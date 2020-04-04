@@ -40,6 +40,7 @@ import Typography from '@material-ui/core/Typography';
 // ---------------------------------------------
 
 import IconClose from '@material-ui/icons/Close';
+import IconSettings from '@material-ui/icons/Settings';
 
 
 // ---------------------------------------------
@@ -233,8 +234,9 @@ export default class extends React.Component {
             ids_idArr
           })}
           disabled={buttonDisabled}
+          startIcon={<IconSettings />}
         >
-          IDを編集する
+          IDを登録・編集する
         </Button>
         
         

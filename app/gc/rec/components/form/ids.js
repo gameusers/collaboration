@@ -26,8 +26,8 @@ import { css, jsx } from '@emotion/core';
 //   Components
 // ---------------------------------------------
 
-import IDChip from '../../../../id/components/chip';
-import IDForm from '../../../../id/components/form';
+import IDChip from '../../../../common/id/components/chip';
+import IDForm from '../../../../common/id/components/form';
 
 
 
@@ -123,17 +123,21 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <div
+        css={css`
+          margin: 24px 0 0 0;
+        `}
+      >
         
         
-        <h3
+        {/*<h3
           css={css`
             font-weight: bold;
             margin: 0 0 2px 0;
           `}
         >
           ID
-        </h3>
+        </h3>*/}
         
         
         <p>ゲームや連絡先のIDを表示します。「IDを登録・編集する」ボタンを押して、表示したいIDを選択してください。</p>
@@ -173,7 +177,7 @@ export default class extends React.Component {
         </div>
         
         
-      </React.Fragment>
+      </div>
     );
     
   }

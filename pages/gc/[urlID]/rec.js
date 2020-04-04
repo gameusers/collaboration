@@ -43,11 +43,13 @@ import initStoreRoot from '../../../app/@stores/root';
 import initStoreGcRecruitment from '../../../app/gc/rec/stores/store';
 import initStoreCardPlayer from '../../../app/common/card/player/stores/player';
 import initStoreForum from '../../../app/common/forum/stores/store';
+import initStoreIDForm from '../../../app/common/id/stores/form';
+import initStoreGameForm from '../../../app/common/game/stores/form';
 import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
 import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
 import initStoreFollow from '../../../app/common/follow/stores/store';
 import initStoreGood from '../../../app/common/good/stores/store';
-import initStoreForm from '../../../app/common/form/stores/store';
+import initStoreHardware from '../../../app/common/hardware/stores/store';
 
 
 // ---------------------------------------------
@@ -81,11 +83,13 @@ const getOrCreateStore = ({ propsObj }) => {
   const storeGcRecruitment = initStoreGcRecruitment({ propsObj });
   const storeCardPlayer = initStoreCardPlayer({});
   const storeForum = initStoreForum({ propsObj });
+  const storeIDForm = initStoreIDForm({});
+  const storeGameForm = initStoreGameForm({});
   const storeImageAndVideo = initStoreImageAndVideo({});
   const storeImageAndVideoForm = initStoreImageAndVideoForm({});
   const storeFollow = initStoreFollow({});
   const storeGood = initStoreGood({});
-  const storeForm = initStoreForm({});
+  const storeHardware = initStoreHardware({});
   
   
   // --------------------------------------------------
@@ -97,11 +101,13 @@ const getOrCreateStore = ({ propsObj }) => {
     storeGcRecruitment,
     storeCardPlayer,
     storeForum,
+    storeIDForm,
+    storeGameForm,
     storeImageAndVideo,
     storeImageAndVideoForm,
     storeFollow,
     storeGood,
-    storeForm,
+    storeHardware,
     
   };
   

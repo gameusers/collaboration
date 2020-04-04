@@ -43,6 +43,13 @@ import Select from '@material-ui/core/Select';
 import { validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation } from '../../../../@database/recruitment-threads/validations/ids-informations';
 
 
+// ---------------------------------------------
+//   Components
+// ---------------------------------------------
+
+import FormIDs from './ids';
+
+
 
 
 // --------------------------------------------------
@@ -96,6 +103,8 @@ export default injectIntl(class extends React.Component {
       storeGcRecruitment,
       intl,
       pathArr,
+      gameCommunities_id,
+      recruitmentThreads_id,
       
     } = this.props;
     
@@ -124,8 +133,10 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Form Data
+    //   Property
     // --------------------------------------------------
+    
+    const ids_idArr = lodashGet(dataObj, [...pathArr, 'ids_idArr'], []);
     
     const hardware1 = lodashGet(dataObj, [...pathArr, 'hardware1'], '');
     const hardware2 = lodashGet(dataObj, [...pathArr, 'hardware2'], '');
@@ -183,6 +194,13 @@ export default injectIntl(class extends React.Component {
     const openType = lodashGet(dataObj, [...pathArr, 'openType'], 1);
     
     
+    // --------------------------------------------------
+    //   login
+    // --------------------------------------------------
+    
+    const login = stores.data.getLogin();
+    
+    
     
     
     // --------------------------------------------------
@@ -191,7 +209,7 @@ export default injectIntl(class extends React.Component {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/gc/rec/components/form/thread.js
+    //   /app/gc/rec/components/form/ids-informations.js
     // `);
     
     // console.log(chalk`
@@ -200,8 +218,14 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(`
-    //   ----- validationRecruitmentThreadsID1Obj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(validationRecruitmentThreadsID1Obj)), { colors: true, depth: null })}\n
+    //   ----- pathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- ids_idArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -264,7 +288,17 @@ export default injectIntl(class extends React.Component {
         
         
         
-        {showForm === 'id' &&
+        {(showForm === 'id' && login) &&
+          <FormIDs
+            type="recruitmentForm"
+            _id={recruitmentThreads_id || gameCommunities_id}
+            ids_idArr={ids_idArr}
+          />
+        }
+        
+        
+        
+        {(showForm === 'id' && !login) &&
           <div
             css={css`
               margin: 24px 0 0 0;
@@ -303,6 +337,7 @@ export default injectIntl(class extends React.Component {
                     pathArr: [...pathArr, 'hardware1'],
                     value: eventObj.target.value
                   })}
+                  displayEmpty
                 >
                   <MenuItem value="">ID</MenuItem>
                   <MenuItem value="Zd_Ia4Hwm">Nintendo Switch</MenuItem>
@@ -374,6 +409,7 @@ export default injectIntl(class extends React.Component {
                     pathArr: [...pathArr, 'hardware2'],
                     value: eventObj.target.value
                   })}
+                  displayEmpty
                 >
                   <MenuItem value="">ID</MenuItem>
                   <MenuItem value="Zd_Ia4Hwm">Nintendo Switch</MenuItem>
@@ -445,6 +481,7 @@ export default injectIntl(class extends React.Component {
                     pathArr: [...pathArr, 'hardware3'],
                     value: eventObj.target.value
                   })}
+                  displayEmpty
                 >
                   <MenuItem value="">ID</MenuItem>
                   <MenuItem value="Zd_Ia4Hwm">Nintendo Switch</MenuItem>

@@ -28,6 +28,7 @@ const schema = mongoose.Schema({
     }
   ],
   imagesAndVideos_id: { type: String },
+  anonymity: { type: Boolean, required: true },
   ids_idArr: [String],
   idsArr: [
     {
@@ -52,6 +53,8 @@ const schema = mongoose.Schema({
       auth: { type: String },
     },
   },
+  commentAndReplyUsers_idsArr: [String],
+  approvalUsers_idsArr: [String],
   comments: { type: Number, default: 0, required: true },
   replies: { type: Number, default: 0, required: true },
   images: { type: Number, default: 0, required: true },

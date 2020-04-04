@@ -36,6 +36,7 @@ import { CustomError } from '../../../@modules/error/custom';
 import initStoreLayout from '../..//layout/stores/layout';
 import initStoreCardPlayer from '../../card/player/stores/player';
 import initStoreGameForm from '../../game/stores/form';
+import initStoreGcRecruitment from '../../../gc/rec/stores/store';
 
 
 
@@ -48,6 +49,7 @@ let storeIDForm = null;
 const storeLayout = initStoreLayout({});
 const storeCardPlayer = initStoreCardPlayer({});
 const storeGameForm = initStoreGameForm({});
+const storeGcRecruitment = initStoreGcRecruitment({});
 
 
 
@@ -357,6 +359,18 @@ class Store {
       
       const clonedArr = lodashCloneDeep(ids_idArr);
       lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'ids_idArr'], clonedArr);
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   募集のフォーム
+    // --------------------------------------------------
+    
+    if (type === 'recruitmentForm') {
+      
+      const clonedArr = lodashCloneDeep(ids_idArr);
+      lodashSet(storeGcRecruitment, ['dataObj', _id, 'recruitmentFormThreadsObj', 'ids_idArr'], clonedArr);
       
     }
     

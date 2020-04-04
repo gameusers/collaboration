@@ -34,7 +34,7 @@ import { CustomError } from '../../../@modules/error/custom';
 //   Validations
 // ---------------------------------------------
 
-const { validationBoolean } = require('../../../@validations/boolean');
+import { validationBoolean } from '../../../@validations/boolean';
 
 import { validationRecruitmentThreadsCategory } from '../../../@database/recruitment-threads/validations/category';
 import { validationRecruitmentThreadsTitle } from '../../../@database/recruitment-threads/validations/title';
@@ -51,13 +51,13 @@ import { validationRecruitmentThreadsDeadlineDate } from '../../../@database/rec
 
 import initStoreData from '../../../@stores/data';
 import initStoreLayout from '../../../common/layout/stores/layout';
-import initStoreForm from '../../../common/form/stores/store';
+import initStoreHardware from '../../../common/hardware/stores/store';
 import initStoreImageAndVideoForm from '../../../common/image-and-video/stores/form';
 
 let storeGcRecruitment = null;
 let storeData = initStoreData({});
 let storeLayout = initStoreLayout({});
-let storeForm = initStoreForm({});
+let storeHardware = initStoreHardware({});
 let storeImageAndVideoForm = initStoreImageAndVideoForm({});
 
 
@@ -134,10 +134,10 @@ class Store {
       //   Temp Data
       // ---------------------------------------------
       
-      lodashSet(storeForm, ['dataObj', ...pathArr, 'hardwaresArr'], [ { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },  { hardwareID: '2yKF4qXAw', name: 'メガドライブ' } ]);
+      lodashSet(storeHardware, ['dataObj', ...pathArr, 'hardwaresArr'], [ { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },  { hardwareID: '2yKF4qXAw', name: 'メガドライブ' } ]);
       
       
-      const recruitmentFormThreadsObj = {
+      const newObj = {
         
         gameCommunities_id,
         recruitmentThreads_id: '',
@@ -145,6 +145,7 @@ class Store {
         title: 'テストタイトル',
         name: 'テストネーム',
         comment: 'テストコメント',
+        anonymity: false,
         hardware1: 'Zd_Ia4Hwm',
         hardware2: '',
         hardware3: '',
@@ -168,7 +169,10 @@ class Store {
         
       };
       
-      lodashSet(this.dataObj, [...pathArr], recruitmentFormThreadsObj);
+      const oldObj = lodashGet(this.dataObj, [...pathArr], {});
+      const mergedObj = lodashMerge(oldObj, newObj);
+      
+      lodashSet(this.dataObj, [...pathArr], mergedObj);
       
       
       
@@ -177,7 +181,7 @@ class Store {
       //   Property
       // ---------------------------------------------
       
-      const hardwaresArr = lodashGet(storeForm, ['dataObj', ...pathArr, 'hardwaresArr'], []);
+      const hardwaresArr = lodashGet(storeHardware, ['dataObj', ...pathArr, 'hardwaresArr'], []);
       
       const hardwareIDsArr = [];
       
@@ -190,6 +194,10 @@ class Store {
       const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
       const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
       const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj', ...pathArr, 'imagesAndVideosObj'], {});
+      
+      const anonymity = lodashGet(this.dataObj, [...pathArr, 'anonymity'], false);
+      
+      const ids_idArr = lodashGet(this.dataObj, [...pathArr, 'ids_idArr'], []);
       
       const hardware1 = lodashGet(this.dataObj, [...pathArr, 'hardware1'], '');
       const hardware2 = lodashGet(this.dataObj, [...pathArr, 'hardware2'], '');
@@ -224,6 +232,23 @@ class Store {
       const replyLimit = parseInt((storeData.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.RECRUITMENT_REPLY_LIMIT), 10);
       
       
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- this.dataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- ids_idArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
@@ -237,6 +262,8 @@ class Store {
         validationRecruitmentThreadsTitle({ value: title }).error ||
         validationRecruitmentThreadsName({ value: name }).error ||
         validationRecruitmentThreadsComment({ value: comment }).error ||
+        
+        validationBoolean({ value: anonymity }).error ||
         
         validationRecruitmentThreadsHardware({ value: hardware1 }).error ||
         validationRecruitmentThreadsHardware({ value: hardware2 }).error ||
@@ -291,6 +318,19 @@ class Store {
       
       
       // ---------------------------------------------
+      //   ids_idArr
+      // ---------------------------------------------
+      
+      // const ids_idArr = [];
+      
+      // for (let valueObj of rawIDs_idArr.values()) {
+      //   ids_idArr.push(valueObj._id);
+      // }
+      
+      
+      
+      
+      // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
       
@@ -303,6 +343,8 @@ class Store {
         title,
         name,
         comment,
+        anonymity,
+        ids_idArr,
         hardware1,
         hardware2,
         hardware3,
@@ -385,72 +427,72 @@ class Store {
       //   console.log
       // --------------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/gc/rec/stores/store.js / handleRecruitment
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/gc/rec/stores/store.js / handleRecruitment
+      // `);
       
-      console.log(`
-        ----- pathArr -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(`
-        ----- hardwaresArr -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(hardwaresArr)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- hardwaresArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(hardwaresArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(`
-        ----- hardwareIDsArr -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(hardwareIDsArr)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- hardwareIDsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(hardwareIDsArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(chalk`
-        gameCommunities_id: {green ${gameCommunities_id}}
-        recruitmentThreads_id: {green ${recruitmentThreads_id}}
-        category: {green ${category}}
-        title: {green ${title}}
-        name: {green ${name}}
-        comment: {green ${comment}}
-      `);
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+      //   category: {green ${category}}
+      //   title: {green ${title}}
+      //   name: {green ${name}}
+      //   comment: {green ${comment}}
+      // `);
       
-      console.log(`
-        ----- imagesAndVideosObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- imagesAndVideosObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(chalk`
-        hardware1: {green ${hardware1}}
-        id1: {green ${id1}}
-        hardware2: {green ${hardware2}}
-        id2: {green ${id2}}
-        hardware3: {green ${hardware3}}
-        id3: {green ${id3}}
+      // console.log(chalk`
+      //   hardware1: {green ${hardware1}}
+      //   id1: {green ${id1}}
+      //   hardware2: {green ${hardware2}}
+      //   id2: {green ${id2}}
+      //   hardware3: {green ${hardware3}}
+      //   id3: {green ${id3}}
         
-        informationTitle1: {green ${informationTitle1}}
-        information1: {green ${information1}}
-        informationTitle2: {green ${informationTitle2}}
-        information2: {green ${information2}}
-        informationTitle3: {green ${informationTitle3}}
-        information3: {green ${information3}}
-        informationTitle4: {green ${informationTitle4}}
-        information4: {green ${information4}}
-        informationTitle5: {green ${informationTitle5}}
-        information5: {green ${information5}}
+      //   informationTitle1: {green ${informationTitle1}}
+      //   information1: {green ${information1}}
+      //   informationTitle2: {green ${informationTitle2}}
+      //   information2: {green ${information2}}
+      //   informationTitle3: {green ${informationTitle3}}
+      //   information3: {green ${information3}}
+      //   informationTitle4: {green ${informationTitle4}}
+      //   information4: {green ${information4}}
+      //   informationTitle5: {green ${informationTitle5}}
+      //   information5: {green ${information5}}
         
-        openType: {green ${openType}}
+      //   openType: {green ${openType}}
         
-        deadlineDate: {green ${deadlineDate}}
-      `);
+      //   deadlineDate: {green ${deadlineDate}}
+      // `);
       
-      console.log(chalk`
-        twitter: {green ${twitter}}
-        webPush: {green ${webPush}}
-      `);
+      // console.log(chalk`
+      //   twitter: {green ${twitter}}
+      //   webPush: {green ${webPush}}
+      // `);
       
       // return;
       

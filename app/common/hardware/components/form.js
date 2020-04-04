@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
+
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -28,9 +29,10 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import { withStyles } from '@material-ui/core/styles';
+
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+// import FormControlLabel from '@material-ui/core/FormControlLabel';
+// import Checkbox from '@material-ui/core/Checkbox';
 import Paper from '@material-ui/core/Paper';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -60,7 +62,7 @@ const stylesObj = {
 // --------------------------------------------------
 
 @withStyles(stylesObj)
-@inject('storeForm')
+@inject('storeHardware')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -90,7 +92,7 @@ export default injectIntl(class extends React.Component {
     const {
       
       classes,
-      storeForm,
+      storeHardware,
       intl,
       pathArr = [],
       
@@ -105,7 +107,7 @@ export default injectIntl(class extends React.Component {
       handleHardwaresSuggestionOnKeyDown,
       handleHardwaresKeyword,
       
-    } = storeForm;
+    } = storeHardware;
     
     
     
@@ -114,11 +116,11 @@ export default injectIntl(class extends React.Component {
     //   Property
     // --------------------------------------------------
     
-    const hardwaresArr = lodashGet(storeForm, ['dataObj', ...pathArr, 'hardwaresArr'], []);
-    const keyword = lodashGet(storeForm, ['dataObj', ...pathArr, 'keyword'], '');
-    const onFocus = lodashGet(storeForm, ['dataObj', ...pathArr, 'onFocus'], false);
-    const suggestionsArr = lodashGet(storeForm, ['dataObj', ...pathArr, 'suggestionsArr'], []);
-    const suggestionSelectedIndex = lodashGet(storeForm, ['dataObj', ...pathArr, 'suggestionSelectedIndex'], 9999);
+    const hardwaresArr = lodashGet(storeHardware, ['dataObj', ...pathArr, 'hardwaresArr'], []);
+    const keyword = lodashGet(storeHardware, ['dataObj', ...pathArr, 'keyword'], '');
+    const onFocus = lodashGet(storeHardware, ['dataObj', ...pathArr, 'onFocus'], false);
+    const suggestionsArr = lodashGet(storeHardware, ['dataObj', ...pathArr, 'suggestionsArr'], []);
+    const suggestionSelectedIndex = lodashGet(storeHardware, ['dataObj', ...pathArr, 'suggestionSelectedIndex'], 9999);
     
     
     

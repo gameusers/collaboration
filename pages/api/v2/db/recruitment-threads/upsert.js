@@ -16,6 +16,7 @@ const util = require('util');
 
 const shortid = require('shortid');
 const moment = require('moment');
+
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 
@@ -48,6 +49,7 @@ const { validationBoolean } = require('../../../../../app/@validations/boolean')
 
 const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
 const { validationHardwareIDsArrServer } = require('../../../../../app/@database/hardwares/validations/id-server');
+const { validationIDs_idArrServer } = require('../../../../../app/@database/ids/validations/_id-server');
 
 const { validationRecruitmentThreadsCategory } = require('../../../../../app/@database/recruitment-threads/validations/category');
 const { validationRecruitmentThreadsTitle } = require('../../../../../app/@database/recruitment-threads/validations/title');
@@ -128,6 +130,8 @@ export default async (req, res) => {
       name,
       comment,
       imagesAndVideosObj,
+      anonymity,
+      ids_idArr,
       hardware1,
       hardware2,
       hardware3,
@@ -163,6 +167,8 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['name'], name);
     lodashSet(requestParametersObj, ['comment'], comment);
     lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
+    lodashSet(requestParametersObj, ['anonymity'], anonymity);
+    lodashSet(requestParametersObj, ['ids_idArr'], ids_idArr);
     lodashSet(requestParametersObj, ['hardware1'], hardware1);
     lodashSet(requestParametersObj, ['hardware2'], hardware2);
     lodashSet(requestParametersObj, ['hardware3'], hardware3);
@@ -215,13 +221,7 @@ export default async (req, res) => {
     await validationRecruitmentThreadsName({ throwError: true, value: name });
     await validationRecruitmentThreadsComment({ throwError: true, value: comment });
     
-    await validationRecruitmentThreadsHardware({ throwError: true, value: hardware1 });
-    await validationRecruitmentThreadsHardware({ throwError: true, value: hardware2 });
-    await validationRecruitmentThreadsHardware({ throwError: true, value: hardware3 });
-    
-    await validationRecruitmentThreadsID({ throwError: true, value: id1 });
-    await validationRecruitmentThreadsID({ throwError: true, value: id2 });
-    await validationRecruitmentThreadsID({ throwError: true, value: id3 });
+    await validationBoolean({ throwError: true, value: anonymity });
     
     await validationRecruitmentThreadsInformationTitle({ throwError: true, value: informationTitle1 });
     await validationRecruitmentThreadsInformationTitle({ throwError: true, value: informationTitle2 });
@@ -245,6 +245,46 @@ export default async (req, res) => {
     await validationRecruitmentThreadsLimit({ throwError: true, required: true, value: threadLimit });
     // await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
     // await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   ID
+    // --------------------------------------------------
+    
+    let saveIDs_idArr = [];
+    let saveHardware1 = '';
+    let saveHardware2 = '';
+    let saveHardware3 = '';
+    let saveID1 = '';
+    let saveID2 = '';
+    let saveID3 = '';
+    
+    if (loginUsers_id) {
+      
+      const validatedIDs_idArrObj = await validationIDs_idArrServer({ valueArr: ids_idArr, loginUsers_id });
+      saveIDs_idArr = lodashGet(validatedIDs_idArrObj, ['valueArr'], []);
+      
+    } else {
+      
+      await validationRecruitmentThreadsHardware({ throwError: true, value: hardware1 });
+      await validationRecruitmentThreadsHardware({ throwError: true, value: hardware2 });
+      await validationRecruitmentThreadsHardware({ throwError: true, value: hardware3 });
+      
+      await validationRecruitmentThreadsID({ throwError: true, value: id1 });
+      await validationRecruitmentThreadsID({ throwError: true, value: id2 });
+      await validationRecruitmentThreadsID({ throwError: true, value: id3 });
+      
+      saveHardware1 = hardware1;
+      saveHardware1 = hardware2;
+      saveHardware1 = hardware3;
+      
+      saveID1 = id1;
+      saveID2 = id2;
+      saveID3 = id3;
+      
+    }
     
     
     
@@ -329,38 +369,54 @@ export default async (req, res) => {
     
     
     
+    
+    // --------------------------------------------------
+    //   idsArr
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----- validatedIDs_idArrObj -----\n
+    //   ${util.inspect(validatedIDs_idArrObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // ;
+    // const validatedIDs_idArr = validatedIDs_idArrObj.valueArr;
+    
+    
+    
     // --------------------------------------------------
     //   idsArr
     // --------------------------------------------------
     
     const idsArr = [];
     
-    if (hardware1 && id1) {
+    if (saveHardware1 && saveID1) {
       
       idsArr.push({
         _id: shortid.generate(),
-        hardwareID: hardware1,
-        id: id1,
+        hardwareID: saveHardware1,
+        id: saveID1,
       });
       
     }
     
-    if (hardware2 && id2) {
+    if (saveHardware2 && saveID2) {
       
       idsArr.push({
         _id: shortid.generate(),
-        hardwareID: hardware2,
-        id: id2,
+        hardwareID: saveHardware2,
+        id: saveID2,
       });
       
     }
     
-    if (hardware3 && id3) {
+    if (saveHardware3 && saveID3) {
       
       idsArr.push({
         _id: shortid.generate(),
-        hardwareID: hardware3,
-        id: id3,
+        hardwareID: saveHardware3,
+        id: saveID3,
       });
       
     }
@@ -524,7 +580,8 @@ export default async (req, res) => {
         }
       ],
       imagesAndVideos_id,
-      ids_idArr: [],
+      anonymity,
+      ids_idArr: saveIDs_idArr,
       idsArr,
       informationsArr,
       deadlineDate,
@@ -536,6 +593,8 @@ export default async (req, res) => {
           auth: '',
         },
       },
+      commentAndReplyUsers_idsArr: [],
+      approvalUsers_idsArr: [],
       comments: 0,
       replies: 0,
       images,

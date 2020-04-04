@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 // --------------------------------------------------
 
 const schema = mongoose.Schema({
+  
   _id: { type: String, required: true },
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
@@ -33,6 +34,7 @@ const schema = mongoose.Schema({
   replies: { type: Number, default: 0, required: true },
   ip: { type: String, required: true },
   userAgent: { type: String, required: true },
+  
 });
 
 

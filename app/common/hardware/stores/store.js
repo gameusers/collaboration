@@ -15,14 +15,13 @@ import util from 'util';
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
-// import moment from 'moment';
-// import Cookies from 'js-cookie';
 import keycode from 'keycode';
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
-import lodashHas from 'lodash/has';
-import lodashCloneDeep from 'lodash/cloneDeep';
-import lodashMerge from 'lodash/merge';
+// import lodashHas from 'lodash/has';
+// import lodashCloneDeep from 'lodash/cloneDeep';
+// import lodashMerge from 'lodash/merge';
 
 
 // ---------------------------------------------
@@ -33,36 +32,11 @@ import { fetchWrapper } from '../../../@modules/fetch';
 import { CustomError } from '../../../@modules/error/custom';
 
 
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-const { validationHardwaresSuggestionKeyword } = require('../../../@database/hardwares/validations/suggestion-keyword');
-
-// import { validationForumThreadsName } from '../../../@database/forum-threads/validations/name';
-// import { validationForumThreadsComment } from '../../../@database/forum-threads/validations/comment';
-
-// import { validationForumCommentsName } from '../../../@database/forum-comments/validations/name';
-// import { validationForumCommentsComment } from '../../../@database/forum-comments/validations/comment';
-
-
-// --------------------------------------------------
-//   Stores
-// --------------------------------------------------
-
-// import initStoreData from '../../../@stores/data';
-// import initStoreLayout from '../../layout/stores/layout';
-// import initStoreImageAndVideoForm from '../../image-and-video/stores/form';
-
-
 // --------------------------------------------------
 //   Store
 // --------------------------------------------------
 
-let storeForm = null;
-// let storeData = initStoreData({});
-// let storeLayout = initStoreLayout({});
-// let storeImageAndVideoForm = initStoreImageAndVideoForm({});
+let storeHardware = null;
       
 
 
@@ -191,8 +165,8 @@ class Store {
     //   Propety
     // ---------------------------------------------
     
-    const suggestionSelectedIndex = lodashGet(storeForm, ['dataObj', ...pathArr, 'suggestionSelectedIndex'], 9999);
-    const suggestionsArr = lodashGet(storeForm, ['dataObj', ...pathArr, 'suggestionsArr'], []);
+    const suggestionSelectedIndex = lodashGet(storeHardware, ['dataObj', ...pathArr, 'suggestionSelectedIndex'], 9999);
+    const suggestionsArr = lodashGet(storeHardware, ['dataObj', ...pathArr, 'suggestionsArr'], []);
     
     
     // --------------------------------------------------
@@ -383,15 +357,15 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreForm({ propsObj }) {
+export default function initStoreHardware({ propsObj }) {
   
   
   // --------------------------------------------------
   //   Store
   // --------------------------------------------------
   
-  if (storeForm === null) {
-    storeForm = new Store();
+  if (storeHardware === null) {
+    storeHardware = new Store();
   }
   
   
@@ -418,7 +392,7 @@ export default function initStoreForm({ propsObj }) {
     const hardwaresArr = lodashGet(propsObj, ['hardwaresArr'], null);
     
     if (hardwaresArr) {
-      lodashSet(storeForm, ['dataObj', ...pathArr, 'hardwaresArr'], hardwaresArr);
+      lodashSet(storeHardware, ['dataObj', ...pathArr, 'hardwaresArr'], hardwaresArr);
     }
     
     
@@ -430,7 +404,7 @@ export default function initStoreForm({ propsObj }) {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/common/form/stores/store.js - initStoreForm
+    //   /app/common/form/stores/store.js - initStoreHardware
     // `);
     
     // console.log(chalk`
@@ -457,7 +431,7 @@ export default function initStoreForm({ propsObj }) {
   //   Return
   // --------------------------------------------------
   
-  return storeForm;
+  return storeHardware;
   
   
 }

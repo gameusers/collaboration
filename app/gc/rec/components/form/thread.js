@@ -59,7 +59,7 @@ import { validationRecruitmentThreadsName } from '../../../../@database/recruitm
 //   Components
 // ---------------------------------------------
 
-import FormHardwares from '../../../../common/form/components/hardwares';
+import FormHardwares from '../../../../common/hardware/components/form';
 import FormIDsInformations from '../form/ids-informations';
 import FormDeadline from '../form/deadline';
 import ImageAndVideoForm from '../../../../common/image-and-video/components/form';
@@ -328,7 +328,7 @@ export default injectIntl(class extends React.Component {
           
           <FormControl>
             
-            <InputLabel htmlFor="category">募集のカテゴリー</InputLabel>
+            <InputLabel shrink id="categoryLabel">募集のカテゴリー</InputLabel>
             
             <Select
               css={css`
@@ -336,12 +336,14 @@ export default injectIntl(class extends React.Component {
                   width: 200px;
                 }
               `}
+              labelId="categoryLabel"
               _id="category"
               value={category}
               onChange={(eventObj) => handleEdit({
                 pathArr: [...this.pathArr, 'category'],
                 value: eventObj.target.value
               })}
+              displayEmpty
             >
               <MenuItem value="">なし</MenuItem>
               <MenuItem value={1}>フレンド募集</MenuItem>
@@ -480,6 +482,8 @@ export default injectIntl(class extends React.Component {
           
           <FormIDsInformations
             pathArr={this.pathArr}
+            gameCommunities_id={gameCommunities_id}
+            recruitmentThreads_id={recruitmentThreads_id}
           />
           
         </div>

@@ -1616,7 +1616,7 @@ const transactionForUpsert = async ({
     //   Transaction / Commit
     // --------------------------------------------------
     
-    await session.commitTransaction();
+    // await session.commitTransaction();
     // console.log('--------コミット-----------');
     
     session.endSession();

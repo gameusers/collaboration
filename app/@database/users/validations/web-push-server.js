@@ -28,10 +28,11 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 /**
  * webPushSubscriptionObj endpoint
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationUsersWebPushSubscriptionObjEndpointServer = async ({ value }) => {
+const validationUsersWebPushSubscriptionObjEndpointServer = async ({ required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -60,7 +61,13 @@ const validationUsersWebPushSubscriptionObjEndpointServer = async ({ value }) =>
   // ---------------------------------------------
   
   if (validator.isEmpty(data)) {
-    throw new CustomError({ level: 'warn', errorsArr: [{ code: 'ipoMJpdN8', messageID: 'cFbXmuFVh' }] });
+    
+    if (required) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'ipoMJpdN8', messageID: 'cFbXmuFVh' }] });
+    }
+    
+    return resultObj;
+    
   }
   
   
@@ -87,10 +94,11 @@ const validationUsersWebPushSubscriptionObjEndpointServer = async ({ value }) =>
 
 /**
  * webPushSubscriptionObj keys p256dh
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationUsersWebPushSubscriptionObjKeysP256dhServer = async ({ value }) => {
+const validationUsersWebPushSubscriptionObjKeysP256dhServer = async ({ required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -119,7 +127,13 @@ const validationUsersWebPushSubscriptionObjKeysP256dhServer = async ({ value }) 
   // ---------------------------------------------
   
   if (validator.isEmpty(data)) {
-    throw new CustomError({ level: 'warn', errorsArr: [{ code: 'oAu72u7Jp', messageID: 'cFbXmuFVh' }] });
+    
+    if (required) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'oAu72u7Jp', messageID: 'cFbXmuFVh' }] });
+    }
+    
+    return resultObj;
+    
   }
   
   
@@ -146,10 +160,11 @@ const validationUsersWebPushSubscriptionObjKeysP256dhServer = async ({ value }) 
 
 /**
  * webPushSubscriptionObj keys auth
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationUsersWebPushSubscriptionObjKeysAuthServer = async ({ value }) => {
+const validationUsersWebPushSubscriptionObjKeysAuthServer = async ({ required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -178,7 +193,13 @@ const validationUsersWebPushSubscriptionObjKeysAuthServer = async ({ value }) =>
   // ---------------------------------------------
   
   if (validator.isEmpty(data)) {
-    throw new CustomError({ level: 'warn', errorsArr: [{ code: '9N58M3W6B', messageID: 'cFbXmuFVh' }] });
+    
+    if (required) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: '9N58M3W6B', messageID: 'cFbXmuFVh' }] });
+    }
+    
+    return resultObj;
+    
   }
   
   

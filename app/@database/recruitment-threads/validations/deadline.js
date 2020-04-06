@@ -15,6 +15,8 @@ const util = require('util');
 // ---------------------------------------------
 
 const validator = require('validator');
+const moment = require('moment');
+
 const lodashGet = require('lodash/get');
 
 
@@ -76,6 +78,24 @@ const validationRecruitmentThreadsDeadlineDate = ({ throwError = false, required
     
     if (!validator.isISO8601(data)) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'N-xewnatz', messageID: 'bT9TGtVck' }] });
+    }
+    
+    
+    // ---------------------------------------------
+    //   今日より前の場合はエラー
+    // ---------------------------------------------
+    
+    const ISO8601Today = moment().hours(0).minutes(0).seconds(0).milliseconds(0);
+    const ISO8601Deadline = moment(data);
+    
+    // console.log(chalk`
+    //   ISO8601Today: {green ${ISO8601Today.toISOString()}}
+    //   ISO8601Deadline: {green ${ISO8601Deadline.toISOString()}}
+    //   ISO8601Deadline.isBefore(ISO8601Today): {green ${ISO8601Deadline.isBefore(ISO8601Today)}}
+    // `);
+    
+    if (ISO8601Deadline.isBefore(ISO8601Today)) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'z3Omz57WQ', messageID: 'zZBe6dTLB' }] });
     }
     
     

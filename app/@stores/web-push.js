@@ -176,7 +176,7 @@ class Store {
    * 参考：https://github.com/web-push-libs/web-push
    * @param {Array} pathArr - パス
    */
-  // @action.bound
+  @action.bound
   async handleWebPushSubscribe() {
     
     
@@ -184,10 +184,10 @@ class Store {
       
       
       // ---------------------------------------------
-      //   必要なデータがない場合は処理停止
+      //   必要なデータがない場合、本番環境でない場合は処理停止
       // ---------------------------------------------
       
-      if (!process.env.WEB_PUSH_VAPID_PUBLIC_KEY) {
+      if (!process.env.WEB_PUSH_VAPID_PUBLIC_KEY || process.env.NODE_ENV !== 'production') {
         return;
       }
       

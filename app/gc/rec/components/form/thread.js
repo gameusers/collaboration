@@ -175,6 +175,7 @@ export default injectIntl(class extends React.Component {
       intl,
       gameCommunities_id,
       recruitmentThreads_id,
+      settingAnonymity,
       
     } = this.props;
     
@@ -198,7 +199,8 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleRecruitment,
+      handleSubmitRecruitment,
+      handleGetWebPushSubscribeObj,
       handleDeleteThread,
       
     } = storeGcRecruitment;
@@ -214,6 +216,7 @@ export default injectIntl(class extends React.Component {
     const comment = lodashGet(dataObj, [...this.pathArr, 'comment'], '');
     const twitter = lodashGet(dataObj, [...this.pathArr, 'twitter'], false);
     const webPush = lodashGet(dataObj, [...this.pathArr, 'webPush'], false);
+    const anonymity = lodashGet(dataObj, [...this.pathArr, 'anonymity'], false);
     
     
     // --------------------------------------------------
@@ -238,6 +241,13 @@ export default injectIntl(class extends React.Component {
     const showDeleteDialog = lodashGet(dataObj, [...this.pathArr, 'showDeleteDialog'], false);
     
     
+    // --------------------------------------------------
+    //   login
+    // --------------------------------------------------
+    
+    const login = stores.data.getLogin();
+    
+    
     
     
     // --------------------------------------------------
@@ -250,8 +260,10 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(chalk`
+    //   gameCommunities_id: {green ${gameCommunities_id}}
     //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-    //   showForm: {green ${showForm}}
+    //   settingAnonymity: {green ${settingAnonymity}}
+    //   login: {green ${login}}
     // `);
     
     // console.log(`
@@ -275,7 +287,7 @@ export default injectIntl(class extends React.Component {
           padding: 0 0 8px;
         `}
         name={recruitmentThreads_id ? `recruitment-thread-${recruitmentThreads_id}` : 'recruitment-thread-new'}
-        onSubmit={(eventObj) => handleRecruitment({
+        onSubmit={(eventObj) => handleSubmitRecruitment({
           eventObj,
           pathArr: this.pathArr,
           gameCommunities_id,
@@ -388,29 +400,53 @@ export default injectIntl(class extends React.Component {
           
           
           {/* Name */}
-          <TextField
-            css={css`
-              && {
-                width: 100%;
-                max-width: 500px;
-                ${recruitmentThreads_id && `margin-top: 4px;`}
-              }
-            `}
-            id="threadName"
-            label="ハンドルネーム"
-            value={validationRecruitmentThreadsNameObj.value}
-            onChange={(eventObj) => handleEdit({
-              pathArr: [...this.pathArr, 'name'],
-              value: eventObj.target.value
-            })}
-            error={validationRecruitmentThreadsNameObj.error}
-            helperText={intl.formatMessage({ id: validationRecruitmentThreadsNameObj.messageID }, { numberOfCharacters: validationRecruitmentThreadsNameObj.numberOfCharacters })}
-            margin="normal"
-            inputProps={{
-              maxLength: 50,
-            }}
-          />
+          {!login &&
+            <TextField
+              css={css`
+                && {
+                  width: 100%;
+                  max-width: 500px;
+                  ${recruitmentThreads_id && `margin-top: 4px;`}
+                }
+              `}
+              id="threadName"
+              label="ハンドルネーム"
+              value={validationRecruitmentThreadsNameObj.value}
+              onChange={(eventObj) => handleEdit({
+                pathArr: [...this.pathArr, 'name'],
+                value: eventObj.target.value
+              })}
+              error={validationRecruitmentThreadsNameObj.error}
+              helperText={intl.formatMessage({ id: validationRecruitmentThreadsNameObj.messageID }, { numberOfCharacters: validationRecruitmentThreadsNameObj.numberOfCharacters })}
+              margin="normal"
+              inputProps={{
+                maxLength: 50,
+              }}
+            />
+          }
           
+          
+          {/* Anonymity */}
+          {(login && settingAnonymity) &&
+            <div
+              css={css`
+                margin: 0 0 4px 0;
+              `}
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={anonymity}
+                    onChange={(eventObj) => handleEdit({
+                      pathArr: [...this.pathArr, 'anonymity'],
+                      value: eventObj.target.checked
+                    })}
+                  />
+                }
+                label="ハンドルネームを匿名にする"
+              />
+            </div>
+          }
           
           
           
@@ -520,7 +556,7 @@ export default injectIntl(class extends React.Component {
               margin: 0 0 12px 0;
             `}
           >
-            ブラウザで通知を受け取れるプッシュ通知の設定を行えます。プッシュ通知を許可すると、募集に返信があったときに通知を受け取れます。何度もページにアクセスして返信が来たかどうか確認する必要がなくなるので、とても便利です。
+            ブラウザで通知を受け取れるプッシュ通知の設定を行えます。プッシュ通知を許可すると、募集に返信があったときに通知を受け取れるのでおすすめです。
           </p>
           
           <p
@@ -529,6 +565,14 @@ export default injectIntl(class extends React.Component {
             `}
           >
             プッシュ通知に対応しているブラウザは Chrome、Edge、Firefox、Opera です。
+          </p>
+          
+          <p
+            css={css`
+              margin: 0 0 12px 0;
+            `}
+          >
+            過去にGame Usersからのプッシュ通知をブロックしたことがある方は、ブロックを解除しなければ通知を受けることはできません。通知を受け取りたい方はブロックの解除方法を調べてから実行してください。
           </p>
           
           
@@ -540,9 +584,9 @@ export default injectIntl(class extends React.Component {
               control={
                 <Checkbox
                   checked={webPush}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [...this.pathArr, 'webPush'],
-                    value: eventObj.target.checked
+                  onChange={(eventObj) => handleGetWebPushSubscribeObj({
+                    pathArr: this.pathArr,
+                    checked: eventObj.target.checked
                   })}
                 />
               }

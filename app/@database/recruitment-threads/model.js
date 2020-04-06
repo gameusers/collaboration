@@ -970,6 +970,8 @@ const format = ({
     const imagesAndVideosObj = lodashGet(valueObj, ['imagesAndVideosObj'], {});
     const followsObj = lodashGet(valueObj, ['followsObj'], {});
     const idsArr = lodashGet(valueObj, ['idsArr'], []);
+    const hardwareIDsArr = lodashGet(valueObj, ['hardwareIDsArr'], []);
+    const hardwaresArr = lodashGet(valueObj, ['hardwaresArr'], []);
     
     
     // --------------------------------------------------
@@ -1054,6 +1056,28 @@ const format = ({
       clonedObj.comment = lodashGet(valueObj, ['localesArr', 0, 'comment'], '');
       
     }
+    
+    
+    // --------------------------------------------------
+    //   hardwaresArr - 元の配列の順番通りに並べなおす
+    // --------------------------------------------------
+    
+    const sortedHardwaresArr = [];
+    
+    for (let hardwareID of hardwareIDsArr) {
+      
+      const index = hardwaresArr.findIndex((value2Obj) => {
+        return value2Obj.hardwareID === hardwareID;
+      });
+      
+      if (index !== -1) {
+        sortedHardwaresArr.push(hardwaresArr[index]);
+      }
+      
+    }
+    
+    clonedObj.hardwaresArr = sortedHardwaresArr;
+    
     
     
     // --------------------------------------------------
@@ -1616,7 +1640,7 @@ const transactionForUpsert = async ({
     //   Transaction / Commit
     // --------------------------------------------------
     
-    // await session.commitTransaction();
+    await session.commitTransaction();
     // console.log('--------コミット-----------');
     
     session.endSession();
@@ -1628,46 +1652,46 @@ const transactionForUpsert = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/recruitment-threads/model.js - transactionForUpsert
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/recruitment-threads/model.js - transactionForUpsert
+    // `);
     
-    console.log(`
-      ----- recruitmentThreadsConditionObj -----\n
-      ${util.inspect(recruitmentThreadsConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- recruitmentThreadsConditionObj -----\n
+    //   ${util.inspect(recruitmentThreadsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- recruitmentThreadsSaveObj -----\n
-      ${util.inspect(recruitmentThreadsSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- recruitmentThreadsSaveObj -----\n
+    //   ${util.inspect(recruitmentThreadsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- imagesAndVideosConditionObj -----\n
-      ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosConditionObj -----\n
+    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- imagesAndVideosSaveObj -----\n
-      ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosSaveObj -----\n
+    //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- gameCommunitiesConditionObj -----\n
-      ${util.inspect(gameCommunitiesConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gameCommunitiesConditionObj -----\n
+    //   ${util.inspect(gameCommunitiesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- gameCommunitiesSaveObj -----\n
-      ${util.inspect(gameCommunitiesSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gameCommunitiesSaveObj -----\n
+    //   ${util.inspect(gameCommunitiesSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- returnObj -----\n

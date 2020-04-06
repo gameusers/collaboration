@@ -50,6 +50,7 @@ const { validationBoolean } = require('../../../../../app/@validations/boolean')
 const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
 const { validationHardwareIDsArrServer } = require('../../../../../app/@database/hardwares/validations/id-server');
 const { validationIDs_idArrServer } = require('../../../../../app/@database/ids/validations/_id-server');
+const { validationUsersWebPushSubscriptionObjEndpointServer, validationUsersWebPushSubscriptionObjKeysP256dhServer, validationUsersWebPushSubscriptionObjKeysAuthServer } = require('../../../../../app/@database/users/validations/web-push-server');
 
 const { validationRecruitmentThreadsCategory } = require('../../../../../app/@database/recruitment-threads/validations/category');
 const { validationRecruitmentThreadsTitle } = require('../../../../../app/@database/recruitment-threads/validations/title');
@@ -130,14 +131,14 @@ export default async (req, res) => {
       name,
       comment,
       imagesAndVideosObj,
-      anonymity,
-      ids_idArr,
-      hardware1,
-      hardware2,
-      hardware3,
-      id1,
-      id2,
-      id3,
+      // anonymity,
+      // ids_idArr,
+      // hardware1,
+      // hardware2,
+      // hardware3,
+      // id1,
+      // id2,
+      // id3,
       informationTitle1,
       informationTitle2,
       informationTitle3,
@@ -148,13 +149,31 @@ export default async (req, res) => {
       information3,
       information4,
       information5,
-      openType,
-      deadlineDate,
+      // openType,
+      // deadlineDate,
+      // webPushSubscriptionObj,
       twitter,
-      webPush,
+      // webPush,
       threadLimit,
       commentLimit,
       replyLimit,
+      
+    } = bodyObj;
+    
+    
+    let { 
+      
+      anonymity,
+      ids_idArr,
+      hardware1,
+      hardware2,
+      hardware3,
+      id1,
+      id2,
+      id3,
+      openType,
+      deadlineDate,
+      webPushSubscriptionObj,
       
     } = bodyObj;
     
@@ -187,8 +206,9 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['information5'], information5);
     lodashSet(requestParametersObj, ['openType'], openType);
     lodashSet(requestParametersObj, ['deadlineDate'], deadlineDate);
+    lodashSet(requestParametersObj, ['webPushSubscriptionObj'], {});
     lodashSet(requestParametersObj, ['twitter'], twitter);
-    lodashSet(requestParametersObj, ['webPush'], webPush);
+    // lodashSet(requestParametersObj, ['webPush'], webPush);
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
     lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
@@ -201,6 +221,17 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     verifyCsrfToken(req, res);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   webPushSubscriptionObj
+    // --------------------------------------------------
+    
+    const endpoint = lodashGet(webPushSubscriptionObj, ['endpoint'], '');
+    const p256dh = lodashGet(webPushSubscriptionObj, ['keys', 'p256dh'], '');
+    const auth = lodashGet(webPushSubscriptionObj, ['keys', 'auth'], '');
     
     
     
@@ -239,8 +270,12 @@ export default async (req, res) => {
     
     await validationRecruitmentThreadsDeadlineDate({ throwError: true, value: deadlineDate });
     
+    await validationUsersWebPushSubscriptionObjEndpointServer({ value: endpoint });
+    await validationUsersWebPushSubscriptionObjKeysP256dhServer({ value: p256dh });
+    await validationUsersWebPushSubscriptionObjKeysAuthServer({ value: auth });
+    
     await validationBoolean({ throwError: true, value: twitter });
-    await validationBoolean({ throwError: true, value: webPush });
+    // await validationBoolean({ throwError: true, value: webPush });
     
     await validationRecruitmentThreadsLimit({ throwError: true, required: true, value: threadLimit });
     // await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
@@ -253,18 +288,11 @@ export default async (req, res) => {
     //   ID
     // --------------------------------------------------
     
-    let saveIDs_idArr = [];
-    let saveHardware1 = '';
-    let saveHardware2 = '';
-    let saveHardware3 = '';
-    let saveID1 = '';
-    let saveID2 = '';
-    let saveID3 = '';
+    let validatedIDs_idArrObj = {};
     
     if (loginUsers_id) {
       
-      const validatedIDs_idArrObj = await validationIDs_idArrServer({ valueArr: ids_idArr, loginUsers_id });
-      saveIDs_idArr = lodashGet(validatedIDs_idArrObj, ['valueArr'], []);
+      validatedIDs_idArrObj = await validationIDs_idArrServer({ valueArr: ids_idArr, loginUsers_id });
       
     } else {
       
@@ -275,14 +303,6 @@ export default async (req, res) => {
       await validationRecruitmentThreadsID({ throwError: true, value: id1 });
       await validationRecruitmentThreadsID({ throwError: true, value: id2 });
       await validationRecruitmentThreadsID({ throwError: true, value: id3 });
-      
-      saveHardware1 = hardware1;
-      saveHardware1 = hardware2;
-      saveHardware1 = hardware3;
-      
-      saveID1 = id1;
-      saveID2 = id2;
-      saveID3 = id3;
       
     }
     
@@ -366,22 +386,41 @@ export default async (req, res) => {
     
     const ISO8601 = moment().utc().toISOString();
     
+    if (deadlineDate) {
+      deadlineDate = moment(ISO8601).utc().toISOString();
+    }
     
     
     
     
     // --------------------------------------------------
-    //   idsArr
+    //   値の強制：ログインしている場合
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----- validatedIDs_idArrObj -----\n
-    //   ${util.inspect(validatedIDs_idArrObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    if (loginUsers_id) {
+      
+      ids_idArr = lodashGet(validatedIDs_idArrObj, ['valueArr'], []);
+      
+      hardware1 = '';
+      hardware2 = '';
+      hardware3 = '';
+      id1 = '';
+      id2 = '';
+      id3 = '';
+      
+      
+    // --------------------------------------------------
+    //   値の強制：ログインしていない場合
+    // --------------------------------------------------
+      
+    } else {
+      
+      anonymity = false;
+      ids_idArr = [];
+      openType = 1;
+      
+    }
     
-    // ;
-    // const validatedIDs_idArr = validatedIDs_idArrObj.valueArr;
     
     
     
@@ -391,32 +430,32 @@ export default async (req, res) => {
     
     const idsArr = [];
     
-    if (saveHardware1 && saveID1) {
+    if (hardware1 && id1) {
       
       idsArr.push({
         _id: shortid.generate(),
-        hardwareID: saveHardware1,
-        id: saveID1,
+        hardwareID: hardware1,
+        id: id1,
       });
       
     }
     
-    if (saveHardware2 && saveID2) {
+    if (hardware2 && id2) {
       
       idsArr.push({
         _id: shortid.generate(),
-        hardwareID: saveHardware2,
-        id: saveID2,
+        hardwareID: hardware2,
+        id: id2,
       });
       
     }
     
-    if (saveHardware3 && saveID3) {
+    if (hardware3 && id3) {
       
       idsArr.push({
         _id: shortid.generate(),
-        hardwareID: saveHardware3,
-        id: saveID3,
+        hardwareID: hardware3,
+        id: id3,
       });
       
     }
@@ -477,6 +516,21 @@ export default async (req, res) => {
       });
       
     }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   webPushSubscriptionObj
+    // --------------------------------------------------
+    
+    webPushSubscriptionObj = {
+      endpoint,
+      keys: {
+        p256dh,
+        auth,
+      }
+    };
     
     
     
@@ -581,18 +635,12 @@ export default async (req, res) => {
       ],
       imagesAndVideos_id,
       anonymity,
-      ids_idArr: saveIDs_idArr,
+      ids_idArr,
       idsArr,
       informationsArr,
       deadlineDate,
       close: false,
-      webPushSubscriptionObj: {
-        endpoint: '',
-        keys: {
-          p256dh: '',
-          auth: '',
-        },
-      },
+      webPushSubscriptionObj,
       commentAndReplyUsers_idsArr: [],
       approvalUsers_idsArr: [],
       comments: 0,

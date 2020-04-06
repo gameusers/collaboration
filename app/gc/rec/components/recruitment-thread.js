@@ -21,6 +21,7 @@ import { injectIntl } from 'react-intl';
 import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
+
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -59,6 +60,7 @@ import IconAssignment from '@material-ui/icons/Assignment';
 import IconPublic from '@material-ui/icons/Public';
 import IconEdit from '@material-ui/icons/Edit';
 import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
+import IconFavorite from '@material-ui/icons/PermIdentity';
 
 
 // ---------------------------------------------
@@ -74,6 +76,8 @@ import SimpleIcons from 'simple-icons-react-component';
 
 import Paragraph from '../../../common/layout/components/paragraph';
 import FormThread from './form/thread';
+import ChipCategory from './chip-category';
+import ChipHardwares from './chip-hardwares';
 // import FormComment from './form-comment';
 // import Comment from './comment';
 import ImageAndVideo from '../../../common/image-and-video/components/image-and-video';
@@ -317,7 +321,10 @@ export default injectIntl(class extends React.Component {
       const editable = lodashGet(threadsDataObj, ['editable'], false);
       // const editable = true;
       
-      const comments = lodashGet(threadsDataObj, ['comments'], 0);
+      // const comments = lodashGet(threadsDataObj, ['comments'], 0);
+      
+      const category = lodashGet(threadsDataObj, ['category'], 1);
+      const hardwaresArr = lodashGet(threadsDataObj, ['hardwaresArr'], []);
       
       
       // --------------------------------------------------
@@ -340,97 +347,6 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: [...this.pathArr, recruitmentThreads_id] });
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   Component - Hardware Chips
-      // --------------------------------------------------
-      
-      const hardwaresArr = lodashGet(threadsDataObj, ['hardwaresArr'], []);
-      
-      const componentHardwareChipsArr = [];
-      
-      for (const [index2, value2Obj] of hardwaresArr.entries()) {
-        
-        
-        if (value2Obj.hardwareID === 'TdK3Oc-yV') {
-          
-          componentHardwareChipsArr.push(
-            <div
-              key={`hardwareChips-${index2}`}
-              css={css`
-                margin: 8px 8px 0 0;
-              `}
-            >
-              <Chip
-                avatar={
-                  <Avatar alt="PlayStation" style={{ 'backgroundColor': '#003791' }}>
-                    <div style={{ 'width': '80%', 'marginTop': '4px' }}>
-                      <SimpleIcons name="PlayStation" color="white" />
-                    </div>
-                  </Avatar>
-                }
-                label={value2Obj.name}
-                color="primary"
-                variant="outlined"
-              />
-            </div>
-          );
-          
-        } else if (value2Obj.hardwareID === 'uPqoiXA_8') {
-          
-          componentHardwareChipsArr.push(
-            <div
-              key={`hardwareChips-${index2}`}
-              css={css`
-                margin: 8px 8px 0 0;
-              `}
-            >
-              <Chip
-                avatar={
-                  <Avatar alt="Xbox" style={{ 'backgroundColor': '#107C10' }}>
-                    <div style={{ 'width': '75%', 'marginTop': '4px' }}>
-                      <SimpleIcons name="Xbox" color="white" />
-                    </div>
-                  </Avatar>
-                }
-                label={value2Obj.name}
-                color="primary"
-                variant="outlined"
-              />
-            </div>
-          );
-          
-        } else if (value2Obj.hardwareID === 'Zd_Ia4Hwm') {
-          
-          componentHardwareChipsArr.push(
-            <div
-              key={`hardwareChips-${index2}`}
-              css={css`
-                margin: 8px 8px 0 0;
-              `}
-            >
-              <Chip
-                avatar={
-                  <Avatar alt="Nintendo" style={{ 'backgroundColor': '#e60012' }}>
-                    <div style={{ 'width': '55%', 'marginTop': '4px' }}>
-                      <SimpleIcons name="Nintendo" color="white" />
-                    </div>
-                  </Avatar>
-                }
-                label={value2Obj.name}
-                color="primary"
-                variant="outlined"
-              />
-            </div>
-          );
-          
-        }
-        
-        
-      }
       
       
       
@@ -483,6 +399,7 @@ export default injectIntl(class extends React.Component {
                   <FormThread
                     gameCommunities_id={gameCommunities_id}
                     recruitmentThreads_id={recruitmentThreads_id}
+                    settingAnonymity={settingAnonymity}
                   />
                 </div>
                 
@@ -584,8 +501,6 @@ export default injectIntl(class extends React.Component {
                       flex-flow: row nowrap;
                       align-items: center;
                       font-size: 12px;
-                      // margin: 0;
-                      // background-color: pink;
                     `}
                   >
                     
@@ -603,8 +518,18 @@ export default injectIntl(class extends React.Component {
                       
                       
                       
-                      {/* Hardware Chips */}
-                      {componentHardwareChipsArr}
+                      {/* Chip Hardwares  */}
+                      <ChipHardwares
+                        hardwaresArr={hardwaresArr}
+                      />
+                      
+                      
+                      
+                      
+                      {/* Chip Category */}
+                      <ChipCategory
+                        category={category}
+                      />
                       
                       
                       
@@ -808,6 +733,7 @@ export default injectIntl(class extends React.Component {
             
             <FormThread
               gameCommunities_id={gameCommunities_id}
+              settingAnonymity={settingAnonymity}
             />
             
           </Panel>

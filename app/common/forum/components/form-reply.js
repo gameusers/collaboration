@@ -398,7 +398,7 @@ export default injectIntl(class extends React.Component {
                   })}
                 />
               }
-              label="匿名にする"
+              label="ハンドルネームを匿名にする"
             />
           </div>
         }

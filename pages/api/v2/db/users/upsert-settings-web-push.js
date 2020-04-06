@@ -132,9 +132,13 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     await validationIP({ throwError: true, value: req.ip });
-    await validationUsersWebPushSubscriptionObjEndpointServer({ value: endpoint });
-    await validationUsersWebPushSubscriptionObjKeysP256dhServer({ value: p256dh });
-    await validationUsersWebPushSubscriptionObjKeysAuthServer({ value: auth });
+    
+    await validationUsersWebPushSubscriptionObjEndpointServer({ required: true, value: endpoint });
+    await validationUsersWebPushSubscriptionObjKeysP256dhServer({ required: true, value: p256dh });
+    await validationUsersWebPushSubscriptionObjKeysAuthServer({ required: true, value: auth });
+    // await validationUsersWebPushSubscriptionObjEndpointServer({ value: endpoint });
+    // await validationUsersWebPushSubscriptionObjKeysP256dhServer({ value: p256dh });
+    // await validationUsersWebPushSubscriptionObjKeysAuthServer({ value: auth });
     
     
     

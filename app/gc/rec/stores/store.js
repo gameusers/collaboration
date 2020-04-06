@@ -50,12 +50,14 @@ import { validationRecruitmentThreadsDeadlineDate } from '../../../@database/rec
 // --------------------------------------------------
 
 import initStoreData from '../../../@stores/data';
+import initStoreWebPush from '../../../@stores/web-push';
 import initStoreLayout from '../../../common/layout/stores/layout';
 import initStoreHardware from '../../../common/hardware/stores/store';
 import initStoreImageAndVideoForm from '../../../common/image-and-video/stores/form';
 
 let storeGcRecruitment = null;
 let storeData = initStoreData({});
+let storeWebPush = initStoreWebPush({});
 let storeLayout = initStoreLayout({});
 let storeHardware = initStoreHardware({});
 let storeImageAndVideoForm = initStoreImageAndVideoForm({});
@@ -108,7 +110,7 @@ class Store {
    * @param {string} recruitmentThreads_id - DB recruitment-threads _id / 募集スレッドのID
    */
   @action.bound
-  async handleRecruitment({
+  async handleSubmitRecruitment({
     
     eventObj,
     pathArr,
@@ -145,7 +147,7 @@ class Store {
         title: 'テストタイトル',
         name: 'テストネーム',
         comment: 'テストコメント',
-        anonymity: false,
+        // anonymity: false,
         hardware1: 'Zd_Ia4Hwm',
         hardware2: '',
         hardware3: '',
@@ -163,9 +165,9 @@ class Store {
         information4: '',
         information5: '',
         openType: 1,
-        deadlineDate: '2020-12-31',
-        twitter: false,
-        webPush: false,
+        // deadlineDate: '2020-12-31',
+        // twitter: false,
+        // webPush: false,
         
       };
       
@@ -223,8 +225,10 @@ class Store {
       
       const deadlineDate = lodashGet(this.dataObj, [...pathArr, 'deadlineDate'], '');
       
-      const twitter = lodashGet(this.dataObj, [...pathArr, 'twitter'], false);
       const webPush = lodashGet(this.dataObj, [...pathArr, 'webPush'], false);
+      const webPushSubscriptionObj = lodashGet(this.dataObj, [...pathArr, 'webPushSubscriptionObj'], {});
+      
+      const twitter = lodashGet(this.dataObj, [...pathArr, 'twitter'], false);
       
       
       const threadLimit = parseInt((storeData.getCookie({ key: 'recruitmentThreadLimit' }) || process.env.RECRUITMENT_THREAD_LIMIT), 10);
@@ -232,23 +236,6 @@ class Store {
       const replyLimit = parseInt((storeData.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.RECRUITMENT_REPLY_LIMIT), 10);
       
       
-      // console.log(`
-      //   ----- pathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- this.dataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- ids_idArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       
       // ---------------------------------------------
@@ -289,8 +276,8 @@ class Store {
         
         validationRecruitmentThreadsDeadlineDate({ value: deadlineDate }).error ||
         
-        validationBoolean({ value: twitter }).error ||
-        validationBoolean({ value: webPush }).error
+        validationBoolean({ value: webPush }).error ||
+        validationBoolean({ value: twitter }).error
         
       ) {
         
@@ -313,19 +300,6 @@ class Store {
       // ---------------------------------------------
       
       storeLayout.handleButtonDisable({ pathArr });
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   ids_idArr
-      // ---------------------------------------------
-      
-      // const ids_idArr = [];
-      
-      // for (let valueObj of rawIDs_idArr.values()) {
-      //   ids_idArr.push(valueObj._id);
-      // }
       
       
       
@@ -364,7 +338,7 @@ class Store {
         openType,
         deadlineDate,
         twitter,
-        webPush,
+        // webPush,
         threadLimit,
         commentLimit,
         replyLimit,
@@ -373,6 +347,10 @@ class Store {
       
       if (Object.keys(imagesAndVideosObj).length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
+      }
+      
+      if (webPush && Object.keys(webPushSubscriptionObj).length !== 0) {
+        formDataObj.webPushSubscriptionObj = webPushSubscriptionObj;
       }
       
       
@@ -435,6 +413,18 @@ class Store {
       // console.log(`
       //   ----- pathArr -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- this.dataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- ids_idArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -507,6 +497,112 @@ class Store {
       storeLayout.handleSnackbarOpen({
         variant: 'error',
         errorObj,
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ pathArr });
+      
+      
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide({});
+      
+      
+    }
+    
+    
+  };
+  
+  
+  
+  
+  /**
+   * 通知設定 - 購読データを取得する
+   * @param {Array} pathArr - パス
+   * @param {boolean} checked - チェックの状態
+   */
+  @action.bound
+  async handleGetWebPushSubscribeObj({ pathArr, checked }) {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Loading 表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingShow({});
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Subscribe
+      // ---------------------------------------------
+      
+      let webPushSubscriptionObj = {};
+      
+      if (checked) {
+        
+        webPushSubscriptionObj = await storeWebPush.handleWebPushSubscribe();
+        lodashSet(this.dataObj, [...pathArr, 'webPushSubscriptionObj'], webPushSubscriptionObj);
+        
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Check Box
+      // ---------------------------------------------
+      
+      lodashSet(this.dataObj, [...pathArr, 'webPush'], checked);
+      
+      
+      
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/gc/rec/stores/store.js - handleGetWebPushSubscribeObj
+      // `);
+      
+      // console.log(`
+      //   ----- webPushSubscriptionObj -----\n
+      //   ${util.inspect(webPushSubscriptionObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        messageID: 'KkWs0oIKw',
       });
       
       

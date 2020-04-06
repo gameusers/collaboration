@@ -4033,7 +4033,7 @@ emotion: https://emotion.sh/docs/introduction`,
         updatedDate: '2020-03-27T00:00:00Z',
         gameCommunities_id: 'Jk92aglWl',
         users_id: 'jun-deE4J',
-        hardwareIDsArr: ['TdK3Oc-yV', 'uPqoiXA_8', 'Zd_Ia4Hwm'],
+        hardwareIDsArr: ['P0UG-LHOQ', 'SXybALV1f', 'o-f3Zxd49', 'TdK3Oc-yV', 'uPqoiXA_8', 'Zd_Ia4Hwm', 'qk9DiUwN-', 'mOpBZsQBm', 'efIOgWs3N', 'I-iu-WmkO', 'KyOSlwcLk' ],
         category: 1,
         localesArr: [
           {

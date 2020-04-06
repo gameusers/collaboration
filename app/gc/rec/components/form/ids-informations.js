@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
+
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -48,20 +49,6 @@ import { validationRecruitmentThreadsID, validationRecruitmentThreadsInformation
 // ---------------------------------------------
 
 import FormIDs from './ids';
-
-
-
-
-// --------------------------------------------------
-//   Emotion
-//   https://emotion.sh/docs/composition
-// --------------------------------------------------
-
-// const cssBox = css`
-//   border-top: 1px dashed #848484;
-//   margin: 24px 0 0 0;
-//   padding: 24px 0 0 0;
-// `;
 
 
 
@@ -107,15 +94,6 @@ export default injectIntl(class extends React.Component {
       recruitmentThreads_id,
       
     } = this.props;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Button - Disabled
-    // --------------------------------------------------
-    
-    // const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr });
     
     
     
@@ -204,6 +182,25 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
+    //   Component - 公開設定
+    // --------------------------------------------------
+    
+    let componentsOpenTypeSelectMenuItemsArr = [<MenuItem value={1} key="openTypeSelectMenuItems1">誰にでも公開</MenuItem>];
+    
+    if (login) {
+      
+      componentsOpenTypeSelectMenuItemsArr = [
+        <MenuItem value={1} key="openTypeSelectMenuItems1">誰にでも公開</MenuItem>,
+        <MenuItem value={2} key="openTypeSelectMenuItems2">返信者に公開（全員）</MenuItem>,
+        <MenuItem value={3} key="openTypeSelectMenuItems3">返信者に公開（選択）</MenuItem>
+      ];
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
@@ -228,8 +225,6 @@ export default injectIntl(class extends React.Component {
     //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
     
     
     
@@ -345,7 +340,7 @@ export default injectIntl(class extends React.Component {
                   <MenuItem value="uPqoiXA_8">Xbox One</MenuItem>
                   <MenuItem value="GTxWVd0z-">Wii U</MenuItem>
                   <MenuItem value="YNZ6nb1Ki">PS3</MenuItem>
-                  <MenuItem value="78lc0hPjL">Xbox</MenuItem>
+                  <MenuItem value="08Qp5KxPA">Xbox 360</MenuItem>
                   <MenuItem value="qk9DiUwN-">3DS</MenuItem>
                   <MenuItem value="mOpBZsQBm">PS Vita</MenuItem>
                   <MenuItem value="efIOgWs3N">PSP</MenuItem>
@@ -417,7 +412,7 @@ export default injectIntl(class extends React.Component {
                   <MenuItem value="uPqoiXA_8">Xbox One</MenuItem>
                   <MenuItem value="GTxWVd0z-">Wii U</MenuItem>
                   <MenuItem value="YNZ6nb1Ki">PS3</MenuItem>
-                  <MenuItem value="78lc0hPjL">Xbox</MenuItem>
+                  <MenuItem value="08Qp5KxPA">Xbox 360</MenuItem>
                   <MenuItem value="qk9DiUwN-">3DS</MenuItem>
                   <MenuItem value="mOpBZsQBm">PS Vita</MenuItem>
                   <MenuItem value="efIOgWs3N">PSP</MenuItem>
@@ -489,7 +484,7 @@ export default injectIntl(class extends React.Component {
                   <MenuItem value="uPqoiXA_8">Xbox One</MenuItem>
                   <MenuItem value="GTxWVd0z-">Wii U</MenuItem>
                   <MenuItem value="YNZ6nb1Ki">PS3</MenuItem>
-                  <MenuItem value="78lc0hPjL">Xbox</MenuItem>
+                  <MenuItem value="08Qp5KxPA">Xbox 360</MenuItem>
                   <MenuItem value="qk9DiUwN-">3DS</MenuItem>
                   <MenuItem value="mOpBZsQBm">PS Vita</MenuItem>
                   <MenuItem value="efIOgWs3N">PSP</MenuItem>
@@ -902,14 +897,10 @@ export default injectIntl(class extends React.Component {
               value: eventObj.target.value
             })}
           >
-            <MenuItem value={1}>誰にでも公開</MenuItem>
-            <MenuItem value={2}>返信者に公開（全員）</MenuItem>
-            <MenuItem value={3}>返信者に公開（選択）</MenuItem>
+            {componentsOpenTypeSelectMenuItemsArr}
           </Select>
           
         </FormControl>
-        
-        
         
         
         {openType === 1 ? (
@@ -931,8 +922,6 @@ export default injectIntl(class extends React.Component {
           </p>
           
         )}
-        
-        
         
         
       </React.Fragment>

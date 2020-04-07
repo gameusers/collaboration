@@ -19,9 +19,6 @@ import keycode from 'keycode';
 
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
-// import lodashHas from 'lodash/has';
-// import lodashCloneDeep from 'lodash/cloneDeep';
-// import lodashMerge from 'lodash/merge';
 
 
 // ---------------------------------------------
@@ -33,10 +30,13 @@ import { CustomError } from '../../../@modules/error/custom';
 
 
 // --------------------------------------------------
-//   Store
+//   Stores
 // --------------------------------------------------
 
+import initStoreLayout from '../../../common/layout/stores/layout';
+
 let storeHardware = null;
+const storeLayout = initStoreLayout({});
       
 
 
@@ -81,9 +81,17 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {string} hardwareID - DB hardwares hardwareID
    * @param {string} name - ハードウェア名
+   * @param {number} limit - 登録できる件数
    */
   @action.bound
-  handleAddHardwares({ pathArr, hardwareID, name }) {
+  handleAddHardwares({
+    
+    pathArr,
+    hardwareID,
+    name,
+    limit,
+    
+  }) {
     
     
     // ---------------------------------------------
@@ -95,6 +103,39 @@ class Store {
     const index = hardwaresArr.findIndex((valueObj) => {
       return valueObj.hardwareID === hardwareID;
     });
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/hardware/stores/store.js - handleAddHardwares
+    // `);
+    
+    // console.log(chalk`
+    //   hardwareID: {green ${hardwareID}}
+    //   name: {green ${name}}
+    //   limit: {green ${limit}}
+    //   hardwaresArr.length: {green ${hardwaresArr.length}}
+    // `);
+    
+    
+    // ---------------------------------------------
+    //   Limitを超えている場合はエラー
+    // ---------------------------------------------
+    
+    if (hardwaresArr.length + 1 > limit) {
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'warning',
+        messageID: 'Owq_rMCaL',
+      });
+      
+      return;
+      
+    }
     
     
     // ---------------------------------------------
@@ -156,9 +197,16 @@ class Store {
   * Enter で現在選択されているハードウェアを登録する
   * @param {Object} eventObj - イベント
   * @param {Array} pathArr - パス
+  * @param {number} limit - 登録できる件数
   */
   @action.bound
-  handleHardwaresSuggestionOnKeyDown({ eventObj, pathArr }) {
+  handleHardwaresSuggestionOnKeyDown({
+    
+    eventObj,
+    pathArr,
+    limit,
+    
+  }) {
     
     
     // ---------------------------------------------
@@ -237,6 +285,7 @@ class Store {
         pathArr,
         hardwareID: suggestionsArr[suggestionSelectedIndex].hardwareID,
         name: suggestionsArr[suggestionSelectedIndex].name,
+        limit,
         
       });
       

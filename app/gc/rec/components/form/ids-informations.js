@@ -18,10 +18,10 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 
-import lodashGet from 'lodash/get';
-
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -96,12 +96,6 @@ export default injectIntl(class extends React.Component {
     } = this.props;
     
     
-    
-    
-    // --------------------------------------------------
-    //   Forum
-    // --------------------------------------------------
-    
     const {
       
       dataObj,
@@ -110,15 +104,17 @@ export default injectIntl(class extends React.Component {
     } = storeGcRecruitment;
     
     
+    
+    
     // --------------------------------------------------
     //   Property
     // --------------------------------------------------
     
     const ids_idArr = lodashGet(dataObj, [...pathArr, 'ids_idArr'], []);
     
-    const hardware1 = lodashGet(dataObj, [...pathArr, 'hardware1'], '');
-    const hardware2 = lodashGet(dataObj, [...pathArr, 'hardware2'], '');
-    const hardware3 = lodashGet(dataObj, [...pathArr, 'hardware3'], '');
+    const platform1 = lodashGet(dataObj, [...pathArr, 'platform1'], 'Other');
+    const platform2 = lodashGet(dataObj, [...pathArr, 'platform2'], 'Other');
+    const platform3 = lodashGet(dataObj, [...pathArr, 'platform3'], 'Other');
     
     const id1 = lodashGet(dataObj, [...pathArr, 'id1'], '');
     const id2 = lodashGet(dataObj, [...pathArr, 'id2'], '');
@@ -169,7 +165,7 @@ export default injectIntl(class extends React.Component {
     //   公開設定
     // --------------------------------------------------
     
-    const openType = lodashGet(dataObj, [...pathArr, 'openType'], 1);
+    const publicSetting = lodashGet(dataObj, [...pathArr, 'publicSetting'], 1);
     
     
     // --------------------------------------------------
@@ -185,14 +181,14 @@ export default injectIntl(class extends React.Component {
     //   Component - 公開設定
     // --------------------------------------------------
     
-    let componentsOpenTypeSelectMenuItemsArr = [<MenuItem value={1} key="openTypeSelectMenuItems1">誰にでも公開</MenuItem>];
+    let componentsOpenTypeSelectMenuItemsArr = [<MenuItem value={1} key="publicSettingSelectMenuItems1">誰にでも公開</MenuItem>];
     
     if (login) {
       
       componentsOpenTypeSelectMenuItemsArr = [
-        <MenuItem value={1} key="openTypeSelectMenuItems1">誰にでも公開</MenuItem>,
-        <MenuItem value={2} key="openTypeSelectMenuItems2">返信者に公開（全員）</MenuItem>,
-        <MenuItem value={3} key="openTypeSelectMenuItems3">返信者に公開（選択）</MenuItem>
+        <MenuItem value={1} key="publicSettingSelectMenuItems1">誰にでも公開</MenuItem>,
+        <MenuItem value={2} key="publicSettingSelectMenuItems2">返信者に公開（全員）</MenuItem>,
+        <MenuItem value={3} key="publicSettingSelectMenuItems3">返信者に公開（選択）</MenuItem>
       ];
       
     }
@@ -326,27 +322,27 @@ export default injectIntl(class extends React.Component {
               >
                 
                 <Select
-                  _id="hardware1"
-                  value={hardware1}
+                  _id="platform1"
+                  value={platform1}
                   onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'hardware1'],
+                    pathArr: [...pathArr, 'platform1'],
                     value: eventObj.target.value
                   })}
                   displayEmpty
                 >
-                  <MenuItem value="">ID</MenuItem>
-                  <MenuItem value="Zd_Ia4Hwm">Nintendo Switch</MenuItem>
-                  <MenuItem value="TdK3Oc-yV">PS4</MenuItem>
-                  <MenuItem value="uPqoiXA_8">Xbox One</MenuItem>
-                  <MenuItem value="GTxWVd0z-">Wii U</MenuItem>
-                  <MenuItem value="YNZ6nb1Ki">PS3</MenuItem>
-                  <MenuItem value="08Qp5KxPA">Xbox 360</MenuItem>
-                  <MenuItem value="qk9DiUwN-">3DS</MenuItem>
-                  <MenuItem value="mOpBZsQBm">PS Vita</MenuItem>
-                  <MenuItem value="efIOgWs3N">PSP</MenuItem>
-                  <MenuItem value="P0UG-LHOQ">PC</MenuItem>
-                  <MenuItem value="o-f3Zxd49">iOS</MenuItem>
-                  <MenuItem value="SXybALV1f">Android</MenuItem>
+                  <MenuItem value={'Other'}>ID</MenuItem>
+                  <MenuItem value={'PlayStation'}>PlayStation</MenuItem>
+                  <MenuItem value={'Xbox'}>Xbox</MenuItem>
+                  <MenuItem value={'Nintendo'}>Nintendo</MenuItem>
+                  <MenuItem value={'PC'}>PC</MenuItem>
+                  <MenuItem value={'Android'}>Android</MenuItem>
+                  <MenuItem value={'iOS'}>iOS</MenuItem>
+                  <MenuItem value={'Steam'}>Steam</MenuItem>
+                  <MenuItem value={'Origin'}>Origin</MenuItem>
+                  <MenuItem value={'Discord'}>Discord</MenuItem>
+                  <MenuItem value={'Skype'}>Skype</MenuItem>
+                  <MenuItem value={'ICQ'}>ICQ</MenuItem>
+                  <MenuItem value={'Line'}>Line</MenuItem>
                 </Select>
                 
               </FormControl>
@@ -398,27 +394,27 @@ export default injectIntl(class extends React.Component {
               >
                 
                 <Select
-                  _id="hardware2"
-                  value={hardware2}
+                  _id="platform2"
+                  value={platform2}
                   onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'hardware2'],
+                    pathArr: [...pathArr, 'platform2'],
                     value: eventObj.target.value
                   })}
                   displayEmpty
                 >
-                  <MenuItem value="">ID</MenuItem>
-                  <MenuItem value="Zd_Ia4Hwm">Nintendo Switch</MenuItem>
-                  <MenuItem value="TdK3Oc-yV">PS4</MenuItem>
-                  <MenuItem value="uPqoiXA_8">Xbox One</MenuItem>
-                  <MenuItem value="GTxWVd0z-">Wii U</MenuItem>
-                  <MenuItem value="YNZ6nb1Ki">PS3</MenuItem>
-                  <MenuItem value="08Qp5KxPA">Xbox 360</MenuItem>
-                  <MenuItem value="qk9DiUwN-">3DS</MenuItem>
-                  <MenuItem value="mOpBZsQBm">PS Vita</MenuItem>
-                  <MenuItem value="efIOgWs3N">PSP</MenuItem>
-                  <MenuItem value="P0UG-LHOQ">PC</MenuItem>
-                  <MenuItem value="o-f3Zxd49">iOS</MenuItem>
-                  <MenuItem value="SXybALV1f">Android</MenuItem>
+                  <MenuItem value={'Other'}>ID</MenuItem>
+                  <MenuItem value={'PlayStation'}>PlayStation</MenuItem>
+                  <MenuItem value={'Xbox'}>Xbox</MenuItem>
+                  <MenuItem value={'Nintendo'}>Nintendo</MenuItem>
+                  <MenuItem value={'PC'}>PC</MenuItem>
+                  <MenuItem value={'Android'}>Android</MenuItem>
+                  <MenuItem value={'iOS'}>iOS</MenuItem>
+                  <MenuItem value={'Steam'}>Steam</MenuItem>
+                  <MenuItem value={'Origin'}>Origin</MenuItem>
+                  <MenuItem value={'Discord'}>Discord</MenuItem>
+                  <MenuItem value={'Skype'}>Skype</MenuItem>
+                  <MenuItem value={'ICQ'}>ICQ</MenuItem>
+                  <MenuItem value={'Line'}>Line</MenuItem>
                 </Select>
                 
               </FormControl>
@@ -470,27 +466,27 @@ export default injectIntl(class extends React.Component {
               >
                 
                 <Select
-                  _id="hardware3"
-                  value={hardware3}
+                  _id="platform3"
+                  value={platform3}
                   onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'hardware3'],
+                    pathArr: [...pathArr, 'platform3'],
                     value: eventObj.target.value
                   })}
                   displayEmpty
                 >
-                  <MenuItem value="">ID</MenuItem>
-                  <MenuItem value="Zd_Ia4Hwm">Nintendo Switch</MenuItem>
-                  <MenuItem value="TdK3Oc-yV">PS4</MenuItem>
-                  <MenuItem value="uPqoiXA_8">Xbox One</MenuItem>
-                  <MenuItem value="GTxWVd0z-">Wii U</MenuItem>
-                  <MenuItem value="YNZ6nb1Ki">PS3</MenuItem>
-                  <MenuItem value="08Qp5KxPA">Xbox 360</MenuItem>
-                  <MenuItem value="qk9DiUwN-">3DS</MenuItem>
-                  <MenuItem value="mOpBZsQBm">PS Vita</MenuItem>
-                  <MenuItem value="efIOgWs3N">PSP</MenuItem>
-                  <MenuItem value="P0UG-LHOQ">PC</MenuItem>
-                  <MenuItem value="o-f3Zxd49">iOS</MenuItem>
-                  <MenuItem value="SXybALV1f">Android</MenuItem>
+                  <MenuItem value={'Other'}>ID</MenuItem>
+                  <MenuItem value={'PlayStation'}>PlayStation</MenuItem>
+                  <MenuItem value={'Xbox'}>Xbox</MenuItem>
+                  <MenuItem value={'Nintendo'}>Nintendo</MenuItem>
+                  <MenuItem value={'PC'}>PC</MenuItem>
+                  <MenuItem value={'Android'}>Android</MenuItem>
+                  <MenuItem value={'iOS'}>iOS</MenuItem>
+                  <MenuItem value={'Steam'}>Steam</MenuItem>
+                  <MenuItem value={'Origin'}>Origin</MenuItem>
+                  <MenuItem value={'Discord'}>Discord</MenuItem>
+                  <MenuItem value={'Skype'}>Skype</MenuItem>
+                  <MenuItem value={'ICQ'}>ICQ</MenuItem>
+                  <MenuItem value={'Line'}>Line</MenuItem>
                 </Select>
                 
               </FormControl>
@@ -880,7 +876,7 @@ export default injectIntl(class extends React.Component {
           variant="outlined"
         >
           
-          <InputLabel id="openTypeLabel">ID・情報の公開設定</InputLabel>
+          <InputLabel id="publicSettingLabel">ID・情報の公開設定</InputLabel>
           
           <Select
             css={css`
@@ -888,12 +884,12 @@ export default injectIntl(class extends React.Component {
                 width: 240px;
               }
             `}
-            labelId="openTypeLabel"
-            _id="openType"
+            labelId="publicSettingLabel"
+            _id="publicSetting"
             label="ID・情報の公開設定"
-            value={openType}
+            value={publicSetting}
             onChange={(eventObj) => handleEdit({
-              pathArr: [...pathArr, 'openType'],
+              pathArr: [...pathArr, 'publicSetting'],
               value: eventObj.target.value
             })}
           >
@@ -903,19 +899,19 @@ export default injectIntl(class extends React.Component {
         </FormControl>
         
         
-        {openType === 1 ? (
+        {publicSetting === 1 ? (
           
           <p>
             このページにアクセスした人なら誰でもID・情報を見ることができます。
           </p>
           
-        ) : openType === 2 ? (
+        ) : publicSetting === 2 ? (
           
           <p>
             ログインして返信したユーザー全員にID・情報を公開します。
           </p>
           
-        ) : (
+        ) : publicSetting === 3 (
           
           <p>
             ログインして返信したユーザーの中からID・情報を公開する相手を選べます。

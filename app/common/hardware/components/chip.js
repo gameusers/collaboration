@@ -18,10 +18,10 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 
-import lodashGet from 'lodash/get';
-
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -84,9 +84,20 @@ export default injectIntl(class extends React.Component {
       
       stores,
       intl,
-      hardwaresArr,
+      hardwaresArr = [],
       
     } = this.props;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   配列が空の場合は処理停止
+    // --------------------------------------------------
+    
+    if (hardwaresArr.lenght === 0) {
+      return null;
+    }
     
     
     
@@ -97,7 +108,7 @@ export default injectIntl(class extends React.Component {
     
     const componentsArr = [];
     
-    for (const [index2, valueObj] of hardwaresArr.entries()) {
+    for (const [index, valueObj] of hardwaresArr.entries()) {
       
       
       // --------------------------------------------------
@@ -108,7 +119,7 @@ export default injectIntl(class extends React.Component {
         
         componentsArr.push(
           <div
-            key={`hardwareChips-${index2}`}
+            key={`hardwareChips-${index}`}
             css={css`
               margin: 8px 8px 0 0;
             `}
@@ -135,7 +146,7 @@ export default injectIntl(class extends React.Component {
         
         componentsArr.push(
           <div
-            key={`hardwareChips-${index2}`}
+            key={`hardwareChips-${index}`}
             css={css`
               margin: 8px 8px 0 0;
             `}
@@ -164,7 +175,7 @@ export default injectIntl(class extends React.Component {
         
         componentsArr.push(
           <div
-            key={`hardwareChips-${index2}`}
+            key={`hardwareChips-${index}`}
             css={css`
               margin: 8px 8px 0 0;
             `}
@@ -193,7 +204,7 @@ export default injectIntl(class extends React.Component {
         
         componentsArr.push(
           <div
-            key={`hardwareChips-${index2}`}
+            key={`hardwareChips-${index}`}
             css={css`
               margin: 8px 8px 0 0;
             `}
@@ -222,7 +233,7 @@ export default injectIntl(class extends React.Component {
         
         componentsArr.push(
           <div
-            key={`hardwareChips-${index2}`}
+            key={`hardwareChips-${index}`}
             css={css`
               margin: 8px 8px 0 0;
             `}
@@ -251,7 +262,7 @@ export default injectIntl(class extends React.Component {
         
         componentsArr.push(
           <div
-            key={`hardwareChips-${index2}`}
+            key={`hardwareChips-${index}`}
             css={css`
               margin: 8px 8px 0 0;
             `}
@@ -280,7 +291,7 @@ export default injectIntl(class extends React.Component {
         
         componentsArr.push(
           <div
-            key={`hardwareChips-${index2}`}
+            key={`hardwareChips-${index}`}
             css={css`
               margin: 8px 8px 0 0;
             `}
@@ -309,7 +320,7 @@ export default injectIntl(class extends React.Component {
         
         componentsArr.push(
           <div
-            key={`hardwareChips-${index2}`}
+            key={`hardwareChips-${index}`}
             css={css`
               margin: 8px 8px 0 0;
             `}
@@ -338,7 +349,7 @@ export default injectIntl(class extends React.Component {
         
         componentsArr.push(
           <div
-            key={`hardwareChips-${index2}`}
+            key={`hardwareChips-${index}`}
             css={css`
               margin: 8px 8px 0 0;
             `}
@@ -367,7 +378,7 @@ export default injectIntl(class extends React.Component {
         
         componentsArr.push(
           <div
-            key={`hardwareChips-${index2}`}
+            key={`hardwareChips-${index}`}
             css={css`
               margin: 8px 8px 0 0;
             `}
@@ -396,7 +407,7 @@ export default injectIntl(class extends React.Component {
         
         componentsArr.push(
           <div
-            key={`hardwareChips-${index2}`}
+            key={`hardwareChips-${index}`}
             css={css`
               margin: 8px 8px 0 0;
             `}
@@ -425,7 +436,7 @@ export default injectIntl(class extends React.Component {
         
         componentsArr.push(
           <div
-            key={`hardwareChips-${index2}`}
+            key={`hardwareChips-${index}`}
             css={css`
               margin: 8px 8px 0 0;
             `}
@@ -454,7 +465,7 @@ export default injectIntl(class extends React.Component {
         
         componentsArr.push(
           <div
-            key={`hardwareChips-${index2}`}
+            key={`hardwareChips-${index}`}
             css={css`
               margin: 8px 8px 0 0;
             `}
@@ -483,7 +494,7 @@ export default injectIntl(class extends React.Component {
         
         componentsArr.push(
           <div
-            key={`hardwareChips-${index2}`}
+            key={`hardwareChips-${index}`}
             css={css`
               margin: 8px 8px 0 0;
             `}

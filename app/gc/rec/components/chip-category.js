@@ -205,7 +205,7 @@ export default injectIntl(class extends React.Component {
             />
           </div>
           
-        ) : (
+        ) : category === 3 (
           
           <div
             css={css`

@@ -961,6 +961,12 @@ const format = ({
     //   --------------------\n
     // `);
     
+    // console.log(`
+    //   ----- valueObj.cardPlayersObj.imagesAndVideosThumbnailObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(valueObj.cardPlayersObj.imagesAndVideosThumbnailObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     
     // --------------------------------------------------
     //   Property
@@ -972,6 +978,7 @@ const format = ({
     const idsArr = lodashGet(valueObj, ['idsArr'], []);
     const hardwareIDsArr = lodashGet(valueObj, ['hardwareIDsArr'], []);
     const hardwaresArr = lodashGet(valueObj, ['hardwaresArr'], []);
+    const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
     
     
     // --------------------------------------------------
@@ -989,7 +996,7 @@ const format = ({
     
     
     // --------------------------------------------------
-    //   画像と動画の処理
+    //   Format - 画像
     // --------------------------------------------------
     
     const formattedObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosObj });
@@ -1001,6 +1008,25 @@ const format = ({
     } else {
       
       delete clonedObj.imagesAndVideosObj;
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   Format - cardPlayersObj サムネイル画像
+    // --------------------------------------------------
+    
+    const formattedThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosThumbnailObj });
+    
+    // console.log(`
+    //   ----- formattedThumbnailObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(formattedThumbnailObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    if (formattedThumbnailObj) {
+      
+      clonedObj.cardPlayersObj.imagesAndVideosThumbnailObj = formattedThumbnailObj;
       
     }
     

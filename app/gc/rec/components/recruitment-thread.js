@@ -22,10 +22,10 @@ import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 
-import lodashGet from 'lodash/get';
-
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -41,8 +41,8 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Paper from '@material-ui/core/Paper';
 
-import Avatar from '@material-ui/core/Avatar';
-import Chip from '@material-ui/core/Chip';
+// import Avatar from '@material-ui/core/Avatar';
+// import Chip from '@material-ui/core/Chip';
 
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -60,14 +60,14 @@ import IconAssignment from '@material-ui/icons/Assignment';
 import IconPublic from '@material-ui/icons/Public';
 import IconEdit from '@material-ui/icons/Edit';
 import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
-import IconFavorite from '@material-ui/icons/PermIdentity';
+// import IconFavorite from '@material-ui/icons/PermIdentity';
 
 
 // ---------------------------------------------
 //   Simple Icons
 // ---------------------------------------------
 
-import SimpleIcons from 'simple-icons-react-component';
+// import SimpleIcons from 'simple-icons-react-component';
 
 
 // ---------------------------------------------
@@ -77,9 +77,10 @@ import SimpleIcons from 'simple-icons-react-component';
 import Paragraph from '../../../common/layout/components/paragraph';
 import FormThread from './form/thread';
 import ChipCategory from './chip-category';
-import ChipHardwares from './chip-hardwares';
+import ChipHardwares from '../../../common/hardware/components/chip';
 // import FormComment from './form-comment';
 // import Comment from './comment';
+import User from '../../../common/user/components/user';
 import ImageAndVideo from '../../../common/image-and-video/components/image-and-video';
 import Panel from '../../../common/layout/components/panel';
 
@@ -312,7 +313,7 @@ export default injectIntl(class extends React.Component {
       const threadsDataObj = lodashGet(dataObj, [gameCommunities_id, 'recruitmentThreadsObj', 'dataObj', recruitmentThreads_id], {});
       
       const title = lodashGet(threadsDataObj, ['title'], '');
-      const name = lodashGet(threadsDataObj, ['name'], '');
+      // const name = lodashGet(threadsDataObj, ['name'], '');
       const comment = lodashGet(threadsDataObj, ['comment'], '');
       
       const imagesAndVideosObj = lodashGet(threadsDataObj, ['imagesAndVideosObj'], {});
@@ -325,6 +326,28 @@ export default injectIntl(class extends React.Component {
       
       const category = lodashGet(threadsDataObj, ['category'], 1);
       const hardwaresArr = lodashGet(threadsDataObj, ['hardwaresArr'], []);
+      
+      
+      // --------------------------------------------------
+      //   User Data
+      // --------------------------------------------------
+      
+      const imagesAndVideosThumbnailObj = lodashGet(threadsDataObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
+      
+      const cardPlayers_id = lodashGet(threadsDataObj, ['cardPlayersObj', '_id'], '');
+      
+      let name = lodashGet(threadsDataObj, ['name'], '');
+      const cardPlayers_name = lodashGet(threadsDataObj, ['cardPlayersObj', 'name'], '');
+      
+      if (cardPlayers_name) {
+        name = cardPlayers_name;
+      }
+      
+      const status = lodashGet(threadsDataObj, ['cardPlayersObj', 'status'], '');
+      
+      const exp = lodashGet(threadsDataObj, ['usersObj', 'exp'], 0);
+      const accessDate = lodashGet(threadsDataObj, ['usersObj', 'accessDate'], '');
+      const userID = lodashGet(threadsDataObj, ['usersObj', 'userID'], '');
       
       
       // --------------------------------------------------
@@ -648,12 +671,46 @@ export default injectIntl(class extends React.Component {
               `}
             >
               
+              
               <div
                 css={css`
                   width: 100%;
-                  margin: 4px 0 0 0;
+                  border-top: 1px solid;
+                  border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+                  border-image-slice: 1;
+                  margin: 12px 0 0 0;
+                  padding: 20px 0 0 0;
                 `}
               >
+                
+                
+                {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
+                <User
+                  imagesAndVideosThumbnailObj={imagesAndVideosThumbnailObj}
+                  name={name}
+                  userID={userID}
+                  status={status}
+                  accessDate={accessDate}
+                  exp={exp}
+                  cardPlayers_id={cardPlayers_id}
+                />
+                
+                
+                {/* Images and Videos */}
+                {Object.keys(imagesAndVideosObj).length > 0 &&
+                  <div
+                    css={css`
+                      margin: 12px 0 0 0;
+                    `}
+                  >
+                    
+                    <ImageAndVideo
+                      pathArr={[recruitmentThreads_id, 'imagesAndVideosObj']}
+                      imagesAndVideosObj={imagesAndVideosObj}
+                    />
+                    
+                  </div>
+                }
                 
                 
                 {/* Comment */}
@@ -697,6 +754,7 @@ export default injectIntl(class extends React.Component {
                 
               </div>
               
+              
             </ExpansionPanelDetails>
             
           </ExpansionPanel>
@@ -728,7 +786,7 @@ export default injectIntl(class extends React.Component {
           <Panel
             heading="募集投稿フォーム"
             pathArr={this.pathFormThreadArr}
-            defaultExpanded={true}
+            defaultExpanded={false}
           >
             
             <FormThread

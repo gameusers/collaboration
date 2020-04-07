@@ -207,7 +207,7 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Form Data
+    //   Property
     // --------------------------------------------------
     
     const category = lodashGet(dataObj, [...this.pathArr, 'category'], '');
@@ -217,6 +217,8 @@ export default injectIntl(class extends React.Component {
     const twitter = lodashGet(dataObj, [...this.pathArr, 'twitter'], false);
     const webPush = lodashGet(dataObj, [...this.pathArr, 'webPush'], false);
     const anonymity = lodashGet(dataObj, [...this.pathArr, 'anonymity'], false);
+    
+    const limitHardwares = parseInt(process.env.RECRUITMENT_THREAD_HARDWARES_LIMIT, 10);
     
     
     // --------------------------------------------------
@@ -311,6 +313,7 @@ export default injectIntl(class extends React.Component {
         <div css={cssBox}>
           <FormHardwares
             pathArr={this.pathArr}
+            limit={limitHardwares}
           />
         </div>
         

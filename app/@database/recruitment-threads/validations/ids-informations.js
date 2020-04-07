@@ -28,13 +28,12 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 
 /**
- * Hardware
+ * Platform
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
- * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationRecruitmentThreadsHardware = ({ throwError = false, required = false, value }) => {
+const validationRecruitmentThreadsPlatform = ({ throwError = false, value }) => {
   
   
   // ---------------------------------------------
@@ -44,7 +43,7 @@ const validationRecruitmentThreadsHardware = ({ throwError = false, required = f
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
     value: data,
     numberOfCharacters,
     messageID: 'Error',
@@ -55,27 +54,26 @@ const validationRecruitmentThreadsHardware = ({ throwError = false, required = f
   try {
     
     
-    // ---------------------------------------------
-    //   空の場合、処理停止
-    // ---------------------------------------------
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
     
-    if (validator.isEmpty(data)) {
-      
-      if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'kniwBGH2u', messageID: 'cFbXmuFVh' }] });
-      }
-      
-      return resultObj;
-      
-    }
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/recruitment-threads/validations/ids-informations.js - validationRecruitmentThreadsPlatform
+    // `);
+    
+    // console.log(chalk`
+    //   data: {green ${data}}
+    // `);
     
     
     // ---------------------------------------------
     //   適切な値が選択されているかチェック
     // ---------------------------------------------
     
-    if (!validator.isIn(data, ['Zd_Ia4Hwm', 'TdK3Oc-yV', 'uPqoiXA_8', 'GTxWVd0z-', 'YNZ6nb1Ki', '78lc0hPjL', 'qk9DiUwN-', 'mOpBZsQBm', 'efIOgWs3N', 'P0UG-LHOQ', 'o-f3Zxd49', 'SXybALV1f'])) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'M3grLD5Ch', messageID: 'PH8jcw-VF' }] });
+    if (!validator.isIn(data, ['PlayStation', 'Xbox', 'Nintendo', 'PC', 'Android', 'iOS', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line', 'Other'])) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'M3grLD5Ch', messageID: 'dJzAwAva3' }] });
     }
     
     
@@ -144,7 +142,7 @@ const validationRecruitmentThreadsID = ({ throwError = false, required = false, 
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
     value: data,
     numberOfCharacters,
     messageID: 'Uh3rnK7Dk',
@@ -244,7 +242,7 @@ const validationRecruitmentThreadsInformationTitle = ({ throwError = false, requ
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
     value: data,
     numberOfCharacters,
     messageID: '9c6Lprg6n',
@@ -344,7 +342,7 @@ const validationRecruitmentThreadsInformation = ({ throwError = false, required 
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
     value: data,
     numberOfCharacters,
     messageID: 'yhgyXHqZu',
@@ -425,7 +423,7 @@ const validationRecruitmentThreadsInformation = ({ throwError = false, required 
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationRecruitmentThreadsOpenType = ({ throwError = false, value }) => {
+const validationRecruitmentThreadsPublicSetting = ({ throwError = false, value }) => {
   
   
   // ---------------------------------------------
@@ -443,7 +441,7 @@ const validationRecruitmentThreadsOpenType = ({ throwError = false, value }) => 
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
     value: data,
     numberOfCharacters,
     messageID: 'Nbu_IqorV',
@@ -509,10 +507,10 @@ const validationRecruitmentThreadsOpenType = ({ throwError = false, value }) => 
 
 module.exports = {
   
-  validationRecruitmentThreadsHardware,
+  validationRecruitmentThreadsPlatform,
   validationRecruitmentThreadsID,
   validationRecruitmentThreadsInformationTitle,
   validationRecruitmentThreadsInformation,
-  validationRecruitmentThreadsOpenType,
+  validationRecruitmentThreadsPublicSetting,
   
 };

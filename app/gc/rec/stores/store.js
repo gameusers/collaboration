@@ -40,7 +40,7 @@ import { validationRecruitmentThreadsCategory } from '../../../@database/recruit
 import { validationRecruitmentThreadsTitle } from '../../../@database/recruitment-threads/validations/title';
 import { validationRecruitmentThreadsName } from '../../../@database/recruitment-threads/validations/name';
 import { validationRecruitmentThreadsComment } from '../../../@database/recruitment-threads/validations/comment';
-import { validationRecruitmentThreadsHardware, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsOpenType } from '../../../@database/recruitment-threads/validations/ids-informations';
+import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } from '../../../@database/recruitment-threads/validations/ids-informations';
 import { validationRecruitmentThreadsDeadlineDate } from '../../../@database/recruitment-threads/validations/deadline';
 
 
@@ -136,45 +136,45 @@ class Store {
       //   Temp Data
       // ---------------------------------------------
       
-      lodashSet(storeHardware, ['dataObj', ...pathArr, 'hardwaresArr'], [ { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },  { hardwareID: '2yKF4qXAw', name: 'メガドライブ' } ]);
+      // lodashSet(storeHardware, ['dataObj', ...pathArr, 'hardwaresArr'], [ { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },  { hardwareID: '2yKF4qXAw', name: 'メガドライブ' } ]);
       
       
-      const newObj = {
+      // const newObj = {
         
-        gameCommunities_id,
-        recruitmentThreads_id: '',
-        category: 1,
-        title: 'テストタイトル',
-        name: 'テストネーム',
-        comment: 'テストコメント',
-        // anonymity: false,
-        hardware1: 'Zd_Ia4Hwm',
-        hardware2: '',
-        hardware3: '',
-        id1: 'test-id-1',
-        id2: '',
-        id3: '',
-        informationTitle1: '情報タイトル1',
-        informationTitle2: '',
-        informationTitle3: '',
-        informationTitle4: '',
-        informationTitle5: '',
-        information1: '情報1',
-        information2: '',
-        information3: '',
-        information4: '',
-        information5: '',
-        openType: 1,
-        // deadlineDate: '2020-12-31',
-        // twitter: false,
-        // webPush: false,
+      //   gameCommunities_id,
+      //   recruitmentThreads_id: '',
+      //   category: 1,
+      //   title: 'テストタイトル',
+      //   name: 'テストネーム',
+      //   comment: 'テストコメント',
+      //   // anonymity: false,
+      //   platform1: 'Other',
+      //   platform2: 'Other',
+      //   platform3: 'Other',
+      //   id1: 'test-id-1',
+      //   id2: '',
+      //   id3: '',
+      //   informationTitle1: '情報タイトル1',
+      //   informationTitle2: '',
+      //   informationTitle3: '',
+      //   informationTitle4: '',
+      //   informationTitle5: '',
+      //   information1: '情報1',
+      //   information2: '',
+      //   information3: '',
+      //   information4: '',
+      //   information5: '',
+      //   publicSetting: 1,
+      //   // deadlineDate: '2020-12-31',
+      //   // twitter: false,
+      //   // webPush: false,
         
-      };
+      // };
       
-      const oldObj = lodashGet(this.dataObj, [...pathArr], {});
-      const mergedObj = lodashMerge(oldObj, newObj);
+      // const oldObj = lodashGet(this.dataObj, [...pathArr], {});
+      // const mergedObj = lodashMerge(oldObj, newObj);
       
-      lodashSet(this.dataObj, [...pathArr], mergedObj);
+      // lodashSet(this.dataObj, [...pathArr], mergedObj);
       
       
       
@@ -201,9 +201,9 @@ class Store {
       
       const ids_idArr = lodashGet(this.dataObj, [...pathArr, 'ids_idArr'], []);
       
-      const hardware1 = lodashGet(this.dataObj, [...pathArr, 'hardware1'], '');
-      const hardware2 = lodashGet(this.dataObj, [...pathArr, 'hardware2'], '');
-      const hardware3 = lodashGet(this.dataObj, [...pathArr, 'hardware3'], '');
+      const platform1 = lodashGet(this.dataObj, [...pathArr, 'platform1'], 'Other');
+      const platform2 = lodashGet(this.dataObj, [...pathArr, 'platform2'], 'Other');
+      const platform3 = lodashGet(this.dataObj, [...pathArr, 'platform3'], 'Other');
       
       const id1 = lodashGet(this.dataObj, [...pathArr, 'id1'], '');
       const id2 = lodashGet(this.dataObj, [...pathArr, 'id2'], '');
@@ -221,7 +221,7 @@ class Store {
       const information4 = lodashGet(this.dataObj, [...pathArr, 'information4'], '');
       const information5 = lodashGet(this.dataObj, [...pathArr, 'information5'], '');
       
-      const openType = lodashGet(this.dataObj, [...pathArr, 'openType'], 1);
+      const publicSetting = lodashGet(this.dataObj, [...pathArr, 'publicSetting'], 1);
       
       const deadlineDate = lodashGet(this.dataObj, [...pathArr, 'deadlineDate'], '');
       
@@ -252,9 +252,9 @@ class Store {
         
         validationBoolean({ value: anonymity }).error ||
         
-        validationRecruitmentThreadsHardware({ value: hardware1 }).error ||
-        validationRecruitmentThreadsHardware({ value: hardware2 }).error ||
-        validationRecruitmentThreadsHardware({ value: hardware3 }).error ||
+        validationRecruitmentThreadsPlatform({ value: platform1 }).error ||
+        validationRecruitmentThreadsPlatform({ value: platform2 }).error ||
+        validationRecruitmentThreadsPlatform({ value: platform3 }).error ||
         
         validationRecruitmentThreadsID({ value: id1 }).error ||
         validationRecruitmentThreadsID({ value: id2 }).error ||
@@ -272,7 +272,7 @@ class Store {
         validationRecruitmentThreadsInformation({ value: information4 }).error ||
         validationRecruitmentThreadsInformation({ value: information5 }).error ||
         
-        validationRecruitmentThreadsOpenType({ value: openType }).error ||
+        validationRecruitmentThreadsPublicSetting({ value: publicSetting }).error ||
         
         validationRecruitmentThreadsDeadlineDate({ value: deadlineDate }).error ||
         
@@ -285,7 +285,7 @@ class Store {
         
       }
       
-      
+      // return;
       
       
       // ---------------------------------------------
@@ -319,9 +319,9 @@ class Store {
         comment,
         anonymity,
         ids_idArr,
-        hardware1,
-        hardware2,
-        hardware3,
+        platform1,
+        platform2,
+        platform3,
         id1,
         id2,
         id3,
@@ -335,7 +335,7 @@ class Store {
         information3,
         information4,
         information5,
-        openType,
+        publicSetting,
         deadlineDate,
         twitter,
         // webPush,
@@ -456,11 +456,11 @@ class Store {
       // `);
       
       // console.log(chalk`
-      //   hardware1: {green ${hardware1}}
+      //   platform1: {green ${platform1}}
       //   id1: {green ${id1}}
-      //   hardware2: {green ${hardware2}}
+      //   platform2: {green ${platform2}}
       //   id2: {green ${id2}}
-      //   hardware3: {green ${hardware3}}
+      //   platform3: {green ${platform3}}
       //   id3: {green ${id3}}
         
       //   informationTitle1: {green ${informationTitle1}}
@@ -474,7 +474,7 @@ class Store {
       //   informationTitle5: {green ${informationTitle5}}
       //   information5: {green ${information5}}
         
-      //   openType: {green ${openType}}
+      //   publicSetting: {green ${publicSetting}}
         
       //   deadlineDate: {green ${deadlineDate}}
       // `);

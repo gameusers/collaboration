@@ -56,7 +56,7 @@ const { validationRecruitmentThreadsCategory } = require('../../../../../app/@da
 const { validationRecruitmentThreadsTitle } = require('../../../../../app/@database/recruitment-threads/validations/title');
 const { validationRecruitmentThreadsName } = require('../../../../../app/@database/recruitment-threads/validations/name');
 const { validationRecruitmentThreadsComment } = require('../../../../../app/@database/recruitment-threads/validations/comment');
-const { validationRecruitmentThreadsHardware, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsOpenType } = require('../../../../../app/@database/recruitment-threads/validations/ids-informations');
+const { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } = require('../../../../../app/@database/recruitment-threads/validations/ids-informations');
 const { validationRecruitmentThreadsDeadlineDate } = require('../../../../../app/@database/recruitment-threads/validations/deadline');
 const { validationRecruitmentThreadsLimit } = require('../../../../../app/@database/recruitment-threads/validations/limit');
 
@@ -133,9 +133,9 @@ export default async (req, res) => {
       imagesAndVideosObj,
       // anonymity,
       // ids_idArr,
-      // hardware1,
-      // hardware2,
-      // hardware3,
+      // platform1,
+      // platform2,
+      // platform3,
       // id1,
       // id2,
       // id3,
@@ -149,7 +149,7 @@ export default async (req, res) => {
       information3,
       information4,
       information5,
-      // openType,
+      // publicSetting,
       // deadlineDate,
       // webPushSubscriptionObj,
       twitter,
@@ -165,13 +165,13 @@ export default async (req, res) => {
       
       anonymity,
       ids_idArr,
-      hardware1,
-      hardware2,
-      hardware3,
+      platform1,
+      platform2,
+      platform3,
       id1,
       id2,
       id3,
-      openType,
+      publicSetting,
       deadlineDate,
       webPushSubscriptionObj,
       
@@ -188,9 +188,9 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
     lodashSet(requestParametersObj, ['anonymity'], anonymity);
     lodashSet(requestParametersObj, ['ids_idArr'], ids_idArr);
-    lodashSet(requestParametersObj, ['hardware1'], hardware1);
-    lodashSet(requestParametersObj, ['hardware2'], hardware2);
-    lodashSet(requestParametersObj, ['hardware3'], hardware3);
+    lodashSet(requestParametersObj, ['platform1'], platform1);
+    lodashSet(requestParametersObj, ['platform2'], platform2);
+    lodashSet(requestParametersObj, ['platform3'], platform3);
     lodashSet(requestParametersObj, ['id1'], id1);
     lodashSet(requestParametersObj, ['id2'], id2);
     lodashSet(requestParametersObj, ['id3'], id3);
@@ -204,7 +204,7 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['information3'], information3);
     lodashSet(requestParametersObj, ['information4'], information4);
     lodashSet(requestParametersObj, ['information5'], information5);
-    lodashSet(requestParametersObj, ['openType'], openType);
+    lodashSet(requestParametersObj, ['publicSetting'], publicSetting);
     lodashSet(requestParametersObj, ['deadlineDate'], deadlineDate);
     lodashSet(requestParametersObj, ['webPushSubscriptionObj'], {});
     lodashSet(requestParametersObj, ['twitter'], twitter);
@@ -243,15 +243,11 @@ export default async (req, res) => {
     await validationIP({ throwError: true, value: ip });
     
     await validationGameCommunities_idServer({ value: gameCommunities_id });
-    
     await validationHardwareIDsArrServer({ throwError: true, arr: hardwareIDsArr });
-    
     await validationRecruitmentThreadsCategory({ throwError: true, value: category });
-    
     await validationRecruitmentThreadsTitle({ throwError: true, value: title });
     await validationRecruitmentThreadsName({ throwError: true, value: name });
     await validationRecruitmentThreadsComment({ throwError: true, value: comment });
-    
     await validationBoolean({ throwError: true, value: anonymity });
     
     await validationRecruitmentThreadsInformationTitle({ throwError: true, value: informationTitle1 });
@@ -266,8 +262,7 @@ export default async (req, res) => {
     await validationRecruitmentThreadsInformation({ throwError: true, value: information4 });
     await validationRecruitmentThreadsInformation({ throwError: true, value: information5 });
     
-    await validationRecruitmentThreadsOpenType({ throwError: true, value: openType });
-    
+    await validationRecruitmentThreadsPublicSetting({ throwError: true, value: publicSetting });
     await validationRecruitmentThreadsDeadlineDate({ throwError: true, value: deadlineDate });
     
     await validationUsersWebPushSubscriptionObjEndpointServer({ value: endpoint });
@@ -275,7 +270,6 @@ export default async (req, res) => {
     await validationUsersWebPushSubscriptionObjKeysAuthServer({ value: auth });
     
     await validationBoolean({ throwError: true, value: twitter });
-    // await validationBoolean({ throwError: true, value: webPush });
     
     await validationRecruitmentThreadsLimit({ throwError: true, required: true, value: threadLimit });
     // await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
@@ -296,9 +290,9 @@ export default async (req, res) => {
       
     } else {
       
-      await validationRecruitmentThreadsHardware({ throwError: true, value: hardware1 });
-      await validationRecruitmentThreadsHardware({ throwError: true, value: hardware2 });
-      await validationRecruitmentThreadsHardware({ throwError: true, value: hardware3 });
+      await validationRecruitmentThreadsPlatform({ throwError: true, value: platform1 });
+      await validationRecruitmentThreadsPlatform({ throwError: true, value: platform2 });
+      await validationRecruitmentThreadsPlatform({ throwError: true, value: platform3 });
       
       await validationRecruitmentThreadsID({ throwError: true, value: id1 });
       await validationRecruitmentThreadsID({ throwError: true, value: id2 });
@@ -401,9 +395,9 @@ export default async (req, res) => {
       
       ids_idArr = lodashGet(validatedIDs_idArrObj, ['valueArr'], []);
       
-      hardware1 = '';
-      hardware2 = '';
-      hardware3 = '';
+      platform1 = '';
+      platform2 = '';
+      platform3 = '';
       id1 = '';
       id2 = '';
       id3 = '';
@@ -417,7 +411,7 @@ export default async (req, res) => {
       
       anonymity = false;
       ids_idArr = [];
-      openType = 1;
+      publicSetting = 1;
       
     }
     
@@ -430,31 +424,31 @@ export default async (req, res) => {
     
     const idsArr = [];
     
-    if (hardware1 && id1) {
+    if (platform1 && id1) {
       
       idsArr.push({
         _id: shortid.generate(),
-        hardwareID: hardware1,
+        platform: platform1,
         id: id1,
       });
       
     }
     
-    if (hardware2 && id2) {
+    if (platform2 && id2) {
       
       idsArr.push({
         _id: shortid.generate(),
-        hardwareID: hardware2,
+        platform: platform2,
         id: id2,
       });
       
     }
     
-    if (hardware3 && id3) {
+    if (platform3 && id3) {
       
       idsArr.push({
         _id: shortid.generate(),
-        hardwareID: hardware3,
+        platform: platform3,
         id: id3,
       });
       
@@ -618,6 +612,7 @@ export default async (req, res) => {
     
     
     const recruitmentThreadsSaveObj = {
+      
       createdDate: ISO8601,
       updatedDate: ISO8601,
       gameCommunities_id,
@@ -638,6 +633,7 @@ export default async (req, res) => {
       ids_idArr,
       idsArr,
       informationsArr,
+      publicSetting,
       deadlineDate,
       close: false,
       webPushSubscriptionObj,
@@ -649,6 +645,7 @@ export default async (req, res) => {
       videos,
       ip,
       userAgent,
+      
     };
     
     
@@ -662,9 +659,11 @@ export default async (req, res) => {
     
     
     const gameCommunitiesSaveObj = {
+      
       updatedDate: ISO8601,
       'updatedDateObj.recruitment': ISO8601,
       $inc: { 'recruitmentObj.threadCount': 1 }
+      
     };
     
     
@@ -817,11 +816,11 @@ export default async (req, res) => {
     //   name: {green ${name}}
     //   comment: {green ${comment}}
       
-    //   hardware1: {green ${hardware1}}
+    //   platform1: {green ${platform1}}
     //   id1: {green ${id1}}
-    //   hardware2: {green ${hardware2}}
+    //   platform2: {green ${platform2}}
     //   id2: {green ${id2}}
-    //   hardware3: {green ${hardware3}}
+    //   platform3: {green ${platform3}}
     //   id3: {green ${id3}}
       
     //   informationTitle1: {green ${informationTitle1}}
@@ -835,7 +834,7 @@ export default async (req, res) => {
     //   informationTitle5: {green ${informationTitle5}}
     //   information5: {green ${information5}}
       
-    //   openType: {green ${openType}}
+    //   publicSetting: {green ${publicSetting}}
       
     //   deadlineDate: {green ${deadlineDate}}
       

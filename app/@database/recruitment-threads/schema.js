@@ -33,7 +33,8 @@ const schema = mongoose.Schema({
   idsArr: [
     {
       _id: { type: String, required: true },
-      hardwareID: { type: String, required: true },
+      platform: { type: String, enum: ['PlayStation', 'Xbox', 'Nintendo', 'PC', 'Android', 'iOS', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line', 'Other'], required: true },
+      // hardwareID: { type: String, required: true },
       id: { type: String, required: true },
     }
   ],
@@ -44,6 +45,7 @@ const schema = mongoose.Schema({
       information: { type: String, required: true },
     }
   ],
+  publicSetting: { type: Number, default: 1, required: true },
   deadlineDate: { type: Date },
   close: { type: Boolean, required: true },
   webPushSubscriptionObj: {

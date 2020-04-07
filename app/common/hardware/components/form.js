@@ -18,21 +18,17 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 
-import lodashGet from 'lodash/get';
-
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
-import { withStyles } from '@material-ui/core/styles';
-
 import TextField from '@material-ui/core/TextField';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import Checkbox from '@material-ui/core/Checkbox';
 import Paper from '@material-ui/core/Paper';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -42,26 +38,9 @@ import Chip from '@material-ui/core/Chip';
 
 
 // --------------------------------------------------
-//   Material UI Style Overrides
-//   https://material-ui.com/styles/basics/
-// --------------------------------------------------
-
-const stylesObj = {
-  
-  label: {
-    fontSize: 14
-  },
-  
-};
-
-
-
-
-// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
-@withStyles(stylesObj)
 @inject('storeHardware')
 @observer
 export default injectIntl(class extends React.Component {
@@ -91,10 +70,10 @@ export default injectIntl(class extends React.Component {
     
     const {
       
-      classes,
       storeHardware,
       intl,
       pathArr = [],
+      limit,
       
     } = this.props;
     
@@ -184,6 +163,10 @@ export default injectIntl(class extends React.Component {
     if (onFocus && keyword && suggestionsArr.length > 0) {
       
       
+      // --------------------------------------------------
+      //   Loop
+      // --------------------------------------------------
+      
       for (const [index, valueObj] of suggestionsArr.entries()) {
         
         
@@ -208,7 +191,8 @@ export default injectIntl(class extends React.Component {
             onMouseDown={() => handleAddHardwares({
               pathArr,
               hardwareID: valueObj.hardwareID,
-              name: valueObj.name
+              name: valueObj.name,
+              limit,
             })}
             style={{
               fontWeight: index2 !== -1 ? 'bold' : 'normal',
@@ -350,6 +334,7 @@ export default injectIntl(class extends React.Component {
             onKeyDown={(eventObj) => handleHardwaresSuggestionOnKeyDown({
               eventObj,
               pathArr,
+              limit,
             })}
             margin="normal"
             autoComplete="off"

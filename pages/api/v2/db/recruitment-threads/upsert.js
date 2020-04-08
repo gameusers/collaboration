@@ -132,7 +132,7 @@ export default async (req, res) => {
       comment,
       imagesAndVideosObj,
       // anonymity,
-      // ids_idArr,
+      // ids_idsArr,
       // platform1,
       // platform2,
       // platform3,
@@ -164,7 +164,7 @@ export default async (req, res) => {
     let { 
       
       anonymity,
-      ids_idArr,
+      ids_idsArr,
       platform1,
       platform2,
       platform3,
@@ -187,7 +187,7 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['comment'], comment);
     lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
     lodashSet(requestParametersObj, ['anonymity'], anonymity);
-    lodashSet(requestParametersObj, ['ids_idArr'], ids_idArr);
+    lodashSet(requestParametersObj, ['ids_idsArr'], ids_idsArr);
     lodashSet(requestParametersObj, ['platform1'], platform1);
     lodashSet(requestParametersObj, ['platform2'], platform2);
     lodashSet(requestParametersObj, ['platform3'], platform3);
@@ -286,7 +286,7 @@ export default async (req, res) => {
     
     if (loginUsers_id) {
       
-      validatedIDs_idArrObj = await validationIDs_idArrServer({ valueArr: ids_idArr, loginUsers_id });
+      validatedIDs_idArrObj = await validationIDs_idArrServer({ valueArr: ids_idsArr, loginUsers_id });
       
     } else {
       
@@ -393,7 +393,8 @@ export default async (req, res) => {
     
     if (loginUsers_id) {
       
-      ids_idArr = lodashGet(validatedIDs_idArrObj, ['valueArr'], []);
+      // Validationで有効なIDだけが抽出される
+      ids_idsArr = lodashGet(validatedIDs_idArrObj, ['valueArr'], []);
       
       platform1 = '';
       platform2 = '';
@@ -410,7 +411,7 @@ export default async (req, res) => {
     } else {
       
       anonymity = false;
-      ids_idArr = [];
+      ids_idsArr = [];
       publicSetting = 1;
       
     }
@@ -419,14 +420,14 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   idsArr
+    //   publicIDsArr
     // --------------------------------------------------
     
-    const idsArr = [];
+    const publicIDsArr = [];
     
     if (platform1 && id1) {
       
-      idsArr.push({
+      publicIDsArr.push({
         _id: shortid.generate(),
         platform: platform1,
         id: id1,
@@ -436,7 +437,7 @@ export default async (req, res) => {
     
     if (platform2 && id2) {
       
-      idsArr.push({
+      publicIDsArr.push({
         _id: shortid.generate(),
         platform: platform2,
         id: id2,
@@ -446,7 +447,7 @@ export default async (req, res) => {
     
     if (platform3 && id3) {
       
-      idsArr.push({
+      publicIDsArr.push({
         _id: shortid.generate(),
         platform: platform3,
         id: id3,
@@ -456,14 +457,14 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   informationsArr
+    //   publicInformationsArr
     // --------------------------------------------------
     
-    const informationsArr = [];
+    const publicInformationsArr = [];
     
     if (informationTitle1 && information1) {
       
-      informationsArr.push({
+      publicInformationsArr.push({
         _id: shortid.generate(),
         title: informationTitle1,
         information: information1,
@@ -473,7 +474,7 @@ export default async (req, res) => {
     
     if (informationTitle2 && information2) {
       
-      informationsArr.push({
+      publicInformationsArr.push({
         _id: shortid.generate(),
         title: informationTitle2,
         information: information2,
@@ -483,7 +484,7 @@ export default async (req, res) => {
     
     if (informationTitle3 && information3) {
       
-      informationsArr.push({
+      publicInformationsArr.push({
         _id: shortid.generate(),
         title: informationTitle3,
         information: information3,
@@ -493,7 +494,7 @@ export default async (req, res) => {
     
     if (informationTitle4 && information4) {
       
-      informationsArr.push({
+      publicInformationsArr.push({
         _id: shortid.generate(),
         title: informationTitle4,
         information: information4,
@@ -503,7 +504,7 @@ export default async (req, res) => {
     
     if (informationTitle5 && information5) {
       
-      informationsArr.push({
+      publicInformationsArr.push({
         _id: shortid.generate(),
         title: informationTitle5,
         information: information5,
@@ -630,9 +631,9 @@ export default async (req, res) => {
       ],
       imagesAndVideos_id,
       anonymity,
-      ids_idArr,
-      idsArr,
-      informationsArr,
+      ids_idsArr,
+      publicIDsArr,
+      publicInformationsArr,
       publicSetting,
       deadlineDate,
       close: false,

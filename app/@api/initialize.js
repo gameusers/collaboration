@@ -2165,7 +2165,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           valueArr: ['I-iu-WmkO', 'KyOSlwcLk', 'eKmDxi8lX', 'lBSGQeGmx', '45syCFviA', '_z4DBLYNi', 'HATpnt7sl', 'M7YVRglvr'],
           search: true,
         },
-        ids_idArr: ['GcymNACvc', 'mDuSVm6S7', 'n4I1BDtxH', 'L00bEpD46', '8bJV9G6MU', 'UVOFSNbXR'],
+        ids_idsArr: ['GcymNACvc', 'mDuSVm6S7', 'n4I1BDtxH', 'L00bEpD46', '8bJV9G6MU', 'UVOFSNbXR'],
         activityTimeObj: {
           valueArr: [
             {
@@ -2364,7 +2364,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           valueArr: ['I-iu-WmkO', 'KyOSlwcLk', 'eKmDxi8lX', 'lBSGQeGmx', '45syCFviA', '_z4DBLYNi', 'HATpnt7sl', 'M7YVRglvr'],
           search: true,
         },
-        ids_idArr: [],
+        ids_idsArr: [],
         activityTimeObj: {
           valueArr: [
             {
@@ -2491,7 +2491,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           valueArr: ['I-iu-WmkO'],
           search: true,
         },
-        ids_idArr: [],
+        ids_idsArr: [],
         activityTimeObj: {
           valueArr: [
             {
@@ -4048,9 +4048,9 @@ emotion: https://emotion.sh/docs/introduction`,
         ],
         imagesAndVideos_id: '',
         anonymity: false,
-        ids_idArr: ['GcymNACvc', 'mDuSVm6S7', 'n4I1BDtxH', 'L00bEpD46', '8bJV9G6MU', 'UVOFSNbXR'],
-        idsArr: [],
-        informationsArr: [],
+        ids_idsArr: ['GcymNACvc', 'mDuSVm6S7', 'n4I1BDtxH', 'L00bEpD46', '8bJV9G6MU', 'UVOFSNbXR'],
+        publicIDsArr: [],
+        publicInformationsArr: [],
         publicSetting: 1,
         deadlineDate: '2020-03-31T00:00:00Z',
         close: false,
@@ -4084,7 +4084,7 @@ emotion: https://emotion.sh/docs/introduction`,
           {
             _id: 'HF1lNznMv',
             language: 'ja',
-            title: 'PC版のフレンド募集',
+            title: 'PC版とiOS版のフレンド募集',
             name: '牧野信一',
             comment: `今度東京へ戻つてからの住むべき部屋を頼む意味の手紙を八代龍太に書くつもりで、炉端で鉛筆を削つた。酒を飲んでゐる平次と倉造が、茶わんの杯をさして、村境の茶屋に三味線の技に長けたひとりの貌麗しい酌女が現れてゆききの遊冶郎のあぶらをしぼつてゐるとのことであるから見参に赴かうではないかと誘つた。
 
@@ -4095,8 +4095,8 @@ emotion: https://emotion.sh/docs/introduction`,
         ],
         imagesAndVideos_id: '',
         anonymity: false,
-        ids_idArr: [],
-        idsArr: [
+        ids_idsArr: [],
+        publicIDsArr: [
           {
             _id: 'XZUlw4SiC',
             platform: 'PC',
@@ -4113,7 +4113,7 @@ emotion: https://emotion.sh/docs/introduction`,
             id: 'test-id-3',
           },
         ],
-        informationsArr: [
+        publicInformationsArr: [
           {
             _id: '5PKhtkAAk',
             title: 'サーバー名',
@@ -4149,85 +4149,6 @@ emotion: https://emotion.sh/docs/introduction`,
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
-      
-      
-//       {
-//         _id: 'nEQMNMWDy',
-//         createdDate: '2020-04-07T00:00:00Z',
-//         updatedDate: '2020-04-07T00:00:00Z',
-//         gameCommunities_id: 'Jk92aglWl',
-//         users_id: '',
-//         hardwareIDsArr: ['P0UG-LHOQ', 'o-f3Zxd49'],
-//         category: 2,
-//         localesArr: [
-//           {
-//             _id: 'HF1lNznMv',
-//             language: 'ja',
-//             title: 'PC版のフレンド募集',
-//             name: '牧野信一',
-//             comment: `今度東京へ戻つてからの住むべき部屋を頼む意味の手紙を八代龍太に書くつもりで、炉端で鉛筆を削つた。酒を飲んでゐる平次と倉造が、茶わんの杯をさして、村境の茶屋に三味線の技に長けたひとりの貌麗しい酌女が現れてゆききの遊冶郎のあぶらをしぼつてゐるとのことであるから見参に赴かうではないかと誘つた。
-
-// 賛成の旨を応へ、手紙一本書く間を待ち給へ、と二階へあがつた。窓からは、暮色の波に揺れる一面の稲田が、もう遥の山々は空との境もなく深い宵暗やみに閉ざされてゐるので――沼の観であつた。向ふ岸に一点の灯が見ゆるのだ。
-
-// 茶屋の灯である。村里を左様に離れた畑中に、ひとり花やかな館を営む所以を不思議と思つたところが、彼は同村民を野蛮で吝嗇の徒と排して、夙に街道の旅人を招ぶべき念であつたとのことである。茶屋の者達は努めて都の言葉を用意して、村言葉の連中をわらふとの由だつた。`,
-//           },
-//         ],
-//         imagesAndVideos_id: '',
-//         anonymity: false,
-//         ids_idArr: [],
-//         idsArr: [
-//           {
-//             _id: 'XZUlw4SiC',
-//             platform: 'PC',
-//             id: 'test-id-1',
-//           },
-//           {
-//             _id: 'EXUDsazUS',
-//             platform: 'Discord',
-//             id: 'test-id-2',
-//           },
-//           {
-//             _id: 'TBs8GWeqf',
-//             platform: 'Other',
-//             id: 'test-id-3',
-//           },
-//         ],
-//         informationsArr: [
-//           {
-//             _id: '5PKhtkAAk',
-//             title: 'サーバー名',
-//             information: 'Game-Server',
-//           },
-//           {
-//             _id: 'to18A4ZRo',
-//             title: 'メンバー数',
-//             information: '20人',
-//           },
-//           {
-//             _id: 'fILlNuMcO',
-//             title: 'PVP',
-//             information: 'あり',
-//           },
-//         ],
-//         publicSetting: 1,
-//         deadlineDate: '2020-05-31T00:00:00Z',
-//         close: false,
-//         webPushSubscriptionObj: {
-//           endpoint: '',
-//           keys: {
-//             p256dh: '',
-//             auth: ''
-//           }
-//         },
-//         commentAndReplyUsers_idsArr: [],
-//         approvalUsers_idsArr: [],
-//         comments: 0,
-//         replies: 0,
-//         images: 0,
-//         videos: 0,
-//         ip: '192.168.1.0',
-//         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
-//       },
       
       
     ];

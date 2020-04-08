@@ -115,135 +115,127 @@ class Store {
   async handleCardPlayerDialogOpen({ cardPlayers_id }) {
     
     
-    // console.log(chalk`
-    //   cardPlayers_id: {green ${cardPlayers_id}}
-    // `);
-    
-    
     try {
       
       
-      if (cardPlayers_id) {
+      // ---------------------------------------------
+      //   すでにデータが存在する場合
+      // ---------------------------------------------
+      
+      if (lodashHas(storeData, ['cardPlayersObj', cardPlayers_id, 'comment'])) {
+        
+        this.cardPlayerDialogObj.type = 'player';
+        this.cardPlayerDialogObj._id = cardPlayers_id;
+        this.cardPlayerDialog = true;
+        
+        
+      // ---------------------------------------------
+      //   データを取得する
+      // ---------------------------------------------
+        
+      } else {
+         
+        
+        // ---------------------------------------------
+        //   Loading 表示
+        // ---------------------------------------------
+        
+        storeLayout.handleLoadingShow({});
         
         
         // ---------------------------------------------
-        //   すでにデータが存在する場合
+        //   Button Disable
         // ---------------------------------------------
         
-        if (lodashHas(storeData, ['cardPlayersObj', cardPlayers_id, 'comment'])) {
-          
-          this.cardPlayerDialogObj.type = 'player';
-          this.cardPlayerDialogObj._id = cardPlayers_id;
-          this.cardPlayerDialog = true;
-          
-          
+        storeLayout.handleButtonDisable({ pathArr: [cardPlayers_id, 'cardObj'] });
+        
+        
         // ---------------------------------------------
-        //   データを取得する
+        //   Button Disable
         // ---------------------------------------------
+        
+        // storeLayout.handleButtonDisable({ _id: `${cardPlayers_id}-card-player` });
+        
+        
+        
+        
+        // ---------------------------------------------
+        //   FormData
+        // ---------------------------------------------
+        
+        const formDataObj = { cardPlayers_id };
+        
+        
+        // ---------------------------------------------
+        //   Fetch
+        // ---------------------------------------------
+        
+        const resultObj = await fetchWrapper({
           
-        } else {
-           
+          urlApi: `${process.env.URL_API}/v2/db/card-players/find-player`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj)
           
-          // ---------------------------------------------
-          //   Loading 表示
-          // ---------------------------------------------
-          
-          storeLayout.handleLoadingShow({});
-          
-          
-          // ---------------------------------------------
-          //   Button Disable
-          // ---------------------------------------------
-          
-          storeLayout.handleButtonDisable({ _id: `${cardPlayers_id}-card-player` });
-          
-          
-          
-          
-          // ---------------------------------------------
-          //   FormData
-          // ---------------------------------------------
-          
-          const formDataObj = { cardPlayers_id };
-          
-          
-          // ---------------------------------------------
-          //   Fetch
-          // ---------------------------------------------
-          
-          const resultObj = await fetchWrapper({
-            urlApi: `${process.env.URL_API}/v2/db/card-players/find-player`,
-            methodType: 'POST',
-            formData: JSON.stringify(formDataObj)
-          });
-          
-          
-          
-          
-          // ---------------------------------------------
-          //   Error
-          // ---------------------------------------------
-          
-          if ('errorsArr' in resultObj) {
-            throw new CustomError({ errorsArr: resultObj.errorsArr });
-          }
-          
-          
-          
-          
-          // ---------------------------------------------
-          //   Data 更新 - usersObj
-          // ---------------------------------------------
-          
-          // const usersObj = {};
-          // usersObj[resultObj.data[cardPlayers_id].users_id] = resultObj.data[cardPlayers_id].usersObj;
-          // storeData.updateUsersObj(usersObj);
-          
-          
-          // ---------------------------------------------
-          //   Data 更新 - cardPlayersObj
-          // ---------------------------------------------
-          
-          storeData.updateCardPlayersObj(resultObj.data);
-          
-          
-          // ---------------------------------------------
-          //   カード表示
-          // ---------------------------------------------
-          
-          this.cardPlayerDialogObj.type = 'player';
-          this.cardPlayerDialogObj._id = cardPlayers_id;
-          this.cardPlayerDialog = true;
-          
-          
-          // console.log(`
-          //   ----- resultObj -----\n
-          //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-          //   --------------------\n
-          // `);
-          
-          // console.log(chalk`
-          //   cardPlayersObj.users_id: {green ${cardPlayersObj.users_id}}
-          // `);
-          
-          // console.log(`
-          //   ----- cardPlayersObj -----\n
-          //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
-          //   --------------------\n
-          // `);
-          
-          // console.log(`
-          //   ----- resultObj.data -----\n
-          //   ${util.inspect(resultObj.data, { colors: true, depth: null })}\n
-          //   --------------------\n
-          // `);
-           
-           
+        });
+        
+        
+        // ---------------------------------------------
+        //   Error
+        // ---------------------------------------------
+        
+        if ('errorsArr' in resultObj) {
+          throw new CustomError({ errorsArr: resultObj.errorsArr });
         }
         
         
+        
+        
+        // --------------------------------------------------
+        //   console.log
+        // --------------------------------------------------
+        
+        // console.log(`
+        //   ----------------------------------------\n
+        //   /app/common/card/player/stores/player.js - handleCardPlayerDialogOpen
+        // `);
+        
+        // console.log(`
+        //   ----- resultObj -----\n
+        //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        // console.log(chalk`
+        //   cardPlayers_id: {green ${cardPlayers_id}}
+        // `);
+        
+        // console.log(`
+        //   ----- this.cardPlayersObj -----\n
+        //   ${util.inspect(this.cardPlayersObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        
+        
+        
+        // ---------------------------------------------
+        //   Data 更新 - cardPlayersObj
+        // ---------------------------------------------
+        
+        storeData.updateCardPlayersObj(resultObj.data);
+        
+        
+        // ---------------------------------------------
+        //   カード表示
+        // ---------------------------------------------
+        
+        this.cardPlayerDialogObj.type = 'player';
+        this.cardPlayerDialogObj._id = cardPlayers_id;
+        this.cardPlayerDialog = true;
+        
+        
       }
-      
+        
       
     } catch (error) {
       
@@ -256,11 +248,18 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      if (cardPlayers_id) {
+      storeLayout.handleButtonEnable({ pathArr: [cardPlayers_id, 'cardObj'] });
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      // if (cardPlayers_id) {
         
-        storeLayout.handleButtonEnable({ _id: `${cardPlayers_id}-card-player` });
+      //   storeLayout.handleButtonEnable({ _id: `${cardPlayers_id}-card-player` });
         
-      }
+      // }
       
       
       // ---------------------------------------------
@@ -271,6 +270,7 @@ class Store {
       
       
     }
+    
     
   };
   

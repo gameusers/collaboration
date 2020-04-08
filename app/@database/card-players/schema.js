@@ -96,7 +96,7 @@ const schema = mongoose.Schema({
     valueArr: [String],
     search: { type: Boolean, required: true },
   },
-  ids_idArr: [String],
+  ids_idsArr: [String],
   activityTimeObj: {
     valueArr: [
       {

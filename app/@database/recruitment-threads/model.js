@@ -647,7 +647,7 @@ const findForRecruitment = async ({
           {
             from: 'ids',
             let: {
-              recruitmentIds_idArr: '$ids_idArr',
+              recruitmentIds_idArr: '$ids_idsArr',
               recruitmentUsers_id: '$users_id',
             },
             pipeline: [
@@ -1114,7 +1114,7 @@ const format = ({
     delete clonedObj.createdDate;
     delete clonedObj.users_id;
     delete clonedObj.hardwareIDsArr;
-    delete clonedObj.ids_idArr;
+    delete clonedObj.ids_idsArr;
     delete clonedObj.localesArr;
     delete clonedObj.ip;
     delete clonedObj.userAgent;

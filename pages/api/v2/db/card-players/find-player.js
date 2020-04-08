@@ -109,21 +109,13 @@ export default async (req, res) => {
     //   DB find / Forum Comments
     // --------------------------------------------------
     
-    const returnObj = await ModelCardPlayers.findForCardPlayer({
+    const returnObj = await ModelCardPlayers.findFromSchemaCardPlayers({
       
-      cardPlayers_id,
       localeObj,
+      cardPlayers_id,
       loginUsers_id,
       
     });
-    
-    // const returnObj = await ModelCardPlayers.findOneBy_id({
-    //   _id: cardPlayers_id,
-    //   localeObj,
-    //   loginUsers_id
-    // });
-    
-    // const returnObj = {};
     
     
     

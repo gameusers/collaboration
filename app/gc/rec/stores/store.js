@@ -199,7 +199,7 @@ class Store {
       
       const anonymity = lodashGet(this.dataObj, [...pathArr, 'anonymity'], false);
       
-      const ids_idArr = lodashGet(this.dataObj, [...pathArr, 'ids_idArr'], []);
+      const ids_idsArr = lodashGet(this.dataObj, [...pathArr, 'ids_idsArr'], []);
       
       const platform1 = lodashGet(this.dataObj, [...pathArr, 'platform1'], 'Other');
       const platform2 = lodashGet(this.dataObj, [...pathArr, 'platform2'], 'Other');
@@ -318,7 +318,7 @@ class Store {
         name,
         comment,
         anonymity,
-        ids_idArr,
+        ids_idsArr,
         platform1,
         platform2,
         platform3,
@@ -423,8 +423,8 @@ class Store {
       // `);
       
       // console.log(`
-      //   ----- ids_idArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
+      //   ----- ids_idsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       

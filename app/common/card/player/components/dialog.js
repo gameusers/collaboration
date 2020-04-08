@@ -26,6 +26,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import { withStyles } from '@material-ui/core/styles';
+
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 
@@ -116,6 +117,7 @@ export default class extends React.Component {
     //   cardPlayerDialogObj.type: {green ${cardPlayerDialogObj.type}}
     //   cardPlayerDialogObj._id: {green ${cardPlayerDialogObj._id}}
     // `);
+    
     
     // --------------------------------------------------
     //   Dialog Card Player

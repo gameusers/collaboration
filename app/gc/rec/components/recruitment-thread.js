@@ -83,6 +83,7 @@ import ChipHardwares from '../../../common/hardware/components/chip';
 import User from '../../../common/user/components/user';
 import ImageAndVideo from '../../../common/image-and-video/components/image-and-video';
 import Panel from '../../../common/layout/components/panel';
+import PublicIDs from './public-ids';
 
 
 
@@ -200,7 +201,7 @@ export default injectIntl(class extends React.Component {
       stores,
       storeGcRecruitment,
       intl,
-      temporaryDataID,
+      // temporaryDataID,
       urlID,
       gameCommunities_id,
       settingAnonymity,
@@ -313,7 +314,6 @@ export default injectIntl(class extends React.Component {
       const threadsDataObj = lodashGet(dataObj, [gameCommunities_id, 'recruitmentThreadsObj', 'dataObj', recruitmentThreads_id], {});
       
       const title = lodashGet(threadsDataObj, ['title'], '');
-      // const name = lodashGet(threadsDataObj, ['name'], '');
       const comment = lodashGet(threadsDataObj, ['comment'], '');
       
       const imagesAndVideosObj = lodashGet(threadsDataObj, ['imagesAndVideosObj'], {});
@@ -356,6 +356,16 @@ export default injectIntl(class extends React.Component {
       
       let linkHref = `/gc/[urlID]/rec/[recruitmentID]?urlID=${urlID}&recruitmentID=${recruitmentThreads_id}`;
       let linkAs = `/gc/${urlID}/rec/${recruitmentThreads_id}`;
+      
+      
+      // --------------------------------------------------
+      //   ID & Information
+      // --------------------------------------------------
+      
+      const idsArr = lodashGet(threadsDataObj, ['idsArr'], []);
+      const publicIDsArr = lodashGet(threadsDataObj, ['publicIDsArr'], []);
+      const publicInformationsArr = lodashGet(threadsDataObj, ['publicInformationsArr'], []);
+      
       
       
       // --------------------------------------------------
@@ -696,6 +706,8 @@ export default injectIntl(class extends React.Component {
                 />
                 
                 
+                
+                
                 {/* Images and Videos */}
                 {Object.keys(imagesAndVideosObj).length > 0 &&
                   <div
@@ -713,6 +725,8 @@ export default injectIntl(class extends React.Component {
                 }
                 
                 
+                
+                
                 {/* Comment */}
                 <div
                   css={css`
@@ -727,8 +741,26 @@ export default injectIntl(class extends React.Component {
                     }
                   `}
                 >
+                  
+                  
                   <Paragraph text={comment} />
+                  
+                  
+                  {/* PublicIDs */}
+                  <PublicIDs
+                    idsArr={idsArr}
+                    publicIDsArr={publicIDsArr}
+                  />
+                  
+                  
                 </div>
+                
+                
+                
+                
+                
+                
+                
                 
                 
                 {/* Form Comment */}

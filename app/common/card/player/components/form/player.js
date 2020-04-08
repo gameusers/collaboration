@@ -186,7 +186,7 @@ export default class extends React.Component {
       hardwareInactiveObj,
       hardwareActiveArr,
       hardwareInactiveArr,
-      ids_idArr,
+      ids_idsArr,
       activityTimeObj,
       lookingForFriendsObj,
       voiceChatObj,
@@ -463,7 +463,7 @@ export default class extends React.Component {
             <ID
               type="cardPlayerForm"
               _id={cardPlayers_id}
-              ids_idArr={ids_idArr}
+              ids_idsArr={ids_idsArr}
             />
           </div>
           

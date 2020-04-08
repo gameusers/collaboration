@@ -35,7 +35,7 @@ const ModelFollows = require('../follows/model');
 //   Format
 // ---------------------------------------------
 
-const { formatCardPlayersArr } = require('./format');
+const { formatCardPlayersArr, formatCardPlayersArrFromSchemaCardPlayers } = require('./format');
 const { formatImagesAndVideosObj } = require('../images-and-videos/format');
 const { formatFollowsObj } = require('../follows/format');
 
@@ -343,6 +343,7 @@ const findForCardPlayers = async ({ localeObj, loginUsers_id, users_id, cardPlay
 
 /**
  * aggregate でデータを取得し、フォーマットして返す
+ * schema: users がベース
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {Array} matchConditionArr - 検索条件
@@ -366,6 +367,8 @@ const aggregateAndFormat = async ({
   // --------------------------------------------------
   
   let returnObj = {};
+  
+  
   
   
   // --------------------------------------------------
@@ -397,6 +400,8 @@ const aggregateAndFormat = async ({
     
     const language = lodashGet(localeObj, ['language'], '');
     const country = lodashGet(localeObj, ['country'], '');
+    
+    
     
     
     // --------------------------------------------------
@@ -584,7 +589,7 @@ const aggregateAndFormat = async ({
                 $lookup:
                   {
                     from: 'ids',
-                    let: { cardPlayersIds_idArr: '$ids_idArr' },
+                    let: { cardPlayersIds_idArr: '$ids_idsArr' },
                     pipeline: [
                       { $match:
                         { $expr:
@@ -751,7 +756,7 @@ const aggregateAndFormat = async ({
     
     
     // --------------------------------------------------
-    //   フォーマット
+    //   Format
     // --------------------------------------------------
     
     const formattedObj = formatCardPlayersArr({
@@ -818,14 +823,23 @@ const aggregateAndFormat = async ({
 
 
 /**
- * 取得する
+ * 取得する [2020/04/08]
+ * プレイヤーカードをダイアログで表示する場合に使用
+ * schema: card-players がベース
  * @param {Object} localeObj - ロケール
  * @param {string} users_id - DB users _id
  * @param {string} cardPlayers_id - DB card-players _id
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @return {Object} 取得データ
  */
-const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUsers_id }) => {
+const findFromSchemaCardPlayers = async ({ 
+  
+  localeObj,
+  users_id,
+  cardPlayers_id,
+  loginUsers_id,
+  
+}) => {
   
   
   // --------------------------------------------------
@@ -835,11 +849,23 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
   let returnObj = {};
   
   
+  
+  
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
   
   try {
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+    
+    
     
     
     // --------------------------------------------------
@@ -874,13 +900,20 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
     //   Card Players のデータを取得
     // --------------------------------------------------
     
-    let resultArr = await Schema.aggregate([
+    const docArr = await Schema.aggregate([
       
+      
+      // --------------------------------------------------
+      //   Match Condition
+      // --------------------------------------------------
       
       ...matchConditionArr,
       
       
-      // 画像と動画を取得
+      // --------------------------------------------------
+      //   images-and-videos / メイン画像
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -894,7 +927,6 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
               },
               { $project:
                 {
-                  // _id: 0,
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -914,7 +946,10 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
       },
       
       
-      // 画像と動画を取得 - サムネイル用
+      // --------------------------------------------------
+      //   images-and-videos / サムネイル用
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -928,7 +963,6 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
               },
               { $project:
                 {
-                  // _id: 0,
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -948,7 +982,10 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
       },
       
       
-      // ユーザー情報
+      // --------------------------------------------------
+      //   users
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -978,7 +1015,10 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
       },
       
       
-      // ハードウェア
+      // --------------------------------------------------
+      //   hardwares
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -994,15 +1034,15 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
                     [
                       { $and:
                         [
-                          { $eq: ['$language', localeObj.language] },
-                          { $eq: ['$country', localeObj.country] },
+                          { $eq: ['$language', language] },
+                          { $eq: ['$country', country] },
                           { $in: ['$hardwareID', '$$cardPlayersHardwareActiveArr'] }
                         ]
                       },
                       { $and:
                         [
-                          { $eq: ['$language', localeObj.language] },
-                          { $eq: ['$country', localeObj.country] },
+                          { $eq: ['$language', language] },
+                          { $eq: ['$country', country] },
                           { $in: ['$hardwareID', '$$cardPlayersHardwareInactiveArr'] }
                         ]
                       }
@@ -1023,7 +1063,10 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
       },
       
       
-      // Follows
+      // --------------------------------------------------
+      //   follows
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -1044,6 +1087,123 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
         $unwind: '$followsObj'
       },
       
+      
+      // --------------------------------------------------
+      //   ids
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'ids',
+            let: { cardPlayersIds_idArr: '$ids_idsArr' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $in: ['$_id', '$$cardPlayersIds_idArr'] }
+                }
+              },
+              
+              
+              // --------------------------------------------------
+              //   ids / games
+              // --------------------------------------------------
+              
+              {
+                $lookup:
+                  {
+                    from: 'games',
+                    let: { idsGameCommunities_id: '$gameCommunities_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $and:
+                            [
+                              { $eq: ['$language', language] },
+                              { $eq: ['$country', country] },
+                              { $eq: ['$gameCommunities_id', '$$idsGameCommunities_id'] }
+                            ]
+                          },
+                        }
+                      },
+                      
+                      
+                      // --------------------------------------------------
+                      //   ids / games / images-and-videos / サムネイル用
+                      // --------------------------------------------------
+                      
+                      {
+                        $lookup:
+                          {
+                            from: 'images-and-videos',
+                            let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                            pipeline: [
+                              { $match:
+                                { $expr:
+                                  { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
+                                }
+                              },
+                              { $project:
+                                {
+                                  createdDate: 0,
+                                  updatedDate: 0,
+                                  users_id: 0,
+                                  __v: 0,
+                                }
+                              }
+                            ],
+                            as: 'imagesAndVideosThumbnailObj'
+                          }
+                      },
+                      
+                      {
+                        $unwind: {
+                          path: '$imagesAndVideosThumbnailObj',
+                          preserveNullAndEmptyArrays: true,
+                        }
+                      },
+                      
+                      
+                      { $project:
+                        {
+                          _id: 1,
+                          gameCommunities_id: 1,
+                          name: 1,
+                          imagesAndVideosThumbnailObj: 1,
+                        }
+                      }
+                    ],
+                    as: 'gamesObj'
+                  }
+              },
+              
+              {
+                $unwind:
+                  {
+                    path: '$gamesObj',
+                    preserveNullAndEmptyArrays: true
+                  }
+              },
+              
+              
+              { $project:
+                {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  search: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'idsArr'
+          }
+      },
+      
+      
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
       
       {
         $project: {
@@ -1072,40 +1232,22 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
           linkArr: { _id: 0, search: 0 },
         }
       },
+      
+      
     ]).exec();
     
     
     
     
     // --------------------------------------------------
-    //   DB - ID データをまとめて取得
+    //   Format
     // --------------------------------------------------
     
-    let ids_idArr = [];
-    
-    for (let valueObj of resultArr.values()) {
-      ids_idArr = ids_idArr.concat(valueObj.ids_idArr);
-    }
-    
-    const resultIDsObj = await ModelIDs.findForCardPlayer({
+    returnObj = formatCardPlayersArrFromSchemaCardPlayers({
       
       localeObj,
       loginUsers_id,
-      ids_idArr,
-      
-    });
-    
-    
-    // --------------------------------------------------
-    //   フォーマット
-    // --------------------------------------------------
-    
-    returnObj = format({
-      
-      localeObj,
-      loginUsers_id,
-      cardPlayersArr: resultArr,
-      idsObj: resultIDsObj,
+      arr: docArr,
       
     });
     
@@ -1118,18 +1260,18 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/@database/card-players/model.js - findForCardPlayer
+    //   /app/@database/card-players/model.js - findFromSchemaCardPlayers
     // `);
     
     // console.log(`
-    //   ----- resultArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     // console.log(`
-    //   ----- ids_idArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -1138,14 +1280,6 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
     //   ${util.inspect(JSON.parse(JSON.stringify(resultIDsObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    // console.log(`\n---------- resultArr ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(resultArr)));
-    // console.log(`\n-----------------------------------\n`);
-    
-    // console.log(`\n---------- returnObj ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(returnObj)));
-    // console.log(`\n-----------------------------------\n`);
     
     
     
@@ -1173,257 +1307,257 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
  * @param {Object} argumentsObj - 引数
  * @return {Object} 取得データ
  */
-const findOneBy_id = async ({
+// const findOneBy_id = async ({
   
-  _id,
-  localeObj,
-  loginUsers_id,
+//   _id,
+//   localeObj,
+//   loginUsers_id,
   
-}) => {
-  
-  
-  // --------------------------------------------------
-  //   console.log
-  // --------------------------------------------------
-  
-  // console.log(chalk`
-  //   _id: {green ${_id}}
-  //   loginUsers_id: {green ${loginUsers_id}}
-  // `);
+// }) => {
   
   
-  // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   console.log
+//   // --------------------------------------------------
   
-  let returnObj = {};
+//   // console.log(chalk`
+//   //   _id: {green ${_id}}
+//   //   loginUsers_id: {green ${loginUsers_id}}
+//   // `);
   
   
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Return Value
+//   // --------------------------------------------------
   
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Aggregate
-    // --------------------------------------------------
-    
-    let resultCardPlayersArr = await Schema.aggregate([
-      
-      {
-        $match : { _id }
-      },
-      
-      
-      {
-        $lookup:
-          {
-            from: 'users',
-            let: { cardPlayersUsers_id: '$users_id' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$cardPlayersUsers_id'] },
-                }
-              },
-              { $project:
-                {
-                  _id: 0,
-                  accessDate: 1,
-                  exp: 1,
-                  userID: 1,
-                  // followArr: 1,
-                  // followedArr: 1,
-                  // followedCount: 1,
-                }
-              }
-            ],
-            as: 'usersObj'
-          }
-      },
-      {
-        $unwind: '$usersObj'
-      },
-      
-      
-      {
-        $lookup:
-          {
-            from: 'hardwares',
-            let: {
-              cardPlayersHardwareActiveArr: '$hardwareActiveObj.valueArr',
-              cardPlayersHardwareInactiveArr: '$hardwareInactiveObj.valueArr'
-            },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $or:
-                    [
-                      { $and:
-                        [
-                          { $eq: ['$language', localeObj.language] },
-                          { $eq: ['$country', localeObj.country] },
-                          { $in: ['$hardwareID', '$$cardPlayersHardwareActiveArr'] }
-                        ]
-                      },
-                      { $and:
-                        [
-                          { $eq: ['$language', localeObj.language] },
-                          { $eq: ['$country', localeObj.country] },
-                          { $in: ['$hardwareID', '$$cardPlayersHardwareInactiveArr'] }
-                        ]
-                      }
-                    ]
-                  }
-                }
-              },
-              { $project:
-                {
-                  _id: 0,
-                  hardwareID: 1,
-                  name: 1,
-                }
-              }
-            ],
-            as: 'hardwaresArr'
-          }
-      },
-      
-      
-      // Follows
-      {
-        $lookup:
-          {
-            from: 'follows',
-            let: { cardPlayersUsers_id: '$users_id' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$users_id', '$$cardPlayersUsers_id'] },
-                }
-              },
-              { $project:
-                {
-                  _id: 0,
-                  followArr: 1,
-                  followedArr: 1,
-                  followedCount: 1,
-                }
-              }
-            ],
-            as: 'followsObj'
-          }
-      },
-      
-      {
-        $unwind: '$followsObj'
-      },
-      
-      
-      {
-        $project: {
-          __v: 0,
-          createdDate: 0,
-          language: 0,
-          ageObj: { search: 0 },
-          sexObj: { search: 0 },
-          addressObj: { search: 0 },
-          gamingExperienceObj: { search: 0 },
-          hobbiesObj: { search: 0 },
-          specialSkillsObj: { search: 0 },
-          smartphoneObj: { search: 0 },
-          tabletObj: { search: 0 },
-          pcObj: { search: 0 },
-          hardwareActiveObj: { search: 0 },
-          hardwareInactiveObj: { search: 0 },
-          activityTimeObj: { search: 0 },
-          'activityTimeObj.valueArr': { _id: 0 },
-          lookingForFriendsObj: { search: 0 },
-          voiceChatObj: { search: 0 },
-          idArr: { _id: 0, search: 0 },
-          linkArr: { _id: 0, search: 0 },
-        }
-      },
-    ]).exec();
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   ID データをまとめて取得
-    // --------------------------------------------------
-    
-    let ids_idArr = [];
-    
-    for (let valueObj of resultCardPlayersArr.values()) {
-      ids_idArr = ids_idArr.concat(valueObj.ids_idArr);
-    }
-    
-    const resultIDsObj = await ModelIDs.findForCardPlayer({
-      
-      localeObj,
-      loginUsers_id,
-      ids_idArr,
-      
-    });
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   カードデータのフォーマット
-    // --------------------------------------------------
-    
-    returnObj = format({
-      loginUsers_id,
-      cardPlayersArr: resultCardPlayersArr,
-      idsObj: resultIDsObj,
-    });
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----- ids_idArr -----\n
-    //   ${util.inspect(ids_idArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- resultCardPlayersArr -----\n
-    //   ${util.inspect(resultCardPlayersArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return returnObj;
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
+//   let returnObj = {};
   
-};
+  
+//   // --------------------------------------------------
+//   //   Database
+//   // --------------------------------------------------
+  
+//   try {
+    
+    
+//     // --------------------------------------------------
+//     //   Aggregate
+//     // --------------------------------------------------
+    
+//     let resultCardPlayersArr = await Schema.aggregate([
+      
+//       {
+//         $match : { _id }
+//       },
+      
+      
+//       {
+//         $lookup:
+//           {
+//             from: 'users',
+//             let: { cardPlayersUsers_id: '$users_id' },
+//             pipeline: [
+//               { $match:
+//                 { $expr:
+//                   { $eq: ['$_id', '$$cardPlayersUsers_id'] },
+//                 }
+//               },
+//               { $project:
+//                 {
+//                   _id: 0,
+//                   accessDate: 1,
+//                   exp: 1,
+//                   userID: 1,
+//                   // followArr: 1,
+//                   // followedArr: 1,
+//                   // followedCount: 1,
+//                 }
+//               }
+//             ],
+//             as: 'usersObj'
+//           }
+//       },
+//       {
+//         $unwind: '$usersObj'
+//       },
+      
+      
+//       {
+//         $lookup:
+//           {
+//             from: 'hardwares',
+//             let: {
+//               cardPlayersHardwareActiveArr: '$hardwareActiveObj.valueArr',
+//               cardPlayersHardwareInactiveArr: '$hardwareInactiveObj.valueArr'
+//             },
+//             pipeline: [
+//               { $match:
+//                 { $expr:
+//                   { $or:
+//                     [
+//                       { $and:
+//                         [
+//                           { $eq: ['$language', localeObj.language] },
+//                           { $eq: ['$country', localeObj.country] },
+//                           { $in: ['$hardwareID', '$$cardPlayersHardwareActiveArr'] }
+//                         ]
+//                       },
+//                       { $and:
+//                         [
+//                           { $eq: ['$language', localeObj.language] },
+//                           { $eq: ['$country', localeObj.country] },
+//                           { $in: ['$hardwareID', '$$cardPlayersHardwareInactiveArr'] }
+//                         ]
+//                       }
+//                     ]
+//                   }
+//                 }
+//               },
+//               { $project:
+//                 {
+//                   _id: 0,
+//                   hardwareID: 1,
+//                   name: 1,
+//                 }
+//               }
+//             ],
+//             as: 'hardwaresArr'
+//           }
+//       },
+      
+      
+//       // Follows
+//       {
+//         $lookup:
+//           {
+//             from: 'follows',
+//             let: { cardPlayersUsers_id: '$users_id' },
+//             pipeline: [
+//               { $match:
+//                 { $expr:
+//                   { $eq: ['$users_id', '$$cardPlayersUsers_id'] },
+//                 }
+//               },
+//               { $project:
+//                 {
+//                   _id: 0,
+//                   followArr: 1,
+//                   followedArr: 1,
+//                   followedCount: 1,
+//                 }
+//               }
+//             ],
+//             as: 'followsObj'
+//           }
+//       },
+      
+//       {
+//         $unwind: '$followsObj'
+//       },
+      
+      
+//       {
+//         $project: {
+//           __v: 0,
+//           createdDate: 0,
+//           language: 0,
+//           ageObj: { search: 0 },
+//           sexObj: { search: 0 },
+//           addressObj: { search: 0 },
+//           gamingExperienceObj: { search: 0 },
+//           hobbiesObj: { search: 0 },
+//           specialSkillsObj: { search: 0 },
+//           smartphoneObj: { search: 0 },
+//           tabletObj: { search: 0 },
+//           pcObj: { search: 0 },
+//           hardwareActiveObj: { search: 0 },
+//           hardwareInactiveObj: { search: 0 },
+//           activityTimeObj: { search: 0 },
+//           'activityTimeObj.valueArr': { _id: 0 },
+//           lookingForFriendsObj: { search: 0 },
+//           voiceChatObj: { search: 0 },
+//           idArr: { _id: 0, search: 0 },
+//           linkArr: { _id: 0, search: 0 },
+//         }
+//       },
+//     ]).exec();
+    
+    
+    
+    
+//     // --------------------------------------------------
+//     //   ID データをまとめて取得
+//     // --------------------------------------------------
+    
+//     let ids_idsArr = [];
+    
+//     for (let valueObj of resultCardPlayersArr.values()) {
+//       ids_idsArr = ids_idsArr.concat(valueObj.ids_idsArr);
+//     }
+    
+//     const resultIDsObj = await ModelIDs.findForCardPlayer({
+      
+//       localeObj,
+//       loginUsers_id,
+//       ids_idsArr,
+      
+//     });
+    
+    
+    
+    
+//     // --------------------------------------------------
+//     //   カードデータのフォーマット
+//     // --------------------------------------------------
+    
+//     returnObj = format({
+//       loginUsers_id,
+//       cardPlayersArr: resultCardPlayersArr,
+//       idsObj: resultIDsObj,
+//     });
+    
+    
+    
+    
+//     // --------------------------------------------------
+//     //   console.log
+//     // --------------------------------------------------
+    
+//     // console.log(`
+//     //   ----- ids_idsArr -----\n
+//     //   ${util.inspect(ids_idsArr, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+//     // console.log(`
+//     //   ----- resultCardPlayersArr -----\n
+//     //   ${util.inspect(resultCardPlayersArr, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+//     // console.log(`
+//     //   ----- returnObj -----\n
+//     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+    
+    
+    
+//     // --------------------------------------------------
+//     //   Return
+//     // --------------------------------------------------
+    
+//     return returnObj;
+    
+    
+//   } catch (err) {
+    
+//     throw err;
+    
+//   }
+  
+// };
 
 
 
@@ -1593,17 +1727,17 @@ const findOneBy_idForEditForm = async ({
     //   ID データをまとめて取得
     // --------------------------------------------------
     
-    let ids_idArr = [];
+    let ids_idsArr = [];
     
     for (let valueObj of resultCardPlayersArr.values()) {
-      ids_idArr = ids_idArr.concat(valueObj.ids_idArr);
+      ids_idsArr = ids_idsArr.concat(valueObj.ids_idsArr);
     }
     
     const resultIDsObj = await ModelIDs.findForCardPlayer({
       
       localeObj,
       loginUsers_id,
-      ids_idArr,
+      ids_idsArr,
       
     });
     
@@ -2027,17 +2161,17 @@ const findForMember = async ({
     //   DB - ID データをまとめて取得
     // --------------------------------------------------
     
-    let ids_idArr = [];
+    let ids_idsArr = [];
     
     for (let valueObj of cardPlayersArr.values()) {
-      ids_idArr = ids_idArr.concat(valueObj.ids_idArr);
+      ids_idsArr = ids_idsArr.concat(valueObj.ids_idsArr);
     }
     
     const resultIDsObj = await ModelIDs.findForCardPlayer({
       
       localeObj,
       loginUsers_id,
-      ids_idArr,
+      ids_idsArr,
       
     });
     
@@ -2094,8 +2228,8 @@ const findForMember = async ({
     // `);
     
     // console.log(`
-    //   ----- ids_idArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
+    //   ----- ids_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -2409,8 +2543,8 @@ const findForFollowers = async ({
     // `);
     
     // console.log(`
-    //   ----- ids_idArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
+    //   ----- ids_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -2589,12 +2723,12 @@ const format = ({ localeObj, loginUsers_id, cardPlayersArr, idsObj }) => {
     //   ID
     // --------------------------------------------------
     
-    clonedObj.ids_idArr = [];
+    clonedObj.ids_idsArr = [];
     
-    for (let value of valueObj.ids_idArr) {
+    for (let value of valueObj.ids_idsArr) {
       
       if (value in idsObj) {
-        clonedObj.ids_idArr.push(idsObj[value]);
+        clonedObj.ids_idsArr.push(idsObj[value]);
       }
       
     }
@@ -2710,12 +2844,12 @@ const formatForEditForm = ({ cardPlayersArr, idsObj }) => {
     //   ID
     // --------------------------------------------------
     
-    clonedObj.ids_idArr = [];
+    clonedObj.ids_idsArr = [];
     
-    for (let value of valueObj.ids_idArr) {
+    for (let value of valueObj.ids_idsArr) {
       
       if (value in idsObj) {
-        clonedObj.ids_idArr.push(idsObj[value]);
+        clonedObj.ids_idsArr.push(idsObj[value]);
       }
       
     }
@@ -2984,8 +3118,8 @@ module.exports = {
   deleteMany,
   
   findForCardPlayers,
-  findForCardPlayer,
-  findOneBy_id,
+  findFromSchemaCardPlayers,
+  // findOneBy_id,
   findOneBy_idForEditForm,
   findForMember,
   findForFollowers,

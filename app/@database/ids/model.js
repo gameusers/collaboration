@@ -351,7 +351,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * @param {Object} argumentsObj - 引数
  * @return {Object} 取得データ
  */
-const findForCardPlayer = async ({ localeObj, loginUsers_id, ids_idArr }) => {
+const findForCardPlayer = async ({ localeObj, loginUsers_id, ids_idsArr }) => {
   
   
   // --------------------------------------------------
@@ -368,7 +368,7 @@ const findForCardPlayer = async ({ localeObj, loginUsers_id, ids_idArr }) => {
     const resultIDsArr = await findBy_idsArr({
       
       localeObj,
-      ids_idArr,
+      ids_idsArr,
       
     });
     
@@ -397,8 +397,8 @@ const findForCardPlayer = async ({ localeObj, loginUsers_id, ids_idArr }) => {
     // `);
     
     // console.log(`
-    //   ----- ids_idArr -----\n
-    //   ${util.inspect(ids_idArr, { colors: true, depth: null })}\n
+    //   ----- ids_idsArr -----\n
+    //   ${util.inspect(ids_idsArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -757,7 +757,7 @@ const formatToObject = ({ localeObj, arr, loginUsers_id }) => {
   
   // let returnArr = [];
   
-  // for (let value of ids_idArr) {
+  // for (let value of ids_idsArr) {
   //   if (value in formattedObj) {
   //     returnArr.push(formattedObj[value]);
   //   }
@@ -805,17 +805,17 @@ const formatToObject = ({ localeObj, arr, loginUsers_id }) => {
 /**
  * 取得する
  * @param {Object} localeObj - ロケール
- * @param {Array} ids_idArr - DB ids _id の入った配列
+ * @param {Array} ids_idsArr - DB ids _id の入った配列
  * @return {Array} 取得データ
  */
-const findBy_idsArr = async ({ localeObj, ids_idArr }) => {
+const findBy_idsArr = async ({ localeObj, ids_idsArr }) => {
   
   
   // --------------------------------------------------
   //   配列の重複している値を削除
   // --------------------------------------------------
   
-  const removedDuplicatesArr = Array.from(new Set(ids_idArr));
+  const removedDuplicatesArr = Array.from(new Set(ids_idsArr));
   
   
   

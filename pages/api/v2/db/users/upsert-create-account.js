@@ -310,7 +310,7 @@ export default async (req, res) => {
         valueArr: [],
         search: true,
       },
-      ids_idArr: [],
+      ids_idsArr: [],
       activityTimeObj: {
         valueArr: [],
         search: true,

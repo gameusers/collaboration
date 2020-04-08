@@ -62,7 +62,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { type, _id, ids_idArr } = this.props;
+    const { type, _id, ids_idsArr } = this.props;
     
     
     
@@ -73,7 +73,7 @@ export default class extends React.Component {
     
     const componentsSelectedArr = [];
     
-    for (const [index, valueObj] of ids_idArr.entries()) {
+    for (const [index, valueObj] of ids_idsArr.entries()) {
       
       const games_id = lodashGet(valueObj, ['gamesObj', '_id'], '');
       const gamesName = lodashGet(valueObj, ['gamesObj', 'name'], '');
@@ -110,8 +110,8 @@ export default class extends React.Component {
     // `);
     
     // console.log(`
-    //   ----- ids_idArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
+    //   ----- ids_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -172,7 +172,7 @@ export default class extends React.Component {
           <IDForm
             type={type}
             _id={_id}
-            ids_idArr={ids_idArr}
+            ids_idsArr={ids_idsArr}
           />
         </div>
         

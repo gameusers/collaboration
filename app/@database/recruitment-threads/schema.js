@@ -29,16 +29,15 @@ const schema = mongoose.Schema({
   ],
   imagesAndVideos_id: { type: String },
   anonymity: { type: Boolean, required: true },
-  ids_idArr: [String],
-  idsArr: [
+  ids_idsArr: [String],
+  publicIDsArr: [
     {
       _id: { type: String, required: true },
       platform: { type: String, enum: ['PlayStation', 'Xbox', 'Nintendo', 'PC', 'Android', 'iOS', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line', 'Other'], required: true },
-      // hardwareID: { type: String, required: true },
       id: { type: String, required: true },
     }
   ],
-  informationsArr: [
+  publicInformationsArr: [
     {
       _id: { type: String, required: true },
       title: { type: String, required: true },

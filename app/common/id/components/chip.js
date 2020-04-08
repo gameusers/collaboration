@@ -141,7 +141,7 @@ export default class extends React.Component {
       
       componentAvatar =
         <Avatar css={cssAvatar} alt="Xbox" style={{ 'backgroundColor': '#107C10' }}>
-          <div style={{ 'width': '75%', 'marginTop': '4px' }}>
+          <div style={{ 'width': '75%', 'marginTop': '2px' }}>
             <SimpleIcons name="Xbox" color="white" />
           </div>
         </Avatar>

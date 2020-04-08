@@ -96,10 +96,10 @@ class Store {
    * Fetchでユーザーが登録しているIDをすべて取得する
    * @param {Array} pathArr - パス
    * @param {string} _id
-   * @param {Array} ids_idArr - 選択されているIDが入っている配列
+   * @param {Array} ids_idsArr - 選択されているIDが入っている配列
    */
   @action.bound
-  async handleDialogOpen({ pathArr, _id, ids_idArr }) {
+  async handleDialogOpen({ pathArr, _id, ids_idsArr }) {
     
     
     try {
@@ -178,7 +178,7 @@ class Store {
         //   - 選択IDの配列を作成する
         // ----------------------------------------
         
-        for (let valueObj of ids_idArr.values()) {
+        for (let valueObj of ids_idsArr.values()) {
           
           // 存在するIDかチェックする（すでに削除されている可能性があるため）
           const index = dataArr.findIndex((value2Obj) => {
@@ -199,7 +199,7 @@ class Store {
         for (let valueObj of dataArr.values()) {
           
           // 選択IDに含まれていない場合、配列に追加
-          const index = ids_idArr.findIndex((value2Obj) => {
+          const index = ids_idsArr.findIndex((value2Obj) => {
             return value2Obj._id === valueObj._id;
           });
           
@@ -329,10 +329,10 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {string} type - IDフォームの呼び出し元の種類 / cardPlayerForm / 
    * @param {string} _id - cardPlayers_id / 
-   * @param {Array} ids_idArr - 選択されたIDの配列
+   * @param {Array} ids_idsArr - 選択されたIDの配列
    */
   @action.bound
-  handleSelectButton({ pathArr, type, _id, ids_idArr }) {
+  handleSelectButton({ pathArr, type, _id, ids_idsArr }) {
     
     // console.log(`
     //   ----------------------------------------\n
@@ -345,8 +345,8 @@ class Store {
     // `);
     
     // console.log(`
-    //   ----- ids_idArr -----\n
-    //   ${util.inspect(ids_idArr, { colors: true, depth: null })}\n
+    //   ----- ids_idsArr -----\n
+    //   ${util.inspect(ids_idsArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -357,8 +357,8 @@ class Store {
     
     if (type === 'cardPlayerForm') {
       
-      const clonedArr = lodashCloneDeep(ids_idArr);
-      lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'ids_idArr'], clonedArr);
+      const clonedArr = lodashCloneDeep(ids_idsArr);
+      lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'ids_idsArr'], clonedArr);
       
     }
     
@@ -369,8 +369,8 @@ class Store {
     
     if (type === 'recruitmentForm') {
       
-      const clonedArr = lodashCloneDeep(ids_idArr);
-      lodashSet(storeGcRecruitment, ['dataObj', _id, 'recruitmentFormThreadsObj', 'ids_idArr'], clonedArr);
+      const clonedArr = lodashCloneDeep(ids_idsArr);
+      lodashSet(storeGcRecruitment, ['dataObj', _id, 'recruitmentFormThreadsObj', 'ids_idsArr'], clonedArr);
       
     }
     
@@ -633,10 +633,10 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {string} type
    * @param {string} _id
-   * @param {Array} ids_idArr - 選択されているID情報の入った配列
+   * @param {Array} ids_idsArr - 選択されているID情報の入った配列
    */
   @action.bound
-  async handleEditSubmit({ pathArr, type, _id, ids_idArr }) {
+  async handleEditSubmit({ pathArr, type, _id, ids_idsArr }) {
     
     
     try {
@@ -754,7 +754,7 @@ class Store {
       
       const updatedIds_idArr = [];
       
-      for (let valueObj of ids_idArr.values()) {
+      for (let valueObj of ids_idsArr.values()) {
         
         // 現在選択されているIDを抽出する
         const newObj = resultObj.data.find((valueObj2) => {
@@ -788,7 +788,7 @@ class Store {
       if (type === 'cardPlayerForm') {
         
         const clonedArr = lodashCloneDeep(updatedIds_idArr);
-        lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'ids_idArr'], clonedArr);
+        lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'ids_idsArr'], clonedArr);
         
       }
       
@@ -823,8 +823,8 @@ class Store {
       // `);
       
       // console.log(`
-      //   ----- ids_idArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
+      //   ----- ids_idsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -889,10 +889,10 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {string} type
    * @param {string} _id
-   * @param {Array} ids_idArr - 選択されているID情報の入った配列
+   * @param {Array} ids_idsArr - 選択されているID情報の入った配列
    */
   @action.bound
-  async handleDeleteSubmit({ pathArr, type, _id, ids_idArr }) {
+  async handleDeleteSubmit({ pathArr, type, _id, ids_idsArr }) {
     
     
     try {
@@ -969,7 +969,7 @@ class Store {
       
       const updatedIds_idArr = [];
       
-      for (let valueObj of ids_idArr.values()) {
+      for (let valueObj of ids_idsArr.values()) {
         
         const newObj = resultObj.data.find((valueObj2) => {
           return valueObj2._id === valueObj._id;
@@ -989,7 +989,7 @@ class Store {
       if (type === 'cardPlayerForm') {
         
         const clonedArr = lodashCloneDeep(updatedIds_idArr);
-        lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'ids_idArr'], clonedArr);
+        lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'ids_idsArr'], clonedArr);
         
       }
       
@@ -1052,8 +1052,8 @@ class Store {
       // `);
       
       // console.log(`
-      //   ----- ids_idArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
+      //   ----- ids_idsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       

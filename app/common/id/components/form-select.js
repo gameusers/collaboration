@@ -321,7 +321,7 @@ export default class extends React.Component {
             pathArr,
             type,
             _id,
-            ids_idArr: selectedIDsArr,
+            ids_idsArr: selectedIDsArr,
           })}
           disabled={buttonDisabled}
         >

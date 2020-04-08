@@ -137,7 +137,7 @@ export default async (req, res) => {
       pcObj,
       hardwareActiveObj,
       hardwareInactiveObj,
-      ids_idArr,
+      ids_idsArr,
       activityTimeObj,
       lookingForFriendsObj,
       voiceChatObj,
@@ -170,7 +170,7 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['pcObj'], pcObj);
     lodashSet(requestParametersObj, ['hardwareActiveObj'], hardwareActiveObj);
     lodashSet(requestParametersObj, ['hardwareInactiveObj'], hardwareInactiveObj);
-    lodashSet(requestParametersObj, ['ids_idArr'], []);
+    lodashSet(requestParametersObj, ['ids_idsArr'], []);
     lodashSet(requestParametersObj, ['activityTimeObj'], activityTimeObj);
     lodashSet(requestParametersObj, ['lookingForFriendsObj'], lookingForFriendsObj);
     lodashSet(requestParametersObj, ['voiceChatObj'], voiceChatObj);
@@ -395,7 +395,7 @@ export default async (req, res) => {
     //   - ID
     // ---------------------------------------------
     
-    const validatedIDs_idArrObj = await validationIDs_idArrServer({ valueArr: ids_idArr, loginUsers_id });
+    const validatedIDs_idArrObj = await validationIDs_idArrServer({ valueArr: ids_idsArr, loginUsers_id });
     
     
     // ---------------------------------------------
@@ -624,7 +624,7 @@ export default async (req, res) => {
         valueArr: validatedHardwareInactiveObj.valueArr,
         search: hardwareInactiveObj.search,
       },
-      ids_idArr: validatedIDs_idArrObj.valueArr,
+      ids_idsArr: validatedIDs_idArrObj.valueArr,
       activityTimeObj,
       lookingForFriendsObj,
       voiceChatObj,
@@ -710,13 +710,15 @@ export default async (req, res) => {
     //   アクセスしたページ所有者のプレイヤーカード情報
     // --------------------------------------------------
     
-    returnObj.cardPlayersObj = await ModelCardPlayers.findForCardPlayer({
+    returnObj.cardPlayersObj = await ModelCardPlayers.findFromSchemaCardPlayers({
       
       localeObj,
       users_id: loginUsers_id,
       loginUsers_id,
       
     });
+    
+    // returnObj.cardPlayersObj
     
     
     // --------------------------------------------------

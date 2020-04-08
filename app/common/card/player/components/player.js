@@ -289,7 +289,7 @@ export default class extends React.Component {
     // ---------------------------------------------
     
     const idsArr = lodashGet(cardPlayersObj, ['idsArr'], []);
-    // const ids_idArr = lodashGet(cardPlayersObj, ['ids_idArr'], []);
+    // const ids_idsArr = lodashGet(cardPlayersObj, ['ids_idsArr'], []);
     
     
     // ---------------------------------------------
@@ -361,12 +361,6 @@ export default class extends React.Component {
     // console.log(chalk`
     //   formOpen: {green ${formOpen}}
     //   panelExpanded: {green ${panelExpanded}}
-    // `);
-    
-    // console.log(`
-    //   ----- ids_idArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
     // `);
     
     

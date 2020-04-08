@@ -119,7 +119,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeIDForm, type, _id, ids_idArr } = this.props;
+    const { stores, storeIDForm, type, _id, ids_idsArr } = this.props;
     
     const {
       
@@ -173,7 +173,7 @@ export default class extends React.Component {
           pathArr={this.pathArr}
           type={type}
           _id={_id}
-          ids_idArr={ids_idArr}
+          ids_idsArr={ids_idsArr}
           additionalGameLimit={1}
         />
       ;
@@ -208,8 +208,8 @@ export default class extends React.Component {
     // `);
     
     // console.log(`
-    //   ----- ids_idArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
+    //   ----- ids_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -231,7 +231,7 @@ export default class extends React.Component {
           onClick={() => handleDialogOpen({
             pathArr: this.pathArr,
             _id,
-            ids_idArr
+            ids_idsArr
           })}
           disabled={buttonDisabled}
           startIcon={<IconSettings />}

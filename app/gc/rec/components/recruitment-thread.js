@@ -78,12 +78,16 @@ import Paragraph from '../../../common/layout/components/paragraph';
 import FormThread from './form/thread';
 import ChipCategory from './chip-category';
 import ChipHardwares from '../../../common/hardware/components/chip';
-// import FormComment from './form-comment';
-// import Comment from './comment';
 import User from '../../../common/user/components/user';
 import ImageAndVideo from '../../../common/image-and-video/components/image-and-video';
 import Panel from '../../../common/layout/components/panel';
 import PublicIDs from './public-ids';
+import PublicInformations from './public-informations';
+import PublicSetting from './public-setting';
+import DeadlineDate from './deadline-date';
+
+// import FormComment from './form-comment';
+// import Comment from './comment';
 
 
 
@@ -327,6 +331,8 @@ export default injectIntl(class extends React.Component {
       const category = lodashGet(threadsDataObj, ['category'], 1);
       const hardwaresArr = lodashGet(threadsDataObj, ['hardwaresArr'], []);
       
+      const deadlineDate = lodashGet(threadsDataObj, ['deadlineDate'], '');
+      
       
       // --------------------------------------------------
       //   User Data
@@ -365,7 +371,7 @@ export default injectIntl(class extends React.Component {
       const idsArr = lodashGet(threadsDataObj, ['idsArr'], []);
       const publicIDsArr = lodashGet(threadsDataObj, ['publicIDsArr'], []);
       const publicInformationsArr = lodashGet(threadsDataObj, ['publicInformationsArr'], []);
-      
+      const publicSetting = lodashGet(threadsDataObj, ['publicSetting'], 1);
       
       
       // --------------------------------------------------
@@ -549,22 +555,16 @@ export default injectIntl(class extends React.Component {
                     >
                       
                       
-                      
-                      
                       {/* Chip Hardwares  */}
                       <ChipHardwares
                         hardwaresArr={hardwaresArr}
                       />
                       
                       
-                      
-                      
                       {/* Chip Category */}
                       <ChipCategory
                         category={category}
                       />
-                      
-                      
                       
                       
                       {/* recruitmentThreads_id */}
@@ -743,6 +743,7 @@ export default injectIntl(class extends React.Component {
                 >
                   
                   
+                  {/* Comment */}
                   <Paragraph text={comment} />
                   
                   
@@ -751,6 +752,25 @@ export default injectIntl(class extends React.Component {
                     idsArr={idsArr}
                     publicIDsArr={publicIDsArr}
                   />
+                  
+                  
+                  {/* PublicInformations */}
+                  <PublicInformations
+                    publicInformationsArr={publicInformationsArr}
+                  />
+                  
+                  
+                  {/* PublicSetting */}
+                  <PublicSetting
+                    publicSetting={publicSetting}
+                  />
+                  
+                  
+                  {/* DeadlineDate */}
+                  <DeadlineDate
+                    deadlineDate={deadlineDate}
+                  />
+                  
                   
                   
                 </div>

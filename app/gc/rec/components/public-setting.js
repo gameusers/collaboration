@@ -31,14 +31,15 @@ import lodashGet from 'lodash/get';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 
+// import Alert from '@material-ui/lab/Alert';
+
 
 // ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
 
-import IconFriend from '@material-ui/icons/SentimentSatisfiedAlt';
-import IconMember from '@material-ui/icons/SupervisedUserCircle';
-import IconDeal from '@material-ui/icons/MonetizationOn';
+// import IconDescription from '@material-ui/icons/Description';
+import IconWarning from '@material-ui/icons/Warning';
 
 
 
@@ -78,82 +79,53 @@ export default injectIntl(class extends React.Component {
       
       stores,
       intl,
-      category,
+      publicSetting,
       
     } = this.props;
     
     
     
+    
     // --------------------------------------------------
-    //   Component
+    //   console.log
     // --------------------------------------------------
     
-    let component = '';
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/gc/rec/components/public-setting.js
+    // `);
     
-    if (category === 1) {
+    // console.log(chalk`
+    //   publicSetting: {green ${publicSetting} / ${typeof publicSetting}}
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   必要な情報がない場合、空のコンポーネントを返す
+    // --------------------------------------------------
+    
+    if (publicSetting === 1) {
+      return null;
+    }
+    
+    
+    
+    
+    let text = '';
+    
+    if (publicSetting === 2) {
       
-      component =
-        <div
-          css={css`
-            margin: 8px 8px 0 0;
-          `}
-        >
-          <Chip
-            avatar={
-              <Avatar alt="フレンド募集">
-                <IconFriend />
-              </Avatar>
-            }
-            label="フレンド募集"
-            color="primary"
-            variant="outlined"
-          />
-        </div>
-      ;
+      text = 'ログインしてコメントした方のみ、ID・情報を閲覧することができます。';
       
-    } else if (category === 2) {
+    } else if (publicSetting === 3) {
       
-      component =
-        <div
-          css={css`
-            margin: 8px 8px 0 0;
-          `}
-        >
-          <Chip
-            avatar={
-              <Avatar alt="メンバー募集">
-                <IconMember />
-              </Avatar>
-            }
-            label="メンバー募集"
-            color="primary"
-            variant="outlined"
-          />
-        </div>
-      ;
-      
-    } else if (category === 3) {
-      
-      component =
-        <div
-          css={css`
-            margin: 8px 8px 0 0;
-          `}
-        >
-          <Chip
-            avatar={
-              <Avatar alt="売買・交換相手募集">
-                <IconDeal />
-              </Avatar>
-            }
-            label="売買・交換相手募集"
-            color="primary"
-            variant="outlined"
-          />
-        </div>
-      ;
+      text = 'ログインしてコメントした方の中から、募集者がID・情報を公開する相手を選びます。';
       
     }
+    
+    
     
     
     
@@ -179,11 +151,39 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <div
+        css={css`
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
+          background-color: #FFF4E5;
+          border-radius: 8px;
+          margin: 24px 0 0 0;
+          padding: 8px 16px;
+        `}
+      >
         
-        {component}
         
-      </React.Fragment>
+        <div
+          css={css`
+            color: #FFCA7E;
+            margin: 5px 8px 0 0;
+          `}
+        >
+          <IconWarning />
+        </div>
+        
+        
+        <div
+          css={css`
+            font-size: 12px;
+          `}
+        >
+          {text}
+        </div>
+        
+        
+      </div>
     );
     
   }

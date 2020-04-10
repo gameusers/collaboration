@@ -49,8 +49,9 @@ const { verifyAuthority } = require('../../@modules/authority');
 // ---------------------------------------------
 
 const { formatImagesAndVideosObj } = require('../images-and-videos/format');
-const { formatFollowsObj } = require('../follows/format');
-const { formatIDsArr } = require('../ids/format');
+const { formatRecruitmentThreadsArr } = require('./format');
+// const { formatFollowsObj } = require('../follows/format');
+// const { formatIDsArr } = require('../ids/format');
 
 
 
@@ -608,34 +609,34 @@ const findForRecruitment = async ({
       //   follows
       // --------------------------------------------------
       
-      {
-        $lookup:
-          {
-            from: 'follows',
-            let: { recruitmentUsers_id: '$users_id' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
-                      { $ne: ['$users_id', '' ] },
-                      { $eq: ['$users_id', '$$recruitmentUsers_id'] },
-                    ]
-                  },
+      // {
+      //   $lookup:
+      //     {
+      //       from: 'follows',
+      //       let: { recruitmentUsers_id: '$users_id' },
+      //       pipeline: [
+      //         { $match:
+      //           { $expr:
+      //             { $and:
+      //               [
+      //                 { $ne: ['$users_id', '' ] },
+      //                 { $eq: ['$users_id', '$$recruitmentUsers_id'] },
+      //               ]
+      //             },
                   
-                }
-              },
-            ],
-            as: 'followsObj'
-          }
-      },
+      //           }
+      //         },
+      //       ],
+      //       as: 'followsObj'
+      //     }
+      // },
       
-      {
-        $unwind: {
-          path: '$followsObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
+      // {
+      //   $unwind: {
+      //     path: '$followsObj',
+      //     preserveNullAndEmptyArrays: true,
+      //   }
+      // },
       
       
       // --------------------------------------------------
@@ -781,7 +782,7 @@ const findForRecruitment = async ({
     //   Format
     // --------------------------------------------------
     
-    const formattedThreadsObj = format({
+    const formattedThreadsObj = formatRecruitmentThreadsArr({
       
       req,
       localeObj,
@@ -913,266 +914,266 @@ const findForRecruitment = async ({
 * @param {number} threadCount - スレッドの総数
 * @return {Array} フォーマット後のデータ
 */
-const format = ({
+// const format = ({
   
-  req,
-  localeObj,
-  loginUsers_id,
-  arr,
-  threadPage,
-  threadCount,
+//   req,
+//   localeObj,
+//   loginUsers_id,
+//   arr,
+//   threadPage,
+//   threadCount,
   
-}) => {
-  
-  
-  // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  const recruitmentThreadsObj = {
-    
-    page: threadPage,
-    count: threadCount,
-    dataObj: {},
-    
-  };
-  
-  const dataObj = {};
-  const recruitmentThreads_idsForCommentArr = [];
-  const ISO8601 = moment().utc().toISOString();
+// }) => {
   
   
+//   // --------------------------------------------------
+//   //   Return Value
+//   // --------------------------------------------------
+  
+//   const recruitmentThreadsObj = {
+    
+//     page: threadPage,
+//     count: threadCount,
+//     dataObj: {},
+    
+//   };
+  
+//   const dataObj = {};
+//   const recruitmentThreads_idsForCommentArr = [];
+//   const ISO8601 = moment().utc().toISOString();
   
   
-  // --------------------------------------------------
-  //   Loop
-  // --------------------------------------------------
   
-  for (let valueObj of arr.values()) {
+  
+//   // --------------------------------------------------
+//   //   Loop
+//   // --------------------------------------------------
+  
+//   for (let valueObj of arr.values()) {
     
     
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   console.log
+//     // --------------------------------------------------
     
-    // console.log(`
-    //   ----- valueObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(valueObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+//     // console.log(`
+//     //   ----- valueObj -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(valueObj)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
     
-    // console.log(`
-    //   ----- valueObj.cardPlayersObj.imagesAndVideosThumbnailObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(valueObj.cardPlayersObj.imagesAndVideosThumbnailObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   Property
-    // --------------------------------------------------
-    
-    const users_id = lodashGet(valueObj, ['users_id'], '');
-    const imagesAndVideosObj = lodashGet(valueObj, ['imagesAndVideosObj'], {});
-    const followsObj = lodashGet(valueObj, ['followsObj'], {});
-    const idsArr = lodashGet(valueObj, ['idsArr'], []);
-    const hardwareIDsArr = lodashGet(valueObj, ['hardwareIDsArr'], []);
-    const hardwaresArr = lodashGet(valueObj, ['hardwaresArr'], []);
-    const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
+//     // console.log(`
+//     //   ----- valueObj.cardPlayersObj.imagesAndVideosThumbnailObj -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(valueObj.cardPlayersObj.imagesAndVideosThumbnailObj)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
     
     
-    // --------------------------------------------------
-    //   Deep Copy
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Property
+//     // --------------------------------------------------
     
-    const clonedObj = lodashCloneDeep(valueObj);
+//     const users_id = lodashGet(valueObj, ['users_id'], '');
+//     const imagesAndVideosObj = lodashGet(valueObj, ['imagesAndVideosObj'], {});
+//     const followsObj = lodashGet(valueObj, ['followsObj'], {});
+//     const idsArr = lodashGet(valueObj, ['idsArr'], []);
+//     const hardwareIDsArr = lodashGet(valueObj, ['hardwareIDsArr'], []);
+//     const hardwaresArr = lodashGet(valueObj, ['hardwaresArr'], []);
+//     const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
     
     
-    // --------------------------------------------------
-    //   Datetime
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Deep Copy
+//     // --------------------------------------------------
     
-    clonedObj.updatedDate = moment(valueObj.updatedDate).utc().format('YYYY/MM/DD hh:mm');
+//     const clonedObj = lodashCloneDeep(valueObj);
     
     
-    // --------------------------------------------------
-    //   Format - 画像
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Datetime
+//     // --------------------------------------------------
     
-    const formattedObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosObj });
+//     clonedObj.updatedDate = moment(valueObj.updatedDate).utc().format('YYYY/MM/DD hh:mm');
     
-    if (formattedObj) {
+    
+//     // --------------------------------------------------
+//     //   Format - 画像
+//     // --------------------------------------------------
+    
+//     const formattedObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosObj });
+    
+//     if (formattedObj) {
       
-      clonedObj.imagesAndVideosObj = formattedObj;
+//       clonedObj.imagesAndVideosObj = formattedObj;
       
-    } else {
+//     } else {
       
-      delete clonedObj.imagesAndVideosObj;
+//       delete clonedObj.imagesAndVideosObj;
       
-    }
+//     }
     
     
-    // --------------------------------------------------
-    //   Format - cardPlayersObj サムネイル画像
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Format - cardPlayersObj サムネイル画像
+//     // --------------------------------------------------
     
-    const formattedThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosThumbnailObj });
+//     const formattedThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosThumbnailObj });
     
-    // console.log(`
-    //   ----- formattedThumbnailObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(formattedThumbnailObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+//     // console.log(`
+//     //   ----- formattedThumbnailObj -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(formattedThumbnailObj)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
     
-    if (formattedThumbnailObj) {
+//     if (formattedThumbnailObj) {
       
-      clonedObj.cardPlayersObj.imagesAndVideosThumbnailObj = formattedThumbnailObj;
+//       clonedObj.cardPlayersObj.imagesAndVideosThumbnailObj = formattedThumbnailObj;
       
-    }
+//     }
     
     
-    // --------------------------------------------------
-    //   Format - Follows
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Format - Follows
+//     // --------------------------------------------------
     
-    clonedObj.followsObj = formatFollowsObj({ followsObj, adminUsers_id: users_id, loginUsers_id });
-    
-    
-    // --------------------------------------------------
-    //   Format - IDs
-    // --------------------------------------------------
-    
-    clonedObj.idsArr = formatIDsArr({ localeObj, loginUsers_id, followsObj: clonedObj.followsObj, arr: idsArr });;
+//     clonedObj.followsObj = formatFollowsObj({ followsObj, adminUsers_id: users_id, loginUsers_id });
     
     
-    // --------------------------------------------------
-    //   編集権限
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Format - IDs
+//     // --------------------------------------------------
     
-    clonedObj.editable = verifyAuthority({
+//     clonedObj.idsArr = formatIDsArr({ localeObj, loginUsers_id, followsObj: clonedObj.followsObj, arr: idsArr });;
+    
+    
+//     // --------------------------------------------------
+//     //   編集権限
+//     // --------------------------------------------------
+    
+//     clonedObj.editable = verifyAuthority({
       
-      req,
-      users_id: valueObj.users_id,
-      loginUsers_id,
-      ISO8601: valueObj.createdDate,
-      _id: valueObj._id,
+//       req,
+//       users_id: valueObj.users_id,
+//       loginUsers_id,
+//       ISO8601: valueObj.createdDate,
+//       _id: valueObj._id,
       
-    });
+//     });
     
     
-    // --------------------------------------------------
-    //   Name & Description
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Name & Description
+//     // --------------------------------------------------
     
-    const filteredArr = valueObj.localesArr.filter((filterObj) => {
-      return filterObj.language === localeObj.language;
-    });
+//     const filteredArr = valueObj.localesArr.filter((filterObj) => {
+//       return filterObj.language === localeObj.language;
+//     });
     
     
-    if (lodashHas(filteredArr, [0])) {
+//     if (lodashHas(filteredArr, [0])) {
       
-      clonedObj.title = lodashGet(filteredArr, [0, 'title'], '');
-      clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');
-      clonedObj.comment = lodashGet(filteredArr, [0, 'comment'], '');
+//       clonedObj.title = lodashGet(filteredArr, [0, 'title'], '');
+//       clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');
+//       clonedObj.comment = lodashGet(filteredArr, [0, 'comment'], '');
       
-    } else {
+//     } else {
       
-      clonedObj.title = lodashGet(filteredArr, [0, 'title'], '');
-      clonedObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
-      clonedObj.comment = lodashGet(valueObj, ['localesArr', 0, 'comment'], '');
+//       clonedObj.title = lodashGet(filteredArr, [0, 'title'], '');
+//       clonedObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
+//       clonedObj.comment = lodashGet(valueObj, ['localesArr', 0, 'comment'], '');
       
-    }
+//     }
     
     
-    // --------------------------------------------------
-    //   hardwaresArr - 元の配列の順番通りに並べなおす
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   hardwaresArr - 元の配列の順番通りに並べなおす
+//     // --------------------------------------------------
     
-    const sortedHardwaresArr = [];
+//     const sortedHardwaresArr = [];
     
-    for (let hardwareID of hardwareIDsArr) {
+//     for (let hardwareID of hardwareIDsArr) {
       
-      const index = hardwaresArr.findIndex((value2Obj) => {
-        return value2Obj.hardwareID === hardwareID;
-      });
+//       const index = hardwaresArr.findIndex((value2Obj) => {
+//         return value2Obj.hardwareID === hardwareID;
+//       });
       
-      if (index !== -1) {
-        sortedHardwaresArr.push(hardwaresArr[index]);
-      }
+//       if (index !== -1) {
+//         sortedHardwaresArr.push(hardwaresArr[index]);
+//       }
       
-    }
+//     }
     
-    clonedObj.hardwaresArr = sortedHardwaresArr;
-    
-    
-    
-    // --------------------------------------------------
-    //   不要な項目を削除する
-    // --------------------------------------------------
-    
-    delete clonedObj._id;
-    delete clonedObj.createdDate;
-    delete clonedObj.users_id;
-    delete clonedObj.hardwareIDsArr;
-    delete clonedObj.ids_idsArr;
-    delete clonedObj.localesArr;
-    delete clonedObj.ip;
-    delete clonedObj.userAgent;
-    delete clonedObj.__v;
+//     clonedObj.hardwaresArr = sortedHardwaresArr;
     
     
-    // --------------------------------------------------
-    //   コメント取得用の _id の入った配列に push
-    // --------------------------------------------------
     
-    dataObj[valueObj._id] = clonedObj;
+//     // --------------------------------------------------
+//     //   不要な項目を削除する
+//     // --------------------------------------------------
     
-    if (valueObj.comments > 0) {
-      recruitmentThreads_idsForCommentArr.push(valueObj._id);
-    }
+//     delete clonedObj._id;
+//     delete clonedObj.createdDate;
+//     delete clonedObj.users_id;
+//     delete clonedObj.hardwareIDsArr;
+//     delete clonedObj.ids_idsArr;
+//     delete clonedObj.localesArr;
+//     delete clonedObj.ip;
+//     delete clonedObj.userAgent;
+//     delete clonedObj.__v;
     
     
-    // --------------------------------------------------
-    //   forumThreadsObj を作成する
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   コメント取得用の _id の入った配列に push
+//     // --------------------------------------------------
     
-    const recruitmentThreadsPageArr = lodashGet(recruitmentThreadsObj, [`page${threadPage}Obj`, 'arr'], []);
+//     dataObj[valueObj._id] = clonedObj;
     
-    recruitmentThreadsPageArr.push(valueObj._id);
+//     if (valueObj.comments > 0) {
+//       recruitmentThreads_idsForCommentArr.push(valueObj._id);
+//     }
     
-    recruitmentThreadsObj[`page${threadPage}Obj`] = {
+    
+//     // --------------------------------------------------
+//     //   forumThreadsObj を作成する
+//     // --------------------------------------------------
+    
+//     const recruitmentThreadsPageArr = lodashGet(recruitmentThreadsObj, [`page${threadPage}Obj`, 'arr'], []);
+    
+//     recruitmentThreadsPageArr.push(valueObj._id);
+    
+//     recruitmentThreadsObj[`page${threadPage}Obj`] = {
       
-      loadedDate: ISO8601,
-      arr: recruitmentThreadsPageArr,
+//       loadedDate: ISO8601,
+//       arr: recruitmentThreadsPageArr,
       
-    };
+//     };
     
     
-  }
+//   }
   
   
   
   
-  // --------------------------------------------------
-  //   dataObj
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   dataObj
+//   // --------------------------------------------------
   
-  recruitmentThreadsObj.dataObj = dataObj;
+//   recruitmentThreadsObj.dataObj = dataObj;
   
   
-  // --------------------------------------------------
-  //   Return
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Return
+//   // --------------------------------------------------
   
-  return {
+//   return {
     
-    recruitmentThreadsObj,
-    recruitmentThreads_idsForCommentArr,
+//     recruitmentThreadsObj,
+//     recruitmentThreads_idsForCommentArr,
     
-  };
+//   };
   
   
-};
+// };
 
 
 

@@ -187,8 +187,8 @@ export default injectIntl(class extends React.Component {
       
       componentsOpenTypeSelectMenuItemsArr = [
         <MenuItem value={1} key="publicSettingSelectMenuItems1">誰にでも公開</MenuItem>,
-        <MenuItem value={2} key="publicSettingSelectMenuItems2">返信者に公開（全員）</MenuItem>,
-        <MenuItem value={3} key="publicSettingSelectMenuItems3">返信者に公開（選択）</MenuItem>
+        <MenuItem value={2} key="publicSettingSelectMenuItems2">コメントした方に公開（全員）</MenuItem>,
+        <MenuItem value={3} key="publicSettingSelectMenuItems3">コメントした方に公開（選択）</MenuItem>
       ];
       
     }
@@ -908,13 +908,13 @@ export default injectIntl(class extends React.Component {
         ) : publicSetting === 2 ? (
           
           <p>
-            ログインして返信したユーザー全員にID・情報を公開します。
+            ログインしてコメントしたユーザー全員にID・情報を公開します。
           </p>
           
         ) : publicSetting === 3 (
           
           <p>
-            ログインして返信したユーザーの中からID・情報を公開する相手を選べます。
+            ログインしてコメントしたユーザーの中からID・情報を公開する相手を選べます。
           </p>
           
         )}

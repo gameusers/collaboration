@@ -36,28 +36,33 @@ const { formatImagesAndVideosObj } = require('../images-and-videos/format');
 
 /**
  * フォーマットする
- * @param {Object} followsObj - フォーマット済みの followsObj
+ * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @return {Array} フォーマットされたオブジェクト
+ * @param {Object} followsObj - フォーマット済みの followsObj
+ * @param {Object} arr - フォーマットする配列
+ * @return {Array} フォーマットされた配列
  */
-const formatIDsArr = ({ localeObj, loginUsers_id, followsObj, arr }) => {
+const formatIDsArr = ({
+  
+  localeObj,
+  loginUsers_id,
+  followsObj,
+  arr,
+  
+}) => {
   
   
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
-  // const returnObj = {};
   const returnArr = [];
   
-  // const approval = lodashGet(followsObj, ['approval'], false);
-  // const followCount = lodashGet(followsObj, ['followCount'], 0);
-  // const followedCount = lodashGet(followsObj, ['followedCount'], 0);
   const admin = lodashGet(followsObj, ['admin'], false);
   const follow = lodashGet(followsObj, ['follow'], false);
   const followed = lodashGet(followsObj, ['followed'], false);
-  // const followApproval = lodashGet(followsObj, ['followApproval'], false);
-  // const followBlocked = lodashGet(followsObj, ['followBlocked'], false);
+  
+  
   
   
   // --------------------------------------------------
@@ -71,11 +76,11 @@ const formatIDsArr = ({ localeObj, loginUsers_id, followsObj, arr }) => {
     //   表示する ID を選択する
     //   publicSetting の番号で ID の表示方法を指定している
     //   
-    //   1.誰にでも表示する
-    //   2.自分をフォローしているユーザーに表示する
-    //   3.自分がフォローしているユーザーに表示する
-    //   4.相互フォローで表示する
-    //   5.自分以外には表示しない
+    //   1. 誰にでも表示する
+    //   2. 自分をフォローしているユーザーに表示する
+    //   3. 自分がフォローしているユーザーに表示する
+    //   4. 相互フォローで表示する
+    //   5. 自分以外には表示しない
     // --------------------------------------------------
     
     if (
@@ -152,6 +157,7 @@ const formatIDsArr = ({ localeObj, loginUsers_id, followsObj, arr }) => {
   //   ${util.inspect(returnArr, { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
+  
   
   
   

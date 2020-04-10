@@ -4061,8 +4061,8 @@ emotion: https://emotion.sh/docs/introduction`,
             auth: ''
           }
         },
-        commentAndReplyUsers_idsArr: [],
-        approvalUsers_idsArr: [],
+        publicCommentsUsers_idsArr: [],
+        publicApprovalUsers_idsArrr: [],
         comments: 0,
         replies: 0,
         images: 0,
@@ -4130,8 +4130,8 @@ emotion: https://emotion.sh/docs/introduction`,
             information: 'あり',
           },
         ],
-        publicSetting: 1,
-        deadlineDate: '2020-05-31T00:00:00Z',
+        publicSetting: 2,
+        deadlineDate: '2020-04-10T23:00:00Z',
         close: false,
         webPushSubscriptionObj: {
           endpoint: '',
@@ -4140,8 +4140,78 @@ emotion: https://emotion.sh/docs/introduction`,
             auth: ''
           }
         },
-        commentAndReplyUsers_idsArr: [],
-        approvalUsers_idsArr: [],
+        publicCommentsUsers_idsArr: [],
+        publicApprovalUsers_idsArrr: [],
+        comments: 0,
+        replies: 0,
+        images: 0,
+        videos: 0,
+        ip: '192.168.1.0',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+      },
+      
+      
+      {
+        _id: 'JWHzs2yPs',
+        createdDate: '2020-04-10T00:00:00Z',
+        updatedDate: '2020-04-10T00:00:00Z',
+        gameCommunities_id: 'Jk92aglWl',
+        users_id: '',
+        hardwareIDsArr: ['Zd_Ia4Hwm'],
+        category: 3,
+        localesArr: [
+          {
+            _id: 'HF1lNznMv',
+            language: 'ja',
+            title: '求む和風家具！交換してくれる方いませんか？',
+            name: 'たぬきち',
+            comment: `「あつまれ どうぶつの森」をプレイしています。
+今、和風の家具を集めているので、余っている家具がある方、交換してもらえないでしょうか？
+
+私が持っている家具のリストはこちらになります。
+
+・家具1
+・家具2
+・家具3
+
+この中で交換したい家具があれば言ってください。
+`,
+          },
+        ],
+        imagesAndVideos_id: '',
+        anonymity: false,
+        ids_idsArr: [],
+        publicIDsArr: [
+          {
+            _id: '1xbPcxCoZ',
+            platform: 'Nintendo',
+            id: 'Nintendo-1',
+          },
+        ],
+        publicInformationsArr: [
+          {
+            _id: 'oaZNfyGO5',
+            title: '活動時間',
+            information: '20時～23時くらい',
+          },
+          {
+            _id: 'Ya81Lq26z',
+            title: '島',
+            information: 'タヌポータル島',
+          },
+        ],
+        publicSetting: 3,
+        deadlineDate: '2023-12-31T00:00:00Z',
+        close: false,
+        webPushSubscriptionObj: {
+          endpoint: '',
+          keys: {
+            p256dh: '',
+            auth: ''
+          }
+        },
+        publicCommentsUsers_idsArr: [],
+        publicApprovalUsers_idsArrr: [],
         comments: 0,
         replies: 0,
         images: 0,

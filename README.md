@@ -4,7 +4,7 @@
 
 [![node](https://img.shields.io/badge/node-v12.16.1-lightgrey.svg)](https://nodejs.org/ja/)
 [![npm](https://img.shields.io/badge/npm-v6.14.4-blue.svg)](https://www.npmjs.com/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-v4.2.3-green.svg)](https://www.mongodb.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-v4.2.5-green.svg)](https://www.mongodb.com/)
 [![David](https://img.shields.io/david/expressjs/express.svg)]()
 [![license](https://img.shields.io/badge/license-Game%20Users%20Project-blue.svg)](https://github.com/gameusers/web/blob/master/LICENSE.txt)
 
@@ -154,10 +154,10 @@ Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、み�
     npm run mongo-express:start
 
 
-次に下記アドレスにアクセスすると、Basic 認証が起動します。
+次に下記アドレスにアクセスすると、Basic 認証が起動します。トップページのアドレスでポート番号だけを8081に変更してください。
 
 
-    http://（.env で設定したトップページのアドレス [ポート番号だけ変更]）:8081/
+    http://（.env で設定したトップページのアドレス）:8081/
     
 
 「ユーザー名：admin」「パスワード：pass」でログインしてください。データベースの構成などを確認する場合に利用すると便利です。<br />

@@ -155,7 +155,7 @@ export default injectIntl(class extends React.Component {
             margin: 0 0 2px 0;
           `}
         >
-          募集の期限 （未記入でもOK）
+          募集期限 （未記入でもOK）
         </h3>
         
         <p
@@ -163,7 +163,7 @@ export default injectIntl(class extends React.Component {
             margin: 0 0 24px 0;
           `}
         >
-          募集期限を設定する場合は、募集の締切日を設定してください。募集期限が過ぎると、募集者と返信者のID・情報が自動的に非表示になります。無期限に募集を掲載したい場合は未記入にしてください。
+          募集期限を設定する場合は、募集の締切日を設定してください。募集期限が過ぎると、募集者とコメントをした方のID・情報が自動的に非表示になります。無期限に募集を掲載したい場合は未記入にしてください。
         </p>
         
         

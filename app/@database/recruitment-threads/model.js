@@ -15,6 +15,7 @@ const util = require('util');
 // ---------------------------------------------
 
 const moment = require('moment');
+
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
@@ -30,6 +31,7 @@ const SchemaForumComments = require('../forum-comments/schema');
 const SchemaImagesAndVideos = require('../images-and-videos/schema');
 const SchemaGameCommunities = require('../game-communities/schema');
 const SchemaUserCommunities = require('../user-communities/schema');
+const SchemaUsers = require('../users/schema');
 
 const ModelForumComments = require('../forum-comments/model');
 const ModelGameCommunities = require('../game-communities/model');
@@ -41,14 +43,14 @@ const ModelUserCommunities = require('../user-communities/model');
 // ---------------------------------------------
 
 const { CustomError } = require('../../@modules/error/custom');
-const { verifyAuthority } = require('../../@modules/authority');
+// const { verifyAuthority } = require('../../@modules/authority');
 
 
 // ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosObj } = require('../images-and-videos/format');
+// const { formatImagesAndVideosObj } = require('../images-and-videos/format');
 const { formatRecruitmentThreadsArr } = require('./format');
 // const { formatFollowsObj } = require('../follows/format');
 // const { formatIDsArr } = require('../ids/format');
@@ -429,14 +431,14 @@ const findForRecruitment = async ({
         $lookup:
           {
             from: 'card-players',
-            let: { recruitmentUsers_id: '$users_id' },
+            let: { recruitmentThreadsUsers_id: '$users_id' },
             pipeline: [
               { $match:
                 { $expr:
                   { $and:
                     [
                       { $eq: ['$language', language] },
-                      { $eq: ['$users_id', '$$recruitmentUsers_id'] },
+                      { $eq: ['$users_id', '$$recruitmentThreadsUsers_id'] },
                     ]
                   },
                 }
@@ -507,11 +509,11 @@ const findForRecruitment = async ({
         $lookup:
           {
             from: 'users',
-            let: { forumCommentsUsers_id: '$users_id' },
+            let: { recruitmentThreadsUsers_id: '$users_id' },
             pipeline: [
               { $match:
                 { $expr:
-                  { $eq: ['$_id', '$$forumCommentsUsers_id'] },
+                  { $eq: ['$_id', '$$recruitmentThreadsUsers_id'] },
                 }
               },
               { $project:
@@ -520,6 +522,7 @@ const findForRecruitment = async ({
                   accessDate: 1,
                   exp: 1,
                   userID: 1,
+                  webPushSubscriptionObj: 1,
                 }
               }
             ],
@@ -543,11 +546,11 @@ const findForRecruitment = async ({
         $lookup:
           {
             from: 'images-and-videos',
-            let: { recruitmentImagesAndVideos_id: '$imagesAndVideos_id' },
+            let: { recruitmentThreadsImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
               { $match:
                 { $expr:
-                  { $eq: ['$_id', '$$recruitmentImagesAndVideos_id'] },
+                  { $eq: ['$_id', '$$recruitmentThreadsImagesAndVideos_id'] },
                 }
               },
               { $project:
@@ -579,7 +582,7 @@ const findForRecruitment = async ({
         $lookup:
           {
             from: 'hardwares',
-            let: { recruitmentHardwareIDsArr: '$hardwareIDsArr' },
+            let: { recruitmentThreadsHardwareIDsArr: '$hardwareIDsArr' },
             pipeline: [
               { $match:
                 { $expr:
@@ -587,7 +590,7 @@ const findForRecruitment = async ({
                     [
                       { $eq: ['$language', language] },
                       { $eq: ['$country', country] },
-                      { $in: ['$hardwareID', '$$recruitmentHardwareIDsArr'] }
+                      { $in: ['$hardwareID', '$$recruitmentThreadsHardwareIDsArr'] }
                     ]
                   },
                 }
@@ -648,16 +651,16 @@ const findForRecruitment = async ({
           {
             from: 'ids',
             let: {
-              recruitmentIds_idArr: '$ids_idsArr',
-              recruitmentUsers_id: '$users_id',
+              recruitmentThreadsIDs_idArr: '$ids_idsArr',
+              recruitmentThreadsUsers_id: '$users_id',
             },
             pipeline: [
               { $match:
                 { $expr:
                   { $and:
                     [
-                      { $eq: ['$users_id', '$$recruitmentUsers_id'] },
-                      { $in: ['$_id', '$$recruitmentIds_idArr'] }
+                      { $eq: ['$users_id', '$$recruitmentThreadsUsers_id'] },
+                      { $in: ['$_id', '$$recruitmentThreadsIDs_idArr'] }
                     ]
                   },
                 }
@@ -1566,6 +1569,8 @@ const findForRecruitment = async ({
 * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
 * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
 * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
+* @param {Object} usersConditionObj - DB users 検索条件
+* @param {Object} usersSaveObj - DB users 保存データ
 * @return {Object} 
 */
 const transactionForUpsert = async ({
@@ -1576,6 +1581,8 @@ const transactionForUpsert = async ({
   imagesAndVideosSaveObj = {},
   gameCommunitiesConditionObj = {},
   gameCommunitiesSaveObj = {},
+  usersConditionObj = {},
+  usersSaveObj = {},
   
 }) => {
   
@@ -1661,6 +1668,16 @@ const transactionForUpsert = async ({
     }
     
     
+    // ---------------------------------------------
+    //   - users
+    // ---------------------------------------------
+    
+    if (Object.keys(usersConditionObj).length !== 0 && Object.keys(usersSaveObj).length !== 0) {
+      
+      await SchemaUsers.updateOne(usersConditionObj, usersSaveObj, { session });
+      
+    }
+    
     
     
     // --------------------------------------------------
@@ -1717,6 +1734,18 @@ const transactionForUpsert = async ({
     // console.log(`
     //   ----- gameCommunitiesSaveObj -----\n
     //   ${util.inspect(gameCommunitiesSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- usersConditionObj -----\n
+    //   ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- usersSaveObj -----\n
+    //   ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

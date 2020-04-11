@@ -18,24 +18,26 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import moment from 'moment';
-import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
-import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
 
 
 // ---------------------------------------------
-//   Validations
+//   Material UI / Icons
 // ---------------------------------------------
 
-import { validationRecruitmentThreadsDeadlineDate } from '../../../../@database/recruitment-threads/validations/deadline';
+import IconAlarm from '@material-ui/icons/Alarm';
+import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
 
@@ -77,15 +79,10 @@ export default injectIntl(class extends React.Component {
       storeGcRecruitment,
       intl,
       pathArr,
+      notification,
       
     } = this.props;
     
-    
-    
-    
-    // --------------------------------------------------
-    //   Forum
-    // --------------------------------------------------
     
     const {
       
@@ -95,25 +92,43 @@ export default injectIntl(class extends React.Component {
     } = storeGcRecruitment;
     
     
+    
+    
+    // --------------------------------------------------
+    //   必要な情報がない場合、空のコンポーネントを返す
+    // --------------------------------------------------
+    
+    if (notification === '') {
+      return null;
+    }
+    
+    
+    
+    
     // --------------------------------------------------
     //   Property
     // --------------------------------------------------
     
-    const deadlineDate = lodashGet(dataObj, [...pathArr, 'deadlineDate'], '');
+    const showNotificationExplanation = lodashGet(dataObj, [...pathArr, 'showNotificationExplanation'], false);
+    
+    
     
     
     // --------------------------------------------------
-    //   Validations
+    //   Component
     // --------------------------------------------------
     
-    const validationRecruitmentThreadsDeadlineDateObj = validationRecruitmentThreadsDeadlineDate({ value: deadlineDate });
+    let component = `プッシュ通知`;
     
-    
-    // --------------------------------------------------
-    //   日付のフォーマット
-    // --------------------------------------------------
-    
-    const formattedDate = deadlineDate ? moment(deadlineDate).format('YYYY-MM-DD') : '';
+    // if (days === 0) {
+      
+    //   component = <span css={css` color: red; `}>残り {moment(deadlineDate).fromNow(true)}</span>;
+      
+    // } else if (days < 0) {
+      
+    //   component = <span css={css` color: red; `}>締め切り</span>;
+      
+    // }
     
     
     
@@ -124,18 +139,11 @@ export default injectIntl(class extends React.Component {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/gc/rec/components/form/thread.js
+    //   /app/gc/rec/components/chip-category.js
     // `);
     
     // console.log(chalk`
-    //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-    //   showForm: {green ${showForm}}
-    // `);
-    
-    // console.log(`
-    //   ----- validationRecruitmentThreadsID1Obj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(validationRecruitmentThreadsID1Obj)), { colors: true, depth: null })}\n
-    //   --------------------\n
+    //   category: {green ${category}}
     // `);
     
     
@@ -146,57 +154,91 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <div
+        css={css`
+          margin: 4px 0 0 0;
+        `}
+      >
         
+        
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+          `}
+        >
           
-        <h3
-          css={css`
-            font-weight: bold;
-            margin: 0 0 2px 0;
-          `}
-        >
-          募集期間 （未記入でもOK）
-        </h3>
-        
-        <p
-          css={css`
-            margin: 0 0 24px 0;
-          `}
-        >
-          募集期間を設定する場合は、募集の締切日を設定してください。募集期間が過ぎると、募集者とコメントをした方のID・情報が自動的に非表示になります。無期限に募集を掲載したい場合は未記入にしてください。
-        </p>
-        
-        
-        
-        <TextField
-          css={css`
-            && {
-              width: 400px;
-              
-              @media screen and (max-width: 480px) {
-                width: 100%;
+          
+          {/* Icon */}
+          <IconAlarm
+            css={css`
+              && {
+                font-size: 24px;
               }
-            }
-          `}
-          id="deadlineDate"
-          label="募集の締切日"
-          type="date"
-          value={formattedDate}
-          onChange={(eventObj) => handleEdit({
-            pathArr: [...pathArr, 'deadlineDate'],
-            value: eventObj.target.value
-          })}
-          error={validationRecruitmentThreadsDeadlineDateObj.error}
-          helperText={intl.formatMessage({ id: validationRecruitmentThreadsDeadlineDateObj.messageID }, { numberOfCharacters: validationRecruitmentThreadsDeadlineDateObj.numberOfCharacters })}
-          margin="normal"
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
+            `}
+          />
+          
+          
+          {/* Heading */}
+          <h3
+            css={css`
+              margin: 2px 0 0 4px;
+            `}
+          >
+            通知方法:
+          </h3>
+          
+          
+          {/* 日数 */}
+          <div
+            css={css`
+              font-size: 14px;
+              margin: 2px 0 0 8px;
+            `}
+          >
+            {component}
+          </div>
+          
+          
+          {/* 解説 */}
+          <IconButton
+            css={css`
+              && {
+                margin: 0 0 0 8px;
+                padding: 0;
+              }
+            `}
+            color="primary"
+            aria-label="Show Notification Explanation"
+            onClick={() => handleEdit({
+              pathArr: [...pathArr, 'showNotificationExplanation'],
+              value: !showNotificationExplanation,
+            })}
+          >
+            <IconHelpOutline />
+          </IconButton>
+          
+          
+        </div>
         
         
         
-      </React.Fragment>
+        
+        {/* 解説 */}
+        {showNotificationExplanation &&
+          <p
+            css={css`
+              font-size: 12px;
+              margin: 6px 0 0 0;
+            `}
+          >
+            この募集者はプッシュ通知を許可しています。コメントや返信が書き込まれると募集者に通知が届くため、書き込みに気づきやすくなります。
+          </p>
+        }
+        
+        
+      </div>
     );
     
   }

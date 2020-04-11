@@ -22,25 +22,12 @@ import moment from 'moment';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
-import lodashGet from 'lodash/get';
-
-
-// ---------------------------------------------
-//   Material UI
-// ---------------------------------------------
-
-import Avatar from '@material-ui/core/Avatar';
-import Chip from '@material-ui/core/Chip';
-
 
 // ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
 
 import IconDescription from '@material-ui/icons/Description';
-// import IconInformation from '@material-ui/icons/DoubleArrow';
-import IconInformation from '@material-ui/icons/MenuBook';
-// import IconInformation from '@material-ui/icons/School';
 
 
 
@@ -90,36 +77,18 @@ export default injectIntl(class extends React.Component {
     //   必要な情報がない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    // if (!Array.isArray(publicInformationsArr) || publicInformationsArr.length === 0) {
-    //   return null;
-    // }
+    if (!deadlineDate) {
+      return null;
+    }
     
     
     
     
     // --------------------------------------------------
-    //   Component
+    //   日数を取得
     // --------------------------------------------------
     
-    // const componentsArr = [];
-    
-    
-    // --------------------------------------------------
-    //   Datetime
-    // --------------------------------------------------
-    
-    // let datetimeCurrent = moment(stores.data.datetimeCurrent);
-    // const datetimeDeadline = moment(deadlineDate);
-    
-    // if (datetimeDeadline.isAfter(datetimeCurrent)) {
-    //   datetimeCurrent = datetimeDeadline;
-    // }
-    
-    // const datetimeFromNow = datetimeDeadline.from(datetimeCurrent);
-    
-    // const datetimeFromNow = moment(deadlineDate).fromNow();
-    
-    // 日時の差をミリ秒で取得
+    // 現在の日時と締切日時の差をミリ秒で取得
     const diff = moment(deadlineDate).diff(moment(stores.data.datetimeCurrent));
     
     // duration オブジェクトを生成
@@ -128,8 +97,12 @@ export default injectIntl(class extends React.Component {
     // 締め切りまでの日数を取得（小数点切り捨て）
     const days = Math.floor(duration.asDays());
     
-    let component = `残り ${days}日`;
     
+    // --------------------------------------------------
+    //   Component
+    // --------------------------------------------------
+    
+    let component = `残り ${days}日`;
     
     if (days === 0) {
       
@@ -144,21 +117,17 @@ export default injectIntl(class extends React.Component {
     
     
     
-    // const datetimeCurrent = moment(stores.data.datetimeCurrent);
-    // const datetimeFromNow = moment(deadlineDate).from(datetimeCurrent).duration().days()
-    
-    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/gc/rec/components/chip-category.js
+    //   /app/gc/rec/components/deadline-date.js
     // `);
     
     // console.log(chalk`
-    //   category: {green ${category}}
+    //   deadlineDate: {green ${deadlineDate} / ${typeof deadlineDate}}
     // `);
     
     
@@ -171,9 +140,7 @@ export default injectIntl(class extends React.Component {
     return (
       <div
         css={css`
-          // border-top: 1px dashed #A4A4A4;
-          margin: 24px 0 0 0;
-          // padding: 12px 0 0 0;
+          margin: 4px 0 0 0;
         `}
       >
         
@@ -203,7 +170,7 @@ export default injectIntl(class extends React.Component {
               margin: 2px 0 0 4px;
             `}
           >
-            募集期限:
+            募集期間:
           </h3>
           
           
@@ -211,7 +178,7 @@ export default injectIntl(class extends React.Component {
           <div
             css={css`
               font-size: 14px;
-              margin: 2px 0 0 12px;
+              margin: 2px 0 0 8px;
             `}
           >
             {component}

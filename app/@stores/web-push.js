@@ -117,13 +117,6 @@ class Store {
   webPushRegistrationObj = {};
   
   
-  /**
-   * Subscription Object
-   * @type {Object}
-   */
-  // webPushSubscriptionObj = {};
-  
-  
   
   
   /**
@@ -153,7 +146,7 @@ class Store {
         
         this.webPushRegistrationObj = await navigator.serviceWorker.getRegistrations();
         
-        for(let registration of this.webPushRegistrationObj) {
+        for (let registration of this.webPushRegistrationObj) {
           registration.unregister();
         }
         
@@ -174,7 +167,6 @@ class Store {
   /**
    * 購読する
    * 参考：https://github.com/web-push-libs/web-push
-   * @param {Array} pathArr - パス
    */
   @action.bound
   async handleWebPushSubscribe() {
@@ -184,10 +176,10 @@ class Store {
       
       
       // ---------------------------------------------
-      //   必要なデータがない場合、本番環境でない場合は処理停止
+      //   本番環境でない場合、必要なデータがない場合は処理停止
       // ---------------------------------------------
       
-      if (!process.env.WEB_PUSH_VAPID_PUBLIC_KEY || process.env.NODE_ENV !== 'production') {
+      if (process.env.NODE_ENV !== 'production' || !process.env.WEB_PUSH_VAPID_PUBLIC_KEY) {
         return;
       }
       
@@ -200,13 +192,26 @@ class Store {
       // ---------------------------------------------
       
       const oldSubscriptionObj = await this.webPushRegistrationObj.pushManager.getSubscription();
-      // console.log('[1] subscriptionObj: ', JSON.parse(JSON.stringify(subscriptionObj)));
+      
+      // console.log('[1] oldSubscriptionObj: ', JSON.parse(JSON.stringify(oldSubscriptionObj)));
       // console.log(typeof subscriptionObj);
       
       if (oldSubscriptionObj) {
         
+        
+        // ---------------------------------------------
+        //   subscriptionObj を返す
+        // ---------------------------------------------
+        
+        return parse({ obj: oldSubscriptionObj });
+        
+        
+        // ---------------------------------------------
+        //   解除してから登録しなおす場合
+        // ---------------------------------------------
+        
         // true 解除成功 / false 解除失敗
-        const unsubscribe = await oldSubscriptionObj.unsubscribe();
+        // const unsubscribe = await oldSubscriptionObj.unsubscribe();
         
         // console.log(chalk`
         //   unsubscribe: {green ${unsubscribe}}
@@ -241,11 +246,6 @@ class Store {
       
       const convertedVapidKey = urlBase64ToUint8Array(process.env.WEB_PUSH_VAPID_PUBLIC_KEY);
       
-      // console.log(chalk`
-      //   process.env.WEB_PUSH_VAPID_PUBLIC_KEY: {green ${process.env.WEB_PUSH_VAPID_PUBLIC_KEY}}
-      //   convertedVapidKey: {green ${convertedVapidKey}}
-      // `);
-      
       
       
       
@@ -258,8 +258,37 @@ class Store {
         applicationServerKey: convertedVapidKey
       });
       
+      
+      
+      
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/@stores/web-push.js - webPushSubscribe
+      // `);
+      
+      // console.log(chalk`
+      //   process.env.NODE_ENV: {green ${process.env.NODE_ENV}}
+      //   process.env.WEB_PUSH_VAPID_PUBLIC_KEY: {green ${process.env.WEB_PUSH_VAPID_PUBLIC_KEY}}
+      //   convertedVapidKey: {green ${convertedVapidKey}}
+      // `);
+      
+      // console.log('[1] oldSubscriptionObj: ', JSON.parse(JSON.stringify(oldSubscriptionObj)));
+      // console.log(typeof subscriptionObj);
+      
       // console.log('[2] newSubscriptionObj: ', JSON.stringify(newSubscriptionObj));
       // console.log(typeof newSubscriptionObj);
+      
+      // console.log(`
+      //   ----- this.webPushRegistrationObj -----\n
+      //   ${util.inspect(this.webPushRegistrationObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
       
       
       // ---------------------------------------------
@@ -283,29 +312,6 @@ class Store {
       }
       
       
-      
-      
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/@stores/web-push.js - webPushSubscribe
-      // `);
-      
-      // console.log(chalk`
-      //   convertedVapidKey: {green ${convertedVapidKey}}
-      //   permission: {green ${permission}}
-      // `);
-      
-      // console.log(`
-      //   ----- this.webPushRegistrationObj -----\n
-      //   ${util.inspect(this.webPushRegistrationObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
     } catch (errorObj) {
       
       throw errorObj;
@@ -320,9 +326,8 @@ class Store {
   
   /**
    * 購読を解除する
-   * @param {Array} pathArr - パス
    */
-  // @action.bound
+  @action.bound
   async handleWebPushUnsubscribe() {
     
     
@@ -330,12 +335,14 @@ class Store {
       
       
       // ---------------------------------------------
-      //   必要なデータがない場合は処理停止
+      //   本番環境でない場合、必要なデータがない場合は処理停止
       // ---------------------------------------------
       
-      if (!process.env.WEB_PUSH_VAPID_PUBLIC_KEY) {
-        return false;
+      if (process.env.NODE_ENV !== 'production' || !process.env.WEB_PUSH_VAPID_PUBLIC_KEY) {
+        return;
       }
+      
+      
       
       
       // ---------------------------------------------
@@ -369,6 +376,8 @@ class Store {
       // ---------------------------------------------
       
       return false;
+      
+      
       
       
       // --------------------------------------------------

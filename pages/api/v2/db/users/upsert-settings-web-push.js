@@ -15,6 +15,7 @@ const util = require('util');
 // ---------------------------------------------
 
 const moment = require('moment');
+
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 
@@ -95,6 +96,16 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['subscriptionObj'], subscriptionObj ? '******' : {});
     
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/users/upsert-settings-web-push.js
+    // `);
+    
+    // console.log(`
+    //   ----- subscriptionObj -----\n
+    //   ${util.inspect(subscriptionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // ---------------------------------------------
@@ -136,9 +147,6 @@ export default async (req, res) => {
     await validationUsersWebPushSubscriptionObjEndpointServer({ required: true, value: endpoint });
     await validationUsersWebPushSubscriptionObjKeysP256dhServer({ required: true, value: p256dh });
     await validationUsersWebPushSubscriptionObjKeysAuthServer({ required: true, value: auth });
-    // await validationUsersWebPushSubscriptionObjEndpointServer({ value: endpoint });
-    // await validationUsersWebPushSubscriptionObjKeysP256dhServer({ value: p256dh });
-    // await validationUsersWebPushSubscriptionObjKeysAuthServer({ value: auth });
     
     
     

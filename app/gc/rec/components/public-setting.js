@@ -28,9 +28,8 @@ import lodashGet from 'lodash/get';
 //   Material UI
 // ---------------------------------------------
 
-import Avatar from '@material-ui/core/Avatar';
-import Chip from '@material-ui/core/Chip';
-
+// import Avatar from '@material-ui/core/Avatar';
+// import Chip from '@material-ui/core/Chip';
 // import Alert from '@material-ui/lab/Alert';
 
 
@@ -38,7 +37,6 @@ import Chip from '@material-ui/core/Chip';
 //   Material UI / Icons
 // ---------------------------------------------
 
-// import IconDescription from '@material-ui/icons/Description';
 import IconWarning from '@material-ui/icons/Warning';
 
 
@@ -113,6 +111,10 @@ export default injectIntl(class extends React.Component {
     
     
     
+    // --------------------------------------------------
+    //   Text
+    // --------------------------------------------------
+    
     let text = '';
     
     if (publicSetting === 2) {
@@ -128,15 +130,13 @@ export default injectIntl(class extends React.Component {
     
     
     
-    
-    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/gc/rec/components/chip-category.js
+    //   /app/gc/rec/components/public-setting.js
     // `);
     
     // console.log(chalk`

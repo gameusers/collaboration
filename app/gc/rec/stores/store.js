@@ -136,45 +136,52 @@ class Store {
       //   Temp Data
       // ---------------------------------------------
       
-      // lodashSet(storeHardware, ['dataObj', ...pathArr, 'hardwaresArr'], [ { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },  { hardwareID: '2yKF4qXAw', name: 'メガドライブ' } ]);
+      lodashSet(storeHardware, ['dataObj', ...pathArr, 'hardwaresArr'], [ { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },  { hardwareID: '2yKF4qXAw', name: 'メガドライブ' } ]);
       
       
-      // const newObj = {
+      const newObj = {
         
-      //   gameCommunities_id,
-      //   recruitmentThreads_id: '',
-      //   category: 1,
-      //   title: 'テストタイトル',
-      //   name: 'テストネーム',
-      //   comment: 'テストコメント',
-      //   // anonymity: false,
-      //   platform1: 'Other',
-      //   platform2: 'Other',
-      //   platform3: 'Other',
-      //   id1: 'test-id-1',
-      //   id2: '',
-      //   id3: '',
-      //   informationTitle1: '情報タイトル1',
-      //   informationTitle2: '',
-      //   informationTitle3: '',
-      //   informationTitle4: '',
-      //   informationTitle5: '',
-      //   information1: '情報1',
-      //   information2: '',
-      //   information3: '',
-      //   information4: '',
-      //   information5: '',
-      //   publicSetting: 1,
-      //   // deadlineDate: '2020-12-31',
-      //   // twitter: false,
-      //   // webPush: false,
+        gameCommunities_id,
+        recruitmentThreads_id: '',
+        category: 1,
+        title: 'テストタイトル',
+        name: 'テストネーム',
+        comment: 'テストコメント',
+        // anonymity: false,
+        platform1: 'Other',
+        platform2: 'Other',
+        platform3: 'Other',
+        id1: 'test-id-1',
+        id2: '',
+        id3: '',
+        informationTitle1: '情報タイトル1',
+        informationTitle2: '',
+        informationTitle3: '',
+        informationTitle4: '',
+        informationTitle5: '',
+        information1: '情報1',
+        information2: '',
+        information3: '',
+        information4: '',
+        information5: '',
+        publicSetting: 1,
+        // deadlineDate: '2020-12-31',
+        // twitter: false,
+        // webPush: false,
+        webPushSubscriptionObj: {
+          endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
+          keys: {
+            p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
+            auth: 'siDbUa9DCbg-n9AMsvWA1w'
+          }
+        },
         
-      // };
+      };
       
-      // const oldObj = lodashGet(this.dataObj, [...pathArr], {});
-      // const mergedObj = lodashMerge(oldObj, newObj);
+      const oldObj = lodashGet(this.dataObj, [...pathArr], {});
+      const mergedObj = lodashMerge(oldObj, newObj);
       
-      // lodashSet(this.dataObj, [...pathArr], mergedObj);
+      lodashSet(this.dataObj, [...pathArr], mergedObj);
       
       
       
@@ -337,8 +344,8 @@ class Store {
         information5,
         publicSetting,
         deadlineDate,
+        webPush,
         twitter,
-        // webPush,
         threadLimit,
         commentLimit,
         replyLimit,

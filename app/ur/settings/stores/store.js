@@ -848,6 +848,23 @@ class Store {
       
       
       
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/ur/settings/stores/store.js - handleSubmitWebPushSubscribe
+      // `);
+      
+      // console.log(`
+      //   ----- subscriptionObj -----\n
+      //   ${util.inspect(subscriptionObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------

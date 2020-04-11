@@ -185,11 +185,18 @@ router.post('/db', upload.none(), async (req, res, next) => {
             count: 1,
           }
         ],
+        // webPushSubscriptionObj: {
+        //   endpoint: '',
+        //   keys: {
+        //     p256dh: '',
+        //     auth: ''
+        //   }
+        // },
         webPushSubscriptionObj: {
-          endpoint: '',
+          endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
           keys: {
-            p256dh: '',
-            auth: ''
+            p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
+            auth: 'siDbUa9DCbg-n9AMsvWA1w'
           }
         },
         role: 'user'
@@ -4054,6 +4061,7 @@ emotion: https://emotion.sh/docs/introduction`,
         publicSetting: 1,
         deadlineDate: '2020-03-31T00:00:00Z',
         close: false,
+        webPush: true,
         webPushSubscriptionObj: {
           endpoint: '',
           keys: {
@@ -4131,8 +4139,9 @@ emotion: https://emotion.sh/docs/introduction`,
           },
         ],
         publicSetting: 2,
-        deadlineDate: '2020-04-10T23:00:00Z',
+        deadlineDate: '2020-04-11T03:00:00Z',
         close: false,
+        webPush: false,
         webPushSubscriptionObj: {
           endpoint: '',
           keys: {
@@ -4203,6 +4212,7 @@ emotion: https://emotion.sh/docs/introduction`,
         publicSetting: 3,
         deadlineDate: '2023-12-31T00:00:00Z',
         close: false,
+        webPush: false,
         webPushSubscriptionObj: {
           endpoint: '',
           keys: {

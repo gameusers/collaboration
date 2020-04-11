@@ -29,7 +29,7 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import Avatar from '@material-ui/core/Avatar';
-import Chip from '@material-ui/core/Chip';
+// import Chip from '@material-ui/core/Chip';
 
 
 // ---------------------------------------------
@@ -37,9 +37,7 @@ import Chip from '@material-ui/core/Chip';
 // ---------------------------------------------
 
 import IconDescription from '@material-ui/icons/Description';
-// import IconInformation from '@material-ui/icons/DoubleArrow';
 import IconInformation from '@material-ui/icons/MenuBook';
-// import IconInformation from '@material-ui/icons/School';
 
 
 
@@ -185,23 +183,6 @@ export default injectIntl(class extends React.Component {
     
     
     
-    // <div
-    //       css={css`
-    //         margin: 8px 8px 0 0;
-    //       `}
-    //       key={`publicInformations-${index}-${_id}`}
-    //     >
-    //       <Chip
-    //         avatar={
-    //           <Avatar>
-    //             <IconInformation />
-    //           </Avatar>
-    //         }
-    //         label={<div style={{ fontSize: '14px' }}><span style={{ fontWeight: 'bold' }}>{title}: </span> {information}</div>}
-    //         color="primary"
-    //         variant="outlined"
-    //       />
-    //     </div>
     
     // --------------------------------------------------
     //   console.log
@@ -226,9 +207,7 @@ export default injectIntl(class extends React.Component {
     return (
       <div
         css={css`
-          // border-top: 1px dashed #A4A4A4;
           margin: 24px 0 0 0;
-          // padding: 12px 0 0 0;
         `}
       >
         

@@ -210,6 +210,13 @@ export default async (req, res) => {
       termsOfServiceConfirmedDate: ISO8601,
       exp: 0,
       achievementsArr: [],
+      webPushSubscriptionObj: {
+        endpoint: '',
+        keys: {
+          p256dh: '',
+          auth: ''
+        }
+      },
       role: 'user',
       
     };

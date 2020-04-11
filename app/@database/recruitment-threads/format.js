@@ -92,17 +92,6 @@ const formatRecruitmentThreadsArr = ({
     
     
     // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----- valueObj -----\n
-    //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // --------------------------------------------------
     //   Property
     // --------------------------------------------------
     
@@ -118,6 +107,29 @@ const formatRecruitmentThreadsArr = ({
     const hardwareIDsArr = lodashGet(valueObj, ['hardwareIDsArr'], []);
     const hardwaresArr = lodashGet(valueObj, ['hardwaresArr'], []);
     const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
+    
+    const users_id = lodashGet(valueObj, ['users_id'], '');
+    const webPush = lodashGet(valueObj, ['webPush'], false);
+    const webPushEndpoint = lodashGet(valueObj, ['webPushSubscriptionObj', 'endpoint'], '');
+    const webPushUsersEndpoint = lodashGet(valueObj, ['usersObj', 'webPushSubscriptionObj', 'endpoint'], '');
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----- valueObj -----\n
+    //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   users_id: {green ${users_id}}
+    //   webPush: {green ${webPush}}
+    //   webPushEndpoint: {green ${webPushEndpoint}}
+    //   webPushUsersEndpoint: {green ${webPushUsersEndpoint}}
+    // `);
     
     
     // --------------------------------------------------
@@ -318,6 +330,143 @@ const formatRecruitmentThreadsArr = ({
     
     
     // --------------------------------------------------
+    //   編集権限
+    // --------------------------------------------------
+    
+    clonedObj.editable = verifyAuthority({
+      
+      req,
+      users_id: valueObj.users_id,
+      loginUsers_id,
+      ISO8601: valueObj.createdDate,
+      _id: valueObj._id,
+      
+    });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Name & Description
+    // --------------------------------------------------
+    
+    const filteredArr = valueObj.localesArr.filter((filterObj) => {
+      return filterObj.language === localeObj.language;
+    });
+    
+    
+    if (lodashHas(filteredArr, [0])) {
+      
+      clonedObj.title = lodashGet(filteredArr, [0, 'title'], '');
+      clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');
+      clonedObj.comment = lodashGet(filteredArr, [0, 'comment'], '');
+      
+    } else {
+      
+      clonedObj.title = lodashGet(filteredArr, [0, 'title'], '');
+      clonedObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
+      clonedObj.comment = lodashGet(valueObj, ['localesArr', 0, 'comment'], '');
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   hardwaresArr - 元の配列の順番通りに並べなおす
+    // --------------------------------------------------
+    
+    const sortedHardwaresArr = [];
+    
+    for (let hardwareID of hardwareIDsArr) {
+      
+      const index = hardwaresArr.findIndex((value2Obj) => {
+        return value2Obj.hardwareID === hardwareID;
+      });
+      
+      if (index !== -1) {
+        sortedHardwaresArr.push(hardwaresArr[index]);
+      }
+      
+    }
+    
+    clonedObj.hardwaresArr = sortedHardwaresArr;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   通知
+    // --------------------------------------------------
+    
+    // users_id: {green ${users_id}}
+    //   webPush: {green ${webPush}}
+    //   webPushEndpoint: {green ${webPushEndpoint}}
+    //   webPushUsersEndpoint
+    
+    if ((webPush && webPushEndpoint) || (webPush && users_id && webPushUsersEndpoint)) {
+      
+      clonedObj.notification = 'webpush';
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   不要な項目を削除する
+    // --------------------------------------------------
+    
+    delete clonedObj._id;
+    delete clonedObj.createdDate;
+    delete clonedObj.users_id;
+    delete clonedObj.anonymity;
+    delete clonedObj.hardwareIDsArr;
+    delete clonedObj.ids_idsArr;
+    delete clonedObj.localesArr;
+    delete clonedObj.close;
+    delete clonedObj.webPushSubscriptionObj;
+    delete clonedObj.ip;
+    delete clonedObj.userAgent;
+    delete clonedObj.__v;
+    
+    if (lodashHas(clonedObj, ['usersObj', 'webPushSubscriptionObj'])) {
+      delete clonedObj.usersObj.webPushSubscriptionObj;
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   コメント取得用の _id の入った配列に push
+    // --------------------------------------------------
+    
+    dataObj[valueObj._id] = clonedObj;
+    
+    if (valueObj.comments > 0) {
+      recruitmentThreads_idsForCommentArr.push(valueObj._id);
+    }
+    
+    
+    // --------------------------------------------------
+    //   forumThreadsObj を作成する
+    // --------------------------------------------------
+    
+    const recruitmentThreadsPageArr = lodashGet(recruitmentThreadsObj, [`page${threadPage}Obj`, 'arr'], []);
+    
+    recruitmentThreadsPageArr.push(valueObj._id);
+    
+    recruitmentThreadsObj[`page${threadPage}Obj`] = {
+      
+      loadedDate: ISO8601,
+      arr: recruitmentThreadsPageArr,
+      
+    };
+    
+    
+    
+    
+    // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
@@ -348,116 +497,6 @@ const formatRecruitmentThreadsArr = ({
     //   ${util.inspect(returnArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    // --------------------------------------------------
-    //   編集権限
-    // --------------------------------------------------
-    
-    clonedObj.editable = verifyAuthority({
-      
-      req,
-      users_id: valueObj.users_id,
-      loginUsers_id,
-      ISO8601: valueObj.createdDate,
-      _id: valueObj._id,
-      
-    });
-    
-    
-    // --------------------------------------------------
-    //   Name & Description
-    // --------------------------------------------------
-    
-    const filteredArr = valueObj.localesArr.filter((filterObj) => {
-      return filterObj.language === localeObj.language;
-    });
-    
-    
-    if (lodashHas(filteredArr, [0])) {
-      
-      clonedObj.title = lodashGet(filteredArr, [0, 'title'], '');
-      clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');
-      clonedObj.comment = lodashGet(filteredArr, [0, 'comment'], '');
-      
-    } else {
-      
-      clonedObj.title = lodashGet(filteredArr, [0, 'title'], '');
-      clonedObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
-      clonedObj.comment = lodashGet(valueObj, ['localesArr', 0, 'comment'], '');
-      
-    }
-    
-    
-    // --------------------------------------------------
-    //   hardwaresArr - 元の配列の順番通りに並べなおす
-    // --------------------------------------------------
-    
-    const sortedHardwaresArr = [];
-    
-    for (let hardwareID of hardwareIDsArr) {
-      
-      const index = hardwaresArr.findIndex((value2Obj) => {
-        return value2Obj.hardwareID === hardwareID;
-      });
-      
-      if (index !== -1) {
-        sortedHardwaresArr.push(hardwaresArr[index]);
-      }
-      
-    }
-    
-    clonedObj.hardwaresArr = sortedHardwaresArr;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   不要な項目を削除する
-    // --------------------------------------------------
-    
-    delete clonedObj._id;
-    delete clonedObj.createdDate;
-    delete clonedObj.users_id;
-    delete clonedObj.anonymity;
-    delete clonedObj.hardwareIDsArr;
-    delete clonedObj.ids_idsArr;
-    delete clonedObj.localesArr;
-    delete clonedObj.close;
-    delete clonedObj.webPushSubscriptionObj;
-    delete clonedObj.ip;
-    delete clonedObj.userAgent;
-    delete clonedObj.__v;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   コメント取得用の _id の入った配列に push
-    // --------------------------------------------------
-    
-    dataObj[valueObj._id] = clonedObj;
-    
-    if (valueObj.comments > 0) {
-      recruitmentThreads_idsForCommentArr.push(valueObj._id);
-    }
-    
-    
-    // --------------------------------------------------
-    //   forumThreadsObj を作成する
-    // --------------------------------------------------
-    
-    const recruitmentThreadsPageArr = lodashGet(recruitmentThreadsObj, [`page${threadPage}Obj`, 'arr'], []);
-    
-    recruitmentThreadsPageArr.push(valueObj._id);
-    
-    recruitmentThreadsObj[`page${threadPage}Obj`] = {
-      
-      loadedDate: ISO8601,
-      arr: recruitmentThreadsPageArr,
-      
-    };
     
     
   }

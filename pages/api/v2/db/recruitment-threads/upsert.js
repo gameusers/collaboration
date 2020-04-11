@@ -25,8 +25,9 @@ const lodashSet = require('lodash/set');
 //   Model
 // ---------------------------------------------
 
-const ModelGameCommunities = require('../../../../../app/@database/game-communities/model');
 const ModelRecruitmentThreads = require('../../../../../app/@database/recruitment-threads/model');
+const ModelUsers = require('../../../../../app/@database/users/model');
+const ModelGameCommunities = require('../../../../../app/@database/game-communities/model');
 
 
 // ---------------------------------------------
@@ -153,7 +154,7 @@ export default async (req, res) => {
       // deadlineDate,
       // webPushSubscriptionObj,
       twitter,
-      // webPush,
+      webPush,
       threadLimit,
       commentLimit,
       replyLimit,
@@ -206,9 +207,9 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['information5'], information5);
     lodashSet(requestParametersObj, ['publicSetting'], publicSetting);
     lodashSet(requestParametersObj, ['deadlineDate'], deadlineDate);
+    lodashSet(requestParametersObj, ['webPush'], webPush);
     lodashSet(requestParametersObj, ['webPushSubscriptionObj'], {});
     lodashSet(requestParametersObj, ['twitter'], twitter);
-    // lodashSet(requestParametersObj, ['webPush'], webPush);
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
     lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
@@ -269,6 +270,7 @@ export default async (req, res) => {
     await validationUsersWebPushSubscriptionObjKeysP256dhServer({ value: p256dh });
     await validationUsersWebPushSubscriptionObjKeysAuthServer({ value: auth });
     
+    await validationBoolean({ throwError: true, value: webPush });
     await validationBoolean({ throwError: true, value: twitter });
     
     await validationRecruitmentThreadsLimit({ throwError: true, required: true, value: threadLimit });
@@ -527,6 +529,23 @@ export default async (req, res) => {
       }
     };
     
+    // if (webPush && loginUsers_id) {
+      
+    //   webPushSubscriptionObj = {
+    //     endpoint,
+    //     keys: {
+    //       p256dh,
+    //       auth,
+    //     }
+    //   };
+      
+    // }
+    
+    
+    
+    
+    
+    
     
     
     
@@ -637,6 +656,7 @@ export default async (req, res) => {
       publicSetting,
       deadlineDate,
       close: false,
+      webPush,
       webPushSubscriptionObj,
       publicCommentsUsers_idsArr: [],
       publicApprovalUsers_idsArrr: [],
@@ -667,6 +687,79 @@ export default async (req, res) => {
       
     };
     
+    
+    // ---------------------------------------------
+    //   - users
+    // ---------------------------------------------
+    
+    let usersConditionObj = {};
+    let usersSaveObj = {};
+    
+    
+    if (webPush && loginUsers_id) {
+      
+      const docUsersObj = await ModelUsers.findOne({
+        
+        conditionObj: {
+          _id: loginUsers_id
+        }
+        
+      });
+      
+      const usersEndpoint = lodashGet(docUsersObj, ['webPushSubscriptionObj', 'endpoint'], '');
+      
+      
+      // ---------------------------------------------
+      //   webPushSubscriptionObj を更新する
+      // ---------------------------------------------
+      
+      if (!usersEndpoint) {
+        
+        usersConditionObj = {
+          _id: loginUsers_id,
+        };
+        
+        usersSaveObj = {
+          $set: {
+            updatedDate: ISO8601,
+            webPushSubscriptionObj,
+          }
+        };
+        
+      }
+      
+      
+      // ---------------------------------------------
+      //   ログインしている場合
+      //   recruitmentThreads の webPushSubscriptionObj は空にする
+      // ---------------------------------------------
+      
+      recruitmentThreadsSaveObj.webPushSubscriptionObj = {
+        endpoint: '',
+        keys: {
+          p256dh: '',
+          auth: ''
+        }
+      };
+      
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /pages/api/v2/db/recruitment-threads/upsert.js
+      // `);
+      
+      // console.log(chalk`
+      //   usersEndpoint: {green ${usersEndpoint}}
+      // `);
+      
+      // console.log(`
+      //   ----- docUsersObj -----\n
+      //   ${util.inspect(docUsersObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+    }
     
     
     
@@ -717,6 +810,8 @@ export default async (req, res) => {
       imagesAndVideosSaveObj,
       gameCommunitiesConditionObj,
       gameCommunitiesSaveObj,
+      usersConditionObj,
+      usersSaveObj,
       
     });
     

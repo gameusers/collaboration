@@ -85,6 +85,7 @@ import PublicIDs from './public-ids';
 import PublicInformations from './public-informations';
 import PublicSetting from './public-setting';
 import DeadlineDate from './deadline-date';
+import Notification from './notification';
 
 // import FormComment from './form-comment';
 // import Comment from './comment';
@@ -326,12 +327,10 @@ export default injectIntl(class extends React.Component {
       const editable = lodashGet(threadsDataObj, ['editable'], false);
       // const editable = true;
       
-      // const comments = lodashGet(threadsDataObj, ['comments'], 0);
-      
       const category = lodashGet(threadsDataObj, ['category'], 1);
       const hardwaresArr = lodashGet(threadsDataObj, ['hardwaresArr'], []);
-      
       const deadlineDate = lodashGet(threadsDataObj, ['deadlineDate'], '');
+      const notification = lodashGet(threadsDataObj, ['notification'], '');
       
       
       // --------------------------------------------------
@@ -555,19 +554,19 @@ export default injectIntl(class extends React.Component {
                     >
                       
                       
-                      {/* Chip Hardwares  */}
+                      {/* ハードウェア  */}
                       <ChipHardwares
                         hardwaresArr={hardwaresArr}
                       />
                       
                       
-                      {/* Chip Category */}
+                      {/* カテゴリー */}
                       <ChipCategory
                         category={category}
                       />
                       
                       
-                      {/* recruitmentThreads_id */}
+                      {/* スレッドの固有ID: recruitmentThreads_id */}
                       <div
                         css={css`
                           display: flex;
@@ -727,7 +726,7 @@ export default injectIntl(class extends React.Component {
                 
                 
                 
-                {/* Comment */}
+                {/* スレッドの内容 */}
                 <div
                   css={css`
                     font-size: 14px;
@@ -743,34 +742,49 @@ export default injectIntl(class extends React.Component {
                 >
                   
                   
-                  {/* Comment */}
+                  {/* コメント */}
                   <Paragraph text={comment} />
                   
                   
-                  {/* PublicIDs */}
+                  {/* ID */}
                   <PublicIDs
                     idsArr={idsArr}
                     publicIDsArr={publicIDsArr}
                   />
                   
                   
-                  {/* PublicInformations */}
+                  {/* 情報 */}
                   <PublicInformations
                     publicInformationsArr={publicInformationsArr}
                   />
                   
                   
-                  {/* PublicSetting */}
+                  {/* 公開設定 */}
                   <PublicSetting
                     publicSetting={publicSetting}
                   />
                   
                   
-                  {/* DeadlineDate */}
-                  <DeadlineDate
-                    deadlineDate={deadlineDate}
-                  />
+                  {/* 募集期間 ＆ 通知方法 */}
+                  <div
+                    css={css`
+                      margin: 20px 0 0 0;
+                    `}
+                  >
+                    
+                    {/* 募集期間 */}
+                    <DeadlineDate
+                      deadlineDate={deadlineDate}
+                    />
+                    
+                    
+                    {/* 通知方法 */}
+                    <Notification
+                      pathArr={[...this.pathArr, recruitmentThreads_id]}
+                      notification={notification}
+                    />
                   
+                  </div>
                   
                   
                 </div>

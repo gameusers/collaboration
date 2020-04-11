@@ -49,6 +49,7 @@ const schema = mongoose.Schema({
   publicApprovalUsers_idsArrr: [String],
   deadlineDate: { type: Date },
   close: { type: Boolean, required: true },
+  webPush: { type: Boolean, required: true },
   webPushSubscriptionObj: {
     endpoint: { type: String },
     keys: {

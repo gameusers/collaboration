@@ -17,6 +17,7 @@ import util from 'util';
 import { action, observable } from 'mobx';
 import moment from 'moment';
 import Cookies from 'js-cookie';
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
@@ -57,13 +58,52 @@ class Store {
   @action.bound
   setDatetimeCurrent({ ISO8601 }) {
     
-    let datetimeCurrent = ISO8601;
     
-    if (!ISO8601) {
-      datetimeCurrent = moment().utc().toISOString();
+    // --------------------------------------------------
+    //   すでにデータが存在する場合は処理停止
+    // --------------------------------------------------
+    
+    if (this.datetimeCurrent) {
+      return;
     }
     
-    this.datetimeCurrent = datetimeCurrent;
+    
+    // --------------------------------------------------
+    //   日時設定
+    // --------------------------------------------------
+    
+    if (ISO8601) {
+      
+      this.datetimeCurrent = ISO8601;
+      
+    } else {
+      
+      this.datetimeCurrent = moment().utc().toISOString();
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@stores/data.js - setDatetimeCurrent
+    // `);
+    
+    // const isServer = !process.browser;
+    
+    // if (isServer) {
+    //   console.log('Server');
+    // } else {
+    //   console.log('Client');
+    // }
+    
+    // console.log(chalk`
+    //   this.datetimeCurrent: {green ${this.datetimeCurrent}}
+    // `);
+    
     
   };
   
@@ -377,6 +417,15 @@ export default function initStoreData({ propsObj }) {
   // --------------------------------------------------
   
   if (propsObj) {
+    
+    
+    // --------------------------------------------------
+    //   DateTime ISO8601
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['ISO8601'])) {
+      storeData.setDatetimeCurrent({ ISO8601: propsObj.ISO8601 });
+    }
     
     
     // --------------------------------------------------

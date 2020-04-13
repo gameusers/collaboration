@@ -678,6 +678,22 @@ export default function initStoreGcRecruitment({ propsObj }) {
     const recruitmentThreadsObj = lodashGet(propsObj, ['recruitmentThreadsObj'], null);
     
     if (recruitmentThreadsObj) {
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/gc/rec/stores/store.js
+      // `);
+      
+      // console.log(`
+      //   ----- recruitmentThreadsObj -----\n
+      //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      // `);
+      
       lodashSet(storeGcRecruitment, ['dataObj', gameCommunities_id, 'recruitmentThreadsObj'], recruitmentThreadsObj);
     }
     

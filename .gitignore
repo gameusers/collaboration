@@ -38,8 +38,5 @@ desktop.ini
 # .env
 .env-dev
 
-# ファイル
+# 一時的に複製したファイル
 __*.
-
-# 一時的に無視する
-/static/img/card/players/test/

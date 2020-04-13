@@ -128,6 +128,7 @@ export default injectIntl(class extends React.Component {
     
     // console.log(chalk`
     //   deadlineDate: {green ${deadlineDate} / ${typeof deadlineDate}}
+    //   stores.data.datetimeCurrent: {green ${stores.data.datetimeCurrent} / ${typeof stores.data.datetimeCurrent}}
     // `);
     
     

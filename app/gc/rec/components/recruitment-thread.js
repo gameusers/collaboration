@@ -277,7 +277,6 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(chalk`
-    //   temporaryDataID: {green ${temporaryDataID}}
     //   urlID: {green ${urlID}}
     //   gameCommunities_id: {green ${gameCommunities_id}}
     //   settingAnonymity: {green ${settingAnonymity}}

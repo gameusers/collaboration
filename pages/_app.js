@@ -28,6 +28,7 @@ import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
 import { IntlProvider } from 'react-intl';
 import moment from 'moment';
+
 import lodashGet from 'lodash/get';
 
 
@@ -44,13 +45,6 @@ import theme from '../app/@css/material-ui/theme';
 // ---------------------------------------------
 
 import { locale } from '../app/@locales/locale';
-
-
-// ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-// import { fetchWrapper } from '../app/@modules/fetch';
 
 
 // ---------------------------------------------
@@ -144,7 +138,7 @@ class MyApp extends App {
       //   Data - Set Datetime Current
       // --------------------------------------------------
       
-      this.stores.data.setDatetimeCurrent({});
+      // this.stores.data.setDatetimeCurrent({});
       
       
       // --------------------------------------------------
@@ -166,6 +160,8 @@ class MyApp extends App {
         this.stores.data.replaceLocaleObj(localeObj);
         
       }
+      
+      
       
       
       // --------------------------------------------------
@@ -229,11 +225,6 @@ class MyApp extends App {
     // --------------------------------------------------
     
     await this.stores.webPush.handleServiceWorkerRegister();
-    
-    
-    // console.log(chalk`
-    //   process.env.NODE_ENV: {green ${process.env.NODE_ENV}}
-    // `);
     
     
   }
@@ -323,7 +314,6 @@ class MyApp extends App {
           
           
         </Provider>
-        
         
       </React.Fragment>
     );

@@ -382,8 +382,15 @@ export default async (req, res) => {
     
     const ISO8601 = moment().utc().toISOString();
     
+    
+    
+    
+    // --------------------------------------------------
+    //   deadlineDate / 締切日
+    // --------------------------------------------------
+    
     if (deadlineDate) {
-      deadlineDate = moment(ISO8601).utc().toISOString();
+      deadlineDate = moment(deadlineDate).utc().add(1, 'day').toISOString();
     }
     
     
@@ -422,7 +429,7 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   publicIDsArr
+    //   ID / publicIDsArr
     // --------------------------------------------------
     
     const publicIDsArr = [];
@@ -459,7 +466,7 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   publicInformationsArr
+    //   情報 / publicInformationsArr
     // --------------------------------------------------
     
     const publicInformationsArr = [];

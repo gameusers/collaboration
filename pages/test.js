@@ -89,7 +89,7 @@ const getOrCreateStore = ({ propsObj }) => {
 
 // --------------------------------------------------
 //   Class
-//   URL: http://dev-1.gameusers.org:8080/ur/***
+//   URL: http://dev-1.gameusers.org:8080/test
 // --------------------------------------------------
 
 class Component extends React.Component {
@@ -99,7 +99,7 @@ class Component extends React.Component {
   //   getInitialProps
   // --------------------------------------------------
   
-  static async getInitialProps({ req, res, datetimeCurrent }) {
+  async getServerSideProps({ req, res }) {
     
     
     // --------------------------------------------------
@@ -165,7 +165,7 @@ class Component extends React.Component {
       },
     ];
     
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr };
+    propsObj = { ...propsObj, pathname, headerNavMainArr };
     
     const storesObj = getOrCreateStore({ propsObj });
     
@@ -198,7 +198,7 @@ class Component extends React.Component {
     //   Return
     // --------------------------------------------------
     
-    return { 
+    return {
       
       statusCode,
       reqAcceptLanguage,
@@ -219,57 +219,58 @@ class Component extends React.Component {
   //   constructor
   // --------------------------------------------------
   
-  constructor(props) {
+  // constructor(props) {
     
     
-    // --------------------------------------------------
-    //   super
-    // --------------------------------------------------
+  //   // --------------------------------------------------
+  //   //   super
+  //   // --------------------------------------------------
     
-    super(props);
-    
-    
-    // --------------------------------------------------
-    //   Property / Error Flag
-    // --------------------------------------------------
-    
-    this.error = false;
+  //   super(props);
     
     
-    // --------------------------------------------------
-    //   Store
-    // --------------------------------------------------
+  //   // --------------------------------------------------
+  //   //   Property / Error Flag
+  //   // --------------------------------------------------
     
-    try {
+  //   this.error = false;
+    
+    
+  //   // --------------------------------------------------
+  //   //   Store
+  //   // --------------------------------------------------
+    
+  //   try {
+      
+  //     console.log(props);
+  //     // --------------------------------------------------
+  //     //   Error
+  //     // --------------------------------------------------
+      
+  //     if (props.statusCode !== 200) {
+  //       throw new Error();
+  //     }
       
       
-      // --------------------------------------------------
-      //   Error
-      // --------------------------------------------------
+  //     // // --------------------------------------------------
+  //     // //   Stores
+  //     // // --------------------------------------------------
       
-      if (props.statusCode !== 200) {
-        throw new Error();
-      }
+  //     // const isServer = !process.browser;
       
-      
-      // --------------------------------------------------
-      //   Stores
-      // --------------------------------------------------
-      
-      const isServer = !process.browser;
-      
-      if (isServer) {
-        this.storesObj = props.storesObj;
-      } else {
-        this.storesObj = getOrCreateStore({ propsObj: props.propsObj });
-      }
+  //     // if (isServer) {
+  //     //   this.storesObj = props.storesObj;
+  //     // } else {
+  //     //   this.storesObj = getOrCreateStore({ propsObj: props.propsObj });
+  //     // }
       
       
-    } catch (e) {
-      this.error = true;
-    }
+  //   } catch (e) {
+  //     console.log(e);
+  //     this.error = true;
+  //   }
     
-  }
+  // }
   
   
   
@@ -290,6 +291,20 @@ class Component extends React.Component {
     }
     
     
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(`
+      ----------------------------------------\n
+      /pages/test.js
+    `);
+    
+    console.log(`
+      ----- this.props -----\n
+      ${util.inspect(this.props, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // --------------------------------------------------

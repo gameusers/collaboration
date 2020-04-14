@@ -3,6 +3,14 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
+//   Console
+// ---------------------------------------------
+
+import chalk from 'chalk';
+import util from 'util';
+
+
+// ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
@@ -15,6 +23,8 @@ import Measure from 'react-measure';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -116,9 +126,37 @@ export default class Layout extends React.Component {
       stores,
       storesObj,
       title,
+      componentSidebar,
       componentContent,
       
     } = this.props;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   画像をLightboxで表示する場合にナビゲーションを消す
+    //   以下を利用しているときにLightboxの上にナビゲーションが表示されてしまうため
+    //   https://github.com/michelecocuccio/simple-react-lightbox
+    // --------------------------------------------------
+    
+    const hideNavForLightbox = lodashGet(stores, ['layout', 'hideNavForLightbox'], false);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/layout/components/layout-ver2.js
+    // `);
+    
+    // console.log(chalk`
+    //   hideNavForLightbox: {green ${hideNavForLightbox}}
+    // `);
     
     
     
@@ -134,43 +172,50 @@ export default class Layout extends React.Component {
         {/* Head 内部のタグをここで追記する */}
         <Head>
           <title>{title}</title>
-          {/*<meta name='viewport' content='initial-scale=1.0, width=device-width' />*/}
           <meta name="robots" content="noindex,nofollow" />
         </Head>
         
         
         
         
-        {/* Header - Navigation Top */}
-        <HeaderNavTop />
-        
-        
-        {/* Header - Hero Image */}
-        <Measure
-          bounds
-          onResize={(contentRect) => {
-            stores.layout.handleHeaderHeroImageSize({ dimensionsObj: contentRect.bounds });
-          }}
-        >
-          {({ measureRef }) => (
-            <div ref={measureRef}>
-              <HeroImage />
+        {!hideNavForLightbox &&
+          <React.Fragment>
+            
+            
+            {/* Header - Navigation Top */}
+            <HeaderNavTop />
+            
+            
+            {/* Header - Hero Image */}
+            <Measure
+              bounds
+              onResize={(contentRect) => {
+                stores.layout.handleHeaderHeroImageSize({ dimensionsObj: contentRect.bounds });
+              }}
+            >
+              {({ measureRef }) => (
+                <div ref={measureRef}>
+                  <HeroImage />
+                </div>
+              )}
+            </Measure>
+            
+            
+            {/* Header - Navigation Main */}
+            <div
+              css={css`
+                background-color: #151515;
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+              `}
+            >
+              <HeaderNavMain />
             </div>
-          )}
-        </Measure>
-        
-        
-        {/* Header - Navigation Main */}
-        <div
-          css={css`
-            background-color: #151515;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-          `}
-        >
-          <HeaderNavMain />
-        </div>
+            
+            
+          </React.Fragment>
+        }
         
         
         
@@ -206,16 +251,9 @@ export default class Layout extends React.Component {
             `}
           >
             
-            
-            {/* フォーラムのナビゲーション */}
             <Sidebar>
-              {/*<ForumNavigation
-                temporaryDataID={this.props.temporaryDataID}
-                urlID={this.props.urlID}
-                gameCommunities_id={this.props.gameCommunities_id}
-              />*/}
+              {componentSidebar}
             </Sidebar>
-            
             
           </div>
           

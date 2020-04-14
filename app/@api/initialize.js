@@ -2943,6 +2943,43 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       
       
+      // gc / Dead-by-Daylight / recruitment
+      {
+        
+        _id: 'DZLBgxuVId',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: 'jun-deE4J',
+        type: 'recruitment',
+        images: 1,
+        videos: 0,
+        arr: [
+          
+          {
+            _id: 'qLqnzIadJf',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'IfVKtaKt_',
+                w: '800w',
+                width: 800,
+                height: 503,
+              },
+            ],
+            localesArr: [
+              {
+                _id: 'I1h1vhv-ro',
+                language: 'ja',
+                caption: 'Cat'
+              }
+            ]
+          },
+          
+        ]
+        
+      },
+      
       
       // uc / community1 - top
       {
@@ -4053,8 +4090,8 @@ emotion: https://emotion.sh/docs/introduction`,
 　そのうどんやは尾道と云ふ港町から船に乗つて小一時間位ありました。みんな「いんのしま」と云つてをりましたので、由は「犬の島」とでも書くのかと思つてをりましたところ、買つて貰つた切符には「因ノ島」と書いてありました。由は此島で短いながら淋しい三週間を過しました。`,
           },
         ],
-        imagesAndVideos_id: '',
-        anonymity: false,
+        imagesAndVideos_id: 'DZLBgxuVId',
+        // anonymity: true,
         ids_idsArr: ['GcymNACvc', 'mDuSVm6S7', 'n4I1BDtxH', 'L00bEpD46', '8bJV9G6MU', 'UVOFSNbXR'],
         publicIDsArr: [],
         publicInformationsArr: [],
@@ -4073,7 +4110,7 @@ emotion: https://emotion.sh/docs/introduction`,
         publicApprovalUsers_idsArrr: [],
         comments: 0,
         replies: 0,
-        images: 0,
+        images: 1,
         videos: 0,
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
@@ -4102,7 +4139,7 @@ emotion: https://emotion.sh/docs/introduction`,
           },
         ],
         imagesAndVideos_id: '',
-        anonymity: false,
+        // anonymity: false,
         ids_idsArr: [],
         publicIDsArr: [
           {
@@ -4188,7 +4225,7 @@ emotion: https://emotion.sh/docs/introduction`,
           },
         ],
         imagesAndVideos_id: '',
-        anonymity: false,
+        // anonymity: false,
         ids_idsArr: [],
         publicIDsArr: [
           {

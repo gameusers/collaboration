@@ -18,12 +18,13 @@ import React from 'react';
 import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import { useSpring, animated } from 'react-spring';
-import lodashGet from 'lodash/get';
-import lodashSet from 'lodash/set';
-import lodashThrottle from 'lodash/throttle';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+import lodashThrottle from 'lodash/throttle';
 
 
 // ---------------------------------------------

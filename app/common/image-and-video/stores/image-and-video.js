@@ -15,17 +15,19 @@ import util from 'util';
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 
 
-
-
 // --------------------------------------------------
-//   Store
+//   Stores
 // --------------------------------------------------
+
+import initStoreLayout from '../../../common/layout/stores/layout';
 
 let storeImageAndVideo = null;
+let storeLayout = initStoreLayout({});
 
 
 
@@ -51,18 +53,23 @@ class Store {
   /**
    * Lightboxを開く
    * @param {Array} pathArr - データを保存する場所を配列で指定する
-   * @param {number} currentNo - 表示する画像番号
    */
   @action.bound
-  handleLightboxOpen({ pathArr = [], currentNo = 0 }) {
+  handleLightboxOpen({ pathArr = [] }) {
     
     // console.log(chalk`
-    //   _id: {green ${_id}}
-    //   currentNo: {green ${currentNo}}
+    //   handleLightboxOpen
+    //   storeLayout.hideNavForLightbox: {green ${storeLayout.hideNavForLightbox}}
     // `);
     
-    lodashSet(this.lightboxObj, [...pathArr, 'currentNo'], currentNo);
+    
+    // lodashSet(this.lightboxObj, [...pathArr, 'currentNo'], currentNo);
     lodashSet(this.lightboxObj, [...pathArr, 'open'], true);
+    
+    storeLayout.hideNavForLightbox = true;
+    
+    // openLightbox(0);
+    
   };
   
   
@@ -72,7 +79,16 @@ class Store {
    */
   @action.bound
   handleLightboxClose({ pathArr = [] }) {
+    
+    // console.log(chalk`
+    //   handleLightboxClose
+    //   storeLayout.hideNavForLightbox: {green ${storeLayout.hideNavForLightbox}}
+    // `);
+    
     lodashSet(this.lightboxObj, [...pathArr, 'open'], false);
+    
+    storeLayout.hideNavForLightbox = false;
+    
   };
   
   
@@ -80,22 +96,22 @@ class Store {
    * 前の画像を表示する
    * @param {Array} pathArr - データを保存する場所を配列で指定する
    */
-  @action.bound
-  handleLightboxPrevious({ pathArr = [] }) {
-    const currentNo = lodashGet(this.lightboxObj, [...pathArr, 'currentNo'], 0);
-    lodashSet(this.lightboxObj, [...pathArr, 'currentNo'], currentNo - 1);
-  };
+  // @action.bound
+  // handleLightboxPrevious({ pathArr = [] }) {
+  //   const currentNo = lodashGet(this.lightboxObj, [...pathArr, 'currentNo'], 0);
+  //   lodashSet(this.lightboxObj, [...pathArr, 'currentNo'], currentNo - 1);
+  // };
   
   
   /**
    * 次の画像を表示する
    * @param {Array} pathArr - データを保存する場所を配列で指定する
    */
-  @action.bound
-  handleLightboxNext({ pathArr = [] }) {
-    const currentNo = lodashGet(this.lightboxObj, [...pathArr, 'currentNo'], 0);
-    lodashSet(this.lightboxObj, [...pathArr, 'currentNo'], currentNo + 1);
-  };
+  // @action.bound
+  // handleLightboxNext({ pathArr = [] }) {
+  //   const currentNo = lodashGet(this.lightboxObj, [...pathArr, 'currentNo'], 0);
+  //   lodashSet(this.lightboxObj, [...pathArr, 'currentNo'], currentNo + 1);
+  // };
   
   
   
@@ -159,10 +175,21 @@ class Store {
 
 export default function initStoreImageAndVideo({}) {
   
+  
+  // --------------------------------------------------
+  //   Store
+  // --------------------------------------------------
+  
   if (storeImageAndVideo === null) {
     storeImageAndVideo = new Store();
   }
   
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
   return storeImageAndVideo;
+  
   
 }

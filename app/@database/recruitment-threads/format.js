@@ -95,6 +95,8 @@ const formatRecruitmentThreadsArr = ({
     //   Property
     // --------------------------------------------------
     
+    // const anonymity = lodashGet(valueObj, ['anonymity'], false);
+    
     const imagesAndVideosObj = lodashGet(valueObj, ['imagesAndVideosObj'], {});
     
     const publicSetting = lodashGet(valueObj, ['publicSetting'], 1);
@@ -106,6 +108,7 @@ const formatRecruitmentThreadsArr = ({
     
     const hardwareIDsArr = lodashGet(valueObj, ['hardwareIDsArr'], []);
     const hardwaresArr = lodashGet(valueObj, ['hardwaresArr'], []);
+    
     const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
     
     const users_id = lodashGet(valueObj, ['users_id'], '');
@@ -113,23 +116,9 @@ const formatRecruitmentThreadsArr = ({
     const webPushEndpoint = lodashGet(valueObj, ['webPushSubscriptionObj', 'endpoint'], '');
     const webPushUsersEndpoint = lodashGet(valueObj, ['usersObj', 'webPushSubscriptionObj', 'endpoint'], '');
     
+    const deadlineDate = lodashGet(valueObj, ['deadlineDate'], '');
     
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
     
-    // console.log(`
-    //   ----- valueObj -----\n
-    //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   users_id: {green ${users_id}}
-    //   webPush: {green ${webPush}}
-    //   webPushEndpoint: {green ${webPushEndpoint}}
-    //   webPushUsersEndpoint: {green ${webPushUsersEndpoint}}
-    // `);
     
     
     // --------------------------------------------------
@@ -139,11 +128,6 @@ const formatRecruitmentThreadsArr = ({
     const clonedObj = lodashCloneDeep(valueObj);
     
     
-    // --------------------------------------------------
-    //   Datetime
-    // --------------------------------------------------
-    
-    // clonedObj.updatedDate = moment(valueObj.updatedDate).utc().format('YYYY/MM/DD hh:mm');
     
     
     // --------------------------------------------------
@@ -178,7 +162,6 @@ const formatRecruitmentThreadsArr = ({
     
     
     
-    
     // --------------------------------------------------
     //   Format - IDと情報を公開する場合 true
     //   
@@ -198,6 +181,36 @@ const formatRecruitmentThreadsArr = ({
     ) {
       
       publicIDsAndInformations = true;
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   締め切りの場合、IDと情報を伏せ字にする
+    // --------------------------------------------------
+    
+    if (deadlineDate) {
+      
+      // 現在の日時と締切日時の差をミリ秒で取得
+      const diff = moment(deadlineDate).diff(moment());
+      
+      // duration オブジェクトを生成
+      const duration = moment.duration(diff);
+      
+      // 締め切りまでの日数を取得（小数点切り捨て）
+      const days = Math.floor(duration.asDays());
+      
+      if (days < 0) {
+        
+        publicIDsAndInformations = false;
+        
+      }
+      
+      // console.log(chalk`
+      //   days: {green ${days}}
+      // `);
       
     }
     
@@ -399,11 +412,6 @@ const formatRecruitmentThreadsArr = ({
     //   通知
     // --------------------------------------------------
     
-    // users_id: {green ${users_id}}
-    //   webPush: {green ${webPush}}
-    //   webPushEndpoint: {green ${webPushEndpoint}}
-    //   webPushUsersEndpoint
-    
     if ((webPush && webPushEndpoint) || (webPush && users_id && webPushUsersEndpoint)) {
       
       clonedObj.notification = 'webpush';
@@ -420,7 +428,7 @@ const formatRecruitmentThreadsArr = ({
     delete clonedObj._id;
     delete clonedObj.createdDate;
     delete clonedObj.users_id;
-    delete clonedObj.anonymity;
+    // delete clonedObj.anonymity;
     delete clonedObj.hardwareIDsArr;
     delete clonedObj.ids_idsArr;
     delete clonedObj.localesArr;
@@ -433,6 +441,18 @@ const formatRecruitmentThreadsArr = ({
     if (lodashHas(clonedObj, ['usersObj', 'webPushSubscriptionObj'])) {
       delete clonedObj.usersObj.webPushSubscriptionObj;
     }
+    
+    
+    // --------------------------------------------------
+    //   匿名の場合の処理
+    // --------------------------------------------------
+    
+    // if (anonymity) {
+      
+    //   delete clonedObj.cardPlayersObj;
+    //   delete clonedObj.usersObj;
+      
+    // }
     
     
     
@@ -472,7 +492,26 @@ const formatRecruitmentThreadsArr = ({
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/@database/ids/format.js - formatIDsArrForRecruitment
+    //   /app/@database/recruitment-threads/format.js - formatRecruitmentThreadsArr
+    // `);
+    
+    // console.log(`
+    //   ----- valueObj -----\n
+    //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- clonedObj -----\n
+    //   ${util.inspect(clonedObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   users_id: {green ${users_id}}
+    //   webPush: {green ${webPush}}
+    //   webPushEndpoint: {green ${webPushEndpoint}}
+    //   webPushUsersEndpoint: {green ${webPushUsersEndpoint}}
     // `);
     
     // console.log(chalk`

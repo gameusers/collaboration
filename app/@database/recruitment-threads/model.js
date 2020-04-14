@@ -324,11 +324,11 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 
 // --------------------------------------------------
-//   スレッド
+//   募集
 // --------------------------------------------------
 
 /**
- * スレッドを取得する
+ * 募集を取得する
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
@@ -606,40 +606,6 @@ const findForRecruitment = async ({
             as: 'hardwaresArr'
           }
       },
-      
-      
-      // --------------------------------------------------
-      //   follows
-      // --------------------------------------------------
-      
-      // {
-      //   $lookup:
-      //     {
-      //       from: 'follows',
-      //       let: { recruitmentUsers_id: '$users_id' },
-      //       pipeline: [
-      //         { $match:
-      //           { $expr:
-      //             { $and:
-      //               [
-      //                 { $ne: ['$users_id', '' ] },
-      //                 { $eq: ['$users_id', '$$recruitmentUsers_id'] },
-      //               ]
-      //             },
-                  
-      //           }
-      //         },
-      //       ],
-      //       as: 'followsObj'
-      //     }
-      // },
-      
-      // {
-      //   $unwind: {
-      //     path: '$followsObj',
-      //     preserveNullAndEmptyArrays: true,
-      //   }
-      // },
       
       
       // --------------------------------------------------

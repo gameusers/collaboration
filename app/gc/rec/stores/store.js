@@ -44,7 +44,6 @@ import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, v
 import { validationRecruitmentThreadsDeadlineDate } from '../../../@database/recruitment-threads/validations/deadline';
 
 
-
 // --------------------------------------------------
 //   Stores
 // --------------------------------------------------
@@ -204,7 +203,7 @@ class Store {
       const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
       const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj', ...pathArr, 'imagesAndVideosObj'], {});
       
-      const anonymity = lodashGet(this.dataObj, [...pathArr, 'anonymity'], false);
+      // const anonymity = lodashGet(this.dataObj, [...pathArr, 'anonymity'], false);
       
       const ids_idsArr = lodashGet(this.dataObj, [...pathArr, 'ids_idsArr'], []);
       
@@ -257,7 +256,7 @@ class Store {
         validationRecruitmentThreadsName({ value: name }).error ||
         validationRecruitmentThreadsComment({ value: comment }).error ||
         
-        validationBoolean({ value: anonymity }).error ||
+        // validationBoolean({ value: anonymity }).error ||
         
         validationRecruitmentThreadsPlatform({ value: platform1 }).error ||
         validationRecruitmentThreadsPlatform({ value: platform2 }).error ||
@@ -324,7 +323,7 @@ class Store {
         title,
         name,
         comment,
-        anonymity,
+        // anonymity,
         ids_idsArr,
         platform1,
         platform2,

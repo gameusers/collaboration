@@ -27,7 +27,7 @@ import App from 'next/app';
 import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
 import { IntlProvider } from 'react-intl';
-import moment from 'moment';
+import SimpleReactLightbox from 'simple-react-lightbox';
 
 import lodashGet from 'lodash/get';
 
@@ -132,13 +132,6 @@ class MyApp extends App {
       // --------------------------------------------------
       
       this.stores = initStoreRoot({});
-      
-      
-      // --------------------------------------------------
-      //   Data - Set Datetime Current
-      // --------------------------------------------------
-      
-      // this.stores.data.setDatetimeCurrent({});
       
       
       // --------------------------------------------------
@@ -305,7 +298,11 @@ class MyApp extends App {
             {/* Material UI Theme Provider */}
             <ThemeProvider theme={theme}>
               
-              <Component {...pageProps} />
+              <SimpleReactLightbox>
+                
+                <Component {...pageProps} />
+                
+              </SimpleReactLightbox>
               
             </ThemeProvider>
             

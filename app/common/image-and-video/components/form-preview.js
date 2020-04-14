@@ -17,10 +17,11 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -56,7 +57,8 @@ import { formatImagesAndVideosObj } from '../../../@database/images-and-videos/f
 //   Components
 // ---------------------------------------------
 
-import LightboxWrapper from '../../image-and-video/components/lightbox';
+// import { SRLWrapper } from 'simple-react-lightbox';
+// import LightboxWrapper from '../../image-and-video/components/lightbox';
 
 
 
@@ -124,12 +126,40 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeImageAndVideo, storeImageAndVideoForm, intl, pathArr = [] } = this.props;
+    const {
+      
+      stores,
+      storeImageAndVideo,
+      storeImageAndVideoForm,
+      intl,
+      pathArr = [],
+      
+    } = this.props;
     
-    const { handleLightboxOpen, handleModalVideoOpen } = storeImageAndVideo;
     
-    const { dataObj, handleGetImagesAndVideosObj, handleRemovePreview } = storeImageAndVideoForm;
+    const {
+      
+      handleLightboxOpen,
+      handleLightboxClose,
+      handleModalVideoOpen,
+      
+    } = storeImageAndVideo;
     
+    
+    const {
+      
+      dataObj,
+      handleGetImagesAndVideosObj,
+      handleRemovePreview,
+      
+    } = storeImageAndVideoForm;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
     
     const imagesAndVideosObj = handleGetImagesAndVideosObj({ pathArr });
     const formattedObj = formatImagesAndVideosObj({ localeObj: stores.data.localeObj, obj: imagesAndVideosObj });
@@ -140,6 +170,8 @@ export default injectIntl(class extends React.Component {
     
     // 画像を追加してもプレビューが更新されないときがある。これを読み込むと正常に更新される。ただいい方法ではない。
     const imageType = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj', 'type'], '');
+    
+    
     
     
     // --------------------------------------------------
@@ -185,6 +217,7 @@ export default injectIntl(class extends React.Component {
     
     
     
+    
     // --------------------------------------------------
     //   必要なデータがない場合は処理停止
     // --------------------------------------------------
@@ -201,9 +234,9 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const componentsPreviewArr = [];
-    const imagesArr = [];
+    // const imagesArr = [];
     
-    let imageIndex = 0;
+    // let imageIndex = 0;
     
     
     for (const [index, valueObj] of arr.entries()) {
@@ -223,7 +256,7 @@ export default injectIntl(class extends React.Component {
       if (valueObj.type === 'image') {
         
         // Lightboxで開く画像Noを設定する
-        const currentNo = imageIndex;
+        // const currentNo = imageIndex;
         
         const src = valueObj.src;
         const width = valueObj.width;
@@ -271,7 +304,7 @@ export default injectIntl(class extends React.Component {
                 `}
                 src={src}
                 alt={imageType}
-                onClick={() => handleLightboxOpen({ pathArr, currentNo })}
+                // onClick={() => handleLightboxOpen({ pathArr, currentNo })}
               />
               
               
@@ -314,7 +347,7 @@ export default injectIntl(class extends React.Component {
                     max-height: 68px;
                   }
                 `}
-                onClick={() => handleLightboxOpen({ pathArr, currentNo })}
+                // onClick={() => handleLightboxOpen({ pathArr, currentNo })}
               />
               
               
@@ -332,8 +365,8 @@ export default injectIntl(class extends React.Component {
           
         }
         
-        imageIndex += 1;
-        imagesArr.push(valueObj);
+        // imageIndex += 1;
+        // imagesArr.push(valueObj);
         
         
       // ---------------------------------------------
@@ -438,6 +471,43 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
+    //   Options
+    // --------------------------------------------------
+    
+    // const optionsObj = {
+      
+    //   enablePanzoom: false,
+      
+    // };
+    
+    // // 画像がひとつの場合は「オートプレイボタン」と「一覧で表示されるサムネイル画像」を非表示にする
+    // if (arr.length === 1) {
+      
+    //   optionsObj.autoplaySpeed = 0;
+    //   optionsObj.showThumbnails = false;
+      
+    // }
+    
+    
+    
+    
+    // // --------------------------------------------------
+    // //   Callbacks
+    // // --------------------------------------------------
+    
+    // const callbacksObj = {
+      
+    //   // onCountSlides: total => countSlides(total),
+    //   // onSlideChange: object => handleSlideChange(object),
+    //   onLightboxClosed: () => handleLightboxClose({ pathArr }),
+    //   onLightboxOpened: () => handleLightboxOpen({ pathArr }),
+      
+    // };
+    
+    
+    
+    
+    // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
@@ -449,8 +519,11 @@ export default injectIntl(class extends React.Component {
     //   _id: {green ${_id}}
     // `);
     
-    
-    
+    // <SRLWrapper
+    //     options={optionsObj}
+    //     callbacks={callbacksObj}
+    //   >
+    // </SRLWrapper>
     
     // --------------------------------------------------
     //   Return
@@ -458,7 +531,7 @@ export default injectIntl(class extends React.Component {
     
     return (
       <React.Fragment>
-        
+      
         
         {/* Preview */}
         <div
@@ -470,13 +543,6 @@ export default injectIntl(class extends React.Component {
         >
           {componentsPreviewArr}
         </div>
-        
-        
-        {/* Lightbox */}
-        <LightboxWrapper
-          pathArr={pathArr}
-          imagesArr={imagesArr}
-        />
         
         
       </React.Fragment>

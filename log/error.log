@@ -146,3 +146,6 @@
 {"logID":"h2TIl0O0c","date":"2020-04-11T09:22:45.840Z","endpointID":"ZVCmdUTHQ","users_id":"","ip":"::ffff:127.0.0.1","userAgent":"","requestParametersObj":{"loginID":"******","loginPassword":"******"},"errorsArr":[{"code":"h2TIl0O0c","messageID":"Error"}],"level":"error","message":"reCAPTCHA: Low Score"}
 {"logID":"DHRz-WQaC","date":"2020-04-11T14:24:24.856Z","endpointID":"t22TWi-ct","users_id":"jun-deE4J","ip":"::1","userAgent":"","requestParametersObj":{"urlID":"Dead-by-Daylight","threadPage":null,"threadLimit":null,"commentLimit":null,"replyLimit":null},"errorsArr":[{"code":"DHRz-WQaC","messageID":"Error"}],"level":"error","message":"endpoint is not defined"}
 {"logID":"_TBcZNYZR","date":"2020-04-11T14:24:25.082Z","endpointID":"t22TWi-ct","users_id":"jun-deE4J","ip":"::1","userAgent":"","requestParametersObj":{"urlID":"Dead-by-Daylight","threadPage":null,"threadLimit":null,"commentLimit":null,"replyLimit":null},"errorsArr":[{"code":"_TBcZNYZR","messageID":"Error"}],"level":"error","message":"endpoint is not defined"}
+{"level":"error","message":""}
+{"level":"error","message":""}
+{"level":"error","message":""}

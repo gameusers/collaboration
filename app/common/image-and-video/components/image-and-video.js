@@ -17,10 +17,11 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -34,7 +35,7 @@ import { imageCalculateSize } from '../../../@modules/image/calculate';
 //   Components
 // ---------------------------------------------
 
-import LightboxWrapper from './lightbox';
+import { SRLWrapper, useLightbox } from 'simple-react-lightbox';
 
 
 
@@ -53,21 +54,69 @@ const cssPreviewBox = css`
 
 
 // --------------------------------------------------
+//   Functional Component
+// --------------------------------------------------
+
+/**
+ * 最初の大きな画像
+ * Lightboxのバグ？で、ページ遷移後戻ってくると、最初の画像がLightboxで開けなくなる
+ * Hookを利用するとなぜか直るので、わざわざFunctional Componentにしている
+ * バグが直ったら不要かもしれない
+ * https://simple-react-lightbox.dev/with-hook/
+ * 
+ * @param {number} width - 横幅
+ * @param {string} src - ソース
+ * @param {string} src - ソースセット
+ * @param {string} src - キャプション
+ * @param {boolean} setMaxHeight - 高さを設定する場合 true
+ */
+const ComponentBigImage = ({ width, src, srcSet, caption, setMaxHeight, handleLightboxOpen, pathArr }) => {
+
+  // Custom Hook
+  const openLightbox = useLightbox();
+  
+  
+  return (
+    <div
+      css={css`
+        width: 100%;
+        background-color: black;
+      `}
+    >
+      <img
+        css={css`
+          // width: 100%;
+          // height: 50%;
+          max-width: 100%;
+          max-height: ${setMaxHeight ? '400px' : 'none'};
+          object-fit: contain;
+          margin: 0 auto;
+        `}
+        src={src}
+        srcSet={srcSet}
+        alt={caption}
+        onClick={() => openLightbox(0)}
+        // onClick={() => handleLightboxOpen({ pathArr, openLightbox:useLightbox })}
+        
+        // onClick={() => handleLightboxOpen({ pathArr, currentNo: 0 })}
+        width={width}
+        // height={height}
+      />
+    </div>
+  );
+  
+};
+
+
+
+
+// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
 @inject('storeImageAndVideo')
 @observer
 export default injectIntl(class extends React.Component {
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  constructor(props) {
-    super(props);
-  }
   
   
   // --------------------------------------------------
@@ -81,22 +130,36 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideo, intl, _id, pathArr, imagesAndVideosObj, setMaxHeight = true } = this.props;
+    const {
+      
+      storeImageAndVideo,
+      intl,
+      pathArr,
+      imagesAndVideosObj,
+      setMaxHeight = true
+      
+    } = this.props;
     
-    const { handleLightboxOpen, handleModalVideoOpen } = storeImageAndVideo;
+    
+    const {
+      
+      handleLightboxOpen,
+      handleLightboxClose,
+      handleModalVideoOpen,
+      
+    } = storeImageAndVideo;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
     
     const type = lodashGet(imagesAndVideosObj, ['type'], '');
     const arr = lodashGet(imagesAndVideosObj, ['arr'], []);
     
     
-    // console.log(chalk`
-    //   type: {green ${type}}
-    // `);
-    
-    // console.log(`\n---------- arr ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(arr)));
-    // console.log(`\n-----------------------------------\n`);
-    // return null;
     
     
     // --------------------------------------------------
@@ -108,15 +171,14 @@ export default injectIntl(class extends React.Component {
     }
     
     
+    
+    
     // --------------------------------------------------
-    //   Component - Preview Thumbnail
+    //   Component - Images
     // --------------------------------------------------
     
-    const componentsThumbnailArr = [];
-    let componentFirst = '';
-    const imagesArr = [];
-    
-    let imageIndex = 0;
+    let componentBigImage = '';
+    const componentsSmallImagesArr = [];
     
     
     for (const [index, valueObj] of arr.entries()) {
@@ -151,34 +213,46 @@ export default injectIntl(class extends React.Component {
           // const height = valueObj.height;
           
           
-          componentFirst =
-            <div
-              css={css`
-                width: 100%;
-                background-color: black;
-              `}
-            >
-              <img
-                css={css`
-                  // width: 100%;
-                  // height: 50%;
-                  max-width: 100%;
-                  max-height: ${setMaxHeight ? '300px' : 'none'};
-                  object-fit: contain;
-                  margin: 0 auto;
-                `}
-                src={valueObj.src}
-                srcSet={valueObj.srcSet}
-                alt={valueObj.caption}
-                onClick={() => handleLightboxOpen({ pathArr, currentNo: 0 })}
-                width={width}
-                // height={height}
-              />
-            </div>
-          ;
+          // componentBigImage =
+          //   <div
+          //     css={css`
+          //       width: 100%;
+          //       background-color: black;
+          //     `}
+          //   >
+          //     <img
+          //       css={css`
+          //         // width: 100%;
+          //         // height: 50%;
+          //         max-width: 100%;
+          //         max-height: ${setMaxHeight ? '400px' : 'none'};
+          //         object-fit: contain;
+          //         margin: 0 auto;
+          //       `}
+          //       src={valueObj.src}
+          //       srcSet={valueObj.srcSet}
+          //       alt={valueObj.caption}
+          //       onClick={() => openLightbox(0)}
+                
+          //       // onClick={() => handleLightboxOpen({ pathArr, currentNo: 0 })}
+          //       width={width}
+          //       // height={height}
+          //     />
+          //   </div>
+          // ;
           
-          imageIndex += 1;
-          imagesArr.push(valueObj);
+          
+          componentBigImage =
+            <ComponentBigImage
+              width={width}
+              src={valueObj.src}
+              srcSet={valueObj.srcSet}
+              caption={valueObj.caption}
+              setMaxHeight={setMaxHeight}
+              // handleLightboxOpen={handleLightboxOpen}
+              // pathArr={pathArr}
+            />
+          ;
           
           
         // ---------------------------------------------
@@ -187,7 +261,7 @@ export default injectIntl(class extends React.Component {
         
         } else if (valueObj.type === 'video') {
           
-          componentFirst =
+          componentBigImage =
             <div
               css={css`
                 width: 100%;
@@ -207,7 +281,7 @@ export default injectIntl(class extends React.Component {
                 src={`https://img.youtube.com/vi/${valueObj.videoID}/mqdefault.jpg`}
                 
                 // src={`https://img.youtube.com/vi/${valueObj.videoID}/maxresdefault.jpg`}
-                // srcSet={`https://img.youtube.com/vi/${valueObj.videoID}/mqdefault.jpg 480w,
+                // srcSet={`https://img.youtube.com/vi/${valueObj.videoID}/mqdefault.jpg 480w,heih
                 //         https://img.youtube.com/vi/${valueObj.videoID}/maxresdefault.jpg 640w`}
               />
               
@@ -276,7 +350,7 @@ export default injectIntl(class extends React.Component {
         if (valueObj.type === 'image') {
           
           // Lightboxで開く画像Noを設定する
-          const currentNo = imageIndex;
+          // const currentNo = imageIndex;
           
           const src = valueObj.src;
           const width = valueObj.width;
@@ -288,6 +362,7 @@ export default injectIntl(class extends React.Component {
           // ---------------------------------------------
           
           const calculatedObj = imageCalculateSize({ width, height, specifiedHeight: 108 });
+          
           
           // console.log(`
           //   ----- calculatedObj -----\n
@@ -308,7 +383,7 @@ export default injectIntl(class extends React.Component {
           
           if (src.indexOf('data:image/svg') === -1) {
             
-            componentsThumbnailArr.push(
+            componentsSmallImagesArr.push(
               <div css={cssPreviewBox} key={index}>
                 
                 <img
@@ -322,7 +397,7 @@ export default injectIntl(class extends React.Component {
                     }
                   `}
                   src={src}
-                  onClick={() => handleLightboxOpen({ pathArr, currentNo })}
+                  // onClick={() => handleLightboxOpen({ pathArr })}
                 />
                 
               </div>
@@ -335,7 +410,7 @@ export default injectIntl(class extends React.Component {
             
           } else {
             
-            componentsThumbnailArr.push(
+            componentsSmallImagesArr.push(
               <div css={cssPreviewBox} key={index}>
                 
                 <div
@@ -354,7 +429,7 @@ export default injectIntl(class extends React.Component {
                       max-height: 68px;
                     }
                   `}
-                  onClick={() => handleLightboxOpen({ pathArr, currentNo })}
+                  // onClick={() => handleLightboxOpen({ pathArr })}
                 />
                 
               </div>
@@ -362,8 +437,8 @@ export default injectIntl(class extends React.Component {
             
           }
           
-          imageIndex += 1;
-          imagesArr.push(valueObj);
+          // imageIndex += 1;
+          // imagesArr.push(valueObj);
           
           
         // ---------------------------------------------
@@ -372,7 +447,7 @@ export default injectIntl(class extends React.Component {
         
         } else if (valueObj.type === 'video') {
           
-          componentsThumbnailArr.push(
+          componentsSmallImagesArr.push(
             <div css={cssPreviewBox} key={index}>
               
               <div
@@ -457,7 +532,72 @@ export default injectIntl(class extends React.Component {
       }
       
       
+      // imageIndex += 1;
+      // imagesArr.push(valueObj);
+      
     }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Small Images
+    // --------------------------------------------------
+    
+    let componentSmallImages = '';
+    
+    if (componentsSmallImagesArr.length !== 0) {
+      
+      componentSmallImages =
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            margin: 10px 0 0 0;
+          `}
+        >
+          {componentsSmallImagesArr}
+        </div>
+      ;
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Options
+    // --------------------------------------------------
+    
+    const optionsObj = {
+      
+      enablePanzoom: false,
+      
+    };
+    
+    // 画像がひとつの場合は「オートプレイボタン」と「一覧で表示されるサムネイル画像」を非表示にする
+    if (arr.length === 1) {
+      
+      optionsObj.autoplaySpeed = 0;
+      optionsObj.showThumbnails = false;
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Callbacks
+    // --------------------------------------------------
+    
+    const callbacksObj = {
+      
+      // onCountSlides: total => countSlides(total),
+      // onSlideChange: object => handleSlideChange(object),
+      onLightboxClosed: () => handleLightboxClose({ pathArr }),
+      onLightboxOpened: () => handleLightboxOpen({ pathArr }),
+      
+    };
     
     
     
@@ -482,35 +622,21 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <SRLWrapper
+        options={optionsObj}
+        callbacks={callbacksObj}
+      >
         
         
         {/* Big Image */}
-        {componentFirst}
+        {componentBigImage}
         
         
-        {/* Preview */}
-        {componentsThumbnailArr.length > 0 &&
-          <div
-            css={css`
-              display: flex;
-              flex-flow: row wrap;
-              margin: 10px 0 0 0;
-            `}
-          >
-            {componentsThumbnailArr}
-          </div>
-        }
+        {/* Small Images */}
+        {componentSmallImages}
         
         
-        {/* Lightbox */}
-        <LightboxWrapper
-          pathArr={pathArr}
-          imagesArr={imagesArr}
-        />
-        
-        
-      </React.Fragment>
+      </SRLWrapper>
     );
     
   }

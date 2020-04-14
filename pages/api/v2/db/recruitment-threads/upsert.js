@@ -164,7 +164,7 @@ export default async (req, res) => {
     
     let { 
       
-      anonymity,
+      // anonymity,
       ids_idsArr,
       platform1,
       platform2,
@@ -187,7 +187,7 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['name'], name);
     lodashSet(requestParametersObj, ['comment'], comment);
     lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
-    lodashSet(requestParametersObj, ['anonymity'], anonymity);
+    // lodashSet(requestParametersObj, ['anonymity'], anonymity);
     lodashSet(requestParametersObj, ['ids_idsArr'], ids_idsArr);
     lodashSet(requestParametersObj, ['platform1'], platform1);
     lodashSet(requestParametersObj, ['platform2'], platform2);
@@ -249,7 +249,7 @@ export default async (req, res) => {
     await validationRecruitmentThreadsTitle({ throwError: true, value: title });
     await validationRecruitmentThreadsName({ throwError: true, value: name });
     await validationRecruitmentThreadsComment({ throwError: true, value: comment });
-    await validationBoolean({ throwError: true, value: anonymity });
+    // await validationBoolean({ throwError: true, value: anonymity });
     
     await validationRecruitmentThreadsInformationTitle({ throwError: true, value: informationTitle1 });
     await validationRecruitmentThreadsInformationTitle({ throwError: true, value: informationTitle2 });
@@ -419,7 +419,7 @@ export default async (req, res) => {
       
     } else {
       
-      anonymity = false;
+      // anonymity = false;
       ids_idsArr = [];
       publicSetting = 1;
       
@@ -656,7 +656,7 @@ export default async (req, res) => {
         }
       ],
       imagesAndVideos_id,
-      anonymity,
+      // anonymity,
       ids_idsArr,
       publicIDsArr,
       publicInformationsArr,

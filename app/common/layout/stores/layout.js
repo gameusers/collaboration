@@ -73,6 +73,16 @@ class Store {
   // ---------------------------------------------
   
   /**
+   * Navigation を隠す true / 隠さない false
+   * Lightboxで画像を表示する際に利用
+   * @type {boolean}
+   */
+  @observable hideNavForLightbox = false;
+  
+  
+  
+  
+  /**
    * Navigation Top を表示する true / 表示しない false
    * @type {boolean}
    */

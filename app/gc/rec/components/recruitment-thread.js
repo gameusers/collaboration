@@ -209,7 +209,7 @@ export default injectIntl(class extends React.Component {
       // temporaryDataID,
       urlID,
       gameCommunities_id,
-      settingAnonymity,
+      // settingAnonymity,
       individual,
       
     } = this.props;
@@ -279,7 +279,6 @@ export default injectIntl(class extends React.Component {
     // console.log(chalk`
     //   urlID: {green ${urlID}}
     //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   settingAnonymity: {green ${settingAnonymity}}
       
     //   page: {green ${page}}
     //   count: {green ${count}}
@@ -436,7 +435,7 @@ export default injectIntl(class extends React.Component {
                   <FormThread
                     gameCommunities_id={gameCommunities_id}
                     recruitmentThreads_id={recruitmentThreads_id}
-                    settingAnonymity={settingAnonymity}
+                    // settingAnonymity={settingAnonymity}
                   />
                 </div>
                 
@@ -510,23 +509,6 @@ export default injectIntl(class extends React.Component {
                     
                     
                   </div>
-                  
-                  
-                  
-                  
-                  {/* Images and Videos */}
-                  {Object.keys(imagesAndVideosObj).length > 0 &&
-                    <div
-                      css={css`
-                        margin: 12px 0 4px 0;
-                      `}
-                    >
-                      <ImageAndVideo
-                        pathArr={[...this.pathArr, recruitmentThreads_id, 'imagesAndVideosObj']}
-                        imagesAndVideosObj={imagesAndVideosObj}
-                      />
-                    </div>
-                  }
                   
                   
                   
@@ -856,7 +838,7 @@ export default injectIntl(class extends React.Component {
             
             <FormThread
               gameCommunities_id={gameCommunities_id}
-              settingAnonymity={settingAnonymity}
+              // settingAnonymity={settingAnonymity}
             />
             
           </Panel>

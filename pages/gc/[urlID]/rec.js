@@ -212,12 +212,25 @@ export default class GcRec extends React.Component {
     
     
     
+    
     // --------------------------------------------------
     //   Props
     // --------------------------------------------------
     
-    const gameCommunities_id = lodashGet(this, ['props', 'propsObj', 'gameCommunityObj', '_id'], '');
-    const gameName = lodashGet(this, ['props', 'propsObj', 'headerObj', 'name'], '');
+    const gameCommunities_id = lodashGet(this.props, ['propsObj', 'gameCommunityObj', '_id'], '');
+    const gameName = lodashGet(this.props, ['propsObj', 'headerObj', 'name'], '');
+    
+    
+    // console.log(`
+    //   ----- this.props -----\n
+    //   ${util.inspect(this.props, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   gameName: {green ${gameName}}
+    // `);
     
     
     // --------------------------------------------------
@@ -241,7 +254,6 @@ export default class GcRec extends React.Component {
           temporaryDataID={this.props.temporaryDataID}
           urlID={this.props.urlID}
           gameCommunities_id={gameCommunities_id}
-          settingAnonymity={true}
         />
       </Element>
     ;
@@ -360,13 +372,13 @@ export async function getServerSideProps({ req, res, query }) {
   // `);
   
   // console.log(chalk`
-  //   forumThreadListLimit: {green ${forumThreadListLimit}}
-  //   forumThreadLimit: {green ${forumThreadLimit}}
-  //   forumCommentLimit: {green ${forumCommentLimit}}
-  //   forumReplyLimit: {green ${forumReplyLimit}}
+  //   threadLimit: {green ${threadLimit}}
+  //   threadLimit: {green ${threadLimit}}
+  //   commentLimit: {green ${commentLimit}}
+  //   replyLimit: {green ${replyLimit}}
     
   //   forumThreadListPage: {green ${forumThreadListPage}}
-  //   forumThreadPage: {green ${forumThreadPage}}
+  //   threadPage: {green ${threadPage}}
   // `);
   
   // console.log(`

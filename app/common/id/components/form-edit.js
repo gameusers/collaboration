@@ -187,7 +187,21 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeIDForm, storeGameForm, intl, pathArr, type, _id, ids_idsArr, additionalGameLimit } = this.props;
+    const {
+      
+      classes,
+      stores,
+      storeIDForm,
+      storeGameForm,
+      intl,
+      pathArr,
+      type,
+      _id,
+      idsArr,
+      additionalGameLimit,
+      
+    } = this.props;
+    
     
     const {
       
@@ -200,6 +214,7 @@ export default injectIntl(class extends React.Component {
       handleDeleteSubmit
       
     } = storeIDForm;
+    
     
     const {
       
@@ -551,7 +566,7 @@ export default injectIntl(class extends React.Component {
               pathArr,
               type,
               _id,
-              ids_idsArr
+              idsArr,
             })}
             disabled={buttonDisabled}
           >
@@ -597,7 +612,7 @@ export default injectIntl(class extends React.Component {
                 pathArr,
                 type,
                 _id,
-                ids_idsArr
+                idsArr,
               })}
               color="primary"
               autoFocus

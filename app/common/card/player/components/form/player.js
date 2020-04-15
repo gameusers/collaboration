@@ -16,10 +16,11 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -186,7 +187,7 @@ export default class extends React.Component {
       hardwareInactiveObj,
       hardwareActiveArr,
       hardwareInactiveArr,
-      ids_idsArr,
+      idsArr,
       activityTimeObj,
       lookingForFriendsObj,
       voiceChatObj,
@@ -463,7 +464,7 @@ export default class extends React.Component {
             <ID
               type="cardPlayerForm"
               _id={cardPlayers_id}
-              ids_idsArr={ids_idsArr}
+              idsArr={idsArr}
             />
           </div>
           

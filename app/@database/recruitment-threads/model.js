@@ -43,7 +43,7 @@ const ModelUserCommunities = require('../user-communities/model');
 // ---------------------------------------------
 
 const { CustomError } = require('../../@modules/error/custom');
-// const { verifyAuthority } = require('../../@modules/authority');
+const { verifyAuthority } = require('../../@modules/authority');
 
 
 // ---------------------------------------------
@@ -1332,194 +1332,343 @@ const findForRecruitment = async ({
 
 
 
-// /**
-// * スレッドを取得する / 編集用（権限もチェック）
-// * @param {Object} req - リクエスト
-// * @param {Object} localeObj - ロケール
-// * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
-// * @param {string} forumThreads_id - DB forum-threads _id / スレッドID
-// * @return {Array} 取得データ
-// */
-// const findForEdit = async ({
+/**
+* 編集用データを取得する（権限もチェック）
+* @param {Object} req - リクエスト
+* @param {Object} localeObj - ロケール
+* @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+* @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
+* @return {Array} 取得データ
+*/
+const findOneForEdit = async ({
   
-//   req,
-//   localeObj,
-//   loginUsers_id,
-//   forumThreads_id,
+  req,
+  localeObj,
+  loginUsers_id,
+  recruitmentThreads_id,
   
-// }) => {
-  
-  
-//   try {
-    
-    
-//     // --------------------------------------------------
-//     //   Find
-//     // --------------------------------------------------
-    
-//     const resultArr = await Schema.aggregate([
-      
-      
-//       // スレッドを取得
-//       {
-//         $match : { _id: forumThreads_id }
-//       },
-      
-      
-//       // 画像と動画を取得
-//       {
-//         $lookup:
-//           {
-//             from: 'images-and-videos',
-//             let: { forumThreadsImagesAndVideos_id: '$imagesAndVideos_id' },
-//             pipeline: [
-//               { $match:
-//                 { $expr:
-//                   { $eq: ['$_id', '$$forumThreadsImagesAndVideos_id'] },
-//                 }
-//               },
-//               { $project:
-//                 {
-//                   createdDate: 0,
-//                   updatedDate: 0,
-//                   users_id: 0,
-//                   __v: 0,
-//                 }
-//               }
-//             ],
-//             as: 'imagesAndVideosObj'
-//           }
-//       },
-      
-//       {
-//         $unwind: {
-//           path: '$imagesAndVideosObj',
-//           preserveNullAndEmptyArrays: true,
-//         }
-//       },
-      
-      
-//       { $project:
-//         {
-//           createdDate: 0,
-//           imagesAndVideos_id: 0,
-//           __v: 0,
-//         }
-//       },
-      
-      
-//     ]).exec();
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   配列が空の場合は処理停止
-//     // --------------------------------------------------
-    
-//     if (resultArr.length === 0) {
-//       throw new CustomError({ level: 'error', errorsArr: [{ code: 'V2oFFcQIl', messageID: 'cvS0qSAlE' }] });
-//     }
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   編集権限がない場合は処理停止
-//     // --------------------------------------------------
-    
-//     const editable = verifyAuthority({
-//       req,
-//       users_id: lodashGet(resultArr, [0, 'users_id'], ''),
-//       loginUsers_id,
-//       ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
-//       _id: lodashGet(resultArr, [0, '_id'], '')
-//     });
-    
-//     if (!editable) {
-//       throw new CustomError({ level: 'error', errorsArr: [{ code: '-2ENyEiaJ', messageID: 'DSRlEoL29' }] });
-//     }
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   Format
-//     // --------------------------------------------------
-    
-//     const _id = lodashGet(resultArr, [0, '_id'], '');
-//     const imagesAndVideosObj = lodashGet(resultArr, [0, 'imagesAndVideosObj'], {});
-//     let name = '';
-//     let comment = '';
-    
-    
-//     // --------------------------------------------------
-//     //   Name & Description
-//     // --------------------------------------------------
-    
-//     const filteredArr = resultArr.filter((filterObj) => {
-//       return filterObj.language === localeObj.language;
-//     });
-    
-    
-//     if (lodashHas(filteredArr, [0])) {
-      
-//       name = lodashGet(filteredArr, [0, 'name'], '');
-//       comment = lodashGet(filteredArr, [0, 'comment'], '');
-      
-//     } else {
-      
-//       name = lodashGet(resultArr, [0, 'localesArr', 0, 'name'], '');
-//       comment = lodashGet(resultArr, [0, 'localesArr', 0, 'comment'], '');
-      
-//     }
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   console.log
-//     // --------------------------------------------------
-    
-//     // console.log(chalk`
-//     //   forumThreads_id: {green ${forumThreads_id}}
-//     // `);
-    
-//     // console.log(`
-//     //   ----- resultArr -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- returnObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   Return
-//     // --------------------------------------------------
-    
-//     return {
-//       _id,
-//       name,
-//       comment,
-//       imagesAndVideosObj,
-//     };
-    
-    
-//   } catch (err) {
-    
-//     throw err;
-    
-//   }
+}) => {
   
   
-// };
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    const docRecruitmentThreadsArr = await Schema.aggregate([
+      
+      
+      // --------------------------------------------------
+      //   Match
+      // --------------------------------------------------
+      
+      {
+        $match : { _id: recruitmentThreads_id }
+      },
+      
+      
+      // --------------------------------------------------
+      //   images-and-videos
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { recruitmentThreadsImagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$recruitmentThreadsImagesAndVideos_id'] },
+                }
+              },
+              { $project:
+                {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // --------------------------------------------------
+      //   hardwares
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'hardwares',
+            let: { recruitmentThreadsHardwareIDsArr: '$hardwareIDsArr' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $and:
+                    [
+                      { $eq: ['$language', language] },
+                      { $eq: ['$country', country] },
+                      { $in: ['$hardwareID', '$$recruitmentThreadsHardwareIDsArr'] }
+                    ]
+                  },
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  hardwareID: 1,
+                  name: 1,
+                }
+              }
+            ],
+            as: 'hardwaresArr'
+          }
+      },
+      
+      
+      // --------------------------------------------------
+      //   ids
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'ids',
+            let: {
+              recruitmentThreadsIDs_idArr: '$ids_idsArr',
+              recruitmentThreadsUsers_id: '$users_id',
+            },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $and:
+                    [
+                      { $eq: ['$users_id', '$$recruitmentThreadsUsers_id'] },
+                      { $in: ['$_id', '$$recruitmentThreadsIDs_idArr'] }
+                    ]
+                  },
+                }
+              },
+              
+              
+              // --------------------------------------------------
+              //   ids / games
+              // --------------------------------------------------
+              
+              {
+                $lookup:
+                  {
+                    from: 'games',
+                    let: { idsGameCommunities_id: '$gameCommunities_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $and:
+                            [
+                              { $eq: ['$language', language] },
+                              { $eq: ['$country', country] },
+                              { $eq: ['$gameCommunities_id', '$$idsGameCommunities_id'] }
+                            ]
+                          },
+                        }
+                      },
+                      
+                      
+                      // --------------------------------------------------
+                      //   ids / games / images-and-videos / サムネイル用
+                      // --------------------------------------------------
+                      
+                      {
+                        $lookup:
+                          {
+                            from: 'images-and-videos',
+                            let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                            pipeline: [
+                              { $match:
+                                { $expr:
+                                  { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
+                                }
+                              },
+                              { $project:
+                                {
+                                  createdDate: 0,
+                                  updatedDate: 0,
+                                  users_id: 0,
+                                  __v: 0,
+                                }
+                              }
+                            ],
+                            as: 'imagesAndVideosThumbnailObj'
+                          }
+                      },
+                      
+                      {
+                        $unwind: {
+                          path: '$imagesAndVideosThumbnailObj',
+                          preserveNullAndEmptyArrays: true,
+                        }
+                      },
+                      
+                      
+                      { $project:
+                        {
+                          _id: 1,
+                          gameCommunities_id: 1,
+                          name: 1,
+                          imagesAndVideosThumbnailObj: 1,
+                        }
+                      }
+                    ],
+                    as: 'gamesObj'
+                  }
+              },
+              
+              {
+                $unwind:
+                  {
+                    path: '$gamesObj',
+                    preserveNullAndEmptyArrays: true
+                  }
+              },
+              
+              
+              { $project:
+                {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  search: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'idsArr'
+          }
+      },
+      
+      
+      { $project:
+        {
+          createdDate: 0,
+          imagesAndVideos_id: 0,
+          __v: 0,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   配列が空の場合は処理停止
+    // --------------------------------------------------
+    
+    if (docRecruitmentThreadsArr.length === 0) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'acvBaS9ri', messageID: 'cvS0qSAlE' }] });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   編集権限がない場合は処理停止
+    // --------------------------------------------------
+    
+    const editable = verifyAuthority({
+      
+      req,
+      users_id: lodashGet(docRecruitmentThreadsArr, [0, 'users_id'], ''),
+      loginUsers_id,
+      ISO8601: lodashGet(docRecruitmentThreadsArr, [0, 'createdDate'], ''),
+      _id: lodashGet(docRecruitmentThreadsArr, [0, '_id'], '')
+      
+    });
+    
+    if (!editable) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'ccO1brrau', messageID: 'DSRlEoL29' }] });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   returnObj
+    // --------------------------------------------------
+    
+    const returnObj = docRecruitmentThreadsArr[0];
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(`
+      ----------------------------------------\n
+      /app/@database/recruitment-threads/model.js - findOneForEdit
+    `);
+    
+    console.log(chalk`
+      recruitmentThreads_id: {green ${recruitmentThreads_id}}
+      editable: {green ${editable} / ${typeof editable}}
+    `);
+    
+    console.log(`
+      ----- docRecruitmentThreadsArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(docRecruitmentThreadsArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
 
 
 
@@ -1972,7 +2121,7 @@ module.exports = {
   deleteMany,
   
   findForRecruitment,
-  // findForEdit,
+  findOneForEdit,
   // findForDeleteThread,
   transactionForUpsert,
   // transactionForDeleteThread,

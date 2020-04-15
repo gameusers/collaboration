@@ -16,10 +16,11 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -48,17 +49,6 @@ export default class extends React.Component {
   
   
   // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  constructor(props) {
-    super(props);
-  }
-  
-  
-  
-  
-  // --------------------------------------------------
   //   render
   // --------------------------------------------------
   
@@ -70,6 +60,8 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const { arr } = this.props;
+    
+    
     
     
     // --------------------------------------------------

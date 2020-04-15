@@ -111,6 +111,7 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const ids_idsArr = lodashGet(dataObj, [...pathArr, 'ids_idsArr'], []);
+    const idsArr = lodashGet(dataObj, [...pathArr, 'idsArr'], []);
     
     const platform1 = lodashGet(dataObj, [...pathArr, 'platform1'], 'Other');
     const platform2 = lodashGet(dataObj, [...pathArr, 'platform2'], 'Other');
@@ -222,6 +223,12 @@ export default injectIntl(class extends React.Component {
     //   --------------------\n
     // `);
     
+    // console.log(`
+    //   ----- idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     
     
     
@@ -283,9 +290,10 @@ export default injectIntl(class extends React.Component {
           <FormIDs
             type="recruitmentForm"
             _id={recruitmentThreads_id || gameCommunities_id}
-            ids_idsArr={ids_idsArr}
+            idsArr={idsArr}
           />
         }
+        
         
         
         

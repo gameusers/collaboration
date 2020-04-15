@@ -209,7 +209,6 @@ export default injectIntl(class extends React.Component {
       // temporaryDataID,
       urlID,
       gameCommunities_id,
-      // settingAnonymity,
       individual,
       
     } = this.props;
@@ -242,7 +241,7 @@ export default injectIntl(class extends React.Component {
       dataObj,
       handleEdit,
       // handleReadThreads,
-      // handleShowFormThread,
+      handleShowFormThread,
       
     } = storeGcRecruitment;
     
@@ -424,227 +423,205 @@ export default injectIntl(class extends React.Component {
             >
               
               
-              {/* Form */}
-              {showForm ? (
+              <div
+                css={css`
+                  display: flex;
+                  flex-flow: column nowrap;
+                  width: 100%;
+                `}
+              >
                 
-                <div
-                  css={css`
-                    width: 100%;
-                  `}
-                >
-                  <FormThread
-                    gameCommunities_id={gameCommunities_id}
-                    recruitmentThreads_id={recruitmentThreads_id}
-                    // settingAnonymity={settingAnonymity}
-                  />
-                </div>
                 
-              // Thread
-              ) : (
-                
+                {/* Container - Thread Name & Expansion Button */}
                 <div
                   css={css`
                     display: flex;
-                    flex-flow: column nowrap;
+                    flex-flow: row nowrap;
+                    align-items: center;
                     width: 100%;
                   `}
                 >
                   
                   
-                  {/* Container - Thread Name & Expansion Button */}
+                  {/* h2 */}
+                  <h2
+                    css={css`
+                      font-weight: bold;
+                      font-size: 16px;
+                      
+                      @media screen and (max-width: 480px) {
+                        font-size: 14px;
+                      }
+                    `}
+                  >
+                    {title}
+                  </h2>
+                  
+                  
+                  
+                  
+                  {/* Expansion Button */}
                   <div
                     css={css`
-                      display: flex;
-                      flex-flow: row nowrap;
-                      align-items: center;
-                      width: 100%;
+                      margin-left: auto;
                     `}
                   >
                     
-                    
-                    {/* h2 */}
-                    <h2
+                    <IconButton
                       css={css`
-                        font-weight: bold;
-                        font-size: 16px;
-                        
-                        @media screen and (max-width: 480px) {
-                          font-size: 14px;
+                        && {
+                          margin: 0;
+                          padding: 4px;
                         }
                       `}
+                      onClick={() => handlePanelExpand({ pathArr: [...this.pathArr, recruitmentThreads_id] })}
+                      aria-expanded={panelExpanded}
+                      aria-label="Show more"
+                      disabled={buttonDisabled}
                     >
-                      {title}
-                    </h2>
-                    
-                    
-                    
-                    
-                    {/* Expansion Button */}
-                    <div
-                      css={css`
-                        margin-left: auto;
-                      `}
-                    >
-                      
-                      <IconButton
-                        css={css`
-                          && {
-                            margin: 0;
-                            padding: 4px;
-                          }
-                        `}
-                        onClick={() => handlePanelExpand({ pathArr: [...this.pathArr, recruitmentThreads_id] })}
-                        aria-expanded={panelExpanded}
-                        aria-label="Show more"
-                        disabled={buttonDisabled}
-                      >
-                        {panelExpanded ? (
-                          <IconExpandLess />
-                        ) : (
-                          <IconExpandMore />
-                        )}
-                      </IconButton>
-                      
-                    </div>
-                    
-                    
-                  </div>
-                  
-                  
-                  
-                  
-                  {/* Information */}
-                  <div
-                    css={css`
-                      display: flex;
-                      flex-flow: row nowrap;
-                      align-items: center;
-                      font-size: 12px;
-                    `}
-                  >
-                    
-                    
-                    {/* Hardwares & recruitmentThreads_id */}
-                    <div
-                      css={css`
-                        display: flex;
-                        flex-flow: row wrap;
-                        align-items: center;
-                        margin: 0;
-                      `}
-                    >
-                      
-                      
-                      {/* ハードウェア  */}
-                      <ChipHardwares
-                        hardwaresArr={hardwaresArr}
-                      />
-                      
-                      
-                      {/* カテゴリー */}
-                      <ChipCategory
-                        category={category}
-                      />
-                      
-                      
-                      {/* スレッドの固有ID: recruitmentThreads_id */}
-                      <div
-                        css={css`
-                          display: flex;
-                          flex-flow: row nowrap;
-                          margin: 8px 0 0 0;
-                        `}
-                      >
-                        
-                        <IconPublic
-                          css={css`
-                            && {
-                              font-size: 24px;
-                              margin: 0 2px 0 0;
-                            }
-                          `}
-                        />
-                        
-                        <div
-                          css={css`
-                            font-size: 12px;
-                            color: #009933;
-                            cursor: pointer;
-                            margin: 2px 0 0 0;
-                          `}
-                        >
-                          <Link href={linkHref} as={linkAs}>
-                            <a>{recruitmentThreads_id}</a>
-                          </Link>
-                        </div>
-                        
-                      </div>
-                      
-                      
-                    </div>
-                    
-                    
-                    
-                    
-                    {/* Edit Button */}
-                    {editable &&
-                      <div
-                        css={css`
-                          display: flex;
-                          flex-flow: row nowrap;
-                          margin: 8px 0 0 auto;
-                          // margin-left: auto;
-                          // background-color: green;
-                        `}
-                      >
-                        <Button
-                          css={css`
-                            && {
-                              font-size: 12px;
-                              height: 22px;
-                              min-width: 54px;
-                              min-height: 22px;
-                              margin: 0 0 0 0;
-                              padding: 0 4px;
-                              
-                              @media screen and (max-width: 480px) {
-                                min-width: 36px;
-                                min-height: 22px;
-                              }
-                            }
-                          `}
-                          variant="outlined"
-                          color="primary"
-                          disabled={buttonDisabled}
-                          // onClick={() => handleShowFormThread({
-                          //   pathArr: this.pathArr,
-                          //   recruitmentThreads_id
-                          // })}
-                        >
-                          <IconEdit
-                            css={css`
-                              && {
-                                font-size: 16px;
-                                margin: 0 2px 3px 0;
-                                
-                                @media screen and (max-width: 480px) {
-                                  display: none;
-                                }
-                              }
-                            `}
-                          />
-                          編集
-                        </Button>
-                      </div>
-                    }
-                    
+                      {panelExpanded ? (
+                        <IconExpandLess />
+                      ) : (
+                        <IconExpandMore />
+                      )}
+                    </IconButton>
                     
                   </div>
                   
                   
                 </div>
-              　
-              )}
+                
+                
+                
+                
+                {/* Information */}
+                <div
+                  css={css`
+                    display: flex;
+                    flex-flow: row nowrap;
+                    align-items: center;
+                    font-size: 12px;
+                  `}
+                >
+                  
+                  
+                  {/* Hardwares & recruitmentThreads_id */}
+                  <div
+                    css={css`
+                      display: flex;
+                      flex-flow: row wrap;
+                      align-items: center;
+                      margin: 0;
+                    `}
+                  >
+                    
+                    
+                    {/* ハードウェア  */}
+                    <ChipHardwares
+                      hardwaresArr={hardwaresArr}
+                    />
+                    
+                    
+                    {/* カテゴリー */}
+                    <ChipCategory
+                      category={category}
+                    />
+                    
+                    
+                    {/* スレッドの固有ID: recruitmentThreads_id */}
+                    <div
+                      css={css`
+                        display: flex;
+                        flex-flow: row nowrap;
+                        margin: 8px 0 0 0;
+                      `}
+                    >
+                      
+                      <IconPublic
+                        css={css`
+                          && {
+                            font-size: 24px;
+                            margin: 0 2px 0 0;
+                          }
+                        `}
+                      />
+                      
+                      <div
+                        css={css`
+                          font-size: 12px;
+                          color: #009933;
+                          cursor: pointer;
+                          margin: 2px 0 0 0;
+                        `}
+                      >
+                        <Link href={linkHref} as={linkAs}>
+                          <a>{recruitmentThreads_id}</a>
+                        </Link>
+                      </div>
+                      
+                    </div>
+                    
+                    
+                  </div>
+                  
+                  
+                  
+                  
+                  {/* Edit Button */}
+                  {editable &&
+                    <div
+                      css={css`
+                        display: flex;
+                        flex-flow: row nowrap;
+                        margin: 8px 0 0 auto;
+                      `}
+                    >
+                      <Button
+                        css={css`
+                          && {
+                            font-size: 12px;
+                            height: 22px;
+                            min-width: 54px;
+                            min-height: 22px;
+                            margin: 0 0 0 0;
+                            padding: 0 4px;
+                            
+                            @media screen and (max-width: 480px) {
+                              min-width: 36px;
+                              min-height: 22px;
+                            }
+                          }
+                        `}
+                        variant="outlined"
+                        color="primary"
+                        disabled={buttonDisabled}
+                        onClick={() => handleShowFormThread({
+                          pathArr: [recruitmentThreads_id, 'recruitmentFormThreadsObj'],
+                          recruitmentThreads_id,
+                        })}
+                      >
+                        <IconEdit
+                          css={css`
+                            && {
+                              font-size: 16px;
+                              margin: 0 2px 3px 0;
+                              
+                              @media screen and (max-width: 480px) {
+                                display: none;
+                              }
+                            }
+                          `}
+                        />
+                        編集
+                      </Button>
+                    </div>
+                  }
+                  
+                  
+                </div>
+                
+                
+              </div>
               
               
             </ExpansionPanelSummary>
@@ -660,149 +637,169 @@ export default injectIntl(class extends React.Component {
                 }
               `}
             >
-              
-              
-              <div
-                css={css`
-                  width: 100%;
-                  border-top: 1px solid;
-                  border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
-                  border-image-slice: 1;
-                  margin: 12px 0 0 0;
-                  padding: 20px 0 0 0;
-                `}
-              >
                 
                 
-                {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
-                <User
-                  imagesAndVideosThumbnailObj={imagesAndVideosThumbnailObj}
-                  name={name}
-                  userID={userID}
-                  status={status}
-                  accessDate={accessDate}
-                  exp={exp}
-                  cardPlayers_id={cardPlayers_id}
-                />
-                
-                
-                
-                
-                {/* Images and Videos */}
-                {Object.keys(imagesAndVideosObj).length > 0 &&
+                {/* Form */}
+                {showForm &&
                   <div
                     css={css`
+                      width: 100%;
+                      border-top: 1px solid;
+                      border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+                      border-image-slice: 1;
                       margin: 12px 0 0 0;
+                      padding: 32px 0 0 0;
                     `}
                   >
-                    
-                    <ImageAndVideo
-                      pathArr={[recruitmentThreads_id, 'imagesAndVideosObj']}
-                      imagesAndVideosObj={imagesAndVideosObj}
+                    <FormThread
+                      gameCommunities_id={gameCommunities_id}
+                      recruitmentThreads_id={recruitmentThreads_id}
                     />
-                    
                   </div>
                 }
                 
                 
                 
                 
-                {/* スレッドの内容 */}
-                <div
-                  css={css`
-                    font-size: 14px;
-                    line-height: 1.6em;
-                    border-left: 4px solid #A4A4A4;
-                    margin: 12px 0 10px 3px;
-                    padding: 0 0 0 16px;
-                    
-                    @media screen and (max-width: 480px) {
-                      padding: 0 0 0 12px;
-                    }
-                  `}
-                >
-                  
-                  
-                  {/* コメント */}
-                  <Paragraph text={comment} />
-                  
-                  
-                  {/* ID */}
-                  <PublicIDs
-                    idsArr={idsArr}
-                    publicIDsArr={publicIDsArr}
-                  />
-                  
-                  
-                  {/* 情報 */}
-                  <PublicInformations
-                    publicInformationsArr={publicInformationsArr}
-                  />
-                  
-                  
-                  {/* 公開設定 */}
-                  <PublicSetting
-                    publicSetting={publicSetting}
-                  />
-                  
-                  
-                  {/* 募集期間 ＆ 通知方法 */}
+                {/* Content */}
+                {!showForm &&
                   <div
                     css={css`
-                      margin: 20px 0 0 0;
+                      width: 100%;
+                      border-top: 1px solid;
+                      border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+                      border-image-slice: 1;
+                      margin: 12px 0 0 0;
+                      padding: 20px 0 0 0;
                     `}
                   >
                     
-                    {/* 募集期間 */}
-                    <DeadlineDate
-                      deadlineDate={deadlineDate}
+                    
+                    {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
+                    <User
+                      imagesAndVideosThumbnailObj={imagesAndVideosThumbnailObj}
+                      name={name}
+                      userID={userID}
+                      status={status}
+                      accessDate={accessDate}
+                      exp={exp}
+                      cardPlayers_id={cardPlayers_id}
                     />
                     
                     
-                    {/* 通知方法 */}
-                    <Notification
-                      pathArr={[...this.pathArr, recruitmentThreads_id]}
-                      notification={notification}
-                    />
-                  
+                    
+                    
+                    {/* Images and Videos */}
+                    {Object.keys(imagesAndVideosObj).length > 0 &&
+                      <div
+                        css={css`
+                          margin: 12px 0 0 0;
+                        `}
+                      >
+                        
+                        <ImageAndVideo
+                          pathArr={[recruitmentThreads_id, 'imagesAndVideosObj']}
+                          imagesAndVideosObj={imagesAndVideosObj}
+                        />
+                        
+                      </div>
+                    }
+                    
+                    
+                    
+                    
+                    {/* スレッド */}
+                    <div
+                      css={css`
+                        font-size: 14px;
+                        line-height: 1.6em;
+                        border-left: 4px solid #A4A4A4;
+                        margin: 12px 0 10px 3px;
+                        padding: 0 0 0 16px;
+                        
+                        @media screen and (max-width: 480px) {
+                          padding: 0 0 0 12px;
+                        }
+                      `}
+                    >
+                      
+                      
+                      {/* コメント */}
+                      <Paragraph text={comment} />
+                      
+                      
+                      {/* ID */}
+                      <PublicIDs
+                        idsArr={idsArr}
+                        publicIDsArr={publicIDsArr}
+                      />
+                      
+                      
+                      {/* 情報 */}
+                      <PublicInformations
+                        publicInformationsArr={publicInformationsArr}
+                      />
+                      
+                      
+                      {/* 公開設定 */}
+                      <PublicSetting
+                        publicSetting={publicSetting}
+                      />
+                      
+                      
+                      {/* 募集期間 ＆ 通知方法 */}
+                      <div
+                        css={css`
+                          margin: 20px 0 0 0;
+                        `}
+                      >
+                        
+                        {/* 募集期間 */}
+                        <DeadlineDate
+                          deadlineDate={deadlineDate}
+                        />
+                        
+                        
+                        {/* 通知方法 */}
+                        <Notification
+                          pathArr={[...this.pathArr, recruitmentThreads_id]}
+                          notification={notification}
+                        />
+                      
+                      </div>
+                      
+                      
+                    </div>
+                    
+                    
+                    
+                    
+                    {/* Form Comment */}
+                    {/*<FormComment
+                      gameCommunities_id={gameCommunities_id}
+                      userCommunities_id={userCommunities_id}
+                      recruitmentThreads_id={recruitmentThreads_id}
+                      settingAnonymity={settingAnonymity}
+                    />*/}
+                    
+                    
+                    {/* Comment */}
+                    {/*<Comment
+                      urlID={urlID}
+                      gameCommunities_id={gameCommunities_id}
+                      userCommunityID={userCommunityID}
+                      userCommunities_id={userCommunities_id}
+                      recruitmentThreads_id={recruitmentThreads_id}
+                      comments={comments}
+                      settingAnonymity={settingAnonymity}
+                    />*/}
+                    
+                    
                   </div>
-                  
-                  
-                </div>
+                }
                 
-                
-                
-                
-                
-                
-                
-                
-                
-                {/* Form Comment */}
-                {/*<FormComment
-                  gameCommunities_id={gameCommunities_id}
-                  userCommunities_id={userCommunities_id}
-                  recruitmentThreads_id={recruitmentThreads_id}
-                  settingAnonymity={settingAnonymity}
-                />*/}
-                
-                
-                {/* Comment */}
-                {/*<Comment
-                  urlID={urlID}
-                  gameCommunities_id={gameCommunities_id}
-                  userCommunityID={userCommunityID}
-                  userCommunities_id={userCommunities_id}
-                  recruitmentThreads_id={recruitmentThreads_id}
-                  comments={comments}
-                  settingAnonymity={settingAnonymity}
-                />*/}
-                
-                
-              </div>
-              
-              
-            </ExpansionPanelDetails>
+              </ExpansionPanelDetails>
+            
             
           </ExpansionPanel>
           
@@ -838,7 +835,6 @@ export default injectIntl(class extends React.Component {
             
             <FormThread
               gameCommunities_id={gameCommunities_id}
-              // settingAnonymity={settingAnonymity}
             />
             
           </Panel>

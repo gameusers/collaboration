@@ -659,11 +659,11 @@ class Store {
         //   cardPlayers_id: {green ${cardPlayers_id}}
         // `);
         
-        // console.log(`
-        //   ----- resultObj -----\n
-        //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
+        console.log(`
+          ----- resultObj -----\n
+          ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+          --------------------\n
+        `);
         
         // console.log(`
         //   ----- pathArr -----\n

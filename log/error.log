@@ -149,3 +149,5 @@
 {"level":"error","message":""}
 {"level":"error","message":""}
 {"level":"error","message":""}
+{"logID":"VjUUeHyGl","date":"2020-04-15T03:47:27.384Z","endpointID":"D6nl8IMoV","users_id":"jun-deE4J","ip":"14.10.56.161","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.92 Safari/537.36","requestParametersObj":{"recruitmentThreads_id":"nEQMNMWDy"},"errorsArr":[{"code":"VjUUeHyGl","messageID":"Error"}],"level":"error","message":"_id is not defined"}
+{"logID":"h8JEPIVYZ","date":"2020-04-15T04:07:35.013Z","endpointID":"D6nl8IMoV","users_id":"jun-deE4J","ip":"14.10.56.161","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.92 Safari/537.36","requestParametersObj":{"recruitmentThreads_id":"nEQMNMWDy"},"errorsArr":[{"code":"h8JEPIVYZ","messageID":"Error"}],"level":"error","message":"The \"string\" argument must be of type string or an instance of Buffer or ArrayBuffer. Received undefined"}

@@ -19,10 +19,10 @@ import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import TextareaAutosize from 'react-autosize-textarea';
 
-import lodashGet from 'lodash/get';
-
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -175,7 +175,6 @@ export default injectIntl(class extends React.Component {
       intl,
       gameCommunities_id,
       recruitmentThreads_id,
-      // settingAnonymity,
       
     } = this.props;
     
@@ -216,7 +215,6 @@ export default injectIntl(class extends React.Component {
     const comment = lodashGet(dataObj, [...this.pathArr, 'comment'], '');
     const twitter = lodashGet(dataObj, [...this.pathArr, 'twitter'], false);
     const webPush = lodashGet(dataObj, [...this.pathArr, 'webPush'], false);
-    // const anonymity = lodashGet(dataObj, [...this.pathArr, 'anonymity'], false);
     
     const limitHardwares = parseInt(process.env.RECRUITMENT_THREAD_HARDWARES_LIMIT, 10);
     
@@ -428,28 +426,6 @@ export default injectIntl(class extends React.Component {
             />
           }
           
-          
-          {/* Anonymity */}
-          {/*{(login && settingAnonymity) &&
-            <div
-              css={css`
-                margin: 0 0 4px 0;
-              `}
-            >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={anonymity}
-                    onChange={(eventObj) => handleEdit({
-                      pathArr: [...this.pathArr, 'anonymity'],
-                      value: eventObj.target.checked
-                    })}
-                  />
-                }
-                label="ハンドルネームを匿名にする"
-              />
-            </div>
-          }*/}
           
           
           

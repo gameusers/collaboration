@@ -16,10 +16,11 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -119,7 +120,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeIDForm, type, _id, ids_idsArr } = this.props;
+    const { stores, storeIDForm, type, _id, idsArr } = this.props;
     
     const {
       
@@ -173,7 +174,7 @@ export default class extends React.Component {
           pathArr={this.pathArr}
           type={type}
           _id={_id}
-          ids_idsArr={ids_idsArr}
+          idsArr={idsArr}
           additionalGameLimit={1}
         />
       ;
@@ -208,8 +209,8 @@ export default class extends React.Component {
     // `);
     
     // console.log(`
-    //   ----- ids_idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
+    //   ----- idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -231,7 +232,7 @@ export default class extends React.Component {
           onClick={() => handleDialogOpen({
             pathArr: this.pathArr,
             _id,
-            ids_idsArr
+            idsArr,
           })}
           disabled={buttonDisabled}
           startIcon={<IconSettings />}

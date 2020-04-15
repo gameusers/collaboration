@@ -139,8 +139,8 @@ export default injectIntl(class extends React.Component {
     
     const {
       
-      handleLightboxOpen,
-      handleLightboxClose,
+      // handleLightboxOpen,
+      // handleLightboxClose,
       handleModalVideoOpen,
       
     } = storeImageAndVideo;

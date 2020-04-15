@@ -96,10 +96,10 @@ class Store {
    * Fetchでユーザーが登録しているIDをすべて取得する
    * @param {Array} pathArr - パス
    * @param {string} _id
-   * @param {Array} ids_idsArr - 選択されているIDが入っている配列
+   * @param {Array} idsArr - 選択されているIDが入っている配列
    */
   @action.bound
-  async handleDialogOpen({ pathArr, _id, ids_idsArr }) {
+  async handleDialogOpen({ pathArr, _id, idsArr }) {
     
     
     try {
@@ -178,7 +178,7 @@ class Store {
         //   - 選択IDの配列を作成する
         // ----------------------------------------
         
-        for (let valueObj of ids_idsArr.values()) {
+        for (let valueObj of idsArr.values()) {
           
           // 存在するIDかチェックする（すでに削除されている可能性があるため）
           const index = dataArr.findIndex((value2Obj) => {
@@ -199,7 +199,7 @@ class Store {
         for (let valueObj of dataArr.values()) {
           
           // 選択IDに含まれていない場合、配列に追加
-          const index = ids_idsArr.findIndex((value2Obj) => {
+          const index = idsArr.findIndex((value2Obj) => {
             return value2Obj._id === valueObj._id;
           });
           
@@ -223,6 +223,43 @@ class Store {
         lodashSet(this.dataObj, [...pathArr, 'dialog'], true);
         
         
+        
+        // --------------------------------------------------
+        //   console.log
+        // --------------------------------------------------
+        
+        // console.log(`
+        //   ----------------------------------------\n
+        //   /app/common/id/stores/form.js - handleDialogOpen
+        // `);
+        
+        // console.log(`
+        //   ----- pathArr -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        // console.log(chalk`
+        //   _id: {green ${_id}}
+        // `);
+        
+        // console.log(`
+        //   ----- idsArr -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        // console.log(`
+        //   ----- selectedArr -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(selectedArr)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        // console.log(`
+        //   ----- unselectedArr -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(unselectedArr)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
         
         
         // --------------------------------------------------
@@ -329,10 +366,15 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {string} type - IDフォームの呼び出し元の種類 / cardPlayerForm / 
    * @param {string} _id - cardPlayers_id / 
-   * @param {Array} ids_idsArr - 選択されたIDの配列
+   * @param {Array} idsArr - 選択されたIDの配列
    */
   @action.bound
-  handleSelectButton({ pathArr, type, _id, ids_idsArr }) {
+  handleSelectButton({ pathArr, type, _id, idsArr }) {
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
     
     // console.log(`
     //   ----------------------------------------\n
@@ -345,8 +387,8 @@ class Store {
     // `);
     
     // console.log(`
-    //   ----- ids_idsArr -----\n
-    //   ${util.inspect(ids_idsArr, { colors: true, depth: null })}\n
+    //   ----- idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -357,8 +399,8 @@ class Store {
     
     if (type === 'cardPlayerForm') {
       
-      const clonedArr = lodashCloneDeep(ids_idsArr);
-      lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'ids_idsArr'], clonedArr);
+      const clonedArr = lodashCloneDeep(idsArr);
+      lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'idsArr'], clonedArr);
       
     }
     
@@ -369,8 +411,8 @@ class Store {
     
     if (type === 'recruitmentForm') {
       
-      const clonedArr = lodashCloneDeep(ids_idsArr);
-      lodashSet(storeGcRecruitment, ['dataObj', _id, 'recruitmentFormThreadsObj', 'ids_idsArr'], clonedArr);
+      const clonedArr = lodashCloneDeep(idsArr);
+      lodashSet(storeGcRecruitment, ['dataObj', _id, 'recruitmentFormThreadsObj', 'idsArr'], clonedArr);
       
     }
     
@@ -496,90 +538,6 @@ class Store {
   
   
   /**
-   * ゲームを追加・変更する
-   * @param {Array} pathArr - パス
-   * @param {string} games_id - DB games games_id
-   * @param {string} gameCommunities_id - DB games gameCommunities_id
-   * @param {string} name - ゲーム名
-   * @param {Object} imagesAndVideosObj - 画像情報の入ったオブジェクト
-   */
-  // @action.bound
-  // handleGame({ pathArr, games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }) {
-    
-    
-  //   // --------------------------------------------------
-  //   //   console.log
-  //   // --------------------------------------------------
-    
-  //   // console.log(`
-  //   //   ----------------------------------------\n
-  //   //   /app/common/id/stores/form.js - handleGame
-  //   // `);
-    
-  //   // console.log(chalk`
-  //   //   games_id: {green ${games_id}}
-  //   //   gameCommunities_id: {green ${gameCommunities_id}}
-  //   //   name: {green ${name}}
-  //   // `);
-    
-  //   // console.log(`
-  //   //   ----- imagesAndVideosThumbnailObj -----\n
-  //   //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailObj)), { colors: true, depth: null })}\n
-  //   //   --------------------\n
-  //   // `);
-    
-    
-  //   // console.log(`
-  //   //   ----- storeGameForm.dataObj / 前 -----\n
-  //   //   ${util.inspect(JSON.parse(JSON.stringify(storeGameForm.dataObj)), { colors: true, depth: null })}\n
-  //   //   --------------------\n
-  //   // `);
-    
-    
-  //   // --------------------------------------------------
-  //   //   データ更新
-  //   // --------------------------------------------------
-    
-  //   let gamesArr = [];
-    
-  //   if (games_id && gameCommunities_id && name) {
-  //     gamesArr = [{ _id: games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }];
-  //   }
-    
-  //   storeGameForm.handleSetGamesArr({ pathArr, gamesArr });
-    
-  //   // lodashSet(storeGameForm, ['dataObj', ...pathArr, 'gamesArr'], gamesArr);
-    
-  //   // storeGameForm.dataObj, [...pathArr, 'gamesArr'], gamesArr
-    
-    
-  //   // console.log(`
-  //   //   ----- storeGameForm.dataObj / 後 -----\n
-  //   //   ${util.inspect(JSON.parse(JSON.stringify(storeGameForm.dataObj)), { colors: true, depth: null })}\n
-  //   //   --------------------\n
-  //   // `);
-    
-    
-  //   // lodashSet(this.dataObj, [...pathArr, 'gamesArr'], [{ games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }]);
-  //   // lodashSet(this.dataObj, [_id, 'gamesArr'], [{ games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }]);
-  // };
-  
-  
-  
-  
-  /**
-   * ゲームを削除する
-   * @param {string} _id
-   */
-  // @action.bound
-  // handleGameDelete({ _id }) {
-  //   lodashSet(this.dataObj, [_id, 'gamesArr'], []);
-  // };
-  
-  
-  
-  
-  /**
    * 削除ダイアログを開く
    * @param {string} _id
    */
@@ -633,10 +591,10 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {string} type
    * @param {string} _id
-   * @param {Array} ids_idsArr - 選択されているID情報の入った配列
+   * @param {Array} idsArr - 選択されているID情報の入った配列
    */
   @action.bound
-  async handleEditSubmit({ pathArr, type, _id, ids_idsArr }) {
+  async handleEditSubmit({ pathArr, type, _id, idsArr }) {
     
     
     try {
@@ -752,9 +710,9 @@ class Store {
       //   ID登録フォームをロードした元のフォームのIDを更新する
       // --------------------------------------------------
       
-      const updatedIds_idArr = [];
+      const updatedIDsArr = [];
       
-      for (let valueObj of ids_idsArr.values()) {
+      for (let valueObj of idsArr.values()) {
         
         // 現在選択されているIDを抽出する
         const newObj = resultObj.data.find((valueObj2) => {
@@ -763,7 +721,7 @@ class Store {
         
         // 新しくなった選択IDの配列を作成
         if (newObj) {
-          updatedIds_idArr.push(newObj);
+          updatedIDsArr.push(newObj);
         }
         
         // console.log(`
@@ -787,8 +745,8 @@ class Store {
       
       if (type === 'cardPlayerForm') {
         
-        const clonedArr = lodashCloneDeep(updatedIds_idArr);
-        lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'ids_idsArr'], clonedArr);
+        const clonedArr = lodashCloneDeep(updatedIDsArr);
+        lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'idsArr'], clonedArr);
         
       }
       
@@ -823,14 +781,14 @@ class Store {
       // `);
       
       // console.log(`
-      //   ----- ids_idsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
+      //   ----- idsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
       // console.log(`
-      //   ----- updatedIds_idArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(updatedIds_idArr)), { colors: true, depth: null })}\n
+      //   ----- updatedIDsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(updatedIDsArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -889,10 +847,10 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {string} type
    * @param {string} _id
-   * @param {Array} ids_idsArr - 選択されているID情報の入った配列
+   * @param {Array} idsArr - 選択されているID情報の入った配列
    */
   @action.bound
-  async handleDeleteSubmit({ pathArr, type, _id, ids_idsArr }) {
+  async handleDeleteSubmit({ pathArr, type, _id, idsArr }) {
     
     
     try {
@@ -967,16 +925,16 @@ class Store {
       //   ID登録フォームをロードした元のフォームのIDを更新する
       // --------------------------------------------------
       
-      const updatedIds_idArr = [];
+      const updatedIDsArr = [];
       
-      for (let valueObj of ids_idsArr.values()) {
+      for (let valueObj of idsArr.values()) {
         
         const newObj = resultObj.data.find((valueObj2) => {
           return valueObj2._id === valueObj._id;
         });
         
         if (newObj) {
-          updatedIds_idArr.push(newObj);
+          updatedIDsArr.push(newObj);
         }
         
       }
@@ -988,8 +946,8 @@ class Store {
       
       if (type === 'cardPlayerForm') {
         
-        const clonedArr = lodashCloneDeep(updatedIds_idArr);
-        lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'ids_idsArr'], clonedArr);
+        const clonedArr = lodashCloneDeep(updatedIDsArr);
+        lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'idsArr'], clonedArr);
         
       }
       
@@ -1052,14 +1010,14 @@ class Store {
       // `);
       
       // console.log(`
-      //   ----- ids_idsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
+      //   ----- idsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
       // console.log(`
-      //   ----- updatedIds_idArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(updatedIds_idArr)), { colors: true, depth: null })}\n
+      //   ----- updatedIDsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(updatedIDsArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       

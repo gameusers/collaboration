@@ -256,9 +256,20 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`\n---------- idArr / form select ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(idArr)));
-    // console.log(`\n-----------------------------------\n`);
+    console.log(`
+      ----------------------------------------\n
+      /app/common/id/components/form-select.js
+    `);
+    
+    console.log(chalk`
+      _id: {green ${_id}}
+    `);
+    
+    console.log(`
+      ----- pathArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -321,7 +332,7 @@ export default class extends React.Component {
             pathArr,
             type,
             _id,
-            ids_idsArr: selectedIDsArr,
+            idsArr: selectedIDsArr,
           })}
           disabled={buttonDisabled}
         >

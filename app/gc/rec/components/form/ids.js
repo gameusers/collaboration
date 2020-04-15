@@ -16,10 +16,11 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -41,17 +42,6 @@ export default class extends React.Component {
   
   
   // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  constructor(props) {
-    super(props);
-  }
-  
-  
-  
-  
-  // --------------------------------------------------
   //   render
   // --------------------------------------------------
   
@@ -62,7 +52,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { type, _id, ids_idsArr } = this.props;
+    const { type, _id, idsArr } = this.props;
     
     
     
@@ -73,7 +63,7 @@ export default class extends React.Component {
     
     const componentsSelectedArr = [];
     
-    for (const [index, valueObj] of ids_idsArr.entries()) {
+    for (const [index, valueObj] of idsArr.entries()) {
       
       const games_id = lodashGet(valueObj, ['gamesObj', '_id'], '');
       const gamesName = lodashGet(valueObj, ['gamesObj', 'name'], '');
@@ -110,8 +100,14 @@ export default class extends React.Component {
     // `);
     
     // console.log(`
-    //   ----- ids_idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
+    //   ----- idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -128,16 +124,6 @@ export default class extends React.Component {
           margin: 24px 0 0 0;
         `}
       >
-        
-        
-        {/*<h3
-          css={css`
-            font-weight: bold;
-            margin: 0 0 2px 0;
-          `}
-        >
-          ID
-        </h3>*/}
         
         
         <p>ゲームや連絡先のIDを表示します。「IDを登録・編集する」ボタンを押して、表示したいIDを選択してください。</p>
@@ -172,7 +158,7 @@ export default class extends React.Component {
           <IDForm
             type={type}
             _id={_id}
-            ids_idsArr={ids_idsArr}
+            idsArr={idsArr}
           />
         </div>
         

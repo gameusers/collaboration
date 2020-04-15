@@ -289,7 +289,6 @@ export default class extends React.Component {
     // ---------------------------------------------
     
     const idsArr = lodashGet(cardPlayersObj, ['idsArr'], []);
-    // const ids_idsArr = lodashGet(cardPlayersObj, ['ids_idsArr'], []);
     
     
     // ---------------------------------------------

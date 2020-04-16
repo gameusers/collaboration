@@ -135,52 +135,52 @@ class Store {
       //   Temp Data
       // ---------------------------------------------
       
-      lodashSet(storeHardware, ['dataObj', ...pathArr, 'hardwaresArr'], [ { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },  { hardwareID: '2yKF4qXAw', name: 'メガドライブ' } ]);
+      // lodashSet(storeHardware, ['dataObj', ...pathArr, 'hardwaresArr'], [ { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },  { hardwareID: '2yKF4qXAw', name: 'メガドライブ' } ]);
       
       
-      const newObj = {
+      // const newObj = {
         
-        gameCommunities_id,
-        recruitmentThreads_id: '',
-        category: 1,
-        title: 'テストタイトル',
-        name: 'テストネーム',
-        comment: 'テストコメント',
-        // anonymity: false,
-        platform1: 'Other',
-        platform2: 'Other',
-        platform3: 'Other',
-        id1: 'test-id-1',
-        id2: '',
-        id3: '',
-        informationTitle1: '情報タイトル1',
-        informationTitle2: '',
-        informationTitle3: '',
-        informationTitle4: '',
-        informationTitle5: '',
-        information1: '情報1',
-        information2: '',
-        information3: '',
-        information4: '',
-        information5: '',
-        publicSetting: 1,
-        // deadlineDate: '2020-12-31',
-        // twitter: false,
-        // webPush: false,
-        webPushSubscriptionObj: {
-          endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
-          keys: {
-            p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
-            auth: 'siDbUa9DCbg-n9AMsvWA1w'
-          }
-        },
+      //   gameCommunities_id,
+      //   recruitmentThreads_id: '',
+      //   category: 1,
+      //   title: 'テストタイトル',
+      //   name: 'テストネーム',
+      //   comment: 'テストコメント',
+      //   // anonymity: false,
+      //   platform1: 'Other',
+      //   platform2: 'Other',
+      //   platform3: 'Other',
+      //   id1: 'test-id-1',
+      //   id2: '',
+      //   id3: '',
+      //   informationTitle1: '情報タイトル1',
+      //   informationTitle2: '',
+      //   informationTitle3: '',
+      //   informationTitle4: '',
+      //   informationTitle5: '',
+      //   information1: '情報1',
+      //   information2: '',
+      //   information3: '',
+      //   information4: '',
+      //   information5: '',
+      //   publicSetting: 1,
+      //   // deadlineDate: '2020-12-31',
+      //   // twitter: false,
+      //   // webPush: false,
+      //   webPushSubscriptionObj: {
+      //     endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
+      //     keys: {
+      //       p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
+      //       auth: 'siDbUa9DCbg-n9AMsvWA1w'
+      //     }
+      //   },
         
-      };
+      // };
       
-      const oldObj = lodashGet(this.dataObj, [...pathArr], {});
-      const mergedObj = lodashMerge(oldObj, newObj);
+      // const oldObj = lodashGet(this.dataObj, [...pathArr], {});
+      // const mergedObj = lodashMerge(oldObj, newObj);
       
-      lodashSet(this.dataObj, [...pathArr], mergedObj);
+      // lodashSet(this.dataObj, [...pathArr], mergedObj);
       
       
       
@@ -203,9 +203,8 @@ class Store {
       const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
       const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj', ...pathArr, 'imagesAndVideosObj'], {});
       
-      // const anonymity = lodashGet(this.dataObj, [...pathArr, 'anonymity'], false);
-      
-      const ids_idsArr = lodashGet(this.dataObj, [...pathArr, 'ids_idsArr'], []);
+      // const ids_idsArr = lodashGet(this.dataObj, [...pathArr, 'ids_idsArr'], []);
+      const idsArr = lodashGet(this.dataObj, [...pathArr, 'idsArr'], []);
       
       const platform1 = lodashGet(this.dataObj, [...pathArr, 'platform1'], 'Other');
       const platform2 = lodashGet(this.dataObj, [...pathArr, 'platform2'], 'Other');
@@ -255,8 +254,6 @@ class Store {
         validationRecruitmentThreadsTitle({ value: title }).error ||
         validationRecruitmentThreadsName({ value: name }).error ||
         validationRecruitmentThreadsComment({ value: comment }).error ||
-        
-        // validationBoolean({ value: anonymity }).error ||
         
         validationRecruitmentThreadsPlatform({ value: platform1 }).error ||
         validationRecruitmentThreadsPlatform({ value: platform2 }).error ||
@@ -323,8 +320,8 @@ class Store {
         title,
         name,
         comment,
-        // anonymity,
-        ids_idsArr,
+        // ids_idsArr,
+        idsArr,
         platform1,
         platform2,
         platform3,
@@ -386,6 +383,17 @@ class Store {
       
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Hide Form
+      // ---------------------------------------------
+      
+      if (recruitmentThreads_id) {
+        lodashSet(this.dataObj, [recruitmentThreads_id, 'showForm'], false);
       }
       
       
@@ -631,26 +639,38 @@ class Store {
       //   
       // ---------------------------------------------
       
-      const editObj = {
+      // const editObj = {
         
-        category: lodashGet(resultObj, ['data', 'category'], 1),
-        title: lodashGet(resultObj, ['data', 'localesArr', 0, 'title'], ''),
-        name: lodashGet(resultObj, ['data', 'localesArr', 0, 'name'], ''),
-        comment: lodashGet(resultObj, ['data', 'localesArr', 0, 'comment'], ''),
-        ids_idsArr: lodashGet(resultObj, ['data', 'ids_idsArr'], []),
-        idsArr: lodashGet(resultObj, ['data', 'idsArr'], []),
-        publicSetting: lodashGet(resultObj, ['data', 'publicSetting'], 1),
-        deadlineDate: lodashGet(resultObj, ['data', 'deadlineDate'], ''),
-        webPush: lodashGet(resultObj, ['data', 'webPush'], false),
+      //   category: lodashGet(resultObj, ['data', 'category'], 1),
+      //   title: lodashGet(resultObj, ['data', 'localesArr', 0, 'title'], ''),
+      //   name: lodashGet(resultObj, ['data', 'localesArr', 0, 'name'], ''),
+      //   comment: lodashGet(resultObj, ['data', 'localesArr', 0, 'comment'], ''),
+      //   ids_idsArr: lodashGet(resultObj, ['data', 'ids_idsArr'], []),
+      //   idsArr: lodashGet(resultObj, ['data', 'idsArr'], []),
         
-      };
-      
-      lodashSet(this.dataObj, [...pathArr], editObj);
-      
-      
-      // const editObj = lodashGet(resultObj, ['data'], {});
+      //   platform1: lodashGet(resultObj, ['data', 'platform1'], ''),
+      //   platform2: lodashGet(resultObj, ['data', 'platform2'], ''),
+      //   platform3: lodashGet(resultObj, ['data', 'platform3'], ''),
+      //   id1: lodashGet(resultObj, ['data', 'id1'], ''),
+      //   id2: lodashGet(resultObj, ['data', 'id2'], ''),
+      //   id3: lodashGet(resultObj, ['data', 'id3'], ''),
+        
+      //   publicSetting: lodashGet(resultObj, ['data', 'publicSetting'], 1),
+      //   deadlineDate: lodashGet(resultObj, ['data', 'deadlineDate'], ''),
+      //   webPush: lodashGet(resultObj, ['data', 'webPush'], false),
+        
+      // };
       
       // lodashSet(this.dataObj, [...pathArr], editObj);
+      
+      
+      const editObj = lodashGet(resultObj, ['data'], {});
+      
+      editObj.title = lodashGet(resultObj, ['data', 'localesArr', 0, 'title'], ''),
+      editObj.name = lodashGet(resultObj, ['data', 'localesArr', 0, 'name'], ''),
+      editObj.comment = lodashGet(resultObj, ['data', 'localesArr', 0, 'comment'], ''),
+      
+      lodashSet(this.dataObj, [...pathArr], editObj);
       
       
       

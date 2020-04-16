@@ -28,7 +28,6 @@ const schema = mongoose.Schema({
     }
   ],
   imagesAndVideos_id: { type: String },
-  // anonymity: { type: Boolean, required: true },
   ids_idsArr: [String],
   publicIDsArr: [
     {

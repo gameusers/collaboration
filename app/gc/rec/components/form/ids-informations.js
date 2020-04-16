@@ -110,7 +110,6 @@ export default injectIntl(class extends React.Component {
     //   Property
     // --------------------------------------------------
     
-    const ids_idsArr = lodashGet(dataObj, [...pathArr, 'ids_idsArr'], []);
     const idsArr = lodashGet(dataObj, [...pathArr, 'idsArr'], []);
     
     const platform1 = lodashGet(dataObj, [...pathArr, 'platform1'], 'Other');
@@ -919,11 +918,15 @@ export default injectIntl(class extends React.Component {
             ログインしてコメントしたユーザー全員にID・情報を公開します。
           </p>
           
-        ) : publicSetting === 3 (
+        ) : publicSetting === 3 ? (
           
           <p>
-            ログインしてコメントしたユーザーの中からID・情報を公開する相手を選べます。
+            ログインしてコメントしたユーザー全員にID・情報を公開します。
           </p>
+          
+        ) : (
+          
+          null
           
         )}
         

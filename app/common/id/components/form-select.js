@@ -256,20 +256,20 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/common/id/components/form-select.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/id/components/form-select.js
+    // `);
     
-    console.log(chalk`
-      _id: {green ${_id}}
-    `);
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    // `);
     
-    console.log(`
-      ----- pathArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- pathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

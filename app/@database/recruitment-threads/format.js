@@ -95,8 +95,6 @@ const formatRecruitmentThreadsArr = ({
     //   Property
     // --------------------------------------------------
     
-    // const anonymity = lodashGet(valueObj, ['anonymity'], false);
-    
     const imagesAndVideosObj = lodashGet(valueObj, ['imagesAndVideosObj'], {});
     
     const publicSetting = lodashGet(valueObj, ['publicSetting'], 1);
@@ -193,8 +191,11 @@ const formatRecruitmentThreadsArr = ({
     
     if (deadlineDate) {
       
+      // 指定日時の翌日に締め切られるように、1日追加する。これを追加しないと当日になった瞬間 0:00 に締め切られてしまうため。
+      const deadlineDateAddOneDay = moment(deadlineDate).utc().add(1, 'day');
+      
       // 現在の日時と締切日時の差をミリ秒で取得
-      const diff = moment(deadlineDate).diff(moment());
+      const diff = deadlineDateAddOneDay.diff(moment());
       
       // duration オブジェクトを生成
       const duration = moment.duration(diff);

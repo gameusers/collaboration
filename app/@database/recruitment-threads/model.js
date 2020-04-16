@@ -50,10 +50,7 @@ const { verifyAuthority } = require('../../@modules/authority');
 //   Format
 // ---------------------------------------------
 
-// const { formatImagesAndVideosObj } = require('../images-and-videos/format');
 const { formatRecruitmentThreadsArr } = require('./format');
-// const { formatFollowsObj } = require('../follows/format');
-// const { formatIDsArr } = require('../ids/format');
 
 
 
@@ -870,283 +867,6 @@ const findForRecruitment = async ({
 
 
 
-
-
-
-/**
-* DB から取得したデータをフォーマットする
-* @param {Object} req - リクエスト
-* @param {Object} localeObj - ロケール
-* @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
-* @param {Array} arr - 配列
-* @param {number} threadPage - スレッドのページ数
-* @param {number} threadCount - スレッドの総数
-* @return {Array} フォーマット後のデータ
-*/
-// const format = ({
-  
-//   req,
-//   localeObj,
-//   loginUsers_id,
-//   arr,
-//   threadPage,
-//   threadCount,
-  
-// }) => {
-  
-  
-//   // --------------------------------------------------
-//   //   Return Value
-//   // --------------------------------------------------
-  
-//   const recruitmentThreadsObj = {
-    
-//     page: threadPage,
-//     count: threadCount,
-//     dataObj: {},
-    
-//   };
-  
-//   const dataObj = {};
-//   const recruitmentThreads_idsForCommentArr = [];
-//   const ISO8601 = moment().utc().toISOString();
-  
-  
-  
-  
-//   // --------------------------------------------------
-//   //   Loop
-//   // --------------------------------------------------
-  
-//   for (let valueObj of arr.values()) {
-    
-    
-//     // --------------------------------------------------
-//     //   console.log
-//     // --------------------------------------------------
-    
-//     // console.log(`
-//     //   ----- valueObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(valueObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- valueObj.cardPlayersObj.imagesAndVideosThumbnailObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(valueObj.cardPlayersObj.imagesAndVideosThumbnailObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-    
-//     // --------------------------------------------------
-//     //   Property
-//     // --------------------------------------------------
-    
-//     const users_id = lodashGet(valueObj, ['users_id'], '');
-//     const imagesAndVideosObj = lodashGet(valueObj, ['imagesAndVideosObj'], {});
-//     const followsObj = lodashGet(valueObj, ['followsObj'], {});
-//     const idsArr = lodashGet(valueObj, ['idsArr'], []);
-//     const hardwareIDsArr = lodashGet(valueObj, ['hardwareIDsArr'], []);
-//     const hardwaresArr = lodashGet(valueObj, ['hardwaresArr'], []);
-//     const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
-    
-    
-//     // --------------------------------------------------
-//     //   Deep Copy
-//     // --------------------------------------------------
-    
-//     const clonedObj = lodashCloneDeep(valueObj);
-    
-    
-//     // --------------------------------------------------
-//     //   Datetime
-//     // --------------------------------------------------
-    
-//     clonedObj.updatedDate = moment(valueObj.updatedDate).utc().format('YYYY/MM/DD hh:mm');
-    
-    
-//     // --------------------------------------------------
-//     //   Format - 画像
-//     // --------------------------------------------------
-    
-//     const formattedObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosObj });
-    
-//     if (formattedObj) {
-      
-//       clonedObj.imagesAndVideosObj = formattedObj;
-      
-//     } else {
-      
-//       delete clonedObj.imagesAndVideosObj;
-      
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   Format - cardPlayersObj サムネイル画像
-//     // --------------------------------------------------
-    
-//     const formattedThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosThumbnailObj });
-    
-//     // console.log(`
-//     //   ----- formattedThumbnailObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(formattedThumbnailObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     if (formattedThumbnailObj) {
-      
-//       clonedObj.cardPlayersObj.imagesAndVideosThumbnailObj = formattedThumbnailObj;
-      
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   Format - Follows
-//     // --------------------------------------------------
-    
-//     clonedObj.followsObj = formatFollowsObj({ followsObj, adminUsers_id: users_id, loginUsers_id });
-    
-    
-//     // --------------------------------------------------
-//     //   Format - IDs
-//     // --------------------------------------------------
-    
-//     clonedObj.idsArr = formatIDsArr({ localeObj, loginUsers_id, followsObj: clonedObj.followsObj, arr: idsArr });;
-    
-    
-//     // --------------------------------------------------
-//     //   編集権限
-//     // --------------------------------------------------
-    
-//     clonedObj.editable = verifyAuthority({
-      
-//       req,
-//       users_id: valueObj.users_id,
-//       loginUsers_id,
-//       ISO8601: valueObj.createdDate,
-//       _id: valueObj._id,
-      
-//     });
-    
-    
-//     // --------------------------------------------------
-//     //   Name & Description
-//     // --------------------------------------------------
-    
-//     const filteredArr = valueObj.localesArr.filter((filterObj) => {
-//       return filterObj.language === localeObj.language;
-//     });
-    
-    
-//     if (lodashHas(filteredArr, [0])) {
-      
-//       clonedObj.title = lodashGet(filteredArr, [0, 'title'], '');
-//       clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');
-//       clonedObj.comment = lodashGet(filteredArr, [0, 'comment'], '');
-      
-//     } else {
-      
-//       clonedObj.title = lodashGet(filteredArr, [0, 'title'], '');
-//       clonedObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
-//       clonedObj.comment = lodashGet(valueObj, ['localesArr', 0, 'comment'], '');
-      
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   hardwaresArr - 元の配列の順番通りに並べなおす
-//     // --------------------------------------------------
-    
-//     const sortedHardwaresArr = [];
-    
-//     for (let hardwareID of hardwareIDsArr) {
-      
-//       const index = hardwaresArr.findIndex((value2Obj) => {
-//         return value2Obj.hardwareID === hardwareID;
-//       });
-      
-//       if (index !== -1) {
-//         sortedHardwaresArr.push(hardwaresArr[index]);
-//       }
-      
-//     }
-    
-//     clonedObj.hardwaresArr = sortedHardwaresArr;
-    
-    
-    
-//     // --------------------------------------------------
-//     //   不要な項目を削除する
-//     // --------------------------------------------------
-    
-//     delete clonedObj._id;
-//     delete clonedObj.createdDate;
-//     delete clonedObj.users_id;
-//     delete clonedObj.hardwareIDsArr;
-//     delete clonedObj.ids_idsArr;
-//     delete clonedObj.localesArr;
-//     delete clonedObj.ip;
-//     delete clonedObj.userAgent;
-//     delete clonedObj.__v;
-    
-    
-//     // --------------------------------------------------
-//     //   コメント取得用の _id の入った配列に push
-//     // --------------------------------------------------
-    
-//     dataObj[valueObj._id] = clonedObj;
-    
-//     if (valueObj.comments > 0) {
-//       recruitmentThreads_idsForCommentArr.push(valueObj._id);
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   forumThreadsObj を作成する
-//     // --------------------------------------------------
-    
-//     const recruitmentThreadsPageArr = lodashGet(recruitmentThreadsObj, [`page${threadPage}Obj`, 'arr'], []);
-    
-//     recruitmentThreadsPageArr.push(valueObj._id);
-    
-//     recruitmentThreadsObj[`page${threadPage}Obj`] = {
-      
-//       loadedDate: ISO8601,
-//       arr: recruitmentThreadsPageArr,
-      
-//     };
-    
-    
-//   }
-  
-  
-  
-  
-//   // --------------------------------------------------
-//   //   dataObj
-//   // --------------------------------------------------
-  
-//   recruitmentThreadsObj.dataObj = dataObj;
-  
-  
-//   // --------------------------------------------------
-//   //   Return
-//   // --------------------------------------------------
-  
-//   return {
-    
-//     recruitmentThreadsObj,
-//     recruitmentThreads_idsForCommentArr,
-    
-//   };
-  
-  
-// };
-
-
-
-
 /**
  * コメント＆返信データを取得する　削除用
  * @param {Object} req - リクエスト
@@ -1333,13 +1053,13 @@ const findForRecruitment = async ({
 
 
 /**
-* 編集用データを取得する（権限もチェック）
-* @param {Object} req - リクエスト
-* @param {Object} localeObj - ロケール
-* @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
-* @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
-* @return {Array} 取得データ
-*/
+ * 編集用データを取得する（権限もチェック）
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
+ * @return {Array} 取得データ
+ */
 const findOneForEdit = async ({
   
   req,
@@ -1574,6 +1294,18 @@ const findOneForEdit = async ({
         {
           createdDate: 0,
           imagesAndVideos_id: 0,
+          hardwareIDsArr: 0,
+          ids_idsArr: 0,
+          publicCommentsUsers_idsArr: 0,
+          publicApprovalUsers_idsArrr: 0,
+          close: 0,
+          webPushSubscriptionObj: 0,
+          comments: 0,
+          replies: 0,
+          images: 0,
+          videos: 0,
+          ip: 0,
+          userAgent: 0,
           __v: 0,
         }
       },
@@ -1617,10 +1349,108 @@ const findOneForEdit = async ({
     
     
     // --------------------------------------------------
+    //   Format
+    // --------------------------------------------------
+    
+    const formattedObj = docRecruitmentThreadsArr[0];
+    
+    
+    // --------------------------------------------------
+    //   非ログイン時のID
+    // --------------------------------------------------
+    
+    const publicIDsArr = lodashGet(formattedObj, ['publicIDsArr'], []);
+    
+    for (const [index, valueObj] of publicIDsArr.entries()) {
+      
+      if (index === 0) {
+        
+        lodashSet(formattedObj, ['platform1'], valueObj.platform);
+        lodashSet(formattedObj, ['id1'], valueObj.id);
+        
+      } else if (index === 1) {
+        
+        lodashSet(formattedObj, ['platform2'], valueObj.platform);
+        lodashSet(formattedObj, ['id2'], valueObj.id);
+        
+      } else if (index === 2) {
+        
+        lodashSet(formattedObj, ['platform3'], valueObj.platform);
+        lodashSet(formattedObj, ['id3'], valueObj.id);
+        
+      }
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   情報
+    // --------------------------------------------------
+    
+    const publicInformationsArr = lodashGet(formattedObj, ['publicInformationsArr'], []);
+    
+    for (const [index, valueObj] of publicInformationsArr.entries()) {
+      
+      if (index === 0) {
+        
+        lodashSet(formattedObj, ['informationTitle1'], valueObj.title);
+        lodashSet(formattedObj, ['information1'], valueObj.information);
+        
+      } else if (index === 1) {
+        
+        lodashSet(formattedObj, ['informationTitle2'], valueObj.title);
+        lodashSet(formattedObj, ['information2'], valueObj.information);
+        
+      } else if (index === 2) {
+        
+        lodashSet(formattedObj, ['informationTitle3'], valueObj.title);
+        lodashSet(formattedObj, ['information3'], valueObj.information);
+        
+      } else if (index === 3) {
+        
+        lodashSet(formattedObj, ['informationTitle4'], valueObj.title);
+        lodashSet(formattedObj, ['information4'], valueObj.information);
+        
+      } else if (index === 4) {
+        
+        lodashSet(formattedObj, ['informationTitle5'], valueObj.title);
+        lodashSet(formattedObj, ['information5'], valueObj.information);
+        
+      }
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
     //   returnObj
     // --------------------------------------------------
     
-    const returnObj = docRecruitmentThreadsArr[0];
+    const returnObj = formattedObj;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   不要なデータを削除
+    // --------------------------------------------------
+    
+    delete returnObj.publicIDsArr;
+    delete returnObj.publicInformationsArr;
+    
+    // delete returnObj.hardwareIDsArr;
+    // delete returnObj.ids_idsArr;
+    // delete returnObj.publicCommentsUsers_idsArr;
+    // delete returnObj.publicApprovalUsers_idsArrr;
+    // delete returnObj.close;
+    // delete returnObj.webPushSubscriptionObj;
+    // delete returnObj.comments;
+    // delete returnObj.replies;
+    // delete returnObj.images;
+    // delete returnObj.videos;
+    // delete returnObj.ip;
+    // delete returnObj.userAgent;
     
     
     
@@ -1629,21 +1459,21 @@ const findOneForEdit = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/recruitment-threads/model.js - findOneForEdit
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/recruitment-threads/model.js - findOneForEdit
+    // `);
     
-    console.log(chalk`
-      recruitmentThreads_id: {green ${recruitmentThreads_id}}
-      editable: {green ${editable} / ${typeof editable}}
-    `);
+    // console.log(chalk`
+    //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+    //   editable: {green ${editable} / ${typeof editable}}
+    // `);
     
-    console.log(`
-      ----- docRecruitmentThreadsArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(docRecruitmentThreadsArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- docRecruitmentThreadsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docRecruitmentThreadsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- returnObj -----\n

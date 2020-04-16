@@ -1,72 +1,72 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const shortid = require('shortid');
-const moment = require('moment');
+import shortid from 'shortid';
+import moment from 'moment';
 
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelRecruitmentThreads = require('../../../../../app/@database/recruitment-threads/model');
-const ModelUsers = require('../../../../../app/@database/users/model');
-const ModelGameCommunities = require('../../../../../app/@database/game-communities/model');
+import ModelRecruitmentThreads from '../../../../../app/@database/recruitment-threads/model';
+import ModelUsers from '../../../../../app/@database/users/model';
+import ModelGameCommunities from '../../../../../app/@database/game-communities/model';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
-const { formatAndSave } = require('../../../../../app/@modules/image/save');
-const { setAuthority } = require('../../../../../app/@modules/authority');
+import { verifyCsrfToken } from '../../../../../app/@modules/csrf';
+import { returnErrorsArr } from '../../../../../app/@modules/log/log';
+import { CustomError } from '../../../../../app/@modules/error/custom';
+import { formatAndSave } from '../../../../../app/@modules/image/save';
+import { setAuthority } from '../../../../../app/@modules/authority';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationBoolean } = require('../../../../../app/@validations/boolean');
+import { validationIP } from '../../../../../app/@validations/ip';
+import { validationBoolean } from '../../../../../app/@validations/boolean';
 
-const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
-const { validationHardwareIDsArrServer } = require('../../../../../app/@database/hardwares/validations/id-server');
-const { validationIDs_idArrServer } = require('../../../../../app/@database/ids/validations/_id-server');
-const { validationUsersWebPushSubscriptionObjEndpointServer, validationUsersWebPushSubscriptionObjKeysP256dhServer, validationUsersWebPushSubscriptionObjKeysAuthServer } = require('../../../../../app/@database/users/validations/web-push-server');
+import { validationGameCommunities_idServer } from '../../../../../app/@database/game-communities/validations/_id-server';
+import { validationHardwareIDsArrServer } from '../../../../../app/@database/hardwares/validations/id-server';
+import { validationIDsArrServer } from '../../../../../app/@database/ids/validations/_id-server';
+import { validationUsersWebPushSubscriptionObjEndpointServer, validationUsersWebPushSubscriptionObjKeysP256dhServer, validationUsersWebPushSubscriptionObjKeysAuthServer } from '../../../../../app/@database/users/validations/web-push-server';
 
-const { validationRecruitmentThreadsCategory } = require('../../../../../app/@database/recruitment-threads/validations/category');
-const { validationRecruitmentThreadsTitle } = require('../../../../../app/@database/recruitment-threads/validations/title');
-const { validationRecruitmentThreadsName } = require('../../../../../app/@database/recruitment-threads/validations/name');
-const { validationRecruitmentThreadsComment } = require('../../../../../app/@database/recruitment-threads/validations/comment');
-const { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } = require('../../../../../app/@database/recruitment-threads/validations/ids-informations');
-const { validationRecruitmentThreadsDeadlineDate } = require('../../../../../app/@database/recruitment-threads/validations/deadline');
-const { validationRecruitmentThreadsLimit } = require('../../../../../app/@database/recruitment-threads/validations/limit');
+import { validationRecruitmentThreadsCategory } from '../../../../../app/@database/recruitment-threads/validations/category';
+import { validationRecruitmentThreadsTitle } from '../../../../../app/@database/recruitment-threads/validations/title';
+import { validationRecruitmentThreadsName } from '../../../../../app/@database/recruitment-threads/validations/name';
+import { validationRecruitmentThreadsComment } from '../../../../../app/@database/recruitment-threads/validations/comment';
+import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } from '../../../../../app/@database/recruitment-threads/validations/ids-informations';
+import { validationRecruitmentThreadsDeadlineDate } from '../../../../../app/@database/recruitment-threads/validations/deadline';
+import { validationRecruitmentThreadsLimit } from '../../../../../app/@database/recruitment-threads/validations/limit';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from '../../../../../app/@locales/locale';
 
 
 
@@ -164,8 +164,8 @@ export default async (req, res) => {
     
     let { 
       
-      // anonymity,
-      ids_idsArr,
+      // ids_idsArr,
+      idsArr,
       platform1,
       platform2,
       platform3,
@@ -187,8 +187,8 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['name'], name);
     lodashSet(requestParametersObj, ['comment'], comment);
     lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
-    // lodashSet(requestParametersObj, ['anonymity'], anonymity);
-    lodashSet(requestParametersObj, ['ids_idsArr'], ids_idsArr);
+    // lodashSet(requestParametersObj, ['ids_idsArr'], ids_idsArr);
+    lodashSet(requestParametersObj, ['idsArr'], idsArr);
     lodashSet(requestParametersObj, ['platform1'], platform1);
     lodashSet(requestParametersObj, ['platform2'], platform2);
     lodashSet(requestParametersObj, ['platform3'], platform3);
@@ -249,7 +249,6 @@ export default async (req, res) => {
     await validationRecruitmentThreadsTitle({ throwError: true, value: title });
     await validationRecruitmentThreadsName({ throwError: true, value: name });
     await validationRecruitmentThreadsComment({ throwError: true, value: comment });
-    // await validationBoolean({ throwError: true, value: anonymity });
     
     await validationRecruitmentThreadsInformationTitle({ throwError: true, value: informationTitle1 });
     await validationRecruitmentThreadsInformationTitle({ throwError: true, value: informationTitle2 });
@@ -277,7 +276,17 @@ export default async (req, res) => {
     // await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
     // await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
     
+    // console.log(`
+    //   ----- ids_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
+    // console.log(`
+    //   ----- idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -288,7 +297,7 @@ export default async (req, res) => {
     
     if (loginUsers_id) {
       
-      validatedIDs_idArrObj = await validationIDs_idArrServer({ valueArr: ids_idsArr, loginUsers_id });
+      validatedIDs_idArrObj = await validationIDsArrServer({ valueArr: idsArr, loginUsers_id });
       
     } else {
       
@@ -320,10 +329,10 @@ export default async (req, res) => {
       
       
       // --------------------------------------------------
-      //   データが存在しない、編集権限がない場合はエラーが投げられる
+      //   データが存在しない　【編集権限】がない場合はエラーが投げられる
       // --------------------------------------------------
       
-      const tempOldObj = await ModelRecruitmentThreads.findForEdit({
+      const tempOldObj = await ModelRecruitmentThreads.findOneForEdit({
         
         req,
         localeObj,
@@ -390,7 +399,8 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (deadlineDate) {
-      deadlineDate = moment(deadlineDate).utc().add(1, 'day').toISOString();
+      deadlineDate = moment(deadlineDate).utc().toISOString();
+      // deadlineDate = moment(deadlineDate).utc().add(1, 'day').toISOString();
     }
     
     
@@ -399,6 +409,8 @@ export default async (req, res) => {
     // --------------------------------------------------
     //   値の強制：ログインしている場合
     // --------------------------------------------------
+    
+    let ids_idsArr = [];
     
     if (loginUsers_id) {
       
@@ -419,7 +431,6 @@ export default async (req, res) => {
       
     } else {
       
-      // anonymity = false;
       ids_idsArr = [];
       publicSetting = 1;
       
@@ -536,23 +547,6 @@ export default async (req, res) => {
       }
     };
     
-    // if (webPush && loginUsers_id) {
-      
-    //   webPushSubscriptionObj = {
-    //     endpoint,
-    //     keys: {
-    //       p256dh,
-    //       auth,
-    //     }
-    //   };
-      
-    // }
-    
-    
-    
-    
-    
-    
     
     
     
@@ -656,7 +650,6 @@ export default async (req, res) => {
         }
       ],
       imagesAndVideos_id,
-      // anonymity,
       ids_idsArr,
       publicIDsArr,
       publicInformationsArr,
@@ -825,13 +818,13 @@ export default async (req, res) => {
     
     
     
-    // // --------------------------------------------------
-    // //   Set Authority / 非ログインユーザーに時間制限のある編集権限を与える
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   Set Authority / 非ログインユーザーに時間制限のある編集権限を与える
+    // --------------------------------------------------
     
-    // if (!loginUsers_id) {
-    //   setAuthority({ req, _id: recruitmentThreadsConditionObj._id });
-    // }
+    if (!loginUsers_id) {
+      setAuthority({ req, _id: recruitmentThreadsConditionObj._id });
+    }
     
     
     

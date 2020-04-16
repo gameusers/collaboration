@@ -115,7 +115,7 @@ const validationIDs_idServer = async ({ value, loginUsers_id }) => {
  * @param {Array} valueArr - 配列
  * @return {Object} バリデーション結果
  */
-const validationIDs_idArrServer = async ({ required = false, valueArr, loginUsers_id }) => {
+const validationIDsArrServer = async ({ required = false, valueArr, loginUsers_id }) => {
   
   
   // ---------------------------------------------
@@ -279,5 +279,5 @@ const validationIDs_idArrServer = async ({ required = false, valueArr, loginUser
 
 module.exports = {
   validationIDs_idServer,
-  validationIDs_idArrServer,
+  validationIDsArrServer,
 };

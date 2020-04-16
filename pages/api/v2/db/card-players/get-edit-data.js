@@ -6,47 +6,47 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelCardPlayers = require('../../../../../app/@database/card-players/model');
+import ModelCardPlayers from '../../../../../app/@database/card-players/model';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
+import { verifyCsrfToken } from '../../../../../app/@modules/csrf';
+import { returnErrorsArr } from '../../../../../app/@modules/log/log';
+import { CustomError } from '../../../../../app/@modules/error/custom';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationCardPlayers_idServer } = require('../../../../../app/@database/card-players/validations/_id-server');
+import { validationIP } from '../../../../../app/@validations/ip';
+import { validationCardPlayers_idServer } from '../../../../../app/@database/card-players/validations/_id-server';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from '../../../../../app/@locales/locale';
 
 
 
@@ -78,9 +78,16 @@ export default async (req, res) => {
   //   Property
   // --------------------------------------------------
   
-  let returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   IP & User Agent
+  // --------------------------------------------------
+  
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
   
   
@@ -113,6 +120,8 @@ export default async (req, res) => {
     verifyCsrfToken(req, res);
     
     
+    
+    
     // --------------------------------------------------
     //   Login Check
     // --------------------------------------------------
@@ -126,10 +135,10 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   Validation
+    //   Validations
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: req.ip });
+    await validationIP({ throwError: true, value: ip });
     await validationCardPlayers_idServer({ throwError: true, value: cardPlayers_id, loginUsers_id });
     
     
@@ -140,11 +149,11 @@ export default async (req, res) => {
     //   プレイヤーカード情報
     // --------------------------------------------------
     
-    returnObj = await ModelCardPlayers.findOneBy_idForEditForm({
+    const returnObj = await ModelCardPlayers.findOneForEdit({
       
-      _id: cardPlayers_id,
       localeObj,
       loginUsers_id,
+      cardPlayers_id,
       
     });
     
@@ -189,11 +198,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: '6bx3tNubv',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

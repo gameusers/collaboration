@@ -15,18 +15,20 @@ const util = require('util');
 // ---------------------------------------------
 
 const moment = require('moment');
+
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashCloneDeep = require('lodash/cloneDeep');
 
 
 // ---------------------------------------------
-//   Model
+//   Schema & Model
 // ---------------------------------------------
 
 const Schema = require('./schema');
 const SchemaUsers = require('../users/schema');
 const SchemaImagesAndVideos = require('../images-and-videos/schema');
+
 const ModelIDs = require('../ids/model');
 const ModelFollows = require('../follows/model');
 
@@ -38,6 +40,13 @@ const ModelFollows = require('../follows/model');
 const { formatCardPlayersArr, formatCardPlayersArrFromSchemaCardPlayers } = require('./format');
 const { formatImagesAndVideosObj } = require('../images-and-videos/format');
 const { formatFollowsObj } = require('../follows/format');
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { CustomError } = require('../../@modules/error/custom');
 
 
 
@@ -407,7 +416,7 @@ const aggregateAndFormat = async ({
     
     // --------------------------------------------------
     //   Card Players のデータを取得
-    //   users をベースにしているのは accessDate でソートするため
+    //   ShemaUsers をベースにしているのは accessDate でソートするため
     // --------------------------------------------------
     
     const docUsersArr = await SchemaUsers.aggregate([
@@ -1302,6 +1311,469 @@ const findFromSchemaCardPlayers = async ({
 };
 
 
+
+
+
+/**
+ * 編集用データを取得する（権限もチェック）[2020/04/16]
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} cardPlayers_id - DB card-players _id / カードのID
+ * @return {Array} 取得データ
+ */
+const findOneForEdit = async ({
+  
+  localeObj,
+  loginUsers_id,
+  cardPlayers_id,
+  
+}) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const language = lodashGet(localeObj, ['language'], '');
+  const country = lodashGet(localeObj, ['country'], '');
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Aggregate
+    // --------------------------------------------------
+    
+    const docCardPlayersArr = await Schema.aggregate([
+      
+      
+      // --------------------------------------------------
+      //   Match
+      // --------------------------------------------------
+      
+      {
+        $match:
+          {
+            _id: cardPlayers_id,
+            users_id: loginUsers_id,
+          }
+      },
+      
+      
+      // --------------------------------------------------
+      //   images-and-videos - トップ画像
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$letImagesAndVideos_id'] },
+                }
+              },
+              { $project:
+                {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // --------------------------------------------------
+      //   images-and-videos - サムネイル画像
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$letImagesAndVideosThumbnail_id'] },
+                }
+              },
+              { $project:
+                {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosThumbnailObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosThumbnailObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // --------------------------------------------------
+      //   hardwares
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'hardwares',
+            let: {
+              letHardwareActiveArr: '$hardwareActiveObj.valueArr',
+              letHardwareInactiveArr: '$hardwareInactiveObj.valueArr'
+            },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $or:
+                    [
+                      { $and:
+                        [
+                          { $eq: ['$language', language] },
+                          { $eq: ['$country', country] },
+                          { $in: ['$hardwareID', '$$letHardwareActiveArr'] }
+                        ]
+                      },
+                      { $and:
+                        [
+                          { $eq: ['$language', language] },
+                          { $eq: ['$country', country] },
+                          { $in: ['$hardwareID', '$$letHardwareInactiveArr'] }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  hardwareID: 1,
+                  name: 1,
+                }
+              }
+            ],
+            as: 'hardwaresArr'
+          }
+      },
+      
+      
+      // --------------------------------------------------
+      //   ids
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'ids',
+            let: {
+              letIDs_idsArr: '$ids_idsArr',
+              letUsers_id: '$users_id',
+            },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $and:
+                    [
+                      { $eq: ['$users_id', '$$letUsers_id'] },
+                      { $in: ['$_id', '$$letIDs_idsArr'] }
+                    ]
+                  },
+                }
+              },
+              
+              
+              // --------------------------------------------------
+              //   ids / games
+              // --------------------------------------------------
+              
+              {
+                $lookup:
+                  {
+                    from: 'games',
+                    let: { letIDsGameCommunities_id: '$gameCommunities_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $and:
+                            [
+                              { $eq: ['$language', language] },
+                              { $eq: ['$country', country] },
+                              { $eq: ['$gameCommunities_id', '$$letIDsGameCommunities_id'] }
+                            ]
+                          },
+                        }
+                      },
+                      
+                      
+                      // --------------------------------------------------
+                      //   ids / games / images-and-videos / サムネイル用
+                      // --------------------------------------------------
+                      
+                      {
+                        $lookup:
+                          {
+                            from: 'images-and-videos',
+                            let: { letIDsGamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                            pipeline: [
+                              { $match:
+                                { $expr:
+                                  { $eq: ['$_id', '$$letIDsGamesImagesAndVideosThumbnail_id'] },
+                                }
+                              },
+                              { $project:
+                                {
+                                  createdDate: 0,
+                                  updatedDate: 0,
+                                  users_id: 0,
+                                  __v: 0,
+                                }
+                              }
+                            ],
+                            as: 'imagesAndVideosThumbnailObj'
+                          }
+                      },
+                      
+                      {
+                        $unwind: {
+                          path: '$imagesAndVideosThumbnailObj',
+                          preserveNullAndEmptyArrays: true,
+                        }
+                      },
+                      
+                      
+                      { $project:
+                        {
+                          _id: 1,
+                          gameCommunities_id: 1,
+                          name: 1,
+                          imagesAndVideosThumbnailObj: 1,
+                        }
+                      }
+                    ],
+                    as: 'gamesObj'
+                  }
+              },
+              
+              {
+                $unwind:
+                  {
+                    path: '$gamesObj',
+                    preserveNullAndEmptyArrays: true
+                  }
+              },
+              
+              
+              { $project:
+                {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  search: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'idsArr'
+          }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   配列が空の場合は処理停止
+    // --------------------------------------------------
+    
+    if (docCardPlayersArr.length === 0) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'bGSSbWbBE', messageID: 'cvS0qSAlE' }] });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Format
+    // --------------------------------------------------
+    
+    const formattedObj = docCardPlayersArr[0];
+    
+    const hardwaresArr = lodashGet(formattedObj, ['hardwaresArr'], []);
+    
+    
+    // --------------------------------------------------
+    //   hardwareActive
+    // --------------------------------------------------
+    
+    const hardwareActiveValueArr = lodashGet(formattedObj, ['hardwareActiveObj', 'valueArr'], []);
+    
+    const hardwareActiveArr = [];
+    
+    for (let value of hardwareActiveValueArr) {
+      
+      const obj = hardwaresArr.find((valueObj) => {
+        return valueObj.hardwareID === value;
+      });
+      
+      if (obj && 'name' in obj) {
+        
+        hardwareActiveArr.push({
+          hardwareID: value,
+          name: obj.name
+        });
+        
+      }
+      
+    }
+    
+    formattedObj.hardwareActiveArr = hardwareActiveArr;
+    
+    
+    // --------------------------------------------------
+    //   hardwareInactive
+    // --------------------------------------------------
+    
+    const hardwareInactiveValueArr = lodashGet(formattedObj, ['hardwareInactiveObj', 'valueArr'], []);
+    
+    const hardwareInactiveArr = [];
+    
+    for (let value of hardwareInactiveValueArr) {
+      
+      const obj = hardwaresArr.find((valueObj) => {
+        return valueObj.hardwareID === value;
+      });
+      
+      if (obj && 'name' in obj) {
+        
+        hardwareInactiveArr.push({
+          hardwareID: value,
+          name: obj.name
+        });
+        
+      }
+      
+    }
+    
+    formattedObj.hardwareInactiveArr = hardwareInactiveArr;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   returnObj
+    // --------------------------------------------------
+    
+    const returnObj = {};
+    
+    returnObj[cardPlayers_id] = formattedObj;
+    
+    
+    
+    // --------------------------------------------------
+    //   ID データをまとめて取得
+    // --------------------------------------------------
+    
+    // let ids_idsArr = [];
+    
+    // for (let valueObj of resultCardPlayersArr.values()) {
+    //   ids_idsArr = ids_idsArr.concat(valueObj.ids_idsArr);
+    // }
+    
+    // const resultIDsObj = await ModelIDs.findForCardPlayer({
+      
+    //   localeObj,
+    //   loginUsers_id,
+    //   ids_idsArr,
+      
+    // });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   カードデータのフォーマット
+    // --------------------------------------------------
+    
+    // returnObj = formatForEditForm({
+    //   cardPlayersArr: resultCardPlayersArr,
+    //   idsObj: resultIDsObj
+    // });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/card-players/model.js - findOneForEdit
+    // `);
+    
+    // console.log(`
+    //   ----- docCardPlayersArr -----\n
+    //   ${util.inspect(docCardPlayersArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    // return {};
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
 
 
 
@@ -2863,6 +3335,7 @@ module.exports = {
   
   findForCardPlayers,
   findFromSchemaCardPlayers,
+  findOneForEdit,
   // findOneBy_id,
   findOneBy_idForEditForm,
   findForMember,

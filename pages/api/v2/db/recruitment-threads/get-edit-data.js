@@ -22,7 +22,7 @@ import lodashSet from 'lodash/set';
 //   Model
 // ---------------------------------------------
 
-import ModelRecruitmentThreads from '../../../../../app/@database/recruitment-threads/model';
+import ModelRecruitmentThreads from '../../../../../app/@database/recruitment-threads/model.js';
 
 
 // ---------------------------------------------

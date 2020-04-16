@@ -54,7 +54,6 @@ const cssSpanColor = css`
 
 
 
-
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -68,9 +67,9 @@ export default class extends React.Component {
   //   constructor
   // --------------------------------------------------
   
-  constructor(props) {
-    super(props);
-  }
+  // constructor(props) {
+  //   super(props);
+  // }
   
   
   // --------------------------------------------------

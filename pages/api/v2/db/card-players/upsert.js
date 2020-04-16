@@ -6,73 +6,72 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const shortid = require('shortid');
-const moment = require('moment');
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import shortid from 'shortid';
+import moment from 'moment';
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelCardPlayers = require('../../../../../app/@database/card-players/model');
-const ModelImagesAndVideos = require('../../../../../app/@database/images-and-videos/model');
+import ModelCardPlayers from '../../../../../app/@database/card-players/model';
+import ModelImagesAndVideos from '../../../../../app/@database/images-and-videos/model';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
-const { formatAndSave } = require('../../../../../app/@modules/image/save');
+import { verifyCsrfToken } from '../../../../../app/@modules/csrf';
+import { returnErrorsArr } from '../../../../../app/@modules/log/log';
+import { CustomError } from '../../../../../app/@modules/error/custom';
+import { formatAndSave } from '../../../../../app/@modules/image/save';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationBoolean } = require('../../../../../app/@validations/boolean');
+import { validationIP } from '../../../../../app/@validations/ip';
+import { validationBoolean } from '../../../../../app/@validations/boolean';
 
-const { validationCardPlayers_idServer } = require('../../../../../app/@database/card-players/validations/_id-server');
-const { validationCardPlayersName } = require('../../../../../app/@database/card-players/validations/name');
-const { validationCardPlayersStatus } = require('../../../../../app/@database/card-players/validations/status');
-const { validationCardPlayersComment } = require('../../../../../app/@database/card-players/validations/comment');
-const { validationCardPlayersAge, validationCardPlayersAgeAlternativeText } = require('../../../../../app/@database/card-players/validations/age');
-const { validationCardPlayersSex, validationCardPlayersSexAlternativeText } = require('../../../../../app/@database/card-players/validations/sex');
-const { validationCardPlayersAddressAlternativeText } = require('../../../../../app/@database/card-players/validations/address');
-const { validationCardPlayersGamingExperience, validationCardPlayersGamingExperienceAlternativeText } = require('../../../../../app/@database/card-players/validations/gaming-experience');
-const { validationCardPlayersHobby } = require('../../../../../app/@database/card-players/validations/hobby');
-const { validationCardPlayersSpecialSkill } = require('../../../../../app/@database/card-players/validations/special-skill');
-const { validationCardPlayersSmartphoneModel, validationCardPlayersSmartphoneComment } = require('../../../../../app/@database/card-players/validations/smartphone');
-const { validationCardPlayersTabletModel, validationCardPlayersTabletComment } = require('../../../../../app/@database/card-players/validations/tablet');
-const { validationCardPlayersPCModel, validationCardPlayersPCComment, validationCardPlayersPCSpec } = require('../../../../../app/@database/card-players/validations/pc');
-const { validationCardPlayersHardwareActiveArrServer, validationCardPlayersHardwareInactiveArrServer } = require('../../../../../app/@database/card-players/validations/hardware-server');
-// const { validationCardPlayersIDArrServer } = require('../../../../../app/@database/card-players/validations/id-server');
-const { validationCardPlayersActivityTimeObjValueArr } = require('../../../../../app/@database/card-players/validations/activity-time');
-const { validationCardPlayersLookingForFriendsValue, validationCardPlayersLookingForFriendsComment, validationCardPlayersLookingForFriendsIcon } = require('../../../../../app/@database/card-players/validations/looking-for-friends');
-const { validationCardPlayersVoiceChatValue, validationCardPlayersVoiceChatComment } = require('../../../../../app/@database/card-players/validations/voice-chat');
-const { validationCardPlayersLinkArr } = require('../../../../../app/@database/card-players/validations/link');
-
-const { validationIDs_idArrServer } = require('../../../../../app/@database/ids/validations/_id-server');
+import { validationCardPlayers_idServer } from '../../../../../app/@database/card-players/validations/_id-server';
+import { validationCardPlayersName } from '../../../../../app/@database/card-players/validations/name';
+import { validationCardPlayersStatus } from '../../../../../app/@database/card-players/validations/status';
+import { validationCardPlayersComment } from '../../../../../app/@database/card-players/validations/comment';
+import { validationCardPlayersAge, validationCardPlayersAgeAlternativeText } from '../../../../../app/@database/card-players/validations/age';
+import { validationCardPlayersSex, validationCardPlayersSexAlternativeText } from '../../../../../app/@database/card-players/validations/sex';
+import { validationCardPlayersAddressAlternativeText } from '../../../../../app/@database/card-players/validations/address';
+import { validationCardPlayersGamingExperience, validationCardPlayersGamingExperienceAlternativeText } from '../../../../../app/@database/card-players/validations/gaming-experience';
+import { validationCardPlayersHobby } from '../../../../../app/@database/card-players/validations/hobby';
+import { validationCardPlayersSpecialSkill } from '../../../../../app/@database/card-players/validations/special-skill';
+import { validationCardPlayersSmartphoneModel, validationCardPlayersSmartphoneComment } from '../../../../../app/@database/card-players/validations/smartphone';
+import { validationCardPlayersTabletModel, validationCardPlayersTabletComment } from '../../../../../app/@database/card-players/validations/tablet';
+import { validationCardPlayersPCModel, validationCardPlayersPCComment, validationCardPlayersPCSpec } from '../../../../../app/@database/card-players/validations/pc';
+import { validationCardPlayersHardwareActiveArrServer, validationCardPlayersHardwareInactiveArrServer } from '../../../../../app/@database/card-players/validations/hardware-server';
+import { validationCardPlayersActivityTimeObjValueArr } from '../../../../../app/@database/card-players/validations/activity-time';
+import { validationCardPlayersLookingForFriendsValue, validationCardPlayersLookingForFriendsComment, validationCardPlayersLookingForFriendsIcon } from '../../../../../app/@database/card-players/validations/looking-for-friends';
+import { validationCardPlayersVoiceChatValue, validationCardPlayersVoiceChatComment } from '../../../../../app/@database/card-players/validations/voice-chat';
+import { validationCardPlayersLinkArr } from '../../../../../app/@database/card-players/validations/link';
+import { validationIDsArrServer } from '../../../../../app/@database/ids/validations/_id-server';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from '../../../../../app/@locales/locale';
 
 
 
@@ -104,9 +103,17 @@ export default async (req, res) => {
   //   Property
   // --------------------------------------------------
   
-  let returnObj = {};
+  const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   IP & User Agent
+  // --------------------------------------------------
+  
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
   
   
@@ -137,7 +144,7 @@ export default async (req, res) => {
       pcObj,
       hardwareActiveObj,
       hardwareInactiveObj,
-      ids_idsArr,
+      idsArr,
       activityTimeObj,
       lookingForFriendsObj,
       voiceChatObj,
@@ -149,11 +156,6 @@ export default async (req, res) => {
       
     } = bodyObj;
     
-    // console.log(`
-    //   ----- ageObj -----\n
-    //   ${util.inspect(ageObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     lodashSet(requestParametersObj, ['_id'], _id);
     lodashSet(requestParametersObj, ['nameObj'], nameObj);
@@ -170,7 +172,7 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['pcObj'], pcObj);
     lodashSet(requestParametersObj, ['hardwareActiveObj'], hardwareActiveObj);
     lodashSet(requestParametersObj, ['hardwareInactiveObj'], hardwareInactiveObj);
-    lodashSet(requestParametersObj, ['ids_idsArr'], []);
+    lodashSet(requestParametersObj, ['idsArr'], []);
     lodashSet(requestParametersObj, ['activityTimeObj'], activityTimeObj);
     lodashSet(requestParametersObj, ['lookingForFriendsObj'], lookingForFriendsObj);
     lodashSet(requestParametersObj, ['voiceChatObj'], voiceChatObj);
@@ -206,7 +208,7 @@ export default async (req, res) => {
     //   Validation
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: req.ip });
+    await validationIP({ throwError: true, value: ip });
     
     
     // ---------------------------------------------
@@ -366,7 +368,7 @@ export default async (req, res) => {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: '9tP9T_0Uc', messageID: '3mDvfqZHV' }] });
     }
     
-    
+    // console.log('AAAAAAAAAAAAAAAAAAAAAAA');
     // ---------------------------------------------
     //   - 所有ハードウェア
     // ---------------------------------------------
@@ -390,13 +392,14 @@ export default async (req, res) => {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'D1H6NUQ2x', messageID: '3mDvfqZHV' }] });
     }
     
-    
+    // console.log('AAAAAAAAAAAAAAAAAAAAAAA22222');
+    // console.log(idsArr);
     // ---------------------------------------------
     //   - ID
     // ---------------------------------------------
     
-    const validatedIDs_idArrObj = await validationIDs_idArrServer({ valueArr: ids_idsArr, loginUsers_id });
-    
+    const validatedIDsArrObj = await validationIDsArrServer({ valueArr: idsArr, loginUsers_id });
+    // console.log('AAAAAAAAAAAAAAAAAAAAAAA33333');
     
     // ---------------------------------------------
     //   - 活動時間
@@ -624,7 +627,7 @@ export default async (req, res) => {
         valueArr: validatedHardwareInactiveObj.valueArr,
         search: hardwareInactiveObj.search,
       },
-      ids_idsArr: validatedIDs_idArrObj.valueArr,
+      ids_idsArr: validatedIDsArrObj.valueArr,
       activityTimeObj,
       lookingForFriendsObj,
       voiceChatObj,
@@ -691,14 +694,14 @@ export default async (req, res) => {
       
       
     // ---------------------------------------------
-    //   - Insert
+    //   - Insert　まだ作成していない
     // ---------------------------------------------
       
     } else {
       
-      cardPlayersConditionObj = {
-        _id: shortid.generate()
-      };
+      // cardPlayersConditionObj = {
+      //   _id: shortid.generate()
+      // };
       
     }
     
@@ -718,19 +721,17 @@ export default async (req, res) => {
       
     });
     
-    // returnObj.cardPlayersObj
-    
     
     // --------------------------------------------------
     //   データ取得 / Card Players
     //   プレイヤーカード情報 / 編集フォーム用
     // --------------------------------------------------
     
-    returnObj.cardPlayersForEditFormObj = await ModelCardPlayers.findOneBy_idForEditForm({
+    returnObj.cardPlayersForEditFormObj = await ModelCardPlayers.findOneForEdit({
       
-      _id,
       localeObj,
       loginUsers_id,
+      cardPlayers_id: _id,
       
     });
     
@@ -765,8 +766,8 @@ export default async (req, res) => {
     // `);
     
     // console.log(`
-    //   ----- validatedIDs_idArrObj -----\n
-    //   ${util.inspect(validatedIDs_idArrObj, { colors: true, depth: null })}\n
+    //   ----- validatedIDsArrObj -----\n
+    //   ${util.inspect(validatedIDsArrObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

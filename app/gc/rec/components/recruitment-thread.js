@@ -44,10 +44,10 @@ import Paper from '@material-ui/core/Paper';
 // import Avatar from '@material-ui/core/Avatar';
 // import Chip from '@material-ui/core/Chip';
 
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+// import OutlinedInput from '@material-ui/core/OutlinedInput';
+// import MenuItem from '@material-ui/core/MenuItem';
+// import FormControl from '@material-ui/core/FormControl';
+// import Select from '@material-ui/core/Select';
 
 
 // ---------------------------------------------
@@ -56,18 +56,10 @@ import Select from '@material-ui/core/Select';
 
 import IconExpandLess from '@material-ui/icons/ExpandLess';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
-import IconAssignment from '@material-ui/icons/Assignment';
+// import IconAssignment from '@material-ui/icons/Assignment';
 import IconPublic from '@material-ui/icons/Public';
 import IconEdit from '@material-ui/icons/Edit';
 import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
-// import IconFavorite from '@material-ui/icons/PermIdentity';
-
-
-// ---------------------------------------------
-//   Simple Icons
-// ---------------------------------------------
-
-// import SimpleIcons from 'simple-icons-react-component';
 
 
 // ---------------------------------------------

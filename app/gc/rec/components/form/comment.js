@@ -51,7 +51,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 //   Validations
 // ---------------------------------------------
 
-import { validationRecruitmentThreadsTitle } from '../../../../@database/recruitment-threads/validations/title';
+// import { validationRecruitmentThreadsTitle } from '../../../../@database/recruitment-threads/validations/title';
 import { validationRecruitmentThreadsName } from '../../../../@database/recruitment-threads/validations/name';
 
 
@@ -59,9 +59,7 @@ import { validationRecruitmentThreadsName } from '../../../../@database/recruitm
 //   Components
 // ---------------------------------------------
 
-import FormHardwares from '../../../../common/hardware/components/form';
 import FormIDsInformations from '../form/ids-informations';
-import FormDeadline from '../form/deadline';
 import ImageAndVideoForm from '../../../../common/image-and-video/components/form';
 
 
@@ -144,6 +142,7 @@ export default injectIntl(class extends React.Component {
       pathArr = [],
       gameCommunities_id,
       recruitmentThreads_id,
+      recruitmentComments_id,
       
     } = this.props;
     
@@ -170,7 +169,7 @@ export default injectIntl(class extends React.Component {
       handleSubmitRecruitment,
       handleGetWebPushSubscribeObj,
       handleDeleteThread,
-      handleHideFormThread,
+      handleHideFormComment,
       
     } = storeGcRecruitment;
     
@@ -179,21 +178,15 @@ export default injectIntl(class extends React.Component {
     //   Property
     // --------------------------------------------------
     
-    const category = lodashGet(dataObj, [...pathArr, 'category'], '');
-    const title = lodashGet(dataObj, [...pathArr, 'title'], '');
     const name = lodashGet(dataObj, [...pathArr, 'name'], '');
     const comment = lodashGet(dataObj, [...pathArr, 'comment'], '');
-    const twitter = lodashGet(dataObj, [...pathArr, 'twitter'], false);
     const webPush = lodashGet(dataObj, [...pathArr, 'webPush'], false);
-    
-    const limitHardwares = parseInt(process.env.RECRUITMENT_THREAD_HARDWARES_LIMIT, 10);
     
     
     // --------------------------------------------------
     //   Validations
     // --------------------------------------------------
     
-    const validationRecruitmentThreadsTitleObj = validationRecruitmentThreadsTitle({ value: title });
     const validationRecruitmentThreadsNameObj = validationRecruitmentThreadsName({ value: name });
     
     
@@ -205,7 +198,7 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   募集を削除するか尋ねるダイアログを表示するための変数
+    //   コメントを削除するか尋ねるダイアログを表示するための変数
     // --------------------------------------------------
     
     const showDeleteDialog = lodashGet(dataObj, [...pathArr, 'showDeleteDialog'], false);
@@ -233,7 +226,7 @@ export default injectIntl(class extends React.Component {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/gc/rec/components/form/thread.js
+    //   /app/gc/rec/components/form/comment.js
     // `);
     
     // console.log(`
@@ -279,135 +272,29 @@ export default injectIntl(class extends React.Component {
         >
           
           
-          {recruitmentThreads_id &&
-            <React.Fragment>
-            
-              <h3
-                css={css`
-                  font-weight: bold;
-                  margin: 0 0 12px 0;
-                `}
-              >
-                募集編集フォーム
-              </h3>
-              
-              
-              <p
-                css={css`
-                  margin: 0 0 14px 0;
-                `}
-              >
-                投稿済みの募集を編集できます。
-              </p>
-              
-            </React.Fragment>
-          }
+          <h3
+            css={css`
+              font-weight: bold;
+              margin: 0 0 12px 0;
+            `}
+          >
+            コメント投稿フォーム
+          </h3>
           
           
-          {!recruitmentThreads_id &&
-            <p
-              css={css`
-                margin: 0 0 14px 0;
-              `}
-            >
-              募集を新しく投稿する場合、こちらのフォームを利用して投稿してください。ログインして投稿すると募集をいつでも編集できるようになり、ID・情報の公開相手を選ぶことができるようになります。
-            </p>
-          }
-          
-          
-          
-          
-          {/* Form Hardware */}
-          <div css={cssBox}>
-            <FormHardwares
-              pathArr={pathArr}
-              limit={limitHardwares}
-            />
-          </div>
-          
-          
-          
-          
-          {/* Category */}
-          <div css={cssBox}>
-            
-            <h3
-              css={css`
-                font-weight: bold;
-                margin: 0 0 2px 0;
-              `}
-            >
-              カテゴリー
-            </h3>
-            
-            <p
-              css={css`
-                margin: 0 0 24px 0;
-              `}
-            >
-              当てはまるカテゴリーを選んでください。どのカテゴリーにも当てはまらない場合は「なし」を選んでください。
-            </p>
-            
-            
-            <FormControl>
-              
-              <InputLabel shrink id="categoryLabel">募集のカテゴリー</InputLabel>
-              
-              <Select
-                css={css`
-                  && {
-                    width: 200px;
-                  }
-                `}
-                labelId="categoryLabel"
-                _id="category"
-                value={category}
-                onChange={(eventObj) => handleEdit({
-                  pathArr: [...pathArr, 'category'],
-                  value: eventObj.target.value
-                })}
-                displayEmpty
-              >
-                <MenuItem value="">なし</MenuItem>
-                <MenuItem value={1}>フレンド募集</MenuItem>
-                <MenuItem value={2}>メンバー募集</MenuItem>
-                <MenuItem value={3}>売買・交換相手募集</MenuItem>
-              </Select>
-              
-            </FormControl>
-            
-          </div>
+          <p
+            css={css`
+              margin: 0 0 14px 0;
+            `}
+          >
+            募集に対してコメントを投稿する場合は、こちらのフォームを利用してください。ログインして投稿するとコメントをいつでも編集できるようになり、ID・情報の公開相手を選ぶことができるようになります。
+          </p>
           
           
           
           
           {/* Title & Handle Name & Comment */}
           <div css={cssBox}>
-            
-            <TextField
-              css={css`
-                && {
-                  width: 100%;
-                  max-width: 500px;
-                  ${recruitmentThreads_id && `margin-top: 4px;`}
-                }
-              `}
-              id="threadTitle"
-              label="募集タイトル"
-              value={validationRecruitmentThreadsTitleObj.value}
-              onChange={(eventObj) => handleEdit({
-                pathArr: [...pathArr, 'title'],
-                value: eventObj.target.value
-              })}
-              error={validationRecruitmentThreadsTitleObj.error}
-              helperText={intl.formatMessage({ id: validationRecruitmentThreadsTitleObj.messageID }, { numberOfCharacters: validationRecruitmentThreadsTitleObj.numberOfCharacters })}
-              margin="normal"
-              inputProps={{
-                maxLength: 100,
-              }}
-            />
-            
-            
             
             
             {/* Name */}
@@ -463,7 +350,7 @@ export default injectIntl(class extends React.Component {
                   }
                 `}
                 rows={5}
-                placeholder="募集について必要な情報をこちらに記述してください。"
+                placeholder="コメントを入力してください。"
                 value={comment}
                 onChange={(eventObj) => handleEdit({
                   pathArr: [...pathArr, 'comment'],
@@ -488,8 +375,8 @@ export default injectIntl(class extends React.Component {
               <ImageAndVideoForm
                 pathArr={pathArr}
                 type="recruitment"
-                descriptionImage="募集に表示する画像をアップロードできます。"
-                descriptionVideo="募集に表示する動画を登録できます。"
+                descriptionImage="コメントに表示する画像をアップロードできます。"
+                descriptionVideo="コメントに表示する動画を登録できます。"
                 showImageCaption={true}
                 limit={limit}
               />
@@ -516,18 +403,6 @@ export default injectIntl(class extends React.Component {
           
           
           
-          {/* Deadline */}
-          <div css={cssBox}>
-            
-            <FormDeadline
-              pathArr={pathArr}
-            />
-            
-          </div>
-          
-          
-          
-          
           {/* プッシュ通知 */}
           <div css={cssBox}>
             
@@ -545,7 +420,7 @@ export default injectIntl(class extends React.Component {
                 margin: 0 0 12px 0;
               `}
             >
-              ブラウザで通知を受け取れるプッシュ通知の設定を行えます。プッシュ通知を許可すると、募集に返信があったときに通知を受け取れるのでおすすめです。
+              ブラウザで通知を受け取れるプッシュ通知の設定を行えます。プッシュ通知を許可すると、コメントに返信があったときに通知を受け取れるのでおすすめです。
             </p>
             
             <p
@@ -588,50 +463,6 @@ export default injectIntl(class extends React.Component {
           
           
           
-          {/* Twitter */}
-          <div css={cssBox}>
-            
-            <h3
-              css={css`
-                font-weight: bold;
-                margin: 0 0 2px 0;
-              `}
-            >
-              Twitter
-            </h3>
-            
-            <p
-              css={css`
-                margin: 0 0 12px 0;
-              `}
-            >
-              Twitterアカウントをお持ちの場合、自分のTwitterアカウントを利用して募集を告知することができます。チェックしない場合は、Game UsersのTwitterアカウントで告知が行われます。
-            </p>
-            
-            
-            <div>
-              <FormControlLabel
-                classes={{
-                  label: classes.label
-                }}
-                control={
-                  <Checkbox
-                    checked={twitter}
-                    onChange={(eventObj) => handleEdit({
-                      pathArr: [...pathArr, 'twitter'],
-                      value: eventObj.target.checked
-                    })}
-                  />
-                }
-                label="自分のTwitterアカウントで告知する"
-              />
-            </div>
-            
-          </div>
-          
-          
-          
-          
           {/* Buttons */}
           <div
             css={css`
@@ -651,12 +482,12 @@ export default injectIntl(class extends React.Component {
               color="primary"
               disabled={buttonDisabled}
             >
-              {recruitmentThreads_id ? '募集を編集する' : '募集を投稿する'}
+              {recruitmentComments_id ? 'コメントを編集する' : 'コメントを投稿する'}
             </Button>
             
             
             {/* Delete */}
-            {recruitmentThreads_id &&
+            {recruitmentComments_id &&
               <div
                 css={css`
                   margin: 0 0 0 24px;
@@ -678,32 +509,34 @@ export default injectIntl(class extends React.Component {
             
             
             {/* Close */}
-            {recruitmentThreads_id &&
-              <div
-                css={css`
-                  margin: 0 0 0 auto;
-                `}
+            <div
+              css={css`
+                margin: 0 0 0 auto;
+              `}
+            >
+              <Button
+                variant="outlined"
+                color="secondary"
+                // onClick={() => handleEdit({
+                //   pathArr: [...pathArr, 'showFormComment'],
+                //   value: false
+                // })}
+                onClick={() => handleHideFormComment({
+                  pathArr,
+                  recruitmentThreads_id,
+                })}
+                disabled={buttonDisabled}
               >
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  onClick={() => handleHideFormThread({
-                    pathArr,
-                    recruitmentThreads_id,
-                  })}
-                  disabled={buttonDisabled}
-                >
-                  閉じる
-                </Button>
-              </div>
-            }
+                閉じる
+              </Button>
+            </div>
             
           </div>
           
           
           
           
-          {/* 募集を削除するか尋ねるダイアログ */}
+          {/* コメントを削除するか尋ねるダイアログ */}
           <Dialog
             open={showDeleteDialog}
             onClose={() => handleEdit({
@@ -718,7 +551,7 @@ export default injectIntl(class extends React.Component {
             
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                募集を削除しますか？
+                コメントを削除しますか？
               </DialogContentText>
             </DialogContent>
             
@@ -733,6 +566,7 @@ export default injectIntl(class extends React.Component {
                     pathArr,
                     gameCommunities_id,
                     recruitmentThreads_id,
+                    recruitmentComments_id,
                   })}
                   color="primary"
                   autoFocus

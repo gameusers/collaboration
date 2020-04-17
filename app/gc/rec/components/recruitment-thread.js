@@ -60,6 +60,7 @@ import IconExpandMore from '@material-ui/icons/ExpandMore';
 import IconPublic from '@material-ui/icons/Public';
 import IconEdit from '@material-ui/icons/Edit';
 import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
+import IconCreate from '@material-ui/icons/Create';
 
 
 // ---------------------------------------------
@@ -67,19 +68,20 @@ import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 // ---------------------------------------------
 
 import Paragraph from '../../../common/layout/components/paragraph';
-import FormThread from './form/thread';
 import ChipCategory from './chip-category';
 import ChipHardwares from '../../../common/hardware/components/chip';
 import User from '../../../common/user/components/user';
 import ImageAndVideo from '../../../common/image-and-video/components/image-and-video';
 import Panel from '../../../common/layout/components/panel';
+
+import FormThread from './form/thread';
+import FormComment from './form/comment';
 import PublicIDs from './public-ids';
 import PublicInformations from './public-informations';
 import PublicSetting from './public-setting';
 import DeadlineDate from './deadline-date';
 import Notification from './notification';
 
-// import FormComment from './form-comment';
 // import Comment from './comment';
 
 
@@ -153,7 +155,7 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     this.pathArr = [this.props.gameCommunities_id, 'recruitmentThreadsObj'];
-    this.pathFormThreadArr = [this.props.gameCommunities_id, 'recruitmentFormThreadsObj'];
+    this.pathRecruitmentThreadsNewFormArr = [this.props.gameCommunities_id, 'recruitmentThreadsNewFormObj'];
     
     
   }
@@ -173,7 +175,7 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
-    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathFormThreadArr });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathRecruitmentThreadsNewFormArr });
     
     
   }
@@ -302,6 +304,16 @@ export default injectIntl(class extends React.Component {
       
       
       // --------------------------------------------------
+      //   Path Array
+      // --------------------------------------------------
+      
+      const pathRecruitmentThreadArr = [recruitmentThreads_id, 'recruitmentThreadObj'];
+      const pathRecruitmentThreadEditFormArr = [recruitmentThreads_id, 'recruitmentThreadEditFormObj'];
+      const pathRecruitmentCommentNewFormArr = [recruitmentThreads_id, 'recruitmentCommentNewFormObj'];
+      // const pathRecruitmentCommentEditFormArr = [recruitmentThreads_id, 'recruitmentCommentEditFormObj'];
+      
+      
+      // --------------------------------------------------
       //   data
       // --------------------------------------------------
       
@@ -320,6 +332,8 @@ export default injectIntl(class extends React.Component {
       const hardwaresArr = lodashGet(threadsDataObj, ['hardwaresArr'], []);
       const deadlineDate = lodashGet(threadsDataObj, ['deadlineDate'], '');
       const notification = lodashGet(threadsDataObj, ['notification'], '');
+      
+      // const comments = lodashGet(threadsDataObj, ['comments'], 0);
       
       
       // --------------------------------------------------
@@ -363,17 +377,36 @@ export default injectIntl(class extends React.Component {
       
       
       // --------------------------------------------------
-      //   Show
+      //   Show Form
       // --------------------------------------------------
       
-      const showForm = lodashGet(dataObj, [recruitmentThreads_id, 'showForm'], false);
+      const showFormThread = lodashGet(dataObj, [...pathRecruitmentThreadEditFormArr, 'showFormThread'], false);
+      const showFormComment = lodashGet(dataObj, [...pathRecruitmentCommentNewFormArr, 'showFormComment'], false);
       
       
       // --------------------------------------------------
       //   Panel
       // --------------------------------------------------
       
-      const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: [...this.pathArr, recruitmentThreads_id] });
+      const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: pathRecruitmentThreadArr });
+      
+      
+      
+      
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/gc/rec/components/recruitment-thread.js
+      // `);
+      
+      // console.log(`
+      //   ----- pathRecruitmentThreadArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathRecruitmentThreadArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       
@@ -466,7 +499,7 @@ export default injectIntl(class extends React.Component {
                           padding: 4px;
                         }
                       `}
-                      onClick={() => handlePanelExpand({ pathArr: [...this.pathArr, recruitmentThreads_id] })}
+                      onClick={() => handlePanelExpand({ pathArr: pathRecruitmentThreadArr })}
                       aria-expanded={panelExpanded}
                       aria-label="Show more"
                       disabled={buttonDisabled}
@@ -588,7 +621,7 @@ export default injectIntl(class extends React.Component {
                         color="primary"
                         disabled={buttonDisabled}
                         onClick={() => handleShowFormThread({
-                          pathArr: [recruitmentThreads_id, 'recruitmentFormThreadsObj'],
+                          pathArr: pathRecruitmentThreadEditFormArr,
                           recruitmentThreads_id,
                         })}
                       >
@@ -624,15 +657,19 @@ export default injectIntl(class extends React.Component {
             {/* Contents */}
             <ExpansionPanelDetails
               css={css`
-                @media screen and (max-width: 480px) {
-                  padding: 0 16px 24px !important;
+                && {
+                  display: flex;
+                  flex-flow: column wrap;
+                  @media screen and (max-width: 480px) {
+                    padding: 0 16px 24px !important;
+                  }
                 }
               `}
             >
                 
                 
-                {/* Form */}
-                {showForm &&
+                {/* Edit Form Thread */}
+                {showFormThread &&
                   <div
                     css={css`
                       width: 100%;
@@ -644,6 +681,7 @@ export default injectIntl(class extends React.Component {
                     `}
                   >
                     <FormThread
+                      pathArr={pathRecruitmentThreadEditFormArr}
                       gameCommunities_id={gameCommunities_id}
                       recruitmentThreads_id={recruitmentThreads_id}
                     />
@@ -653,8 +691,8 @@ export default injectIntl(class extends React.Component {
                 
                 
                 
-                {/* Content */}
-                {!showForm &&
+                {/* Thread */}
+                {!showFormThread &&
                   <div
                     css={css`
                       width: 100%;
@@ -754,7 +792,7 @@ export default injectIntl(class extends React.Component {
                         
                         {/* 通知方法 */}
                         <Notification
-                          pathArr={[...this.pathArr, recruitmentThreads_id]}
+                          pathArr={pathRecruitmentThreadArr}
                           notification={notification}
                         />
                       
@@ -767,13 +805,69 @@ export default injectIntl(class extends React.Component {
                     
                     
                     {/* Form Comment */}
-                    {/*<FormComment
-                      gameCommunities_id={gameCommunities_id}
-                      userCommunities_id={userCommunities_id}
-                      recruitmentThreads_id={recruitmentThreads_id}
-                      settingAnonymity={settingAnonymity}
-                    />*/}
-                    
+                    <div
+                      css={css`
+                        width: 100%;
+                        border-top: 1px solid;
+                        border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+                        border-image-slice: 1;
+                        margin: 6px 0 0 0;
+                        padding: 14px 0 0 0;
+                      `}
+                    >
+                      
+                      
+                      {/* Show Form Button */}
+                      {!showFormComment &&
+                        <div
+                          css={css`
+                            display: flex;
+                            flex-flow: row nowrap;
+                            justify-content: center;
+                          `}
+                        >
+                          <Button
+                            type="submit"
+                            variant="outlined"
+                            size="small"
+                            disabled={buttonDisabled}
+                            startIcon={<IconCreate />}
+                            onClick={() => handleEdit({
+                              pathArr: [...pathRecruitmentCommentNewFormArr, 'showFormComment'],
+                              value: !showFormComment,
+                            })}
+                          >
+                            コメント投稿フォーム
+                          </Button>
+                        </div>
+                      }
+                      
+                      
+                      
+                      
+                      {/* Form Comment */}
+                      {showFormComment &&
+                        <div
+                          css={css`
+                            // width: 100%;
+                            // border-bottom: 1px solid;
+                            // border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+                            // border-image-slice: 1;
+                            margin: 16px 0 0 0;
+                            // padding: 14px 0 0 0;
+                          `}
+                        >
+                          
+                          <FormComment
+                            pathArr={pathRecruitmentCommentNewFormArr}
+                            recruitmentThreads_id={recruitmentThreads_id}
+                          />
+                          
+                        </div>
+                      }
+                      
+                    </div>
+                
                     
                     {/* Comment */}
                     {/*<Comment
@@ -789,6 +883,12 @@ export default injectIntl(class extends React.Component {
                     
                   </div>
                 }
+                
+                
+                
+                
+                
+                
                 
               </ExpansionPanelDetails>
             
@@ -812,7 +912,7 @@ export default injectIntl(class extends React.Component {
       <React.Fragment>
         
         
-        {/* Recruitment Post Form */}
+        {/* New Form Recruitment Thread */}
         <div
           css={css`
             margin: 0 0 16px 0;
@@ -821,11 +921,12 @@ export default injectIntl(class extends React.Component {
           
           <Panel
             heading="募集投稿フォーム"
-            pathArr={this.pathFormThreadArr}
+            pathArr={this.pathRecruitmentThreadsNewFormArr}
             defaultExpanded={false}
           >
             
             <FormThread
+              pathArr={this.pathRecruitmentThreadsNewFormArr}
               gameCommunities_id={gameCommunities_id}
             />
             

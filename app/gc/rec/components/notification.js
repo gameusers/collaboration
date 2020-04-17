@@ -17,7 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import moment from 'moment';
+// import moment from 'moment';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -55,9 +55,9 @@ export default injectIntl(class extends React.Component {
   //   constructor
   // --------------------------------------------------
   
-  constructor(props) {
-    super(props);
-  }
+  // constructor(props) {
+  //   super(props);
+  // }
   
   
   
@@ -233,7 +233,7 @@ export default injectIntl(class extends React.Component {
               margin: 6px 0 0 0;
             `}
           >
-            この募集者はプッシュ通知を許可しています。コメントや返信が書き込まれると募集者に通知が届くため、書き込みに気づきやすくなります。
+            この投稿者はプッシュ通知を許可しています。コメントや返信が書き込まれると投稿者に通知が届くため、書き込みに気づきやすくなります。
           </p>
         }
         

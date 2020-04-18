@@ -26,6 +26,7 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import ModelRecruitmentThreads from '../../../../../app/@database/recruitment-threads/model';
+import ModelRecruitmentComments from '../../../../../app/@database/recruitment-comments/model';
 import ModelUsers from '../../../../../app/@database/users/model';
 import ModelGameCommunities from '../../../../../app/@database/game-communities/model';
 
@@ -49,16 +50,16 @@ import { validationIP } from '../../../../../app/@validations/ip';
 import { validationBoolean } from '../../../../../app/@validations/boolean';
 
 import { validationGameCommunities_idServer } from '../../../../../app/@database/game-communities/validations/_id-server';
-import { validationHardwareIDsArrServer } from '../../../../../app/@database/hardwares/validations/id-server';
+// import { validationHardwareIDsArrServer } from '../../../../../app/@database/hardwares/validations/id-server';
 import { validationIDsArrServer } from '../../../../../app/@database/ids/validations/_id-server';
 import { validationUsersWebPushSubscriptionObjEndpointServer, validationUsersWebPushSubscriptionObjKeysP256dhServer, validationUsersWebPushSubscriptionObjKeysAuthServer } from '../../../../../app/@database/users/validations/web-push-server';
 
-import { validationRecruitmentThreadsCategory } from '../../../../../app/@database/recruitment-threads/validations/category';
-import { validationRecruitmentThreadsTitle } from '../../../../../app/@database/recruitment-threads/validations/title';
+// import { validationRecruitmentThreadsCategory } from '../../../../../app/@database/recruitment-threads/validations/category';
+// import { validationRecruitmentThreadsTitle } from '../../../../../app/@database/recruitment-threads/validations/title';
 import { validationRecruitmentThreadsName } from '../../../../../app/@database/recruitment-threads/validations/name';
 import { validationRecruitmentThreadsComment } from '../../../../../app/@database/recruitment-threads/validations/comment';
 import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } from '../../../../../app/@database/recruitment-threads/validations/ids-informations';
-import { validationRecruitmentThreadsDeadlineDate } from '../../../../../app/@database/recruitment-threads/validations/deadline';
+// import { validationRecruitmentThreadsDeadlineDate } from '../../../../../app/@database/recruitment-threads/validations/deadline';
 import { validationRecruitmentThreadsLimit } from '../../../../../app/@database/recruitment-threads/validations/limit';
 
 
@@ -72,7 +73,7 @@ import { locale } from '../../../../../app/@locales/locale';
 
 
 // --------------------------------------------------
-//   endpointID: muKeCPjlC
+//   endpointID: 1X2JEdmdO
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -126,19 +127,9 @@ export default async (req, res) => {
       
       gameCommunities_id,
       recruitmentThreads_id,
-      hardwareIDsArr,
-      category,
-      title,
+      recruitmentComments_id,
       comment,
       imagesAndVideosObj,
-      // anonymity,
-      // ids_idsArr,
-      // platform1,
-      // platform2,
-      // platform3,
-      // id1,
-      // id2,
-      // id3,
       informationTitle1,
       informationTitle2,
       informationTitle3,
@@ -149,10 +140,6 @@ export default async (req, res) => {
       information3,
       information4,
       information5,
-      // publicSetting,
-      // deadlineDate,
-      // webPushSubscriptionObj,
-      twitter,
       webPush,
       threadLimit,
       commentLimit,
@@ -172,7 +159,6 @@ export default async (req, res) => {
       id2,
       id3,
       publicSetting,
-      deadlineDate,
       webPushSubscriptionObj,
       
     } = bodyObj;
@@ -180,9 +166,7 @@ export default async (req, res) => {
     
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['recruitmentThreads_id'], recruitmentThreads_id);
-    lodashSet(requestParametersObj, ['hardwareIDsArr'], hardwareIDsArr);
-    lodashSet(requestParametersObj, ['category'], category);
-    lodashSet(requestParametersObj, ['title'], title);
+    lodashSet(requestParametersObj, ['recruitmentComments_id'], recruitmentComments_id);
     lodashSet(requestParametersObj, ['name'], name);
     lodashSet(requestParametersObj, ['comment'], comment);
     lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
@@ -204,10 +188,8 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['information4'], information4);
     lodashSet(requestParametersObj, ['information5'], information5);
     lodashSet(requestParametersObj, ['publicSetting'], publicSetting);
-    lodashSet(requestParametersObj, ['deadlineDate'], deadlineDate);
     lodashSet(requestParametersObj, ['webPush'], webPush);
     lodashSet(requestParametersObj, ['webPushSubscriptionObj'], {});
-    lodashSet(requestParametersObj, ['twitter'], twitter);
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
     lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
@@ -242,9 +224,6 @@ export default async (req, res) => {
     await validationIP({ throwError: true, value: ip });
     
     await validationGameCommunities_idServer({ value: gameCommunities_id });
-    await validationHardwareIDsArrServer({ throwError: true, arr: hardwareIDsArr });
-    await validationRecruitmentThreadsCategory({ throwError: true, value: category });
-    await validationRecruitmentThreadsTitle({ throwError: true, value: title });
     await validationRecruitmentThreadsName({ throwError: true, value: name });
     await validationRecruitmentThreadsComment({ throwError: true, value: comment });
     
@@ -261,30 +240,18 @@ export default async (req, res) => {
     await validationRecruitmentThreadsInformation({ throwError: true, value: information5 });
     
     await validationRecruitmentThreadsPublicSetting({ throwError: true, value: publicSetting });
-    await validationRecruitmentThreadsDeadlineDate({ throwError: true, value: deadlineDate });
     
     await validationUsersWebPushSubscriptionObjEndpointServer({ value: endpoint });
     await validationUsersWebPushSubscriptionObjKeysP256dhServer({ value: p256dh });
     await validationUsersWebPushSubscriptionObjKeysAuthServer({ value: auth });
     
     await validationBoolean({ throwError: true, value: webPush });
-    await validationBoolean({ throwError: true, value: twitter });
     
     await validationRecruitmentThreadsLimit({ throwError: true, required: true, value: threadLimit });
     // await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
     // await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
     
-    // console.log(`
-    //   ----- ids_idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
-    // console.log(`
-    //   ----- idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     // --------------------------------------------------
@@ -323,19 +290,19 @@ export default async (req, res) => {
     //   編集の場合
     // --------------------------------------------------
     
-    if (recruitmentThreads_id) {
+    if (recruitmentComments_id) {
       
       
       // --------------------------------------------------
       //   データが存在しない　【編集権限】がない場合はエラーが投げられる
       // --------------------------------------------------
       
-      const tempOldObj = await ModelRecruitmentThreads.findOneForEdit({
+      const tempOldObj = await ModelRecruitmentComments.findOneForEdit({
         
         req,
         localeObj,
         loginUsers_id,
-        recruitmentThreads_id,
+        recruitmentComments_id,
         
       });
       
@@ -349,22 +316,22 @@ export default async (req, res) => {
       
       
     // --------------------------------------------------
-    //   新規の場合
+    //   新規の場合 - 同じIPで、同じコメントが10分以内に投稿されている場合はエラー
     // --------------------------------------------------
       
     } else {
       
       
-      // --------------------------------------------------
-      //   同じ名前のスレッドが存在するかチェック
-      //   count が 0 の場合は、同じ名前のスレッドは存在しない
-      // --------------------------------------------------
+      const dateTimeLimit = moment().utc().add(-10, 'minutes');
       
-      const count = await ModelRecruitmentThreads.count({
+      const count = await ModelRecruitmentComments.count({
         
         conditionObj: {
           gameCommunities_id,
-          'localesArr.name': name,
+          recruitmentThreads_id,
+          'localesArr.comment': comment,
+          'createdDate': { '$gt': dateTimeLimit },
+          ip,
         }
         
       });
@@ -374,7 +341,7 @@ export default async (req, res) => {
       // `);
       
       if (count > 0) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'PlYmFNcUT', messageID: '8ObqNYJ85' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'sdOQZwxlv', messageID: '8ObqNYJ85' }] });
       }
       
       
@@ -393,18 +360,6 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   deadlineDate / 締切日
-    // --------------------------------------------------
-    
-    if (deadlineDate) {
-      deadlineDate = moment(deadlineDate).utc().toISOString();
-      // deadlineDate = moment(deadlineDate).utc().add(1, 'day').toISOString();
-    }
-    
-    
-    
-    
-    // --------------------------------------------------
     //   値の強制：ログインしている場合
     // --------------------------------------------------
     
@@ -412,7 +367,7 @@ export default async (req, res) => {
     
     if (loginUsers_id) {
       
-      name = '';
+      name = '',
       
       // Validationで有効なIDだけが抽出される
       ids_idsArr = lodashGet(validatedIDsArrObj, ['valueArr'], []);
@@ -619,6 +574,8 @@ export default async (req, res) => {
     
     
     
+    
+    
     // --------------------------------------------------
     //   Insert
     // --------------------------------------------------
@@ -627,24 +584,22 @@ export default async (req, res) => {
     //   - recruitment-threads
     // ---------------------------------------------
     
-    const recruitmentThreadsConditionObj = {
+    const recruitmentCommentsConditionObj = {
       _id: shortid.generate(),
     };
     
     
-    const recruitmentThreadsSaveObj = {
+    const recruitmentCommentsSaveObj = {
       
       createdDate: ISO8601,
       updatedDate: ISO8601,
       gameCommunities_id,
+      recruitmentThreads_id,
       users_id: loginUsers_id,
-      hardwareIDsArr,
-      category,
       localesArr: [
         {
           _id: shortid.generate(),
           language: localeObj.language,
-          title,
           name,
           comment,
         }
@@ -654,16 +609,10 @@ export default async (req, res) => {
       publicIDsArr,
       publicInformationsArr,
       publicSetting,
-      deadlineDate,
-      close: false,
       webPush,
       webPushSubscriptionObj,
-      publicCommentsUsers_idsArr: [],
-      publicApprovalUsers_idsArrr: [],
-      comments: 0,
+      goods: 0,
       replies: 0,
-      images,
-      videos,
       ip,
       userAgent,
       
@@ -671,7 +620,22 @@ export default async (req, res) => {
     
     
     // ---------------------------------------------
-    //   - game-communities / 更新日時の変更＆スレッド数 + 1
+    //   - recruitment-threads / コメント数 + 1
+    // ---------------------------------------------
+    
+    const recruitmentThreadsConditionObj = {
+      _id: recruitmentThreads_id,
+    };
+    
+    
+    let recruitmentThreadsSaveObj = {
+      updatedDate: ISO8601,
+      $inc: { comments: 1, images, videos }
+    };
+    
+    
+    // ---------------------------------------------
+    //   - game-communities / 更新日時の変更
     // ---------------------------------------------
     
     const gameCommunitiesConditionObj = {
@@ -683,7 +647,6 @@ export default async (req, res) => {
       
       updatedDate: ISO8601,
       'updatedDateObj.recruitment': ISO8601,
-      $inc: { 'recruitmentObj.threadCount': 1 }
       
     };
     
@@ -734,7 +697,7 @@ export default async (req, res) => {
       //   recruitmentThreads の webPushSubscriptionObj は空にする
       // ---------------------------------------------
       
-      recruitmentThreadsSaveObj.webPushSubscriptionObj = {
+      recruitmentCommentsSaveObj.webPushSubscriptionObj = {
         endpoint: '',
         keys: {
           p256dh: '',
@@ -763,34 +726,42 @@ export default async (req, res) => {
     
     
     
+    
     // --------------------------------------------------
     //   Update
     // --------------------------------------------------
     
-    if (recruitmentThreads_id) {
+    if (recruitmentComments_id) {
       
       
       // ---------------------------------------------
-      //   - forum-threads
+      //   - forum-comments
       // ---------------------------------------------
       
-      recruitmentThreadsConditionObj._id = recruitmentThreads_id;
+      recruitmentCommentsConditionObj._id = recruitmentComments_id;
       
-      delete recruitmentThreadsSaveObj.createdDate;
-      delete recruitmentThreadsSaveObj.gameCommunities_id;
-      delete recruitmentThreadsSaveObj.users_id;
-      delete recruitmentThreadsSaveObj.comments;
-      delete recruitmentThreadsSaveObj.images;
-      delete recruitmentThreadsSaveObj.videos;
-      
-      recruitmentThreadsSaveObj.$inc = { images, videos };
+      delete recruitmentCommentsSaveObj.createdDate;
+      delete recruitmentCommentsSaveObj.gameCommunities_id;
+      delete recruitmentCommentsSaveObj.recruitmentThreads_id;
+      delete recruitmentCommentsSaveObj.users_id;
+      delete recruitmentCommentsSaveObj.goods;
       
       
       // ---------------------------------------------
       //   - game-communities / 更新日時の変更
       // ---------------------------------------------
       
-      delete gameCommunitiesSaveObj.$inc;
+      // delete gameCommunitiesSaveObj.$inc;
+      
+      
+      // ---------------------------------------------
+      //   - forum-threads / 更新日時の変更 & 画像数と動画数の変更
+      // ---------------------------------------------
+      
+      recruitmentThreadsSaveObj = {
+        updatedDate: ISO8601,
+        $inc: { images, videos }
+      };
       
       
     }
@@ -802,10 +773,12 @@ export default async (req, res) => {
     //   DB upsert Transaction
     // --------------------------------------------------
     
-    await ModelRecruitmentThreads.transactionForUpsert({
+    await ModelRecruitmentComments.transactionForUpsert({
       
       recruitmentThreadsConditionObj,
       recruitmentThreadsSaveObj,
+      recruitmentCommentsConditionObj,
+      recruitmentCommentsSaveObj,
       imagesAndVideosConditionObj,
       imagesAndVideosSaveObj,
       gameCommunitiesConditionObj,
@@ -822,9 +795,9 @@ export default async (req, res) => {
     //   Set Authority / 非ログインユーザーに時間制限のある編集権限を与える
     // --------------------------------------------------
     
-    if (!loginUsers_id) {
-      setAuthority({ req, _id: recruitmentThreadsConditionObj._id });
-    }
+    // if (!loginUsers_id) {
+    //   setAuthority({ req, _id: recruitmentCommentsConditionObj._id });
+    // }
     
     
     
@@ -959,7 +932,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'muKeCPjlC',
+      endpointID: '1X2JEdmdO',
       users_id: loginUsers_id,
       ip,
       userAgent,

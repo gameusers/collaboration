@@ -120,7 +120,17 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeIDForm, type, _id, idsArr } = this.props;
+    const {
+      
+      stores,
+      storeIDForm,
+      type,
+      _id,
+      idsArr,
+      forUpdateOtherStorePathArr = [],
+      
+    } = this.props;
+    
     
     const {
       
@@ -164,6 +174,7 @@ export default class extends React.Component {
           pathArr={this.pathArr}
           type={type}
           _id={_id}
+          forUpdateOtherStorePathArr={forUpdateOtherStorePathArr}
         />
       ;
       
@@ -176,6 +187,7 @@ export default class extends React.Component {
           _id={_id}
           idsArr={idsArr}
           additionalGameLimit={1}
+          forUpdateOtherStorePathArr={forUpdateOtherStorePathArr}
         />
       ;
       
@@ -184,7 +196,6 @@ export default class extends React.Component {
       componentContent =
         <FormRegister
           pathArr={this.pathArr}
-          // _id={`${_id}-register`}
           _id={_id}
           additionalGameLimit={1}
         />

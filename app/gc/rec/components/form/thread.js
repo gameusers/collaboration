@@ -167,7 +167,7 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleSubmitRecruitment,
+      handleSubmitRecruitmentThread,
       handleGetWebPushSubscribeObj,
       handleDeleteThread,
       handleHideFormThread,
@@ -270,7 +270,7 @@ export default injectIntl(class extends React.Component {
         
         <form
           name={elementName}
-          onSubmit={(eventObj) => handleSubmitRecruitment({
+          onSubmit={(eventObj) => handleSubmitRecruitmentThread({
             eventObj,
             pathArr,
             gameCommunities_id,

@@ -166,7 +166,7 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleSubmitRecruitment,
+      handleSubmitRecruitmentComment,
       handleGetWebPushSubscribeObj,
       handleDeleteThread,
       handleHideFormComment,
@@ -263,7 +263,7 @@ export default injectIntl(class extends React.Component {
         
         <form
           name={elementName}
-          onSubmit={(eventObj) => handleSubmitRecruitment({
+          onSubmit={(eventObj) => handleSubmitRecruitmentComment({
             eventObj,
             pathArr,
             gameCommunities_id,
@@ -287,7 +287,7 @@ export default injectIntl(class extends React.Component {
               margin: 0 0 14px 0;
             `}
           >
-            募集に対してコメントを投稿する場合は、こちらのフォームを利用してください。ログインして投稿するとコメントをいつでも編集できるようになり、ID・情報の公開相手を選ぶことができるようになります。
+            こちらのフォームで募集にコメントが行えます。ログインして投稿するとコメントをいつでも編集できるようになり、ID・情報の公開相手を選ぶことができるようになります。
           </p>
           
           
@@ -396,6 +396,7 @@ export default injectIntl(class extends React.Component {
               pathArr={pathArr}
               gameCommunities_id={gameCommunities_id}
               recruitmentThreads_id={recruitmentThreads_id}
+              recruitmentComments_id={recruitmentComments_id}
             />
             
           </div>

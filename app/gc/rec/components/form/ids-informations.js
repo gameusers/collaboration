@@ -66,9 +66,9 @@ export default injectIntl(class extends React.Component {
   //   constructor
   // --------------------------------------------------
   
-  constructor(props) {
-    super(props);
-  }
+  // constructor(props) {
+  //   super(props);
+  // }
   
   
   
@@ -92,6 +92,7 @@ export default injectIntl(class extends React.Component {
       pathArr,
       gameCommunities_id,
       recruitmentThreads_id,
+      recruitmentComments_id,
       
     } = this.props;
     
@@ -287,9 +288,10 @@ export default injectIntl(class extends React.Component {
         
         {(showForm === 'id' && login) &&
           <FormIDs
-            type="recruitmentForm"
-            _id={recruitmentThreads_id || gameCommunities_id}
+            type="recruitment"
+            _id={recruitmentComments_id || recruitmentThreads_id || gameCommunities_id}
             idsArr={idsArr}
+            forUpdateOtherStorePathArr={pathArr}
           />
         }
         
@@ -888,7 +890,7 @@ export default injectIntl(class extends React.Component {
           <Select
             css={css`
               && {
-                width: 240px;
+                width: 280px;
               }
             `}
             labelId="publicSettingLabel"
@@ -921,7 +923,7 @@ export default injectIntl(class extends React.Component {
         ) : publicSetting === 3 ? (
           
           <p>
-            ログインしてコメントしたユーザー全員にID・情報を公開します。
+            ログインして返信したユーザーの中からID・情報を公開する相手を選べます。
           </p>
           
         ) : (

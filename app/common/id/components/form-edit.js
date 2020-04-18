@@ -17,10 +17,11 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -135,43 +136,43 @@ export default injectIntl(class extends React.Component {
   //   constructor
   // --------------------------------------------------
   
-  constructor(props) {
+  // constructor(props) {
     
     
-    // --------------------------------------------------
-    //   super
-    // --------------------------------------------------
+  //   // --------------------------------------------------
+  //   //   super
+  //   // --------------------------------------------------
     
-    super(props);
-    
-    
-    // --------------------------------------------------
-    //   Path Array
-    // --------------------------------------------------
-    
-    // this.pathArr = [props._id, 'idFormObj'];
+  //   super(props);
     
     
-  }
+  //   // --------------------------------------------------
+  //   //   Path Array
+  //   // --------------------------------------------------
+    
+  //   // this.pathArr = [props._id, 'idFormObj'];
+    
+    
+  // }
   
   
   
   
-  // --------------------------------------------------
-  //   componentDidMount
-  // --------------------------------------------------
+  // // --------------------------------------------------
+  // //   componentDidMount
+  // // --------------------------------------------------
   
-  componentDidMount() {
+  // componentDidMount() {
     
     
-    // --------------------------------------------------
-    //   Button - Enable
-    // --------------------------------------------------
+  //   // --------------------------------------------------
+  //   //   Button - Enable
+  //   // --------------------------------------------------
     
-    // this.props.stores.layout.handleButtonEnable({ pathArr });
+  //   // this.props.stores.layout.handleButtonEnable({ pathArr });
     
     
-  }
+  // }
   
   
   
@@ -199,6 +200,7 @@ export default injectIntl(class extends React.Component {
       _id,
       idsArr,
       additionalGameLimit,
+      forUpdateOtherStorePathArr,
       
     } = this.props;
     
@@ -211,7 +213,7 @@ export default injectIntl(class extends React.Component {
       handleDeleteDialogOpen,
       handleDeleteDialogClose,
       handleEditSubmit,
-      handleDeleteSubmit
+      handleDeleteSubmit,
       
     } = storeIDForm;
     
@@ -567,6 +569,7 @@ export default injectIntl(class extends React.Component {
               type,
               _id,
               idsArr,
+              forUpdateOtherStorePathArr,
             })}
             disabled={buttonDisabled}
           >
@@ -613,6 +616,7 @@ export default injectIntl(class extends React.Component {
                 type,
                 _id,
                 idsArr,
+                forUpdateOtherStorePathArr,
               })}
               color="primary"
               autoFocus

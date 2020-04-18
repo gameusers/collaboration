@@ -16,6 +16,8 @@ const schema = mongoose.Schema({
   updatedDate: { type: Date, required: true },
   gameCommunities_id: { type: String, required: true },
   recruitmentThreads_id: { type: String },
+  recruitmentComments_id: { type: String },
+  replyToRecruitmentComments_id: { type: String },
   users_id: { type: String },
   localesArr: [
     {
@@ -41,7 +43,6 @@ const schema = mongoose.Schema({
       information: { type: String, required: true },
     }
   ],
-  publicSetting: { type: Number, default: 1, required: true },
   webPush: { type: Boolean, required: true },
   webPushSubscriptionObj: {
     endpoint: { type: String },
@@ -64,10 +65,10 @@ const schema = mongoose.Schema({
 
 let model = '';
 
-if (mongoose.models['recruitment-comments']) {
-  model = mongoose.model('recruitment-comments');
+if (mongoose.models['recruitment-replies']) {
+  model = mongoose.model('recruitment-replies');
 } else {
-  model = mongoose.model('recruitment-comments', schema);
+  model = mongoose.model('recruitment-replies', schema);
 }
 
 module.exports = model;

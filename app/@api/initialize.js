@@ -51,6 +51,7 @@ const SchemaUserCommunities = require('../@database/user-communities/model');
 const SchemaForumThreads = require('../@database/forum-threads/model');
 const SchemaForumComments = require('../@database/forum-comments/model');
 const SchemaRecruitmentThreads = require('../@database/recruitment-threads/model');
+const SchemaRecruitmentComments = require('../@database/recruitment-comments/model');
 const SchemaFollows = require('../@database/follows/model');
 const SchemaGoods = require('../@database/goods/model');
 
@@ -4107,7 +4108,7 @@ emotion: https://emotion.sh/docs/introduction`,
         },
         publicCommentsUsers_idsArr: [],
         publicApprovalUsers_idsArrr: [],
-        comments: 0,
+        comments: 1,
         replies: 0,
         images: 1,
         videos: 0,
@@ -4274,6 +4275,64 @@ emotion: https://emotion.sh/docs/introduction`,
     
     await SchemaRecruitmentThreads.deleteMany({ reset: true });
     returnObj = await SchemaRecruitmentThreads.insertMany({ saveArr });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB / Recruitment Comments
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Save Object
+    // ---------------------------------------------
+    
+    saveArr = [
+      
+      {
+        _id: 'hSe73CMkq',
+        createdDate: '2020-04-18T00:00:00Z',
+        updatedDate: '2020-04-18T00:00:00Z',
+        gameCommunities_id: 'Jk92aglWl',
+        recruitmentThreads_id: 'nEQMNMWDy',
+        users_id: 'jun-deE4J',
+        localesArr: [
+          {
+            _id: 'KCH7Abzg7',
+            language: 'ja',
+            name: '',
+            comment: `子供の時分の冬の夜の記憶の中に浮上がって来る数々の物象の中に「行燈あんどん」がある。自分の思い出し得られる限りその当時の夜の主なる照明具は石油ランプであった。時たま特別の来客を饗応でもするときに、西洋蝋燭ろうそくがばね仕掛じかけで管の中からせり上がって来る当時ではハイカラな燭台を使うこともあったが、しかし就寝時の有明けにはずっと後までも行燈を使っていた。`,
+          },
+        ],
+        imagesAndVideos_id: '',
+        ids_idsArr: ['UVOFSNbXR'],
+        publicIDsArr: [],
+        publicInformationsArr: [],
+        publicSetting: 1,
+        webPush: true,
+        webPushSubscriptionObj: {
+          endpoint: '',
+          keys: {
+            p256dh: '',
+            auth: ''
+          }
+        },
+        goods: 0,
+        replies: 0,
+        ip: '192.168.1.0',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+      },
+      
+      
+    ];
+    
+    
+    // ---------------------------------------------
+    //   Insert
+    // ---------------------------------------------
+    
+    await SchemaRecruitmentComments.deleteMany({ reset: true });
+    returnObj = await SchemaRecruitmentComments.insertMany({ saveArr });
     
     
     

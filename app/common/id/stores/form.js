@@ -367,9 +367,10 @@ class Store {
    * @param {string} type - IDフォームの呼び出し元の種類 / cardPlayerForm / 
    * @param {string} _id - cardPlayers_id / 
    * @param {Array} idsArr - 選択されたIDの配列
+   * @param {Array} forUpdateOtherStorePathArr - 別のストア更新用のパスが入った配列
    */
   @action.bound
-  handleSelectButton({ pathArr, type, _id, idsArr }) {
+  handleSelectButton({ pathArr, type, _id, idsArr, forUpdateOtherStorePathArr }) {
     
     
     // --------------------------------------------------
@@ -379,6 +380,18 @@ class Store {
     // console.log(`
     //   ----------------------------------------\n
     //   /app/common/id/stores/form.js - handleSelectButton
+    // `);
+    
+    // console.log(`
+    //   ----- pathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forUpdateOtherStorePathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forUpdateOtherStorePathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(chalk`
@@ -406,13 +419,13 @@ class Store {
     
     
     // --------------------------------------------------
-    //   募集のフォーム
+    //   募集フォーム
     // --------------------------------------------------
     
-    if (type === 'recruitmentForm') {
+    if (type === 'recruitment') {
       
       const clonedArr = lodashCloneDeep(idsArr);
-      lodashSet(storeGcRecruitment, ['dataObj', _id, 'recruitmentFormThreadsObj', 'idsArr'], clonedArr);
+      lodashSet(storeGcRecruitment, ['dataObj', ...forUpdateOtherStorePathArr, 'idsArr'], clonedArr);
       
     }
     
@@ -592,9 +605,10 @@ class Store {
    * @param {string} type
    * @param {string} _id
    * @param {Array} idsArr - 選択されているID情報の入った配列
+   * @param {Array} forUpdateOtherStorePathArr - 別のストア更新用のパスが入った配列
    */
   @action.bound
-  async handleEditSubmit({ pathArr, type, _id, idsArr }) {
+  async handleEditSubmit({ pathArr, type, _id, idsArr, forUpdateOtherStorePathArr }) {
     
     
     try {
@@ -752,6 +766,41 @@ class Store {
       
       
       
+    
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/id/stores/form.js - handleEditSubmit
+      // `);
+      
+      // console.log(`
+      //   ----- forUpdateOtherStorePathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(forUpdateOtherStorePathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(chalk`
+      //   type: {green ${type}}
+      // `);
+      
+      
+      
+      // --------------------------------------------------
+      //   募集フォーム
+      // --------------------------------------------------
+      
+      if (type === 'recruitment') {
+        
+        const clonedArr = lodashCloneDeep(updatedIDsArr);
+        lodashSet(storeGcRecruitment, ['dataObj', ...forUpdateOtherStorePathArr, 'idsArr'], clonedArr);
+        
+      }
+      
+      
+      
       
       // --------------------------------------------------
       //   Snackbar: Success
@@ -848,9 +897,10 @@ class Store {
    * @param {string} type
    * @param {string} _id
    * @param {Array} idsArr - 選択されているID情報の入った配列
+   * @param {Array} forUpdateOtherStorePathArr - 別のストア更新用のパスが入った配列
    */
   @action.bound
-  async handleDeleteSubmit({ pathArr, type, _id, idsArr }) {
+  async handleDeleteSubmit({ pathArr, type, _id, idsArr, forUpdateOtherStorePathArr }) {
     
     
     try {
@@ -948,6 +998,18 @@ class Store {
         
         const clonedArr = lodashCloneDeep(updatedIDsArr);
         lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'idsArr'], clonedArr);
+        
+      }
+      
+      
+      // --------------------------------------------------
+      //   募集フォーム
+      // --------------------------------------------------
+      
+      if (type === 'recruitment') {
+        
+        const clonedArr = lodashCloneDeep(updatedIDsArr);
+        lodashSet(storeGcRecruitment, ['dataObj', ...forUpdateOtherStorePathArr, 'idsArr'], clonedArr);
         
       }
       

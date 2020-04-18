@@ -811,7 +811,7 @@ export default injectIntl(class extends React.Component {
                         border-top: 1px solid;
                         border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
                         border-image-slice: 1;
-                        margin: 6px 0 0 0;
+                        margin: 14px 0 0 0;
                         padding: 14px 0 0 0;
                       `}
                     >
@@ -860,6 +860,7 @@ export default injectIntl(class extends React.Component {
                           
                           <FormComment
                             pathArr={pathRecruitmentCommentNewFormArr}
+                            gameCommunities_id={gameCommunities_id}
                             recruitmentThreads_id={recruitmentThreads_id}
                           />
                           

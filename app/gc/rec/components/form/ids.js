@@ -52,7 +52,14 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { type, _id, idsArr } = this.props;
+    const {
+      
+      type,
+      _id,
+      idsArr,
+      forUpdateOtherStorePathArr,
+      
+    } = this.props;
     
     
     
@@ -159,6 +166,7 @@ export default class extends React.Component {
             type={type}
             _id={_id}
             idsArr={idsArr}
+            forUpdateOtherStorePathArr={forUpdateOtherStorePathArr}
           />
         </div>
         

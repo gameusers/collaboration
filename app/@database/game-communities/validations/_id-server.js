@@ -67,7 +67,7 @@ const validationGameCommunities_idServer = async ({ value }) => {
   // ---------------------------------------------
   
   if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-    throw new CustomError({ level: 'warn', errorsArr: [{ code: '3IEM_Yeh8', messageID: 'Pp_CFyt_3' }] });
+    throw new CustomError({ level: 'warn', errorsArr: [{ code: '7azwAsn2J', messageID: 'Pp_CFyt_3' }] });
   }
   
   

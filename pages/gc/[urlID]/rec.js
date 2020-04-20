@@ -247,15 +247,15 @@ export default class GcRec extends React.Component {
     // --------------------------------------------------
     
     const componentContent = 
-      <Element
-        name="recruitmentThreads"
-      >
+      // <Element
+      //   name="recruitmentThreads"
+      // >
         <RecruitmentThread
           temporaryDataID={this.props.temporaryDataID}
           urlID={this.props.urlID}
           gameCommunities_id={gameCommunities_id}
         />
-      </Element>
+      // </Element>
     ;
     
     

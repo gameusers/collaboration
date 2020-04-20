@@ -44,23 +44,24 @@ const { formatImagesAndVideosObj } = require('../images-and-videos/format');
 // --------------------------------------------------
 
 /**
-* DB から取得したデータをフォーマットする
-* @param {Object} req - リクエスト
-* @param {Object} localeObj - ロケール
-* @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
-* @param {Array} arr - 配列
-* @param {number} threadPage - スレッドのページ数
-* @param {number} threadCount - スレッドの総数
-* @return {Array} フォーマット後のデータ
-*/
-const formatRecruitmentThreadsArr = ({
+ * DB から取得したデータをフォーマットする
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {Array} arr - 配列
+ * @param {number} commentPage - コメントのページ
+ * @param {number} replyPage - 返信のページ
+ * @return {Array} フォーマット後のデータ
+ */
+const formatRecruitmentCommentsAndRepliesArr = ({
   
   req,
   localeObj,
   loginUsers_id,
   arr,
-  threadPage,
-  threadCount,
+  recruitmentThreadsObj,
+  commentPage,
+  replyPage,
   
 }) => {
   
@@ -69,16 +70,16 @@ const formatRecruitmentThreadsArr = ({
   //   Return Value
   // --------------------------------------------------
   
-  const recruitmentThreadsObj = {
-    
-    page: threadPage,
-    count: threadCount,
+  const recruitmentCommentsObj = {
     dataObj: {},
-    
   };
   
-  const dataObj = {};
-  const recruitmentThreads_idsForCommentArr = [];
+  const recruitmentRepliesObj = {
+    dataObj: {},
+  };
+  
+  // const dataObj = {};
+  // // const recruitmentThreads_idsForCommentArr = [];
   const ISO8601 = moment().utc().toISOString();
   
   
@@ -92,8 +93,10 @@ const formatRecruitmentThreadsArr = ({
     
     
     // --------------------------------------------------
-    //   Property
+    //   Property Comment
     // --------------------------------------------------
+    
+    const recruitmentThreads_id = lodashGet(valueObj, ['recruitmentThreads_id'], '');
     
     const imagesAndVideosObj = lodashGet(valueObj, ['imagesAndVideosObj'], {});
     
@@ -104,9 +107,6 @@ const formatRecruitmentThreadsArr = ({
     const publicIDsArr = lodashGet(valueObj, ['publicIDsArr'], []);
     const publicInformationsArr = lodashGet(valueObj, ['publicInformationsArr'], []);
     
-    const hardwareIDsArr = lodashGet(valueObj, ['hardwareIDsArr'], []);
-    const hardwaresArr = lodashGet(valueObj, ['hardwaresArr'], []);
-    
     const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
     
     const users_id = lodashGet(valueObj, ['users_id'], '');
@@ -114,7 +114,24 @@ const formatRecruitmentThreadsArr = ({
     const webPushEndpoint = lodashGet(valueObj, ['webPushSubscriptionObj', 'endpoint'], '');
     const webPushUsersEndpoint = lodashGet(valueObj, ['usersObj', 'webPushSubscriptionObj', 'endpoint'], '');
     
-    const deadlineDate = lodashGet(valueObj, ['deadlineDate'], '');
+    
+    // --------------------------------------------------
+    //   Property Thread
+    // --------------------------------------------------
+    
+    const deadlineDate = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'deadlineDate'], 0);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(chalk`
+      recruitmentThreads_id: {green ${recruitmentThreads_id}}
+      deadlineDate: {green ${deadlineDate}}
+    `);
     
     
     
@@ -387,29 +404,6 @@ const formatRecruitmentThreadsArr = ({
     
     
     // --------------------------------------------------
-    //   hardwaresArr - 元の配列の順番通りに並べなおす
-    // --------------------------------------------------
-    
-    const sortedHardwaresArr = [];
-    
-    for (let hardwareID of hardwareIDsArr) {
-      
-      const index = hardwaresArr.findIndex((value2Obj) => {
-        return value2Obj.hardwareID === hardwareID;
-      });
-      
-      if (index !== -1) {
-        sortedHardwaresArr.push(hardwaresArr[index]);
-      }
-      
-    }
-    
-    clonedObj.hardwaresArr = sortedHardwaresArr;
-    
-    
-    
-    
-    // --------------------------------------------------
     //   通知
     // --------------------------------------------------
     
@@ -429,11 +423,8 @@ const formatRecruitmentThreadsArr = ({
     delete clonedObj._id;
     delete clonedObj.createdDate;
     delete clonedObj.users_id;
-    // delete clonedObj.anonymity;
-    delete clonedObj.hardwareIDsArr;
     delete clonedObj.ids_idsArr;
     delete clonedObj.localesArr;
-    delete clonedObj.close;
     delete clonedObj.webPushSubscriptionObj;
     delete clonedObj.ip;
     delete clonedObj.userAgent;
@@ -444,16 +435,39 @@ const formatRecruitmentThreadsArr = ({
     }
     
     
+    
+    
     // --------------------------------------------------
-    //   匿名の場合の処理
+    //   オブジェクトに追加 - dataObj用
     // --------------------------------------------------
     
-    // if (anonymity) {
+    recruitmentCommentsObj.dataObj[valueObj._id] = clonedObj;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   recruitmentCommentsObj 作成
+    // --------------------------------------------------
+    
+    const comments = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'comments'], 0);
+    
+    const recruitmentCommentsPageArr = lodashGet(recruitmentCommentsObj, [recruitmentThreads_id, `page${commentPage}Obj`, 'arr'], []);
+    recruitmentCommentsPageArr.push(valueObj._id);
+    
+    recruitmentCommentsObj[recruitmentThreads_id] = {
       
-    //   delete clonedObj.cardPlayersObj;
-    //   delete clonedObj.usersObj;
+      page: commentPage,
+      count : comments,
       
-    // }
+    };
+    
+    recruitmentCommentsObj[recruitmentThreads_id][`page${commentPage}Obj`] = {
+      
+      loadedDate: ISO8601,
+      arr: recruitmentCommentsPageArr,
+      
+    };
     
     
     
@@ -462,27 +476,27 @@ const formatRecruitmentThreadsArr = ({
     //   コメント取得用の _id の入った配列に push
     // --------------------------------------------------
     
-    dataObj[valueObj._id] = clonedObj;
+    // dataObj[valueObj._id] = clonedObj;
     
-    if (valueObj.comments > 0) {
-      recruitmentThreads_idsForCommentArr.push(valueObj._id);
-    }
+    // if (valueObj.comments > 0) {
+    //   recruitmentThreads_idsForCommentArr.push(valueObj._id);
+    // }
     
     
-    // --------------------------------------------------
-    //   forumThreadsObj を作成する
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   forumThreadsObj を作成する
+    // // --------------------------------------------------
     
-    const recruitmentThreadsPageArr = lodashGet(recruitmentThreadsObj, [`page${threadPage}Obj`, 'arr'], []);
+    // const recruitmentThreadsPageArr = lodashGet(recruitmentCommentsObj, [`page${threadPage}Obj`, 'arr'], []);
     
-    recruitmentThreadsPageArr.push(valueObj._id);
+    // recruitmentThreadsPageArr.push(valueObj._id);
     
-    recruitmentThreadsObj[`page${threadPage}Obj`] = {
+    // recruitmentCommentsObj[`page${threadPage}Obj`] = {
       
-      loadedDate: ISO8601,
-      arr: recruitmentThreadsPageArr,
+    //   loadedDate: ISO8601,
+    //   arr: recruitmentThreadsPageArr,
       
-    };
+    // };
     
     
     
@@ -493,7 +507,7 @@ const formatRecruitmentThreadsArr = ({
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/@database/recruitment-threads/format.js - formatRecruitmentThreadsArr
+    //   /app/@database/recruitment-comments/format.js - formatRecruitmentCommentsAndRepliesArr
     // `);
     
     // console.log(`
@@ -521,18 +535,6 @@ const formatRecruitmentThreadsArr = ({
     // `);
     
     // console.log(`
-    //   ----- publicCommentsUsers_idsArr -----\n
-    //   ${util.inspect(publicCommentsUsers_idsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- publicApprovalUsers_idsArrr -----\n
-    //   ${util.inspect(publicApprovalUsers_idsArrr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
     //   ----- returnArr -----\n
     //   ${util.inspect(returnArr, { colors: true, depth: null })}\n
     //   --------------------\n
@@ -545,22 +547,46 @@ const formatRecruitmentThreadsArr = ({
   
   
   // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  console.log(`
+    ----------------------------------------\n
+    /app/@database/recruitment-comments/format.js - formatRecruitmentCommentsAndRepliesArr
+  `);
+  
+  // console.log(`
+  //   ----- recruitmentThreadsObj -----\n
+  //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  console.log(`
+    ----- recruitmentCommentsObj -----\n
+    ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
+    --------------------\n
+  `);
+  
+  
+  
+  
+  // --------------------------------------------------
   //   dataObj
   // --------------------------------------------------
   
-  recruitmentThreadsObj.dataObj = dataObj;
+  // recruitmentCommentsObj.dataObj = dataObj;
   
   
-  // --------------------------------------------------
-  //   Return
-  // --------------------------------------------------
+  // // --------------------------------------------------
+  // //   Return
+  // // --------------------------------------------------
   
-  return {
+  // return {
     
-    recruitmentThreadsObj,
-    recruitmentThreads_idsForCommentArr,
+  //   recruitmentCommentsObj,
+  //   recruitmentThreads_idsForCommentArr,
     
-  };
+  // };
   
   
 };
@@ -574,6 +600,6 @@ const formatRecruitmentThreadsArr = ({
 
 module.exports = {
   
-  formatRecruitmentThreadsArr,
+  formatRecruitmentCommentsAndRepliesArr,
   
 };

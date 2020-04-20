@@ -52,6 +52,7 @@ const SchemaForumThreads = require('../@database/forum-threads/model');
 const SchemaForumComments = require('../@database/forum-comments/model');
 const SchemaRecruitmentThreads = require('../@database/recruitment-threads/model');
 const SchemaRecruitmentComments = require('../@database/recruitment-comments/model');
+const SchemaRecruitmentReplies = require('../@database/recruitment-replies/model');
 const SchemaFollows = require('../@database/follows/model');
 const SchemaGoods = require('../@database/goods/model');
 
@@ -4187,7 +4188,7 @@ emotion: https://emotion.sh/docs/introduction`,
         },
         publicCommentsUsers_idsArr: [],
         publicApprovalUsers_idsArrr: [],
-        comments: 0,
+        comments: 1,
         replies: 0,
         images: 0,
         videos: 0,
@@ -4318,7 +4319,90 @@ emotion: https://emotion.sh/docs/introduction`,
           }
         },
         goods: 0,
+        replies: 1,
+        ip: '192.168.1.0',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+      },
+      
+      
+      {
+        _id: '4obJ8p4vf',
+        createdDate: '2020-04-20T00:00:00Z',
+        updatedDate: '2020-04-20T00:00:00Z',
+        gameCommunities_id: 'Jk92aglWl',
+        recruitmentThreads_id: 'jlpBu0RfB',
+        users_id: 'P7UJMuUnx',
+        localesArr: [
+          {
+            _id: 'pJ2DaA5xb',
+            language: 'ja',
+            name: '',
+            comment: `私は随分遊び好きな方だった。お友達を訪ねて行くなどということは、余りなかったけれども、決して温順おとなしい、陰気な子供ではなかった。したがって、じっと書斎に閉じ籠って、書いてばかりいたのだとは思えない。`,
+          },
+        ],
+        imagesAndVideos_id: '',
+        ids_idsArr: [],
+        publicIDsArr: [],
+        publicInformationsArr: [],
+        publicSetting: 1,
+        webPush: false,
+        webPushSubscriptionObj: {
+          endpoint: '',
+          keys: {
+            p256dh: '',
+            auth: ''
+          }
+        },
+        goods: 0,
         replies: 0,
+        ip: '192.168.1.0',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+      },
+      
+    ];
+    
+    
+    // ---------------------------------------------
+    //   Insert
+    // ---------------------------------------------
+    
+    await SchemaRecruitmentComments.deleteMany({ reset: true });
+    returnObj = await SchemaRecruitmentComments.insertMany({ saveArr });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB / Recruitment Replies
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Save Object
+    // ---------------------------------------------
+    
+    saveArr = [
+      
+      {
+        _id: 'pd4s2Arht',
+        createdDate: '2020-04-20T00:00:00Z',
+        updatedDate: '2020-04-20T00:00:00Z',
+        gameCommunities_id: 'Jk92aglWl',
+        recruitmentThreads_id: 'nEQMNMWDy',
+        recruitmentComments_id: 'hSe73CMkq',
+        replyToRecruitmentComments_id: '',
+        users_id: 'jun-deE4J',
+        localesArr: [
+          {
+            _id: 'q6aFUKOlY',
+            language: 'ja',
+            name: '',
+            comment: `玄関の横の少し薄暗い四畳半、それは一寸茶室のような感じの、畳からすぐに窓のとってあるような、陰気な部屋だった。女学校へ通う子供の時分から、いつとはなしに、私はその部屋を自分の勉強部屋と決めて独占してしまったのである。
+            
+私はその部屋で、誰にも邪魔されないで、自分の好きなものを、随分沢山書いた。書いて、書いて、ただ書いただけだった。何といっても、まるっきり子供のことではあり、それらをどうしようという気持は少しもなかった。投書というようなことも嫌いで一度もしたことはなかった。`,
+          },
+        ],
+        imagesAndVideos_id: '',
+        goods: 0,
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4331,8 +4415,8 @@ emotion: https://emotion.sh/docs/introduction`,
     //   Insert
     // ---------------------------------------------
     
-    await SchemaRecruitmentComments.deleteMany({ reset: true });
-    returnObj = await SchemaRecruitmentComments.insertMany({ saveArr });
+    await SchemaRecruitmentReplies.deleteMany({ reset: true });
+    returnObj = await SchemaRecruitmentReplies.insertMany({ saveArr });
     
     
     

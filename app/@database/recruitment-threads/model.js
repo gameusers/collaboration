@@ -30,12 +30,10 @@ const Schema = require('./schema');
 const SchemaForumComments = require('../forum-comments/schema');
 const SchemaImagesAndVideos = require('../images-and-videos/schema');
 const SchemaGameCommunities = require('../game-communities/schema');
-const SchemaUserCommunities = require('../user-communities/schema');
 const SchemaUsers = require('../users/schema');
 
-const ModelForumComments = require('../forum-comments/model');
+const ModelRecruitmentComments = require('../recruitment-comments/model');
 const ModelGameCommunities = require('../game-communities/model');
-const ModelUserCommunities = require('../user-communities/model');
 
 
 // ---------------------------------------------
@@ -338,7 +336,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * @param {number} replyLimit - 返信のリミット
  * @return {Array} 取得データ
  */
-const findForRecruitment = async ({
+const findRecruitments = async ({
   
   req,
   localeObj,
@@ -358,20 +356,20 @@ const findForRecruitment = async ({
     
     
     // --------------------------------------------------
+    //   Language & Country
+    // --------------------------------------------------
+    
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+    
+    
+    // --------------------------------------------------
     //   Parse
     // --------------------------------------------------
     
     const intThreadLimit = parseInt(threadLimit, 10);
     const intCommentLimit = parseInt(commentLimit, 10);
     const intReplyLimit = parseInt(replyLimit, 10);
-    
-    
-    // --------------------------------------------------
-    //   Property
-    // --------------------------------------------------
-    
-    const language = lodashGet(localeObj, ['language'], '');
-    const country = lodashGet(localeObj, ['country'], '');
     
     
     
@@ -760,29 +758,31 @@ const findForRecruitment = async ({
     });
     
     const recruitmentThreadsObj = lodashGet(formattedThreadsObj, ['recruitmentThreadsObj'], {});
-    const recruitmentThreads_idsForCommentArr = lodashGet(formattedThreadsObj, ['recruitmentThreads_idsForCommentArr'], []);
+    const recruitmentThreads_idsArr = lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []);
     
     
     
     
-    // // --------------------------------------------------
-    // //   DB find / Forum Comments & Replies
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   DB find / Comments & Replies
+    // --------------------------------------------------
     
-    // const forumCommentsAndRepliesObj = await ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr({
-    //   req,
-    //   localeObj,
-    //   loginUsers_id,
-    //   forumThreads_idsArr: forumThreads_idsForCommentArr,
-    //   forumThreadsObj,
-    //   commentPage,
-    //   commentLimit: intCommentLimit,
-    //   replyPage,
-    //   replyLimit: intReplyLimit,
-    // });
+    const forumCommentsAndRepliesObj = await ModelRecruitmentComments.findCommentsAndReplies({
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      recruitmentThreads_idsArr,
+      recruitmentThreadsObj,
+      commentPage,
+      commentLimit: intCommentLimit,
+      replyPage,
+      replyLimit: intReplyLimit,
+      
+    });
     
-    // const forumCommentsObj = lodashGet(forumCommentsAndRepliesObj, ['forumCommentsObj'], {});
-    // const forumRepliesObj = lodashGet(forumCommentsAndRepliesObj, ['forumRepliesObj'], {});
+    const forumCommentsObj = lodashGet(forumCommentsAndRepliesObj, ['forumCommentsObj'], {});
+    const forumRepliesObj = lodashGet(forumCommentsAndRepliesObj, ['forumRepliesObj'], {});
     
     
     
@@ -793,7 +793,7 @@ const findForRecruitment = async ({
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/@database/recruitment-threads/model.js - findForRecruitment
+    //   /app/@database/recruitment-threads/model.js - findRecruitments
     // `);
     
     // console.log(chalk`
@@ -824,8 +824,8 @@ const findForRecruitment = async ({
     // `);
     
     // console.log(`
-    //   ----- forumThreadsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
+    //   ----- recruitmentThreadsObj -----\n
+    //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -1504,6 +1504,7 @@ const findOneForEdit = async ({
 
 
 
+
 /**
 * Transaction 挿入 / 更新する
 * スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
@@ -1950,7 +1951,7 @@ module.exports = {
   insertMany,
   deleteMany,
   
-  findForRecruitment,
+  findRecruitments,
   findOneForEdit,
   // findForDeleteThread,
   transactionForUpsert,

@@ -26,7 +26,6 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Modules
 // ---------------------------------------------
 
-// const { CustomError } = require('../../@modules/error/custom');
 const { verifyAuthority } = require('../../@modules/authority');
 
 
@@ -78,7 +77,7 @@ const formatRecruitmentThreadsArr = ({
   };
   
   const dataObj = {};
-  const recruitmentThreads_idsForCommentArr = [];
+  const recruitmentThreads_idsArr = [];
   const ISO8601 = moment().utc().toISOString();
   
   
@@ -429,7 +428,6 @@ const formatRecruitmentThreadsArr = ({
     delete clonedObj._id;
     delete clonedObj.createdDate;
     delete clonedObj.users_id;
-    // delete clonedObj.anonymity;
     delete clonedObj.hardwareIDsArr;
     delete clonedObj.ids_idsArr;
     delete clonedObj.localesArr;
@@ -465,7 +463,7 @@ const formatRecruitmentThreadsArr = ({
     dataObj[valueObj._id] = clonedObj;
     
     if (valueObj.comments > 0) {
-      recruitmentThreads_idsForCommentArr.push(valueObj._id);
+      recruitmentThreads_idsArr.push(valueObj._id);
     }
     
     
@@ -558,7 +556,7 @@ const formatRecruitmentThreadsArr = ({
   return {
     
     recruitmentThreadsObj,
-    recruitmentThreads_idsForCommentArr,
+    recruitmentThreads_idsArr,
     
   };
   

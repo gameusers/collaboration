@@ -338,7 +338,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * @param {number} replyLimit - 返信のリミット
  * @return {Array} 取得データ
  */
-const findForRecruitment = async ({
+const findRecruitments = async ({
   
   req,
   localeObj,
@@ -793,7 +793,7 @@ const findForRecruitment = async ({
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/@database/recruitment-threads/model.js - findForRecruitment
+    //   /app/@database/recruitment-threads/model.js - findRecruitments
     // `);
     
     // console.log(chalk`
@@ -1950,7 +1950,7 @@ module.exports = {
   insertMany,
   deleteMany,
   
-  findForRecruitment,
+  findRecruitments,
   findOneForEdit,
   // findForDeleteThread,
   transactionForUpsert,

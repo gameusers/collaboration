@@ -28,31 +28,7 @@ const schema = mongoose.Schema({
     }
   ],
   imagesAndVideos_id: { type: String },
-  ids_idsArr: [String],
-  publicIDsArr: [
-    {
-      _id: { type: String, required: true },
-      platform: { type: String, enum: ['PlayStation', 'Xbox', 'Nintendo', 'PC', 'Android', 'iOS', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line', 'Other'], required: true },
-      id: { type: String, required: true },
-    }
-  ],
-  publicInformationsArr: [
-    {
-      _id: { type: String, required: true },
-      title: { type: String, required: true },
-      information: { type: String, required: true },
-    }
-  ],
-  webPush: { type: Boolean, required: true },
-  webPushSubscriptionObj: {
-    endpoint: { type: String },
-    keys: {
-      p256dh: { type: String },
-      auth: { type: String },
-    },
-  },
   goods: { type: Number, default: 0, required: true },
-  replies: { type: Number, default: 0, required: true },
   ip: { type: String, required: true },
   userAgent: { type: String, required: true },
   

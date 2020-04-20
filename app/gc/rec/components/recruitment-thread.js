@@ -40,14 +40,10 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Paper from '@material-ui/core/Paper';
-
-// import Avatar from '@material-ui/core/Avatar';
-// import Chip from '@material-ui/core/Chip';
-
-// import OutlinedInput from '@material-ui/core/OutlinedInput';
-// import MenuItem from '@material-ui/core/MenuItem';
-// import FormControl from '@material-ui/core/FormControl';
-// import Select from '@material-ui/core/Select';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
 
 // ---------------------------------------------
@@ -56,7 +52,6 @@ import Paper from '@material-ui/core/Paper';
 
 import IconExpandLess from '@material-ui/icons/ExpandLess';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
-// import IconAssignment from '@material-ui/icons/Assignment';
 import IconPublic from '@material-ui/icons/Public';
 import IconEdit from '@material-ui/icons/Edit';
 import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
@@ -83,23 +78,6 @@ import DeadlineDate from './deadline-date';
 import Notification from './notification';
 
 // import Comment from './comment';
-
-
-
-
-// --------------------------------------------------
-//   Emotion
-//   https://emotion.sh/docs/composition
-// --------------------------------------------------
-
-// const cssAvatar = css`
-//   && {
-//     width: 32px;
-//     height: 32px;
-//     line-height: 1;
-//     background-color: #003791;
-//   }
-// `;
 
 
 
@@ -175,7 +153,7 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
-    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathRecruitmentThreadsNewFormArr });
+    // this.props.stores.layout.handleButtonEnable({ pathArr: this.pathRecruitmentThreadsNewFormArr });
     
     
   }
@@ -200,7 +178,7 @@ export default injectIntl(class extends React.Component {
       stores,
       storeGcRecruitment,
       intl,
-      // temporaryDataID,
+      temporaryDataID,
       urlID,
       gameCommunities_id,
       individual,
@@ -234,7 +212,7 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      // handleReadThreads,
+      handleReadRecruitmentThreads,
       handleShowFormThread,
       
     } = storeGcRecruitment;
@@ -910,7 +888,9 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <Element
+        name="recruitmentThreads"
+      >
         
         
         {/* New Form Recruitment Thread */}
@@ -947,37 +927,40 @@ export default injectIntl(class extends React.Component {
         {/* Pagination */}
         {individual ? (
           
+          
           <div
             css={css`
               margin: 24px 0 8px 0;
             `}
           >
-          
-          <Paper
-            css={css`
-              display: flex;
-              flex-flow: row wrap;
-              padding: 12px 0 12px 12px;
-            `}
-          >
             
-            <Link href={linkReturnTopHref} as={linkReturnTopAs}>
-              <Button
-                type="submit"
-                variant="outlined"
-                size="small"
-                disabled={buttonDisabled}
-              >
-                <IconDoubleArrow />
-                フォーラムトップに戻る
-              </Button>
-            </Link>
-            
+            <Paper
+              css={css`
+                display: flex;
+                flex-flow: row wrap;
+                padding: 12px 0 12px 12px;
+              `}
+            >
+              
+              <Link href={linkReturnTopHref} as={linkReturnTopAs}>
+                <Button
+                  type="submit"
+                  variant="outlined"
+                  size="small"
+                  disabled={buttonDisabled}
+                >
+                  <IconDoubleArrow />
+                  募集トップに戻る
+                </Button>
+              </Link>
+              
             </Paper>
             
           </div>
           
+          
         ) : (
+          
           
           <Paper
             css={css`
@@ -989,7 +972,7 @@ export default injectIntl(class extends React.Component {
             
             
             {/* Pagination */}
-            {/*<div
+            <div
               css={css`
                 margin: 8px 24px 0 0;
               `}
@@ -997,7 +980,7 @@ export default injectIntl(class extends React.Component {
               
               <Pagination
                 disabled={buttonDisabled}
-                onChange={(page) => handleReadThreads({
+                onChange={(page) => handleReadRecruitmentThreads({
                   pathArr: this.pathArr,
                   temporaryDataID,
                   gameCommunities_id,
@@ -1009,11 +992,11 @@ export default injectIntl(class extends React.Component {
                 locale={localeInfo}
               />
               
-            </div>*/}
+            </div>
             
             
             {/* Rows Per Page */}
-            {/*<FormControl
+            <FormControl
               css={css`
                 margin: 8px 0 0 0 !important;
               `}
@@ -1022,7 +1005,7 @@ export default injectIntl(class extends React.Component {
               
               <Select
                 value={limit}
-                onChange={(eventObj) => handleReadThreads({
+                onChange={(eventObj) => handleReadRecruitmentThreads({
                   pathArr: this.pathArr,
                   temporaryDataID,
                   gameCommunities_id,
@@ -1034,7 +1017,7 @@ export default injectIntl(class extends React.Component {
                     classes={{
                       input: classes.input
                     }}
-                    name="forum-threads-pagination"
+                    name="recruitment-threads-pagination"
                     id="outlined-rows-per-page"
                   />
                 }
@@ -1047,15 +1030,16 @@ export default injectIntl(class extends React.Component {
                 <MenuItem value={50}>50</MenuItem>
               </Select>
               
-            </FormControl>*/}
+            </FormControl>
             
             
           </Paper>
           
+          
         )}
         
         
-      </React.Fragment>
+      </Element>
     );
     
   }

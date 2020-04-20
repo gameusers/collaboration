@@ -1514,16 +1514,16 @@ const findRepliesByForumComments_idArr = async ({
 
 
 /**
-* DBから取得した情報をフォーマットする
-* @param {Object} req - リクエスト
-* @param {Object} localeObj - ロケール
-* @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
-* @param {Array} arr - コメントと返信情報の入った配列
-* @param {Object} forumThreadsObj - スレッド情報の入ったオブジェクト / カウントの取得に使う
-* @param {number} commentPage - コメントのページ
-* @param {number} replyPage - 返信のページ
-* @return {Array} フォーマット後のデータ
-*/
+ * DBから取得した情報をフォーマットする
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {Array} arr - コメントと返信情報の入った配列
+ * @param {Object} forumThreadsObj - スレッド情報の入ったオブジェクト / カウントの取得に使う
+ * @param {number} commentPage - コメントのページ
+ * @param {number} replyPage - 返信のページ
+ * @return {Array} フォーマット後のデータ
+ */
 const formatVer2 = ({ req, localeObj, loginUsers_id, arr, forumThreadsObj, commentPage, replyPage }) => {
   
   

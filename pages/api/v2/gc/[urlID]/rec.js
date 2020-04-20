@@ -262,7 +262,7 @@ export default async (req, res) => {
       argumentsObj.replyLimit = replyLimit;
     }
     
-    const recruitmentObj = await ModelRecruitmentThreads.findForRecruitment(argumentsObj);
+    const recruitmentObj = await ModelRecruitmentThreads.findRecruitments(argumentsObj);
     
     returnObj.recruitmentThreadsObj = recruitmentObj.recruitmentThreadsObj;
     // returnObj.forumCommentsObj = forumObj.forumCommentsObj;

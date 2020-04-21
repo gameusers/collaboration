@@ -43,15 +43,15 @@ const { formatImagesAndVideosObj } = require('../images-and-videos/format');
 // --------------------------------------------------
 
 /**
-* DB から取得したデータをフォーマットする
-* @param {Object} req - リクエスト
-* @param {Object} localeObj - ロケール
-* @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
-* @param {Array} arr - 配列
-* @param {number} threadPage - スレッドのページ数
-* @param {number} threadCount - スレッドの総数
-* @return {Array} フォーマット後のデータ
-*/
+ * DB から取得したデータをフォーマットする
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {Array} arr - 配列
+ * @param {number} threadPage - スレッドのページ数
+ * @param {number} threadCount - スレッドの総数
+ * @return {Array} フォーマット後のデータ
+ */
 const formatRecruitmentThreadsArr = ({
   
   req,
@@ -427,7 +427,7 @@ const formatRecruitmentThreadsArr = ({
     
     delete clonedObj._id;
     delete clonedObj.createdDate;
-    delete clonedObj.users_id;
+    // delete clonedObj.users_id;
     delete clonedObj.hardwareIDsArr;
     delete clonedObj.ids_idsArr;
     delete clonedObj.localesArr;

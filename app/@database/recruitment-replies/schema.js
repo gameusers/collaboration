@@ -17,7 +17,7 @@ const schema = mongoose.Schema({
   gameCommunities_id: { type: String, required: true },
   recruitmentThreads_id: { type: String },
   recruitmentComments_id: { type: String },
-  replyToRecruitmentComments_id: { type: String },
+  replyToRecruitmentReplies_id: { type: String },
   users_id: { type: String },
   localesArr: [
     {

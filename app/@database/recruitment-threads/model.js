@@ -767,7 +767,7 @@ const findRecruitments = async ({
     //   DB find / Comments & Replies
     // --------------------------------------------------
     
-    const forumCommentsAndRepliesObj = await ModelRecruitmentComments.findCommentsAndReplies({
+    const formattedCommentsAndRepliesObj = await ModelRecruitmentComments.findCommentsAndReplies({
       
       req,
       localeObj,
@@ -781,8 +781,8 @@ const findRecruitments = async ({
       
     });
     
-    const forumCommentsObj = lodashGet(forumCommentsAndRepliesObj, ['forumCommentsObj'], {});
-    const forumRepliesObj = lodashGet(forumCommentsAndRepliesObj, ['forumRepliesObj'], {});
+    const recruitmentCommentsObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentCommentsObj'], {});
+    const recruitmentRepliesObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentRepliesObj'], {});
     
     
     
@@ -791,17 +791,19 @@ const findRecruitments = async ({
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/@database/recruitment-threads/model.js - findRecruitments
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /app/@database/recruitment-threads/model.js - findRecruitments
+    `);
     
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
     //   gameCommunities_id: {green ${gameCommunities_id}}
     //   threadPage: {green ${threadPage}}
     //   threadLimit: {green ${threadLimit}}
+    //   commentPage: {green ${commentPage}}
     //   commentLimit: {green ${commentLimit}}
+    //   replyPage: {green ${replyPage}}
     //   replyLimit: {green ${replyLimit}}
     // `);
     
@@ -817,29 +819,23 @@ const findRecruitments = async ({
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- forumCommentsAndRepliesObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- recruitmentThreadsObj -----\n
+      ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- recruitmentThreadsObj -----\n
-    //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- recruitmentCommentsObj -----\n
+      ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- forumCommentsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- forumRepliesObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumRepliesObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- recruitmentRepliesObj -----\n
+      ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     

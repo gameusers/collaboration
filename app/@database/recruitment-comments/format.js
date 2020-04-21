@@ -35,6 +35,7 @@ const { verifyAuthority } = require('../../@modules/authority');
 // ---------------------------------------------
 
 const { formatImagesAndVideosObj } = require('../images-and-videos/format');
+const { formatRecruitmentRepliesArr } = require('../recruitment-replies/format');
 
 
 
@@ -49,6 +50,7 @@ const { formatImagesAndVideosObj } = require('../images-and-videos/format');
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {Array} arr - 配列
+ * @param {Object} recruitmentThreadsObj - スレッドのデータ / コメントの総数と締切日を取得するために利用
  * @param {number} commentPage - コメントのページ
  * @param {number} replyPage - 返信のページ
  * @return {Array} フォーマット後のデータ
@@ -74,22 +76,53 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     dataObj: {},
   };
   
-  const recruitmentRepliesObj = {
-    dataObj: {},
-  };
+  // const recruitmentRepliesObj = {
+  //   dataObj: {},
+  // };
   
-  // const dataObj = {};
-  // // const recruitmentThreads_idsForCommentArr = [];
+  
+  
+  
+  // --------------------------------------------------
+  //   コメントと返信に分離
+  // --------------------------------------------------
+  
+  const commentsArr = [];
+  let repliesArr = [];
+  
+  
+  for (let valueObj of arr.values()) {
+   
+    if (lodashHas(valueObj, ['recruitmentRepliesArr'])) {
+      
+      const tempArr = lodashGet(valueObj, ['recruitmentRepliesArr'], []);
+      repliesArr = repliesArr.concat(tempArr);
+      
+    }
+    
+    delete valueObj.recruitmentRepliesArr;
+    
+    commentsArr.push(valueObj);
+    
+  }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Datetime
+  // --------------------------------------------------
+  
   const ISO8601 = moment().utc().toISOString();
   
   
   
   
   // --------------------------------------------------
-  //   Loop
+  //   Loop - Comment
   // --------------------------------------------------
   
-  for (let valueObj of arr.values()) {
+  for (let valueObj of commentsArr.values()) {
     
     
     // --------------------------------------------------
@@ -101,8 +134,6 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     const imagesAndVideosObj = lodashGet(valueObj, ['imagesAndVideosObj'], {});
     
     const publicSetting = lodashGet(valueObj, ['publicSetting'], 1);
-    const publicCommentsUsers_idsArr = lodashGet(valueObj, ['publicCommentsUsers_idsArr'], []);
-    const publicApprovalUsers_idsArrr = lodashGet(valueObj, ['publicApprovalUsers_idsArrr'], []);
     const idsArr = lodashGet(valueObj, ['idsArr'], []);
     const publicIDsArr = lodashGet(valueObj, ['publicIDsArr'], []);
     const publicInformationsArr = lodashGet(valueObj, ['publicInformationsArr'], []);
@@ -119,19 +150,11 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     //   Property Thread
     // --------------------------------------------------
     
-    const deadlineDate = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'deadlineDate'], 0);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    console.log(chalk`
-      recruitmentThreads_id: {green ${recruitmentThreads_id}}
-      deadlineDate: {green ${deadlineDate}}
-    `);
+    const threadUsers_id = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'users_id'], '');
+    const threadDeadlineDate = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'deadlineDate'], 0);
+    const threadPublicSetting = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'publicSetting'], 1);
+    const threadPublicCommentsUsers_idsArr = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'publicCommentsUsers_idsArr'], []);
+    const threadPublicApprovalUsers_idsArrr = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'publicApprovalUsers_idsArrr'], []);
     
     
     
@@ -178,11 +201,42 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     
     
     // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----- recruitmentThreadsObj -----\n
+    //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   threadUsers_id: {green ${threadUsers_id}}
+    //   threadDeadlineDate: {green ${threadDeadlineDate}}
+    //   threadPublicSetting: {green ${threadPublicSetting}}
+    // `);
+    
+    // console.log(`
+    //   ----- threadPublicCommentsUsers_idsArr -----\n
+    //   ${util.inspect(threadPublicCommentsUsers_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- threadPublicApprovalUsers_idsArrr -----\n
+    //   ${util.inspect(threadPublicApprovalUsers_idsArrr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
     //   Format - IDと情報を公開する場合 true
     //   
     //   1. 誰にでも公開
-    //   2. 返信者に公開（全員）
-    //   3. 返信者に公開（選択）
+    //   2. 募集者だけに公開
+    //   3. 募集者が自分に公開した場合
     // --------------------------------------------------
     
     let publicIDsAndInformations = false;
@@ -190,8 +244,8 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     if (
       
       publicSetting === 1 ||
-      (publicSetting === 2 && publicCommentsUsers_idsArr.includes(loginUsers_id)) ||
-      (publicSetting === 3 && publicApprovalUsers_idsArrr.includes(loginUsers_id))
+      (publicSetting === 2 && loginUsers_id === threadUsers_id) ||
+      (publicSetting === 3 && threadPublicApprovalUsers_idsArrr.includes(users_id))
       
     ) {
       
@@ -206,10 +260,10 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     //   締め切りの場合、IDと情報を伏せ字にする
     // --------------------------------------------------
     
-    if (deadlineDate) {
+    if (threadDeadlineDate) {
       
       // 指定日時の翌日に締め切られるように、1日追加する。これを追加しないと当日になった瞬間 0:00 に締め切られてしまうため。
-      const deadlineDateAddOneDay = moment(deadlineDate).utc().add(1, 'day');
+      const deadlineDateAddOneDay = moment(threadDeadlineDate).utc().add(1, 'day');
       
       // 現在の日時と締切日時の差をミリ秒で取得
       const diff = deadlineDateAddOneDay.diff(moment());
@@ -388,13 +442,11 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     
     if (lodashHas(filteredArr, [0])) {
       
-      clonedObj.title = lodashGet(filteredArr, [0, 'title'], '');
       clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');
       clonedObj.comment = lodashGet(filteredArr, [0, 'comment'], '');
       
     } else {
       
-      clonedObj.title = lodashGet(filteredArr, [0, 'title'], '');
       clonedObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
       clonedObj.comment = lodashGet(valueObj, ['localesArr', 0, 'comment'], '');
       
@@ -438,7 +490,7 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     
     
     // --------------------------------------------------
-    //   オブジェクトに追加 - dataObj用
+    //   オブジェクトに追加 - dataObj
     // --------------------------------------------------
     
     recruitmentCommentsObj.dataObj[valueObj._id] = clonedObj;
@@ -468,35 +520,6 @@ const formatRecruitmentCommentsAndRepliesArr = ({
       arr: recruitmentCommentsPageArr,
       
     };
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   コメント取得用の _id の入った配列に push
-    // --------------------------------------------------
-    
-    // dataObj[valueObj._id] = clonedObj;
-    
-    // if (valueObj.comments > 0) {
-    //   recruitmentThreads_idsForCommentArr.push(valueObj._id);
-    // }
-    
-    
-    // // --------------------------------------------------
-    // //   forumThreadsObj を作成する
-    // // --------------------------------------------------
-    
-    // const recruitmentThreadsPageArr = lodashGet(recruitmentCommentsObj, [`page${threadPage}Obj`, 'arr'], []);
-    
-    // recruitmentThreadsPageArr.push(valueObj._id);
-    
-    // recruitmentCommentsObj[`page${threadPage}Obj`] = {
-      
-    //   loadedDate: ISO8601,
-    //   arr: recruitmentThreadsPageArr,
-      
-    // };
     
     
     
@@ -547,13 +570,44 @@ const formatRecruitmentCommentsAndRepliesArr = ({
   
   
   // --------------------------------------------------
+  //   Format - Reply
+  // --------------------------------------------------
+  
+  const recruitmentRepliesObj = formatRecruitmentRepliesArr({
+    
+    req,
+    localeObj,
+    loginUsers_id,
+    recruitmentCommentsObj,
+    arr: repliesArr,
+    replyPage,
+    ISO8601,
+    
+  });
+  
+  
+  
+  
+  // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
   
-  console.log(`
-    ----------------------------------------\n
-    /app/@database/recruitment-comments/format.js - formatRecruitmentCommentsAndRepliesArr
-  `);
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /app/@database/recruitment-comments/format.js - formatRecruitmentCommentsAndRepliesArr
+  // `);
+  
+  // console.log(`
+  //   ----- commentsArr -----\n
+  //   ${util.inspect(commentsArr, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(`
+  //   ----- repliesArr -----\n
+  //   ${util.inspect(repliesArr, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   // console.log(`
   //   ----- recruitmentThreadsObj -----\n
@@ -561,32 +615,31 @@ const formatRecruitmentCommentsAndRepliesArr = ({
   //   --------------------\n
   // `);
   
-  console.log(`
-    ----- recruitmentCommentsObj -----\n
-    ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- recruitmentCommentsObj -----\n
+  //   ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(`
+  //   ----- recruitmentRepliesObj -----\n
+  //   ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   
   
   
   // --------------------------------------------------
-  //   dataObj
+  //   Return
   // --------------------------------------------------
   
-  // recruitmentCommentsObj.dataObj = dataObj;
-  
-  
-  // // --------------------------------------------------
-  // //   Return
-  // // --------------------------------------------------
-  
-  // return {
+  return {
     
-  //   recruitmentCommentsObj,
-  //   recruitmentThreads_idsForCommentArr,
+    recruitmentCommentsObj,
+    recruitmentRepliesObj,
     
-  // };
+  };
   
   
 };

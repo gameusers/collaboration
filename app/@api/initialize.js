@@ -4175,7 +4175,7 @@ emotion: https://emotion.sh/docs/introduction`,
             information: 'あり',
           },
         ],
-        publicSetting: 1,
+        publicSetting: 2,
         deadlineDate: '2020-04-13T15:00:00Z',
         close: false,
         webPush: false,
@@ -4245,7 +4245,7 @@ emotion: https://emotion.sh/docs/introduction`,
             information: 'タヌポータル島',
           },
         ],
-        publicSetting: 1,
+        publicSetting: 3,
         deadlineDate: '2023-12-31T00:00:00Z',
         close: false,
         webPush: false,
@@ -4319,7 +4319,7 @@ emotion: https://emotion.sh/docs/introduction`,
           }
         },
         goods: 0,
-        replies: 1,
+        replies: 2,
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4354,7 +4354,7 @@ emotion: https://emotion.sh/docs/introduction`,
           }
         },
         goods: 0,
-        replies: 0,
+        replies: 1,
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4389,7 +4389,7 @@ emotion: https://emotion.sh/docs/introduction`,
         gameCommunities_id: 'Jk92aglWl',
         recruitmentThreads_id: 'nEQMNMWDy',
         recruitmentComments_id: 'hSe73CMkq',
-        replyToRecruitmentComments_id: '',
+        replyToRecruitmentReplies_id: '',
         users_id: 'jun-deE4J',
         localesArr: [
           {
@@ -4399,6 +4399,74 @@ emotion: https://emotion.sh/docs/introduction`,
             comment: `玄関の横の少し薄暗い四畳半、それは一寸茶室のような感じの、畳からすぐに窓のとってあるような、陰気な部屋だった。女学校へ通う子供の時分から、いつとはなしに、私はその部屋を自分の勉強部屋と決めて独占してしまったのである。
             
 私はその部屋で、誰にも邪魔されないで、自分の好きなものを、随分沢山書いた。書いて、書いて、ただ書いただけだった。何といっても、まるっきり子供のことではあり、それらをどうしようという気持は少しもなかった。投書というようなことも嫌いで一度もしたことはなかった。`,
+          },
+        ],
+        imagesAndVideos_id: '',
+        goods: 0,
+        ip: '192.168.1.0',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+      },
+      
+      
+      {
+        _id: 'XHNLEQl8N',
+        createdDate: '2020-04-21T00:00:00Z',
+        updatedDate: '2020-04-21T00:00:00Z',
+        gameCommunities_id: 'Jk92aglWl',
+        recruitmentThreads_id: 'nEQMNMWDy',
+        recruitmentComments_id: 'hSe73CMkq',
+        replyToRecruitmentReplies_id: 'pd4s2Arht',
+        users_id: '',
+        localesArr: [
+          {
+            _id: 'tCNK79D8y',
+            language: 'ja',
+            name: 'ナイチンゲール',
+            comment: `中国という国では、みなさんもごぞんじのことと思いますが、皇帝こうていは中国人です。
+            
+それから、おそばにつかえている人たちも、みんな中国人です。さて、これからするお話は、もう今からずっとむかしにあったことですけれど、それだけに、かえって今お話しておくほうがいいと思うのです。なぜって、そうでもしておかなければ、忘れられてしまいますからね。`,
+          },
+        ],
+        imagesAndVideos_id: '',
+        goods: 0,
+        ip: '192.168.1.0',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+      },
+      
+      
+      {
+        _id: '7_PH3n0CK',
+        createdDate: '2020-04-21T00:00:00Z',
+        updatedDate: '2020-04-21T00:00:00Z',
+        gameCommunities_id: 'Jk92aglWl',
+        recruitmentThreads_id: 'nEQMNMWDy',
+        recruitmentComments_id: '4obJ8p4vf',
+        replyToRecruitmentReplies_id: '',
+        users_id: '6GWOpEcD3',
+        localesArr: [
+          {
+            _id: 'oZkq_bH7q',
+            language: 'ja',
+            name: '',
+            comment: `蛞蝓のように地面を這って
+歩く練習をしていたら
+体が充血して熱くなってきた
+丁度向うから女が
+這ってきたので交接した
+女は子供を産んだ
+子供はごむ製だった
+口から息を吹きこむと
+だんだん大きくなった
+もっともっと大きくしようと
+ふくらませたら
+パァーンと花火のように
+破裂した
+女と大笑いして別れた
+さらに這ってゆくと日が暮れて
+怠惰になった
+骨まで解体してぐったりと寝た
+やがて星よりもよく光る
+白骨になった`,
           },
         ],
         imagesAndVideos_id: '',

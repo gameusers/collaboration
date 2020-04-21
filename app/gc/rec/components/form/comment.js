@@ -51,7 +51,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 //   Validations
 // ---------------------------------------------
 
-// import { validationRecruitmentThreadsTitle } from '../../../../@database/recruitment-threads/validations/title';
 import { validationRecruitmentThreadsName } from '../../../../@database/recruitment-threads/validations/name';
 
 
@@ -143,6 +142,7 @@ export default injectIntl(class extends React.Component {
       gameCommunities_id,
       recruitmentThreads_id,
       recruitmentComments_id,
+      publicSettingThread,
       
     } = this.props;
     
@@ -393,10 +393,12 @@ export default injectIntl(class extends React.Component {
           <div css={cssBox}>
             
             <FormIDsInformations
+              type="comment"
               pathArr={pathArr}
               gameCommunities_id={gameCommunities_id}
               recruitmentThreads_id={recruitmentThreads_id}
               recruitmentComments_id={recruitmentComments_id}
+              publicSettingThread={publicSettingThread}
             />
             
           </div>
@@ -518,10 +520,6 @@ export default injectIntl(class extends React.Component {
               <Button
                 variant="outlined"
                 color="secondary"
-                // onClick={() => handleEdit({
-                //   pathArr: [...pathArr, 'showFormComment'],
-                //   value: false
-                // })}
                 onClick={() => handleHideFormComment({
                   pathArr,
                   recruitmentThreads_id,

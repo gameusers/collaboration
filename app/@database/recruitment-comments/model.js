@@ -869,13 +869,13 @@ const findCommentsAndReplies = async ({
                   $lookup:
                     {
                       from: 'recruitment-replies',
-                      let: { letReplyToForumComments_id: '$replyToForumComments_id' },
+                      let: { letReplyToRecruitmentReplies_id: '$replyToRecruitmentReplies_id' },
                       pipeline: [
                         
                         
                         { $match:
                           { $expr:
-                            { $eq: ['$_id', '$$letReplyToForumComments_id'] },
+                            { $eq: ['$_id', '$$letReplyToRecruitmentReplies_id'] },
                           }
                         },
                         
@@ -1067,7 +1067,7 @@ const findCommentsAndReplies = async ({
     //   Return
     // --------------------------------------------------
     
-    // return formattedObj;
+    return formattedObj;
     
     
   } catch (err) {

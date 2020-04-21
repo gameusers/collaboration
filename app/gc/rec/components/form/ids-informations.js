@@ -89,10 +89,12 @@ export default injectIntl(class extends React.Component {
       stores,
       storeGcRecruitment,
       intl,
+      type,
       pathArr,
       gameCommunities_id,
       recruitmentThreads_id,
       recruitmentComments_id,
+      publicSettingThread,
       
     } = this.props;
     
@@ -182,15 +184,81 @@ export default injectIntl(class extends React.Component {
     //   Component - 公開設定
     // --------------------------------------------------
     
-    let componentsOpenTypeSelectMenuItemsArr = [<MenuItem value={1} key="publicSettingSelectMenuItems1">誰にでも公開</MenuItem>];
+    let componentsPublicSettingSelectMenuItemsArr = [<MenuItem value={1} key="publicSettingSelectMenuItems1">誰にでも公開</MenuItem>];
     
     if (login) {
       
-      componentsOpenTypeSelectMenuItemsArr = [
-        <MenuItem value={1} key="publicSettingSelectMenuItems1">誰にでも公開</MenuItem>,
-        <MenuItem value={2} key="publicSettingSelectMenuItems2">コメントした方に公開（全員）</MenuItem>,
-        <MenuItem value={3} key="publicSettingSelectMenuItems3">コメントした方に公開（選択）</MenuItem>
-      ];
+      if (type === 'thread') {
+        
+        componentsPublicSettingSelectMenuItemsArr = [
+          <MenuItem value={1} key="publicSettingSelectMenuItems1">誰にでも公開</MenuItem>,
+          <MenuItem value={2} key="publicSettingSelectMenuItems2">コメントした方に公開（全員）</MenuItem>,
+          <MenuItem value={3} key="publicSettingSelectMenuItems3">コメントした方に公開（選択）</MenuItem>
+        ];
+        
+      } else if (type === 'comment') {
+        
+        componentsPublicSettingSelectMenuItemsArr = [
+          <MenuItem value={1} key="publicSettingSelectMenuItems1">誰にでも公開</MenuItem>,
+          <MenuItem value={2} key="publicSettingSelectMenuItems2">募集者だけに公開</MenuItem>,
+        ];
+        
+        if (publicSettingThread === 3) {
+          componentsPublicSettingSelectMenuItemsArr.push(<MenuItem value={3} key="publicSettingSelectMenuItems3">募集者が自分に公開した場合</MenuItem>);
+        }
+        
+      }
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   Component - 公開設定の解説
+    // --------------------------------------------------
+    
+    let componentPublicSettingExplanation = '';
+    
+    
+    // --------------------------------------------------
+    //   - 募集フォーム
+    // --------------------------------------------------
+    
+    if (type === 'thread') {
+      
+      if (publicSetting === 1) {
+        
+        componentPublicSettingExplanation = <p>このページにアクセスした人なら誰でもID・情報を見ることができます。</p>;
+        
+      } else if (publicSetting === 2) {
+        
+        componentPublicSettingExplanation = <p>ログインしてコメントしたユーザー全員にID・情報を公開します。</p>;
+        
+      } else if (publicSetting === 3) {
+        
+        componentPublicSettingExplanation = <p>ログインして返信したユーザーの中からID・情報を公開する相手を選べます。</p>;
+        
+      }
+      
+      
+    // --------------------------------------------------
+    //   - コメントフォーム
+    // --------------------------------------------------
+      
+    } else if (type === 'comment') {
+      
+      if (publicSetting === 1) {
+        
+        componentPublicSettingExplanation = <p>このページにアクセスした人なら誰でもID・情報を見ることができます。</p>;
+        
+      } else if (publicSetting === 2) {
+        
+        componentPublicSettingExplanation = <p>募集者だけにID・情報を公開します。</p>;
+        
+      } else if (publicSetting === 3) {
+        
+        componentPublicSettingExplanation = <p>募集者が自分に対してID・情報を公開した場合、募集者だけに自分のID・情報を公開します。お互いが公開した場合だけ、相互に閲覧できるようになる設定です。</p>;
+        
+      }
       
     }
     
@@ -208,7 +276,7 @@ export default injectIntl(class extends React.Component {
     
     // console.log(chalk`
     //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-    //   showForm: {green ${showForm}}
+    //   publicSettingThread: {green ${publicSettingThread}}
     // `);
     
     // console.log(`
@@ -902,35 +970,14 @@ export default injectIntl(class extends React.Component {
               value: eventObj.target.value
             })}
           >
-            {componentsOpenTypeSelectMenuItemsArr}
+            {componentsPublicSettingSelectMenuItemsArr}
           </Select>
           
         </FormControl>
         
         
-        {publicSetting === 1 ? (
-          
-          <p>
-            このページにアクセスした人なら誰でもID・情報を見ることができます。
-          </p>
-          
-        ) : publicSetting === 2 ? (
-          
-          <p>
-            ログインしてコメントしたユーザー全員にID・情報を公開します。
-          </p>
-          
-        ) : publicSetting === 3 ? (
-          
-          <p>
-            ログインして返信したユーザーの中からID・情報を公開する相手を選べます。
-          </p>
-          
-        ) : (
-          
-          null
-          
-        )}
+        {/* 公開設定の解説 */}
+        {componentPublicSettingExplanation}
         
         
       </React.Fragment>

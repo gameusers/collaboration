@@ -840,10 +840,12 @@ export default injectIntl(class extends React.Component {
                             pathArr={pathRecruitmentCommentNewFormArr}
                             gameCommunities_id={gameCommunities_id}
                             recruitmentThreads_id={recruitmentThreads_id}
+                            publicSettingThread={publicSetting}
                           />
                           
                         </div>
                       }
+                      
                       
                     </div>
                 

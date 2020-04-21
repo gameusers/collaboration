@@ -506,6 +506,7 @@ export default injectIntl(class extends React.Component {
           <div css={cssBox}>
             
             <FormIDsInformations
+              type="thread"
               pathArr={pathArr}
               gameCommunities_id={gameCommunities_id}
               recruitmentThreads_id={recruitmentThreads_id}

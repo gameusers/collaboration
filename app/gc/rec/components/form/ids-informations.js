@@ -63,17 +63,6 @@ export default injectIntl(class extends React.Component {
   
   
   // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  // constructor(props) {
-  //   super(props);
-  // }
-  
-  
-  
-  
-  // --------------------------------------------------
   //   render
   // --------------------------------------------------
   
@@ -176,6 +165,280 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const login = stores.data.getLogin();
+    
+    
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Component - ID
+    // --------------------------------------------------
+    
+    const componentsIDsArr = [];
+    
+    
+    for (let i = 1; i <= 3; i++) {
+      
+      
+      let platform = '';
+      let validationObj = {};
+      
+      if (i === 1) {
+        
+        platform = platform1;
+        validationObj = validationRecruitmentThreadsID1Obj;
+        
+      } else if (i === 2) {
+        
+        platform = platform2;
+        validationObj = validationRecruitmentThreadsID2Obj;
+        
+      } else if (i === 3) {
+        
+        platform = platform3;
+        validationObj = validationRecruitmentThreadsID3Obj;
+        
+      }
+      
+      
+      componentsIDsArr.push(
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            padding: 0 0 0 16px;
+            
+            @media screen and (max-width: 480px) {
+              flex-flow: column wrap;
+              border-left: 4px solid #01DFA5;
+              margin: 24px 0 0 0;
+            }
+          `}
+          key={`ids-${i}`}
+        >
+          
+            
+          <div
+            css={css`
+              width: 100px;
+              margin: 24px 24px 0 0;
+              
+              @media screen and (max-width: 480px) {
+                margin: 0;
+              }
+            `}
+          >
+            
+            <Select
+              _id={`platform${i}`}
+              value={platform}
+              onChange={(eventObj) => handleEdit({
+                pathArr: [...pathArr, `platform${i}`],
+                value: eventObj.target.value
+              })}
+              displayEmpty
+            >
+              <MenuItem value={'Other'}>ID</MenuItem>
+              <MenuItem value={'PlayStation'}>PlayStation</MenuItem>
+              <MenuItem value={'Xbox'}>Xbox</MenuItem>
+              <MenuItem value={'Nintendo'}>Nintendo</MenuItem>
+              <MenuItem value={'PC'}>PC</MenuItem>
+              <MenuItem value={'Android'}>Android</MenuItem>
+              <MenuItem value={'iOS'}>iOS</MenuItem>
+              <MenuItem value={'Steam'}>Steam</MenuItem>
+              <MenuItem value={'Origin'}>Origin</MenuItem>
+              <MenuItem value={'Discord'}>Discord</MenuItem>
+              <MenuItem value={'Skype'}>Skype</MenuItem>
+              <MenuItem value={'ICQ'}>ICQ</MenuItem>
+              <MenuItem value={'Line'}>Line</MenuItem>
+            </Select>
+            
+          </div>
+          
+          
+          
+          
+          <div
+            css={css`
+              @media screen and (max-width: 480px) {
+                margin: 8px 0 0 0;
+              }
+            `}
+          >
+            
+            <TextField
+              css={css`
+                && {
+                  margin: 8px 0 0 0;
+                }
+              `}
+              id={`id${i}`}
+              label={`ID ${i}`}
+              value={validationObj.value}
+              onChange={(eventObj) => handleEdit({
+                pathArr: [...pathArr, `id${i}`],
+                value: eventObj.target.value
+              })}
+              error={validationObj.error}
+              helperText={intl.formatMessage({ id: validationObj.messageID }, { numberOfCharacters: validationObj.numberOfCharacters })}
+              margin="normal"
+              inputProps={{
+                maxLength: 100,
+              }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+            
+          </div>
+          
+          
+        </div>
+      );
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Component - Information
+    // --------------------------------------------------
+    
+    const componentsInformationsArr = [];
+    
+    
+    for (let i = 1; i <= 5; i++) {
+      
+      
+      let validationInformationTitleObj = {};
+      let validationInformationObj = {};
+      
+      if (i === 1) {
+        
+        validationInformationTitleObj = validationRecruitmentThreadsInformationTitle1Obj;
+        validationInformationObj = validationRecruitmentThreadsInformation1Obj;
+        
+      } else if (i === 2) {
+        
+        validationInformationTitleObj = validationRecruitmentThreadsInformationTitle2Obj;
+        validationInformationObj = validationRecruitmentThreadsInformation2Obj;
+        
+      } else if (i === 3) {
+        
+        validationInformationTitleObj = validationRecruitmentThreadsInformationTitle3Obj;
+        validationInformationObj = validationRecruitmentThreadsInformation3Obj;
+        
+      } else if (i === 4) {
+        
+        validationInformationTitleObj = validationRecruitmentThreadsInformationTitle4Obj;
+        validationInformationObj = validationRecruitmentThreadsInformation4Obj;
+        
+      } else if (i === 5) {
+        
+        validationInformationTitleObj = validationRecruitmentThreadsInformationTitle5Obj;
+        validationInformationObj = validationRecruitmentThreadsInformation5Obj;
+        
+      }
+      
+      
+      componentsInformationsArr.push(
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            margin: 8px 0 0 0;
+            padding: 0 0 0 16px;
+            
+            @media screen and (max-width: 480px) {
+              flex-flow: column wrap;
+              border-left: 4px solid #01DFA5;
+              margin: 24px 0 0 0;
+            }
+          `}
+          key={`informations-${i}`}
+        >
+          
+          
+          <div
+            css={css`
+              margin: 0 16px 0 0;
+              
+              @media screen and (max-width: 480px) {
+                margin: 0;
+              }
+            `}
+          >
+            
+            <TextField
+              css={css`
+                && {
+                  margin: 8px 0 0 0;
+                }
+              `}
+              id={`informationTitle${i}`}
+              label={`タイトル ${i}`}
+              value={validationInformationTitleObj.value}
+              onChange={(eventObj) => handleEdit({
+                pathArr: [...pathArr, `informationTitle${i}`],
+                value: eventObj.target.value
+              })}
+              error={validationInformationTitleObj.error}
+              helperText={intl.formatMessage({ id: validationInformationTitleObj.messageID }, { numberOfCharacters: validationInformationTitleObj.numberOfCharacters })}
+              margin="normal"
+              inputProps={{
+                maxLength: 30,
+              }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+            
+          </div>
+          
+          
+          
+          
+          <div
+            css={css`
+              @media screen and (max-width: 480px) {
+                margin: 8px 0 0 0;
+              }
+            `}
+          >
+          
+            <TextField
+              css={css`
+                && {
+                  margin: 8px 0 0 0;
+                }
+              `}
+              id={`information${i}`}
+              label={`情報 ${i}`}
+              value={validationInformationObj.value}
+              onChange={(eventObj) => handleEdit({
+                pathArr: [...pathArr, `information${i}`],
+                value: eventObj.target.value
+              })}
+              error={validationInformationObj.error}
+              helperText={intl.formatMessage({ id: validationInformationObj.messageID }, { numberOfCharacters: validationInformationObj.numberOfCharacters })}
+              margin="normal"
+              inputProps={{
+                maxLength: 50,
+              }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+            
+          </div>
+          
+          
+        </div>
+      );
+      
+    }
     
     
     
@@ -379,220 +642,14 @@ export default injectIntl(class extends React.Component {
             </p>
             
             
-            
-            
-            {/* ID 1 */}
             <div
               css={css`
-                display: flex;
-                flex-flow: row nowrap;
+                margin: 16px 0 0 0;
               `}
             >
-              
-              <FormControl
-                css={css`
-                  && {
-                    width: 100px;
-                    margin: 24px 12px 0 0;
-                  }
-                `}
-              >
-                
-                <Select
-                  _id="platform1"
-                  value={platform1}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'platform1'],
-                    value: eventObj.target.value
-                  })}
-                  displayEmpty
-                >
-                  <MenuItem value={'Other'}>ID</MenuItem>
-                  <MenuItem value={'PlayStation'}>PlayStation</MenuItem>
-                  <MenuItem value={'Xbox'}>Xbox</MenuItem>
-                  <MenuItem value={'Nintendo'}>Nintendo</MenuItem>
-                  <MenuItem value={'PC'}>PC</MenuItem>
-                  <MenuItem value={'Android'}>Android</MenuItem>
-                  <MenuItem value={'iOS'}>iOS</MenuItem>
-                  <MenuItem value={'Steam'}>Steam</MenuItem>
-                  <MenuItem value={'Origin'}>Origin</MenuItem>
-                  <MenuItem value={'Discord'}>Discord</MenuItem>
-                  <MenuItem value={'Skype'}>Skype</MenuItem>
-                  <MenuItem value={'ICQ'}>ICQ</MenuItem>
-                  <MenuItem value={'Line'}>Line</MenuItem>
-                </Select>
-                
-              </FormControl>
-              
-              
-              <div>
-                <TextField
-                  css={css`
-                    && {
-                      margin: 8px 0 0 0;
-                    }
-                  `}
-                  id="id1"
-                  label="ID 1"
-                  value={validationRecruitmentThreadsID1Obj.value}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'id1'],
-                    value: eventObj.target.value
-                  })}
-                  error={validationRecruitmentThreadsID1Obj.error}
-                  helperText={intl.formatMessage({ id: validationRecruitmentThreadsID1Obj.messageID }, { numberOfCharacters: validationRecruitmentThreadsID1Obj.numberOfCharacters })}
-                  margin="normal"
-                  inputProps={{
-                    maxLength: 100,
-                  }}
-                />
-              </div>
-              
+              {componentsIDsArr}
             </div>
             
-            
-            
-            
-            {/* ID 2 */}
-            <div
-              css={css`
-                display: flex;
-                flex-flow: row nowrap;
-              `}
-            >
-              
-              <FormControl
-                css={css`
-                  && {
-                    width: 100px;
-                    margin: 24px 12px 0 0;
-                  }
-                `}
-              >
-                
-                <Select
-                  _id="platform2"
-                  value={platform2}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'platform2'],
-                    value: eventObj.target.value
-                  })}
-                  displayEmpty
-                >
-                  <MenuItem value={'Other'}>ID</MenuItem>
-                  <MenuItem value={'PlayStation'}>PlayStation</MenuItem>
-                  <MenuItem value={'Xbox'}>Xbox</MenuItem>
-                  <MenuItem value={'Nintendo'}>Nintendo</MenuItem>
-                  <MenuItem value={'PC'}>PC</MenuItem>
-                  <MenuItem value={'Android'}>Android</MenuItem>
-                  <MenuItem value={'iOS'}>iOS</MenuItem>
-                  <MenuItem value={'Steam'}>Steam</MenuItem>
-                  <MenuItem value={'Origin'}>Origin</MenuItem>
-                  <MenuItem value={'Discord'}>Discord</MenuItem>
-                  <MenuItem value={'Skype'}>Skype</MenuItem>
-                  <MenuItem value={'ICQ'}>ICQ</MenuItem>
-                  <MenuItem value={'Line'}>Line</MenuItem>
-                </Select>
-                
-              </FormControl>
-              
-              
-              <div>
-                <TextField
-                  css={css`
-                    && {
-                      margin: 8px 0 0 0;
-                    }
-                  `}
-                  id="id2"
-                  label="ID 2"
-                  value={validationRecruitmentThreadsID2Obj.value}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'id2'],
-                    value: eventObj.target.value
-                  })}
-                  error={validationRecruitmentThreadsID2Obj.error}
-                  helperText={intl.formatMessage({ id: validationRecruitmentThreadsID2Obj.messageID }, { numberOfCharacters: validationRecruitmentThreadsID2Obj.numberOfCharacters })}
-                  margin="normal"
-                  inputProps={{
-                    maxLength: 100,
-                  }}
-                />
-              </div>
-              
-            </div>
-            
-            
-            
-            
-            {/* ID 3 */}
-            <div
-              css={css`
-                display: flex;
-                flex-flow: row nowrap;
-              `}
-            >
-              
-              <FormControl
-                css={css`
-                  && {
-                    width: 100px;
-                    margin: 24px 12px 0 0;
-                  }
-                `}
-              >
-                
-                <Select
-                  _id="platform3"
-                  value={platform3}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'platform3'],
-                    value: eventObj.target.value
-                  })}
-                  displayEmpty
-                >
-                  <MenuItem value={'Other'}>ID</MenuItem>
-                  <MenuItem value={'PlayStation'}>PlayStation</MenuItem>
-                  <MenuItem value={'Xbox'}>Xbox</MenuItem>
-                  <MenuItem value={'Nintendo'}>Nintendo</MenuItem>
-                  <MenuItem value={'PC'}>PC</MenuItem>
-                  <MenuItem value={'Android'}>Android</MenuItem>
-                  <MenuItem value={'iOS'}>iOS</MenuItem>
-                  <MenuItem value={'Steam'}>Steam</MenuItem>
-                  <MenuItem value={'Origin'}>Origin</MenuItem>
-                  <MenuItem value={'Discord'}>Discord</MenuItem>
-                  <MenuItem value={'Skype'}>Skype</MenuItem>
-                  <MenuItem value={'ICQ'}>ICQ</MenuItem>
-                  <MenuItem value={'Line'}>Line</MenuItem>
-                </Select>
-                
-              </FormControl>
-              
-              
-              <div>
-                <TextField
-                  css={css`
-                    && {
-                      margin: 8px 0 0 0;
-                    }
-                  `}
-                  id="id3"
-                  label="ID 3"
-                  value={validationRecruitmentThreadsID3Obj.value}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'id3'],
-                    value: eventObj.target.value
-                  })}
-                  error={validationRecruitmentThreadsID3Obj.error}
-                  helperText={intl.formatMessage({ id: validationRecruitmentThreadsID3Obj.messageID }, { numberOfCharacters: validationRecruitmentThreadsID3Obj.numberOfCharacters })}
-                  margin="normal"
-                  inputProps={{
-                    maxLength: 100,
-                  }}
-                />
-              </div>
-              
-            </div>
             
           </div>
         }
@@ -617,323 +674,12 @@ export default injectIntl(class extends React.Component {
             </p>
             
             
-            
-            
-            {/* Information 1 */}
             <div
               css={css`
-                display: flex;
-                flex-flow: row nowrap;
+                margin: 16px 0 0 0;
               `}
             >
-              
-              <div
-                css={css`
-                  margin: 0 12px 0 0;
-                `}
-              >
-                <TextField
-                  css={css`
-                    && {
-                      margin: 8px 0 0 0;
-                    }
-                  `}
-                  id="informationTitle1"
-                  label="タイトル 1"
-                  value={validationRecruitmentThreadsInformationTitle1Obj.value}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'informationTitle1'],
-                    value: eventObj.target.value
-                  })}
-                  error={validationRecruitmentThreadsInformationTitle1Obj.error}
-                  helperText={intl.formatMessage({ id: validationRecruitmentThreadsInformationTitle1Obj.messageID }, { numberOfCharacters: validationRecruitmentThreadsInformationTitle1Obj.numberOfCharacters })}
-                  margin="normal"
-                  inputProps={{
-                    maxLength: 30,
-                  }}
-                />
-              </div>
-              
-              
-              <div>
-                <TextField
-                  css={css`
-                    && {
-                      margin: 8px 0 0 0;
-                    }
-                  `}
-                  id="information1"
-                  label="情報 1"
-                  value={validationRecruitmentThreadsInformation1Obj.value}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'information1'],
-                    value: eventObj.target.value
-                  })}
-                  error={validationRecruitmentThreadsInformation1Obj.error}
-                  helperText={intl.formatMessage({ id: validationRecruitmentThreadsInformation1Obj.messageID }, { numberOfCharacters: validationRecruitmentThreadsInformation1Obj.numberOfCharacters })}
-                  margin="normal"
-                  inputProps={{
-                    maxLength: 100,
-                  }}
-                />
-              </div>
-              
-            </div>
-            
-            
-            
-            
-            {/* Information 2 */}
-            <div
-              css={css`
-                display: flex;
-                flex-flow: row nowrap;
-              `}
-            >
-              
-              <div
-                css={css`
-                  margin: 0 12px 0 0;
-                `}
-              >
-                <TextField
-                  css={css`
-                    && {
-                      margin: 8px 0 0 0;
-                    }
-                  `}
-                  id="informationTitle2"
-                  label="タイトル 2"
-                  value={validationRecruitmentThreadsInformationTitle2Obj.value}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'informationTitle2'],
-                    value: eventObj.target.value
-                  })}
-                  error={validationRecruitmentThreadsInformationTitle2Obj.error}
-                  helperText={intl.formatMessage({ id: validationRecruitmentThreadsInformationTitle2Obj.messageID }, { numberOfCharacters: validationRecruitmentThreadsInformationTitle2Obj.numberOfCharacters })}
-                  margin="normal"
-                  inputProps={{
-                    maxLength: 30,
-                  }}
-                />
-              </div>
-              
-              
-              <div>
-                <TextField
-                  css={css`
-                    && {
-                      margin: 8px 0 0 0;
-                    }
-                  `}
-                  id="information2"
-                  label="情報 2"
-                  value={validationRecruitmentThreadsInformation2Obj.value}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'information2'],
-                    value: eventObj.target.value
-                  })}
-                  error={validationRecruitmentThreadsInformation2Obj.error}
-                  helperText={intl.formatMessage({ id: validationRecruitmentThreadsInformation2Obj.messageID }, { numberOfCharacters: validationRecruitmentThreadsInformation2Obj.numberOfCharacters })}
-                  margin="normal"
-                  inputProps={{
-                    maxLength: 100,
-                  }}
-                />
-              </div>
-              
-            </div>
-            
-            
-            
-            
-            {/* Information 3 */}
-            <div
-              css={css`
-                display: flex;
-                flex-flow: row nowrap;
-              `}
-            >
-              
-              <div
-                css={css`
-                  margin: 0 12px 0 0;
-                `}
-              >
-                <TextField
-                  css={css`
-                    && {
-                      margin: 8px 0 0 0;
-                    }
-                  `}
-                  id="informationTitle3"
-                  label="タイトル 3"
-                  value={validationRecruitmentThreadsInformationTitle3Obj.value}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'informationTitle3'],
-                    value: eventObj.target.value
-                  })}
-                  error={validationRecruitmentThreadsInformationTitle3Obj.error}
-                  helperText={intl.formatMessage({ id: validationRecruitmentThreadsInformationTitle3Obj.messageID }, { numberOfCharacters: validationRecruitmentThreadsInformationTitle3Obj.numberOfCharacters })}
-                  margin="normal"
-                  inputProps={{
-                    maxLength: 30,
-                  }}
-                />
-              </div>
-              
-              
-              <div>
-                <TextField
-                  css={css`
-                    && {
-                      margin: 8px 0 0 0;
-                    }
-                  `}
-                  id="information3"
-                  label="情報 3"
-                  value={validationRecruitmentThreadsInformation3Obj.value}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'information3'],
-                    value: eventObj.target.value
-                  })}
-                  error={validationRecruitmentThreadsInformation3Obj.error}
-                  helperText={intl.formatMessage({ id: validationRecruitmentThreadsInformation3Obj.messageID }, { numberOfCharacters: validationRecruitmentThreadsInformation3Obj.numberOfCharacters })}
-                  margin="normal"
-                  inputProps={{
-                    maxLength: 100,
-                  }}
-                />
-              </div>
-              
-            </div>
-            
-            
-            
-            
-            {/* Information 4 */}
-            <div
-              css={css`
-                display: flex;
-                flex-flow: row nowrap;
-              `}
-            >
-              
-              <div
-                css={css`
-                  margin: 0 12px 0 0;
-                `}
-              >
-                <TextField
-                  css={css`
-                    && {
-                      margin: 8px 0 0 0;
-                    }
-                  `}
-                  id="informationTitle4"
-                  label="タイトル 4"
-                  value={validationRecruitmentThreadsInformationTitle4Obj.value}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'informationTitle4'],
-                    value: eventObj.target.value
-                  })}
-                  error={validationRecruitmentThreadsInformationTitle4Obj.error}
-                  helperText={intl.formatMessage({ id: validationRecruitmentThreadsInformationTitle4Obj.messageID }, { numberOfCharacters: validationRecruitmentThreadsInformationTitle4Obj.numberOfCharacters })}
-                  margin="normal"
-                  inputProps={{
-                    maxLength: 30,
-                  }}
-                />
-              </div>
-              
-              
-              <div>
-                <TextField
-                  css={css`
-                    && {
-                      margin: 8px 0 0 0;
-                    }
-                  `}
-                  id="information4"
-                  label="情報 4"
-                  value={validationRecruitmentThreadsInformation4Obj.value}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'information4'],
-                    value: eventObj.target.value
-                  })}
-                  error={validationRecruitmentThreadsInformation4Obj.error}
-                  helperText={intl.formatMessage({ id: validationRecruitmentThreadsInformation4Obj.messageID }, { numberOfCharacters: validationRecruitmentThreadsInformation4Obj.numberOfCharacters })}
-                  margin="normal"
-                  inputProps={{
-                    maxLength: 100,
-                  }}
-                />
-              </div>
-              
-            </div>
-            
-            
-            
-            
-            {/* Information 5 */}
-            <div
-              css={css`
-                display: flex;
-                flex-flow: row nowrap;
-              `}
-            >
-              
-              <div
-                css={css`
-                  margin: 0 12px 0 0;
-                `}
-              >
-                <TextField
-                  css={css`
-                    && {
-                      margin: 8px 0 0 0;
-                    }
-                  `}
-                  id="informationTitle5"
-                  label="タイトル 5"
-                  value={validationRecruitmentThreadsInformationTitle5Obj.value}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'informationTitle5'],
-                    value: eventObj.target.value
-                  })}
-                  error={validationRecruitmentThreadsInformationTitle5Obj.error}
-                  helperText={intl.formatMessage({ id: validationRecruitmentThreadsInformationTitle5Obj.messageID }, { numberOfCharacters: validationRecruitmentThreadsInformationTitle5Obj.numberOfCharacters })}
-                  margin="normal"
-                  inputProps={{
-                    maxLength: 30,
-                  }}
-                />
-              </div>
-              
-              
-              <div>
-                <TextField
-                  css={css`
-                    && {
-                      margin: 8px 0 0 0;
-                    }
-                  `}
-                  id="information5"
-                  label="情報 5"
-                  value={validationRecruitmentThreadsInformation5Obj.value}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'information5'],
-                    value: eventObj.target.value
-                  })}
-                  error={validationRecruitmentThreadsInformation5Obj.error}
-                  helperText={intl.formatMessage({ id: validationRecruitmentThreadsInformation5Obj.messageID }, { numberOfCharacters: validationRecruitmentThreadsInformation5Obj.numberOfCharacters })}
-                  margin="normal"
-                  inputProps={{
-                    maxLength: 100,
-                  }}
-                />
-              </div>
-              
+              {componentsInformationsArr}
             </div>
             
             

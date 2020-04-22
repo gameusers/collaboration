@@ -76,10 +76,6 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     dataObj: {},
   };
   
-  // const recruitmentRepliesObj = {
-  //   dataObj: {},
-  // };
-  
   
   
   
@@ -153,7 +149,7 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     const threadUsers_id = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'users_id'], '');
     const threadDeadlineDate = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'deadlineDate'], 0);
     const threadPublicSetting = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'publicSetting'], 1);
-    const threadPublicCommentsUsers_idsArr = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'publicCommentsUsers_idsArr'], []);
+    // const threadPublicCommentsUsers_idsArr = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'publicCommentsUsers_idsArr'], []);
     const threadPublicApprovalUsers_idsArrr = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'publicApprovalUsers_idsArrr'], []);
     
     
@@ -245,7 +241,7 @@ const formatRecruitmentCommentsAndRepliesArr = ({
       
       publicSetting === 1 ||
       (publicSetting === 2 && loginUsers_id === threadUsers_id) ||
-      (publicSetting === 3 && threadPublicApprovalUsers_idsArrr.includes(users_id))
+      (publicSetting === 3 && threadPublicSetting === 3 && threadPublicApprovalUsers_idsArrr.includes(users_id))
       
     ) {
       

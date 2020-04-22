@@ -14,8 +14,6 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-// const moment = require('moment');
-
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
@@ -276,10 +274,15 @@ const formatRecruitmentRepliesArr = ({
     const recruitmentRepliesPageArr = lodashGet(recruitmentRepliesObj, [recruitmentComments_id, `page${replyPage}Obj`, 'arr'], []);
     recruitmentRepliesPageArr.push(valueObj._id);
     
-    lodashSet(recruitmentRepliesObj, [recruitmentComments_id, `page${replyPage}Obj`], {
+    recruitmentCommentsObj[recruitmentComments_id] = {
       
       page: replyPage,
       count: replies,
+      
+    };
+    
+    lodashSet(recruitmentRepliesObj, [recruitmentComments_id, `page${replyPage}Obj`], {
+      
       loadedDate: ISO8601,
       arr: recruitmentRepliesPageArr,
       

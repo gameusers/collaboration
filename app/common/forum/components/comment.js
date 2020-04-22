@@ -476,8 +476,12 @@ export default injectIntl(class extends React.Component {
             <div
               css={css`
                 border-left: 4px solid #84cacb;
-                margin: 10px 0 0 0;
-                padding: 0 0 0 12px;
+                
+                margin: 12px 0 0 3px;
+                padding: 0 0 0 16px;
+                
+                // margin: 10px 0 0 0;
+                // padding: 0 0 0 12px;
                 
                 @media screen and (max-width: 480px) {
                   padding: 0 0 0 12px;

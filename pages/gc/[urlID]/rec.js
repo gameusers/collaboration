@@ -17,14 +17,14 @@ import util from 'util';
 import React from 'react';
 import Error from 'next/error';
 import { observer } from 'mobx-react';
-import { Element } from 'react-scroll';
+// import { Element } from 'react-scroll';
 import moment from 'moment';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
 import lodashGet from 'lodash/get';
-import lodashHas from 'lodash/has';
+// import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
@@ -76,8 +76,6 @@ export default class GcRec extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
-    
-    // console.log('constructor');
     
     
     // --------------------------------------------------
@@ -206,10 +204,6 @@ export default class GcRec extends React.Component {
       return <Error statusCode={this.props.statusCode} />;
     }
     
-    // console.log(chalk`
-    //   this.props.statusCode: {green ${this.props.statusCode}}
-    // `);
-    
     
     
     
@@ -228,6 +222,7 @@ export default class GcRec extends React.Component {
     // `);
     
     // console.log(chalk`
+    //   this.props.statusCode: {green ${this.props.statusCode}}
     //   gameCommunities_id: {green ${gameCommunities_id}}
     //   gameName: {green ${gameName}}
     // `);
@@ -247,15 +242,11 @@ export default class GcRec extends React.Component {
     // --------------------------------------------------
     
     const componentContent = 
-      // <Element
-      //   name="recruitmentThreads"
-      // >
-        <RecruitmentThread
-          temporaryDataID={this.props.temporaryDataID}
-          urlID={this.props.urlID}
-          gameCommunities_id={gameCommunities_id}
-        />
-      // </Element>
+      <RecruitmentThread
+        temporaryDataID={this.props.temporaryDataID}
+        urlID={this.props.urlID}
+        gameCommunities_id={gameCommunities_id}
+      />
     ;
     
     
@@ -362,7 +353,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/index.js
+  //   /pages/gc/[urlID]/rec.js
   // `);
   
   // console.log(`
@@ -372,13 +363,10 @@ export async function getServerSideProps({ req, res, query }) {
   // `);
   
   // console.log(chalk`
-  //   threadLimit: {green ${threadLimit}}
+  //   threadPage: {green ${threadPage}}
   //   threadLimit: {green ${threadLimit}}
   //   commentLimit: {green ${commentLimit}}
   //   replyLimit: {green ${replyLimit}}
-    
-  //   forumThreadListPage: {green ${forumThreadListPage}}
-  //   threadPage: {green ${threadPage}}
   // `);
   
   // console.log(`

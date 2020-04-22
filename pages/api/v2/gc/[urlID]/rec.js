@@ -24,7 +24,7 @@ const lodashHas = require('lodash/has');
 // ---------------------------------------------
 
 const ModelGameCommunities = require('../../../../../app/@database/game-communities/model');
-const ModelGames = require('../../../../../app/@database/games/model');
+// const ModelGames = require('../../../../../app/@database/games/model');
 const ModelRecruitmentThreads = require('../../../../../app/@database/recruitment-threads/model');
 
 
@@ -41,8 +41,9 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 // ---------------------------------------------
 
 const { validationInteger } = require('../../../../../app/@validations/integer');
-const { validationForumThreadsListLimit, validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
-const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
+const { validationRecruitmentThreadsLimit } = require('../../../../../app/@database/recruitment-threads/validations/limit');
+const { validationRecruitmentCommentsLimit } = require('../../../../../app/@database/recruitment-comments/validations/limit');
+const { validationRecruitmentRepliesLimit } = require('../../../../../app/@database/recruitment-replies/validations/limit');
 
 
 // ---------------------------------------------
@@ -56,7 +57,7 @@ const { locale } = require('../../../../../app/@locales/locale');
 //   API
 // ---------------------------------------------
 
-const { initialProps } = require('../../../../../app/@api/v2/common');
+// const { initialProps } = require('../../../../../app/@api/v2/common');
 
 
 
@@ -125,8 +126,10 @@ export default async (req, res) => {
     returnObj.login = false;
     
     if (req.isAuthenticated() && req.user) {
+      
       returnObj.loginUsersObj = req.user;
       returnObj.login = true;
+      
     }
     
     
@@ -234,10 +237,10 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Forum
+    //   DB find / Recruitment
     // --------------------------------------------------
     
-    let argumentsObj = {
+    const argumentsObj = {
       
       req,
       localeObj,
@@ -246,27 +249,29 @@ export default async (req, res) => {
       
     };
     
+    
     if (await validationInteger({ throwError: false, required: true, value: threadPage }).error === false) {
       argumentsObj.threadPage = threadPage;
     }
     
-    if (await validationForumThreadsLimit({ throwError: false, required: true, value: threadLimit }).error === false) {
+    if (await validationRecruitmentThreadsLimit({ throwError: false, required: true, value: threadLimit }).error === false) {
       argumentsObj.threadLimit = threadLimit;
     }
     
-    if (await validationForumCommentsLimit({ throwError: false, required: true, value: commentLimit }).error === false) {
+    if (await validationRecruitmentCommentsLimit({ throwError: false, required: true, value: commentLimit }).error === false) {
       argumentsObj.commentLimit = commentLimit;
     }
     
-    if (await validationForumRepliesLimit({ throwError: false, required: true, value: replyLimit }).error === false) {
+    if (await validationRecruitmentRepliesLimit({ throwError: false, required: true, value: replyLimit }).error === false) {
       argumentsObj.replyLimit = replyLimit;
     }
+    
     
     const recruitmentObj = await ModelRecruitmentThreads.findRecruitments(argumentsObj);
     
     returnObj.recruitmentThreadsObj = recruitmentObj.recruitmentThreadsObj;
-    // returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    // returnObj.forumRepliesObj = forumObj.forumRepliesObj;
+    returnObj.recruitmentCommentsObj = recruitmentObj.recruitmentCommentsObj;
+    returnObj.recruitmentRepliesObj = recruitmentObj.recruitmentRepliesObj;
       
       
     
@@ -275,21 +280,25 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/gc/[urlID]/index.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/gc/[urlID]/rec.js
+    `);
     
-    // console.log(chalk`
-    //   urlID: {green ${urlID}}
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    // `);
+    console.log(chalk`
+      urlID: {green ${urlID}}
+      threadPage: {green ${threadPage}}
+      threadLimit: {green ${threadLimit}}
+      commentLimit: {green ${commentLimit}}
+      replyLimit: {green ${replyLimit}}
+      gameCommunities_id: {green ${gameCommunities_id}}
+    `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -309,11 +318,13 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 't22TWi-ct',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,
+      
     });
     
     

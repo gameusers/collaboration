@@ -323,7 +323,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 // --------------------------------------------------
 
 /**
- * 募集を取得する
+ * 募集（コメント＆返信を含む全てのデータ）を取得する
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
@@ -814,16 +814,10 @@ const findRecruitments = async ({
     // `);
     
     // console.log(`
-    //   ----- formattedThreadsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(formattedThreadsObj)), { colors: true, depth: null })}\n
+    //   ----- recruitmentThreadsObj -----\n
+    //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    console.log(`
-      ----- recruitmentThreadsObj -----\n
-      ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
     
     console.log(`
       ----- recruitmentCommentsObj -----\n
@@ -831,11 +825,11 @@ const findRecruitments = async ({
       --------------------\n
     `);
     
-    console.log(`
-      ----- recruitmentRepliesObj -----\n
-      ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- recruitmentRepliesObj -----\n
+    //   ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -847,6 +841,8 @@ const findRecruitments = async ({
     return {
       
       recruitmentThreadsObj,
+      recruitmentCommentsObj,
+      recruitmentRepliesObj,
       
     };
     

@@ -17,7 +17,6 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-// import moment from 'moment';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -49,17 +48,6 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 @inject('stores', 'storeGcRecruitment')
 @observer
 export default injectIntl(class extends React.Component {
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  // constructor(props) {
-  //   super(props);
-  // }
-  
-  
   
   
   // --------------------------------------------------
@@ -118,17 +106,7 @@ export default injectIntl(class extends React.Component {
     //   Component
     // --------------------------------------------------
     
-    let component = `プッシュ通知`;
-    
-    // if (days === 0) {
-      
-    //   component = <span css={css` color: red; `}>残り {moment(deadlineDate).fromNow(true)}</span>;
-      
-    // } else if (days < 0) {
-      
-    //   component = <span css={css` color: red; `}>締め切り</span>;
-      
-    // }
+    const component = `プッシュ通知`;
     
     
     
@@ -139,11 +117,11 @@ export default injectIntl(class extends React.Component {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/gc/rec/components/chip-category.js
+    //   /app/gc/rec/components/notification.js
     // `);
     
     // console.log(chalk`
-    //   category: {green ${category}}
+    //   notification: {green ${notification}}
     // `);
     
     

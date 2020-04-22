@@ -29,13 +29,13 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 
 /**
- * スレッドの1ページに表示する件数
+ * コメントの1ページに表示する件数
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationRecruitmentThreadsLimit = ({ throwError = false, required = false, value }) => {
+const validationRecruitmentCommentsLimit = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -63,7 +63,7 @@ const validationRecruitmentThreadsLimit = ({ throwError = false, required = fals
     // ---------------------------------------------
     
     if (!validator.isIn(data, ['1', '3', '5', '10', '20', '50'])) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'PShLfn3GS', messageID: 'PH8jcw-VF' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'kdhevf_rT', messageID: 'PH8jcw-VF' }] });
     }
     
     
@@ -113,6 +113,6 @@ const validationRecruitmentThreadsLimit = ({ throwError = false, required = fals
 
 module.exports = {
   
-  validationRecruitmentThreadsLimit,
+  validationRecruitmentCommentsLimit,
   
 };

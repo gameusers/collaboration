@@ -172,10 +172,10 @@ class Store {
       //   console.log
       // ---------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/gc/rec/stores/store.js - handleReadThreads
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/gc/rec/stores/store.js - handleReadThreads
+      // `);
       
       // // console.log(`
       // //   ----- forumObj -----\n
@@ -1819,6 +1819,28 @@ export default function initStoreGcRecruitment({ propsObj }) {
       // `);
       
       lodashSet(storeGcRecruitment, ['dataObj', gameCommunities_id, 'recruitmentThreadsObj'], recruitmentThreadsObj);
+    }
+    
+    
+    // --------------------------------------------------
+    //   recruitmentCommentsObj
+    // --------------------------------------------------
+    
+    const recruitmentCommentsObj = lodashGet(propsObj, ['recruitmentCommentsObj'], null);
+    
+    if (recruitmentCommentsObj) {
+      lodashSet(storeGcRecruitment, ['dataObj', gameCommunities_id, 'recruitmentCommentsObj'], recruitmentCommentsObj);
+    }
+    
+    
+    // --------------------------------------------------
+    //   recruitmentRepliesObj
+    // --------------------------------------------------
+    
+    const recruitmentRepliesObj = lodashGet(propsObj, ['recruitmentRepliesObj'], null);
+    
+    if (recruitmentCommentsObj) {
+      lodashSet(storeGcRecruitment, ['dataObj', gameCommunities_id, 'recruitmentRepliesObj'], recruitmentRepliesObj);
     }
     
     

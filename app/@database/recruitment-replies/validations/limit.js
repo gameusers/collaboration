@@ -35,7 +35,7 @@ const { CustomError } = require('../../../@modules/error/custom');
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationRecruitmentThreadsLimit = ({ throwError = false, required = false, value }) => {
+const validationRecruitmentRepliesLimit = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -63,7 +63,7 @@ const validationRecruitmentThreadsLimit = ({ throwError = false, required = fals
     // ---------------------------------------------
     
     if (!validator.isIn(data, ['1', '3', '5', '10', '20', '50'])) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'PShLfn3GS', messageID: 'PH8jcw-VF' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'WOJ7RnjAl', messageID: 'PH8jcw-VF' }] });
     }
     
     
@@ -113,6 +113,6 @@ const validationRecruitmentThreadsLimit = ({ throwError = false, required = fals
 
 module.exports = {
   
-  validationRecruitmentThreadsLimit,
+  validationRecruitmentRepliesLimit,
   
 };

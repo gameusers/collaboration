@@ -69,6 +69,7 @@ import User from '../../../common/user/components/user';
 import ImageAndVideo from '../../../common/image-and-video/components/image-and-video';
 import Panel from '../../../common/layout/components/panel';
 
+import RecruitmentComment from './recruitment-comment';
 import FormThread from './form/thread';
 import FormComment from './form/comment';
 import PublicIDs from './public-ids';
@@ -76,8 +77,6 @@ import PublicInformations from './public-informations';
 import PublicSetting from './public-setting';
 import DeadlineDate from './deadline-date';
 import Notification from './notification';
-
-// import Comment from './comment';
 
 
 
@@ -310,8 +309,6 @@ export default injectIntl(class extends React.Component {
       const hardwaresArr = lodashGet(threadsDataObj, ['hardwaresArr'], []);
       const deadlineDate = lodashGet(threadsDataObj, ['deadlineDate'], '');
       const notification = lodashGet(threadsDataObj, ['notification'], '');
-      
-      // const comments = lodashGet(threadsDataObj, ['comments'], 0);
       
       
       // --------------------------------------------------
@@ -646,7 +643,7 @@ export default injectIntl(class extends React.Component {
             >
                 
                 
-                {/* Edit Form Thread */}
+                {/* Thread - Edit Form */}
                 {showFormThread &&
                   <div
                     css={css`
@@ -756,25 +753,24 @@ export default injectIntl(class extends React.Component {
                       
                       
                       {/* 募集期間 ＆ 通知方法 */}
-                      <div
-                        css={css`
-                          margin: 20px 0 0 0;
-                        `}
-                      >
-                        
-                        {/* 募集期間 */}
-                        <DeadlineDate
-                          deadlineDate={deadlineDate}
-                        />
-                        
-                        
-                        {/* 通知方法 */}
-                        <Notification
-                          pathArr={pathRecruitmentThreadArr}
-                          notification={notification}
-                        />
-                      
-                      </div>
+                      {(deadlineDate || notification) &&
+                        <div
+                          css={css`
+                            margin: 20px 0 0 0;
+                          `}
+                        >
+                          
+                          <DeadlineDate
+                            deadlineDate={deadlineDate}
+                          />
+                          
+                          <Notification
+                            pathArr={pathRecruitmentThreadArr}
+                            notification={notification}
+                          />
+                          
+                        </div>
+                      }
                       
                       
                     </div>
@@ -786,16 +782,21 @@ export default injectIntl(class extends React.Component {
                     <div
                       css={css`
                         width: 100%;
+                        
                         border-top: 1px solid;
                         border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
                         border-image-slice: 1;
+                        
                         margin: 14px 0 0 0;
                         padding: 14px 0 0 0;
+                        
+                        // margin: 14px 0 0 0;
+                        // padding: 6px 0 0 0;
                       `}
                     >
                       
                       
-                      {/* Show Form Button */}
+                      {/* Button - Show Form Comment */}
                       {!showFormComment &&
                         <div
                           css={css`
@@ -827,12 +828,7 @@ export default injectIntl(class extends React.Component {
                       {showFormComment &&
                         <div
                           css={css`
-                            // width: 100%;
-                            // border-bottom: 1px solid;
-                            // border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
-                            // border-image-slice: 1;
-                            margin: 16px 0 0 0;
-                            // padding: 14px 0 0 0;
+                            margin: 8px 0 0 0;
                           `}
                         >
                           
@@ -850,25 +846,19 @@ export default injectIntl(class extends React.Component {
                     </div>
                 
                     
+                    
+                    
                     {/* Comment */}
-                    {/*<Comment
+                    <RecruitmentComment
                       urlID={urlID}
                       gameCommunities_id={gameCommunities_id}
-                      userCommunityID={userCommunityID}
-                      userCommunities_id={userCommunities_id}
                       recruitmentThreads_id={recruitmentThreads_id}
-                      comments={comments}
-                      settingAnonymity={settingAnonymity}
-                    />*/}
+                      // comments={comments}
+                    />
                     
                     
                   </div>
                 }
-                
-                
-                
-                
-                
                 
                 
               </ExpansionPanelDetails>

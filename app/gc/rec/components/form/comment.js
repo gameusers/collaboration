@@ -34,12 +34,12 @@ import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
+// import InputLabel from '@material-ui/core/InputLabel';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
+// import FormControl from '@material-ui/core/FormControl';
 import Checkbox from '@material-ui/core/Checkbox';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+// import MenuItem from '@material-ui/core/MenuItem';
+// import Select from '@material-ui/core/Select';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -262,6 +262,16 @@ export default injectIntl(class extends React.Component {
         
         
         <form
+          css={css`
+            // background-color: #FAFAFA;
+            background-color: #F8F8FF;
+            // background-color: #f8fcf9;
+            
+            padding: 16px 12px 16px 12px;
+            
+            // margin: 0 0 14px 0;
+            // padding: 0 0 10px 0;
+          `}
           name={elementName}
           onSubmit={(eventObj) => handleSubmitRecruitmentComment({
             eventObj,

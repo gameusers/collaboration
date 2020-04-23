@@ -116,7 +116,7 @@ const stylesObj = {
 // --------------------------------------------------
 
 @withStyles(stylesObj)
-@inject('stores', 'storeGcRecruitment')
+@inject('stores', 'storeGcRecruitment', 'storeGood')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -184,6 +184,7 @@ export default injectIntl(class extends React.Component {
       classes,
       stores,
       storeGcRecruitment,
+      storeGood,
       intl,
       temporaryDataID,
       urlID,
@@ -212,10 +213,21 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleReadRecruitmentThreads,
-      handleShowFormThread,
+      handleReadRecruitmentComments,
+      handleShowFormRecruitmentComment,
       
     } = storeGcRecruitment;
+    
+    
+    // --------------------------------------------------
+    //   storeGood
+    // --------------------------------------------------
+    
+    const {
+      
+      handleSubmitGood,
+      
+    } = storeGood;
     
     
     
@@ -334,7 +346,6 @@ export default injectIntl(class extends React.Component {
       // // const editable = true;
       
       const notification = lodashGet(commentsDataObj, ['notification'], '');
-      // const goods = lodashGet(commentsDataObj, ['goods'], 0);
       
       
       // --------------------------------------------------
@@ -437,7 +448,7 @@ export default injectIntl(class extends React.Component {
       
       componentArr.push(
         <Element
-          name={recruitmentThreads_id}
+          name={recruitmentComments_id}
           key={index}
         >
           
@@ -447,9 +458,11 @@ export default injectIntl(class extends React.Component {
             <div
               css={css`
                 width: 100%;
+                
                 border-top: 1px solid;
                 border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
                 border-image-slice: 1;
+                
                 margin: 14px 0 0 0;
                 padding: 32px 0 0 0;
               `}
@@ -471,11 +484,13 @@ export default injectIntl(class extends React.Component {
             <div
               css={css`
                 width: 100%;
-                border-top: 1px solid;
-                border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
-                border-image-slice: 1;
+                
+                // border-top: 1px solid;
+                // border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+                // border-image-slice: 1;
+                
                 margin: 14px 0 0 0;
-                padding: 20px 0 0 0;
+                padding: 14px 0 0 0;
               `}
             >
               
@@ -517,17 +532,11 @@ export default injectIntl(class extends React.Component {
               <div
                 css={css`
                   border-left: 4px solid #84cacb;
-                  margin: 12px 0 0 3px;
-                  padding: 0 0 0 16px;
-                  
-                  // margin: 10px 0 0 0;
-                  // padding: 0 0 0 12px;
-                  
-                  // margin: 12px 0 10px 3px;
-                  // padding: 0 0 0 16px;
+                  margin: 12px 0;
+                  padding: 8px 0 8px 16px;
                   
                   @media screen and (max-width: 480px) {
-                    padding: 0 0 0 12px;
+                    padding: 8px 0 8px 12px;
                   }
                 `}
               >
@@ -608,12 +617,12 @@ export default injectIntl(class extends React.Component {
                     `}
                     
                     variant="outlined"
-                    // onClick={() => handleSubmitGood({
-                    //   pathArr: this.pathArr,
-                    //   goodsPathArr: [communities_id, 'forumCommentsObj', 'dataObj', forumComments_id],
-                    //   type: 'forumComment',
-                    //   target_id: forumComments_id,
-                    // })}
+                    onClick={() => handleSubmitGood({
+                      pathArr: this.pathArr,
+                      goodsPathArr: [gameCommunities_id, 'recruitmentCommentsObj', 'dataObj', recruitmentComments_id],
+                      type: 'recruitmentComment',
+                      target_id: recruitmentComments_id,
+                    })}
                   >
                     <IconThumbUp
                       css={css`
@@ -757,10 +766,10 @@ export default injectIntl(class extends React.Component {
                         `}
                         variant="outlined"
                         color="primary"
-                        // onClick={() => handleShowFormComment({
-                        //   pathArr: this.pathArr,
-                        //   forumComments_id,
-                        // })}
+                        onClick={() => handleShowFormRecruitmentComment({
+                          pathArr: pathRecruitmentCommentEditFormArr,
+                          recruitmentComments_id,
+                        })}
                       >
                         <IconEdit
                           css={css`

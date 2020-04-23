@@ -169,8 +169,8 @@ export default injectIntl(class extends React.Component {
       handleEdit,
       handleSubmitRecruitmentThread,
       handleGetWebPushSubscribeObj,
-      handleDeleteThread,
-      handleHideFormThread,
+      handleDeleteRecruitmentThread,
+      handleHideFormRecruitmentThread,
       
     } = storeGcRecruitment;
     
@@ -688,7 +688,7 @@ export default injectIntl(class extends React.Component {
                 <Button
                   variant="outlined"
                   color="secondary"
-                  onClick={() => handleHideFormThread({
+                  onClick={() => handleHideFormRecruitmentThread({
                     pathArr,
                     recruitmentThreads_id,
                   })}
@@ -730,7 +730,7 @@ export default injectIntl(class extends React.Component {
                 `}
               >
                 <Button
-                  onClick={() => handleDeleteThread({
+                  onClick={() => handleDeleteRecruitmentThread({
                     pathArr,
                     gameCommunities_id,
                     recruitmentThreads_id,

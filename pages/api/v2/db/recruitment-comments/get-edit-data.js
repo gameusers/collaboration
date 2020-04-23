@@ -22,7 +22,7 @@ import lodashSet from 'lodash/set';
 //   Model
 // ---------------------------------------------
 
-import ModelRecruitmentThreads from '../../../../../app/@database/recruitment-threads/model.js';
+import ModelRecruitmentComments from '../../../../../app/@database/recruitment-comments/model.js';
 
 
 // ---------------------------------------------
@@ -43,7 +43,7 @@ import { locale } from '../../../../../app/@locales/locale';
 
 
 // --------------------------------------------------
-//   endpointID: D6nl8IMoV
+//   endpointID: 6wFrxRUgm
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -94,12 +94,12 @@ export default async (req, res) => {
     
     const { 
       
-      recruitmentThreads_id,
+      recruitmentComments_id,
       
     } = bodyObj;
     
     
-    lodashSet(requestParametersObj, ['recruitmentThreads_id'], recruitmentThreads_id);
+    lodashSet(requestParametersObj, ['recruitmentComments_id'], recruitmentComments_id);
     
     
     
@@ -114,15 +114,15 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Forum Threads / 権限チェック含む
+    //   DB find / Recruitment Comments / 権限チェック含む
     // --------------------------------------------------
     
-    const returnObj = await ModelRecruitmentThreads.findOneForEdit({
+    const returnObj = await ModelRecruitmentComments.findOneForEdit({
       
       req,
       localeObj,
       loginUsers_id,
-      recruitmentThreads_id,
+      recruitmentComments_id,
       
     });
     
@@ -135,16 +135,16 @@ export default async (req, res) => {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/api/v2/db/recruitment-threads/get-edit-data.js
+    //   /pages/api/v2/db/recruitment-comments/get-edit-data.js
     // `);
     
     // console.log(chalk`
-    //   forumThreads_id: {green ${forumThreads_id}}
+    //   recruitmentComments_id: {green ${recruitmentComments_id}}
     // `);
     
     // console.log(`
     //   ----- returnObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -168,7 +168,7 @@ export default async (req, res) => {
     const resultErrorObj = returnErrorsArr({
       
       errorObj,
-      endpointID: 'D6nl8IMoV',
+      endpointID: '6wFrxRUgm',
       users_id: loginUsers_id,
       ip,
       userAgent,

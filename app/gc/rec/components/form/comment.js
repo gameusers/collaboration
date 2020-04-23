@@ -168,8 +168,8 @@ export default injectIntl(class extends React.Component {
       handleEdit,
       handleSubmitRecruitmentComment,
       handleGetWebPushSubscribeObj,
-      handleDeleteThread,
-      handleHideFormComment,
+      handleDeleteRecruitmentComment,
+      handleHideFormRecruitmentComment,
       
     } = storeGcRecruitment;
     
@@ -264,10 +264,10 @@ export default injectIntl(class extends React.Component {
         <form
           css={css`
             // background-color: #FAFAFA;
-            background-color: #F8F8FF;
+            // background-color: #F8F8FF;
             // background-color: #f8fcf9;
             
-            padding: 16px 12px 16px 12px;
+            // padding: 16px 12px;
             
             // margin: 0 0 14px 0;
             // padding: 0 0 10px 0;
@@ -483,7 +483,7 @@ export default injectIntl(class extends React.Component {
               flex-flow: row nowrap;
               border-top: 1px dashed #848484;
               margin: 24px 0 0 0;
-              padding: 36px 0 0 0;
+              padding: 24px 0 0 0;
             `}
           >
             
@@ -530,7 +530,7 @@ export default injectIntl(class extends React.Component {
               <Button
                 variant="outlined"
                 color="secondary"
-                onClick={() => handleHideFormComment({
+                onClick={() => handleHideFormRecruitmentComment({
                   pathArr,
                   recruitmentThreads_id,
                 })}
@@ -556,7 +556,7 @@ export default injectIntl(class extends React.Component {
             aria-describedby="alert-dialog-description"
           >
             
-            <DialogTitle id="alert-dialog-title">募集削除</DialogTitle>
+            <DialogTitle id="alert-dialog-title">コメント削除</DialogTitle>
             
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
@@ -571,7 +571,7 @@ export default injectIntl(class extends React.Component {
                 `}
               >
                 <Button
-                  onClick={() => handleDeleteThread({
+                  onClick={() => handleDeleteRecruitmentComment({
                     pathArr,
                     gameCommunities_id,
                     recruitmentThreads_id,

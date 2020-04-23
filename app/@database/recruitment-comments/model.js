@@ -42,8 +42,8 @@ const SchemaUsers = require('../users/schema');
 //   Modules
 // ---------------------------------------------
 
-// const { CustomError } = require('../../@modules/error/custom');
-// const { verifyAuthority } = require('../../@modules/authority');
+const { CustomError } = require('../../@modules/error/custom');
+const { verifyAuthority } = require('../../@modules/authority');
 
 
 // ---------------------------------------------
@@ -1082,24 +1082,420 @@ const findCommentsAndReplies = async ({
 
 
 
+/**
+ * 編集用データを取得する（権限もチェック）
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} recruitmentComments_id - DB recruitment-comments _id / スレッドID
+ * @return {Array} 取得データ
+ */
+const findOneForEdit = async ({
+  
+  req,
+  localeObj,
+  loginUsers_id,
+  recruitmentComments_id,
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    const docRecruitmentCommentsArr = await Schema.aggregate([
+      
+      
+      // --------------------------------------------------
+      //   Match
+      // --------------------------------------------------
+      
+      {
+        $match : { _id: recruitmentComments_id }
+      },
+      
+      
+      // --------------------------------------------------
+      //   images-and-videos
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$letImagesAndVideos_id'] },
+                }
+              },
+              { $project:
+                {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // --------------------------------------------------
+      //   ids
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'ids',
+            let: {
+              letUsers_id: '$users_id',
+              letIDs_idArr: '$ids_idsArr',
+            },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $and:
+                    [
+                      { $eq: ['$users_id', '$$letUsers_id'] },
+                      { $in: ['$_id', '$$letIDs_idArr'] }
+                    ]
+                  },
+                }
+              },
+              
+              
+              // --------------------------------------------------
+              //   ids / games
+              // --------------------------------------------------
+              
+              {
+                $lookup:
+                  {
+                    from: 'games',
+                    let: { letGameCommunities_id: '$gameCommunities_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $and:
+                            [
+                              { $eq: ['$language', language] },
+                              { $eq: ['$country', country] },
+                              { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
+                            ]
+                          },
+                        }
+                      },
+                      
+                      
+                      // --------------------------------------------------
+                      //   ids / games / images-and-videos / サムネイル用
+                      // --------------------------------------------------
+                      
+                      {
+                        $lookup:
+                          {
+                            from: 'images-and-videos',
+                            let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                            pipeline: [
+                              { $match:
+                                { $expr:
+                                  { $eq: ['$_id', '$$letImagesAndVideosThumbnail_id'] },
+                                }
+                              },
+                              { $project:
+                                {
+                                  createdDate: 0,
+                                  updatedDate: 0,
+                                  users_id: 0,
+                                  __v: 0,
+                                }
+                              }
+                            ],
+                            as: 'imagesAndVideosThumbnailObj'
+                          }
+                      },
+                      
+                      {
+                        $unwind: {
+                          path: '$imagesAndVideosThumbnailObj',
+                          preserveNullAndEmptyArrays: true,
+                        }
+                      },
+                      
+                      
+                      { $project:
+                        {
+                          _id: 1,
+                          gameCommunities_id: 1,
+                          name: 1,
+                          imagesAndVideosThumbnailObj: 1,
+                        }
+                      }
+                    ],
+                    as: 'gamesObj'
+                  }
+              },
+              
+              {
+                $unwind:
+                  {
+                    path: '$gamesObj',
+                    preserveNullAndEmptyArrays: true
+                  }
+              },
+              
+              
+              { $project:
+                {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  search: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'idsArr'
+          }
+      },
+      
+      
+      { $project:
+        {
+          createdDate: 0,
+          imagesAndVideos_id: 0,
+          ids_idsArr: 0,
+          webPushSubscriptionObj: 0,
+          ip: 0,
+          userAgent: 0,
+          __v: 0,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   配列が空の場合は処理停止
+    // --------------------------------------------------
+    
+    if (docRecruitmentCommentsArr.length === 0) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'T-kp_548w', messageID: 'cvS0qSAlE' }] });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   編集権限がない場合は処理停止
+    // --------------------------------------------------
+    
+    const editable = verifyAuthority({
+      
+      req,
+      users_id: lodashGet(docRecruitmentCommentsArr, [0, 'users_id'], ''),
+      loginUsers_id,
+      ISO8601: lodashGet(docRecruitmentCommentsArr, [0, 'createdDate'], ''),
+      _id: lodashGet(docRecruitmentCommentsArr, [0, '_id'], '')
+      
+    });
+    
+    if (!editable) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'qWgemV6ra', messageID: 'DSRlEoL29' }] });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Format
+    // --------------------------------------------------
+    
+    const formattedObj = docRecruitmentCommentsArr[0];
+    
+    
+    // --------------------------------------------------
+    //   非ログイン時のID
+    // --------------------------------------------------
+    
+    const publicIDsArr = lodashGet(formattedObj, ['publicIDsArr'], []);
+    
+    for (const [index, valueObj] of publicIDsArr.entries()) {
+      
+      if (index === 0) {
+        
+        lodashSet(formattedObj, ['platform1'], valueObj.platform);
+        lodashSet(formattedObj, ['id1'], valueObj.id);
+        
+      } else if (index === 1) {
+        
+        lodashSet(formattedObj, ['platform2'], valueObj.platform);
+        lodashSet(formattedObj, ['id2'], valueObj.id);
+        
+      } else if (index === 2) {
+        
+        lodashSet(formattedObj, ['platform3'], valueObj.platform);
+        lodashSet(formattedObj, ['id3'], valueObj.id);
+        
+      }
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   情報
+    // --------------------------------------------------
+    
+    const publicInformationsArr = lodashGet(formattedObj, ['publicInformationsArr'], []);
+    
+    for (const [index, valueObj] of publicInformationsArr.entries()) {
+      
+      if (index === 0) {
+        
+        lodashSet(formattedObj, ['informationTitle1'], valueObj.title);
+        lodashSet(formattedObj, ['information1'], valueObj.information);
+        
+      } else if (index === 1) {
+        
+        lodashSet(formattedObj, ['informationTitle2'], valueObj.title);
+        lodashSet(formattedObj, ['information2'], valueObj.information);
+        
+      } else if (index === 2) {
+        
+        lodashSet(formattedObj, ['informationTitle3'], valueObj.title);
+        lodashSet(formattedObj, ['information3'], valueObj.information);
+        
+      } else if (index === 3) {
+        
+        lodashSet(formattedObj, ['informationTitle4'], valueObj.title);
+        lodashSet(formattedObj, ['information4'], valueObj.information);
+        
+      } else if (index === 4) {
+        
+        lodashSet(formattedObj, ['informationTitle5'], valueObj.title);
+        lodashSet(formattedObj, ['information5'], valueObj.information);
+        
+      }
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   returnObj
+    // --------------------------------------------------
+    
+    const returnObj = formattedObj;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   不要なデータを削除
+    // --------------------------------------------------
+    
+    delete returnObj.publicIDsArr;
+    delete returnObj.publicInformationsArr;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(`
+      ----------------------------------------\n
+      /app/@database/recruitment-comments/model.js - findOneForEdit
+    `);
+    
+    console.log(chalk`
+      recruitmentComments_id: {green ${recruitmentComments_id}}
+      editable: {green ${editable} / ${typeof editable}}
+    `);
+    
+    console.log(`
+      ----- docRecruitmentCommentsArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(docRecruitmentCommentsArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
 
 
 /**
-* Transaction 挿入 / 更新する
-* スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
-* 
-* @param {Object} recruitmentThreadsConditionObj - DB recruitment-threads 検索条件
-* @param {Object} recruitmentThreadsSaveObj - DB recruitment-threads 保存データ
-* @param {Object} recruitmentCommentsConditionObj - DB recruitment-comments 検索条件
-* @param {Object} recruitmentCommentsSaveObj - DB recruitment-comments 保存データ
-* @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
-* @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
-* @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
-* @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
-* @param {Object} usersConditionObj - DB users 検索条件
-* @param {Object} usersSaveObj - DB users 保存データ
-* @return {Object} 
-*/
+ * Transaction 挿入 / 更新する
+ * スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
+ * 
+ * @param {Object} recruitmentThreadsConditionObj - DB recruitment-threads 検索条件
+ * @param {Object} recruitmentThreadsSaveObj - DB recruitment-threads 保存データ
+ * @param {Object} recruitmentCommentsConditionObj - DB recruitment-comments 検索条件
+ * @param {Object} recruitmentCommentsSaveObj - DB recruitment-comments 保存データ
+ * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
+ * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
+ * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
+ * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
+ * @param {Object} usersConditionObj - DB users 検索条件
+ * @param {Object} usersSaveObj - DB users 保存データ
+ * @return {Object} 
+ */
 const transactionForUpsert = async ({
   
   recruitmentThreadsConditionObj,
@@ -1356,6 +1752,7 @@ module.exports = {
   deleteMany,
   
   findCommentsAndReplies,
+  findOneForEdit,
   
   transactionForUpsert,
   

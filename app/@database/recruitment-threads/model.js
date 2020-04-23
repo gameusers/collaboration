@@ -791,10 +791,10 @@ const findRecruitments = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/recruitment-threads/model.js - findRecruitments
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/recruitment-threads/model.js - findRecruitments
+    // `);
     
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
@@ -819,11 +819,11 @@ const findRecruitments = async ({
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- recruitmentCommentsObj -----\n
-      ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- recruitmentCommentsObj -----\n
+    //   ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- recruitmentRepliesObj -----\n
@@ -1498,19 +1498,19 @@ const findOneForEdit = async ({
 
 
 /**
-* Transaction 挿入 / 更新する
-* スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
-* 
-* @param {Object} recruitmentThreadsConditionObj - DB recruitment-threads 検索条件
-* @param {Object} recruitmentThreadsSaveObj - DB recruitment-threads 保存データ
-* @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
-* @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
-* @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
-* @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
-* @param {Object} usersConditionObj - DB users 検索条件
-* @param {Object} usersSaveObj - DB users 保存データ
-* @return {Object} 
-*/
+ * Transaction 挿入 / 更新する
+ * スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
+ * 
+ * @param {Object} recruitmentThreadsConditionObj - DB recruitment-threads 検索条件
+ * @param {Object} recruitmentThreadsSaveObj - DB recruitment-threads 保存データ
+ * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
+ * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
+ * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
+ * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
+ * @param {Object} usersConditionObj - DB users 検索条件
+ * @param {Object} usersSaveObj - DB users 保存データ
+ * @return {Object} 
+ */
 const transactionForUpsert = async ({
   
   recruitmentThreadsConditionObj,

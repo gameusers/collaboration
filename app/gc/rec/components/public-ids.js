@@ -49,17 +49,6 @@ export default class extends React.Component {
   
   
   // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  constructor(props) {
-    super(props);
-  }
-  
-  
-  
-  
-  // --------------------------------------------------
   //   render
   // --------------------------------------------------
   
@@ -71,17 +60,6 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const { idsArr, publicIDsArr } = this.props;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   必要な情報がない場合、空のコンポーネントを返す
-    // --------------------------------------------------
-    
-    // if (!Array.isArray(arr) || arr.length === 0) {
-    //   return null;
-    // }
     
     
     
@@ -129,7 +107,6 @@ export default class extends React.Component {
       for (const [index, valueObj] of publicIDsArr.entries()) {
         
         const label = valueObj.platform === 'Other' ? 'ID' : '';
-        // const gamesName = lodashGet(valueObj, ['gamesObj', 'name'], '');
         
         componentsArr.push(
           <IDChip
@@ -187,9 +164,7 @@ export default class extends React.Component {
     return (
       <div
         css={css`
-          // border-top: 1px dashed #A4A4A4;
-          margin: 24px 0 0 0;
-          // padding: 12px 0 0 0;
+          margin: 16px 0 0 0;
         `}
       >
         

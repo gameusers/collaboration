@@ -26,6 +26,8 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 
 const Schema = require('./schema');
 const SchemaForumComments = require('../forum-comments/schema');
+const SchemaRecruitmentComments = require('../recruitment-comments/schema');
+const SchemaRecruitmentReplies = require('../recruitment-replies/schema');
 const SchemaUsers = require('../users/schema');
 
 
@@ -33,8 +35,8 @@ const SchemaUsers = require('../users/schema');
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosObj } = require('../images-and-videos/format');
-const { formatFollowsObj } = require('../follows/format');
+// const { formatImagesAndVideosObj } = require('../images-and-videos/format');
+// const { formatFollowsObj } = require('../follows/format');
 
 
 
@@ -351,14 +353,16 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * Transaction 挿入 / 更新する
  * スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
  * 
- * @param {Object} forumThreadsConditionObj - DB forum-threads 検索条件
- * @param {Object} forumThreadsSaveObj - DB forum-threads 保存データ
- * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
- * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
- * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
- * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
- * @param {Object} userCommunitiesConditionObj - DB user-communities 検索条件
- * @param {Object} userCommunitiesSaveObj - DB user-communities 保存データ
+ * @param {Object} goodsConditionObj - DB goods 検索条件
+ * @param {Object} goodsSaveObj - DB goods 保存データ
+ * @param {Object} forumCommentsConditionObj - DB forum-comments 検索条件
+ * @param {Object} forumCommentsSaveObj - DB forum-comments 保存データ
+ * @param {Object} recruitmentCommentsConditionObj - DB recruitment-comments 検索条件
+ * @param {Object} recruitmentCommentsSaveObj - DB recruitment-comments 保存データ
+ * @param {Object} recruitmentRepliesConditionObj - DB recruitment-replies 検索条件
+ * @param {Object} recruitmentRepliesSaveObj - DB recruitment-replies 保存データ
+ * @param {Object} usersConditionObj - DB users 検索条件
+ * @param {Object} usersSaveObj - DB users 保存データ
  * @return {Object} 
  */
 const transaction = async ({
@@ -367,6 +371,10 @@ const transaction = async ({
   goodsSaveObj,
   forumCommentsConditionObj = {},
   forumCommentsSaveObj = {},
+  recruitmentCommentsConditionObj = {},
+  recruitmentCommentsSaveObj = {},
+  recruitmentRepliesConditionObj = {},
+  recruitmentRepliesSaveObj = {},
   usersConditionObj = {},
   usersSaveObj = {},
   
@@ -434,6 +442,28 @@ const transaction = async ({
     
     
     // ---------------------------------------------
+    //   - recruitment-comments
+    // ---------------------------------------------
+    
+    if (Object.keys(recruitmentCommentsConditionObj).length !== 0 && Object.keys(recruitmentCommentsSaveObj).length !== 0) {
+      
+      await SchemaRecruitmentComments.updateOne(recruitmentCommentsConditionObj, recruitmentCommentsSaveObj, { session });
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   - recruitment-replies
+    // ---------------------------------------------
+    
+    if (Object.keys(recruitmentRepliesConditionObj).length !== 0 && Object.keys(recruitmentRepliesSaveObj).length !== 0) {
+      
+      await SchemaRecruitmentReplies.updateOne(recruitmentRepliesConditionObj, recruitmentRepliesSaveObj, { session });
+      
+    }
+    
+    
+    // ---------------------------------------------
     //   - users
     // ---------------------------------------------
     
@@ -486,6 +516,30 @@ const transaction = async ({
     // console.log(`
     //   ----- forumCommentsSaveObj -----\n
     //   ${util.inspect(forumCommentsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- recruitmentCommentsConditionObj -----\n
+    //   ${util.inspect(recruitmentCommentsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- recruitmentCommentsSaveObj -----\n
+    //   ${util.inspect(recruitmentCommentsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- recruitmentRepliesConditionObj -----\n
+    //   ${util.inspect(recruitmentRepliesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- recruitmentRepliesSaveObj -----\n
+    //   ${util.inspect(recruitmentRepliesSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

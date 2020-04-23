@@ -16,6 +16,7 @@ const util = require('util');
 
 const shortid = require('shortid');
 const moment = require('moment');
+
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 
@@ -25,8 +26,9 @@ const lodashSet = require('lodash/set');
 // ---------------------------------------------
 
 const ModelGoods = require('../../../../../app/@database/goods/model');
-const ModelForumThreads = require('../../../../../app/@database/forum-threads/model');
 const ModelForumComments = require('../../../../../app/@database/forum-comments/model');
+const ModelRecruitmentComments = require('../../../../../app/@database/recruitment-comments/model');
+const ModelRecruitmentReplies = require('../../../../../app/@database/recruitment-replies/model');
 
 
 // ---------------------------------------------
@@ -122,16 +124,14 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   
+    //   データを取得する
     // --------------------------------------------------
     
     let docObj = {};
-    let targetUsers_id = '';
-    let targetIP = '';
     
     
     // --------------------------------------------------
-    //   Forum Comment
+    //   Forum Comment & Reply
     // --------------------------------------------------
     
     if (type === 'forumComment' || type === 'forumReply') {
@@ -144,8 +144,35 @@ export default async (req, res) => {
         
       });
       
-      targetUsers_id = lodashGet(docObj, ['users_id'], '');
-      targetIP = lodashGet(docObj, ['ip'], '');
+      
+    // --------------------------------------------------
+    //   Recruitment Comment
+    // --------------------------------------------------
+    
+    } else if (type === 'recruitmentComment') {
+      
+      docObj = await ModelRecruitmentComments.findOne({
+        
+        conditionObj: {
+          _id: target_id
+        }
+        
+      });
+      
+      
+    // --------------------------------------------------
+    //   Recruitment Reply
+    // --------------------------------------------------
+    
+    } else if (type === 'recruitmentReply') {
+      
+      docObj = await ModelRecruitmentReplies.findOne({
+        
+        conditionObj: {
+          _id: target_id
+        }
+        
+      });
       
       
     // --------------------------------------------------
@@ -159,11 +186,32 @@ export default async (req, res) => {
     }
     
     
+    // console.log(`
+    //   ----- docObj -----\n
+    //   ${util.inspect(docObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   評価対象のデータがデータベースに見つからなかった場合、エラー
+    // --------------------------------------------------
+    
+    if (!docObj) {
+      throw new CustomError({ level: 'info', errorsArr: [{ code: 'PiEzaVFrX', messageID: 'cvS0qSAlE' }] });
+    }
+    
+    
     
     
     // --------------------------------------------------
     //   自分を評価しようとした場合、エラー
     // --------------------------------------------------
+    
+    const targetUsers_id = lodashGet(docObj, ['users_id'], '');
+    const targetIP = lodashGet(docObj, ['ip'], '');
     
     if (targetUsers_id === loginUsers_id || targetIP === ip) {
       statusCode = 403;
@@ -216,6 +264,10 @@ export default async (req, res) => {
     let goodsSaveObj = {};
     let forumCommentsConditionObj = {};
     let forumCommentsSaveObj = {};
+    let recruitmentCommentsConditionObj = {};
+    let recruitmentCommentsSaveObj = {};
+    let recruitmentRepliesConditionObj = {};
+    let recruitmentRepliesSaveObj = {};
     let usersConditionObj = {};
     let usersSaveObj = {};
     
@@ -249,6 +301,40 @@ export default async (req, res) => {
         };
         
         forumCommentsSaveObj = {
+          $inc: { goods: - 1 }
+        };
+        
+      }
+      
+      
+      // ---------------------------------------------
+      //   - recruitment-comments
+      // ---------------------------------------------
+      
+      if (type === 'recruitmentComment') {
+        
+        recruitmentCommentsConditionObj = {
+          _id: target_id,
+        };
+        
+        recruitmentCommentsSaveObj = {
+          $inc: { goods: - 1 }
+        };
+        
+      }
+      
+      
+      // ---------------------------------------------
+      //   - recruitment-replies
+      // ---------------------------------------------
+      
+      if (type === 'recruitmentReply') {
+        
+        recruitmentRepliesConditionObj = {
+          _id: target_id,
+        };
+        
+        recruitmentRepliesSaveObj = {
           $inc: { goods: - 1 }
         };
         
@@ -325,6 +411,40 @@ export default async (req, res) => {
       
       
       // ---------------------------------------------
+      //   - recruitment-comments
+      // ---------------------------------------------
+      
+      if (type === 'recruitmentComment') {
+        
+        recruitmentCommentsConditionObj = {
+          _id: target_id,
+        };
+        
+        recruitmentCommentsSaveObj = {
+          $inc: { goods: + 1 }
+        };
+        
+      }
+      
+      
+      // ---------------------------------------------
+      //   - recruitment-replies
+      // ---------------------------------------------
+      
+      if (type === 'recruitmentReply') {
+        
+        recruitmentRepliesConditionObj = {
+          _id: target_id,
+        };
+        
+        recruitmentRepliesSaveObj = {
+          $inc: { goods: + 1 }
+        };
+        
+      }
+      
+      
+      // ---------------------------------------------
       //   - users
       // ---------------------------------------------
       
@@ -354,6 +474,10 @@ export default async (req, res) => {
       goodsSaveObj,
       forumCommentsConditionObj,
       forumCommentsSaveObj,
+      recruitmentCommentsConditionObj,
+      recruitmentCommentsSaveObj,
+      recruitmentRepliesConditionObj,
+      recruitmentRepliesSaveObj,
       usersConditionObj,
       usersSaveObj,
       

@@ -15,8 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
-import moment from 'moment';
-import Cookies from 'js-cookie';
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
@@ -32,24 +31,13 @@ import { fetchWrapper } from '../../../@modules/fetch';
 import { CustomError } from '../../../@modules/error/custom';
 
 
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-import { validationForumThreadsName } from '../../../@database/forum-threads/validations/name';
-import { validationForumThreadsComment } from '../../../@database/forum-threads/validations/comment';
-
-import { validationForumCommentsName } from '../../../@database/forum-comments/validations/name';
-import { validationForumCommentsComment } from '../../../@database/forum-comments/validations/comment';
-
-
 // --------------------------------------------------
 //   Stores
 // --------------------------------------------------
 
-// import initStoreData from '../../../@stores/data';
 import initStoreLayout from '../../layout/stores/layout';
 import initStoreForum from '../../forum/stores/store';
+import initStoreGcRecruitment from '../../../gc/rec/stores/store';
 
 
 // --------------------------------------------------
@@ -57,9 +45,9 @@ import initStoreForum from '../../forum/stores/store';
 // --------------------------------------------------
 
 let storeGood = null;
-// let storeData = initStoreData({});
 const storeLayout = initStoreLayout({});
 const storeForum = initStoreForum({});
+const storeGcRecruitment = initStoreGcRecruitment({});
       
 
 
@@ -71,41 +59,11 @@ const storeForum = initStoreForum({});
 class Store {
   
   
-  // ---------------------------------------------
-  //   Data
-  // ---------------------------------------------
-  
-  /**
-   * データを入れるオブジェクト
-   * @type {Object}
-   */
-  // @observable dataObj = {};
-  
-  
-  /**
-   * データを変更する
-   * @param {Array} pathArr - パス
-   * @param {string} value - 値
-   */
-  // @action.bound
-  // handleEdit({ pathArr, value }) {
-  //   lodashSet(this.dataObj, pathArr, value);
-  // };
-  
-  
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   
-  // ---------------------------------------------
-  
   /**
    * Good ボタンを押したときの処理
    * @param {Array} pathArr - パス
    * @param {Array} goodsPathArr - グッド数を更新するためのパス
-   * @param {string} type - タイプ
+   * @param {string} type - タイプ / forumComment / forumReply / recruitmentComment / recruitmentReply
    * @param {string} target_id - Goodボタンを押したコンテンツのID
    */
   @action.bound
@@ -173,7 +131,23 @@ class Store {
       
       const result = lodashGet(resultObj, ['data', 'result'], true);
       
+      // const result = true;
       
+      // ---------------------------------------------
+      //   更新するストアを選択
+      // ---------------------------------------------
+      
+      let store = '';
+      
+      if (type === 'forumComment' || type === 'forumReply') {
+        
+        store = storeForum;
+        
+      } else if (type === 'recruitmentComment' || type === 'recruitmentReply') {
+        
+        store = storeGcRecruitment;
+        
+      }
       
       
       // ---------------------------------------------
@@ -184,15 +158,15 @@ class Store {
       
       if (result) {
         
-        goods = lodashGet(storeForum, ['dataObj', ...goodsPathArr, 'goods'], 0) + 1;
+        goods = lodashGet(store, ['dataObj', ...goodsPathArr, 'goods'], 0) + 1;
         
       } else {
         
-        goods = lodashGet(storeForum, ['dataObj', ...goodsPathArr, 'goods'], 0) - 1;
+        goods = lodashGet(store, ['dataObj', ...goodsPathArr, 'goods'], 0) - 1;
         
       }
       
-      lodashSet(storeForum, ['dataObj', ...goodsPathArr, 'goods'], goods);
+      lodashSet(store, ['dataObj', ...goodsPathArr, 'goods'], goods);
       
       
       
@@ -272,7 +246,7 @@ class Store {
 
 export default function initStoreGood({ propsObj }) {
   
-  // console.log('initStoreGood');
+  
   // --------------------------------------------------
   //   Store
   // --------------------------------------------------

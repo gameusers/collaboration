@@ -55,7 +55,7 @@ import IconExpandMore from '@material-ui/icons/ExpandMore';
 import IconPublic from '@material-ui/icons/Public';
 import IconEdit from '@material-ui/icons/Edit';
 import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
-import IconCreate from '@material-ui/icons/Create';
+import IconReply from '@material-ui/icons/Reply';
 
 
 // ---------------------------------------------
@@ -212,7 +212,7 @@ export default injectIntl(class extends React.Component {
       dataObj,
       handleEdit,
       handleReadRecruitmentThreads,
-      handleShowFormThread,
+      handleShowFormRecruitmentThread,
       
     } = storeGcRecruitment;
     
@@ -309,6 +309,8 @@ export default injectIntl(class extends React.Component {
       const hardwaresArr = lodashGet(threadsDataObj, ['hardwaresArr'], []);
       const deadlineDate = lodashGet(threadsDataObj, ['deadlineDate'], '');
       const notification = lodashGet(threadsDataObj, ['notification'], '');
+      
+      const comments = lodashGet(threadsDataObj, ['comments'], 0);
       
       
       // --------------------------------------------------
@@ -595,7 +597,7 @@ export default injectIntl(class extends React.Component {
                         variant="outlined"
                         color="primary"
                         disabled={buttonDisabled}
-                        onClick={() => handleShowFormThread({
+                        onClick={() => handleShowFormRecruitmentThread({
                           pathArr: pathRecruitmentThreadEditFormArr,
                           recruitmentThreads_id,
                         })}
@@ -635,8 +637,9 @@ export default injectIntl(class extends React.Component {
                 && {
                   display: flex;
                   flex-flow: column wrap;
+                  
                   @media screen and (max-width: 480px) {
-                    padding: 0 16px 24px !important;
+                    padding: 0 16px 16px !important;
                   }
                 }
               `}
@@ -648,18 +651,50 @@ export default injectIntl(class extends React.Component {
                   <div
                     css={css`
                       width: 100%;
+                      
+                      // border-top: 2px dashed red;
                       border-top: 1px solid;
                       border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
                       border-image-slice: 1;
+                      
                       margin: 12px 0 0 0;
-                      padding: 32px 0 0 0;
+                      // padding: 24px 0 0 0;
+                      // padding: 12px 0 0 0;
                     `}
                   >
-                    <FormThread
-                      pathArr={pathRecruitmentThreadEditFormArr}
-                      gameCommunities_id={gameCommunities_id}
-                      recruitmentThreads_id={recruitmentThreads_id}
-                    />
+                  
+                    <div
+                      css={css`
+                        border-left: 4px solid #A4A4A4;
+                        margin: 16px 0 0 0;
+                        padding: 8px 0 8px 16px;
+                        
+                        @media screen and (max-width: 480px) {
+                          // background-color: #F8F8FF;
+                          border-left: none;
+                          margin: 0;
+                          padding: 32px 0 0 0;
+                        }
+                      `}
+                      // css={css`
+                      //   border-left: 4px solid #A4A4A4;
+                      //   margin: 16px 0 0 0;
+                      //   padding: 8px 0 8px 16px;
+                        
+                      //   @media screen and (max-width: 480px) {
+                      //     padding: 8px 0 8px 12px;
+                      //   }
+                      // `}
+                    >
+                      
+                      <FormThread
+                        pathArr={pathRecruitmentThreadEditFormArr}
+                        gameCommunities_id={gameCommunities_id}
+                        recruitmentThreads_id={recruitmentThreads_id}
+                      />
+                      
+                    </div>
+                    
                   </div>
                 }
                 
@@ -671,9 +706,11 @@ export default injectIntl(class extends React.Component {
                   <div
                     css={css`
                       width: 100%;
+                      
                       border-top: 1px solid;
                       border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
                       border-image-slice: 1;
+                      
                       margin: 12px 0 0 0;
                       padding: 20px 0 0 0;
                     `}
@@ -718,12 +755,13 @@ export default injectIntl(class extends React.Component {
                       css={css`
                         font-size: 14px;
                         line-height: 1.6em;
+                        
                         border-left: 4px solid #A4A4A4;
-                        margin: 12px 0 10px 3px;
-                        padding: 0 0 0 16px;
+                        margin: 12px 0 24px 0;
+                        padding: 8px 0 8px 16px;
                         
                         @media screen and (max-width: 480px) {
-                          padding: 0 0 0 12px;
+                          padding: 8px 0 8px 12px;
                         }
                       `}
                     >
@@ -783,26 +821,66 @@ export default injectIntl(class extends React.Component {
                       css={css`
                         width: 100%;
                         
-                        border-top: 1px solid;
-                        border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
-                        border-image-slice: 1;
+                        ${showFormComment
+                          ? `
+                            border-top: 2px dashed red;
+                            ${comments > 0 && 'border-bottom: 2px dashed red;'}
+                            // border-bottom: 2px dashed red;
+                            `
+                          : `
+                            border-top: 1px dashed #585858;
+                            ${comments > 0 && 'border-bottom: 1px dashed #585858;'}
+                            // border-bottom: 1px dashed #585858;
+                            
+                            // border-top: 1px solid;
+                            // border-bottom: 1px solid;
+                            // background-color: #E8F4FD;
+                            // border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+                            // border-image-slice: 1;
+                            
+                            // border-left: 4px solid #84cacb;
+                            // margin: 24px 0;
+                            // padding: 8px 0 8px 16px;
+                            `
+                        }
                         
-                        margin: 14px 0 0 0;
-                        padding: 14px 0 0 0;
+                        // margin: 24px 0 0 0;
+                        // padding: 14px 0 14px 0;
                         
-                        // margin: 14px 0 0 0;
-                        // padding: 6px 0 0 0;
+                        // padding: 1px 0;
+                        // margin: 4px;
+                        
+                        
+                        @media screen and (max-width: 480px) {
+                          // border-top: 6px solid;
+                          // border-top: 1px dashed red;
+                          // border-image: 100%;
+                          
+                          border-left: none;
+                          
+                          // margin: 28px 0 0 0;
+                          // padding: 18px 0 24px 0;
+                        }
                       `}
                     >
                       
                       
-                      {/* Button - Show Form Comment */}
+                      {/* Button - Show New Form Comment */}
                       {!showFormComment &&
                         <div
                           css={css`
                             display: flex;
                             flex-flow: row nowrap;
                             justify-content: center;
+                            
+                            ${comments > 0
+                              ? `
+                                margin: 14px 0;
+                                `
+                              : `
+                                margin: 14px 0 0 0;
+                                `
+                            }
                           `}
                         >
                           <Button
@@ -810,7 +888,7 @@ export default injectIntl(class extends React.Component {
                             variant="outlined"
                             size="small"
                             disabled={buttonDisabled}
-                            startIcon={<IconCreate />}
+                            startIcon={<IconReply />}
                             onClick={() => handleEdit({
                               pathArr: [...pathRecruitmentCommentNewFormArr, 'showFormComment'],
                               value: !showFormComment,
@@ -824,11 +902,28 @@ export default injectIntl(class extends React.Component {
                       
                       
                       
-                      {/* Form Comment */}
+                      {/* New Form Comment */}
                       {showFormComment &&
                         <div
                           css={css`
-                            margin: 8px 0 0 0;
+                            border-left: 4px solid #84cacb;
+                            
+                            ${comments > 0
+                              ? `
+                                margin: 24px 0;
+                                `
+                              : `
+                                margin: 24px 0 0 0;
+                                `
+                            }
+                            
+                            padding: 8px 0 8px 16px;
+                            
+                            @media screen and (max-width: 480px) {
+                              border-left: none;
+                              
+                              padding: 8px 0 8px 0;
+                            }
                           `}
                         >
                           

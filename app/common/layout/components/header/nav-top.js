@@ -582,28 +582,30 @@ export default class extends React.Component {
           ) : (
           
             <Link href="/login">
-              <div
-                css={css`
-                  display: flex;
-                  flex-direction: row;
-                  color: #4000FF;
-                  cursor: pointer;
-                  white-space: nowrap;
-                  margin: 0 16px 0 0;
-                  
-                  @media screen and (max-width: 480px) {
-                    margin: 0 10px 0 0;
-                  }
-                `}
-              >
-                <IconLogin
+              <a>
+                <div
                   css={css`
-                    && {
-                      margin: 0 6px 0 0;
+                    display: flex;
+                    flex-direction: row;
+                    color: #4000FF;
+                    cursor: pointer;
+                    white-space: nowrap;
+                    margin: 0 16px 0 0;
+                    
+                    @media screen and (max-width: 480px) {
+                      margin: 0 10px 0 0;
                     }
                   `}
-                /> ログイン
-              </div>
+                >
+                  <IconLogin
+                    css={css`
+                      && {
+                        margin: 0 6px 0 0;
+                      }
+                    `}
+                  /> ログイン
+                </div>
+              </a>
             </Link>
             
           )}
@@ -627,51 +629,47 @@ export default class extends React.Component {
           
           <MenuItem onClick={stores.layout.handleHeaderLoginMenuClose}>
             
-            <ListItemIcon
-              // css={css`
-              //   && {
-              //     margin: 0 8px 0 0;
-              //   }
-              // `}
-            >
+            <ListItemIcon>
               <IconPerson />
             </ListItemIcon>
             
+            
             <Link href={`/ur/[userID]/index?userID=${userID}`} as={`/ur/${userID}`}>
-              <ListItemText
-                css={css`
-                  && {
-                    margin: 0 8px 0 0;
-                  }
-                `}
-                primary="ユーザー"
-              />
+              <a>
+                <ListItemText
+                  css={css`
+                    && {
+                      margin: 0 8px 0 0;
+                    }
+                  `}
+                  primary="ユーザー"
+                />
+              </a>
             </Link>
             
           </MenuItem>
           
           
+          
+          
           <MenuItem onClick={stores.layout.handleHeaderLoginMenuClose}>
             
-            <ListItemIcon
-              // css={css`
-              //   && {
-              //     margin: 0 8px 0 0;
-              //   }
-              // `}
-            >
+            <ListItemIcon>
               <IconEject />
             </ListItemIcon>
             
+            
             <Link href="/logout">
-              <ListItemText
-                css={css`
-                  && {
-                    margin: 0 8px 0 0;
-                  }
-                `}
-                primary="ログアウト"
-              />
+              <a>
+                <ListItemText
+                  css={css`
+                    && {
+                      margin: 0 8px 0 0;
+                    }
+                  `}
+                  primary="ログアウト"
+                />
+              </a>
             </Link>
             
           </MenuItem>

@@ -819,47 +819,22 @@ export default injectIntl(class extends React.Component {
                     {/* Form Comment */}
                     <div
                       css={css`
-                        width: 100%;
                         
                         ${showFormComment
-                          ? `
+                          ?
+                            `
                             border-top: 2px dashed red;
                             ${comments > 0 && 'border-bottom: 2px dashed red;'}
-                            // border-bottom: 2px dashed red;
                             `
-                          : `
+                          :
+                            `
                             border-top: 1px dashed #585858;
                             ${comments > 0 && 'border-bottom: 1px dashed #585858;'}
-                            // border-bottom: 1px dashed #585858;
-                            
-                            // border-top: 1px solid;
-                            // border-bottom: 1px solid;
-                            // background-color: #E8F4FD;
-                            // border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
-                            // border-image-slice: 1;
-                            
-                            // border-left: 4px solid #84cacb;
-                            // margin: 24px 0;
-                            // padding: 8px 0 8px 16px;
                             `
                         }
                         
-                        // margin: 24px 0 0 0;
-                        // padding: 14px 0 14px 0;
-                        
-                        // padding: 1px 0;
-                        // margin: 4px;
-                        
-                        
                         @media screen and (max-width: 480px) {
-                          // border-top: 6px solid;
-                          // border-top: 1px dashed red;
-                          // border-image: 100%;
-                          
                           border-left: none;
-                          
-                          // margin: 28px 0 0 0;
-                          // padding: 18px 0 24px 0;
                         }
                       `}
                     >
@@ -874,10 +849,12 @@ export default injectIntl(class extends React.Component {
                             justify-content: center;
                             
                             ${comments > 0
-                              ? `
+                              ?
+                                `
                                 margin: 14px 0;
                                 `
-                              : `
+                              :
+                                `
                                 margin: 14px 0 0 0;
                                 `
                             }
@@ -906,6 +883,8 @@ export default injectIntl(class extends React.Component {
                       {showFormComment &&
                         <div
                           css={css`
+                            // border-top: 2px dashed red;
+                            // border-bottom: 2px dashed red;
                             border-left: 4px solid #84cacb;
                             
                             ${comments > 0
@@ -913,16 +892,16 @@ export default injectIntl(class extends React.Component {
                                 margin: 24px 0;
                                 `
                               : `
-                                margin: 24px 0 0 0;
+                                margin: 24px 0 6px 0;
                                 `
                             }
                             
-                            padding: 8px 0 8px 16px;
+                            padding: 0 0 0 16px;
                             
                             @media screen and (max-width: 480px) {
                               border-left: none;
                               
-                              padding: 8px 0 8px 0;
+                              padding-left: 0;
                             }
                           `}
                         >
@@ -948,7 +927,6 @@ export default injectIntl(class extends React.Component {
                       urlID={urlID}
                       gameCommunities_id={gameCommunities_id}
                       recruitmentThreads_id={recruitmentThreads_id}
-                      // comments={comments}
                     />
                     
                     

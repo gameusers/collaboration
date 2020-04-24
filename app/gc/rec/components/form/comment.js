@@ -262,22 +262,13 @@ export default injectIntl(class extends React.Component {
         
         
         <form
-          css={css`
-            // background-color: #FAFAFA;
-            // background-color: #F8F8FF;
-            // background-color: #f8fcf9;
-            
-            // padding: 16px 12px;
-            
-            // margin: 0 0 14px 0;
-            // padding: 0 0 10px 0;
-          `}
           name={elementName}
           onSubmit={(eventObj) => handleSubmitRecruitmentComment({
             eventObj,
             pathArr,
             gameCommunities_id,
             recruitmentThreads_id,
+            recruitmentComments_id,
           })}
         >
           
@@ -533,6 +524,7 @@ export default injectIntl(class extends React.Component {
                 onClick={() => handleHideFormRecruitmentComment({
                   pathArr,
                   recruitmentThreads_id,
+                  recruitmentComments_id,
                 })}
                 disabled={buttonDisabled}
               >

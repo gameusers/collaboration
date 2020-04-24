@@ -69,11 +69,6 @@ import User from '../../../common/user/components/user';
 import ImageAndVideo from '../../../common/image-and-video/components/image-and-video';
 
 import FormComment from './form/comment';
-import RecruitmentReply from './recruitment-reply';
-import PublicIDs from './public-ids';
-import PublicInformations from './public-informations';
-import PublicSetting from './public-setting';
-import Notification from './notification';
 
 
 
@@ -124,7 +119,7 @@ export default injectIntl(class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    this.pathArr = [this.props.recruitmentThreads_id, 'recruitmentCommentsObj'];
+    this.pathArr = [this.props.recruitmentComments_id, 'recruitmentRepliesObj'];
     
     
   }
@@ -173,6 +168,7 @@ export default injectIntl(class extends React.Component {
       urlID,
       gameCommunities_id,
       recruitmentThreads_id,
+      recruitmentComments_id,
       
     } = this.props;
     
@@ -216,20 +212,13 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Thread
-    // --------------------------------------------------
-    
-    const publicSettingThread = lodashGet(dataObj, [gameCommunities_id, 'recruitmentThreadsObj', 'dataObj', recruitmentThreads_id, 'publicSetting'], 1);
-    
-    
-    // --------------------------------------------------
     //   Comment
     // --------------------------------------------------
     
-    const page = lodashGet(dataObj, [gameCommunities_id, 'recruitmentCommentsObj', recruitmentThreads_id, 'page'], 1);
-    const count = lodashGet(dataObj, [gameCommunities_id, 'recruitmentCommentsObj', recruitmentThreads_id, 'count'], 0);
-    const limit = parseInt((stores.data.getCookie({ key: 'recruitmentCommentLimit' }) || process.env.RECRUITMENT_COMMENT_LIMIT), 10);
-    const arr = lodashGet(dataObj, [gameCommunities_id, 'recruitmentCommentsObj', recruitmentThreads_id, `page${page}Obj`, 'arr'], []);
+    const page = lodashGet(dataObj, [gameCommunities_id, 'recruitmentRepliesObj', recruitmentComments_id, 'page'], 1);
+    const count = lodashGet(dataObj, [gameCommunities_id, 'recruitmentRepliesObj', recruitmentComments_id, 'count'], 0);
+    const limit = parseInt((stores.data.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.RECRUITMENT_REPLY_LIMIT), 10);
+    const arr = lodashGet(dataObj, [gameCommunities_id, 'recruitmentRepliesObj', recruitmentComments_id, `page${page}Obj`, 'arr'], []);
     
     
     // --------------------------------------------------
@@ -255,14 +244,14 @@ export default injectIntl(class extends React.Component {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/gc/rec/components/recruitment-comment.js
+    //   /app/gc/rec/components/recruitment-reply.js
     // `);
     
     // console.log(chalk`
     //   urlID: {green ${urlID}}
     //   gameCommunities_id: {green ${gameCommunities_id}}
     //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-    //   publicSettingThread: {green ${publicSettingThread}}
+    //   recruitmentComments_id: {green ${recruitmentComments_id}}
     //   page: {green ${page}}
     //   count: {green ${count}}
     //   limit: {green ${limit}}
@@ -301,56 +290,53 @@ export default injectIntl(class extends React.Component {
     const componentArr = [];
     
     
-    for (const [index, recruitmentComments_id] of arr.entries()) {
+    for (const [index, recruitmentReplies_id] of arr.entries()) {
       
       
       // --------------------------------------------------
       //   Path Array
       // --------------------------------------------------
       
-      const pathRecruitmentCommentArr = [recruitmentComments_id, 'recruitmentCommentObj'];
+      // const pathRecruitmentCommentArr = [recruitmentReplies_id, 'recruitmentReplyObj'];
       // const pathRecruitmentThreadEditFormArr = [recruitmentComments_id, 'recruitmentThreadEditFormObj'];
-      const pathRecruitmentCommentEditFormArr = [recruitmentComments_id, 'recruitmentCommentEditFormObj'];
-      // const pathRecruitmentCommentEditFormArr = [recruitmentThreads_id, 'recruitmentCommentEditFormObj'];
+      const pathRecruitmentReplyEditFormArr = [recruitmentReplies_id, 'recruitmentReplyEditFormObj'];
+      // const pathRecruitmentReplyEditFormArr = [recruitmentThreads_id, 'recruitmentCommentEditFormObj'];
       
       
       // --------------------------------------------------
       //   data
       // --------------------------------------------------
       
-      const commentsDataObj = lodashGet(dataObj, [gameCommunities_id, 'recruitmentCommentsObj', 'dataObj', recruitmentComments_id], {});
+      const repliesDataObj = lodashGet(dataObj, [gameCommunities_id, 'recruitmentRepliesObj', 'dataObj', recruitmentReplies_id], {});
       
-      const comment = lodashGet(commentsDataObj, ['comment'], '');
-      
-      const imagesAndVideosObj = lodashGet(commentsDataObj, ['imagesAndVideosObj'], {});
+      const comment = lodashGet(repliesDataObj, ['comment'], '');
+      const imagesAndVideosObj = lodashGet(repliesDataObj, ['imagesAndVideosObj'], {});
       
       // 管理者権限がある、またはスレッドを建てた本人の場合、編集ボタンを表示する
-      const editable = lodashGet(commentsDataObj, ['editable'], false);
+      const editable = lodashGet(repliesDataObj, ['editable'], false);
       // // const editable = true;
-      
-      const notification = lodashGet(commentsDataObj, ['notification'], '');
       
       
       // --------------------------------------------------
       //   User Data
       // --------------------------------------------------
       
-      const imagesAndVideosThumbnailObj = lodashGet(commentsDataObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
+      const imagesAndVideosThumbnailObj = lodashGet(repliesDataObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
       
-      const cardPlayers_id = lodashGet(commentsDataObj, ['cardPlayersObj', '_id'], '');
+      const cardPlayers_id = lodashGet(repliesDataObj, ['cardPlayersObj', '_id'], '');
       
-      let name = lodashGet(commentsDataObj, ['name'], '');
-      const cardPlayers_name = lodashGet(commentsDataObj, ['cardPlayersObj', 'name'], '');
+      let name = lodashGet(repliesDataObj, ['name'], '');
+      const cardPlayers_name = lodashGet(repliesDataObj, ['cardPlayersObj', 'name'], '');
       
       if (cardPlayers_name) {
         name = cardPlayers_name;
       }
       
-      const status = lodashGet(commentsDataObj, ['cardPlayersObj', 'status'], '');
+      const status = lodashGet(repliesDataObj, ['cardPlayersObj', 'status'], '');
       
-      const exp = lodashGet(commentsDataObj, ['usersObj', 'exp'], 0);
-      const accessDate = lodashGet(commentsDataObj, ['usersObj', 'accessDate'], '');
-      const userID = lodashGet(commentsDataObj, ['usersObj', 'userID'], '');
+      const exp = lodashGet(repliesDataObj, ['usersObj', 'exp'], 0);
+      const accessDate = lodashGet(repliesDataObj, ['usersObj', 'accessDate'], '');
+      const userID = lodashGet(repliesDataObj, ['usersObj', 'userID'], '');
       
       
       // --------------------------------------------------
@@ -358,7 +344,7 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       let datetimeCurrent = moment(stores.data.datetimeCurrent);
-      const datetimeUpdated = moment(commentsDataObj.updatedDate);
+      const datetimeUpdated = moment(repliesDataObj.updatedDate);
       
       if (datetimeUpdated.isAfter(datetimeCurrent)) {
         datetimeCurrent = datetimeUpdated;
@@ -371,7 +357,7 @@ export default injectIntl(class extends React.Component {
       //   Good
       // --------------------------------------------------
       
-      const goods = lodashGet(commentsDataObj, ['goods'], 0);
+      const goods = lodashGet(repliesDataObj, ['goods'], 0);
       
       
       // --------------------------------------------------
@@ -383,21 +369,10 @@ export default injectIntl(class extends React.Component {
       
       
       // --------------------------------------------------
-      //   ID & Information
-      // --------------------------------------------------
-      
-      const idsArr = lodashGet(commentsDataObj, ['idsArr'], []);
-      const publicIDsArr = lodashGet(commentsDataObj, ['publicIDsArr'], []);
-      const publicInformationsArr = lodashGet(commentsDataObj, ['publicInformationsArr'], []);
-      const publicSetting = lodashGet(commentsDataObj, ['publicSetting'], 1);
-      
-      
-      // --------------------------------------------------
       //   Show Form
       // --------------------------------------------------
       
-      const showFormComment = lodashGet(dataObj, [...pathRecruitmentCommentEditFormArr, 'showFormComment'], false);
-      // const showFormReply = lodashGet(dataObj, [...pathRecruitmentCommentNewFormArr, 'showFormReply'], false);
+      const showFormReply = lodashGet(dataObj, [...pathRecruitmentReplyEditFormArr, 'showFormReply'], false);
       
       
       
@@ -417,8 +392,8 @@ export default injectIntl(class extends React.Component {
       // `);
       
       // console.log(`
-      //   ----- commentsDataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(commentsDataObj)), { colors: true, depth: null })}\n
+      //   ----- repliesDataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(repliesDataObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -426,90 +401,56 @@ export default injectIntl(class extends React.Component {
       
       
       // --------------------------------------------------
-      //   componentArr.push
+      //   Component - Form Reply
       // --------------------------------------------------
       
-      componentArr.push(
-        <Element
-          css={css`
-            ${index === 0 || showFormComment
-              ?
-                `
-                border-top: none;
-                border-bottom: none;
-                `
-              :
-                `
-                border-top: 1px solid;
-                border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
-                border-image-slice: 1;
-                `
-            }
-          `}
-          name={recruitmentComments_id}
-          key={index}
-        >
+      if (showFormReply) {
+        
+        componentArr.push(
           
+          <Element
+            css={css`
+              border-top: 1px solid;
+              border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+              border-image-slice: 1;
+              padding: 24px 0 0 0;
+              margin: 24px 0 0 0;
+            `}
+            key={index}
+            name={recruitmentComments_id}
+          >
+            
+            
+            
+            
+          </Element>
           
-          
-          
-          {/* Comment - Edit Form */}
-          {showFormComment &&
+        );
+      
+      
+      // --------------------------------------------------
+      //   Component - Replies
+      // --------------------------------------------------
+      
+      } else {
+        
+        componentArr.push(
+          <Element
+            css={css`
+              border-top: 1px dashed #BDBDBD;
+              margin: 12px 0 0 0;
+              padding: 12px 0 0 0;
+            `}
+            name={recruitmentComments_id}
+            key={index}
+          >
+            
+            
+            {/* Reply */}
             <div
               css={css`
-                ${showFormComment
-                  ?
-                    `
-                    border-top: 2px dashed red;
-                    border-bottom: 2px dashed red;
-                    `
-                  :
-                    `
-                    border-top: 1px solid;
-                    border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
-                    border-image-slice: 1;
-                    `
-                }
-                  
-                margin: 24px 0;
-                padding: 24px 0 24px 0;
-              `}
-            >
-              
-              <div
-                css={css`
-                  border-left: 4px solid #84cacb;
-                  padding: 6px 0 6px 16px;
-                  
-                  @media screen and (max-width: 480px) {
-                    border-left: none;
-                    padding-left: 0;
-                  }
-                `}
-              >
-                
-                <FormComment
-                  pathArr={pathRecruitmentCommentEditFormArr}
-                  gameCommunities_id={gameCommunities_id}
-                  recruitmentThreads_id={recruitmentThreads_id}
-                  recruitmentComments_id={recruitmentComments_id}
-                  publicSettingThread={publicSettingThread}
-                />
-                
-              </div>
-                
-            </div>
-          }
-          
-          
-          
-          
-          {/* Comment */}
-          {!showFormComment &&
-            <div
-              css={css`
-                margin: 6px 0 0 0;
-                padding: 14px 0 0 0;
+                // margin: 6px 0 0 0;
+                // padding: 14px 0 0 0;
               `}
             >
               
@@ -547,10 +488,10 @@ export default injectIntl(class extends React.Component {
               
               
               
-              {/* コメント */}
+              {/* 返信 */}
               <div
                 css={css`
-                  border-left: 4px solid #84cacb;
+                  border-left: 4px solid #A9A9F5;
                   margin: 12px 0;
                   padding: 8px 0 8px 16px;
                   
@@ -563,42 +504,6 @@ export default injectIntl(class extends React.Component {
                 
                 {/* コメント */}
                 <Paragraph text={comment} />
-                
-                
-                {/* ID */}
-                <PublicIDs
-                  idsArr={idsArr}
-                  publicIDsArr={publicIDsArr}
-                />
-                
-                
-                {/* 情報 */}
-                <PublicInformations
-                  publicInformationsArr={publicInformationsArr}
-                />
-                
-                
-                {/* 公開設定 */}
-                <PublicSetting
-                  publicSetting={publicSetting}
-                />
-                
-                
-                {/* 通知方法 */}
-                {notification &&
-                  <div
-                    css={css`
-                      margin: 20px 0 8px 0;
-                    `}
-                  >
-                    
-                    <Notification
-                      pathArr={pathRecruitmentCommentArr}
-                      notification={notification}
-                    />
-                    
-                  </div>
-                }
                 
                 
                 
@@ -638,9 +543,9 @@ export default injectIntl(class extends React.Component {
                     variant="outlined"
                     onClick={() => handleSubmitGood({
                       pathArr: this.pathArr,
-                      goodsPathArr: [gameCommunities_id, 'recruitmentCommentsObj', 'dataObj', recruitmentComments_id],
-                      type: 'recruitmentComment',
-                      target_id: recruitmentComments_id,
+                      goodsPathArr: [gameCommunities_id, 'recruitmentRepliesObj', 'dataObj', recruitmentReplies_id],
+                      type: 'recruitmentReply',
+                      target_id: recruitmentReplies_id,
                     })}
                   >
                     <IconThumbUp
@@ -715,7 +620,7 @@ export default injectIntl(class extends React.Component {
                       `}
                     >
                       <Link href={linkHref} as={linkAs}>
-                        <a>{recruitmentComments_id}</a>
+                        <a>{recruitmentReplies_id}</a>
                       </Link>
                     </div>
                   </div>
@@ -794,7 +699,7 @@ export default injectIntl(class extends React.Component {
                         variant="outlined"
                         color="primary"
                         onClick={() => handleShowFormRecruitmentComment({
-                          pathArr: pathRecruitmentCommentEditFormArr,
+                          pathArr: pathRecruitmentReplyEditFormArr,
                           recruitmentComments_id,
                         })}
                       >
@@ -821,17 +726,6 @@ export default injectIntl(class extends React.Component {
                 </div>
                 
                 
-                
-                
-                {/* Reply */}
-                <RecruitmentReply
-                  urlID={urlID}
-                  gameCommunities_id={gameCommunities_id}
-                  recruitmentThreads_id={recruitmentThreads_id}
-                  recruitmentComments_id={recruitmentComments_id}
-                />
-                
-                
               </div>
               
               
@@ -851,7 +745,7 @@ export default injectIntl(class extends React.Component {
                 
                 
                 {/* Show Form Button */}
-                {/*{!showFormComment &&
+                {/*{!showFormReply &&
                   <div
                     css={css`
                       display: flex;
@@ -866,8 +760,8 @@ export default injectIntl(class extends React.Component {
                       disabled={buttonDisabled}
                       startIcon={<IconCreate />}
                       onClick={() => handleEdit({
-                        pathArr: [...pathRecruitmentCommentNewFormArr, 'showFormComment'],
-                        value: !showFormComment,
+                        pathArr: [...pathRecruitmentCommentNewFormArr, 'showFormReply'],
+                        value: !showFormReply,
                       })}
                     >
                       コメント投稿フォーム
@@ -879,7 +773,7 @@ export default injectIntl(class extends React.Component {
                 
                 
                 {/* Form Comment */}
-                {/*{showFormComment &&
+                {/*{showFormReply &&
                   <div
                     css={css`
                       margin: 16px 0 0 0;
@@ -900,16 +794,13 @@ export default injectIntl(class extends React.Component {
               {/*</div>*/}
               
               
-              
-              
-              
-              
             </div>
-          }
-          
-          
-        </Element>
-      );
+            
+            
+          </Element>
+        );
+        
+      }
       
     }
     
@@ -956,7 +847,7 @@ export default injectIntl(class extends React.Component {
           >
             <Pagination
               disabled={buttonDisabled}
-              // onChange={(page) => handleReadComments({
+              // onChange={(page) => handleReadRecruitmentReplies({
               //   pathArr: this.pathArr,
               //   gameCommunities_id,
               //   userCommunities_id,
@@ -981,7 +872,7 @@ export default injectIntl(class extends React.Component {
             
             <Select
               value={limit}
-              // onChange={(eventObj) => handleReadComments({
+              // onChange={(eventObj) => handleReadRecruitmentReplies({
               //   pathArr: this.pathArr,
               //   gameCommunities_id,
               //   userCommunities_id,

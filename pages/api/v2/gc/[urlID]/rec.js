@@ -285,14 +285,14 @@ export default async (req, res) => {
       /pages/api/v2/gc/[urlID]/rec.js
     `);
     
-    console.log(chalk`
-      urlID: {green ${urlID}}
-      threadPage: {green ${threadPage}}
-      threadLimit: {green ${threadLimit}}
-      commentLimit: {green ${commentLimit}}
-      replyLimit: {green ${replyLimit}}
-      gameCommunities_id: {green ${gameCommunities_id}}
-    `);
+    // console.log(chalk`
+    //   urlID: {green ${urlID}}
+    //   threadPage: {green ${threadPage}}
+    //   threadLimit: {green ${threadLimit}}
+    //   commentLimit: {green ${commentLimit}}
+    //   replyLimit: {green ${replyLimit}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    // `);
     
     console.log(`
       ----- returnObj -----\n

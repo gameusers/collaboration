@@ -1434,27 +1434,27 @@ const findOneForEdit = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/recruitment-comments/model.js - findOneForEdit
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/recruitment-comments/model.js - findOneForEdit
+    // `);
     
-    console.log(chalk`
-      recruitmentComments_id: {green ${recruitmentComments_id}}
-      editable: {green ${editable} / ${typeof editable}}
-    `);
+    // console.log(chalk`
+    //   recruitmentComments_id: {green ${recruitmentComments_id}}
+    //   editable: {green ${editable} / ${typeof editable}}
+    // `);
     
-    console.log(`
-      ----- docRecruitmentCommentsArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(docRecruitmentCommentsArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- docRecruitmentCommentsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docRecruitmentCommentsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

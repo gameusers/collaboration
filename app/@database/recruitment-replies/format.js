@@ -274,19 +274,19 @@ const formatRecruitmentRepliesArr = ({
     const recruitmentRepliesPageArr = lodashGet(recruitmentRepliesObj, [recruitmentComments_id, `page${replyPage}Obj`, 'arr'], []);
     recruitmentRepliesPageArr.push(valueObj._id);
     
-    recruitmentCommentsObj[recruitmentComments_id] = {
+    recruitmentRepliesObj[recruitmentComments_id] = {
       
       page: replyPage,
       count: replies,
       
     };
     
-    lodashSet(recruitmentRepliesObj, [recruitmentComments_id, `page${replyPage}Obj`], {
+    recruitmentRepliesObj[recruitmentComments_id][`page${replyPage}Obj`] = {
       
       loadedDate: ISO8601,
       arr: recruitmentRepliesPageArr,
       
-    });
+    };
     
     
     
@@ -323,6 +323,10 @@ const formatRecruitmentRepliesArr = ({
     //   webPush: {green ${webPush}}
     //   webPushEndpoint: {green ${webPushEndpoint}}
     //   webPushUsersEndpoint: {green ${webPushUsersEndpoint}}
+    // `);
+    
+    // console.log(chalk`
+    //   replies: {green ${replies}}
     // `);
     
     

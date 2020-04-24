@@ -15,10 +15,13 @@ import util from 'util';
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
+import moment from 'moment';
+import Cookies from 'js-cookie';
 
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
+import lodashCloneDeep from 'lodash/cloneDeep';
 import lodashMerge from 'lodash/merge';
 
 
@@ -97,8 +100,6 @@ class Store {
   
   
   
-  
-  
   // ---------------------------------------------
   //   Read
   // ---------------------------------------------
@@ -130,40 +131,38 @@ class Store {
       //   Property
       // ---------------------------------------------
       
-      // const communities_id = gameCommunities_id || userCommunities_id;
+      const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
+      const clonedObj = lodashCloneDeep(recruitmentObj);
       
-      // const forumObj = lodashGet(this.dataObj, [gameCommunities_id], {});
-      // const clonedObj = lodashCloneDeep(forumObj);
+      const loadedDate = lodashGet(recruitmentObj, ['recruitmentThreadsObj', `page${page}Obj`, 'loadedDate'], '');
+      const arr = lodashGet(recruitmentObj, ['recruitmentThreadsObj', `page${page}Obj`, 'arr'], []);
+      const reloadThreads = lodashGet(recruitmentObj, ['reloadThreads'], false);
       
-      // const loadedDate = lodashGet(forumObj, ['forumThreadsObj', `page${page}Obj`, 'loadedDate'], '');
-      // const arr = lodashGet(forumObj, ['forumThreadsObj', `page${page}Obj`, 'arr'], []);
-      // const reloadThreads = lodashGet(forumObj, ['reloadThreads'], false);
-      
-      // let threadLimit = parseInt((storeData.getCookie({ key: 'forumThreadLimit' }) || process.env.FORUM_THREAD_LIMIT), 10);
-      // const commentLimit = parseInt((storeData.getCookie({ key: 'forumCommentLimit' }) || process.env.FORUM_COMMENT_LIMIT), 10);
-      // const replyLimit = parseInt((storeData.getCookie({ key: 'forumReplyLimit' }) || process.env.FORUM_REPLY_LIMIT), 10);
+      let threadLimit = parseInt((storeData.getCookie({ key: 'recruitmentThreadLimit' }) || process.env.RECRUITMENT_THREAD_LIMIT), 10);
+      const commentLimit = parseInt((storeData.getCookie({ key: 'recruitmentCommentLimit' }) || process.env.RECRUITMENT_COMMENT_LIMIT), 10);
+      const replyLimit = parseInt((storeData.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.RECRUITMENT_REPLY_LIMIT), 10);
       
       
       
       
-      // // ---------------------------------------------
-      // //   Change Limit
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Change Limit
+      // ---------------------------------------------
       
-      // if (changeLimit) {
+      if (changeLimit) {
         
         
-      //   threadLimit = changeLimit;
+        threadLimit = changeLimit;
         
         
-      //   // ---------------------------------------------
-      //   //   Set Cookie - forumThreadLimit
-      //   // ---------------------------------------------
+        // ---------------------------------------------
+        //   Set Cookie - recruitmentThreadLimit
+        // ---------------------------------------------
         
-      //   Cookies.set('forumThreadLimit', changeLimit);
+        Cookies.set('recruitmentThreadLimit', changeLimit);
         
         
-      // }
+      }
       
       
       
@@ -174,20 +173,20 @@ class Store {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/gc/rec/stores/store.js - handleReadThreads
+      //   /app/gc/rec/stores/store.js - handleReadRecruitmentThreads
       // `);
       
-      // // console.log(`
-      // //   ----- forumObj -----\n
-      // //   ${util.inspect(JSON.parse(JSON.stringify(forumObj)), { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
+      // console.log(`
+      //   ----- recruitmentObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      // // console.log(`
-      // //   ----- pathArr -----\n
-      // //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       // console.log(chalk`
       //   gameCommunities_id: {green ${gameCommunities_id}}
@@ -198,274 +197,276 @@ class Store {
       //   loadedDate: {green ${loadedDate}}
       // `);
       
-      // // console.log(`
-      // //   ----- arr -----\n
-      // //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
+      // console.log(`
+      //   ----- arr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      // // return;
-      
-      
+      // return;
       
       
-      // // ---------------------------------------------
-      // //   再読込するかどうか
-      // // ---------------------------------------------
-      
-      // let reload = false;
       
       
-      // // ---------------------------------------------
-      // //   1ページに表示する件数を変更した場合、再読込
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   再読込するかどうか
+      // ---------------------------------------------
       
-      // if (changeLimit || reloadThreads) {
+      let reload = false;
+      
+      
+      // ---------------------------------------------
+      //   1ページに表示する件数を変更した場合、再読込
+      // ---------------------------------------------
+      
+      if (changeLimit || reloadThreads) {
         
         
-      //   // ---------------------------------------------
-      //   //   スレッド＆コメント　次回の読み込み時に強制リロード
-      //   // ---------------------------------------------
+        // ---------------------------------------------
+        //   スレッド＆コメント　次回の読み込み時に強制リロード
+        // ---------------------------------------------
         
-      //   lodashSet(clonedObj, ['reloadThreads'], false);
-      //   lodashSet(clonedObj, ['reloadComments'], false);
-        
-        
-      //   // ---------------------------------------------
-      //   //   再読込
-      //   // ---------------------------------------------
-        
-      //   reload = true;
-        
-      
-      // // ---------------------------------------------
-      // //   最後の読み込み以降にフォーラムの更新があった場合
-      // //   または最後の読み込みからある程度時間（10分）が経っていた場合、再読込する
-      // // ---------------------------------------------
-        
-      // } else if (loadedDate) {
-        
-      //   const forumUpdatedDate = lodashGet(forumObj, ['updatedDateObj', 'forum'], '0000-01-01T00:00:00Z');
-        
-      //   const datetimeLoaded = moment(loadedDate).utcOffset(0);
-      //   const datetimeForumUpdated = moment(forumUpdatedDate).utcOffset(0);
-      //   const datetimeNow = moment().utcOffset(0);
-      //   const datetimeReloadLimit = moment(loadedDate).add(process.env.FORUM_RELOAD_MINUTES, 'm').utcOffset(0);
-        
-      //   if (
-      //     datetimeForumUpdated.isAfter(datetimeLoaded) ||
-      //     datetimeNow.isAfter(datetimeReloadLimit)
-      //   ) {
-      //     reload = true;
-      //   }
-        
-      // }
-      
-      
-      // // console.log(chalk`
-      // //   reload: {green ${reload}}
-      // // `);
-      
-      
-      // // ---------------------------------------------
-      // //   すでにデータを読み込んでいる場合は、ストアのデータを表示する
-      // // ---------------------------------------------
-      
-      // if (!reload && arr.length > 0) {
+        lodashSet(clonedObj, ['reloadThreads'], false);
+        lodashSet(clonedObj, ['reloadComments'], false);
         
         
-      //   console.log('store');
+        // ---------------------------------------------
+        //   再読込
+        // ---------------------------------------------
         
-      //   // ---------------------------------------------
-      //   //   Page 更新
-      //   // ---------------------------------------------
+        reload = true;
         
-      //   clonedObj.forumThreadsObj.page = page;
+      
+      // ---------------------------------------------
+      //   最後の読み込み以降にフォーラムの更新があった場合
+      //   または最後の読み込みからある程度時間（10分）が経っていた場合、再読込する
+      // ---------------------------------------------
         
-      //   this.handleEdit({
-      //     pathArr: [communities_id],
-      //     value: clonedObj
-      //   });
+      } else if (loadedDate) {
+        
+        const recruitmentUpdatedDate = lodashGet(recruitmentObj, ['updatedDateObj', 'recruitment'], '0000-01-01T00:00:00Z');
+        
+        const datetimeLoaded = moment(loadedDate).utcOffset(0);
+        const datetimeRecruitmentUpdated = moment(recruitmentUpdatedDate).utcOffset(0);
+        const datetimeNow = moment().utcOffset(0);
+        const datetimeReloadLimit = moment(loadedDate).add(process.env.RECRUITMENT_RELOAD_MINUTES, 'm').utcOffset(0);
+        
+        if (
+          datetimeRecruitmentUpdated.isAfter(datetimeLoaded) ||
+          datetimeNow.isAfter(datetimeReloadLimit)
+        ) {
+          reload = true;
+        }
+        
+      }
+      
+      
+      console.log(chalk`
+        reload: {green ${reload}}
+      `);
+      
+      
+      // ---------------------------------------------
+      //   すでにデータを読み込んでいる場合は、ストアのデータを表示する
+      // ---------------------------------------------
+      
+      if (!reload && arr.length > 0) {
         
         
-      //   // ---------------------------------------------
-      //   //   Set Temporary Data - ForumThreadPage
-      //   // ---------------------------------------------
-        
-      //   storeData.setTemporaryData({ pathname: temporaryDataID, key: 'forumThreadPage', value: page });
+        console.log('store');
         
         
-      //   // ---------------------------------------------
-      //   //   Return
-      //   // ---------------------------------------------
+        // ---------------------------------------------
+        //   Page 更新
+        // ---------------------------------------------
         
-      //   return;
+        clonedObj.recruitmentThreadsObj.page = page;
+        
+        this.handleEdit({
+          pathArr: [gameCommunities_id],
+          value: clonedObj
+        });
         
         
-      // }
-      
-      // console.log('fetch');
-      
-      
-      
-      
-      // // ---------------------------------------------
-      // //   Button Disable
-      // // ---------------------------------------------
-      
-      // storeLayout.handleButtonDisable({ pathArr });
-      
-      
-      
-      
-      // // ---------------------------------------------
-      // //   FormData
-      // // ---------------------------------------------
-      
-      // const formDataObj = {
+        // ---------------------------------------------
+        //   Set Temporary Data - Thread Page
+        // ---------------------------------------------
         
-      //   gameCommunities_id,
-      //   userCommunities_id,
-      //   threadPage: page,
-      //   threadLimit,
-      //   commentPage: 1,
-      //   commentLimit,
-      //   replyPage: 1,
-      //   replyLimit,
+        storeData.setTemporaryData({ pathname: temporaryDataID, key: 'recruitmentThreadPage', value: page });
         
-      // };
+        
+        // ---------------------------------------------
+        //   Return
+        // ---------------------------------------------
+        
+        return;
+        
+        
+      }
       
-      
-      // // ---------------------------------------------
-      // //   Fetch
-      // // ---------------------------------------------
-      
-      // const resultObj = await fetchWrapper({
-      //   urlApi: `${process.env.URL_API}/v2/db/forum-threads/read-threads`,
-      //   methodType: 'POST',
-      //   formData: JSON.stringify(formDataObj),
-      // });
-      
-      // // console.log(`
-      // //   ----- resultObj -----\n
-      // //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
+      console.log('fetch');
       
       
       
       
-      // // ---------------------------------------------
-      // //   Error
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
       
-      // if ('errorsArr' in resultObj) {
-      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
-      // }
+      storeLayout.handleButtonDisable({ pathArr });
       
       
       
       
-      // // ---------------------------------------------
-      // //   forumThreadsObj
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
       
-      // const forumThreadsOldObj = lodashGet(forumObj, ['forumThreadsObj'], {});
-      // const forumThreadsNewObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
-      
-      // // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
-      // const forumThreadsMergedObj = reload ? forumThreadsNewObj : lodashMerge(forumThreadsOldObj, forumThreadsNewObj);
-      
-      // clonedObj.forumThreadsObj = forumThreadsMergedObj;
-      
-      // // console.log(`
-      // //   ----- forumThreadsOldObj -----\n
-      // //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsOldObj)), { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
-      
-      // // console.log(`
-      // //   ----- forumThreadsNewObj -----\n
-      // //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsNewObj)), { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
-      
-      // // console.log(`
-      // //   ----- forumThreadsMergedObj -----\n
-      // //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsMergedObj)), { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
+      const formDataObj = {
+        
+        gameCommunities_id,
+        threadPage: page,
+        threadLimit,
+        commentPage: 1,
+        commentLimit,
+        replyPage: 1,
+        replyLimit,
+        
+      };
       
       
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
       
+      const resultObj = await fetchWrapper({
+        
+        urlApi: `${process.env.URL_API}/v2/db/recruitment-threads/read-threads`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
+        
+      });
       
-      // // ---------------------------------------------
-      // //   forumCommentsObj
-      // // ---------------------------------------------
-      
-      // const forumCommentsOldObj = lodashGet(forumObj, ['forumCommentsObj'], {});
-      // const forumCommentsNewObj = lodashGet(resultObj, ['data', 'forumCommentsObj'], {});
-      
-      // // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
-      // const forumCommentsMergedObj = reload ? forumCommentsNewObj : lodashMerge(forumCommentsOldObj, forumCommentsNewObj);
-      
-      // clonedObj.forumCommentsObj = forumCommentsMergedObj;
-      
-      
-      // // ---------------------------------------------
-      // //   forumRepliesObj
-      // // ---------------------------------------------
-      
-      // const forumRepliesOldObj = lodashGet(forumObj, ['forumRepliesObj'], {});
-      // const forumRepliesNewObj = lodashGet(resultObj, ['data', 'forumRepliesObj'], {});
-      
-      // // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
-      // const forumRepliesMergedObj = reload ? forumRepliesNewObj : lodashMerge(forumRepliesOldObj, forumRepliesNewObj);
-      
-      // clonedObj.forumRepliesObj = forumRepliesMergedObj;
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       
       
-      // // ---------------------------------------------
-      // //   Page
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
       
-      // clonedObj.forumThreadsObj.page = page;
-      
-      
-      // // --------------------------------------------------
-      // //   Community UpdatedDateObj
-      // // --------------------------------------------------
-      
-      // const updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
-      // clonedObj.updatedDateObj = updatedDateObj;
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
       
       
       
       
-      // // ---------------------------------------------
-      // //   Update
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   recruitmentThreadsObj
+      // ---------------------------------------------
       
-      // this.handleEdit({
-      //   pathArr: ['forumThreadLimit'],
-      //   value: threadLimit,
-      // });
+      const recruitmentThreadsOldObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj'], {});
+      const recruitmentThreadsNewObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {});
       
-      // this.handleEdit({
-      //   pathArr: [communities_id],
-      //   value: clonedObj
-      // });
+      // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+      const recruitmentThreadsMergedObj = reload ? recruitmentThreadsNewObj : lodashMerge(recruitmentThreadsOldObj, recruitmentThreadsNewObj);
+      
+      clonedObj.recruitmentThreadsObj = recruitmentThreadsMergedObj;
+      
+      // console.log(`
+      //   ----- recruitmentThreadsOldObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreadsOldObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- recruitmentThreadsNewObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreadsNewObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- recruitmentThreadsMergedObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreadsMergedObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       
       
-      // // ---------------------------------------------
-      // //   Set Temporary Data - ForumThreadPage
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   recruitmentCommentsObj
+      // ---------------------------------------------
       
-      // storeData.setTemporaryData({ pathname: temporaryDataID, key: 'forumThreadPage', value: page });
+      const recruitmentCommentsOldObj = lodashGet(recruitmentObj, ['recruitmentCommentsObj'], {});
+      const recruitmentCommentsNewObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
+      
+      // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+      const recruitmentCommentsMergedObj = reload ? recruitmentCommentsNewObj : lodashMerge(recruitmentCommentsOldObj, recruitmentCommentsNewObj);
+      
+      clonedObj.recruitmentCommentsObj = recruitmentCommentsMergedObj;
+      
+      
+      // ---------------------------------------------
+      //   recruitmentRepliesObj
+      // ---------------------------------------------
+      
+      const recruitmentRepliesOldObj = lodashGet(recruitmentObj, ['recruitmentRepliesObj'], {});
+      const recruitmentRepliesNewObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
+      
+      // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+      const recruitmentRepliesMergedObj = reload ? recruitmentRepliesNewObj : lodashMerge(recruitmentRepliesOldObj, recruitmentRepliesNewObj);
+      
+      clonedObj.recruitmentRepliesObj = recruitmentRepliesMergedObj;
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Page
+      // ---------------------------------------------
+      
+      clonedObj.recruitmentThreadsObj.page = page;
+      
+      
+      // --------------------------------------------------
+      //   Community UpdatedDateObj
+      // --------------------------------------------------
+      
+      const updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+      clonedObj.updatedDateObj = updatedDateObj;
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Update
+      // ---------------------------------------------
+      
+      this.handleEdit({
+        pathArr: ['recruitmentThreadLimit'],
+        value: threadLimit,
+      });
+      
+      this.handleEdit({
+        pathArr: [gameCommunities_id],
+        value: clonedObj
+      });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Set Temporary Data - ForumThreadPage
+      // ---------------------------------------------
+      
+      storeData.setTemporaryData({ pathname: temporaryDataID, key: 'recruitmentThreadPage', value: page });
       
       
     } catch (errorObj) {
@@ -972,10 +973,16 @@ class Store {
    * コメント投稿フォームを閉じる
    * @param {Array} pathArr - パス
    * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドのID
+   * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントのID
    */
   @action.bound
-  async handleHideFormRecruitmentComment({ pathArr, recruitmentThreads_id }) {
+  async handleHideFormRecruitmentComment({ pathArr, recruitmentThreads_id, recruitmentComments_id }) {
     
+    
+    // console.log(chalk`
+    //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+    //   recruitmentComments_id: {green ${recruitmentComments_id}}
+    // `);
     
     // ---------------------------------------------
     //   Hide Form Comment
@@ -990,7 +997,7 @@ class Store {
     
     storeLayout.handleScrollTo({
       
-      to: recruitmentThreads_id,
+      to: recruitmentComments_id || recruitmentThreads_id,
       duration: 0,
       delay: 0,
       smooth: 'easeInOutQuart',
@@ -1482,46 +1489,46 @@ class Store {
       //   Temp Data
       // ---------------------------------------------
       
-      const newObj = {
+      // const newObj = {
         
-        gameCommunities_id,
-        // recruitmentThreads_id: '',
-        // recruitmentComments_id: '',
-        category: 1,
-        // name: 'テストネーム',
-        // comment: 'テストコメント',
-        platform1: 'Other',
-        platform2: 'Other',
-        platform3: 'Other',
-        id1: 'test-id-1',
-        id2: '',
-        id3: '',
-        informationTitle1: '情報タイトル1',
-        informationTitle2: '',
-        informationTitle3: '',
-        informationTitle4: '',
-        informationTitle5: '',
-        information1: '情報1',
-        information2: '',
-        information3: '',
-        information4: '',
-        information5: '',
-        publicSetting: 1,
-        webPush: true,
-        webPushSubscriptionObj: {
-          endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
-          keys: {
-            p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
-            auth: 'siDbUa9DCbg-n9AMsvWA1w'
-          }
-        },
+      //   gameCommunities_id,
+      //   // recruitmentThreads_id: '',
+      //   // recruitmentComments_id: '',
+      //   category: 1,
+      //   // name: 'テストネーム',
+      //   // comment: 'テストコメント',
+      //   platform1: 'Other',
+      //   platform2: 'Other',
+      //   platform3: 'Other',
+      //   id1: 'test-id-1',
+      //   id2: '',
+      //   id3: '',
+      //   informationTitle1: '情報タイトル1',
+      //   informationTitle2: '',
+      //   informationTitle3: '',
+      //   informationTitle4: '',
+      //   informationTitle5: '',
+      //   information1: '情報1',
+      //   information2: '',
+      //   information3: '',
+      //   information4: '',
+      //   information5: '',
+      //   publicSetting: 1,
+      //   webPush: true,
+      //   webPushSubscriptionObj: {
+      //     endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
+      //     keys: {
+      //       p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
+      //       auth: 'siDbUa9DCbg-n9AMsvWA1w'
+      //     }
+      //   },
         
-      };
+      // };
       
-      const oldObj = lodashGet(this.dataObj, [...pathArr], {});
-      const mergedObj = lodashMerge(oldObj, newObj);
+      // const oldObj = lodashGet(this.dataObj, [...pathArr], {});
+      // const mergedObj = lodashMerge(oldObj, newObj);
       
-      lodashSet(this.dataObj, [...pathArr], mergedObj);
+      // lodashSet(this.dataObj, [...pathArr], mergedObj);
       
       
       
@@ -1734,22 +1741,22 @@ class Store {
       //   console.log
       // --------------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/gc/rec/stores/store.js / handleSubmitRecruitmentComment
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/gc/rec/stores/store.js / handleSubmitRecruitmentComment
+      // `);
       
-      console.log(`
-        ----- pathArr -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(`
-        ----- formDataObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- formDataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       // console.log(`
       //   ----- ids_idsArr -----\n
@@ -1769,13 +1776,13 @@ class Store {
       //   --------------------\n
       // `);
       
-      console.log(chalk`
-        gameCommunities_id: {green ${gameCommunities_id}}
-        recruitmentThreads_id: {green ${recruitmentThreads_id}}
-        recruitmentComments_id: {green ${recruitmentComments_id}}
-        name: {green ${name}}
-        comment: {green ${comment}}
-      `);
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+      //   recruitmentComments_id: {green ${recruitmentComments_id}}
+      //   name: {green ${name}}
+      //   comment: {green ${comment}}
+      // `);
       
       // console.log(`
       //   ----- imagesAndVideosObj -----\n

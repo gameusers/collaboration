@@ -328,6 +328,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
+ * @param {Array} threads_idsArr - DB recruitment-threads _id / スレッドID（threads_idsArr という名前に変更しているのは、下の方に recruitmentThreads_idsArr が存在しているから）
  * @param {number} threadPage - スレッドのページ
  * @param {number} threadLimit - スレッドのリミット
  * @param {number} commentPage - コメントのページ
@@ -342,6 +343,7 @@ const findRecruitments = async ({
   localeObj,
   loginUsers_id,
   gameCommunities_id,
+  recruitmentThreads_idsArr = [],
   threadPage = 1,
   threadLimit = process.env.RECRUITMENT_THREAD_LIMIT,
   commentPage = 1,
@@ -386,20 +388,42 @@ const findRecruitments = async ({
       },
     ];
     
+    // console.log(`
+    //   ----- recruitmentThreads_idsArr -----\n
+    //   ${util.inspect(recruitmentThreads_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    if (recruitmentThreads_idsArr.length > 0) {
+      
+      matchConditionArr = [
+        {
+          $match: {
+            $and:
+              [
+                { gameCommunities_id },
+                { _id: { $in: recruitmentThreads_idsArr } }
+              ]
+          }
+        },
+      ];
+      
+    }
+    
     
     // --------------------------------------------------
     //   threadCount
     // --------------------------------------------------
     
-    const gameCommunityArr = await ModelGameCommunities.find({
+    // const gameCommunityArr = await ModelGameCommunities.find({
       
-      conditionObj: {
-        _id: gameCommunities_id
-      }
+    //   conditionObj: {
+    //     _id: gameCommunities_id
+    //   }
       
-    });
+    // });
     
-    const threadCount = lodashGet(gameCommunityArr, [0, 'recruitmentObj', 'threadCount'], 0);
+    // const threadCount = lodashGet(gameCommunityArr, [0, 'recruitmentObj', 'threadCount'], 0);
     
     
     
@@ -416,6 +440,40 @@ const findRecruitments = async ({
       // --------------------------------------------------
       
       ...matchConditionArr,
+      
+      
+      // --------------------------------------------------
+      //   game-communities / threadCount 取得用
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'game-communities',
+            let: { letGameCommunities_id: '$gameCommunities_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$letGameCommunities_id'] },
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  recruitmentObj: 1,
+                }
+              }
+            ],
+            as: 'gameCommunitiesObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$gameCommunitiesObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
       
       
       // --------------------------------------------------
@@ -753,12 +811,12 @@ const findRecruitments = async ({
       loginUsers_id,
       arr: docArr,
       threadPage,
-      threadCount,
+      // threadCount,
       
     });
     
     const recruitmentThreadsObj = lodashGet(formattedThreadsObj, ['recruitmentThreadsObj'], {});
-    const recruitmentThreads_idsArr = lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []);
+    // const recruitmentThreads_idsArr = lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []);
     
     
     
@@ -772,7 +830,7 @@ const findRecruitments = async ({
       req,
       localeObj,
       loginUsers_id,
-      recruitmentThreads_idsArr,
+      recruitmentThreads_idsArr: lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []),
       recruitmentThreadsObj,
       commentPage,
       commentLimit: intCommentLimit,

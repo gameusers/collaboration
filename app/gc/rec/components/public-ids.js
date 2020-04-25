@@ -162,11 +162,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <div
-        css={css`
-          margin: 16px 0 0 0;
-        `}
-      >
+      <React.Fragment>
         
         
         {/* Heading */}
@@ -216,7 +212,7 @@ export default class extends React.Component {
         </div>
         
         
-      </div>
+      </React.Fragment>
     );
     
   }

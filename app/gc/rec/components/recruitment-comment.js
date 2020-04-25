@@ -70,9 +70,7 @@ import ImageAndVideo from '../../../common/image-and-video/components/image-and-
 
 import FormComment from './form/comment';
 import RecruitmentReply from './recruitment-reply';
-import PublicIDs from './public-ids';
-import PublicInformations from './public-informations';
-import PublicSetting from './public-setting';
+import Public from './public';
 import Notification from './notification';
 
 
@@ -228,16 +226,9 @@ export default injectIntl(class extends React.Component {
     
     const page = lodashGet(dataObj, [gameCommunities_id, 'recruitmentCommentsObj', recruitmentThreads_id, 'page'], 1);
     const count = lodashGet(dataObj, [gameCommunities_id, 'recruitmentCommentsObj', recruitmentThreads_id, 'count'], 0);
-    const limit = parseInt((stores.data.getCookie({ key: 'recruitmentCommentLimit' }) || process.env.RECRUITMENT_COMMENT_LIMIT), 10);
     const arr = lodashGet(dataObj, [gameCommunities_id, 'recruitmentCommentsObj', recruitmentThreads_id, `page${page}Obj`, 'arr'], []);
     
-    
-    // --------------------------------------------------
-    //   Link Return Top
-    // --------------------------------------------------
-    
-    // const linkReturnTopHref = `/gc/[urlID]/rec?urlID=${urlID}`;
-    // const linkReturnTopAs = `/gc/${urlID}`;
+    const limit = parseInt((stores.data.getCookie({ key: 'recruitmentCommentLimit' }) || process.env.RECRUITMENT_COMMENT_LIMIT), 10);
     
     
     // --------------------------------------------------
@@ -565,23 +556,17 @@ export default injectIntl(class extends React.Component {
                 <Paragraph text={comment} />
                 
                 
-                {/* ID */}
-                <PublicIDs
+                
+                
+                {/* ID & 情報 & 公開設定 */}
+                <Public
                   idsArr={idsArr}
                   publicIDsArr={publicIDsArr}
-                />
-                
-                
-                {/* 情報 */}
-                <PublicInformations
                   publicInformationsArr={publicInformationsArr}
-                />
-                
-                
-                {/* 公開設定 */}
-                <PublicSetting
                   publicSetting={publicSetting}
                 />
+                
+                
                 
                 
                 {/* 通知方法 */}
@@ -956,13 +941,12 @@ export default injectIntl(class extends React.Component {
           >
             <Pagination
               disabled={buttonDisabled}
-              // onChange={(page) => handleReadComments({
-              //   pathArr: this.pathArr,
-              //   gameCommunities_id,
-              //   userCommunities_id,
-              //   forumThreads_id,
-              //   page,
-              // })}
+              onChange={(page) => handleReadRecruitmentComments({
+                pathArr: this.pathArr,
+                gameCommunities_id,
+                recruitmentThreads_id,
+                page,
+              })}
               pageSize={limit}
               current={page}
               total={count}
@@ -981,14 +965,13 @@ export default injectIntl(class extends React.Component {
             
             <Select
               value={limit}
-              // onChange={(eventObj) => handleReadComments({
-              //   pathArr: this.pathArr,
-              //   gameCommunities_id,
-              //   userCommunities_id,
-              //   forumThreads_id,
-              //   page: 1,
-              //   changeLimit: eventObj.target.value,
-              // })}
+              onChange={(eventObj) => handleReadRecruitmentComments({
+                pathArr: this.pathArr,
+                gameCommunities_id,
+                recruitmentThreads_id,
+                page: 1,
+                changeLimit: eventObj.target.value,
+              })}
               input={
                 <OutlinedInput
                   classes={{

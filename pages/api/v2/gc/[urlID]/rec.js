@@ -280,10 +280,16 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/gc/[urlID]/rec.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/gc/[urlID]/rec.js
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(chalk`
     //   urlID: {green ${urlID}}
@@ -294,11 +300,7 @@ export default async (req, res) => {
     //   gameCommunities_id: {green ${gameCommunities_id}}
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    
     
     
     

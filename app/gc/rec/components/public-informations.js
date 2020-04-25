@@ -29,7 +29,6 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import Avatar from '@material-ui/core/Avatar';
-// import Chip from '@material-ui/core/Chip';
 
 
 // ---------------------------------------------
@@ -48,17 +47,6 @@ import IconInformation from '@material-ui/icons/MenuBook';
 @inject('stores', 'storeGcRecruitment')
 @observer
 export default injectIntl(class extends React.Component {
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  constructor(props) {
-    super(props);
-  }
-  
-  
   
   
   // --------------------------------------------------
@@ -91,23 +79,7 @@ export default injectIntl(class extends React.Component {
       return null;
     }
     
-    // publicInformationsArr: [
-    //   {
-    //     _id: '5PKhtkAAk',
-    //     title: 'サーバー名',
-    //     information: 'Game-Server',
-    //   },
-    //   {
-    //     _id: 'to18A4ZRo',
-    //     title: 'メンバー数',
-    //     information: '20人',
-    //   },
-    //   {
-    //     _id: 'fILlNuMcO',
-    //     title: 'PVP',
-    //     information: 'あり',
-    //   },
-    // ],
+    
     
     
     // --------------------------------------------------
@@ -205,11 +177,7 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <div
-        css={css`
-          margin: 24px 0 0 0;
-        `}
-      >
+      <React.Fragment>
         
         
         {/* Heading */}
@@ -259,7 +227,7 @@ export default injectIntl(class extends React.Component {
         </div>
         
         
-      </div>
+      </React.Fragment>
     );
     
   }

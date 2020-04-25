@@ -21,17 +21,6 @@ import { injectIntl } from 'react-intl';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
-import lodashGet from 'lodash/get';
-
-
-// ---------------------------------------------
-//   Material UI
-// ---------------------------------------------
-
-// import Avatar from '@material-ui/core/Avatar';
-// import Chip from '@material-ui/core/Chip';
-// import Alert from '@material-ui/lab/Alert';
-
 
 // ---------------------------------------------
 //   Material UI / Icons
@@ -49,17 +38,6 @@ import IconWarning from '@material-ui/icons/Warning';
 @inject('stores', 'storeGcRecruitment')
 @observer
 export default injectIntl(class extends React.Component {
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  constructor(props) {
-    super(props);
-  }
-  
-  
   
   
   // --------------------------------------------------
@@ -156,8 +134,10 @@ export default injectIntl(class extends React.Component {
           display: flex;
           flex-flow: row nowrap;
           align-items: center;
+          
           background-color: #FFF4E5;
           border-radius: 8px;
+          
           margin: 24px 0 0 0;
           padding: 8px 16px;
         `}

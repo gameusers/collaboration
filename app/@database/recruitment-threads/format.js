@@ -49,7 +49,6 @@ const { formatImagesAndVideosObj } = require('../images-and-videos/format');
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {Array} arr - 配列
  * @param {number} threadPage - スレッドのページ数
- * @param {number} threadCount - スレッドの総数
  * @return {Array} フォーマット後のデータ
  */
 const formatRecruitmentThreadsArr = ({
@@ -59,7 +58,7 @@ const formatRecruitmentThreadsArr = ({
   loginUsers_id,
   arr,
   threadPage,
-  threadCount,
+  // threadCount,
   
 }) => {
   
@@ -71,7 +70,7 @@ const formatRecruitmentThreadsArr = ({
   const recruitmentThreadsObj = {
     
     page: threadPage,
-    count: threadCount,
+    count: lodashGet(arr, [0, 'gameCommunitiesObj', 'recruitmentObj', 'threadCount'], 0),
     dataObj: {},
     
   };
@@ -80,8 +79,15 @@ const formatRecruitmentThreadsArr = ({
   const recruitmentThreads_idsArr = [];
   const ISO8601 = moment().utc().toISOString();
   
+  // console.log(chalk`
+  //   lodashGet(arr, [0, 'gameCommunitiesObj', 'recruitmentObj', 'threadCount'], 0): {green ${lodashGet(arr, [0, 'gameCommunitiesObj', 'recruitmentObj', 'threadCount'], 0)}}
+  // `);
   
-  
+  // console.log(`
+  //     ----- arr -----\n
+  //     ${util.inspect(arr, { colors: true, depth: null })}\n
+  //     --------------------\n
+  //   `);
   
   // --------------------------------------------------
   //   Loop

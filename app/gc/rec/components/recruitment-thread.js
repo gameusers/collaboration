@@ -72,9 +72,10 @@ import Panel from '../../../common/layout/components/panel';
 import RecruitmentComment from './recruitment-comment';
 import FormThread from './form/thread';
 import FormComment from './form/comment';
-import PublicIDs from './public-ids';
-import PublicInformations from './public-informations';
-import PublicSetting from './public-setting';
+import Public from './public';
+// import PublicIDs from './public-ids';
+// import PublicInformations from './public-informations';
+// import PublicSetting from './public-setting';
 import DeadlineDate from './deadline-date';
 import Notification from './notification';
 
@@ -152,7 +153,6 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
-    // this.props.stores.layout.handleButtonEnable({ pathArr: this.pathRecruitmentThreadsNewFormArr });
     
     
   }
@@ -223,8 +223,9 @@ export default injectIntl(class extends React.Component {
     
     const page = lodashGet(dataObj, [gameCommunities_id, 'recruitmentThreadsObj', 'page'], 1);
     const count = lodashGet(dataObj, [gameCommunities_id, 'recruitmentThreadsObj', 'count'], 0);
-    const limit = parseInt((stores.data.getCookie({ key: 'recruitmentThreadsObj' }) || process.env.RECRUITMENT_THREAD_LIMIT), 10);
     const arr = lodashGet(dataObj, [gameCommunities_id, 'recruitmentThreadsObj', `page${page}Obj`, 'arr'], []);
+    
+    const limit = parseInt((stores.data.getCookie({ key: 'recruitmentThreadLimit' }) || process.env.RECRUITMENT_THREAD_LIMIT), 10);
     
     
     // --------------------------------------------------
@@ -652,14 +653,11 @@ export default injectIntl(class extends React.Component {
                     css={css`
                       width: 100%;
                       
-                      // border-top: 2px dashed red;
                       border-top: 1px solid;
                       border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
                       border-image-slice: 1;
                       
                       margin: 12px 0 0 0;
-                      // padding: 24px 0 0 0;
-                      // padding: 12px 0 0 0;
                     `}
                   >
                   
@@ -676,15 +674,6 @@ export default injectIntl(class extends React.Component {
                           padding: 32px 0 0 0;
                         }
                       `}
-                      // css={css`
-                      //   border-left: 4px solid #A4A4A4;
-                      //   margin: 16px 0 0 0;
-                      //   padding: 8px 0 8px 16px;
-                        
-                      //   @media screen and (max-width: 480px) {
-                      //     padding: 8px 0 8px 12px;
-                      //   }
-                      // `}
                     >
                       
                       <FormThread
@@ -771,23 +760,17 @@ export default injectIntl(class extends React.Component {
                       <Paragraph text={comment} />
                       
                       
-                      {/* ID */}
-                      <PublicIDs
+                      
+                      
+                      {/* ID & 情報 & 公開設定 */}
+                      <Public
                         idsArr={idsArr}
                         publicIDsArr={publicIDsArr}
-                      />
-                      
-                      
-                      {/* 情報 */}
-                      <PublicInformations
                         publicInformationsArr={publicInformationsArr}
-                      />
-                      
-                      
-                      {/* 公開設定 */}
-                      <PublicSetting
                         publicSetting={publicSetting}
                       />
+                      
+                      
                       
                       
                       {/* 募集期間 ＆ 通知方法 */}

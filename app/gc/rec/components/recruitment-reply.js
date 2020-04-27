@@ -192,7 +192,7 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleReadRecruitmentComments,
+      handleReadRecruitmentReplies,
       handleShowFormRecruitmentComment,
       
     } = storeGcRecruitment;
@@ -417,7 +417,7 @@ export default injectIntl(class extends React.Component {
               margin: 24px 0 0 0;
             `}
             key={index}
-            name={recruitmentComments_id}
+            name={recruitmentReplies_id}
           >
             
             
@@ -441,7 +441,7 @@ export default injectIntl(class extends React.Component {
               margin: 12px 0 0 0;
               padding: 12px 0 0 0;
             `}
-            name={recruitmentComments_id}
+            name={recruitmentReplies_id}
             key={index}
           >
             
@@ -847,13 +847,12 @@ export default injectIntl(class extends React.Component {
           >
             <Pagination
               disabled={buttonDisabled}
-              // onChange={(page) => handleReadRecruitmentReplies({
-              //   pathArr: this.pathArr,
-              //   gameCommunities_id,
-              //   userCommunities_id,
-              //   forumThreads_id,
-              //   page,
-              // })}
+              onChange={(page) => handleReadRecruitmentReplies({
+                pathArr: this.pathArr,
+                gameCommunities_id,
+                recruitmentComments_id,
+                page,
+              })}
               pageSize={limit}
               current={page}
               total={count}
@@ -872,20 +871,19 @@ export default injectIntl(class extends React.Component {
             
             <Select
               value={limit}
-              // onChange={(eventObj) => handleReadRecruitmentReplies({
-              //   pathArr: this.pathArr,
-              //   gameCommunities_id,
-              //   userCommunities_id,
-              //   forumThreads_id,
-              //   page: 1,
-              //   changeLimit: eventObj.target.value,
-              // })}
+              onChange={(eventObj) => handleReadRecruitmentReplies({
+                pathArr: this.pathArr,
+                gameCommunities_id,
+                recruitmentComments_id,
+                page: 1,
+                changeLimit: eventObj.target.value,
+              })}
               input={
                 <OutlinedInput
                   classes={{
                     input: classes.input
                   }}
-                  name="forum-comments-pagination"
+                  name="recruitment-replies-pagination"
                   id="outlined-rows-per-page"
                 />
               }

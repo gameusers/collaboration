@@ -245,6 +245,7 @@ const formatRecruitmentRepliesArr = ({
     delete clonedObj.users_id;
     delete clonedObj.localesArr;
     delete clonedObj.replyToObj;
+    delete clonedObj.recruitmentCommentsObj;
     delete clonedObj.ip;
     delete clonedObj.userAgent;
     delete clonedObj.__v;
@@ -269,7 +270,21 @@ const formatRecruitmentRepliesArr = ({
     //   recruitmentRepliesObj 作成
     // --------------------------------------------------
     
-    const replies = lodashGet(recruitmentCommentsObj, ['dataObj', recruitmentComments_id, 'replies'], 0);
+    let replies = 0;
+    
+    // findCommentsAndReplies からフォーマットを読み込んだ場合
+    if (recruitmentCommentsObj) {
+      
+      replies = lodashGet(recruitmentCommentsObj, ['dataObj', recruitmentComments_id, 'replies'], 0);
+      
+    // findReplies からフォーマットを読み込んだ場合
+    } else {
+      
+      replies = lodashGet(valueObj, ['recruitmentCommentsObj', 'replies'], 0);
+      
+    }
+    
+    // const replies = lodashGet(recruitmentCommentsObj, ['dataObj', recruitmentComments_id, 'replies'], 0);
     
     const recruitmentRepliesPageArr = lodashGet(recruitmentRepliesObj, [recruitmentComments_id, `page${replyPage}Obj`, 'arr'], []);
     recruitmentRepliesPageArr.push(valueObj._id);

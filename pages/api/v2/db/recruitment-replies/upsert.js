@@ -73,7 +73,7 @@ import { locale } from '../../../../../app/@locales/locale';
 
 
 // --------------------------------------------------
-//   endpointID: 1X2JEdmdO
+//   endpointID: cEP23RNNl
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -745,7 +745,6 @@ export default async (req, res) => {
       delete recruitmentCommentsSaveObj.recruitmentThreads_id;
       delete recruitmentCommentsSaveObj.users_id;
       delete recruitmentCommentsSaveObj.goods;
-      delete recruitmentCommentsSaveObj.replies;
       
       
       // ---------------------------------------------
@@ -922,7 +921,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: '1X2JEdmdO',
+      endpointID: 'cEP23RNNl',
       users_id: loginUsers_id,
       ip,
       userAgent,

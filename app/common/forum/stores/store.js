@@ -1919,7 +1919,7 @@ class Store {
       
       
       // ---------------------------------------------
-      //   forumThreadsObj
+      //   forumThreadsObj - dataObj / [データオブジェクトのみ]
       // ---------------------------------------------
       
       const forumThreadsOldDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
@@ -2893,7 +2893,7 @@ class Store {
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
    * @param {string} forumComments_id - DB forum-comments _id / コメントのID
-   * @param {number} page - コメントのページ
+   * @param {number} page - 返信のページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
   @action.bound

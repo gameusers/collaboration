@@ -23,7 +23,7 @@ const lodashSet = require('lodash/set');
 // ---------------------------------------------
 
 const ModelGameCommunities = require('../../../../../app/@database/game-communities/model');
-const ModelRecruitmentThreads = require('../../../../../app/@database/recruitment-threads/model');
+const ModelRecruitmentReplies = require('../../../../../app/@database/recruitment-replies/model');
 
 
 // ---------------------------------------------
@@ -40,7 +40,7 @@ const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 
 const { validationInteger } = require('../../../../../app/@validations/integer');
 const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
-const { validationRecruitmentThreadsLimit } = require('../../../../../app/@database/recruitment-threads/validations/limit');
+// const { validationRecruitmentThreadsLimit } = require('../../../../../app/@database/recruitment-threads/validations/limit');
 const { validationRecruitmentCommentsLimit } = require('../../../../../app/@database/recruitment-comments/validations/limit');
 const { validationRecruitmentRepliesLimit } = require('../../../../../app/@database/recruitment-replies/validations/limit');
 
@@ -55,7 +55,7 @@ const { locale } = require('../../../../../app/@locales/locale');
 
 
 // --------------------------------------------------
-//   endpointID: aCv-xLGqx
+//   endpointID: SnUlYeCbE
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -108,9 +108,7 @@ export default async (req, res) => {
     const { 
       
       gameCommunities_id,
-      recruitmentThreads_idsArr,
-      threadPage,
-      threadLimit,
+      recruitmentComments_idsArr,
       commentPage, 
       commentLimit,
       replyPage,
@@ -120,9 +118,7 @@ export default async (req, res) => {
     
     
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
-    lodashSet(requestParametersObj, ['recruitmentThreads_idsArr'], recruitmentThreads_idsArr);
-    lodashSet(requestParametersObj, ['threadPage'], threadPage);
-    lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
+    lodashSet(requestParametersObj, ['recruitmentComments_idsArr'], recruitmentComments_idsArr);
     lodashSet(requestParametersObj, ['commentPage'], commentPage);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
     lodashSet(requestParametersObj, ['replyPage'], replyPage);
@@ -146,10 +142,6 @@ export default async (req, res) => {
     
     await validationGameCommunities_idServer({ value: gameCommunities_id });
     
-    // Thread Page & Limit
-    await validationInteger({ throwError: true, required: true, value: threadPage });
-    await validationRecruitmentThreadsLimit({ throwError: true, required: true, value: threadLimit });
-    
     // Comment Page & Limit
     await validationInteger({ throwError: true, required: true, value: commentPage });
     await validationRecruitmentCommentsLimit({ throwError: true, required: true, value: commentLimit });
@@ -162,28 +154,22 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Forum Threads
+    //   DB find / Comments & Replies
     // --------------------------------------------------
     
-    const recruitmentObj = await ModelRecruitmentThreads.findRecruitments({
+    returnObj.recruitmentRepliesObj = await ModelRecruitmentReplies.findReplies({
       
       req,
       localeObj,
       loginUsers_id,
       gameCommunities_id,
-      recruitmentThreads_idsArr,
-      threadPage,
-      threadLimit,
+      recruitmentComments_idsArr,
       commentPage,
       commentLimit,
       replyPage,
       replyLimit,
       
     });
-    
-    returnObj.recruitmentThreadsObj = recruitmentObj.recruitmentThreadsObj;
-    returnObj.recruitmentCommentsObj = recruitmentObj.recruitmentCommentsObj;
-    returnObj.recruitmentRepliesObj = recruitmentObj.recruitmentRepliesObj;
     
     
     
@@ -213,14 +199,12 @@ export default async (req, res) => {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/api/v2/db/recruitment-comments/read-comments.js
+    //   /pages/api/v2/db/recruitment-replies/read-replies.js
     // `);
     
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
     //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   threadPage: {green ${threadPage} / ${typeof threadPage}}
-    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
     //   commentPage: {green ${commentPage} / ${typeof commentPage}}
     //   commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
     //   replyPage: {green ${replyPage} / ${typeof replyPage}}
@@ -228,8 +212,8 @@ export default async (req, res) => {
     // `);
     
     // console.log(`
-    //   ----- recruitmentThreads_idsArr -----\n
-    //   ${util.inspect(recruitmentThreads_idsArr, { colors: true, depth: null })}\n
+    //   ----- recruitmentComments_idsArr -----\n
+    //   ${util.inspect(recruitmentComments_idsArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -259,7 +243,7 @@ export default async (req, res) => {
     const resultErrorObj = returnErrorsArr({
       
       errorObj,
-      endpointID: 'aCv-xLGqx',
+      endpointID: 'SnUlYeCbE',
       users_id: loginUsers_id,
       ip,
       userAgent,

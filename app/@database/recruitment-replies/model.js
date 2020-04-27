@@ -27,15 +27,15 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 // ---------------------------------------------
 
 const Schema = require('./schema');
-const SchemaForumComments = require('../forum-comments/schema');
+const SchemaRecruitmentThreads = require('../recruitment-threads/schema');
+const SchemaRecruitmentComments = require('../recruitment-comments/schema');
 const SchemaImagesAndVideos = require('../images-and-videos/schema');
 const SchemaGameCommunities = require('../game-communities/schema');
-const SchemaUserCommunities = require('../user-communities/schema');
 const SchemaUsers = require('../users/schema');
 
-const ModelForumComments = require('../forum-comments/model');
-const ModelGameCommunities = require('../game-communities/model');
-const ModelUserCommunities = require('../user-communities/model');
+// const ModelForumComments = require('../forum-comments/model');
+// const ModelGameCommunities = require('../game-communities/model');
+// const ModelUserCommunities = require('../user-communities/model');
 
 
 // ---------------------------------------------
@@ -50,7 +50,8 @@ const { verifyAuthority } = require('../../@modules/authority');
 //   Format
 // ---------------------------------------------
 
-const { formatRecruitmentThreadsArr } = require('./format');
+const { formatRecruitmentRepliesArr } = require('./format');
+// const { formatRecruitmentCommentsAndRepliesArr } = require('./format');
 
 
 
@@ -325,27 +326,25 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 // --------------------------------------------------
 
 /**
- * 募集を取得する
+ * 返信を取得する
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
- * @param {number} threadPage - スレッドのページ
- * @param {number} threadLimit - スレッドのリミット
+ * @param {Array} recruitmentComments_idsArr - DB recruitment-comments _id / 募集のコメントIDが入った配列
  * @param {number} commentPage - コメントのページ
  * @param {number} commentLimit - コメントのリミット
  * @param {number} replyPage - 返信のページ
  * @param {number} replyLimit - 返信のリミット
  * @return {Array} 取得データ
  */
-const findRecruitments = async ({
+const findReplies = async ({
   
   req,
   localeObj,
   loginUsers_id,
   gameCommunities_id,
-  threadPage = 1,
-  threadLimit = process.env.RECRUITMENT_THREAD_LIMIT,
+  recruitmentComments_idsArr,
   commentPage = 1,
   commentLimit = process.env.RECRUITMENT_COMMENT_LIMIT,
   replyPage = 1,
@@ -358,10 +357,21 @@ const findRecruitments = async ({
     
     
     // --------------------------------------------------
+    //   Replies データ取得
+    //   $in, sort, limit を使って最新のコメントを取得すると、古い返信が limit で削られてしまうため
+    //   あるスレッドでは古いコメントが表示されないという事態になってしまう
+    //   そのため for のループで検索している　ただ良くない書き方だと思うので可能なら改善した方がいい
+    // --------------------------------------------------
+    
+    let resultArr = [];
+    
+    
+    
+    
+    // --------------------------------------------------
     //   Parse
     // --------------------------------------------------
     
-    const intThreadLimit = parseInt(threadLimit, 10);
     const intCommentLimit = parseInt(commentLimit, 10);
     const intReplyLimit = parseInt(replyLimit, 10);
     
@@ -380,409 +390,374 @@ const findRecruitments = async ({
     //   Match Condition Array
     // --------------------------------------------------
     
-    let matchConditionArr = [];
+    // let matchConditionArr = [];
     
-    matchConditionArr = [
-      {
-        $match : { gameCommunities_id }
-      },
-    ];
+    // matchConditionArr = [
+    //   {
+    //     $match: {
+    //       $and: [
+    //         { recruitmentComments_id: { $in: recruitmentComments_idsArr } },
+    //         { gameCommunities_id },
+    //       ]
+    //     },
+    //   },
+    // ];
+    
     
     
     // --------------------------------------------------
-    //   threadCount
+    //   Loop
     // --------------------------------------------------
     
-    const gameCommunityArr = await ModelGameCommunities.find({
+    for (let recruitmentComments_id of recruitmentComments_idsArr.values()) {
       
-      conditionObj: {
-        _id: gameCommunities_id
+      
+      // --------------------------------------------------
+      //   Aggregation
+      // --------------------------------------------------
+      
+      const docArr = await Schema.aggregate([
+        
+        
+        // --------------------------------------------------
+        //   Match
+        // --------------------------------------------------
+        
+        {
+          $match: {
+            recruitmentComments_id,
+          },
+        },
+        
+        
+        // --------------------------------------------------
+        //   recruitment-comments / replies 取得用
+        // --------------------------------------------------
+        
+        {
+          $lookup:
+            {
+              from: 'recruitment-comments',
+              let: { letRecruitmentComments_id: '$recruitmentComments_id' },
+              pipeline: [
+                { $match:
+                  { $expr:
+                    { $eq: ['$_id', '$$letRecruitmentComments_id'] },
+                  }
+                },
+                { $project:
+                  {
+                    _id: 0,
+                    replies: 1,
+                  }
+                }
+              ],
+              as: 'recruitmentCommentsObj'
+            }
+        },
+        
+        {
+          $unwind: {
+            path: '$recruitmentCommentsObj',
+            preserveNullAndEmptyArrays: true,
+          }
+        },
+        
+        
+        // --------------------------------------------------
+        //   card-players / プレイヤーカードを取得（名前＆ステータス＆サムネイル用）
+        // --------------------------------------------------
+        
+        {
+          $lookup:
+            {
+              from: 'card-players',
+              let: { letUsers_id: '$users_id' },
+              pipeline: [
+                { $match:
+                  { $expr:
+                    { $and:
+                      [
+                        { $eq: ['$language', language] },
+                        { $eq: ['$users_id', '$$letUsers_id'] },
+                      ]
+                    },
+                  }
+                },
+                
+                
+                // --------------------------------------------------
+                //   card-players / images-and-videos / サムネイルを取得
+                // --------------------------------------------------
+                
+                {
+                  $lookup:
+                    {
+                      from: 'images-and-videos',
+                      let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                      pipeline: [
+                        { $match:
+                          { $expr:
+                            { $eq: ['$_id', '$$letImagesAndVideosThumbnail_id'] },
+                          }
+                        },
+                        { $project:
+                          {
+                            createdDate: 0,
+                            updatedDate: 0,
+                            users_id: 0,
+                            __v: 0,
+                          }
+                        }
+                      ],
+                      as: 'imagesAndVideosThumbnailObj'
+                    }
+                },
+                
+                {
+                  $unwind: {
+                    path: '$imagesAndVideosThumbnailObj',
+                    preserveNullAndEmptyArrays: true,
+                  }
+                },
+                
+                
+                { $project:
+                  {
+                    name: '$nameObj.value',
+                    status: '$statusObj.value',
+                    imagesAndVideosThumbnailObj: 1,
+                  }
+                }
+              ],
+              as: 'cardPlayersObj'
+            }
+        },
+        
+        {
+          $unwind: {
+            path: '$cardPlayersObj',
+            preserveNullAndEmptyArrays: true,
+          }
+        },
+        
+        
+        // --------------------------------------------------
+        //   users / ユーザーを取得（アクセス日時＆経験値＆プレイヤーID用）
+        // --------------------------------------------------
+        
+        {
+          $lookup:
+            {
+              from: 'users',
+              let: { letUsers_id: '$users_id' },
+              pipeline: [
+                { $match:
+                  { $expr:
+                    { $eq: ['$_id', '$$letUsers_id'] },
+                  }
+                },
+                { $project:
+                  {
+                    _id: 0,
+                    accessDate: 1,
+                    exp: 1,
+                    userID: 1,
+                  }
+                }
+              ],
+              as: 'usersObj'
+            }
+        },
+        
+        {
+          $unwind: {
+            path: '$usersObj',
+            preserveNullAndEmptyArrays: true,
+          }
+        },
+        
+        
+        // --------------------------------------------------
+        //   images-and-videos
+        // --------------------------------------------------
+        
+        {
+          $lookup:
+            {
+              from: 'images-and-videos',
+              let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
+              pipeline: [
+                { $match:
+                  { $expr:
+                    { $eq: ['$_id', '$$letImagesAndVideos_id'] },
+                  }
+                },
+                { $project:
+                  {
+                    createdDate: 0,
+                    updatedDate: 0,
+                    users_id: 0,
+                    __v: 0,
+                  }
+                }
+              ],
+              as: 'imagesAndVideosObj'
+            }
+        },
+        
+        {
+          $unwind: {
+            path: '$imagesAndVideosObj',
+            preserveNullAndEmptyArrays: true,
+          }
+        },
+        
+        
+        // --------------------------------------------------
+        //   recruitment-replies / recruitment-replies - replyTo 用のデータ取得
+        // --------------------------------------------------
+        
+        {
+          $lookup:
+            {
+              from: 'recruitment-replies',
+              let: { letReplyToRecruitmentReplies_id: '$replyToRecruitmentReplies_id' },
+              pipeline: [
+                
+                
+                { $match:
+                  { $expr:
+                    { $eq: ['$_id', '$$letReplyToRecruitmentReplies_id'] },
+                  }
+                },
+                
+                
+                // --------------------------------------------------
+                //   recruitment-replies / recruitment-replies / card-players - 名前＆ステータス＆サムネイル用
+                // --------------------------------------------------
+                
+                {
+                  $lookup:
+                    {
+                      from: 'card-players',
+                      let: { letUsers_id: '$users_id' },
+                      pipeline: [
+                        { $match:
+                          { $expr:
+                            { $and:
+                              [
+                                { $eq: ['$language', language] },
+                                { $eq: ['$users_id', '$$letUsers_id'] },
+                              ]
+                            },
+                          }
+                        },
+                        
+                        
+                        { $project:
+                          {
+                            name: '$nameObj.value',
+                          }
+                        }
+                      ],
+                      as: 'cardPlayersObj'
+                    }
+                },
+                
+                {
+                  $unwind: {
+                    path: '$cardPlayersObj',
+                    preserveNullAndEmptyArrays: true,
+                  }
+                },
+                
+                
+                { $project:
+                  {
+                    _id: 0,
+                    localesArr: 1,
+                    cardPlayersObj: 1,
+                  }
+                }
+                
+                
+              ],
+              as: 'replyToObj'
+            }
+        },
+        
+        {
+          $unwind: {
+            path: '$replyToObj',
+            preserveNullAndEmptyArrays: true,
+          }
+        },
+        
+        
+        { $project:
+          {
+            imagesAndVideos_id: 0,
+            __v: 0,
+          }
+        },
+        
+        
+        { '$sort': { 'createdDate': 1 } },
+        { $skip: (replyPage - 1) * intReplyLimit },
+        { $limit: intReplyLimit },
+        
+        
+      ]).exec();
+      
+      
+      
+      // console.log(chalk`
+      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+      // `);
+      
+      // console.log(`
+      //   ----- docArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      
+      
+      // --------------------------------------------------
+      //   配列を結合する
+      // --------------------------------------------------
+      
+      if (docArr.length > 0) {
+        resultArr = resultArr.concat(docArr);
       }
       
-    });
-    
-    const threadCount = lodashGet(gameCommunityArr, [0, 'recruitmentObj', 'threadCount'], 0);
-    
+      
+    }
     
     
     
-    // --------------------------------------------------
-    //   Aggregation
-    // --------------------------------------------------
     
-    const docArr = await Schema.aggregate([
-      
-      
-      // --------------------------------------------------
-      //   Match Condition Array
-      // --------------------------------------------------
-      
-      ...matchConditionArr,
-      
-      
-      // --------------------------------------------------
-      //   card-players / プレイヤーカードを取得（名前＆ステータス＆サムネイル用）
-      // --------------------------------------------------
-      
-      {
-        $lookup:
-          {
-            from: 'card-players',
-            let: { recruitmentThreadsUsers_id: '$users_id' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
-                      { $eq: ['$language', language] },
-                      { $eq: ['$users_id', '$$recruitmentThreadsUsers_id'] },
-                    ]
-                  },
-                }
-              },
-              
-              
-              // --------------------------------------------------
-              //   card-players / images-and-videos / サムネイルを取得
-              // --------------------------------------------------
-              
-              {
-                $lookup:
-                  {
-                    from: 'images-and-videos',
-                    let: { cardPlayersImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-                    pipeline: [
-                      { $match:
-                        { $expr:
-                          { $eq: ['$_id', '$$cardPlayersImagesAndVideosThumbnail_id'] },
-                        }
-                      },
-                      { $project:
-                        {
-                          createdDate: 0,
-                          updatedDate: 0,
-                          users_id: 0,
-                          __v: 0,
-                        }
-                      }
-                    ],
-                    as: 'imagesAndVideosThumbnailObj'
-                  }
-              },
-              
-              {
-                $unwind: {
-                  path: '$imagesAndVideosThumbnailObj',
-                  preserveNullAndEmptyArrays: true,
-                }
-              },
-              
-              
-              { $project:
-                {
-                  name: '$nameObj.value',
-                  status: '$statusObj.value',
-                  imagesAndVideosThumbnailObj: 1,
-                }
-              }
-            ],
-            as: 'cardPlayersObj'
-          }
-      },
-      
-      {
-        $unwind: {
-          path: '$cardPlayersObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
-      
-      
-      // --------------------------------------------------
-      //   users / ユーザーを取得（アクセス日時＆経験値＆プレイヤーID用）
-      // --------------------------------------------------
-      
-      {
-        $lookup:
-          {
-            from: 'users',
-            let: { recruitmentThreadsUsers_id: '$users_id' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$recruitmentThreadsUsers_id'] },
-                }
-              },
-              { $project:
-                {
-                  _id: 0,
-                  accessDate: 1,
-                  exp: 1,
-                  userID: 1,
-                  webPushSubscriptionObj: 1,
-                }
-              }
-            ],
-            as: 'usersObj'
-          }
-      },
-      
-      {
-        $unwind: {
-          path: '$usersObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
-      
-      
-      // --------------------------------------------------
-      //   images-and-videos
-      // --------------------------------------------------
-      
-      {
-        $lookup:
-          {
-            from: 'images-and-videos',
-            let: { recruitmentThreadsImagesAndVideos_id: '$imagesAndVideos_id' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$recruitmentThreadsImagesAndVideos_id'] },
-                }
-              },
-              { $project:
-                {
-                  createdDate: 0,
-                  updatedDate: 0,
-                  users_id: 0,
-                  __v: 0,
-                }
-              }
-            ],
-            as: 'imagesAndVideosObj'
-          }
-      },
-      
-      {
-        $unwind: {
-          path: '$imagesAndVideosObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
-      
-      
-      // --------------------------------------------------
-      //   hardwares
-      // --------------------------------------------------
-      
-      {
-        $lookup:
-          {
-            from: 'hardwares',
-            let: { recruitmentThreadsHardwareIDsArr: '$hardwareIDsArr' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
-                      { $eq: ['$language', language] },
-                      { $eq: ['$country', country] },
-                      { $in: ['$hardwareID', '$$recruitmentThreadsHardwareIDsArr'] }
-                    ]
-                  },
-                }
-              },
-              { $project:
-                {
-                  _id: 0,
-                  hardwareID: 1,
-                  name: 1,
-                }
-              }
-            ],
-            as: 'hardwaresArr'
-          }
-      },
-      
-      
-      // --------------------------------------------------
-      //   ids
-      // --------------------------------------------------
-      
-      {
-        $lookup:
-          {
-            from: 'ids',
-            let: {
-              recruitmentThreadsIDs_idArr: '$ids_idsArr',
-              recruitmentThreadsUsers_id: '$users_id',
-            },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
-                      { $eq: ['$users_id', '$$recruitmentThreadsUsers_id'] },
-                      { $in: ['$_id', '$$recruitmentThreadsIDs_idArr'] }
-                    ]
-                  },
-                }
-              },
-              
-              
-              // --------------------------------------------------
-              //   ids / games
-              // --------------------------------------------------
-              
-              {
-                $lookup:
-                  {
-                    from: 'games',
-                    let: { idsGameCommunities_id: '$gameCommunities_id' },
-                    pipeline: [
-                      { $match:
-                        { $expr:
-                          { $and:
-                            [
-                              { $eq: ['$language', language] },
-                              { $eq: ['$country', country] },
-                              { $eq: ['$gameCommunities_id', '$$idsGameCommunities_id'] }
-                            ]
-                          },
-                        }
-                      },
-                      
-                      
-                      // --------------------------------------------------
-                      //   ids / games / images-and-videos / サムネイル用
-                      // --------------------------------------------------
-                      
-                      {
-                        $lookup:
-                          {
-                            from: 'images-and-videos',
-                            let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-                            pipeline: [
-                              { $match:
-                                { $expr:
-                                  { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
-                                }
-                              },
-                              { $project:
-                                {
-                                  createdDate: 0,
-                                  updatedDate: 0,
-                                  users_id: 0,
-                                  __v: 0,
-                                }
-                              }
-                            ],
-                            as: 'imagesAndVideosThumbnailObj'
-                          }
-                      },
-                      
-                      {
-                        $unwind: {
-                          path: '$imagesAndVideosThumbnailObj',
-                          preserveNullAndEmptyArrays: true,
-                        }
-                      },
-                      
-                      
-                      { $project:
-                        {
-                          _id: 1,
-                          gameCommunities_id: 1,
-                          name: 1,
-                          imagesAndVideosThumbnailObj: 1,
-                        }
-                      }
-                    ],
-                    as: 'gamesObj'
-                  }
-              },
-              
-              {
-                $unwind:
-                  {
-                    path: '$gamesObj',
-                    preserveNullAndEmptyArrays: true
-                  }
-              },
-              
-              
-              { $project:
-                {
-                  createdDate: 0,
-                  updatedDate: 0,
-                  users_id: 0,
-                  search: 0,
-                  __v: 0,
-                }
-              }
-            ],
-            as: 'idsArr'
-          }
-      },
-      
-      
-      { $project:
-        {
-          imagesAndVideos_id: 0,
-          __v: 0,
-        }
-      },
-      
-      
-      { '$sort': { 'updatedDate': -1 } },
-      { $skip: (threadPage - 1) * intThreadLimit },
-      { $limit: intThreadLimit },
-      
-      
-    ]).exec();
+    
     
     
     
     
     // --------------------------------------------------
-    //   Format
+    //   Format - Reply
     // --------------------------------------------------
     
-    const formattedThreadsObj = formatRecruitmentThreadsArr({
+    const recruitmentRepliesObj = formatRecruitmentRepliesArr({
       
       req,
       localeObj,
       loginUsers_id,
-      arr: docArr,
-      threadPage,
-      threadCount,
+      arr: resultArr,
+      replyPage,
+      ISO8601: moment().utc().toISOString(),
       
     });
-    
-    const recruitmentThreadsObj = lodashGet(formattedThreadsObj, ['recruitmentThreadsObj'], {});
-    const recruitmentThreads_idsForCommentArr = lodashGet(formattedThreadsObj, ['recruitmentThreads_idsForCommentArr'], []);
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   DB find / Forum Comments & Replies
-    // // --------------------------------------------------
-    
-    // const forumCommentsAndRepliesObj = await ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr({
-    //   req,
-    //   localeObj,
-    //   loginUsers_id,
-    //   forumThreads_idsArr: forumThreads_idsForCommentArr,
-    //   forumThreadsObj,
-    //   commentPage,
-    //   commentLimit: intCommentLimit,
-    //   replyPage,
-    //   replyLimit: intReplyLimit,
-    // });
-    
-    // const forumCommentsObj = lodashGet(forumCommentsAndRepliesObj, ['forumCommentsObj'], {});
-    // const forumRepliesObj = lodashGet(forumCommentsAndRepliesObj, ['forumRepliesObj'], {});
     
     
     
@@ -799,21 +774,27 @@ const findRecruitments = async ({
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
     //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   threadPage: {green ${threadPage}}
-    //   threadLimit: {green ${threadLimit}}
+    //   commentPage: {green ${commentPage}}
     //   commentLimit: {green ${commentLimit}}
+    //   replyPage: {green ${replyPage}}
     //   replyLimit: {green ${replyLimit}}
     // `);
     
     // console.log(`
-    //   ----- docArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
+    //   ----- recruitmentComments_idsArr -----\n
+    //   ${util.inspect(recruitmentComments_idsArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     // console.log(`
-    //   ----- formattedThreadsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(formattedThreadsObj)), { colors: true, depth: null })}\n
+    //   ----- resultArr -----\n
+    //   ${util.inspect(resultArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- recruitmentRepliesObj -----\n
+    //   ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -848,11 +829,13 @@ const findRecruitments = async ({
     //   Return
     // --------------------------------------------------
     
-    return {
+    return recruitmentRepliesObj;
+    
+    // return {
       
-      recruitmentThreadsObj,
+    //   recruitmentThreadsObj,
       
-    };
+    // };
     
     
   } catch (err) {
@@ -865,22 +848,28 @@ const findRecruitments = async ({
 };
 
 
-
-
 /**
- * コメント＆返信データを取得する　削除用
+ * コメントと返信を取得する - recruitmentThreads_idsArr で検索
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
+ * @param {Array} recruitmentComments_idsArr - DB recruitment-comments _id / _idが入っている配列
+ * @param {number} commentPage - コメントのページ
+ * @param {number} commentLimit - コメントのリミット
+ * @param {number} replyPage - 返信のページ
+ * @param {number} replyLimit - 返信のリミット
  * @return {Array} 取得データ
  */
-// const findForDeleteThread = async ({
+// const findReplies = async ({
   
 //   req,
 //   localeObj,
 //   loginUsers_id,
-//   forumThreads_id,
+//   recruitmentComments_idsArr,
+//   commentPage = 1,
+//   commentLimit = process.env.RECRUITMENT_COMMENT_LIMIT,
+//   replyPage = 1,
+//   replyLimit = process.env.RECRUITMENT_REPLY_LIMIT,
   
 // }) => {
   
@@ -889,82 +878,650 @@ const findRecruitments = async ({
     
     
 //     // --------------------------------------------------
-//     //   Thread
+//     //   Replies データ取得
+//     //   $in, sort, limit を使って最新のコメントを取得すると、古いコメントが limit で削られてしまうため
+//     //   あるスレッドでは古いコメントが表示されないという事態になってしまう
+//     //   そのため for のループで検索している　ただ良くない書き方だと思うので可能なら改善した方がいい
 //     // --------------------------------------------------
     
-//     const forumThreadsArr = await Schema.aggregate([
+//     let resultArr = [];
+    
+    
+    
+    
+//     // --------------------------------------------------
+//     //   Language & Country
+//     // --------------------------------------------------
+    
+//     const language = lodashGet(localeObj, ['language'], '');
+//     const country = lodashGet(localeObj, ['country'], '');
+    
+    
+//     // --------------------------------------------------
+//     //   parseInt
+//     // --------------------------------------------------
+    
+//     const intCommentLimit = parseInt(commentLimit, 10);
+//     const intReplyLimit = parseInt(replyLimit, 10);
+    
+    
+    
+    
+//     // --------------------------------------------------
+//     //   Loop
+//     // --------------------------------------------------
+    
+//     for (let recruitmentComments_id of recruitmentComments_idsArr.values()) {
       
       
-//       {
-//         $match: { _id: forumThreads_id },
-//       },
-      
-      
-//       { $project:
+//       const docArr = await Schema.aggregate([
+        
+        
+//         // --------------------------------------------------
+//         //   コメント
+//         // --------------------------------------------------
+        
+//         // --------------------------------------------------
+//         //   Match
+//         // --------------------------------------------------
+        
 //         {
-//           createdDate: 1,
-//           users_id: 1,
-//           imagesAndVideos_id: 1,
-//         }
-//       },
-      
-      
-//     ]).exec();
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   Comments & Replies
-//     // --------------------------------------------------
-    
-//     const forumCommentsArr = await SchemaForumComments.aggregate([
-      
-      
-//       {
-//         $match: { forumThreads_id },
-//       },
-      
-      
-//       { $project:
+//           $match: {
+//             _id: recruitmentComments_id,
+//           },
+//         },
+        
+        
+//         // --------------------------------------------------
+//         //   card-players - 名前＆ステータス＆サムネイル用
+//         // --------------------------------------------------
+        
 //         {
-//           createdDate: 1,
-//           users_id: 1,
-//           imagesAndVideos_id: 1,
-//         }
-//       },
+//           $lookup:
+//             {
+//               from: 'card-players',
+//               let: { letUsers_id: '$users_id' },
+//               pipeline: [
+//                 { $match:
+//                   { $expr:
+//                     { $and:
+//                       [
+//                         { $eq: ['$language', language] },
+//                         { $eq: ['$users_id', '$$letUsers_id'] },
+//                       ]
+//                     },
+//                   }
+//                 },
+                
+                
+//                 // --------------------------------------------------
+//                 //   card-players / images-and-videos - サムネイル画像
+//                 // --------------------------------------------------
+                
+//                 {
+//                   $lookup:
+//                     {
+//                       from: 'images-and-videos',
+//                       let: { letCardPlayersImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+//                       pipeline: [
+//                         { $match:
+//                           { $expr:
+//                             { $eq: ['$_id', '$$letCardPlayersImagesAndVideosThumbnail_id'] },
+//                           }
+//                         },
+//                         { $project:
+//                           {
+//                             createdDate: 0,
+//                             updatedDate: 0,
+//                             users_id: 0,
+//                             __v: 0,
+//                           }
+//                         }
+//                       ],
+//                       as: 'imagesAndVideosThumbnailObj'
+//                     }
+//                 },
+                
+//                 {
+//                   $unwind: {
+//                     path: '$imagesAndVideosThumbnailObj',
+//                     preserveNullAndEmptyArrays: true,
+//                   }
+//                 },
+                
+                
+//                 { $project:
+//                   {
+//                     name: '$nameObj.value',
+//                     status: '$statusObj.value',
+//                     imagesAndVideosThumbnailObj: 1,
+//                   }
+//                 }
+//               ],
+//               as: 'cardPlayersObj'
+//             }
+//         },
+        
+//         {
+//           $unwind: {
+//             path: '$cardPlayersObj',
+//             preserveNullAndEmptyArrays: true,
+//           }
+//         },
+        
+        
+//         // --------------------------------------------------
+//         //   users - アクセス日時＆経験値＆プレイヤーID用
+//         // --------------------------------------------------
+        
+//         {
+//           $lookup:
+//             {
+//               from: 'users',
+//               let: { letUsers_id: '$users_id' },
+//               pipeline: [
+//                 { $match:
+//                   { $expr:
+//                     { $eq: ['$_id', '$$letUsers_id'] },
+//                   }
+//                 },
+//                 { $project:
+//                   {
+//                     _id: 0,
+//                     accessDate: 1,
+//                     exp: 1,
+//                     userID: 1,
+//                     webPushSubscriptionObj: 1,
+//                   }
+//                 }
+//               ],
+//               as: 'usersObj'
+//             }
+//         },
+        
+//         {
+//           $unwind: {
+//             path: '$usersObj',
+//             preserveNullAndEmptyArrays: true,
+//           }
+//         },
+        
+        
+//         // --------------------------------------------------
+//         //   images-and-videos - 画像
+//         // --------------------------------------------------
+        
+//         {
+//           $lookup:
+//             {
+//               from: 'images-and-videos',
+//               let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
+//               pipeline: [
+//                 { $match:
+//                   { $expr:
+//                     { $eq: ['$_id', '$$letImagesAndVideos_id'] },
+//                   }
+//                 },
+//                 { $project:
+//                   {
+//                     createdDate: 0,
+//                     updatedDate: 0,
+//                     users_id: 0,
+//                     __v: 0,
+//                   }
+//                 }
+//               ],
+//               as: 'imagesAndVideosObj'
+//             }
+//         },
+        
+//         {
+//           $unwind: {
+//             path: '$imagesAndVideosObj',
+//             preserveNullAndEmptyArrays: true,
+//           }
+//         },
+        
+        
+//         // --------------------------------------------------
+//         //   ids
+//         // --------------------------------------------------
+        
+//         {
+//           $lookup:
+//             {
+//               from: 'ids',
+//               let: {
+//                 letUsers_id: '$users_id',
+//                 letIDs_idArr: '$ids_idsArr',
+//               },
+//               pipeline: [
+//                 { $match:
+//                   { $expr:
+//                     { $and:
+//                       [
+//                         { $eq: ['$users_id', '$$letUsers_id'] },
+//                         { $in: ['$_id', '$$letIDs_idArr'] }
+//                       ]
+//                     },
+//                   }
+//                 },
+                
+                
+//                 // --------------------------------------------------
+//                 //   ids / games
+//                 // --------------------------------------------------
+                
+//                 {
+//                   $lookup:
+//                     {
+//                       from: 'games',
+//                       let: { letGameCommunities_id: '$gameCommunities_id' },
+//                       pipeline: [
+//                         { $match:
+//                           { $expr:
+//                             { $and:
+//                               [
+//                                 { $eq: ['$language', language] },
+//                                 { $eq: ['$country', country] },
+//                                 { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
+//                               ]
+//                             },
+//                           }
+//                         },
+                        
+                        
+//                         // --------------------------------------------------
+//                         //   ids / games / images-and-videos / サムネイル用
+//                         // --------------------------------------------------
+                        
+//                         {
+//                           $lookup:
+//                             {
+//                               from: 'images-and-videos',
+//                               let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+//                               pipeline: [
+//                                 { $match:
+//                                   { $expr:
+//                                     { $eq: ['$_id', '$$letImagesAndVideosThumbnail_id'] },
+//                                   }
+//                                 },
+//                                 { $project:
+//                                   {
+//                                     createdDate: 0,
+//                                     updatedDate: 0,
+//                                     users_id: 0,
+//                                     __v: 0,
+//                                   }
+//                                 }
+//                               ],
+//                               as: 'imagesAndVideosThumbnailObj'
+//                             }
+//                         },
+                        
+//                         {
+//                           $unwind: {
+//                             path: '$imagesAndVideosThumbnailObj',
+//                             preserveNullAndEmptyArrays: true,
+//                           }
+//                         },
+                        
+                        
+//                         { $project:
+//                           {
+//                             _id: 1,
+//                             gameCommunities_id: 1,
+//                             name: 1,
+//                             imagesAndVideosThumbnailObj: 1,
+//                           }
+//                         }
+//                       ],
+//                       as: 'gamesObj'
+//                     }
+//                 },
+                
+//                 {
+//                   $unwind:
+//                     {
+//                       path: '$gamesObj',
+//                       preserveNullAndEmptyArrays: true
+//                     }
+//                 },
+                
+                
+//                 { $project:
+//                   {
+//                     createdDate: 0,
+//                     updatedDate: 0,
+//                     users_id: 0,
+//                     search: 0,
+//                     __v: 0,
+//                   }
+//                 }
+//               ],
+//               as: 'idsArr'
+//             }
+//         },
+        
+        
+//         { $project:
+//           {
+//             imagesAndVideos_id: 0,
+//             __v: 0,
+//           }
+//         },
+        
+        
+        
+        
+//         // --------------------------------------------------
+//         //   返信
+//         // --------------------------------------------------
+        
+//         {
+//           $lookup:
+//             {
+//               from: 'recruitment-replies',
+//               let: { let_id: '$_id' },
+//               pipeline: [
+                
+//                 { $match:
+//                   { $expr:
+//                     { $eq: ['$recruitmentComments_id', '$$let_id'] }
+//                   }
+//                 },
+                
+                
+//                 // --------------------------------------------------
+//                 //   recruitment-replies / card-players - 名前＆ステータス＆サムネイル用
+//                 // --------------------------------------------------
+                
+//                 {
+//                   $lookup:
+//                     {
+//                       from: 'card-players',
+//                       let: { letUsers_id: '$users_id' },
+//                       pipeline: [
+//                         { $match:
+//                           { $expr:
+//                             { $and:
+//                               [
+//                                 { $eq: ['$language', language] },
+//                                 { $eq: ['$users_id', '$$letUsers_id'] },
+//                               ]
+//                             },
+//                           }
+//                         },
+                        
+                        
+//                         // --------------------------------------------------
+//                         //   recruitment-replies / card-players / images-and-videos - サムネイル画像
+//                         // --------------------------------------------------
+                        
+//                         {
+//                           $lookup:
+//                             {
+//                               from: 'images-and-videos',
+//                               let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+//                               pipeline: [
+//                                 { $match:
+//                                   { $expr:
+//                                     { $eq: ['$_id', '$$letImagesAndVideosThumbnail_id'] },
+//                                   }
+//                                 },
+//                                 { $project:
+//                                   {
+//                                     createdDate: 0,
+//                                     updatedDate: 0,
+//                                     users_id: 0,
+//                                     __v: 0,
+//                                   }
+//                                 }
+//                               ],
+//                               as: 'imagesAndVideosThumbnailObj'
+//                             }
+//                         },
+                        
+//                         {
+//                           $unwind: {
+//                             path: '$imagesAndVideosThumbnailObj',
+//                             preserveNullAndEmptyArrays: true,
+//                           }
+//                         },
+                        
+                        
+//                         { $project:
+//                           {
+//                             name: '$nameObj.value',
+//                             status: '$statusObj.value',
+//                             imagesAndVideosThumbnailObj: 1,
+//                           }
+//                         }
+//                       ],
+//                       as: 'cardPlayersObj'
+//                     }
+//                 },
+                
+//                 {
+//                   $unwind: {
+//                     path: '$cardPlayersObj',
+//                     preserveNullAndEmptyArrays: true,
+//                   }
+//                 },
+                
+                
+//                 // --------------------------------------------------
+//                 //   recruitment-replies / users - アクセス日時＆経験値＆プレイヤーID用
+//                 // --------------------------------------------------
+                
+//                 {
+//                   $lookup:
+//                     {
+//                       from: 'users',
+//                       let: { letUsers_id: '$users_id' },
+//                       pipeline: [
+//                         { $match:
+//                           { $expr:
+//                             { $eq: ['$_id', '$$letUsers_id'] },
+//                           }
+//                         },
+//                         { $project:
+//                           {
+//                             _id: 0,
+//                             accessDate: 1,
+//                             exp: 1,
+//                             userID: 1,
+//                             webPushSubscriptionObj: 1,
+//                           }
+//                         }
+//                       ],
+//                       as: 'usersObj'
+//                     }
+//                 },
+                
+//                 {
+//                   $unwind: {
+//                     path: '$usersObj',
+//                     preserveNullAndEmptyArrays: true,
+//                   }
+//                 },
+                
+                
+//                 // --------------------------------------------------
+//                 //   recruitment-replies / images-and-videos - メイン画像
+//                 // --------------------------------------------------
+                
+//                 {
+//                   $lookup:
+//                     {
+//                       from: 'images-and-videos',
+//                       let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
+//                       pipeline: [
+//                         { $match:
+//                           { $expr:
+//                             { $eq: ['$_id', '$$letImagesAndVideos_id'] },
+//                           }
+//                         },
+//                         { $project:
+//                           {
+//                             createdDate: 0,
+//                             updatedDate: 0,
+//                             users_id: 0,
+//                             __v: 0,
+//                           }
+//                         }
+//                       ],
+//                       as: 'imagesAndVideosObj'
+//                     }
+//                 },
+                
+//                 {
+//                   $unwind: {
+//                     path: '$imagesAndVideosObj',
+//                     preserveNullAndEmptyArrays: true,
+//                   }
+//                 },
+                
+                
+//                 // --------------------------------------------------
+//                 //   recruitment-replies / recruitment-replies - replyTo 用のデータ取得
+//                 // --------------------------------------------------
+                
+//                 {
+//                   $lookup:
+//                     {
+//                       from: 'recruitment-replies',
+//                       let: { letReplyToRecruitmentReplies_id: '$replyToRecruitmentReplies_id' },
+//                       pipeline: [
+                        
+                        
+//                         { $match:
+//                           { $expr:
+//                             { $eq: ['$_id', '$$letReplyToRecruitmentReplies_id'] },
+//                           }
+//                         },
+                        
+                        
+//                         // --------------------------------------------------
+//                         //   recruitment-replies / recruitment-replies / card-players - 名前＆ステータス＆サムネイル用
+//                         // --------------------------------------------------
+                        
+//                         {
+//                           $lookup:
+//                             {
+//                               from: 'card-players',
+//                               let: { letUsers_id: '$users_id' },
+//                               pipeline: [
+//                                 { $match:
+//                                   { $expr:
+//                                     { $and:
+//                                       [
+//                                         { $eq: ['$language', language] },
+//                                         { $eq: ['$users_id', '$$letUsers_id'] },
+//                                       ]
+//                                     },
+//                                   }
+//                                 },
+                                
+                                
+//                                 { $project:
+//                                   {
+//                                     name: '$nameObj.value',
+//                                   }
+//                                 }
+//                               ],
+//                               as: 'cardPlayersObj'
+//                             }
+//                         },
+                        
+//                         {
+//                           $unwind: {
+//                             path: '$cardPlayersObj',
+//                             preserveNullAndEmptyArrays: true,
+//                           }
+//                         },
+                        
+                        
+//                         { $project:
+//                           {
+//                             _id: 0,
+//                             localesArr: 1,
+//                             cardPlayersObj: 1,
+//                           }
+//                         }
+                        
+                        
+//                       ],
+//                       as: 'replyToObj'
+//                     }
+//                 },
+                
+//                 {
+//                   $unwind: {
+//                     path: '$replyToObj',
+//                     preserveNullAndEmptyArrays: true,
+//                   }
+//                 },
+                
+                
+//                 { $project:
+//                   {
+//                     imagesAndVideos_id: 0,
+//                     __v: 0,
+//                   }
+//                 },
+                
+                
+//                 { '$sort': { 'createdDate': 1 } },
+//                 { $skip: (replyPage - 1) * intReplyLimit },
+//                 { $limit: intReplyLimit },
+                
+                
+//               ],
+//               as: 'recruitmentRepliesArr'
+//             }
+//         },
+        
+        
+//         { $project:
+//           {
+//             imagesAndVideos_id: 0,
+//             __v: 0,
+//           }
+//         },
+        
+        
+//         { '$sort': { 'updatedDate': -1 } },
+//         { $skip: (commentPage - 1) * intCommentLimit },
+//         { $limit: intCommentLimit },
+        
+        
+//       ]).exec();
       
       
-//     ]).exec();
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   配列が空の場合は処理停止
-//     // --------------------------------------------------
-    
-//     if (forumThreadsArr.length === 0) {
-//       throw new CustomError({ level: 'error', errorsArr: [{ code: 'Wwc1vpiQ-', messageID: 'cvS0qSAlE' }] });
-//     }
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   編集権限がない場合は処理停止
-//     // --------------------------------------------------
-    
-//     const editable = verifyAuthority({
-//       req,
-//       users_id: lodashGet(forumThreadsArr, [0, 'users_id'], ''),
-//       loginUsers_id,
-//       ISO8601: lodashGet(forumThreadsArr, [0, 'createdDate'], ''),
-//       _id: lodashGet(forumThreadsArr, [0, '_id'], ''),
-//     });
-    
-//     if (!editable) {
-//       throw new CustomError({ level: 'error', errorsArr: [{ code: 'M2XmqnE4r', messageID: 'DSRlEoL29' }] });
+      
+//       // console.log(chalk`
+//       //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+//       // `);
+      
+//       // console.log(`
+//       //   ----- docArr -----\n
+//       //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
+//       //   --------------------\n
+//       // `);
+      
+      
+      
+      
+//       // --------------------------------------------------
+//       //   配列を結合する
+//       // --------------------------------------------------
+      
+//       if (docArr.length > 0) {
+//         resultArr = resultArr.concat(docArr);
+//       }
+      
+      
 //     }
     
     
@@ -974,59 +1531,54 @@ const findRecruitments = async ({
 //     //   Format
 //     // --------------------------------------------------
     
-//     const imagesAndVideos_id = lodashGet(forumThreadsArr, [0, 'imagesAndVideos_id'], '');
-    
-//     let imagesAndVideos_idsArr = [];
-    
-//     if (imagesAndVideos_id) {
-//       imagesAndVideos_idsArr = [imagesAndVideos_id];
-//     }
-    
-    
-//     for (let valueObj of forumCommentsArr.values()) {
+//     const formattedObj = formatRecruitmentCommentsAndRepliesArr({
       
-//       if (valueObj.imagesAndVideos_id) {
-//         imagesAndVideos_idsArr.push(valueObj.imagesAndVideos_id);
-//       }
+//       req,
+//       localeObj,
+//       loginUsers_id,
+//       arr: resultArr,
+//       recruitmentThreadsObj,
+//       commentPage,
+//       replyPage,
       
-//     }
-    
-//     const returnObj = {
-//       imagesAndVideos_idsArr,
-//     };
+//     });
     
     
     
+    
+    
+  
 //     // --------------------------------------------------
 //     //   console.log
 //     // --------------------------------------------------
     
+//     // console.log(`
+//     //   ----------------------------------------\n
+//     //   /app/@database/recruitment-comments/model.js - findCommentsAndReplies
+//     // `);
+    
 //     // console.log(chalk`
-//     //   forumThreads_id: {green ${forumThreads_id}}
+//     //   commentPage: {green ${commentPage}}
+//     //   commentLimit: {green ${commentLimit}}
+//     //   replyPage: {green ${replyPage}}
+//     //   replyLimit: {green ${replyLimit}}
 //     // `);
     
 //     // console.log(`
-//     //   ----- imagesAndVideos_idsArr -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideos_idsArr)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-    
-//     // console.log(`
-//     //   ----- forumThreadsArr -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsArr)), { colors: true, depth: null })}\n
+//     //   ----- recruitmentThreads_idsArr -----\n
+//     //   ${util.inspect(recruitmentThreads_idsArr, { colors: true, depth: null })}\n
 //     //   --------------------\n
 //     // `);
     
 //     // console.log(`
-//     //   ----- forumCommentsArr -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsArr)), { colors: true, depth: null })}\n
+//     //   ----- resultArr -----\n
+//     //   ${util.inspect(resultArr, { colors: true, depth: null })}\n
 //     //   --------------------\n
 //     // `);
     
 //     // console.log(`
-//     //   ----- returnObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+//     //   ----- formattedObj -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
 //     //   --------------------\n
 //     // `);
     
@@ -1037,7 +1589,7 @@ const findRecruitments = async ({
 //     //   Return
 //     // --------------------------------------------------
     
-//     return returnObj;
+//     return formattedObj;
     
     
 //   } catch (err) {
@@ -1057,7 +1609,7 @@ const findRecruitments = async ({
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
+ * @param {string} recruitmentComments_id - DB recruitment-comments _id / スレッドID
  * @return {Array} 取得データ
  */
 const findOneForEdit = async ({
@@ -1065,7 +1617,7 @@ const findOneForEdit = async ({
   req,
   localeObj,
   loginUsers_id,
-  recruitmentThreads_id,
+  recruitmentComments_id,
   
 }) => {
   
@@ -1087,7 +1639,7 @@ const findOneForEdit = async ({
     //   Find
     // --------------------------------------------------
     
-    const docRecruitmentThreadsArr = await Schema.aggregate([
+    const docRecruitmentCommentsArr = await Schema.aggregate([
       
       
       // --------------------------------------------------
@@ -1095,7 +1647,7 @@ const findOneForEdit = async ({
       // --------------------------------------------------
       
       {
-        $match : { _id: recruitmentThreads_id }
+        $match : { _id: recruitmentComments_id }
       },
       
       
@@ -1107,11 +1659,11 @@ const findOneForEdit = async ({
         $lookup:
           {
             from: 'images-and-videos',
-            let: { recruitmentThreadsImagesAndVideos_id: '$imagesAndVideos_id' },
+            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
               { $match:
                 { $expr:
-                  { $eq: ['$_id', '$$recruitmentThreadsImagesAndVideos_id'] },
+                  { $eq: ['$_id', '$$letImagesAndVideos_id'] },
                 }
               },
               { $project:
@@ -1136,40 +1688,6 @@ const findOneForEdit = async ({
       
       
       // --------------------------------------------------
-      //   hardwares
-      // --------------------------------------------------
-      
-      {
-        $lookup:
-          {
-            from: 'hardwares',
-            let: { recruitmentThreadsHardwareIDsArr: '$hardwareIDsArr' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
-                      { $eq: ['$language', language] },
-                      { $eq: ['$country', country] },
-                      { $in: ['$hardwareID', '$$recruitmentThreadsHardwareIDsArr'] }
-                    ]
-                  },
-                }
-              },
-              { $project:
-                {
-                  _id: 0,
-                  hardwareID: 1,
-                  name: 1,
-                }
-              }
-            ],
-            as: 'hardwaresArr'
-          }
-      },
-      
-      
-      // --------------------------------------------------
       //   ids
       // --------------------------------------------------
       
@@ -1178,16 +1696,16 @@ const findOneForEdit = async ({
           {
             from: 'ids',
             let: {
-              recruitmentThreadsIDs_idArr: '$ids_idsArr',
-              recruitmentThreadsUsers_id: '$users_id',
+              letUsers_id: '$users_id',
+              letIDs_idArr: '$ids_idsArr',
             },
             pipeline: [
               { $match:
                 { $expr:
                   { $and:
                     [
-                      { $eq: ['$users_id', '$$recruitmentThreadsUsers_id'] },
-                      { $in: ['$_id', '$$recruitmentThreadsIDs_idArr'] }
+                      { $eq: ['$users_id', '$$letUsers_id'] },
+                      { $in: ['$_id', '$$letIDs_idArr'] }
                     ]
                   },
                 }
@@ -1202,7 +1720,7 @@ const findOneForEdit = async ({
                 $lookup:
                   {
                     from: 'games',
-                    let: { idsGameCommunities_id: '$gameCommunities_id' },
+                    let: { letGameCommunities_id: '$gameCommunities_id' },
                     pipeline: [
                       { $match:
                         { $expr:
@@ -1210,7 +1728,7 @@ const findOneForEdit = async ({
                             [
                               { $eq: ['$language', language] },
                               { $eq: ['$country', country] },
-                              { $eq: ['$gameCommunities_id', '$$idsGameCommunities_id'] }
+                              { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
                             ]
                           },
                         }
@@ -1225,11 +1743,11 @@ const findOneForEdit = async ({
                         $lookup:
                           {
                             from: 'images-and-videos',
-                            let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                            let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
                             pipeline: [
                               { $match:
                                 { $expr:
-                                  { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
+                                  { $eq: ['$_id', '$$letImagesAndVideosThumbnail_id'] },
                                 }
                               },
                               { $project:
@@ -1294,16 +1812,8 @@ const findOneForEdit = async ({
         {
           createdDate: 0,
           imagesAndVideos_id: 0,
-          hardwareIDsArr: 0,
           ids_idsArr: 0,
-          publicCommentsUsers_idsArr: 0,
-          publicApprovalUsers_idsArrr: 0,
-          close: 0,
           webPushSubscriptionObj: 0,
-          comments: 0,
-          replies: 0,
-          images: 0,
-          videos: 0,
           ip: 0,
           userAgent: 0,
           __v: 0,
@@ -1320,8 +1830,8 @@ const findOneForEdit = async ({
     //   配列が空の場合は処理停止
     // --------------------------------------------------
     
-    if (docRecruitmentThreadsArr.length === 0) {
-      throw new CustomError({ level: 'error', errorsArr: [{ code: 'acvBaS9ri', messageID: 'cvS0qSAlE' }] });
+    if (docRecruitmentCommentsArr.length === 0) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'T-kp_548w', messageID: 'cvS0qSAlE' }] });
     }
     
     
@@ -1334,15 +1844,15 @@ const findOneForEdit = async ({
     const editable = verifyAuthority({
       
       req,
-      users_id: lodashGet(docRecruitmentThreadsArr, [0, 'users_id'], ''),
+      users_id: lodashGet(docRecruitmentCommentsArr, [0, 'users_id'], ''),
       loginUsers_id,
-      ISO8601: lodashGet(docRecruitmentThreadsArr, [0, 'createdDate'], ''),
-      _id: lodashGet(docRecruitmentThreadsArr, [0, '_id'], '')
+      ISO8601: lodashGet(docRecruitmentCommentsArr, [0, 'createdDate'], ''),
+      _id: lodashGet(docRecruitmentCommentsArr, [0, '_id'], '')
       
     });
     
     if (!editable) {
-      throw new CustomError({ level: 'error', errorsArr: [{ code: 'ccO1brrau', messageID: 'DSRlEoL29' }] });
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'qWgemV6ra', messageID: 'DSRlEoL29' }] });
     }
     
     
@@ -1352,7 +1862,7 @@ const findOneForEdit = async ({
     //   Format
     // --------------------------------------------------
     
-    const formattedObj = docRecruitmentThreadsArr[0];
+    const formattedObj = docRecruitmentCommentsArr[0];
     
     
     // --------------------------------------------------
@@ -1439,19 +1949,6 @@ const findOneForEdit = async ({
     delete returnObj.publicIDsArr;
     delete returnObj.publicInformationsArr;
     
-    // delete returnObj.hardwareIDsArr;
-    // delete returnObj.ids_idsArr;
-    // delete returnObj.publicCommentsUsers_idsArr;
-    // delete returnObj.publicApprovalUsers_idsArrr;
-    // delete returnObj.close;
-    // delete returnObj.webPushSubscriptionObj;
-    // delete returnObj.comments;
-    // delete returnObj.replies;
-    // delete returnObj.images;
-    // delete returnObj.videos;
-    // delete returnObj.ip;
-    // delete returnObj.userAgent;
-    
     
     
     
@@ -1461,17 +1958,17 @@ const findOneForEdit = async ({
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/@database/recruitment-threads/model.js - findOneForEdit
+    //   /app/@database/recruitment-comments/model.js - findOneForEdit
     // `);
     
     // console.log(chalk`
-    //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+    //   recruitmentComments_id: {green ${recruitmentComments_id}}
     //   editable: {green ${editable} / ${typeof editable}}
     // `);
     
     // console.log(`
-    //   ----- docRecruitmentThreadsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(docRecruitmentThreadsArr)), { colors: true, depth: null })}\n
+    //   ----- docRecruitmentCommentsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docRecruitmentCommentsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -1504,24 +2001,29 @@ const findOneForEdit = async ({
 
 
 
+
 /**
-* Transaction 挿入 / 更新する
-* スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
-* 
-* @param {Object} recruitmentThreadsConditionObj - DB recruitment-threads 検索条件
-* @param {Object} recruitmentThreadsSaveObj - DB recruitment-threads 保存データ
-* @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
-* @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
-* @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
-* @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
-* @param {Object} usersConditionObj - DB users 検索条件
-* @param {Object} usersSaveObj - DB users 保存データ
-* @return {Object} 
-*/
+ * Transaction 挿入 / 更新する
+ * スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
+ * 
+ * @param {Object} recruitmentThreadsConditionObj - DB recruitment-threads 検索条件
+ * @param {Object} recruitmentThreadsSaveObj - DB recruitment-threads 保存データ
+ * @param {Object} recruitmentCommentsConditionObj - DB recruitment-comments 検索条件
+ * @param {Object} recruitmentCommentsSaveObj - DB recruitment-comments 保存データ
+ * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
+ * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
+ * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
+ * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
+ * @param {Object} usersConditionObj - DB users 検索条件
+ * @param {Object} usersSaveObj - DB users 保存データ
+ * @return {Object} 
+ */
 const transactionForUpsert = async ({
   
   recruitmentThreadsConditionObj,
   recruitmentThreadsSaveObj,
+  recruitmentCommentsConditionObj,
+  recruitmentCommentsSaveObj,
   imagesAndVideosConditionObj = {},
   imagesAndVideosSaveObj = {},
   gameCommunitiesConditionObj = {},
@@ -1563,12 +2065,18 @@ const transactionForUpsert = async ({
     
     
     
+    // ---------------------------------------------
+    //   - recruitment-comments
+    // ---------------------------------------------
+    
+    await Schema.updateOne(recruitmentCommentsConditionObj, recruitmentCommentsSaveObj, { session, upsert: true });
+    
     
     // ---------------------------------------------
     //   - recruitment-threads
     // ---------------------------------------------
     
-    await Schema.updateOne(recruitmentThreadsConditionObj, recruitmentThreadsSaveObj, { session, upsert: true });
+    await SchemaRecruitmentThreads.updateOne(recruitmentThreadsConditionObj, recruitmentThreadsSaveObj, { session, upsert: true });
     
     
     // ---------------------------------------------
@@ -1643,7 +2151,7 @@ const transactionForUpsert = async ({
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/@database/recruitment-threads/model.js - transactionForUpsert
+    //   /app/@database/recruitment-comments/model.js - transactionForUpsert
     // `);
     
     // console.log(`
@@ -1655,6 +2163,18 @@ const transactionForUpsert = async ({
     // console.log(`
     //   ----- recruitmentThreadsSaveObj -----\n
     //   ${util.inspect(recruitmentThreadsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- recruitmentCommentsConditionObj -----\n
+    //   ${util.inspect(recruitmentCommentsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- recruitmentCommentsSaveObj -----\n
+    //   ${util.inspect(recruitmentCommentsSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -1738,203 +2258,6 @@ const transactionForUpsert = async ({
 
 
 
-// /**
-// * Transaction スレッドを削除する
-// * スレッド、コメント、返信、画像＆動画を削除して、ユーザーコミュニティを更新する
-// * @param {Object} forumRepliesConditionObj - DB forum-comments 検索条件
-// * @param {Object} forumCommentsConditionObj - DB forum-comments 検索条件
-// * @param {Object} forumThreadsConditionObj - DB forum-threads 検索条件
-// * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
-// * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
-// * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
-// * @param {Object} userCommunitiesConditionObj - DB user-communities 検索条件
-// * @param {Object} userCommunitiesSaveObj - DB user-communities 保存データ
-// * @return {Object} 
-// */
-// const transactionForDeleteThread = async ({
-  
-//   forumRepliesConditionObj,
-//   forumCommentsConditionObj,
-//   forumThreadsConditionObj,
-//   imagesAndVideosConditionObj = {},
-//   gameCommunitiesConditionObj = {},
-//   gameCommunitiesSaveObj = {},
-//   userCommunitiesConditionObj = {},
-//   userCommunitiesSaveObj = {},
-  
-// }) => {
-  
-  
-//   // --------------------------------------------------
-//   //   Property
-//   // --------------------------------------------------
-  
-//   let returnObj = {};
-  
-  
-//   // --------------------------------------------------
-//   //   Transaction / Session
-//   // --------------------------------------------------
-  
-//   const session = await Schema.startSession();
-  
-  
-  
-  
-//   // --------------------------------------------------
-//   //   Database
-//   // --------------------------------------------------
-  
-//   try {
-    
-    
-//     // --------------------------------------------------
-//     //   Transaction / Start
-//     // --------------------------------------------------
-    
-//     await session.startTransaction();
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   - forum-comments / Comments & Replies / deleteMany
-//     // --------------------------------------------------
-    
-//     await SchemaForumComments.deleteMany(forumRepliesConditionObj, { session });
-//     await SchemaForumComments.deleteMany(forumCommentsConditionObj, { session });
-    
-    
-//     // --------------------------------------------------
-//     //   - forum-threads / deleteOne
-//     // --------------------------------------------------
-    
-//     await Schema.deleteOne(forumThreadsConditionObj, { session });
-    
-    
-//     // ---------------------------------------------
-//     //   - images-and-videos
-//     // ---------------------------------------------
-    
-//     if (Object.keys(imagesAndVideosConditionObj).length !== 0) {
-//       await SchemaImagesAndVideos.deleteMany(imagesAndVideosConditionObj, { session });
-//     }
-    
-    
-//     // ---------------------------------------------
-//     //   - game-communities
-//     // ---------------------------------------------
-    
-//     if (Object.keys(gameCommunitiesConditionObj).length !== 0 && Object.keys(gameCommunitiesSaveObj).length !== 0) {
-//       await SchemaGameCommunities.updateOne(gameCommunitiesConditionObj, gameCommunitiesSaveObj, { session });
-//     }
-    
-    
-//     // ---------------------------------------------
-//     //   - user-communities
-//     // ---------------------------------------------
-    
-//     if (Object.keys(userCommunitiesConditionObj).length !== 0 && Object.keys(userCommunitiesSaveObj).length !== 0) {
-//       await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
-//     }
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   Transaction / Commit
-//     // --------------------------------------------------
-    
-//     await session.commitTransaction();
-//     // console.log('--------コミット-----------');
-    
-//     session.endSession();
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   console.log
-//     // --------------------------------------------------
-    
-//     // console.log(`
-//     //   ----- forumRepliesConditionObj -----\n
-//     //   ${util.inspect(forumRepliesConditionObj, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- forumCommentsConditionObj -----\n
-//     //   ${util.inspect(forumCommentsConditionObj, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- forumThreadsConditionObj -----\n
-//     //   ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- imagesAndVideosConditionObj -----\n
-//     //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- userCommunitiesConditionObj -----\n
-//     //   ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- userCommunitiesSaveObj -----\n
-//     //   ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- returnObj -----\n
-//     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   Return
-//     // --------------------------------------------------
-    
-//     return returnObj;
-    
-    
-//   } catch (errorObj) {
-    
-//     // console.log(`
-//     //   ----- errorObj -----\n
-//     //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-    
-//     // --------------------------------------------------
-//     //   Transaction / Rollback
-//     // --------------------------------------------------
-    
-//     await session.abortTransaction();
-//     // console.log('--------ロールバック-----------');
-    
-//     session.endSession();
-    
-    
-//     throw errorObj;
-    
-//   }
-  
-// };
-
-
 
 
 // --------------------------------------------------
@@ -1950,10 +2273,9 @@ module.exports = {
   insertMany,
   deleteMany,
   
-  findRecruitments,
+  findReplies,
   findOneForEdit,
-  // findForDeleteThread,
+  
   transactionForUpsert,
-  // transactionForDeleteThread,
   
 };

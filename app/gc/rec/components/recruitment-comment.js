@@ -977,7 +977,7 @@ export default injectIntl(class extends React.Component {
                   classes={{
                     input: classes.input
                   }}
-                  name="forum-comments-pagination"
+                  name="recruitment-comments-pagination"
                   id="outlined-rows-per-page"
                 />
               }

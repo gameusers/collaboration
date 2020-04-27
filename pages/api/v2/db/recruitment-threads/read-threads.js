@@ -160,7 +160,7 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Forum Threads
+    //   DB find / Recruitments
     // --------------------------------------------------
     
     const recruitmentObj = await ModelRecruitmentThreads.findRecruitments({

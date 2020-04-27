@@ -780,6 +780,7 @@ export default async (req, res) => {
       delete recruitmentThreadsSaveObj.gameCommunities_id;
       delete recruitmentThreadsSaveObj.users_id;
       delete recruitmentThreadsSaveObj.comments;
+      delete recruitmentThreadsSaveObj.replies;
       delete recruitmentThreadsSaveObj.images;
       delete recruitmentThreadsSaveObj.videos;
       
@@ -829,56 +830,45 @@ export default async (req, res) => {
     
     
     
-    // // --------------------------------------------------
-    // //   DB find / Forum Threads List
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   DB find / Recruitments
+    // --------------------------------------------------
     
-    // returnObj.recruitmentThreadsForListObj = await ModelForumThreads.findForThreadsList({
+    const recruitmentObj = await ModelRecruitmentThreads.findRecruitments({
       
-    //   localeObj,
-    //   loginUsers_id,
-    //   gameCommunities_id,
-    //   page: 1,
-    //   limit: threadListLimit,
+      req,
+      localeObj,
+      loginUsers_id,
+      gameCommunities_id,
+      threadPage: 1,
+      threadLimit,
+      commentPage: 1,
+      commentLimit,
+      replyPage: 1,
+      replyLimit,
       
-    // });
+    });
+    
+    returnObj.recruitmentThreadsObj = recruitmentObj.recruitmentThreadsObj;
+    returnObj.recruitmentCommentsObj = recruitmentObj.recruitmentCommentsObj;
+    returnObj.recruitmentRepliesObj = recruitmentObj.recruitmentRepliesObj;
     
     
-    // // --------------------------------------------------
-    // //   DB find / Forum Threads
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   updatedDateObj
+    // --------------------------------------------------
     
-    // const forumObj = await ModelForumThreads.findForForum({
+    const gameCommunityArr = await ModelGameCommunities.find({
       
-    //   req,
-    //   localeObj,
-    //   loginUsers_id,
-    //   gameCommunities_id,
-    //   threadPage: 1,
-    //   threadLimit,
-    //   commentPage: 1,
-    //   commentLimit,
-    //   replyPage: 1,
-    //   replyLimit,
+      conditionObj: {
+        _id: gameCommunities_id
+      }
       
-    // });
+    });
     
-    // returnObj.recruitmentThreadsObj = forumObj.recruitmentThreadsObj;
-    // returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    // returnObj.forumRepliesObj = forumObj.forumRepliesObj;
+    const updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
     
-    
-    // // --------------------------------------------------
-    // //   DB find / Game Communities / 最新の更新日時情報を取得する
-    // // --------------------------------------------------
-    
-    // const gameCommunityArr = await ModelGameCommunities.find({
-    //   conditionObj: {
-    //     _id: gameCommunities_id
-    //   }
-    // });
-    
-    // returnObj.updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
+    returnObj.updatedDateObj = updatedDateObj;
     
     
     

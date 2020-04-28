@@ -22,7 +22,7 @@ import lodashSet from 'lodash/set';
 //   Model
 // ---------------------------------------------
 
-import ModelRecruitmentComments from '../../../../../app/@database/recruitment-comments/model.js';
+import ModelRecruitmentReplies from '../../../../../app/@database/recruitment-replies/model.js';
 
 
 // ---------------------------------------------
@@ -43,7 +43,7 @@ import { locale } from '../../../../../app/@locales/locale';
 
 
 // --------------------------------------------------
-//   endpointID: 6wFrxRUgm
+//   endpointID: RLzqENxO-
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -94,12 +94,12 @@ export default async (req, res) => {
     
     const { 
       
-      recruitmentComments_id,
+      recruitmentReplies_id,
       
     } = bodyObj;
     
     
-    lodashSet(requestParametersObj, ['recruitmentComments_id'], recruitmentComments_id);
+    lodashSet(requestParametersObj, ['recruitmentReplies_id'], recruitmentReplies_id);
     
     
     
@@ -114,15 +114,15 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Recruitment Comments / 権限チェック含む
+    //   DB find / Recruitment Replies / 権限チェック含む
     // --------------------------------------------------
     
-    const returnObj = await ModelRecruitmentComments.findOneForEdit({
+    const returnObj = await ModelRecruitmentReplies.findOneForEdit({
       
       req,
       localeObj,
       loginUsers_id,
-      recruitmentComments_id,
+      recruitmentReplies_id,
       
     });
     
@@ -135,11 +135,11 @@ export default async (req, res) => {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/api/v2/db/recruitment-comments/get-edit-data.js
+    //   /pages/api/v2/db/recruitment-replies/get-edit-data.js
     // `);
     
     // console.log(chalk`
-    //   recruitmentComments_id: {green ${recruitmentComments_id}}
+    //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
     // `);
     
     // console.log(`
@@ -168,7 +168,7 @@ export default async (req, res) => {
     const resultErrorObj = returnErrorsArr({
       
       errorObj,
-      endpointID: '6wFrxRUgm',
+      endpointID: 'RLzqENxO-',
       users_id: loginUsers_id,
       ip,
       userAgent,

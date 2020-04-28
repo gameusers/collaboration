@@ -367,7 +367,7 @@ export default async (req, res) => {
     
     if (loginUsers_id) {
       
-      name = '',
+      name = '';
       
       // Validationで有効なIDだけが抽出される
       ids_idsArr = lodashGet(validatedIDsArrObj, ['valueArr'], []);

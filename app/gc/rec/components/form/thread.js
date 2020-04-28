@@ -652,7 +652,7 @@ export default injectIntl(class extends React.Component {
               color="primary"
               disabled={buttonDisabled}
             >
-              {recruitmentThreads_id ? '募集を編集する' : '募集を投稿する'}
+              {recruitmentThreads_id ? '編集する' : '投稿する'}
             </Button>
             
             

@@ -30,16 +30,8 @@ import lodashGet from 'lodash/get';
 //   Material UI
 // ---------------------------------------------
 
-import { withStyles } from '@material-ui/core/styles';
-
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-// import InputLabel from '@material-ui/core/InputLabel';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import FormControl from '@material-ui/core/FormControl';
-import Checkbox from '@material-ui/core/Checkbox';
-// import MenuItem from '@material-ui/core/MenuItem';
-// import Select from '@material-ui/core/Select';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -48,46 +40,24 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 // ---------------------------------------------
+//   Material UI / Icon
+// ---------------------------------------------
+
+import IconReply from '@material-ui/icons/Reply';
+
+
+// ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-import { validationRecruitmentThreadsName } from '../../../../@database/recruitment-threads/validations/name';
+import { validationHandleName } from '../../../../@validations/name';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import FormIDsInformations from '../form/ids-informations';
 import ImageAndVideoForm from '../../../../common/image-and-video/components/form';
-
-
-
-
-// --------------------------------------------------
-//   Emotion
-//   https://emotion.sh/docs/composition
-// --------------------------------------------------
-
-const cssBox = css`
-  border-top: 1px dashed #848484;
-  margin: 24px 0 0 0;
-  padding: 24px 0 0 0;
-`;
-
-
-// --------------------------------------------------
-//   Material UI Style Overrides
-//   https://material-ui.com/styles/basics/
-// --------------------------------------------------
-
-const stylesObj = {
-  
-  label: {
-    fontSize: 14
-  },
-  
-};
 
 
 
@@ -96,7 +66,6 @@ const stylesObj = {
 //   Class
 // --------------------------------------------------
 
-@withStyles(stylesObj)
 @inject('stores', 'storeGcRecruitment')
 @observer
 export default injectIntl(class extends React.Component {
@@ -142,7 +111,8 @@ export default injectIntl(class extends React.Component {
       gameCommunities_id,
       recruitmentThreads_id,
       recruitmentComments_id,
-      publicSettingThread,
+      recruitmentReplies_id,
+      replyToRecruitmentReplies_id,
       
     } = this.props;
     
@@ -159,17 +129,16 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Forum
+    //   storeGcRecruitment
     // --------------------------------------------------
     
     const {
       
       dataObj,
       handleEdit,
-      handleSubmitRecruitmentComment,
-      handleGetWebPushSubscribeObj,
-      handleDeleteRecruitmentComment,
-      handleHideFormRecruitmentComment,
+      handleSubmitRecruitmentReply,
+      handleDeleteRecruitmentReply,
+      handleHideFormRecruitmentReply,
       
     } = storeGcRecruitment;
     
@@ -180,25 +149,61 @@ export default injectIntl(class extends React.Component {
     
     const name = lodashGet(dataObj, [...pathArr, 'name'], '');
     const comment = lodashGet(dataObj, [...pathArr, 'comment'], '');
-    const webPush = lodashGet(dataObj, [...pathArr, 'webPush'], false);
     
     
     // --------------------------------------------------
     //   Validations
     // --------------------------------------------------
     
-    const validationRecruitmentThreadsNameObj = validationRecruitmentThreadsName({ value: name });
+    const validationHandleNameObj = validationHandleName({ value: name });
     
     
     // --------------------------------------------------
     //   Limit
     // --------------------------------------------------
     
-    const limit = parseInt(process.env.RECRUITMENT_COMMENT_IMAGES_AND_VIDEOS_LIMIT, 10);
+    const limit = parseInt(process.env.RECRUITMENT_REPLY_IMAGES_AND_VIDEOS_LIMIT, 10);
     
     
     // --------------------------------------------------
-    //   コメントを削除するか尋ねるダイアログを表示するための変数
+    //   Reply to
+    // --------------------------------------------------
+    
+    const repliesDataObj = lodashGet(dataObj, [gameCommunities_id, 'recruitmentRepliesObj', 'dataObj'], {});
+    
+    // console.log(`
+    //   ----- repliesDataObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(repliesDataObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    let replyToName = '';
+    let replyTo = '';
+    
+    if (recruitmentReplies_id) {
+      
+      replyToName = lodashGet(repliesDataObj, [recruitmentReplies_id, 'replyToName'], '');
+      
+    } else if (replyToRecruitmentReplies_id) {
+      
+      const nonLoginUsersName = lodashGet(repliesDataObj, [replyToRecruitmentReplies_id, 'name'], '');
+      const loginUsersName = lodashGet(repliesDataObj, [replyToRecruitmentReplies_id, 'cardPlayersObj', 'name'], '');
+      
+      replyToName = loginUsersName || nonLoginUsersName;
+      
+      if (!replyToName) {
+        replyToName = 'ななしさん';
+      }
+      
+    }
+    
+    if (replyToName) {
+      replyTo = `${replyToName} | ${replyToRecruitmentReplies_id} への返信`;
+    }
+    
+    
+    // --------------------------------------------------
+    //   返信を削除するか尋ねるダイアログを表示するための変数
     // --------------------------------------------------
     
     const showDeleteDialog = lodashGet(dataObj, [...pathArr, 'showDeleteDialog'], false);
@@ -226,7 +231,7 @@ export default injectIntl(class extends React.Component {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/gc/rec/components/form/comment.js
+    //   /app/gc/rec/components/form/reply.js
     // `);
     
     // console.log(`
@@ -238,13 +243,15 @@ export default injectIntl(class extends React.Component {
     // console.log(chalk`
     //   gameCommunities_id: {green ${gameCommunities_id}}
     //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+    //   recruitmentComments_id: {green ${recruitmentComments_id}}
+    //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
     //   login: {green ${login}}
-    //   formName: {green ${formName}}
+    //   elementName: {green ${elementName}}
     // `);
     
     // console.log(`
-    //   ----- validationRecruitmentThreadsID1Obj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(validationRecruitmentThreadsID1Obj)), { colors: true, depth: null })}\n
+    //   ----- validationHandleNameObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(validationHandleNameObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -257,45 +264,56 @@ export default injectIntl(class extends React.Component {
     
     return (
       <Element
+        css={css`
+          margin: ${recruitmentReplies_id ? '0 0 24px 0' : '0'};
+        `}
         name={elementName}
       >
         
         
         <form
           name={elementName}
-          onSubmit={(eventObj) => handleSubmitRecruitmentComment({
+          onSubmit={(eventObj) => handleSubmitRecruitmentReply({
             eventObj,
             pathArr,
             gameCommunities_id,
             recruitmentThreads_id,
             recruitmentComments_id,
+            recruitmentReplies_id,
+            replyToRecruitmentReplies_id,
           })}
         >
           
           
-          <h3
-            css={css`
-              font-weight: bold;
-              margin: 0 0 12px 0;
-            `}
-          >
-            コメント投稿フォーム
-          </h3>
-          
-          
-          <p
-            css={css`
-              margin: 0 0 14px 0;
-            `}
-          >
-            こちらのフォームで募集にコメントが行えます。ログインして投稿するとコメントをいつでも編集できるようになり、ID・情報の公開相手を選ぶことができるようになります。
-          </p>
-          
-          
-          
-          
           {/* Title & Handle Name & Comment */}
-          <div css={cssBox}>
+          <div css={css`
+            border-top: 1px dashed #848484;
+            margin: 24px 0 0 0;
+            padding: 24px 0 0 0;
+          `}>
+            
+            
+            {/* Reply To */}
+            {replyTo &&
+              <div
+                css={css`
+                  display: flex;
+                  flex-flow: row nowrap;
+                  margin: 0 0 12px 0;
+                  color: #7401DF;
+                `}
+              >
+                <IconReply
+                  css={css`
+                    && {
+                      font-size: 16px;
+                      margin: 4px 4px 0 0;
+                    }
+                  `}
+                />
+                <p>{replyTo}</p>
+              </div>
+            }
             
             
             {/* Name */}
@@ -305,18 +323,18 @@ export default injectIntl(class extends React.Component {
                   && {
                     width: 100%;
                     max-width: 500px;
-                    ${recruitmentThreads_id && `margin-top: 4px;`}
+                    margin-top: ${replyTo ? '4px' : '0'};
                   }
                 `}
                 id="threadName"
                 label="ハンドルネーム"
-                value={validationRecruitmentThreadsNameObj.value}
+                value={validationHandleNameObj.value}
                 onChange={(eventObj) => handleEdit({
                   pathArr: [...pathArr, 'name'],
                   value: eventObj.target.value
                 })}
-                error={validationRecruitmentThreadsNameObj.error}
-                helperText={intl.formatMessage({ id: validationRecruitmentThreadsNameObj.messageID }, { numberOfCharacters: validationRecruitmentThreadsNameObj.numberOfCharacters })}
+                error={validationHandleNameObj.error}
+                helperText={intl.formatMessage({ id: validationHandleNameObj.messageID }, { numberOfCharacters: validationHandleNameObj.numberOfCharacters })}
                 margin="normal"
                 inputProps={{
                   maxLength: 50,
@@ -330,7 +348,7 @@ export default injectIntl(class extends React.Component {
             {/* Comment */}
             <div
               css={css`
-                margin: 12px 0 0 0;
+                margin: ${login ? '0' : '12px 0 0 0'};
               `}
             >
               
@@ -351,7 +369,7 @@ export default injectIntl(class extends React.Component {
                   }
                 `}
                 rows={5}
-                placeholder="コメントを入力してください。"
+                placeholder="返信を入力してください。"
                 value={comment}
                 onChange={(eventObj) => handleEdit({
                   pathArr: [...pathArr, 'comment'],
@@ -376,8 +394,8 @@ export default injectIntl(class extends React.Component {
               <ImageAndVideoForm
                 pathArr={pathArr}
                 type="recruitment"
-                descriptionImage="コメントに表示する画像をアップロードできます。"
-                descriptionVideo="コメントに表示する動画を登録できます。"
+                descriptionImage="返信に表示する画像をアップロードできます。"
+                descriptionVideo="返信に表示する動画を登録できます。"
                 showImageCaption={true}
                 limit={limit}
               />
@@ -390,91 +408,13 @@ export default injectIntl(class extends React.Component {
           
           
           
-          {/* ID & Other Information */}
-          <div css={cssBox}>
-            
-            <FormIDsInformations
-              type="comment"
-              pathArr={pathArr}
-              gameCommunities_id={gameCommunities_id}
-              recruitmentThreads_id={recruitmentThreads_id}
-              recruitmentComments_id={recruitmentComments_id}
-              publicSettingThread={publicSettingThread}
-            />
-            
-          </div>
-          
-          
-          
-          
-          {/* プッシュ通知 */}
-          <div css={cssBox}>
-            
-            <h3
-              css={css`
-                font-weight: bold;
-                margin: 0 0 2px 0;
-              `}
-            >
-              プッシュ通知
-            </h3>
-            
-            <p
-              css={css`
-                margin: 0 0 12px 0;
-              `}
-            >
-              ブラウザで通知を受け取れるプッシュ通知の設定を行えます。プッシュ通知を許可すると、コメントに返信があったときに通知を受け取れるのでおすすめです。
-            </p>
-            
-            <p
-              css={css`
-                margin: 0 0 12px 0;
-              `}
-            >
-              プッシュ通知に対応しているブラウザは Chrome、Edge、Firefox、Opera です。
-            </p>
-            
-            <p
-              css={css`
-                margin: 0 0 12px 0;
-              `}
-            >
-              過去にGame Usersからのプッシュ通知をブロックしたことがある方は、ブロックを解除しなければ通知を受けることができません。通知を受け取りたい方はブロックの解除方法を調べてから実行してください。
-            </p>
-            
-            
-            <div>
-              <FormControlLabel
-                classes={{
-                  label: classes.label
-                }}
-                control={
-                  <Checkbox
-                    checked={webPush}
-                    onChange={(eventObj) => handleGetWebPushSubscribeObj({
-                      pathArr,
-                      checked: eventObj.target.checked
-                    })}
-                  />
-                }
-                label="プッシュ通知を許可する"
-              />
-            </div>
-            
-          </div>
-          
-          
-          
-          
           {/* Buttons */}
           <div
             css={css`
               display: flex;
               flex-flow: row nowrap;
-              border-top: 1px dashed #848484;
               margin: 24px 0 0 0;
-              padding: 24px 0 0 0;
+              // padding: 24px 0 0 0;
             `}
           >
             
@@ -486,12 +426,12 @@ export default injectIntl(class extends React.Component {
               color="primary"
               disabled={buttonDisabled}
             >
-              {recruitmentComments_id ? '編集する' : '投稿する'}
+              {recruitmentReplies_id ? '編集する' : '投稿する'}
             </Button>
             
             
             {/* Delete */}
-            {recruitmentComments_id &&
+            {recruitmentReplies_id &&
               <div
                 css={css`
                   margin: 0 0 0 24px;
@@ -521,10 +461,11 @@ export default injectIntl(class extends React.Component {
               <Button
                 variant="outlined"
                 color="secondary"
-                onClick={() => handleHideFormRecruitmentComment({
+                onClick={() => handleHideFormRecruitmentReply({
                   pathArr,
-                  recruitmentThreads_id,
                   recruitmentComments_id,
+                  recruitmentReplies_id,
+                  replyToRecruitmentReplies_id,
                 })}
                 disabled={buttonDisabled}
               >
@@ -537,7 +478,7 @@ export default injectIntl(class extends React.Component {
           
           
           
-          {/* コメントを削除するか尋ねるダイアログ */}
+          {/* 返信を削除するか尋ねるダイアログ */}
           <Dialog
             open={showDeleteDialog}
             onClose={() => handleEdit({
@@ -548,11 +489,11 @@ export default injectIntl(class extends React.Component {
             aria-describedby="alert-dialog-description"
           >
             
-            <DialogTitle id="alert-dialog-title">コメント削除</DialogTitle>
+            <DialogTitle id="alert-dialog-title">返信削除</DialogTitle>
             
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                コメントを削除しますか？
+                返信を削除しますか？
               </DialogContentText>
             </DialogContent>
             
@@ -563,7 +504,7 @@ export default injectIntl(class extends React.Component {
                 `}
               >
                 <Button
-                  onClick={() => handleDeleteRecruitmentComment({
+                  onClick={() => handleDeleteRecruitmentReply({
                     pathArr,
                     gameCommunities_id,
                     recruitmentThreads_id,

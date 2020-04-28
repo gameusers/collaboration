@@ -48,19 +48,19 @@ import { setAuthority } from '../../../../../app/@modules/authority';
 
 import { validationIP } from '../../../../../app/@validations/ip';
 import { validationBoolean } from '../../../../../app/@validations/boolean';
+import { validationHandleName } from '../../../../../app/@validations/name';
 
 import { validationGameCommunities_idServer } from '../../../../../app/@database/game-communities/validations/_id-server';
-// import { validationHardwareIDsArrServer } from '../../../../../app/@database/hardwares/validations/id-server';
 import { validationIDsArrServer } from '../../../../../app/@database/ids/validations/_id-server';
-import { validationUsersWebPushSubscriptionObjEndpointServer, validationUsersWebPushSubscriptionObjKeysP256dhServer, validationUsersWebPushSubscriptionObjKeysAuthServer } from '../../../../../app/@database/users/validations/web-push-server';
 
-// import { validationRecruitmentThreadsCategory } from '../../../../../app/@database/recruitment-threads/validations/category';
-// import { validationRecruitmentThreadsTitle } from '../../../../../app/@database/recruitment-threads/validations/title';
-import { validationRecruitmentThreadsName } from '../../../../../app/@database/recruitment-threads/validations/name';
+// import { validationRecruitmentThreadsName } from '../../../../../app/@database/recruitment-threads/validations/name';
 import { validationRecruitmentThreadsComment } from '../../../../../app/@database/recruitment-threads/validations/comment';
-import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } from '../../../../../app/@database/recruitment-threads/validations/ids-informations';
-// import { validationRecruitmentThreadsDeadlineDate } from '../../../../../app/@database/recruitment-threads/validations/deadline';
+import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID } from '../../../../../app/@database/recruitment-threads/validations/ids-informations';
 import { validationRecruitmentThreadsLimit } from '../../../../../app/@database/recruitment-threads/validations/limit';
+import { validationRecruitmentCommentsLimit } from '../../../../../app/@database/recruitment-comments/validations/limit';
+import { validationRecruitmentRepliesLimit } from '../../../../../app/@database/recruitment-replies/validations/limit';
+
+
 
 
 // ---------------------------------------------
@@ -73,7 +73,7 @@ import { locale } from '../../../../../app/@locales/locale';
 
 
 // --------------------------------------------------
-//   endpointID: cEP23RNNl
+//   endpointID: Xp-NFh_gZ
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -128,19 +128,11 @@ export default async (req, res) => {
       gameCommunities_id,
       recruitmentThreads_id,
       recruitmentComments_id,
+      recruitmentReplies_id,
+      replyToRecruitmentReplies_id,
+      // name,
       comment,
       imagesAndVideosObj,
-      informationTitle1,
-      informationTitle2,
-      informationTitle3,
-      informationTitle4,
-      informationTitle5,
-      information1,
-      information2,
-      information3,
-      information4,
-      information5,
-      webPush,
       threadLimit,
       commentLimit,
       replyLimit,
@@ -151,15 +143,6 @@ export default async (req, res) => {
     let { 
       
       name,
-      idsArr,
-      platform1,
-      platform2,
-      platform3,
-      id1,
-      id2,
-      id3,
-      publicSetting,
-      webPushSubscriptionObj,
       
     } = bodyObj;
     
@@ -167,29 +150,11 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['recruitmentThreads_id'], recruitmentThreads_id);
     lodashSet(requestParametersObj, ['recruitmentComments_id'], recruitmentComments_id);
+    lodashSet(requestParametersObj, ['recruitmentReplies_id'], recruitmentReplies_id);
+    lodashSet(requestParametersObj, ['replyToRecruitmentReplies_id'], replyToRecruitmentReplies_id);
     lodashSet(requestParametersObj, ['name'], name);
     lodashSet(requestParametersObj, ['comment'], comment);
     lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
-    lodashSet(requestParametersObj, ['idsArr'], idsArr);
-    lodashSet(requestParametersObj, ['platform1'], platform1);
-    lodashSet(requestParametersObj, ['platform2'], platform2);
-    lodashSet(requestParametersObj, ['platform3'], platform3);
-    lodashSet(requestParametersObj, ['id1'], id1);
-    lodashSet(requestParametersObj, ['id2'], id2);
-    lodashSet(requestParametersObj, ['id3'], id3);
-    lodashSet(requestParametersObj, ['informationTitle1'], informationTitle1);
-    lodashSet(requestParametersObj, ['informationTitle2'], informationTitle2);
-    lodashSet(requestParametersObj, ['informationTitle3'], informationTitle3);
-    lodashSet(requestParametersObj, ['informationTitle4'], informationTitle4);
-    lodashSet(requestParametersObj, ['informationTitle5'], informationTitle5);
-    lodashSet(requestParametersObj, ['information1'], information1);
-    lodashSet(requestParametersObj, ['information2'], information2);
-    lodashSet(requestParametersObj, ['information3'], information3);
-    lodashSet(requestParametersObj, ['information4'], information4);
-    lodashSet(requestParametersObj, ['information5'], information5);
-    lodashSet(requestParametersObj, ['publicSetting'], publicSetting);
-    lodashSet(requestParametersObj, ['webPush'], webPush);
-    lodashSet(requestParametersObj, ['webPushSubscriptionObj'], {});
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
     lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
@@ -207,80 +172,26 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   webPushSubscriptionObj
-    // --------------------------------------------------
-    
-    const endpoint = lodashGet(webPushSubscriptionObj, ['endpoint'], '');
-    const p256dh = lodashGet(webPushSubscriptionObj, ['keys', 'p256dh'], '');
-    const auth = lodashGet(webPushSubscriptionObj, ['keys', 'auth'], '');
-    
-    
-    
-    
-    // --------------------------------------------------
     //   Validation
     // --------------------------------------------------
     
     await validationIP({ throwError: true, value: ip });
     
     await validationGameCommunities_idServer({ value: gameCommunities_id });
-    await validationRecruitmentThreadsName({ throwError: true, value: name });
+    await validationHandleName({ throwError: true, value: name });
     await validationRecruitmentThreadsComment({ throwError: true, value: comment });
     
-    await validationRecruitmentThreadsInformationTitle({ throwError: true, value: informationTitle1 });
-    await validationRecruitmentThreadsInformationTitle({ throwError: true, value: informationTitle2 });
-    await validationRecruitmentThreadsInformationTitle({ throwError: true, value: informationTitle3 });
-    await validationRecruitmentThreadsInformationTitle({ throwError: true, value: informationTitle4 });
-    await validationRecruitmentThreadsInformationTitle({ throwError: true, value: informationTitle5 });
-    
-    await validationRecruitmentThreadsInformation({ throwError: true, value: information1 });
-    await validationRecruitmentThreadsInformation({ throwError: true, value: information2 });
-    await validationRecruitmentThreadsInformation({ throwError: true, value: information3 });
-    await validationRecruitmentThreadsInformation({ throwError: true, value: information4 });
-    await validationRecruitmentThreadsInformation({ throwError: true, value: information5 });
-    
-    await validationRecruitmentThreadsPublicSetting({ throwError: true, value: publicSetting });
-    
-    await validationUsersWebPushSubscriptionObjEndpointServer({ value: endpoint });
-    await validationUsersWebPushSubscriptionObjKeysP256dhServer({ value: p256dh });
-    await validationUsersWebPushSubscriptionObjKeysAuthServer({ value: auth });
-    
-    await validationBoolean({ throwError: true, value: webPush });
-    
     await validationRecruitmentThreadsLimit({ throwError: true, required: true, value: threadLimit });
-    // await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
-    // await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
+    await validationRecruitmentCommentsLimit({ throwError: true, required: true, value: commentLimit });
+    await validationRecruitmentRepliesLimit({ throwError: true, required: true, value: replyLimit });
     
     
     
-    
-    // --------------------------------------------------
-    //   ID
-    // --------------------------------------------------
-    
-    let validatedIDsArrObj = {};
-    
-    if (loginUsers_id) {
-      
-      validatedIDsArrObj = await validationIDsArrServer({ valueArr: idsArr, loginUsers_id });
-      
-    } else {
-      
-      await validationRecruitmentThreadsPlatform({ throwError: true, value: platform1 });
-      await validationRecruitmentThreadsPlatform({ throwError: true, value: platform2 });
-      await validationRecruitmentThreadsPlatform({ throwError: true, value: platform3 });
-      
-      await validationRecruitmentThreadsID({ throwError: true, value: id1 });
-      await validationRecruitmentThreadsID({ throwError: true, value: id2 });
-      await validationRecruitmentThreadsID({ throwError: true, value: id3 });
-      
-    }
-    
-    
+    //////////////////////次ここから
     
     
     // --------------------------------------------------
-    //   スレッドが存在するかチェック
+    //   返信が存在するかチェック
     // --------------------------------------------------
     
     let oldImagesAndVideosObj = {};
@@ -367,17 +278,17 @@ export default async (req, res) => {
     
     if (loginUsers_id) {
       
-      name = '',
+      name = '';
       
       // Validationで有効なIDだけが抽出される
-      ids_idsArr = lodashGet(validatedIDsArrObj, ['valueArr'], []);
+      // ids_idsArr = lodashGet(validatedIDsArrObj, ['valueArr'], []);
       
-      platform1 = '';
-      platform2 = '';
-      platform3 = '';
-      id1 = '';
-      id2 = '';
-      id3 = '';
+      // platform1 = '';
+      // platform2 = '';
+      // platform3 = '';
+      // id1 = '';
+      // id2 = '';
+      // id3 = '';
       
       
     // --------------------------------------------------
@@ -386,121 +297,10 @@ export default async (req, res) => {
       
     } else {
       
-      ids_idsArr = [];
-      publicSetting = 1;
+      // ids_idsArr = [];
+      // publicSetting = 1;
       
     }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   ID / publicIDsArr
-    // --------------------------------------------------
-    
-    const publicIDsArr = [];
-    
-    if (platform1 && id1) {
-      
-      publicIDsArr.push({
-        _id: shortid.generate(),
-        platform: platform1,
-        id: id1,
-      });
-      
-    }
-    
-    if (platform2 && id2) {
-      
-      publicIDsArr.push({
-        _id: shortid.generate(),
-        platform: platform2,
-        id: id2,
-      });
-      
-    }
-    
-    if (platform3 && id3) {
-      
-      publicIDsArr.push({
-        _id: shortid.generate(),
-        platform: platform3,
-        id: id3,
-      });
-      
-    }
-    
-    
-    // --------------------------------------------------
-    //   情報 / publicInformationsArr
-    // --------------------------------------------------
-    
-    const publicInformationsArr = [];
-    
-    if (informationTitle1 && information1) {
-      
-      publicInformationsArr.push({
-        _id: shortid.generate(),
-        title: informationTitle1,
-        information: information1,
-      });
-      
-    }
-    
-    if (informationTitle2 && information2) {
-      
-      publicInformationsArr.push({
-        _id: shortid.generate(),
-        title: informationTitle2,
-        information: information2,
-      });
-      
-    }
-    
-    if (informationTitle3 && information3) {
-      
-      publicInformationsArr.push({
-        _id: shortid.generate(),
-        title: informationTitle3,
-        information: information3,
-      });
-      
-    }
-    
-    if (informationTitle4 && information4) {
-      
-      publicInformationsArr.push({
-        _id: shortid.generate(),
-        title: informationTitle4,
-        information: information4,
-      });
-      
-    }
-    
-    if (informationTitle5 && information5) {
-      
-      publicInformationsArr.push({
-        _id: shortid.generate(),
-        title: informationTitle5,
-        information: information5,
-      });
-      
-    }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   webPushSubscriptionObj
-    // --------------------------------------------------
-    
-    webPushSubscriptionObj = {
-      endpoint,
-      keys: {
-        p256dh,
-        auth,
-      }
-    };
     
     
     
@@ -921,7 +721,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'cEP23RNNl',
+      endpointID: 'Xp-NFh_gZ',
       users_id: loginUsers_id,
       ip,
       userAgent,

@@ -69,6 +69,7 @@ import User from '../../../common/user/components/user';
 import ImageAndVideo from '../../../common/image-and-video/components/image-and-video';
 
 import FormComment from './form/comment';
+import FormReply from './form/reply';
 import RecruitmentReply from './recruitment-reply';
 import Public from './public';
 import Notification from './notification';
@@ -300,9 +301,8 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const pathRecruitmentCommentArr = [recruitmentComments_id, 'recruitmentCommentObj'];
-      // const pathRecruitmentThreadEditFormArr = [recruitmentComments_id, 'recruitmentThreadEditFormObj'];
       const pathRecruitmentCommentEditFormArr = [recruitmentComments_id, 'recruitmentCommentEditFormObj'];
-      // const pathRecruitmentCommentEditFormArr = [recruitmentThreads_id, 'recruitmentCommentEditFormObj'];
+      const pathRecruitmentReplyNewFormArr = [recruitmentComments_id, 'recruitmentReplyNewForm'];
       
       
       // --------------------------------------------------
@@ -388,7 +388,7 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const showFormComment = lodashGet(dataObj, [...pathRecruitmentCommentEditFormArr, 'showFormComment'], false);
-      // const showFormReply = lodashGet(dataObj, [...pathRecruitmentCommentNewFormArr, 'showFormReply'], false);
+      const showFormReply = lodashGet(dataObj, [...pathRecruitmentReplyNewFormArr, 'showFormReply'], false);
       
       
       
@@ -735,10 +735,10 @@ export default injectIntl(class extends React.Component {
                         }
                       `}
                       variant="outlined"
-                      // onClick={() => handleEdit({
-                      //   pathArr: [recruitmentComments_id, 'formReplyObj', 'show'],
-                      //   value: !showFormReply
-                      // })}
+                      onClick={() => handleEdit({
+                        pathArr: [...pathRecruitmentReplyNewFormArr, 'showFormReply'],
+                        value: !showFormReply
+                      })}
                     >
                       <IconReply
                         css={css`
@@ -806,6 +806,17 @@ export default injectIntl(class extends React.Component {
                 </div>
                 
                 
+                
+                
+                {/* Reply - New Form */}
+                {showFormReply &&
+                  <FormReply
+                    pathArr={pathRecruitmentReplyNewFormArr}
+                    gameCommunities_id={gameCommunities_id}
+                    recruitmentThreads_id={recruitmentThreads_id}
+                    recruitmentComments_id={recruitmentComments_id}
+                  />
+                }
                 
                 
                 {/* Reply */}

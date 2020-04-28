@@ -68,7 +68,7 @@ import Paragraph from '../../../common/layout/components/paragraph';
 import User from '../../../common/user/components/user';
 import ImageAndVideo from '../../../common/image-and-video/components/image-and-video';
 
-import FormComment from './form/comment';
+import FormReply from './form/reply';
 
 
 
@@ -193,7 +193,7 @@ export default injectIntl(class extends React.Component {
       dataObj,
       handleEdit,
       handleReadRecruitmentReplies,
-      handleShowFormRecruitmentComment,
+      handleShowFormRecruitmentReply,
       
     } = storeGcRecruitment;
     
@@ -219,14 +219,6 @@ export default injectIntl(class extends React.Component {
     const count = lodashGet(dataObj, [gameCommunities_id, 'recruitmentRepliesObj', recruitmentComments_id, 'count'], 0);
     const limit = parseInt((stores.data.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.RECRUITMENT_REPLY_LIMIT), 10);
     const arr = lodashGet(dataObj, [gameCommunities_id, 'recruitmentRepliesObj', recruitmentComments_id, `page${page}Obj`, 'arr'], []);
-    
-    
-    // --------------------------------------------------
-    //   Link Return Top
-    // --------------------------------------------------
-    
-    // const linkReturnTopHref = `/gc/[urlID]/rec?urlID=${urlID}`;
-    // const linkReturnTopAs = `/gc/${urlID}`;
     
     
     // --------------------------------------------------
@@ -297,10 +289,8 @@ export default injectIntl(class extends React.Component {
       //   Path Array
       // --------------------------------------------------
       
-      // const pathRecruitmentCommentArr = [recruitmentReplies_id, 'recruitmentReplyObj'];
-      // const pathRecruitmentThreadEditFormArr = [recruitmentComments_id, 'recruitmentThreadEditFormObj'];
-      const pathRecruitmentReplyEditFormArr = [recruitmentReplies_id, 'recruitmentReplyEditFormObj'];
-      // const pathRecruitmentReplyEditFormArr = [recruitmentThreads_id, 'recruitmentCommentEditFormObj'];
+      const pathRecruitmentReplyEditFormArr = [recruitmentReplies_id, 'recruitmentReplyEditForm'];
+      const pathRecruitmentReplyNewFormReplyToArr = [recruitmentReplies_id, 'recruitmentReplyNewFormReplyTo'];
       
       
       // --------------------------------------------------
@@ -373,6 +363,22 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const showFormReply = lodashGet(dataObj, [...pathRecruitmentReplyEditFormArr, 'showFormReply'], false);
+      const showFormReplyTo = lodashGet(dataObj, [...pathRecruitmentReplyNewFormReplyToArr, 'showFormReplyTo'], false);
+      
+      
+      // --------------------------------------------------
+      //   Reply to
+      // --------------------------------------------------
+      
+      const replyToRecruitmentReplies_id = lodashGet(repliesDataObj, ['replyToRecruitmentReplies_id'], '');
+      
+      let replyToName = lodashGet(repliesDataObj, ['replyToName'], '');
+      
+      if (!replyToName) {
+        replyToName = 'ななしさん';
+      }
+      
+      const replyTo = `${replyToName} | ${replyToRecruitmentReplies_id}`;
       
       
       
@@ -383,7 +389,7 @@ export default injectIntl(class extends React.Component {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/gc/rec/components/recruitment-comment.js
+      //   /app/gc/rec/components/recruitment-reply.js
       // `);
       
       // console.log(chalk`
@@ -401,7 +407,7 @@ export default injectIntl(class extends React.Component {
       
       
       // --------------------------------------------------
-      //   Component - Form Reply
+      //   Component - Edit Form
       // --------------------------------------------------
       
       if (showFormReply) {
@@ -409,19 +415,18 @@ export default injectIntl(class extends React.Component {
         componentArr.push(
           
           <Element
-            css={css`
-              border-top: 1px solid;
-              border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
-              border-image-slice: 1;
-              padding: 24px 0 0 0;
-              margin: 24px 0 0 0;
-            `}
             key={index}
             name={recruitmentReplies_id}
           >
             
-            
-            
+            <FormReply
+              pathArr={pathRecruitmentReplyEditFormArr}
+              gameCommunities_id={gameCommunities_id}
+              recruitmentThreads_id={recruitmentThreads_id}
+              recruitmentComments_id={recruitmentComments_id}
+              recruitmentReplies_id={recruitmentReplies_id}
+              replyToRecruitmentReplies_id={replyToRecruitmentReplies_id}
+            />
             
           </Element>
           
@@ -438,8 +443,8 @@ export default injectIntl(class extends React.Component {
           <Element
             css={css`
               border-top: 1px dashed #BDBDBD;
-              margin: 12px 0 0 0;
-              padding: 12px 0 0 0;
+              margin: 20px 0 0 0;
+              padding: 20px 0 0 0;
             `}
             name={recruitmentReplies_id}
             key={index}
@@ -447,12 +452,7 @@ export default injectIntl(class extends React.Component {
             
             
             {/* Reply */}
-            <div
-              css={css`
-                // margin: 6px 0 0 0;
-                // padding: 14px 0 0 0;
-              `}
-            >
+            <div>
               
               
               {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
@@ -500,6 +500,31 @@ export default injectIntl(class extends React.Component {
                   }
                 `}
               >
+                
+                
+                {/* Reply To */}
+                {replyToRecruitmentReplies_id &&
+                  <div
+                    css={css`
+                      display: flex;
+                      flex-flow: row nowrap;
+                      margin: 0 0 12px 0;
+                      color: #7401DF;
+                    `}
+                  >
+                    <IconReply
+                      css={css`
+                        && {
+                          font-size: 16px;
+                          margin: 4px 4px 0 0;
+                        }
+                      `}
+                    />
+                    <p>{replyTo}</p>
+                  </div>
+                }
+                
+                
                 
                 
                 {/* コメント */}
@@ -655,6 +680,14 @@ export default injectIntl(class extends React.Component {
                         }
                       `}
                       variant="outlined"
+                      onClick={() => handleEdit({
+                        pathArr: [...pathRecruitmentReplyNewFormReplyToArr, 'showFormReplyTo'],
+                        value: !showFormReplyTo
+                      })}
+                      // onClick={() => handleShowFormRecruitmentReply({
+                      //   pathArr: pathRecruitmentReplyNewFormArr,
+                      //   recruitmentReplies_id,
+                      // })}
                       // onClick={() => handleEdit({
                       //   pathArr: [recruitmentComments_id, 'formReplyObj', 'show'],
                       //   value: !showFormReply
@@ -698,9 +731,9 @@ export default injectIntl(class extends React.Component {
                         `}
                         variant="outlined"
                         color="primary"
-                        onClick={() => handleShowFormRecruitmentComment({
+                        onClick={() => handleShowFormRecruitmentReply({
                           pathArr: pathRecruitmentReplyEditFormArr,
-                          recruitmentComments_id,
+                          recruitmentReplies_id,
                         })}
                       >
                         <IconEdit
@@ -726,72 +759,21 @@ export default injectIntl(class extends React.Component {
                 </div>
                 
                 
+                
+                
+                {/* Reply - New Form Reply To */}
+                {showFormReplyTo &&
+                  <FormReply
+                    pathArr={pathRecruitmentReplyNewFormReplyToArr}
+                    gameCommunities_id={gameCommunities_id}
+                    recruitmentThreads_id={recruitmentThreads_id}
+                    recruitmentComments_id={recruitmentComments_id}
+                    replyToRecruitmentReplies_id={recruitmentReplies_id}
+                  />
+                }
+                
+                
               </div>
-              
-              
-              
-              
-              {/* Form Comment */}
-              {/*<div
-                css={css`
-                  width: 100%;
-                  border-top: 1px solid;
-                  border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
-                  border-image-slice: 1;
-                  margin: 14px 0 0 0;
-                  padding: 14px 0 0 0;
-                `}
-              >*/}
-                
-                
-                {/* Show Form Button */}
-                {/*{!showFormReply &&
-                  <div
-                    css={css`
-                      display: flex;
-                      flex-flow: row nowrap;
-                      justify-content: center;
-                    `}
-                  >
-                    <Button
-                      type="submit"
-                      variant="outlined"
-                      size="small"
-                      disabled={buttonDisabled}
-                      startIcon={<IconCreate />}
-                      onClick={() => handleEdit({
-                        pathArr: [...pathRecruitmentCommentNewFormArr, 'showFormReply'],
-                        value: !showFormReply,
-                      })}
-                    >
-                      コメント投稿フォーム
-                    </Button>
-                  </div>
-                }*/}
-                
-                
-                
-                
-                {/* Form Comment */}
-                {/*{showFormReply &&
-                  <div
-                    css={css`
-                      margin: 16px 0 0 0;
-                    `}
-                  >
-                    
-                    <FormComment
-                      pathArr={pathRecruitmentCommentNewFormArr}
-                      gameCommunities_id={gameCommunities_id}
-                      recruitmentThreads_id={recruitmentThreads_id}
-                      publicSettingThread={publicSetting}
-                    />
-                    
-                  </div>
-                }*/}
-                
-                
-              {/*</div>*/}
               
               
             </div>

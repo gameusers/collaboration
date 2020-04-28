@@ -23,19 +23,27 @@ const lodashGet = require('lodash/get');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../@modules/error/custom');
 
 
 
 
 /**
- * 返信の1ページに表示する件数
+ * Handle Name
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {boolean} required - 必須 true / 必須でない false
- * @param {string} value - 値
+ * @param {boolean} value - 値
  * @return {Object} バリデーション結果
  */
-const validationRecruitmentRepliesLimit = ({ throwError = false, required = false, value }) => {
+const validationHandleName = ({ throwError = false, required = false, value }) => {
+  
+  
+  // ---------------------------------------------
+  //   Config
+  // ---------------------------------------------
+  
+  const minLength = 1;
+  const maxLength = 50;
   
   
   // ---------------------------------------------
@@ -45,13 +53,11 @@ const validationRecruitmentRepliesLimit = ({ throwError = false, required = fals
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  const resultObj = {
-    
+  let resultObj = {
     value: data,
     numberOfCharacters,
-    messageID: 'Error',
+    messageID: 'yhgyXHqZu',
     error: false,
-    
   };
   
   
@@ -59,11 +65,26 @@ const validationRecruitmentRepliesLimit = ({ throwError = false, required = fals
     
     
     // ---------------------------------------------
-    //   適切な値が選択されているかチェック
+    //   空の場合、処理停止
     // ---------------------------------------------
     
-    if (!validator.isIn(data, ['1', '3', '5', '10', '20', '50'])) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'WOJ7RnjAl', messageID: 'PH8jcw-VF' }] });
+    if (validator.isEmpty(data)) {
+      
+      if (required) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Ra4SEJsb_', messageID: 'cFbXmuFVh' }] });
+      }
+      
+      return resultObj;
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   文字数チェック
+    // ---------------------------------------------
+    
+    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'tZlNs2n5m', messageID: 'yhgyXHqZu' }] });
     }
     
     
@@ -113,6 +134,6 @@ const validationRecruitmentRepliesLimit = ({ throwError = false, required = fals
 
 module.exports = {
   
-  validationRecruitmentRepliesLimit,
+  validationHandleName,
   
 };

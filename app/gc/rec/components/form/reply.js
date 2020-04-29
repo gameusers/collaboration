@@ -509,6 +509,7 @@ export default injectIntl(class extends React.Component {
                     gameCommunities_id,
                     recruitmentThreads_id,
                     recruitmentComments_id,
+                    recruitmentReplies_id,
                   })}
                   color="primary"
                   autoFocus

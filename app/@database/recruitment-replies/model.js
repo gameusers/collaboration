@@ -31,7 +31,7 @@ const SchemaRecruitmentThreads = require('../recruitment-threads/schema');
 const SchemaRecruitmentComments = require('../recruitment-comments/schema');
 const SchemaImagesAndVideos = require('../images-and-videos/schema');
 const SchemaGameCommunities = require('../game-communities/schema');
-const SchemaUsers = require('../users/schema');
+// const SchemaUsers = require('../users/schema');
 
 // const ModelForumComments = require('../forum-comments/model');
 // const ModelGameCommunities = require('../game-communities/model');
@@ -1037,12 +1037,12 @@ const findOneForEdit = async ({
  * @param {Object} recruitmentThreadsSaveObj - DB recruitment-threads 保存データ
  * @param {Object} recruitmentCommentsConditionObj - DB recruitment-comments 検索条件
  * @param {Object} recruitmentCommentsSaveObj - DB recruitment-comments 保存データ
+ * @param {Object} recruitmentRepliesConditionObj - DB recruitment-replies 検索条件
+ * @param {Object} recruitmentRepliesSaveObj - DB recruitment-replies 保存データ
  * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
  * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
  * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
  * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
- * @param {Object} usersConditionObj - DB users 検索条件
- * @param {Object} usersSaveObj - DB users 保存データ
  * @return {Object} 
  */
 const transactionForUpsert = async ({
@@ -1051,12 +1051,12 @@ const transactionForUpsert = async ({
   recruitmentThreadsSaveObj,
   recruitmentCommentsConditionObj,
   recruitmentCommentsSaveObj,
+  recruitmentRepliesConditionObj,
+  recruitmentRepliesSaveObj,
   imagesAndVideosConditionObj = {},
   imagesAndVideosSaveObj = {},
   gameCommunitiesConditionObj = {},
   gameCommunitiesSaveObj = {},
-  usersConditionObj = {},
-  usersSaveObj = {},
   
 }) => {
   
@@ -1093,10 +1093,17 @@ const transactionForUpsert = async ({
     
     
     // ---------------------------------------------
+    //   - recruitment-replies
+    // ---------------------------------------------
+    
+    await Schema.updateOne(recruitmentRepliesConditionObj, recruitmentRepliesSaveObj, { session, upsert: true });
+    
+    
+    // ---------------------------------------------
     //   - recruitment-comments
     // ---------------------------------------------
     
-    await Schema.updateOne(recruitmentCommentsConditionObj, recruitmentCommentsSaveObj, { session, upsert: true });
+    await SchemaRecruitmentComments.updateOne(recruitmentCommentsConditionObj, recruitmentCommentsSaveObj, { session, upsert: true });
     
     
     // ---------------------------------------------
@@ -1148,17 +1155,6 @@ const transactionForUpsert = async ({
     }
     
     
-    // ---------------------------------------------
-    //   - users
-    // ---------------------------------------------
-    
-    if (Object.keys(usersConditionObj).length !== 0 && Object.keys(usersSaveObj).length !== 0) {
-      
-      await SchemaUsers.updateOne(usersConditionObj, usersSaveObj, { session });
-      
-    }
-    
-    
     
     // --------------------------------------------------
     //   Transaction / Commit
@@ -1178,7 +1174,7 @@ const transactionForUpsert = async ({
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/@database/recruitment-comments/model.js - transactionForUpsert
+    //   /app/@database/recruitment-replies/model.js - transactionForUpsert
     // `);
     
     // console.log(`
@@ -1202,6 +1198,18 @@ const transactionForUpsert = async ({
     // console.log(`
     //   ----- recruitmentCommentsSaveObj -----\n
     //   ${util.inspect(recruitmentCommentsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- recruitmentRepliesConditionObj -----\n
+    //   ${util.inspect(recruitmentRepliesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- recruitmentRepliesSaveObj -----\n
+    //   ${util.inspect(recruitmentRepliesSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -1230,16 +1238,218 @@ const transactionForUpsert = async ({
     // `);
     
     // console.log(`
-    //   ----- usersConditionObj -----\n
-    //   ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (errorObj) {
+    
     // console.log(`
-    //   ----- usersSaveObj -----\n
-    //   ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
+    //   ----- errorObj -----\n
+    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Rollback
+    // --------------------------------------------------
+    
+    await session.abortTransaction();
+    // console.log('--------ロールバック-----------');
+    
+    session.endSession();
+    
+    
+    throw errorObj;
+    
+  }
+  
+};
+
+
+
+
+/**
+ * Transaction 返信を削除する
+ * 返信を削除して、コメント、スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
+ * 
+ * @param {Object} recruitmentThreadsConditionObj - DB recruitment-threads 検索条件
+ * @param {Object} recruitmentThreadsSaveObj - DB recruitment-threads 保存データ
+ * @param {Object} recruitmentCommentsConditionObj - DB recruitment-comments 検索条件
+ * @param {Object} recruitmentCommentsSaveObj - DB recruitment-comments 保存データ
+ * @param {Object} recruitmentRepliesConditionObj - DB recruitment-replies 検索条件
+ * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
+ * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
+ * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
+ * @return {Object} 
+ */
+const transactionForDelete = async ({
+  
+  recruitmentThreadsConditionObj,
+  recruitmentThreadsSaveObj,
+  recruitmentCommentsConditionObj,
+  recruitmentCommentsSaveObj,
+  recruitmentRepliesConditionObj,
+  imagesAndVideosConditionObj = {},
+  gameCommunitiesConditionObj = {},
+  gameCommunitiesSaveObj = {},
+  
+}) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   Transaction / Session
+  // --------------------------------------------------
+  
+  const session = await Schema.startSession();
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Start
+    // --------------------------------------------------
+    
+    await session.startTransaction();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   - recruitment-replies / Delete
+    // --------------------------------------------------
+    
+    await Schema.deleteOne(recruitmentRepliesConditionObj, { session });
+    
+    
+    // ---------------------------------------------
+    //   - recruitment-comments / Update
+    // ---------------------------------------------
+    
+    await SchemaRecruitmentComments.updateOne(recruitmentCommentsConditionObj, recruitmentCommentsSaveObj, { session });
+    
+    
+    // ---------------------------------------------
+    //   - recruitment-threads / Update
+    // ---------------------------------------------
+    
+    await SchemaRecruitmentThreads.updateOne(recruitmentThreadsConditionObj, recruitmentThreadsSaveObj, { session });
+    
+    
+    // ---------------------------------------------
+    //   - images-and-videos / Delete
+    // ---------------------------------------------
+    
+    if (Object.keys(imagesAndVideosConditionObj).length !== 0) {
+      await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj, { session });
+    }
+    
+    
+    // ---------------------------------------------
+    //   - game-communities / Update
+    // ---------------------------------------------
+    
+    if (Object.keys(gameCommunitiesConditionObj).length !== 0 && Object.keys(gameCommunitiesSaveObj).length !== 0) {
+      await SchemaGameCommunities.updateOne(gameCommunitiesConditionObj, gameCommunitiesSaveObj, { session });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Commit
+    // --------------------------------------------------
+    
+    await session.commitTransaction();
+    // console.log('--------コミット-----------');
+    
+    session.endSession();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(`
+      ----------------------------------------\n
+      /app/@database/recruitment-replies/model.js - transactionForDelete
+    `);
+    
+    console.log(`
+      ----- recruitmentThreadsConditionObj -----\n
+      ${util.inspect(recruitmentThreadsConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- recruitmentThreadsSaveObj -----\n
+      ${util.inspect(recruitmentThreadsSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- recruitmentCommentsConditionObj -----\n
+      ${util.inspect(recruitmentCommentsConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- recruitmentCommentsSaveObj -----\n
+      ${util.inspect(recruitmentCommentsSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- recruitmentRepliesConditionObj -----\n
+      ${util.inspect(recruitmentRepliesConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- imagesAndVideosConditionObj -----\n
+      ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- gameCommunitiesConditionObj -----\n
+      ${util.inspect(gameCommunitiesConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- gameCommunitiesSaveObj -----\n
+      ${util.inspect(gameCommunitiesSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(`
     //   ----- returnObj -----\n
@@ -1304,5 +1514,6 @@ module.exports = {
   findOneForEdit,
   
   transactionForUpsert,
+  transactionForDelete,
   
 };

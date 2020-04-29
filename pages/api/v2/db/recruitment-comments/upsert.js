@@ -341,7 +341,7 @@ export default async (req, res) => {
       // `);
       
       if (count > 0) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'sdOQZwxlv', messageID: '8ObqNYJ85' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'sdOQZwxlv', messageID: 'ffNAq3wYT' }] });
       }
       
       
@@ -581,7 +581,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     // ---------------------------------------------
-    //   - recruitment-threads
+    //   - recruitment-comments
     // ---------------------------------------------
     
     const recruitmentCommentsConditionObj = {
@@ -620,7 +620,7 @@ export default async (req, res) => {
     
     
     // ---------------------------------------------
-    //   - recruitment-threads / コメント数 + 1
+    //   - recruitment-threads / コメント総数 + 1
     // ---------------------------------------------
     
     const recruitmentThreadsConditionObj = {
@@ -728,14 +728,14 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   Update
+    //   Update - 編集の場合、更新しない方がいいフィールドを削除する
     // --------------------------------------------------
     
     if (recruitmentComments_id) {
       
       
       // ---------------------------------------------
-      //   - forum-comments
+      //   - recruitment-comments
       // ---------------------------------------------
       
       recruitmentCommentsConditionObj._id = recruitmentComments_id;
@@ -749,20 +749,15 @@ export default async (req, res) => {
       
       
       // ---------------------------------------------
-      //   - game-communities / 更新日時の変更
+      //   - recruitment-threads / comments（スレッドに記録するコメント総数）を増やさない
       // ---------------------------------------------
       
-      // delete gameCommunitiesSaveObj.$inc;
+      delete recruitmentThreadsSaveObj.$inc.comments;
       
-      
-      // ---------------------------------------------
-      //   - forum-threads / 更新日時の変更 & 画像数と動画数の変更
-      // ---------------------------------------------
-      
-      recruitmentThreadsSaveObj = {
-        updatedDate: ISO8601,
-        $inc: { images, videos }
-      };
+      // recruitmentThreadsSaveObj = {
+      //   updatedDate: ISO8601,
+      //   $inc: { images, videos }
+      // };
       
       
     }

@@ -671,7 +671,7 @@ export default async (req, res) => {
     
     
     // ---------------------------------------------
-    //   - game-communities / 更新日時の変更＆スレッド数 + 1
+    //   - game-communities / 更新日時の変更＆スレッド総数 + 1
     // ---------------------------------------------
     
     const gameCommunitiesConditionObj = {
@@ -763,15 +763,16 @@ export default async (req, res) => {
     
     
     
+    
     // --------------------------------------------------
-    //   Update
+    //   Update - 編集の場合、更新しない方がいいフィールドを削除する
     // --------------------------------------------------
     
     if (recruitmentThreads_id) {
       
       
       // ---------------------------------------------
-      //   - forum-threads
+      //   - recruitment-threads
       // ---------------------------------------------
       
       recruitmentThreadsConditionObj._id = recruitmentThreads_id;
@@ -788,7 +789,7 @@ export default async (req, res) => {
       
       
       // ---------------------------------------------
-      //   - game-communities / 更新日時の変更
+      //   - game-communities / $inc を削除して threadCount（ゲームコミュニティに記録するスレッド総数）を増やさない
       // ---------------------------------------------
       
       delete gameCommunitiesSaveObj.$inc;

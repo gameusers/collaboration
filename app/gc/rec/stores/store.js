@@ -3057,7 +3057,6 @@ class Store {
       const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
       const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj', ...pathArr, 'imagesAndVideosObj'], {});
       
-      
       const threadLimit = parseInt((storeData.getCookie({ key: 'recruitmentThreadLimit' }) || process.env.RECRUITMENT_THREAD_LIMIT), 10);
       const commentLimit = parseInt((storeData.getCookie({ key: 'recruitmentCommentLimit' }) || process.env.RECRUITMENT_COMMENT_LIMIT), 10);
       const replyLimit = parseInt((storeData.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.RECRUITMENT_REPLY_LIMIT), 10);
@@ -3161,9 +3160,10 @@ class Store {
       const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
       const clonedObj = lodashCloneDeep(recruitmentObj);
       
-      clonedObj.recruitmentThreadsObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {});
-      clonedObj.recruitmentCommentsObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
-      clonedObj.recruitmentRepliesObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
+      const recruitmentRepliesOldObj = lodashGet(recruitmentObj, ['recruitmentRepliesObj'], {});
+      const recruitmentRepliesNewObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
+      
+      clonedObj.recruitmentRepliesObj = lodashMerge(recruitmentRepliesOldObj, recruitmentRepliesNewObj);
       clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
       
       this.handleEdit({
@@ -3174,81 +3174,9 @@ class Store {
       
       
       
-      
-      // let scrollToTarget_id = '';
-      
-      
-      // // ---------------------------------------------
-      // //   Update - 返信対象が存在する
-      // // ---------------------------------------------
-      
-      // if (recruitmentReplies_id && replyToRecruitmentReplies_id) {
-        
-      //   lodashSet(this.dataObj, [...pathArr, 'showFormReply'], false);
-      //   // lodashSet(this.dataObj, [...pathArr, 'showFormReplyTo'], false);
-      //   scrollToTarget_id = recruitmentReplies_id;
-        
-        
-      // // ---------------------------------------------
-      // //   Update - 返信対象が存在しない
-      // // ---------------------------------------------
-        
-      // } else if (recruitmentReplies_id && !replyToRecruitmentReplies_id) {
-        
-      //   lodashSet(this.dataObj, [...pathArr, 'showFormReply'], false);
-      //   scrollToTarget_id = recruitmentReplies_id;
-      
-        
-      // // ---------------------------------------------
-      // //   Insert - 返信対象が存在する
-      // // ---------------------------------------------
-        
-      // } else if (!recruitmentReplies_id && replyToRecruitmentReplies_id) {
-        
-      //   lodashSet(this.dataObj, [...pathArr, 'showFormReplyTo'], false);
-      //   scrollToTarget_id = replyToRecruitmentReplies_id;
-        
-        
-      // // ---------------------------------------------
-      // //   Insert - 返信対象が存在しない
-      // // ---------------------------------------------
-        
-      // } else if (!recruitmentReplies_id && !replyToRecruitmentReplies_id) {
-        
-      //   lodashSet(this.dataObj, [...pathArr, 'showFormReply'], false);
-      //   scrollToTarget_id = recruitmentComments_id;
-        
-      // }
-      
-      
-      // ---------------------------------------------
-      //   Insert - 返信対象の存在する返信
-      // ---------------------------------------------
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Scroll
-      // ---------------------------------------------
-      
-      // storeLayout.handleScrollTo({
-        
-      //   to: scrollTo_id || replyToRecruitmentReplies_id || recruitmentReplies_id || recruitmentComments_id,
-      //   duration: 0,
-      //   delay: 0,
-      //   smooth: 'easeInOutQuart',
-      //   offset: -50,
-        
-      // });
-      
-      
-      
       // ---------------------------------------------
       //   Hide Form & Scroll To
       // ---------------------------------------------
-      
-      // const scrollTo_id = lodashGet(resultObj, ['data', 'scrollTo_id'], '');
       
       this.handleHideFormRecruitmentReply({
         
@@ -3256,9 +3184,20 @@ class Store {
         recruitmentComments_id,
         recruitmentReplies_id: lodashGet(resultObj, ['data', 'scrollTo_id'], ''),
         replyToRecruitmentReplies_id,
-        // scrollTo_id,
         
       });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Reset Form
+      // ---------------------------------------------
+      
+      lodashSet(this.dataObj, [...pathArr, 'name'], '');
+      lodashSet(this.dataObj, [...pathArr, 'comment'], '');
+      
+      storeImageAndVideoForm.handleResetForm({ pathArr });
       
       
       
@@ -3340,14 +3279,12 @@ class Store {
   // ---------------------------------------------
   
   /**
-   * 返信を投稿する
-   * @param {Object} eventObj - イベント
+   * 返信を削除する
    * @param {Array} pathArr - パス
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
    * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
    * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントID
    * @param {string} recruitmentReplies_id - DB recruitment-replies _id / 返信ID
-   * @param {string} replyToRecruitmentReplies_id - DB recruitment-replies _id / 返信対象の返信ID
    */
   @action.bound
   async handleDeleteRecruitmentReply({
@@ -3479,23 +3416,23 @@ class Store {
       //   console.log
       // --------------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/gc/rec/stores/store.js / handleDeleteRecruitmentReply
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/gc/rec/stores/store.js / handleDeleteRecruitmentReply
+      // `);
       
-      console.log(`
-        ----- pathArr -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(chalk`
-        gameCommunities_id: {green ${gameCommunities_id}}
-        recruitmentThreads_id: {green ${recruitmentThreads_id}}
-        recruitmentComments_id: {green ${recruitmentComments_id}}
-        recruitmentReplies_id: {green ${recruitmentReplies_id}}
-      `);
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+      //   recruitmentComments_id: {green ${recruitmentComments_id}}
+      //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
+      // `);
       
       
     } catch (errorObj) {

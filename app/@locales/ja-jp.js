@@ -286,7 +286,7 @@ const ja_JP = {
   
   
   // ---------------------------------------------
-  //   Forum
+  //   Forum & Recruitment
   // ---------------------------------------------
   
   // /app/@database/forum-threads/api.js
@@ -294,6 +294,9 @@ const ja_JP = {
   
   // /app/@database/forum-comments/api.js
   'ffNAq3wYT': '同じコメントが10分以内に投稿されています',
+  
+  // /app/@database/recruitment-replies/api.js
+  'xkbq0REwt': '同じ返信が10分以内に投稿されています',
   
   
   

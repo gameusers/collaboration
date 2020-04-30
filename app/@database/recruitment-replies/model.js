@@ -31,11 +31,8 @@ const SchemaRecruitmentThreads = require('../recruitment-threads/schema');
 const SchemaRecruitmentComments = require('../recruitment-comments/schema');
 const SchemaImagesAndVideos = require('../images-and-videos/schema');
 const SchemaGameCommunities = require('../game-communities/schema');
-// const SchemaUsers = require('../users/schema');
 
-// const ModelForumComments = require('../forum-comments/model');
-// const ModelGameCommunities = require('../game-communities/model');
-// const ModelUserCommunities = require('../user-communities/model');
+const ModelRecruitmentComments = require('../../@database/recruitment-comments/model.js');
 
 
 // ---------------------------------------------
@@ -383,25 +380,6 @@ const findReplies = async ({
     const language = lodashGet(localeObj, ['language'], '');
     const country = lodashGet(localeObj, ['country'], '');
     
-    
-    
-    
-    // --------------------------------------------------
-    //   Match Condition Array
-    // --------------------------------------------------
-    
-    // let matchConditionArr = [];
-    
-    // matchConditionArr = [
-    //   {
-    //     $match: {
-    //       $and: [
-    //         { recruitmentComments_id: { $in: recruitmentComments_idsArr } },
-    //         { gameCommunities_id },
-    //       ]
-    //     },
-    //   },
-    // ];
     
     
     
@@ -763,7 +741,7 @@ const findReplies = async ({
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/@database/recruitment-threads/model.js - findRecruitments
+    //   /app/@database/recruitment-replies/model.js - findRecruitments
     // `);
     
     // console.log(chalk`
@@ -814,6 +792,237 @@ const findReplies = async ({
     // console.log(`
     //   ----- forumRepliesObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(forumRepliesObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return recruitmentRepliesObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
+/**
+ * 返信を取得する / 投稿＆編集後のデータ
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
+ * @param {Array} recruitmentComments_idsArr - DB recruitment-comments _id / 募集のコメントIDが入った配列
+ * @param {number} commentPage - コメントのページ
+ * @param {number} commentLimit - コメントのリミット
+ * @param {number} replyPage - 返信のページ
+ * @param {number} replyLimit - 返信のリミット
+ * @return {Array} 取得データ
+ */
+const findRepliesForUpsert = async ({
+  
+  req,
+  localeObj,
+  loginUsers_id,
+  gameCommunities_id,
+  recruitmentThreads_id,
+  recruitmentComments_id,
+  recruitmentReplies_id,
+  commentPage = 1,
+  commentLimit = process.env.RECRUITMENT_COMMENT_LIMIT,
+  replyPage = 1,
+  replyLimit = process.env.RECRUITMENT_REPLY_LIMIT,
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    let replyPage = 1;
+    
+    
+    
+    // --------------------------------------------------
+    //   編集
+    //   返信は投稿順（昇順）で表示されるため、一番新しいページを単純に表示すれば編集した返信が表示されるわけではない
+    //   そのため、編集した返信を表示する場合、返信の表示順を計算しなければならない
+    //   返信の総数から順番を取得し
+    //   limit で割って表示ページを取得する
+    // --------------------------------------------------
+    
+    if (recruitmentReplies_id) {
+      
+      
+      // --------------------------------------------------
+      //   Aggregation
+      // --------------------------------------------------
+      
+      const docRecruitmentRepliesArr = await Schema.aggregate([
+        
+        
+        // --------------------------------------------------
+        //   Match
+        // --------------------------------------------------
+        
+        {
+          $match: {
+            gameCommunities_id,
+            recruitmentThreads_id,
+            recruitmentComments_id,
+          },
+        },
+        
+        
+        { '$sort': { 'createdDate': 1 } },
+        
+        
+        { $project:
+          {
+            _id: 1,
+          }
+        },
+        
+        
+      ]).exec();
+      
+      
+      
+      
+      const index = docRecruitmentRepliesArr.findIndex((valueObj) => {
+        return valueObj._id === recruitmentReplies_id;
+      });
+      
+      
+      const replies = docRecruitmentRepliesArr.length;
+      replyPage = Math.ceil((index + 1) / replyLimit);
+      
+      
+      
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   Update
+      // `);
+      
+      // console.log(`
+      //   ----- docRecruitmentRepliesArr -----\n
+      //   ${util.inspect(docRecruitmentRepliesArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // console.log(chalk`
+      //   index: {green ${index}}
+      //   replies: {green ${replies}}
+      // `);
+      
+      
+    // --------------------------------------------------
+    //   新規投稿
+    //   返信は投稿順（昇順）で表示されるため、新規投稿した返信は順番的に最後に表示される
+    //   そのため、新規投稿した返信を表示する場合は、返信の最後のページを表示しなければならない
+    //   スレッドの情報から返信の総数を取得し
+    //   limit で割って最後のページを取得する
+    // --------------------------------------------------
+      
+    } else {
+      
+      
+      const docRecruitmentCommentsObj = await ModelRecruitmentComments.findOne({
+        
+        conditionObj: {
+          _id: recruitmentComments_id,
+          gameCommunities_id,
+          recruitmentThreads_id,
+        }
+        
+      });
+      
+      
+      const replies = lodashGet(docRecruitmentCommentsObj, ['replies'], 1);
+      replyPage = Math.ceil(replies / replyLimit);
+      
+      
+      
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   Insert
+      // `);
+      
+      // console.log(`
+      //   ----- docRecruitmentCommentsObj -----\n
+      //   ${util.inspect(docRecruitmentCommentsObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   findReplies
+    // --------------------------------------------------
+    
+    const recruitmentRepliesObj = await findReplies({
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      gameCommunities_id,
+      recruitmentComments_idsArr: [recruitmentComments_id],
+      commentPage: 1,
+      commentLimit,
+      replyPage,
+      replyLimit,
+      
+    });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/recruitment-replies/model.js - findRepliesForUpsert
+    // `);
+    
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+    //   recruitmentComments_id: {green ${recruitmentComments_id}}
+    //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
+    //   commentPage: {green ${commentPage}}
+    //   commentLimit: {green ${commentLimit}}
+    //   replyPage: {green ${replyPage}}
+    //   replyLimit: {green ${replyLimit}}
+    // `);
+    
+    // console.log(`
+    //   ----- recruitmentRepliesObj -----\n
+    //   ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -1398,58 +1607,58 @@ const transactionForDelete = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/recruitment-replies/model.js - transactionForDelete
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/recruitment-replies/model.js - transactionForDelete
+    // `);
     
-    console.log(`
-      ----- recruitmentThreadsConditionObj -----\n
-      ${util.inspect(recruitmentThreadsConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- recruitmentThreadsConditionObj -----\n
+    //   ${util.inspect(recruitmentThreadsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- recruitmentThreadsSaveObj -----\n
-      ${util.inspect(recruitmentThreadsSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- recruitmentThreadsSaveObj -----\n
+    //   ${util.inspect(recruitmentThreadsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- recruitmentCommentsConditionObj -----\n
-      ${util.inspect(recruitmentCommentsConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- recruitmentCommentsConditionObj -----\n
+    //   ${util.inspect(recruitmentCommentsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- recruitmentCommentsSaveObj -----\n
-      ${util.inspect(recruitmentCommentsSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- recruitmentCommentsSaveObj -----\n
+    //   ${util.inspect(recruitmentCommentsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- recruitmentRepliesConditionObj -----\n
-      ${util.inspect(recruitmentRepliesConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- recruitmentRepliesConditionObj -----\n
+    //   ${util.inspect(recruitmentRepliesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- imagesAndVideosConditionObj -----\n
-      ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosConditionObj -----\n
+    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- gameCommunitiesConditionObj -----\n
-      ${util.inspect(gameCommunitiesConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gameCommunitiesConditionObj -----\n
+    //   ${util.inspect(gameCommunitiesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- gameCommunitiesSaveObj -----\n
-      ${util.inspect(gameCommunitiesSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gameCommunitiesSaveObj -----\n
+    //   ${util.inspect(gameCommunitiesSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- returnObj -----\n
@@ -1511,6 +1720,7 @@ module.exports = {
   deleteMany,
   
   findReplies,
+  findRepliesForUpsert,
   findOneForEdit,
   
   transactionForUpsert,

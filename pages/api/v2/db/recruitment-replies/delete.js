@@ -56,7 +56,7 @@ import { validationRecruitmentRepliesLimit } from '../../../../../app/@database/
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+const { locale } = require('../../../../../app/@locales/locale.js');
 
 
 

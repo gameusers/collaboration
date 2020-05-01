@@ -51,18 +51,18 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 //   Validations
 // ---------------------------------------------
 
-import { validationRecruitmentThreadsTitle } from '../../../../@database/recruitment-threads/validations/title';
-import { validationRecruitmentThreadsName } from '../../../../@database/recruitment-threads/validations/name';
+import { validationRecruitmentThreadsTitle } from '../../../../@database/recruitment-threads/validations/title.js';
+import { validationRecruitmentThreadsName } from '../../../../@database/recruitment-threads/validations/name.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import FormHardwares from '../../../../common/hardware/components/form';
-import FormIDsInformations from '../form/ids-informations';
-import FormDeadline from '../form/deadline';
-import ImageAndVideoForm from '../../../../common/image-and-video/components/form';
+import FormHardwares from '../../../../common/hardware/components/form.js';
+import FormIDsInformations from '../form/ids-informations.js';
+import FormDeadline from '../form/deadline.js';
+import ImageAndVideoForm from '../../../../common/image-and-video/components/form.js';
 
 
 

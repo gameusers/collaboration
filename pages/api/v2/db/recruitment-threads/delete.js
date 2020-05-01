@@ -6,60 +6,60 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const moment = require('moment');
-const rimraf = require('rimraf');
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import moment from 'moment';
+import rimraf from 'rimraf';
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelGameCommunities = require('../../../../../app/@database/game-communities/model');
-const ModelForumThreads = require('../../../../../app/@database/forum-threads/model');
-const ModelForumComments = require('../../../../../app/@database/forum-comments/model');
+import ModelGameCommunities from '../../../../../app/@database/game-communities/model.js';
+import ModelRecruitmentThreads from '../../../../../app/@database/recruitment-threads/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
+import { verifyCsrfToken } from '../../../../../app/@modules/csrf.js';
+import { returnErrorsArr } from '../../../../../app/@modules/log/log.js';
+import { CustomError } from '../../../../../app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
-const { validationForumThreads_idServerGC } = require('../../../../../app/@database/forum-threads/validations/_id-server');
-const { validationForumThreadsListLimit, validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
-const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
+import { validationIP } from '../../../../../app/@validations/ip.js';
+
+import { validationRecruitmentThreadsLimit } from '../../../../../app/@database/recruitment-threads/validations/limit.js';
+import { validationRecruitmentCommentsLimit } from '../../../../../app/@database/recruitment-comments/validations/limit.js';
+import { validationRecruitmentRepliesLimit } from '../../../../../app/@database/recruitment-replies/validations/limit.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+const { locale } = require('../../../../../app/@locales/locale.js');
 
 
 
 
 // --------------------------------------------------
-//   endpointID: IB5ETD3kZ
+//   endpointID: LC_YIutPm
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -85,16 +85,17 @@ export default async (req, res) => {
   //   Property
   // --------------------------------------------------
   
-  let returnObj = {};
+  const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
   // --------------------------------------------------
-  //   IP: Remote Client Address
+  //   IP & User Agent
   // --------------------------------------------------
   
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
   
   
@@ -110,10 +111,7 @@ export default async (req, res) => {
     
     const {
       
-      gameCommunities_id,
-      forumThreads_id,
-      forumComments_id,
-      threadListLimit,
+      recruitmentThreads_id,
       threadLimit,
       commentLimit,
       replyLimit,
@@ -121,10 +119,7 @@ export default async (req, res) => {
     } = bodyObj;
     
     
-    lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
-    lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
-    lodashSet(requestParametersObj, ['forumComments_id'], forumComments_id);
-    lodashSet(requestParametersObj, ['threadListLimit'], threadListLimit);
+    lodashSet(requestParametersObj, ['recruitmentThreads_id'], recruitmentThreads_id);
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
     lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
@@ -147,13 +142,9 @@ export default async (req, res) => {
     
     await validationIP({ throwError: true, value: ip });
     
-    await validationGameCommunities_idServer({ value: gameCommunities_id });
-    await validationForumThreads_idServerGC({ forumThreads_id, gameCommunities_id });
-    
-    await validationForumThreadsListLimit({ throwError: true, required: true, value: threadListLimit });
-    await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
-    await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
-    await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
+    await validationRecruitmentThreadsLimit({ throwError: true, required: true, value: threadLimit });
+    await validationRecruitmentCommentsLimit({ throwError: true, required: true, value: commentLimit });
+    await validationRecruitmentRepliesLimit({ throwError: true, required: true, value: replyLimit });
     
     
     
@@ -163,19 +154,60 @@ export default async (req, res) => {
     //   データが存在しない、編集権限がない場合はエラーが投げられる
     // --------------------------------------------------
     
-    const docForumCommentsObj = await ModelForumComments.findForDeleteComment({
+    const docObj = await ModelRecruitmentThreads.findForDelete({
       
       req,
       localeObj,
       loginUsers_id,
-      forumComments_id,
+      recruitmentThreads_id,
       
     });
     
-    const replies = lodashGet(docForumCommentsObj, ['replies'], 0);
-    const imagesAndVideos_idsArr = lodashGet(docForumCommentsObj, ['imagesAndVideos_idsArr'], []);
-    const images = lodashGet(docForumCommentsObj, ['images'], 0);
-    const videos = lodashGet(docForumCommentsObj, ['videos'], 0);
+    const gameCommunities_id = lodashGet(docObj, ['gameCommunities_id'], '');
+    // const comments = lodashGet(docObj, ['comments'], 0);
+    // const replies = lodashGet(docObj, ['replies'], 0);
+    const imagesAndVideos_idsArr = lodashGet(docObj, ['imagesAndVideos_idsArr'], []);
+    // const images = lodashGet(docObj, ['images'], 0);
+    // const videos = lodashGet(docObj, ['images'], 0);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/recruitment-threads/delete.js
+    // `);
+    
+    // console.log(chalk`
+    //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+    //   threadLimit: {green ${threadLimit}}
+    //   commentLimit: {green ${commentLimit}}
+    //   replyLimit: {green ${replyLimit}}
+    // `);
+    
+    // console.log(`
+    //   ----- docObj -----\n
+    //   ${util.inspect(docObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   comments: {green ${comments}}
+    //   replies: {green ${replies}}
+    //   images: {green ${images}}
+    //   videos: {green ${videos}}
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideos_idsArr -----\n
+    //   ${util.inspect(imagesAndVideos_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -194,20 +226,29 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     // ---------------------------------------------
-    //   - forum-replies / 返信削除
+    //   - recruitment-threads / スレッド削除
     // ---------------------------------------------
     
-    const forumRepliesConditionObj = {
-      forumComments_id,
+    const recruitmentThreadsConditionObj = {
+      _id: recruitmentThreads_id,
     };
     
     
     // ---------------------------------------------
-    //   - forum-comments / コメント削除
+    //   - recruitment-comments / コメント削除
     // ---------------------------------------------
     
-    const forumCommentsConditionObj = {
-      _id: forumComments_id,
+    const recruitmentCommentsConditionObj = {
+      recruitmentThreads_id,
+    };
+    
+    
+    // ---------------------------------------------
+    //   - recruitment-replies / 返信削除
+    // ---------------------------------------------
+    
+    const recruitmentRepliesConditionObj = {
+      recruitmentThreads_id,
     };
     
     
@@ -225,22 +266,7 @@ export default async (req, res) => {
     
     
     // ---------------------------------------------
-    //   - forum-threads / 更新日時の変更 & コメント数 - 1 & 返信数 - ○○ & 画像数と動画数の変更
-    // ---------------------------------------------
-    
-    const forumThreadsConditionObj = {
-      _id: forumThreads_id,
-    };
-    
-    
-    let forumThreadsSaveObj = {
-      updatedDate: ISO8601,
-      $inc: { comments: -1, replies, images, videos }
-    };
-    
-    
-    // ---------------------------------------------
-    //   - game-communities / 更新日時の変更
+    //   - game-communities / 更新日時＆スレッド数の変更
     // ---------------------------------------------
     
     const gameCommunitiesConditionObj = {
@@ -250,7 +276,8 @@ export default async (req, res) => {
     
     const gameCommunitiesSaveObj = {
       updatedDate: ISO8601,
-      'updatedDateObj.forum': ISO8601,
+      'updatedDateObj.recruitment': ISO8601,
+      $inc: { 'recruitmentObj.threadCount': -1 }
     };
     
     
@@ -260,12 +287,11 @@ export default async (req, res) => {
     //   DB insert Transaction
     // --------------------------------------------------
     
-    await ModelForumComments.transactionForDeleteComment({
+    await ModelRecruitmentThreads.transactionForDelete({
       
-      forumThreadsConditionObj,
-      forumThreadsSaveObj,
-      forumCommentsConditionObj,
-      forumRepliesConditionObj,
+      recruitmentThreadsConditionObj,
+      recruitmentCommentsConditionObj,
+      recruitmentRepliesConditionObj,
       imagesAndVideosConditionObj,
       gameCommunitiesConditionObj,
       gameCommunitiesSaveObj,
@@ -281,12 +307,12 @@ export default async (req, res) => {
     
     for (let value of imagesAndVideos_idsArr.values()) {
       
-      const dirPath = `public/img/forum/${value}`;
+      const dirPath = `public/img/recruitment/${value}`;
       // console.log(dirPath);
       
       rimraf(dirPath, (err) => {
         if (err) {
-          throw new CustomError({ level: 'error', errorsArr: [{ code: '9Nv0_OQQG', messageID: 'Error' }] });
+          throw new CustomError({ level: 'error', errorsArr: [{ code: '7eE0VckQr', messageID: 'Error' }] });
         }
       });
       
@@ -296,25 +322,10 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Forum Threads List
+    //   DB find / Recruitments
     // --------------------------------------------------
     
-    returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
-      
-      localeObj,
-      loginUsers_id,
-      gameCommunities_id,
-      page: 1,
-      limit: threadListLimit,
-      
-    });
-    
-    
-    // --------------------------------------------------
-    //   DB find / Forum Threads
-    // --------------------------------------------------
-    
-    const forumObj = await ModelForumThreads.findForForum({
+    const recruitmentObj = await ModelRecruitmentThreads.findRecruitments({
       
       req,
       localeObj,
@@ -329,13 +340,15 @@ export default async (req, res) => {
       
     });
     
-    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    returnObj.forumRepliesObj = forumObj.forumRepliesObj;
+    returnObj.recruitmentThreadsObj = recruitmentObj.recruitmentThreadsObj;
+    returnObj.recruitmentCommentsObj = recruitmentObj.recruitmentCommentsObj;
+    returnObj.recruitmentRepliesObj = recruitmentObj.recruitmentRepliesObj;
+    
+    
     
     
     // --------------------------------------------------
-    //   DB find / Game Communities / 最新の更新日時情報を取得する
+    //   updatedDateObj
     // --------------------------------------------------
     
     const gameCommunityArr = await ModelGameCommunities.find({
@@ -346,7 +359,9 @@ export default async (req, res) => {
       
     });
     
-    returnObj.updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
+    const updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
+    
+    returnObj.updatedDateObj = updatedDateObj;
     
     
     
@@ -356,15 +371,13 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   userCommunities_id: {green ${userCommunities_id}}
     //   forumThreads_id: {green ${forumThreads_id}}
     //   forumComments_id: {green ${forumComments_id}}
     //   anonymity: {green ${anonymity} / ${typeof anonymity}}
     //   IP: {green ${ip}}
     //   User Agent: {green ${req.headers['user-agent']}}
     // `);
-    
-    
     
     
     // ---------------------------------------------
@@ -382,11 +395,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
-      endpointID: 'IB5ETD3kZ',
+      endpointID: 'LC_YIutPm',
       users_id: loginUsers_id,
-      ip: ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

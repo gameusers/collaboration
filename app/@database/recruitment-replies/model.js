@@ -26,11 +26,12 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Model
 // ---------------------------------------------
 
-const Schema = require('./schema');
-const SchemaRecruitmentThreads = require('../recruitment-threads/schema');
-const SchemaRecruitmentComments = require('../recruitment-comments/schema');
-const SchemaImagesAndVideos = require('../images-and-videos/schema');
-const SchemaGameCommunities = require('../game-communities/schema');
+const SchemaRecruitmentReplies = require('./schema.js');
+
+const SchemaRecruitmentThreads = require('../recruitment-threads/schema.js');
+const SchemaRecruitmentComments = require('../recruitment-comments/schema.js');
+const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
+const SchemaGameCommunities = require('../game-communities/schema.js');
 
 const ModelRecruitmentComments = require('../../@database/recruitment-comments/model.js');
 
@@ -39,16 +40,17 @@ const ModelRecruitmentComments = require('../../@database/recruitment-comments/m
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../@modules/error/custom');
-const { verifyAuthority } = require('../../@modules/authority');
+const { CustomError } = require('../../@modules/error/custom.js');
+const { verifyAuthority } = require('../../@modules/authority.js');
 
 
 // ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatRecruitmentRepliesArr } = require('./format');
-// const { formatRecruitmentCommentsAndRepliesArr } = require('./format');
+const { formatRecruitmentRepliesArr } = require('./format.js');
+
+
 
 
 
@@ -85,7 +87,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await Schema.findOne(conditionObj).exec();
+    return await SchemaRecruitmentReplies.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -128,7 +130,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.find(conditionObj).exec();
+    return await SchemaRecruitmentReplies.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -170,7 +172,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.countDocuments(conditionObj).exec();
+    return await SchemaRecruitmentReplies.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -217,7 +219,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await SchemaRecruitmentReplies.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -259,7 +261,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await Schema.insertMany(saveArr);
+    return await SchemaRecruitmentReplies.insertMany(saveArr);
     
     
   } catch (err) {
@@ -302,7 +304,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await Schema.deleteMany(conditionObj);
+    return await SchemaRecruitmentReplies.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -319,7 +321,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 
 // --------------------------------------------------
-//   募集
+//   find
 // --------------------------------------------------
 
 /**
@@ -394,7 +396,7 @@ const findReplies = async ({
       //   Aggregation
       // --------------------------------------------------
       
-      const docArr = await Schema.aggregate([
+      const docArr = await SchemaRecruitmentReplies.aggregate([
         
         
         // --------------------------------------------------
@@ -873,7 +875,7 @@ const findRepliesForUpsert = async ({
       //   Aggregation
       // --------------------------------------------------
       
-      const docRecruitmentRepliesArr = await Schema.aggregate([
+      const docRecruitmentRepliesArr = await SchemaRecruitmentReplies.aggregate([
         
         
         // --------------------------------------------------
@@ -1083,7 +1085,7 @@ const findOneForEdit = async ({
     //   Find
     // --------------------------------------------------
     
-    const docRecruitmentRepliesArr = await Schema.aggregate([
+    const docRecruitmentRepliesArr = await SchemaRecruitmentReplies.aggregate([
       
       
       // --------------------------------------------------
@@ -1238,6 +1240,10 @@ const findOneForEdit = async ({
 
 
 
+// --------------------------------------------------
+//   transaction
+// --------------------------------------------------
+
 /**
  * Transaction 挿入 / 更新する
  * スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
@@ -1281,7 +1287,7 @@ const transactionForUpsert = async ({
   //   Transaction / Session
   // --------------------------------------------------
   
-  const session = await Schema.startSession();
+  const session = await SchemaRecruitmentReplies.startSession();
   
   
   
@@ -1305,7 +1311,7 @@ const transactionForUpsert = async ({
     //   - recruitment-replies
     // ---------------------------------------------
     
-    await Schema.updateOne(recruitmentRepliesConditionObj, recruitmentRepliesSaveObj, { session, upsert: true });
+    await SchemaRecruitmentReplies.updateOne(recruitmentRepliesConditionObj, recruitmentRepliesSaveObj, { session, upsert: true });
     
     
     // ---------------------------------------------
@@ -1529,7 +1535,7 @@ const transactionForDelete = async ({
   //   Transaction / Session
   // --------------------------------------------------
   
-  const session = await Schema.startSession();
+  const session = await SchemaRecruitmentReplies.startSession();
   
   
   
@@ -1550,29 +1556,29 @@ const transactionForDelete = async ({
     
     
     
-    // --------------------------------------------------
-    //   - recruitment-replies / Delete
-    // --------------------------------------------------
-    
-    await Schema.deleteOne(recruitmentRepliesConditionObj, { session });
-    
-    
     // ---------------------------------------------
-    //   - recruitment-comments / Update
-    // ---------------------------------------------
-    
-    await SchemaRecruitmentComments.updateOne(recruitmentCommentsConditionObj, recruitmentCommentsSaveObj, { session });
-    
-    
-    // ---------------------------------------------
-    //   - recruitment-threads / Update
+    //   - recruitment-threads / updateOne
     // ---------------------------------------------
     
     await SchemaRecruitmentThreads.updateOne(recruitmentThreadsConditionObj, recruitmentThreadsSaveObj, { session });
     
     
     // ---------------------------------------------
-    //   - images-and-videos / Delete
+    //   - recruitment-comments / updateOne
+    // ---------------------------------------------
+    
+    await SchemaRecruitmentComments.updateOne(recruitmentCommentsConditionObj, recruitmentCommentsSaveObj, { session });
+    
+    
+    // --------------------------------------------------
+    //   - recruitment-replies / deleteOne
+    // --------------------------------------------------
+    
+    await SchemaRecruitmentReplies.deleteOne(recruitmentRepliesConditionObj, { session });
+    
+    
+    // ---------------------------------------------
+    //   - images-and-videos / deleteOne
     // ---------------------------------------------
     
     if (Object.keys(imagesAndVideosConditionObj).length !== 0) {
@@ -1581,7 +1587,7 @@ const transactionForDelete = async ({
     
     
     // ---------------------------------------------
-    //   - game-communities / Update
+    //   - game-communities / updateOne
     // ---------------------------------------------
     
     if (Object.keys(gameCommunitiesConditionObj).length !== 0 && Object.keys(gameCommunitiesSaveObj).length !== 0) {

@@ -26,31 +26,30 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Model
 // ---------------------------------------------
 
-const Schema = require('./schema');
-const SchemaRecruitmentThreads = require('../recruitment-threads/schema');
-// const SchemaForumComments = require('../forum-comments/schema');
-const SchemaImagesAndVideos = require('../images-and-videos/schema');
-const SchemaGameCommunities = require('../game-communities/schema');
-const SchemaUsers = require('../users/schema');
+const SchemaRecruitmentComments = require('./schema.js');
 
-// const ModelForumComments = require('../forum-comments/model');
-// const ModelGameCommunities = require('../game-communities/model');
-// const ModelUserCommunities = require('../user-communities/model');
+const SchemaRecruitmentThreads = require('../recruitment-threads/schema.js');
+const SchemaRecruitmentReplies = require('../recruitment-replies/schema.js');
+const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
+const SchemaGameCommunities = require('../game-communities/schema.js');
+const SchemaUsers = require('../users/schema.js');
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../@modules/error/custom');
-const { verifyAuthority } = require('../../@modules/authority');
+const { CustomError } = require('../../@modules/error/custom.js');
+const { verifyAuthority } = require('../../@modules/authority.js');
 
 
 // ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatRecruitmentCommentsAndRepliesArr } = require('./format');
+const { formatRecruitmentCommentsAndRepliesArr } = require('./format.js');
+
+
 
 
 
@@ -87,7 +86,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await Schema.findOne(conditionObj).exec();
+    return await SchemaRecruitmentComments.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -130,7 +129,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.find(conditionObj).exec();
+    return await SchemaRecruitmentComments.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -172,7 +171,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.countDocuments(conditionObj).exec();
+    return await SchemaRecruitmentComments.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -219,7 +218,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await SchemaRecruitmentComments.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -261,7 +260,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await Schema.insertMany(saveArr);
+    return await SchemaRecruitmentComments.insertMany(saveArr);
     
     
   } catch (err) {
@@ -304,7 +303,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await Schema.deleteMany(conditionObj);
+    return await SchemaRecruitmentComments.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -321,7 +320,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 
 // --------------------------------------------------
-//   募集
+//   find
 // --------------------------------------------------
 
 /**
@@ -392,7 +391,7 @@ const findCommentsAndReplies = async ({
     for (let recruitmentThreads_id of recruitmentThreads_idsArr.values()) {
       
       
-      const docArr = await Schema.aggregate([
+      const docArr = await SchemaRecruitmentComments.aggregate([
         
         
         // --------------------------------------------------
@@ -1117,7 +1116,7 @@ const findOneForEdit = async ({
     //   Find
     // --------------------------------------------------
     
-    const docRecruitmentCommentsArr = await Schema.aggregate([
+    const docRecruitmentCommentsArr = await SchemaRecruitmentComments.aggregate([
       
       
       // --------------------------------------------------
@@ -1478,12 +1477,324 @@ const findOneForEdit = async ({
 
 
 
+/**
+ * 削除用データを取得する（権限もチェック）
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} recruitmentComments_id - DB recruitment-comments _id / スレッドID
+ * @return {Array} 取得データ
+ */
+const findForDelete = async ({
+  
+  req,
+  localeObj,
+  loginUsers_id,
+  recruitmentComments_id,
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    // const language = lodashGet(localeObj, ['language'], '');
+    // const country = lodashGet(localeObj, ['country'], '');
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Aggregate
+    // --------------------------------------------------
+    
+    const docArr = await SchemaRecruitmentComments.aggregate([
+      
+      
+      // --------------------------------------------------
+      //   Match
+      // --------------------------------------------------
+      
+      {
+        $match : { _id: recruitmentComments_id }
+      },
+      
+      
+      // --------------------------------------------------
+      //   images-and-videos
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$letImagesAndVideos_id'] },
+                }
+              },
+              { $project:
+                {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // --------------------------------------------------
+      //   返信
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'recruitment-replies',
+            let: { let_id: '$_id' },
+            pipeline: [
+              
+              { $match:
+                { $expr:
+                  { $eq: ['$recruitmentComments_id', '$$let_id'] }
+                }
+              },
+              
+              
+              // --------------------------------------------------
+              //   recruitment-replies / images-and-videos - メイン画像
+              // --------------------------------------------------
+              
+              {
+                $lookup:
+                  {
+                    from: 'images-and-videos',
+                    let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $eq: ['$_id', '$$letImagesAndVideos_id'] },
+                        }
+                      },
+                      { $project:
+                        {
+                          createdDate: 0,
+                          updatedDate: 0,
+                          users_id: 0,
+                          __v: 0,
+                        }
+                      }
+                    ],
+                    as: 'imagesAndVideosObj'
+                  }
+              },
+              
+              {
+                $unwind: {
+                  path: '$imagesAndVideosObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+              
+              
+              {
+                $project: {
+                  imagesAndVideos_id: 1,
+                  imagesAndVideosObj: 1,
+                }
+              },
+              
+            ],
+            as: 'recruitmentRepliesArr'
+          }
+      },
+      
+      
+      {
+        $project: {
+          _id: 1,
+          createdDate: 1,
+          gameCommunities_id: 1,
+          recruitmentThreads_id: 1,
+          users_id: 1,
+          imagesAndVideos_id: 1,
+          imagesAndVideosObj: 1,
+          recruitmentRepliesArr: 1,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   配列が空の場合は処理停止
+    // --------------------------------------------------
+    
+    if (docArr.length === 0) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'I9zrbWcOD', messageID: 'cvS0qSAlE' }] });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    const docCommentObj = lodashGet(docArr, [0], {});
+    const recruitmentRepliesArr = lodashGet(docCommentObj, ['recruitmentRepliesArr'], []);
+    const gameCommunities_id = lodashGet(docCommentObj, ['gameCommunities_id'], '');
+    const recruitmentThreads_id = lodashGet(docCommentObj, ['recruitmentThreads_id'], '');
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   編集権限がない場合は処理停止
+    // --------------------------------------------------
+    
+    const editable = verifyAuthority({
+      
+      req,
+      users_id: lodashGet(docCommentObj, ['users_id'], ''),
+      loginUsers_id,
+      ISO8601: lodashGet(docCommentObj, ['createdDate'], ''),
+      _id: lodashGet(docCommentObj, ['_id'], '')
+      
+    });
+    
+    if (!editable) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'Y5gWhUpcc', messageID: 'DSRlEoL29' }] });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   データ作成
+    // --------------------------------------------------
+    
+    const replies = - recruitmentRepliesArr.length;
+    
+    const imagesAndVideos_id = lodashGet(docCommentObj, ['imagesAndVideos_id'], '');
+    const imagesAndVideos_idsArr = [];
+    
+    if (imagesAndVideos_id) {
+      imagesAndVideos_idsArr.push(imagesAndVideos_id);
+    }
+    
+    let images = - lodashGet(docCommentObj, ['imagesAndVideosObj', 'images'], 0);
+    let videos = - lodashGet(docCommentObj, ['imagesAndVideosObj', 'videos'], 0);
+    
+    
+    for (let valueObj of recruitmentRepliesArr.values()) {
+      
+      if (valueObj.imagesAndVideos_id) {
+        imagesAndVideos_idsArr.push(valueObj.imagesAndVideos_id);
+      }
+      
+      images -= lodashGet(valueObj, ['imagesAndVideosObj', 'images'], 0);
+      videos -= lodashGet(valueObj, ['imagesAndVideosObj', 'videos'], 0);
+      
+    }
+    
+    
+    const returnObj = {
+      
+      gameCommunities_id,
+      recruitmentThreads_id,
+      replies,
+      imagesAndVideos_idsArr,
+      images,
+      videos,
+      
+    };
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/recruitment-comments/model.js - findForDelete
+    // `);
+    
+    // console.log(chalk`
+    //   recruitmentComments_id: {green ${recruitmentComments_id}}
+    //   editable: {green ${editable} / ${typeof editable}}
+    // `);
+    
+    // console.log(`
+    //   ----- docCommentObj -----\n
+    //   ${util.inspect(docCommentObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- recruitmentRepliesArr -----\n
+    //   ${util.inspect(recruitmentRepliesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
 
+
+
+
+
+
+// --------------------------------------------------
+//   transaction
+// --------------------------------------------------
 
 /**
  * Transaction 挿入 / 更新する
- * スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
- * 
  * @param {Object} recruitmentThreadsConditionObj - DB recruitment-threads 検索条件
  * @param {Object} recruitmentThreadsSaveObj - DB recruitment-threads 保存データ
  * @param {Object} recruitmentCommentsConditionObj - DB recruitment-comments 検索条件
@@ -1523,7 +1834,7 @@ const transactionForUpsert = async ({
   //   Transaction / Session
   // --------------------------------------------------
   
-  const session = await Schema.startSession();
+  const session = await SchemaRecruitmentComments.startSession();
   
   
   
@@ -1547,7 +1858,7 @@ const transactionForUpsert = async ({
     //   - recruitment-comments
     // ---------------------------------------------
     
-    await Schema.updateOne(recruitmentCommentsConditionObj, recruitmentCommentsSaveObj, { session, upsert: true });
+    await SchemaRecruitmentComments.updateOne(recruitmentCommentsConditionObj, recruitmentCommentsSaveObj, { session, upsert: true });
     
     
     // ---------------------------------------------
@@ -1736,6 +2047,210 @@ const transactionForUpsert = async ({
 
 
 
+/**
+ * Transaction コメントを削除する
+ * @param {Object} recruitmentThreadsConditionObj - DB recruitment-threads 検索条件
+ * @param {Object} recruitmentThreadsSaveObj - DB recruitment-threads 保存データ
+ * @param {Object} recruitmentCommentsConditionObj - DB recruitment-comments 検索条件
+ * @param {Object} recruitmentRepliesConditionObj - DB recruitment-replies 検索条件
+ * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
+ * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
+ * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
+ * @return {Object} 
+ */
+const transactionForDelete = async ({
+  
+  recruitmentThreadsConditionObj,
+  recruitmentThreadsSaveObj,
+  recruitmentCommentsConditionObj,
+  recruitmentRepliesConditionObj,
+  imagesAndVideosConditionObj = {},
+  gameCommunitiesConditionObj = {},
+  gameCommunitiesSaveObj = {},
+  
+}) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   Transaction / Session
+  // --------------------------------------------------
+  
+  const session = await SchemaRecruitmentComments.startSession();
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Start
+    // --------------------------------------------------
+    
+    await session.startTransaction();
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   - recruitment-threads / updateOne
+    // ---------------------------------------------
+    
+    await SchemaRecruitmentThreads.updateOne(recruitmentThreadsConditionObj, recruitmentThreadsSaveObj, { session });
+    
+    
+    // ---------------------------------------------
+    //   - recruitment-comments / deleteOne
+    // ---------------------------------------------
+    
+    await SchemaRecruitmentComments.deleteOne(recruitmentCommentsConditionObj, { session });
+    
+    
+    // --------------------------------------------------
+    //   - recruitment-replies / deleteMany
+    // --------------------------------------------------
+    
+    await SchemaRecruitmentReplies.deleteMany(recruitmentRepliesConditionObj, { session });
+    
+    
+    // ---------------------------------------------
+    //   - images-and-videos / deleteMany
+    // ---------------------------------------------
+    
+    if (Object.keys(imagesAndVideosConditionObj).length !== 0) {
+      await SchemaImagesAndVideos.deleteMany(imagesAndVideosConditionObj, { session });
+    }
+    
+    
+    // ---------------------------------------------
+    //   - game-communities / updateOne
+    // ---------------------------------------------
+    
+    if (Object.keys(gameCommunitiesConditionObj).length !== 0 && Object.keys(gameCommunitiesSaveObj).length !== 0) {
+      await SchemaGameCommunities.updateOne(gameCommunitiesConditionObj, gameCommunitiesSaveObj, { session });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Commit
+    // --------------------------------------------------
+    
+    await session.commitTransaction();
+    // console.log('--------コミット-----------');
+    
+    session.endSession();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/recruitment-comments/model.js - transactionForDelete
+    // `);
+    
+    // console.log(`
+    //   ----- recruitmentThreadsConditionObj -----\n
+    //   ${util.inspect(recruitmentThreadsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- recruitmentThreadsSaveObj -----\n
+    //   ${util.inspect(recruitmentThreadsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- recruitmentCommentsConditionObj -----\n
+    //   ${util.inspect(recruitmentCommentsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- recruitmentRepliesConditionObj -----\n
+    //   ${util.inspect(recruitmentRepliesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideosConditionObj -----\n
+    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- gameCommunitiesConditionObj -----\n
+    //   ${util.inspect(gameCommunitiesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- gameCommunitiesSaveObj -----\n
+    //   ${util.inspect(gameCommunitiesSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (errorObj) {
+    
+    // console.log(`
+    //   ----- errorObj -----\n
+    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Rollback
+    // --------------------------------------------------
+    
+    await session.abortTransaction();
+    // console.log('--------ロールバック-----------');
+    
+    session.endSession();
+    
+    
+    throw errorObj;
+    
+  }
+  
+};
+
+
+
+
 
 
 // --------------------------------------------------
@@ -1753,7 +2268,9 @@ module.exports = {
   
   findCommentsAndReplies,
   findOneForEdit,
+  findForDelete,
   
   transactionForUpsert,
+  transactionForDelete,
   
 };

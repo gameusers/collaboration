@@ -114,9 +114,6 @@ export default async (req, res) => {
     
     const {
       
-      gameCommunities_id,
-      recruitmentThreads_id,
-      recruitmentComments_id,
       recruitmentReplies_id,
       threadLimit,
       commentLimit,
@@ -125,9 +122,6 @@ export default async (req, res) => {
     } = bodyObj;
     
     
-    lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
-    lodashSet(requestParametersObj, ['recruitmentThreads_id'], recruitmentThreads_id);
-    lodashSet(requestParametersObj, ['recruitmentComments_id'], recruitmentComments_id);
     lodashSet(requestParametersObj, ['recruitmentReplies_id'], recruitmentReplies_id);
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
@@ -151,8 +145,6 @@ export default async (req, res) => {
     
     await validationIP({ throwError: true, value: ip });
     
-    await validationGameCommunities_idServer({ value: gameCommunities_id });
-    
     await validationRecruitmentThreadsLimit({ throwError: true, required: true, value: threadLimit });
     await validationRecruitmentCommentsLimit({ throwError: true, required: true, value: commentLimit });
     await validationRecruitmentRepliesLimit({ throwError: true, required: true, value: replyLimit });
@@ -166,19 +158,17 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const docObj = await ModelRecruitmentReplies.findOneForEdit({
-        
-        req,
-        localeObj,
-        loginUsers_id,
-        recruitmentReplies_id,
-        
-      });
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      recruitmentReplies_id,
+      
+    });
     
-    
-    // --------------------------------------------------
-    //   images & videos
-    // --------------------------------------------------
-    
+    const gameCommunities_id = lodashGet(docObj, ['gameCommunities_id'], '');
+    const recruitmentThreads_id = lodashGet(docObj, ['recruitmentThreads_id'], '');
+    const recruitmentComments_id = lodashGet(docObj, ['recruitmentComments_id'], '');
     const imagesAndVideos_id = lodashGet(docObj, ['imagesAndVideos_id'], '');
     const images = lodashGet(docObj, ['images'], 0);
     const videos = lodashGet(docObj, ['images'], 0);
@@ -213,7 +203,7 @@ export default async (req, res) => {
     
     // console.log(`
     //   ----- docObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(docObj)), { colors: true, depth: null })}\n
+    //   ${util.inspect(docObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -363,6 +353,8 @@ export default async (req, res) => {
     returnObj.recruitmentThreadsObj = recruitmentObj.recruitmentThreadsObj;
     returnObj.recruitmentCommentsObj = recruitmentObj.recruitmentCommentsObj;
     returnObj.recruitmentRepliesObj = recruitmentObj.recruitmentRepliesObj;
+    
+    
     
     
     // --------------------------------------------------

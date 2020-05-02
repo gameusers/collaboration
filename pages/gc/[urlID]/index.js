@@ -16,101 +16,55 @@ import util from 'util';
 
 import React from 'react';
 import Error from 'next/error';
-import Head from 'next/head';
-import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
 import { Element } from 'react-scroll';
-import lodashGet from 'lodash/get';
-import lodashHas from 'lodash/has';
+import moment from 'moment';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+import lodashGet from 'lodash/get';
+// import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-import { locale } from '../../../app/@locales/locale';
+import { locale } from '../../../app/@locales/locale.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from '../../../app/@modules/fetch';
-import { createCsrfToken } from '../../../app/@modules/csrf';
+import { fetchWrapper } from '../../../app/@modules/fetch.js';
+import { createCsrfToken } from '../../../app/@modules/csrf.js';
 
 
 // ---------------------------------------------
 //   Stores
 // ---------------------------------------------
 
-import initStoreRoot from '../../../app/@stores/root';
-import initStoreGcCommunity from '../../../app/gc/community/stores/store';
-import initStoreCardPlayer from '../../../app/common/card/player/stores/player';
-import initStoreForum from '../../../app/common/forum/stores/store';
-import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
-import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
-import initStoreFollow from '../../../app/common/follow/stores/store';
-import initStoreGood from '../../../app/common/good/stores/store';
+import initStoreRoot from '../../../app/@stores/root.js';
+import initStoreGcCommunity from '../../../app/gc/community/stores/store.js';
+import initStoreCardPlayer from '../../../app/common/card/player/stores/player.js';
+import initStoreForum from '../../../app/common/forum/stores/store.js';
+import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video.js';
+import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form.js';
+import initStoreFollow from '../../../app/common/follow/stores/store.js';
+import initStoreGood from '../../../app/common/good/stores/store.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import Layout from '../../../app/common/layout/components/layout';
-import Sidebar from '../../../app/common/layout/components/sidebar';
-import Drawer from '../../../app/common/layout/components/drawer';
-import ForumNavigation from '../../../app/common/forum/components/navigation';
-import ForumThread from '../../../app/common/forum/components/thread';
-import VideoModal from '../../../app/common/image-and-video/components/video-modal';
-import CardPlayerDialog from '../../../app/common/card/player/components/dialog';
+import Layout from '../../../app/common/layout/components/layout-ver2.js';
+import ForumNavigation from '../../../app/common/forum/components/navigation.js';
+import ForumThread from '../../../app/common/forum/components/thread.js';
 
 
-
-
-/**
- * ストアを読み込む、または作成する
- * @param {Object} propsObj - ストアに入れる値
- */
-const getOrCreateStore = ({ propsObj }) => {
-  
-  
-  // --------------------------------------------------
-  //   Stores
-  // --------------------------------------------------
-  
-  initStoreRoot({ propsObj });
-  
-  const storeGcCommunity = initStoreGcCommunity({});
-  const storeCardPlayer = initStoreCardPlayer({});
-  const storeForum = initStoreForum({ propsObj });
-  const storeImageAndVideo = initStoreImageAndVideo({});
-  const storeImageAndVideoForm = initStoreImageAndVideoForm({});
-  const storeFollow = initStoreFollow({});
-  const storeGood = initStoreGood({});
-  
-  
-  // --------------------------------------------------
-  //   Return
-  // --------------------------------------------------
-  
-  return {
-    
-    storeGcCommunity,
-    storeCardPlayer,
-    storeForum,
-    storeImageAndVideo,
-    storeImageAndVideoForm,
-    storeFollow,
-    storeGood,
-    
-  };
-  
-  
-};
 
 
 
@@ -125,95 +79,46 @@ export default class extends React.Component {
   
   
   // --------------------------------------------------
-  //   getInitialProps
+  //   constructor
   // --------------------------------------------------
   
-  static async getInitialProps({ req, res, query, datetimeCurrent }) {
+  constructor(props) {
     
     
     // --------------------------------------------------
-    //   CSRF
+    //   super
     // --------------------------------------------------
     
-    createCsrfToken(req, res);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Cookie & Accept Language
-    // --------------------------------------------------
-    
-    const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
-    const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-    
-    const stores = initStoreRoot({
-      
-      propsObj: {
-        cookie: reqHeadersCookie
-      }
-      
-    });
+    super(props);
     
     
     
     
     // --------------------------------------------------
-    //   Property
+    //   Props
     // --------------------------------------------------
     
-    const urlID = query.urlID;
-    const pathname = `/gc/${urlID}`;
-    const temporaryDataID = `/gc/${urlID}`;
+    const urlID = props.urlID;
+    const pathname = props.pathname;
+    const ISO8601 = props.ISO8601;
     
+    let propsObj = props.propsObj;
     
-    // --------------------------------------------------
-    //   Get Cookie Data & Temporary Data for Fetch
-    // --------------------------------------------------
-    
-    const threadListPage = stores.data.getTemporaryData({ pathname: temporaryDataID, key: 'threadListPage' });
-    const threadListLimit = stores.data.getCookie({ key: 'threadListLimit' });
-    
-    const threadPage = stores.data.getTemporaryData({ pathname: temporaryDataID, key: 'threadPage' });
-    const threadLimit = stores.data.getCookie({ key: 'threadLimit' });
-    const commentLimit = stores.data.getCookie({ key: 'commentLimit' });
-    const replyLimit = stores.data.getCookie({ key: 'replyLimit' });
+    const gameCommunities_id = lodashGet(propsObj, ['gameCommunityObj', '_id'], '');
+    const accessLevel = lodashGet(propsObj, ['accessLevel'], 1);
     
     
     // --------------------------------------------------
-    //   Fetch
+    //   Path Array
     // --------------------------------------------------
     
-    const resultObj = await fetchWrapper({
-      
-      urlApi: encodeURI(`${process.env.URL_API}/v2/gc/${urlID}?threadListPage=${threadListPage}&threadListLimit=${threadListLimit}&threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}`),
-      methodType: 'GET',
-      reqHeadersCookie,
-      reqAcceptLanguage,
-      
-    });
-    
-    const statusCode = lodashGet(resultObj, ['statusCode'], 400);
-    let propsObj = lodashGet(resultObj, ['data'], {});
-    
-    const gameCommunities_id = lodashGet(resultObj, ['data', 'gameCommunityObj', '_id'], '');
-    const gameName = lodashGet(resultObj, ['data', 'headerObj', 'name'], '');
-    const accessLevel = lodashGet(resultObj, ['data', 'accessLevel'], 1);
+    const pathArr = ['gc', urlID];
     
     
     
     
     // --------------------------------------------------
-    //   Title
-    // --------------------------------------------------
-    
-    const title = `${gameName}`;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Stores
+    //   Header Navigation Link
     // --------------------------------------------------
     
     const headerNavMainArr = [
@@ -236,135 +141,52 @@ export default class extends React.Component {
       }
     ];
     
-    // if (accessLevel === 100) {
-    //   headerNavMainArr.push(
-    //     {
-    //       name: '設定',
-    //       href: `/gc/[urlID]/settings?urlID=${urlID}`,
-    //       as: `/gc/${urlID}/settings`,
-    //     }
-    //   );
-    // }
-    
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, gameCommunities_id };
-    
-    const storesObj = getOrCreateStore({ propsObj });
+    if (accessLevel === 100) {
+      headerNavMainArr.push(
+        {
+          name: '設定',
+          href: `/gc/[urlID]/settings?urlID=${urlID}`,
+          as: `/gc/${urlID}/settings`,
+        }
+      );
+    }
     
     
     
     
     // --------------------------------------------------
-    //   console.log
+    //   propsObj
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/gc/[urlID]/index.js
-    // `);
+    propsObj = { ...propsObj, ISO8601, pathname, pathArr, headerNavMainArr, gameCommunities_id };
     
-    // console.log(chalk`
-    //   threadListLimit: {green ${threadListLimit}}
-    //   threadLimit: {green ${threadLimit}}
-    //   commentLimit: {green ${commentLimit}}
-    //   replyLimit: {green ${replyLimit}}
+    
+    // --------------------------------------------------
+    //   Stores
+    // --------------------------------------------------
+    
+    initStoreRoot({ propsObj });
+    
+    const storeGcCommunity = initStoreGcCommunity({});
+    const storeCardPlayer = initStoreCardPlayer({});
+    const storeForum = initStoreForum({ propsObj });
+    const storeImageAndVideo = initStoreImageAndVideo({});
+    const storeImageAndVideoForm = initStoreImageAndVideoForm({});
+    const storeFollow = initStoreFollow({});
+    const storeGood = initStoreGood({});
+    
+    
+    this.storesObj = {
       
-    //   threadListPage: {green ${threadListPage}}
-    //   threadPage: {green ${threadPage}}
-    // `);
-    
-    // console.log(`
-    //   ----- reqHeadersCookie -----\n
-    //   ${util.inspect(reqHeadersCookie, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   reqAcceptLanguage: {green ${reqAcceptLanguage}}
-    // `);
-    
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return { 
-      
-      statusCode,
-      reqAcceptLanguage,
-      temporaryDataID,
-      urlID,
-      gameCommunities_id,
-      title,
-      storesObj,
-      propsObj,
+      storeGcCommunity,
+      storeCardPlayer,
+      storeForum,
+      storeImageAndVideo,
+      storeImageAndVideoForm,
+      storeFollow,
+      storeGood,
       
     };
-    
-    
-  }
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  constructor(props) {
-    
-    
-    // --------------------------------------------------
-    //   super
-    // --------------------------------------------------
-    
-    super(props);
-    
-    
-    // --------------------------------------------------
-    //   Property / Error Flag
-    // --------------------------------------------------
-    
-    this.error = false;
-    
-    
-    try {
-      
-      
-      // --------------------------------------------------
-      //   Error
-      // --------------------------------------------------
-      
-      if (
-        this.props.statusCode !== 200
-      ) {
-        throw new Error();
-      }
-      
-      
-      // --------------------------------------------------
-      //   Stores
-      // --------------------------------------------------
-      
-      const isServer = !process.browser;
-      
-      if (isServer) {
-        this.storesObj = props.storesObj;
-      } else {
-        this.storesObj = getOrCreateStore({ propsObj: props.propsObj });
-      }
-      
-      
-    } catch (e) {
-      this.error = true;
-    }
     
     
   }
@@ -384,7 +206,7 @@ export default class extends React.Component {
     //   参考：https://github.com/zeit/next.js#custom-error-handling
     // --------------------------------------------------
     
-    if (this.error) {
+    if (this.props.statusCode !== 200) {
       return <Error statusCode={this.props.statusCode} />;
     }
     
@@ -392,26 +214,11 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Setting
+    //   Props
     // --------------------------------------------------
     
-    // const settingAnonymity = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'anonymity'], false);
-    // const accessRightRead = lodashGet(this.props, ['propsObj', 'accessRightRead'], false);
-    
-    
-    // --------------------------------------------------
-    //   About
-    // --------------------------------------------------
-    
-    // const description = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'description'], '');
-    // const communityType = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'communityType'], 'open');
-    // const anonymity = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'anonymity'], true);
-    // const createdDate = lodashGet(this.props, ['propsObj', 'headerObj', 'createdDate'], '');
-    // const approval = lodashGet(this.props, ['propsObj', 'headerObj', 'approval'], false);
-    // const followedCount = lodashGet(this.props, ['propsObj', 'headerObj', 'followedCount'], 1);
-    // const gamesArr = lodashGet(this.props, ['propsObj', 'headerObj', 'gamesArr'], []);
-    
-    
+    const gameCommunities_id = lodashGet(this.props, ['propsObj', 'gameCommunityObj', '_id'], '');
+    const gameName = lodashGet(this.props, ['propsObj', 'headerObj', 'name'], '');
     
     
     // console.log(`
@@ -421,22 +228,52 @@ export default class extends React.Component {
     // `);
     
     // console.log(chalk`
-    //   createdDate: {green ${createdDate}}
-    //   description: {green ${description}}
-    //   followedCount: {green ${followedCount}}
+    //   this.props.statusCode: {green ${this.props.statusCode}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   gameName: {green ${gameName}}
     // `);
     
-    // console.log(`
-    //   ----- gamesArr -----\n
-    //   ${util.inspect(gamesArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
-    // console.log(chalk`
-    //   this.props.settingAnonymity: {green ${this.props.settingAnonymity}}
-    //   this.settingAnonymity: {green ${this.settingAnonymity}}
-    //   this.props.userCommunities_id: {green ${this.props.userCommunities_id}}
-    // `);
+    // --------------------------------------------------
+    //   Title
+    // --------------------------------------------------
+    
+    const title = `${gameName}`;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Component - Sidebar
+    // --------------------------------------------------
+    
+    const componentSidebar =
+      <ForumNavigation
+        temporaryDataID={this.props.temporaryDataID}
+        urlID={this.props.urlID}
+        gameCommunities_id={gameCommunities_id}
+      />
+    ;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Component - Contents
+    // --------------------------------------------------
+    
+    const componentContent = 
+      <Element
+        name="forumThreads"
+      >
+        <ForumThread
+          temporaryDataID={this.props.temporaryDataID}
+          urlID={this.props.urlID}
+          gameCommunities_id={gameCommunities_id}
+          settingAnonymity={true}
+        />
+      </Element>
+    ;
     
     
     
@@ -446,122 +283,157 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Provider { ...this.storesObj }>
-        
-        <Layout>
-          
-          
-          {/* Head 内部のタグをここで追記する */}
-          <Head>
-            <title>{this.props.title}</title>
-          </Head>
-          
-          
-          {/* 2 Column */}
-          <div
-            css={css`
-              display: flex;
-              flex-flow: row nowrap;
-              justify-content: center;
-              margin: 0 auto;
-              padding: 16px;
-              
-              @media screen and (max-width: 947px) {
-                display: flex;
-                flex-flow: column nowrap;
-                padding: 10px 0 10px 0;
-              }
-            `}
-          >
-            
-            
-            {/* Sidebar */}
-            <div
-              css={css`
-                width: 300px;
-                margin: 0 16px 0 0;
-                
-                @media screen and (max-width: 947px) {
-                  width: auto;
-                  margin: 0 0 16px 0;
-                }
-              `}
-            >
-              
-              
-              {/* フォーラムのナビゲーション */}
-              <Sidebar>
-                <ForumNavigation
-                  temporaryDataID={this.props.temporaryDataID}
-                  urlID={this.props.urlID}
-                  gameCommunities_id={this.props.gameCommunities_id}
-                />
-              </Sidebar>
-              
-              
-            </div>
-            
-            
-            
-            
-            {/* Main */}
-            <div
-              css={css`
-                width: 100%;
-                max-width: 800px;
-                
-                @media screen and (max-width: 947px) {
-                  max-width: none;
-                }
-              `}
-            >
-              
-              
-              {/* フォーラム */}
-              <Element
-                name="forumThreads"
-              >
-                <ForumThread
-                  temporaryDataID={this.props.temporaryDataID}
-                  urlID={this.props.urlID}
-                  gameCommunities_id={this.props.gameCommunities_id}
-                  settingAnonymity={true}
-                />
-              </Element>
-              
-              
-            </div>
-            
-            
-          </div>
-          
-          
-          
-          
-          {/* プレイヤーカードを表示するダイアログ */}
-          <CardPlayerDialog />
-          
-          
-          
-          
-          {/* Drawer */}
-          <Drawer>
-            Drawer
-          </Drawer>
-          
-          
-          
-          
-          <VideoModal />
-          
-          
-          
-          
-        </Layout>
-        
-      </Provider>
+      <Layout
+        storesObj={this.storesObj}
+        title={title}
+        componentSidebar={componentSidebar}
+        componentContent={componentContent}
+      />
     );
     
+    
   }
+  
+  
+}
+
+
+
+
+/**
+ * getServerSideProps
+ * @param {Object} req - リクエスト
+ * @param {Object} res - レスポンス
+ * @param {Object} query - クエリー
+ */
+export async function getServerSideProps({ req, res, query }) {
+  
+  
+  // --------------------------------------------------
+  //   CSRF
+  // --------------------------------------------------
+  
+  createCsrfToken(req, res);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Cookie & Accept Language
+  // --------------------------------------------------
+  
+  const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
+  const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+  
+  const stores = initStoreRoot({
+    
+    propsObj: {
+      cookie: reqHeadersCookie
+    }
+    
+  });
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const urlID = query.urlID;
+  const pathname = `/gc/${urlID}`;
+  const temporaryDataID = `/gc/${urlID}`;
+  const ISO8601 = moment().utc().toISOString();
+  
+  
+  // --------------------------------------------------
+  //   Get Cookie Data & Temporary Data for Fetch
+  // --------------------------------------------------
+  
+  const threadListPage = stores.data.getTemporaryData({ pathname: temporaryDataID, key: 'threadListPage' });
+  const threadListLimit = stores.data.getCookie({ key: 'threadListLimit' });
+  
+  const threadPage = stores.data.getTemporaryData({ pathname: temporaryDataID, key: 'threadPage' });
+  const threadLimit = stores.data.getCookie({ key: 'threadLimit' });
+  const commentLimit = stores.data.getCookie({ key: 'commentLimit' });
+  const replyLimit = stores.data.getCookie({ key: 'replyLimit' });
+  
+  
+  // --------------------------------------------------
+  //   Fetch
+  // --------------------------------------------------
+  
+  const resultObj = await fetchWrapper({
+      
+    urlApi: encodeURI(`${process.env.URL_API}/v2/gc/${urlID}?threadListPage=${threadListPage}&threadListLimit=${threadListLimit}&threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}`),
+    methodType: 'GET',
+    reqHeadersCookie,
+    reqAcceptLanguage,
+    
+  });
+  
+  const statusCode = lodashGet(resultObj, ['statusCode'], 400);
+  const propsObj = lodashGet(resultObj, ['data'], {});
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /pages/gc/[urlID]/index.js
+  // `);
+  
+  // console.log(chalk`
+  //   threadListPage: {green ${threadListPage}}
+  //   threadPage: {green ${threadPage}}
+    
+  //   threadListLimit: {green ${threadListLimit}}
+  //   threadLimit: {green ${threadLimit}}
+  //   commentLimit: {green ${commentLimit}}
+  //   replyLimit: {green ${replyLimit}}
+  // `);
+  
+  // console.log(`
+  //   ----- reqHeadersCookie -----\n
+  //   ${util.inspect(reqHeadersCookie, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(chalk`
+  //   reqAcceptLanguage: {green ${reqAcceptLanguage}}
+  // `);
+  
+  // console.log(`
+  //   ----- resultObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return { 
+    
+    props: {
+      
+      urlID,
+      pathname,
+      temporaryDataID,
+      ISO8601,
+      statusCode,
+      propsObj,
+      
+    }
+    
+  };
+  
   
 }

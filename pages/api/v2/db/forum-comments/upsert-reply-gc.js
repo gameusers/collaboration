@@ -6,59 +6,61 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const shortid = require('shortid');
-const moment = require('moment');
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import shortid from 'shortid';
+import moment from 'moment';
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelGameCommunities = require('../../../../../app/@database/game-communities/model');
-const ModelForumThreads = require('../../../../../app/@database/forum-threads/model');
-const ModelForumComments = require('../../../../../app/@database/forum-comments/model');
+import ModelGameCommunities from '../../../../../app/@database/game-communities/model.js';
+import ModelForumThreads from '../../../../../app/@database/forum-threads/model.js';
+import ModelForumComments from '../../../../../app/@database/forum-comments/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
-const { formatAndSave } = require('../../../../../app/@modules/image/save');
-const { setAuthority } = require('../../../../../app/@modules/authority');
+import { verifyCsrfToken } from '../../../../../app/@modules/csrf.js';
+import { returnErrorsArr } from '../../../../../app/@modules/log/log.js';
+import { CustomError } from '../../../../../app/@modules/error/custom.js';
+import { formatAndSave } from '../../../../../app/@modules/image/save.js';
+import { setAuthority } from '../../../../../app/@modules/authority.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationBoolean } = require('../../../../../app/@validations/boolean');
-const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
-const { validationForumThreads_idServerGC } = require('../../../../../app/@database/forum-threads/validations/_id-server');
-const { validationForumCommentsName } = require('../../../../../app/@database/forum-comments/validations/name');
-const { validationForumCommentsComment } = require('../../../../../app/@database/forum-comments/validations/comment');
-const { validationForumThreadsListLimit, validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
-const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
+import { validationIP } from '../../../../../app/@validations/ip.js';
+import { validationBoolean } from '../../../../../app/@validations/boolean.js';
+import { validationHandleName } from '../../../../../app/@validations/name.js';
+
+import { validationGameCommunities_idServer } from '../../../../../app/@database/game-communities/validations/_id-server.js';
+import { validationForumThreads_idServerGC } from '../../../../../app/@database/forum-threads/validations/_id-server.js';
+import { validationForumCommentsComment } from '../../../../../app/@database/forum-comments/validations/comment.js';
+import { validationForumThreadsListLimit, validationForumThreadsLimit } from '../../../../../app/@database/forum-threads/validations/limit.js';
+import { validationForumCommentsLimit, validationForumRepliesLimit } from '../../../../../app/@database/forum-comments/validations/limit.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from '../../../../../app/@locales/locale.js';
 
 
 
@@ -96,10 +98,11 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   IP: Remote Client Address
+  //   IP & User Agent
   // --------------------------------------------------
   
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
   
   
@@ -118,8 +121,8 @@ export default async (req, res) => {
       gameCommunities_id,
       forumThreads_id,
       forumComments_id,
-      forumReplies_id,
-      replyToForumComments_id,
+      forumReplies_id = '',
+      replyToForumComments_id = '',
       name,
       comment,
       anonymity,
@@ -167,7 +170,7 @@ export default async (req, res) => {
     await validationGameCommunities_idServer({ value: gameCommunities_id });
     await validationForumThreads_idServerGC({ forumThreads_id, gameCommunities_id });
     
-    await validationForumCommentsName({ throwError: true, value: name });
+    await validationHandleName({ throwError: true, value: name });
     await validationForumCommentsComment({ throwError: true, value: comment });
     await validationBoolean({ throwError: true, value: anonymity });
     
@@ -175,8 +178,6 @@ export default async (req, res) => {
     await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
     await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
     await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
-    
-    
     
     
     
@@ -241,7 +242,7 @@ export default async (req, res) => {
       // `);
       
       if (count > 0) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'GGx6QGEIK', messageID: 'ffNAq3wYT' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'q5gxH7amv', messageID: 'ffNAq3wYT' }] });
       }
       
     }
@@ -254,40 +255,6 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const ISO8601 = moment().utc().toISOString();
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   DB findOne / User Communities / 匿名
-    // --------------------------------------------------
-    
-    // const resultUserCommunityObj = await ModelUserCommunities.findOne({
-      
-    //   conditionObj: {
-    //     _id: gameCommunities_id
-    //   }
-      
-    // });
-    
-    // const settingAnonymity = lodashGet(resultUserCommunityObj, ['anonymity'], false);
-    
-    // // 匿名での投稿ができないのに匿名にしようとした場合、エラー
-    // if (!settingAnonymity && anonymity) {
-    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: '_TiwS7HD1-X', messageID: 'qnWsuPcrJ' }] });
-    // }
-    
-    
-    // console.log(chalk`
-    //   settingAnonymity: {green ${settingAnonymity}}
-    //   anonymity: {green ${anonymity}}
-    // `);
-    
-    // console.log(`
-    //   ----- resultUserCommunityObj -----\n
-    //   ${util.inspect(resultUserCommunityObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     
@@ -366,6 +333,36 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     // ---------------------------------------------
+    //   - forum-threads / 更新日時の変更 & 返信総数 + 1 & 画像数と動画数の変更
+    // ---------------------------------------------
+    
+    const forumThreadsConditionObj = {
+      _id: forumThreads_id,
+    };
+    
+    
+    const forumThreadsSaveObj = {
+      updatedDate: ISO8601,
+      $inc: { replies: 1, images, videos }
+    };
+    
+    
+    // ---------------------------------------------
+    //   - forum-comments / 更新日時の変更 & 返信総数 + 1
+    // ---------------------------------------------
+    
+    const forumCommentsConditionObj = {
+      _id: forumComments_id,
+    };
+    
+    
+    const forumCommentsSaveObj = {
+      updatedDate: ISO8601,
+      $inc: { replies: 1 }
+    };
+    
+    
+    // ---------------------------------------------
     //   - forum-comments / 返信
     // ---------------------------------------------
     
@@ -375,6 +372,7 @@ export default async (req, res) => {
     
     
     const forumRepliesSaveObj = {
+      
       createdDate: ISO8601,
       updatedDate: ISO8601,
       gameCommunities_id,
@@ -396,37 +394,8 @@ export default async (req, res) => {
       goods: 0,
       replies: 0,
       ip,
-      userAgent: lodashGet(req, ['headers', 'user-agent'], ''),
-    };
-    
-    
-    // ---------------------------------------------
-    //   - forum-threads / 更新日時の変更 & 返信数 + 1 & 画像数と動画数の変更
-    // ---------------------------------------------
-    
-    const forumThreadsConditionObj = {
-      _id: forumThreads_id,
-    };
-    
-    
-    let forumThreadsSaveObj = {
-      updatedDate: ISO8601,
-      $inc: { replies: 1, images, videos }
-    };
-    
-    
-    // ---------------------------------------------
-    //   - forum-comments / 更新日時の変更 & 返信数 + 1
-    // ---------------------------------------------
-    
-    const forumCommentsConditionObj = {
-      _id: forumComments_id,
-    };
-    
-    
-    let forumCommentsSaveObj = {
-      updatedDate: ISO8601,
-      $inc: { replies: 1 }
+      userAgent,
+      
     };
     
     
@@ -472,22 +441,17 @@ export default async (req, res) => {
       
       
       // ---------------------------------------------
-      //   - forum-threads / 編集の場合は返信数に +1 させない
+      //   - forum-threads / replies（スレッドに記録する返信総数）を増やさない
       // ---------------------------------------------
       
-      forumThreadsSaveObj = {
-        updatedDate: ISO8601,
-        $inc: { images, videos }
-      };
+      delete forumThreadsSaveObj.$inc.replies;
       
       
       // ---------------------------------------------
-      //   - forum-comments / 編集の場合は返信数に +1 させない
+      //   - forum-comments / replies（コメントに記録する返信総数）を増やさない
       // ---------------------------------------------
       
-      forumCommentsSaveObj = {
-        updatedDate: ISO8601,
-      };
+      delete forumCommentsSaveObj.$inc.replies;
       
       
     }
@@ -501,12 +465,12 @@ export default async (req, res) => {
     
     await ModelForumComments.transactionForUpsert({
       
-      forumRepliesConditionObj,
-      forumRepliesSaveObj,
-      forumCommentsConditionObj,
-      forumCommentsSaveObj,
       forumThreadsConditionObj,
       forumThreadsSaveObj,
+      forumCommentsConditionObj,
+      forumCommentsSaveObj,
+      forumRepliesConditionObj,
+      forumRepliesSaveObj,
       imagesAndVideosConditionObj,
       imagesAndVideosSaveObj,
       gameCommunitiesConditionObj,
@@ -543,28 +507,51 @@ export default async (req, res) => {
     });
     
     
-    // --------------------------------------------------
-    //   DB find / Forum Threads
-    // --------------------------------------------------
     
-    const forumObj = await ModelForumThreads.findForForum({
+    
+    // -------------------------------------------------------
+    //   新規投稿または編集後の返信を表示するために、データを取得する
+    // -------------------------------------------------------
+    
+    returnObj.forumRepliesObj = await ModelForumComments.findRepliesForUpsert({
       
       req,
       localeObj,
       loginUsers_id,
       gameCommunities_id,
-      threadPage: 1,
-      threadLimit,
-      commentPage: 1,
+      forumThreads_id,
+      forumComments_id,
+      forumReplies_id,
       commentLimit,
-      replyPage: 1,
       replyLimit,
       
     });
     
-    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    returnObj.forumRepliesObj = forumObj.forumRepliesObj;
+    
+    // --------------------------------------------------
+    //   DB find / Forum Threads
+    // --------------------------------------------------
+    
+    // const forumObj = await ModelForumThreads.findForForum({
+      
+    //   req,
+    //   localeObj,
+    //   loginUsers_id,
+    //   gameCommunities_id,
+    //   threadPage: 1,
+    //   threadLimit,
+    //   commentPage: 1,
+    //   commentLimit,
+    //   replyPage: 1,
+    //   replyLimit,
+      
+    // });
+    
+    // returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+    // returnObj.forumCommentsObj = forumObj.forumCommentsObj;
+    // returnObj.forumRepliesObj = forumObj.forumRepliesObj;
+    
+    
     
     
     // --------------------------------------------------
@@ -623,11 +610,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'EXVmnpmJu',
       users_id: loginUsers_id,
       ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     
@@ -645,6 +635,10 @@ export default async (req, res) => {
 
 
 
+
+// --------------------------------------------------
+//   config
+// --------------------------------------------------
 
 export const config = {
   api: {

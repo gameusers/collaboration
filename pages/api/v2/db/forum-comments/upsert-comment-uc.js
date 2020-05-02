@@ -6,65 +6,68 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const shortid = require('shortid');
-const moment = require('moment');
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import shortid from 'shortid';
+import moment from 'moment';
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
-const ModelForumThreads = require('../../../../../app/@database/forum-threads/model');
-const ModelForumComments = require('../../../../../app/@database/forum-comments/model');
+import ModelUserCommunities from '../../../../../app/@database/user-communities/model.js';
+import ModelForumThreads from '../../../../../app/@database/forum-threads/model.js';
+import ModelForumComments from '../../../../../app/@database/forum-comments/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
-const { formatAndSave } = require('../../../../../app/@modules/image/save');
-const { setAuthority } = require('../../../../../app/@modules/authority');
+import { verifyCsrfToken } from '../../../../../app/@modules/csrf.js';
+import { returnErrorsArr } from '../../../../../app/@modules/log/log.js';
+import { CustomError } from '../../../../../app/@modules/error/custom.js';
+import { formatAndSave } from '../../../../../app/@modules/image/save.js';
+import { setAuthority } from '../../../../../app/@modules/authority.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationBoolean } = require('../../../../../app/@validations/boolean');
-const { validationUserCommunities_idAndAuthorityServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
-const { validationForumThreads_idServerUC } = require('../../../../../app/@database/forum-threads/validations/_id-server');
-const { validationForumCommentsName } = require('../../../../../app/@database/forum-comments/validations/name');
-const { validationForumCommentsComment } = require('../../../../../app/@database/forum-comments/validations/comment');
-const { validationForumThreadsListLimit, validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
-const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
+import { validationIP } from '../../../../../app/@validations/ip.js';
+import { validationBoolean } from '../../../../../app/@validations/boolean.js';
+import { validationHandleName } from '../../../../../app/@validations/name.js';
+
+import { validationUserCommunities_idAndAuthorityServer } from '../../../../../app/@database/user-communities/validations/_id-server.js';
+import { validationForumThreads_idServerUC } from '../../../../../app/@database/forum-threads/validations/_id-server.js';
+// import { validationForumCommentsName } from '../../../../../app/@database/forum-comments/validations/name.js';
+import { validationForumCommentsComment } from '../../../../../app/@database/forum-comments/validations/comment.js';
+import { validationForumThreadsListLimit, validationForumThreadsLimit } from '../../../../../app/@database/forum-threads/validations/limit.js';
+import { validationForumCommentsLimit, validationForumRepliesLimit } from '../../../../../app/@database/forum-comments/validations/limit.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from '../../../../../app/@locales/locale.js';
 
 
 
 
 // --------------------------------------------------
-//   endpointID: ViCtroXyq
+//   endpointID: BXfHtdxsO
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -93,6 +96,14 @@ export default async (req, res) => {
   const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   IP & User Agent
+  // --------------------------------------------------
+  
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
   
   
@@ -151,11 +162,12 @@ export default async (req, res) => {
     //   Validation
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: req.ip });
+    await validationIP({ throwError: true, value: ip });
     
     await validationUserCommunities_idAndAuthorityServer({ value: userCommunities_id, loginUsers_id });
+    
     await validationForumThreads_idServerUC({ forumThreads_id, userCommunities_id });
-    await validationForumCommentsName({ throwError: true, value: name });
+    await validationHandleName({ throwError: true, value: name });
     await validationForumCommentsComment({ throwError: true, value: comment });
     await validationBoolean({ throwError: true, value: anonymity });
     
@@ -181,10 +193,12 @@ export default async (req, res) => {
       // --------------------------------------------------
       
       const forumCommentsObj = await ModelForumComments.findForEdit({
+        
         req,
         localeObj,
         loginUsers_id,
         forumComments_id,
+        
       });
       
       // console.log(`
@@ -205,13 +219,15 @@ export default async (req, res) => {
       const dateTimeLimit = moment().utc().add(-10, 'minutes');
       
       const count = await ModelForumComments.count({
+        
         conditionObj: {
           userCommunities_id,
           forumThreads_id,
           'localesArr.comment': comment,
           'createdDate': { '$gt': dateTimeLimit },
-          ip: req.ip,
+          ip,
         }
+        
       });
       
       // console.log(chalk`
@@ -220,7 +236,7 @@ export default async (req, res) => {
       // `);
       
       if (count > 0) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'GhO9a3n1M', messageID: 'ffNAq3wYT' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'TtVm8vpfk', messageID: 'ffNAq3wYT' }] });
       }
       
     }
@@ -253,7 +269,7 @@ export default async (req, res) => {
     
     // 匿名での投稿ができないのに匿名にしようとした場合、エラー
     if (!settingAnonymity && anonymity) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'A2aYwNx-X', messageID: 'qnWsuPcrJ' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: '8IB9f3aBa', messageID: 'qnWsuPcrJ' }] });
     }
     
     
@@ -352,6 +368,7 @@ export default async (req, res) => {
     
     
     const forumCommentsSaveObj = {
+      
       createdDate: ISO8601,
       updatedDate: ISO8601,
       gameCommunities_id: '',
@@ -372,8 +389,9 @@ export default async (req, res) => {
       anonymity,
       goods: 0,
       replies: 0,
-      ip: req.ip,
-      userAgent: lodashGet(req, ['headers', 'user-agent'], '')
+      ip,
+      userAgent,
+      
     };
     
     
@@ -494,6 +512,8 @@ export default async (req, res) => {
     });
     
     
+    
+    
     // --------------------------------------------------
     //   DB find / Forum Threads
     // --------------------------------------------------
@@ -518,14 +538,18 @@ export default async (req, res) => {
     returnObj.forumRepliesObj = forumObj.forumRepliesObj;
     
     
+    
+    
     // --------------------------------------------------
     //   DB find / User Communities / 最新の更新日時情報を取得する
     // --------------------------------------------------
     
     const userCommunityArr = await ModelUserCommunities.find({
+      
       conditionObj: {
         _id: userCommunities_id
       }
+      
     });
     
     returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
@@ -572,11 +596,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
-      endpointID: 'ViCtroXyq',
+      endpointID: 'BXfHtdxsO',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     
@@ -594,6 +621,10 @@ export default async (req, res) => {
 
 
 
+
+// --------------------------------------------------
+//   config
+// --------------------------------------------------
 
 export const config = {
   api: {

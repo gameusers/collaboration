@@ -148,7 +148,7 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Stores
+    //   propsObj
     // --------------------------------------------------
     
     propsObj = { ...propsObj, ISO8601, pathname, headerNavMainArr, userCommunities_id };
@@ -358,10 +358,8 @@ export default class extends React.Component {
     );
     
     
-    
-    
-    
   }
+  
   
 }
 

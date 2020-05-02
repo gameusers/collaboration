@@ -18,10 +18,11 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import TextareaAutosize from 'react-autosize-textarea';
-import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -50,14 +51,14 @@ import IconReply from '@material-ui/icons/Reply';
 //   Validations
 // ---------------------------------------------
 
-const { validationForumCommentsName } = require('../../../@database/forum-comments/validations/form');
+const { validationForumCommentsName } = require('../../../@database/forum-comments/validations/form.js');
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import ImageAndVideoForm from '../../image-and-video/components/form';
+import ImageAndVideoForm from '../../image-and-video/components/form.js';
 
 
 
@@ -172,8 +173,6 @@ export default injectIntl(class extends React.Component {
       settingAnonymity,
       
     } = this.props;
-    
-    // const { loginUsersObj } = stores.data;
     
     
     

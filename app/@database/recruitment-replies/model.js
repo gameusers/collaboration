@@ -825,12 +825,14 @@ const findReplies = async ({
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
- * @param {Array} recruitmentComments_idsArr - DB recruitment-comments _id / 募集のコメントIDが入った配列
+ * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
+ * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントID
+ * @param {string} recruitmentReplies_id - DB recruitment-replies _id / 返信ID
  * @param {number} commentPage - コメントのページ
  * @param {number} commentLimit - コメントのリミット
  * @param {number} replyPage - 返信のページ
  * @param {number} replyLimit - 返信のリミット
- * @return {Array} 取得データ
+ * @return {Object} 取得データ
  */
 const findRepliesForUpsert = async ({
   
@@ -857,6 +859,7 @@ const findRepliesForUpsert = async ({
     // --------------------------------------------------
     
     let replyPage = 1;
+    
     
     
     
@@ -911,7 +914,7 @@ const findRepliesForUpsert = async ({
       });
       
       
-      const replies = docRecruitmentRepliesArr.length;
+      // const replies = docRecruitmentRepliesArr.length;
       replyPage = Math.ceil((index + 1) / replyLimit);
       
       
@@ -939,7 +942,7 @@ const findRepliesForUpsert = async ({
     //   新規投稿
     //   返信は投稿順（昇順）で表示されるため、新規投稿した返信は順番的に最後に表示される
     //   そのため、新規投稿した返信を表示する場合は、返信の最後のページを表示しなければならない
-    //   スレッドの情報から返信の総数を取得し
+    //   コメントの情報から返信の総数を取得し
     //   limit で割って最後のページを取得する
     // --------------------------------------------------
       

@@ -101,7 +101,7 @@ export default async (req, res) => {
       
       gameCommunities_id,
       userCommunities_id,
-      forumComments_idArr,
+      forumComments_idsArr,
       commentPage, 
       commentLimit,
       replyPage,
@@ -112,7 +112,7 @@ export default async (req, res) => {
     
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
-    lodashSet(requestParametersObj, ['forumComments_idArr'], forumComments_idArr);
+    lodashSet(requestParametersObj, ['forumComments_idsArr'], forumComments_idsArr);
     lodashSet(requestParametersObj, ['commentPage'], commentPage);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
     lodashSet(requestParametersObj, ['replyPage'], replyPage);
@@ -159,14 +159,14 @@ export default async (req, res) => {
     //   DB find / Forum Comments - Replies
     // --------------------------------------------------
     
-    returnObj.forumRepliesObj = await ModelForumComments.findRepliesByForumComments_idArr({
+    returnObj.forumRepliesObj = await ModelForumComments.findRepliesByForumComments_idsArr({
       
       req,
       localeObj,
       loginUsers_id,
       gameCommunities_id,
       userCommunities_id,
-      forumComments_idArr,
+      forumComments_idsArr,
       commentPage,
       commentLimit,
       replyPage,
@@ -234,8 +234,8 @@ export default async (req, res) => {
     // `);
     
     // console.log(`
-    //   ----- forumComments_idArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumComments_idArr)), { colors: true, depth: null })}\n
+    //   ----- forumComments_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumComments_idsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

@@ -15,6 +15,7 @@ const util = require('util');
 // ---------------------------------------------
 
 const moment = require('moment');
+
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
@@ -26,26 +27,28 @@ const lodashMerge = require('lodash/merge');
 //   Model
 // ---------------------------------------------
 
-const Schema = require('./schema');
-const SchemaForumThreads = require('../forum-threads/schema');
-const SchemaGameCommunities = require('../game-communities/schema');
-const SchemaUserCommunities = require('../user-communities/schema');
-const SchemaImagesAndVideos = require('../images-and-videos/schema');
+const SchemaForumComments = require('./schema.js');
+const SchemaForumThreads = require('../forum-threads/schema.js');
+const SchemaGameCommunities = require('../game-communities/schema.js');
+const SchemaUserCommunities = require('../user-communities/schema.js');
+const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../@modules/error/custom');
-const { verifyAuthority } = require('../../@modules/authority');
+const { CustomError } = require('../../@modules/error/custom.js');
+const { verifyAuthority } = require('../../@modules/authority.js');
 
 
 // ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosObj, formatImagesAndVideosArr } = require('../images-and-videos/format');
+const { formatImagesAndVideosObj, formatImagesAndVideosArr } = require('../images-and-videos/format.js');
+
+
 
 
 
@@ -83,7 +86,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await Schema.findOne(conditionObj).exec();
+    return await SchemaForumComments.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -126,7 +129,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.find(conditionObj).exec();
+    return await SchemaForumComments.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -168,7 +171,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.countDocuments(conditionObj).exec();
+    return await SchemaForumComments.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -215,7 +218,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await SchemaForumComments.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -257,7 +260,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await Schema.insertMany(saveArr);
+    return await SchemaForumComments.insertMany(saveArr);
     
     
   } catch (err) {
@@ -300,7 +303,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await Schema.deleteMany(conditionObj);
+    return await SchemaForumComments.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -316,6 +319,9 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 
 
+// --------------------------------------------------
+//   find
+// --------------------------------------------------
 
 /**
  * コメントと返信を取得する - forumThreads_idsArr で検索
@@ -371,7 +377,7 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
     for (let value of forumThreads_idsArr.values()) {
       
       
-      const docArr = await Schema.aggregate([
+      const docArr = await SchemaForumComments.aggregate([
         
         
         // --------------------------------------------------
@@ -901,25 +907,25 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
 
 
 /**
- * 返信を取得する - forumComments_id で検索
+ * 返信を取得する - forumComments_idsArr で検索
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} forumComments_id - DB forum-comments _id / コメントのID
+ * @param {string} forumComments_idsArr - DB forum-comments _id / コメントIDが入った配列
  * @param {number} commentPage - コメントのページ
  * @param {number} commentLimit - コメントのリミット
  * @param {number} replyPage - 返信のページ
  * @param {number} replyLimit - 返信のリミット
  * @return {Array} 取得データ
  */
-const findRepliesByForumComments_idArr = async ({
+const findRepliesByForumComments_idsArr = async ({
   
   req,
   localeObj,
   loginUsers_id,
   gameCommunities_id,
   userCommunities_id,
-  forumComments_idArr = [],
+  forumComments_idsArr = [],
   commentPage = 1,
   commentLimit = process.env.FORUM_COMMENT_LIMIT,
   replyPage = 1,
@@ -935,7 +941,7 @@ const findRepliesByForumComments_idArr = async ({
     //   parse
     // --------------------------------------------------
     
-    const intCommentLimit = forumComments_idArr.length;
+    const intCommentLimit = forumComments_idsArr.length;
     const intReplyLimit = parseInt(replyLimit, 10);
     
     // const intCommentLimit = parseInt(commentLimit, 10);
@@ -961,7 +967,7 @@ const findRepliesByForumComments_idArr = async ({
         {
           $match: {
             $and: [
-              { _id: { $in: forumComments_idArr } },
+              { _id: { $in: forumComments_idsArr } },
               { gameCommunities_id },
             ]
           },
@@ -979,7 +985,7 @@ const findRepliesByForumComments_idArr = async ({
         {
           $match: {
             $and: [
-              { _id: { $in: forumComments_idArr } },
+              { _id: { $in: forumComments_idsArr } },
               { userCommunities_id },
             ]
           },
@@ -995,7 +1001,7 @@ const findRepliesByForumComments_idArr = async ({
     //   Aggregation
     // --------------------------------------------------
     
-    const docArr = await Schema.aggregate([
+    const docArr = await SchemaForumComments.aggregate([
       
       
       // --------------------------------------------------
@@ -1003,17 +1009,6 @@ const findRepliesByForumComments_idArr = async ({
       // --------------------------------------------------
       
       ...matchConditionArr,
-      
-      
-      
-      // {
-      //   $match: {
-      //     $and: [
-      //       { _id: { $in: forumComments_idArr } },
-      //       { userCommunities_id },
-      //     ]
-      //   },
-      // },
       
       
       // --------------------------------------------------
@@ -1462,7 +1457,7 @@ const findRepliesByForumComments_idArr = async ({
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/@database/forum-comments/model.js - findRepliesByForumComments_idArr
+    //   /app/@database/forum-comments/model.js - findRepliesByForumComments_idsArr
     // `);
     
     // console.log(chalk`
@@ -1474,8 +1469,8 @@ const findRepliesByForumComments_idArr = async ({
     // `);
     
     // console.log(`
-    //   ----- forumComments_idArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumComments_idArr)), { colors: true, depth: null })}\n
+    //   ----- forumComments_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumComments_idsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -1968,7 +1963,7 @@ const getPage = async ({
     //   _idをすべて取得する
     // --------------------------------------------------
     
-    const comment_idsArr = await Schema.aggregate([
+    const comment_idsArr = await SchemaForumComments.aggregate([
       
       
       // --------------------------------------------------
@@ -2028,7 +2023,7 @@ const getPage = async ({
       //   _idをすべて取得する
       // --------------------------------------------------
       
-      const reply_idsArr = await Schema.aggregate([
+      const reply_idsArr = await SchemaForumComments.aggregate([
         
         
         // --------------------------------------------------
@@ -2162,10 +2157,6 @@ const getPage = async ({
 
 
 
-
-
-
-
 /**
  * コメント＆返信データを取得する　編集用
  * @param {Object} req - リクエスト
@@ -2191,7 +2182,7 @@ const findForEdit = async ({
     //   Aggregate
     // --------------------------------------------------
     
-    const resultArr = await Schema.aggregate([
+    const resultArr = await SchemaForumComments.aggregate([
       
       
       // スレッドを取得
@@ -2379,6 +2370,304 @@ const findForEdit = async ({
 
 
 
+/**
+ * 返信を取得する / 投稿＆編集後のデータ / 2020/5/2
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
+ * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティID
+ * @param {string} forumThreads_id - DB forum-threads _id / スレッドID
+ * @param {string} forumComments_id - DB forum-comments _id / コメントID
+ * @param {string} forumReplies_id - DB forum-comments _id / 返信ID
+ * @param {number} commentPage - コメントのページ
+ * @param {number} commentLimit - コメントのリミット
+ * @param {number} replyPage - 返信のページ
+ * @param {number} replyLimit - 返信のリミット
+ * @return {Object} 取得データ
+ */
+const findRepliesForUpsert = async ({
+  
+  req,
+  localeObj,
+  loginUsers_id,
+  gameCommunities_id,
+  userCommunities_id,
+  forumThreads_id,
+  forumComments_id,
+  forumReplies_id,
+  commentPage = 1,
+  commentLimit = process.env.FORUM_COMMENT_LIMIT,
+  replyPage = 1,
+  replyLimit = process.env.FORUM_REPLY_LIMIT,
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    let replyPage = 1;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   編集
+    //   返信は投稿順（昇順）で表示されるため、一番新しいページを単純に表示すれば編集した返信が表示されるわけではない
+    //   そのため、編集した返信を表示する場合、返信の表示順を計算しなければならない
+    //   返信の総数から順番を取得し
+    //   limit で割って表示ページを取得する
+    // --------------------------------------------------
+    
+    if (forumReplies_id) {
+      
+      
+      // --------------------------------------------------
+      //   Match Condition Array
+      // --------------------------------------------------
+      
+      let matchConditionArr = [];
+      
+      
+      // --------------------------------------------------
+      //   Game Community
+      // --------------------------------------------------
+      
+      if (gameCommunities_id) {
+        
+        matchConditionArr = [
+          {
+            $match: {
+              gameCommunities_id,
+              forumThreads_id,
+              forumComments_id,
+            },
+          },
+        ];
+        
+        
+      // --------------------------------------------------
+      //   User Community
+      // --------------------------------------------------
+      
+      } else if (userCommunities_id) {
+      
+        matchConditionArr = [
+          {
+            $match: {
+              userCommunities_id,
+              forumThreads_id,
+              forumComments_id,
+            },
+          },
+        ];
+        
+      }
+      
+      
+      // --------------------------------------------------
+      //   Aggregation
+      // --------------------------------------------------
+      
+      const docForumRepliesArr = await SchemaForumComments.aggregate([
+        
+        
+        // --------------------------------------------------
+        //   matchConditionArr
+        // --------------------------------------------------
+        
+        ...matchConditionArr,
+        
+        
+        { '$sort': { 'createdDate': 1 } },
+        
+        
+        { $project:
+          {
+            _id: 1,
+          }
+        },
+        
+        
+      ]).exec();
+      
+      
+      
+      
+      const index = docForumRepliesArr.findIndex((valueObj) => {
+        return valueObj._id === forumReplies_id;
+      });
+      
+      
+      // const replies = docForumRepliesArr.length;
+      replyPage = Math.ceil((index + 1) / replyLimit);
+      
+      
+      
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   Update
+      // `);
+      
+      // console.log(`
+      //   ----- docForumRepliesArr -----\n
+      //   ${util.inspect(docForumRepliesArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(chalk`
+      //   index: {green ${index}}
+      //   replies: {green ${replies}}
+      // `);
+      
+      
+    // --------------------------------------------------
+    //   新規投稿
+    //   返信は投稿順（昇順）で表示されるため、新規投稿した返信は順番的に最後に表示される
+    //   そのため、新規投稿した返信を表示する場合は、返信の最後のページを表示しなければならない
+    //   コメントの情報から返信の総数を取得し
+    //   limit で割って最後のページを取得する
+    // --------------------------------------------------
+      
+    } else {
+      
+      
+      let docForumCommentsObj = {};
+      
+      
+      // --------------------------------------------------
+      //   Game Community
+      // --------------------------------------------------
+      
+      if (gameCommunities_id) {
+        
+        docForumCommentsObj = await findOne({
+          
+          conditionObj: {
+            _id: forumComments_id,
+            gameCommunities_id,
+            forumThreads_id,
+          }
+          
+        });
+        
+        
+      // --------------------------------------------------
+      //   User Community
+      // --------------------------------------------------
+      
+      } else if (userCommunities_id) {
+      
+        docForumCommentsObj = await findOne({
+          
+          conditionObj: {
+            _id: forumComments_id,
+            userCommunities_id,
+            forumThreads_id,
+          }
+          
+        });
+        
+      }
+      
+      
+      const replies = lodashGet(docForumCommentsObj, ['replies'], 1);
+      replyPage = Math.ceil(replies / replyLimit);
+      
+      
+      
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   Insert
+      // `);
+      
+      // console.log(`
+      //   ----- docForumCommentsObj -----\n
+      //   ${util.inspect(docForumCommentsObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   findReplies
+    // --------------------------------------------------
+    
+    const forumRepliesObj = await findRepliesByForumComments_idsArr({
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      gameCommunities_id,
+      userCommunities_id,
+      forumComments_idsArr: [forumComments_id],
+      commentPage: 1,
+      commentLimit,
+      replyPage,
+      replyLimit,
+      
+    });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/forum-comments/model.js - findRepliesForUpsert
+    // `);
+    
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   forumThreads_id: {green ${forumThreads_id}}
+    //   forumComments_id: {green ${forumComments_id}}
+    //   forumReplies_id: {green ${forumReplies_id}}
+    //   commentPage: {green ${commentPage}}
+    //   commentLimit: {green ${commentLimit}}
+    //   replyPage: {green ${replyPage}}
+    //   replyLimit: {green ${replyLimit}}
+    // `);
+    
+    // console.log(`
+    //   ----- forumRepliesObj -----\n
+    //   ${util.inspect(forumRepliesObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return forumRepliesObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
 
 
 
@@ -2407,7 +2696,7 @@ const findForDeleteComment = async ({
     //   Aggregate
     // --------------------------------------------------
     
-    const resultArr = await Schema.aggregate([
+    const resultArr = await SchemaForumComments.aggregate([
       
       
       // コメントを取得
@@ -2663,7 +2952,7 @@ const findForDeleteReply = async ({
     //   Aggregate
     // --------------------------------------------------
     
-    const resultArr = await Schema.aggregate([
+    const resultArr = await SchemaForumComments.aggregate([
       
       
       // --------------------------------------------------
@@ -2823,6 +3112,12 @@ const findForDeleteReply = async ({
 
 
 
+
+
+// --------------------------------------------------
+//   transaction
+// --------------------------------------------------
+
 /**
  * Transaction 挿入 / 更新する
  * コメント、スレッド、画像＆動画、コミュニティを同時に更新する
@@ -2905,7 +3200,7 @@ const transactionForUpsert = async ({
     // ---------------------------------------------
     
     if (Object.keys(forumCommentsConditionObj).length !== 0 && Object.keys(forumCommentsSaveObj).length !== 0) {
-      await Schema.updateOne(forumCommentsConditionObj, forumCommentsSaveObj, { session, upsert: true });
+      await SchemaForumComments.updateOne(forumCommentsConditionObj, forumCommentsSaveObj, { session, upsert: true });
     }
     
     
@@ -2914,7 +3209,7 @@ const transactionForUpsert = async ({
     // ---------------------------------------------
     
     if (Object.keys(forumRepliesConditionObj).length !== 0 && Object.keys(forumRepliesSaveObj).length !== 0) {
-      await Schema.updateOne(forumRepliesConditionObj, forumRepliesSaveObj, { session, upsert: true });
+      await SchemaForumComments.updateOne(forumRepliesConditionObj, forumRepliesSaveObj, { session, upsert: true });
     }
     
     
@@ -3154,8 +3449,8 @@ const transactionForDeleteComment = async ({
     //   DB
     // --------------------------------------------------
     
-    await Schema.deleteMany(forumRepliesConditionObj, { session });
-    await Schema.deleteOne(forumCommentsConditionObj, { session });
+    await SchemaForumComments.deleteMany(forumRepliesConditionObj, { session });
+    await SchemaForumComments.deleteOne(forumCommentsConditionObj, { session });
     await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session });
     
     
@@ -3352,14 +3647,14 @@ const transactionForDeleteReply = async ({
     //   - forum-comments (reply) / Delete
     // --------------------------------------------------
     
-    await Schema.deleteOne(forumRepliesConditionObj, { session });
+    await SchemaForumComments.deleteOne(forumRepliesConditionObj, { session });
     
     
     // ---------------------------------------------
     //   - forum-comments & forum-threads / Update
     // ---------------------------------------------
     
-    await Schema.updateOne(forumCommentsConditionObj, forumCommentsSaveObj, { session });
+    await SchemaForumComments.updateOne(forumCommentsConditionObj, forumCommentsSaveObj, { session });
     await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session });
     
     
@@ -3518,6 +3813,7 @@ const transactionForDeleteReply = async ({
 
 
 
+
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
@@ -3532,11 +3828,13 @@ module.exports = {
   deleteMany,
   
   findCommentsAndRepliesByForumThreads_idsArr,
-  findRepliesByForumComments_idArr,
+  findRepliesByForumComments_idsArr,
   getPage,
   findForEdit,
+  findRepliesForUpsert,
   findForDeleteComment,
   findForDeleteReply,
+  
   transactionForUpsert,
   transactionForDeleteComment,
   transactionForDeleteReply,

@@ -822,8 +822,10 @@ export default async (req, res) => {
     returnObj.recruitmentRepliesObj = recruitmentObj.recruitmentRepliesObj;
     
     
+    
+    
     // --------------------------------------------------
-    //   updatedDateObj
+    //   DB find / Game Communities / 最新の更新日時情報を取得する
     // --------------------------------------------------
     
     const gameCommunityArr = await ModelGameCommunities.find({
@@ -916,12 +918,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: '1X2JEdmdO',
       users_id: loginUsers_id,
       ip,
       userAgent,
       requestParametersObj,
+      
     });
     
     
@@ -939,6 +943,10 @@ export default async (req, res) => {
 
 
 
+
+// --------------------------------------------------
+//   config
+// --------------------------------------------------
 
 export const config = {
   api: {

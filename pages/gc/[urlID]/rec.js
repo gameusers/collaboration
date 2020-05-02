@@ -17,7 +17,6 @@ import util from 'util';
 import React from 'react';
 import Error from 'next/error';
 import { observer } from 'mobx-react';
-// import { Element } from 'react-scroll';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -58,6 +57,8 @@ import initStoreHardware from '../../../app/common/hardware/stores/store';
 
 import Layout from '../../../app/common/layout/components/layout-ver2';
 import RecruitmentThread from '../../../app/gc/rec/components/recruitment-thread';
+
+
 
 
 

@@ -168,7 +168,7 @@ export default injectIntl(class extends React.Component {
           </h3>
           
           
-          {/* 日数 */}
+          {/* 通知方法 */}
           <div
             css={css`
               font-size: 14px;
@@ -179,7 +179,7 @@ export default injectIntl(class extends React.Component {
           </div>
           
           
-          {/* 解説 */}
+          {/* ？アイコン */}
           <IconButton
             css={css`
               && {

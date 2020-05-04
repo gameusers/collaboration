@@ -17,12 +17,13 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { useSpring, animated } from 'react-spring';
-import lodashGet from 'lodash/get';
-// import lodashSet from 'lodash/set';
-// import lodashThrottle from 'lodash/throttle';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+import lodashGet from 'lodash/get';
+// import lodashSet from 'lodash/set';
+// import lodashThrottle from 'lodash/throttle';
 
 
 
@@ -46,10 +47,10 @@ const Container = ({ children, showNavTop, lowerSidebar }) => {
   }
   
   
-  
   // console.log(chalk`
   //   ypx: {green ${ypx}}
   // `);
+  
   
   const props = useSpring({
     transform: lowerSidebar ? `translateY(${ypx}px)` : 'translateY(0px)',
@@ -57,21 +58,23 @@ const Container = ({ children, showNavTop, lowerSidebar }) => {
   });
   
   return <animated.div
-      css={css`
-        width: 300px;
-        
-        position: sticky;
-        top: 0;
-        
-        @media screen and (max-width: 947px) {
-          width: 100%;
-          position: static;
-        }
-      `}
-      style={props}
-    >
-      {children}
-    </animated.div>;
+    css={css`
+      width: 300px;
+      margin: 0 0 50px 0;
+      
+      position: sticky;
+      top: 0;
+      
+      @media screen and (max-width: 947px) {
+        width: 100%;
+        position: static;
+        margin: 0;
+      }
+    `}
+    style={props}
+  >
+    {children}
+  </animated.div>;
   
 };
 
@@ -85,17 +88,6 @@ const Container = ({ children, showNavTop, lowerSidebar }) => {
 @inject('stores')
 @observer
 export default class extends React.Component {
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  constructor(props) {
-    super(props);
-  }
-  
-  
   
   
   // --------------------------------------------------
@@ -117,7 +109,6 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const showNavTop = lodashGet(stores, ['layout', 'showNavTop'], true);
-    // const lowerNavMain = lodashGet(stores, ['layout', 'lowerNavMain'], false);
     const lowerSidebar = lodashGet(stores, ['layout', 'lowerSidebar'], false);
     
     
@@ -145,14 +136,10 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container showNavTop={showNavTop} lowerSidebar={lowerSidebar}>
-        
-        
-        {/*<img
-          src="/img/sample/knight_f_idle_anim_f0.png"
-          width="32"
-          height="40"
-        />*/}
+      <Container
+        showNavTop={showNavTop}
+        lowerSidebar={lowerSidebar}
+      >
         
         
         {/* Contents */}

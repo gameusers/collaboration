@@ -29,13 +29,13 @@ const { CustomError } = require('../@modules/error/custom.js');
 
 
 /**
- * Handle Name
+ * Keyword
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {boolean} required - 必須 true / 必須でない false
  * @param {boolean} value - 値
  * @return {Object} バリデーション結果
  */
-const validationHandleName = ({ throwError = false, required = false, value }) => {
+const validationKeyword = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -43,7 +43,7 @@ const validationHandleName = ({ throwError = false, required = false, value }) =
   // ---------------------------------------------
   
   const minLength = 1;
-  const maxLength = 50;
+  const maxLength = 100;
   
   
   // ---------------------------------------------
@@ -56,7 +56,7 @@ const validationHandleName = ({ throwError = false, required = false, value }) =
   const resultObj = {
     value: data,
     numberOfCharacters,
-    messageID: 'yhgyXHqZu',
+    messageID: 'Uh3rnK7Dk',
     error: false,
   };
   
@@ -71,7 +71,7 @@ const validationHandleName = ({ throwError = false, required = false, value }) =
     if (validator.isEmpty(data)) {
       
       if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Ra4SEJsb_', messageID: 'cFbXmuFVh' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Sg7H_-dXL', messageID: 'cFbXmuFVh' }] });
       }
       
       return resultObj;
@@ -84,7 +84,7 @@ const validationHandleName = ({ throwError = false, required = false, value }) =
     // ---------------------------------------------
     
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'tZlNs2n5m', messageID: 'yhgyXHqZu' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'jprJiUFPU', messageID: 'Uh3rnK7Dk' }] });
     }
     
     
@@ -134,6 +134,6 @@ const validationHandleName = ({ throwError = false, required = false, value }) =
 
 module.exports = {
   
-  validationHandleName,
+  validationKeyword,
   
 };

@@ -59,7 +59,7 @@ import { validationRecruitmentThreadsName } from '../../../../@database/recruitm
 //   Components
 // ---------------------------------------------
 
-import FormHardwares from '../../../../common/hardware/components/form.js';
+import FormHardwares from '../../../../common/hardware/components/form-explanation.js';
 import FormIDsInformations from '../form/ids-informations.js';
 import FormDeadline from '../form/deadline.js';
 import ImageAndVideoForm from '../../../../common/image-and-video/components/form.js';

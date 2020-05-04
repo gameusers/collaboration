@@ -31,16 +31,16 @@ import lodashGet from 'lodash/get';
 //   Components
 // ---------------------------------------------
 
-import HeaderNavTop from './header/nav-top';
-import HeroImage from './header/hero-image';
-import HeaderNavMain from './header/nav-main';
-import Footer from './footer';
-import Sidebar from './sidebar';
-import Drawer from './drawer';
-import CardPlayerDialog from '../../card/player/components/dialog';
-import VideoModal from '../../image-and-video/components/video-modal';
-import Snackbar from './snackbar';
-import Loading from './loading';
+import HeaderNavTop from './header/nav-top.js';
+import HeroImage from './header/hero-image.js';
+import HeaderNavMain from './header/nav-main.js';
+import Footer from './footer.js';
+import Sidebar from './sidebar.js';
+import Drawer from './drawer.js';
+import CardPlayerDialog from '../../card/player/components/dialog.js';
+import VideoModal from '../../image-and-video/components/video-modal.js';
+import Snackbar from './snackbar.js';
+import Loading from './loading.js';
 
 
 
@@ -69,17 +69,6 @@ Router.events.on('routeChangeError', () => NProgress.done());
 @inject('stores')
 @observer
 export default class Layout extends React.Component {
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  // constructor(props) {
-  //   super(props);
-  // }
-  
-  
   
   
   // --------------------------------------------------

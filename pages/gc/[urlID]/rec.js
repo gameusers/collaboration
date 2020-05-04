@@ -30,33 +30,34 @@ import lodashGet from 'lodash/get';
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from '../../../app/@modules/fetch';
-import { createCsrfToken } from '../../../app/@modules/csrf';
+import { fetchWrapper } from '../../../app/@modules/fetch.js';
+import { createCsrfToken } from '../../../app/@modules/csrf.js';
 
 
 // ---------------------------------------------
 //   Stores
 // ---------------------------------------------
 
-import initStoreRoot from '../../../app/@stores/root';
-import initStoreGcRecruitment from '../../../app/gc/rec/stores/store';
-import initStoreCardPlayer from '../../../app/common/card/player/stores/player';
-import initStoreForum from '../../../app/common/forum/stores/store';
-import initStoreIDForm from '../../../app/common/id/stores/form';
-import initStoreGameForm from '../../../app/common/game/stores/form';
-import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
-import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
-import initStoreFollow from '../../../app/common/follow/stores/store';
-import initStoreGood from '../../../app/common/good/stores/store';
-import initStoreHardware from '../../../app/common/hardware/stores/store';
+import initStoreRoot from '../../../app/@stores/root.js';
+import initStoreGcRecruitment from '../../../app/gc/rec/stores/store.js';
+import initStoreCardPlayer from '../../../app/common/card/player/stores/player.js';
+import initStoreForum from '../../../app/common/forum/stores/store.js';
+import initStoreIDForm from '../../../app/common/id/stores/form.js';
+import initStoreGameForm from '../../../app/common/game/stores/form.js';
+import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video.js';
+import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form.js';
+import initStoreFollow from '../../../app/common/follow/stores/store.js';
+import initStoreGood from '../../../app/common/good/stores/store.js';
+import initStoreHardware from '../../../app/common/hardware/stores/store.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import Layout from '../../../app/common/layout/components/layout-ver2';
-import RecruitmentThread from '../../../app/gc/rec/components/recruitment-thread';
+import Layout from '../../../app/common/layout/components/layout-ver2.js';
+import RecruitmentNavigation from '../../../app/gc/rec/components/recruitment-navigation.js';
+import RecruitmentThread from '../../../app/gc/rec/components/recruitment-thread.js';
 
 
 
@@ -239,6 +240,21 @@ export default class GcRec extends React.Component {
     
     
     // --------------------------------------------------
+    //   Component - Sidebar
+    // --------------------------------------------------
+    
+    const componentSidebar =
+      <RecruitmentNavigation
+        temporaryDataID={this.props.temporaryDataID}
+        urlID={this.props.urlID}
+        gameCommunities_id={gameCommunities_id}
+      />
+    ;
+    
+    
+    
+    
+    // --------------------------------------------------
     //   Component - Contents
     // --------------------------------------------------
     
@@ -261,6 +277,7 @@ export default class GcRec extends React.Component {
       <Layout
         storesObj={this.storesObj}
         title={title}
+        componentSidebar={componentSidebar}
         componentContent={componentContent}
       />
     );

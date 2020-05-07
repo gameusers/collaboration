@@ -22,7 +22,7 @@ const lodashGet = require('lodash/get');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom.js');
 
 
 
@@ -51,7 +51,7 @@ const validationRecruitmentThreadsCategory = ({ throwError = false, value }) => 
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
     value: data,
     numberOfCharacters,
     messageID: 'Nbu_IqorV',
@@ -111,6 +111,117 @@ const validationRecruitmentThreadsCategory = ({ throwError = false, value }) => 
 
 
 
+/**
+ * category の配列
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {Array} arr - 値
+ * @return {Object} バリデーション結果
+ */
+const validationRecruitmentThreadsCategoriesArr = async ({ throwError = false, arr }) => {
+  
+  
+  // ---------------------------------------------
+  //   Result Object
+  // ---------------------------------------------
+  
+  const resultObj = {
+    
+    value: arr,
+    messageID: 'Error',
+    error: false,
+    
+  };
+  
+  
+  try {
+    
+    
+    // ---------------------------------------------
+    //   配列チェック
+    // ---------------------------------------------
+    
+    if (!Array.isArray(arr)) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'SfXL8LOe0', messageID: '3mDvfqZHV' }] });
+    }
+    
+    
+    // ---------------------------------------------
+    //   配列が空の場合、処理停止
+    // ---------------------------------------------
+    
+    const length = arr.length;
+    
+    if (length === 0) {
+      return;
+    }
+    
+    
+    // ---------------------------------------------
+    //   ループ
+    // ---------------------------------------------
+    
+    for (let value of arr.values()) {
+      
+      
+      // ---------------------------------------------
+      //   適切な値が選択されているかチェック
+      // ---------------------------------------------
+      
+      if (!validator.isIn(String(value), ['1', '2', '3'])) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: '9gbvNTrGP', messageID: 'PH8jcw-VF' }] });
+      }
+      
+      
+    }
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   Throw Error
+    // ---------------------------------------------
+    
+    if (throwError) {
+      throw errorObj;
+    }
+    
+    
+    // ---------------------------------------------
+    //   Result Error
+    // ---------------------------------------------
+    
+    resultObj.error = true;
+    
+    if (errorObj instanceof CustomError) {
+      resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    } else {
+      resultObj.messageID = 'qnWsuPcrJ';
+    }
+    
+    
+  }
+  
+  
+  // console.log(`
+  //   ----- arr -----\n
+  //   ${util.inspect(arr, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
+  
+  
+};
+
+
+
+
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
@@ -118,5 +229,6 @@ const validationRecruitmentThreadsCategory = ({ throwError = false, value }) => 
 module.exports = {
   
   validationRecruitmentThreadsCategory,
+  validationRecruitmentThreadsCategoriesArr,
   
 };

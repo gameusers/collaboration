@@ -21,14 +21,14 @@ const validator = require('validator');
 //   Model
 // ---------------------------------------------
 
-const Model = require('../model');
+const Model = require('../model.js');
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom.js');
 
 
 

@@ -30,15 +30,10 @@ import lodashGet from 'lodash/get';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-// import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
 
 
@@ -46,9 +41,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 //   Material UI / Icons
 // ---------------------------------------------
 
-import IconExpandLess from '@material-ui/icons/ExpandLess';
-import IconExpandMore from '@material-ui/icons/ExpandMore';
-import IconAlarm from '@material-ui/icons/Alarm';
 import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
@@ -235,7 +227,7 @@ export default injectIntl(class extends React.Component {
       <Panel
         heading="募集検索"
         pathArr={this.pathArr}
-        defaultExpanded={false}
+        defaultExpanded={true}
       >
         
         

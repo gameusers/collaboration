@@ -885,7 +885,7 @@ const findFromSchemaCardPlayers = async ({
     
     let matchConditionArr = [
       {
-        $match : { users_id }
+        $match: { users_id }
       },
     ];
     
@@ -893,7 +893,7 @@ const findFromSchemaCardPlayers = async ({
       
       matchConditionArr = [
         {
-          $match : { _id: cardPlayers_id }
+          $match: { _id: cardPlayers_id }
         },
       ];
       

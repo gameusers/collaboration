@@ -38,8 +38,13 @@ import { returnErrorsArr } from '../../../../../app/@modules/log/log.js';
 //   Validations
 // ---------------------------------------------
 
-import { validationInteger } from '../../../../../app/@validations/integer.js';
+// import { validationInteger } from '../../../../../app/@validations/integer.js';
+import { validationKeyword } from '../../../../../app/@validations/keyword.js';
+
 import { validationGameCommunities_idServer } from '../../../../../app/@database/game-communities/validations/_id-server.js';
+import { validationHardwareIDsArrServer } from '../../../../../app/@database/hardwares/validations/id-server.js';
+
+import { validationRecruitmentThreadsCategoriesArr } from '../../../../../app/@database/recruitment-threads/validations/category.js';
 import { validationRecruitmentThreadsLimit } from '../../../../../app/@database/recruitment-threads/validations/limit.js';
 import { validationRecruitmentCommentsLimit } from '../../../../../app/@database/recruitment-comments/validations/limit.js';
 import { validationRecruitmentRepliesLimit } from '../../../../../app/@database/recruitment-replies/validations/limit.js';
@@ -55,7 +60,7 @@ import { locale } from '../../../../../app/@locales/locale.js';
 
 
 // --------------------------------------------------
-//   endpointID: 41RpY56fl
+//   endpointID: YewAAV82g
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -108,22 +113,22 @@ export default async (req, res) => {
     const { 
       
       gameCommunities_id,
-      threadPage,
+      hardwareIDsArr,
+      categoriesArr,
+      keyword,
       threadLimit,
-      commentPage, 
       commentLimit,
-      replyPage,
       replyLimit,
       
     } = bodyObj;
     
     
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
-    lodashSet(requestParametersObj, ['threadPage'], threadPage);
+    lodashSet(requestParametersObj, ['hardwareIDsArr'], hardwareIDsArr);
+    lodashSet(requestParametersObj, ['categoriesArr'], categoriesArr);
+    lodashSet(requestParametersObj, ['keyword'], keyword);
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
-    lodashSet(requestParametersObj, ['commentPage'], commentPage);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
-    lodashSet(requestParametersObj, ['replyPage'], replyPage);
     lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
     
     
@@ -143,17 +148,17 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     await validationGameCommunities_idServer({ value: gameCommunities_id });
+    await validationHardwareIDsArrServer({ throwError: true, arr: hardwareIDsArr });
+    await validationRecruitmentThreadsCategoriesArr({ throwError: true, arr: categoriesArr });
+    await validationKeyword({ throwError: true, value: keyword });
     
-    // Thread Page & Limit
-    await validationInteger({ throwError: true, required: true, value: threadPage });
+    // Thread Limit
     await validationRecruitmentThreadsLimit({ throwError: true, required: true, value: threadLimit });
     
-    // Comment Page & Limit
-    await validationInteger({ throwError: true, required: true, value: commentPage });
+    // Comment Limit
     await validationRecruitmentCommentsLimit({ throwError: true, required: true, value: commentLimit });
     
-    // Reply Page & Limit
-    await validationInteger({ throwError: true, required: true, value: replyPage });
+    // Reply Limit
     await validationRecruitmentRepliesLimit({ throwError: true, required: true, value: replyLimit });
     
     
@@ -163,17 +168,20 @@ export default async (req, res) => {
     //   DB find / Recruitments
     // --------------------------------------------------
     
-    const recruitmentObj = await ModelRecruitmentThreads.findRecruitments({
+    const recruitmentObj = await ModelRecruitmentThreads.findRecruitmentsForSearch({
       
       req,
       localeObj,
       loginUsers_id,
       gameCommunities_id,
-      threadPage,
+      hardwareIDsArr,
+      categoriesArr,
+      keyword,
+      threadPage: 1,
       threadLimit,
-      commentPage,
+      commentPage: 1,
       commentLimit,
-      replyPage,
+      replyPage: 1,
       replyLimit,
       
     });
@@ -208,27 +216,28 @@ export default async (req, res) => {
     //   console.log
     // ---------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/db/recruitment-threads/read-threads.js
-    // `);
-    
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   threadPage: {green ${threadPage} / ${typeof threadPage}}
-    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
-    //   commentPage: {green ${commentPage} / ${typeof commentPage}}
-    //   commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
-    //   replyPage: {green ${replyPage} / ${typeof replyPage}}
-    //   replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/db/recruitment-threads/search.js
+    `);
     
     // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   ----- hardwareIDsArr -----\n
+    //   ${util.inspect(hardwareIDsArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    // console.log(`
+    //   ----- categoriesArr -----\n
+    //   ${util.inspect(categoriesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -250,7 +259,7 @@ export default async (req, res) => {
     const resultErrorObj = returnErrorsArr({
       
       errorObj,
-      endpointID: '41RpY56fl',
+      endpointID: 'YewAAV82g',
       users_id: loginUsers_id,
       ip,
       userAgent,

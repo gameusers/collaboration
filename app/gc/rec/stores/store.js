@@ -286,82 +286,66 @@ class Store {
       //   Fetch
       // ---------------------------------------------
       
-      // const resultObj = await fetchWrapper({
+      const resultObj = await fetchWrapper({
         
-      //   urlApi: `${process.env.URL_API}/v2/db/recruitment-threads/upsert`,
-      //   methodType: 'POST',
-      //   formData: JSON.stringify(formDataObj),
+        urlApi: `${process.env.URL_API}/v2/db/recruitment-threads/search`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
         
-      // });
+      });
       
       
-      // // console.log(`
-      // //   ----- resultObj -----\n
-      // //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
-      // // ---------------------------------------------
-      // //   Error
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
       
-      // if ('errorsArr' in resultObj) {
-      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
-      // }
-      
-      
-      
-      
-      // // ---------------------------------------------
-      // //   スレッド更新
-      // // ---------------------------------------------
-      
-      // const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
-      // const clonedObj = lodashCloneDeep(recruitmentObj);
-      
-      // clonedObj.recruitmentThreadsObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {});
-      // clonedObj.recruitmentCommentsObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
-      // clonedObj.recruitmentRepliesObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
-      // clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
-      
-      // this.handleEdit({
-      //   pathArr: [gameCommunities_id],
-      //   value: clonedObj
-      // });
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
       
       
       
       
-      // // ---------------------------------------------
-      // //   Hide Form
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   スレッド更新
+      // ---------------------------------------------
       
-      // lodashSet(this.dataObj, [...pathArr, 'showFormThread'], false);
+      const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
+      const clonedObj = lodashCloneDeep(recruitmentObj);
+      
+      clonedObj.recruitmentThreadsObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {});
+      clonedObj.recruitmentCommentsObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
+      clonedObj.recruitmentRepliesObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
+      clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+      
+      this.handleEdit({
+        pathArr: [gameCommunities_id],
+        value: clonedObj
+      });
       
       
-      // // ---------------------------------------------
-      // //   編集の場合
-      // // ---------------------------------------------
       
-      // if (recruitmentThreads_id) {
         
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      storeLayout.handleScrollTo({
         
-      //   // ---------------------------------------------
-      //   //   Scroll
-      //   // ---------------------------------------------
+        to: 'recruitmentThreads',
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
         
-      //   storeLayout.handleScrollTo({
-          
-      //     to: recruitmentThreads_id,
-      //     duration: 0,
-      //     delay: 0,
-      //     smooth: 'easeInOutQuart',
-      //     offset: -50,
-          
-      //   });
-        
-      // }
+      });
       
       
       
@@ -373,10 +357,10 @@ class Store {
       //   console.log
       // --------------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/gc/rec/stores/store.js / handleNavigationFormSearchSubmit
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/gc/rec/stores/store.js / handleNavigationFormSearchSubmit
+      // `);
       
       // console.log(`
       //   ----- pathArr -----\n
@@ -390,15 +374,15 @@ class Store {
       //   --------------------\n
       // `);
       
-      console.log(`
-        ----- formDataObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- formDataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(chalk`
-        gameCommunities_id: {green ${gameCommunities_id}}
-      `);
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      // `);
       
       // return;
       

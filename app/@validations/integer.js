@@ -44,11 +44,13 @@ const validationInteger = ({ throwError = false, required = false, value }) => {
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
+    
     value: data,
     numberOfCharacters,
     messageID: 'Error',
     error: false,
+    
   };
   
   // console.log(chalk`

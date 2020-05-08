@@ -165,7 +165,7 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Recruitments
+    //   DB find / Recruitments For Search
     // --------------------------------------------------
     
     const recruitmentObj = await ModelRecruitmentThreads.findRecruitmentsForSearch({

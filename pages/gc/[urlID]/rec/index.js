@@ -23,41 +23,40 @@ import moment from 'moment';
 import { css, jsx } from '@emotion/core';
 
 import lodashGet from 'lodash/get';
-// import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from '../../../app/@modules/fetch.js';
-import { createCsrfToken } from '../../../app/@modules/csrf.js';
+import { fetchWrapper } from '../../../../app/@modules/fetch.js';
+import { createCsrfToken } from '../../../../app/@modules/csrf.js';
 
 
 // ---------------------------------------------
 //   Stores
 // ---------------------------------------------
 
-import initStoreRoot from '../../../app/@stores/root.js';
-import initStoreGcRecruitment from '../../../app/gc/rec/stores/store.js';
-import initStoreCardPlayer from '../../../app/common/card/player/stores/player.js';
-import initStoreForum from '../../../app/common/forum/stores/store.js';
-import initStoreIDForm from '../../../app/common/id/stores/form.js';
-import initStoreGameForm from '../../../app/common/game/stores/form.js';
-import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video.js';
-import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form.js';
-import initStoreFollow from '../../../app/common/follow/stores/store.js';
-import initStoreGood from '../../../app/common/good/stores/store.js';
-import initStoreHardware from '../../../app/common/hardware/stores/store.js';
+import initStoreRoot from '../../../../app/@stores/root.js';
+import initStoreGcRecruitment from '../../../../app/gc/rec/stores/store.js';
+import initStoreCardPlayer from '../../../../app/common/card/player/stores/player.js';
+import initStoreForum from '../../../../app/common/forum/stores/store.js';
+import initStoreIDForm from '../../../../app/common/id/stores/form.js';
+import initStoreGameForm from '../../../../app/common/game/stores/form.js';
+import initStoreImageAndVideo from '../../../../app/common/image-and-video/stores/image-and-video.js';
+import initStoreImageAndVideoForm from '../../../../app/common/image-and-video/stores/form.js';
+import initStoreFollow from '../../../../app/common/follow/stores/store.js';
+import initStoreGood from '../../../../app/common/good/stores/store.js';
+import initStoreHardware from '../../../../app/common/hardware/stores/store.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import Layout from '../../../app/common/layout/components/layout-ver2.js';
-import RecruitmentNavigation from '../../../app/gc/rec/components/recruitment-navigation.js';
-import RecruitmentThread from '../../../app/gc/rec/components/recruitment-thread.js';
+import Layout from '../../../../app/common/layout/components/layout-ver2.js';
+import RecruitmentNavigation from '../../../../app/gc/rec/components/recruitment-navigation.js';
+import RecruitmentThread from '../../../../app/gc/rec/components/recruitment-thread.js';
 
 
 
@@ -371,7 +370,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/rec.js
+  //   /pages/gc/[urlID]/rec/index.js
   // `);
   
   // console.log(`
@@ -385,6 +384,12 @@ export async function getServerSideProps({ req, res, query }) {
   //   threadLimit: {green ${threadLimit}}
   //   commentLimit: {green ${commentLimit}}
   //   replyLimit: {green ${replyLimit}}
+  // `);
+  
+  // console.log(`
+  //   ----- query -----\n
+  //   ${util.inspect(query, { colors: true, depth: null })}\n
+  //   --------------------\n
   // `);
   
   // console.log(`

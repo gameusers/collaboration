@@ -6,58 +6,54 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
-const lodashHas = require('lodash/has');
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelGameCommunities = require('../../../../../app/@database/game-communities/model');
-// const ModelGames = require('../../../../../app/@database/games/model');
-const ModelRecruitmentThreads = require('../../../../../app/@database/recruitment-threads/model');
+import ModelGameCommunities from '../../../../../app/@database/game-communities/model.js';
+import ModelRecruitmentThreads from '../../../../../app/@database/recruitment-threads/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
+import { returnErrorsArr } from '../../../../../app/@modules/log/log.js';
+import { CustomError } from '../../../../../app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationInteger } = require('../../../../../app/@validations/integer');
-const { validationRecruitmentThreadsLimit } = require('../../../../../app/@database/recruitment-threads/validations/limit');
-const { validationRecruitmentCommentsLimit } = require('../../../../../app/@database/recruitment-comments/validations/limit');
-const { validationRecruitmentRepliesLimit } = require('../../../../../app/@database/recruitment-replies/validations/limit');
+import { validationInteger } from '../../../../../app/@validations/integer.js';
+import { validationKeyword } from '../../../../../app/@validations/keyword.js';
+
+import { validationRecruitmentThreadsLimit } from '../../../../../app/@database/recruitment-threads/validations/limit.js';
+import { validationRecruitmentCommentsLimit } from '../../../../../app/@database/recruitment-comments/validations/limit.js';
+import { validationRecruitmentRepliesLimit } from '../../../../../app/@database/recruitment-replies/validations/limit.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from '../../../../../app/@locales/locale.js';
 
 
-// ---------------------------------------------
-//   API
-// ---------------------------------------------
-
-// const { initialProps } = require('../../../../../app/@api/v2/common');
 
 
 
@@ -95,6 +91,14 @@ export default async (req, res) => {
   const loginUsersRole = lodashGet(req, ['user', 'role'], '');
   
   
+  // --------------------------------------------------
+  //   IP & User Agent
+  // --------------------------------------------------
+  
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
   
   
   try {
@@ -104,17 +108,24 @@ export default async (req, res) => {
     //   GET Data
     // --------------------------------------------------
     
-    const urlID = req.query.urlID;
-    const threadPage = parseInt(req.query.threadPage, 10);
-    const threadLimit = parseInt(req.query.threadLimit, 10);
-    const commentLimit = parseInt(req.query.commentLimit, 10);
-    const replyLimit = parseInt(req.query.replyLimit, 10);
+    const urlID = lodashGet(req, ['query', 'urlID'], '');
+    const threadPage = parseInt(lodashGet(req, ['query', 'threadPage'], 1), 10);
+    const threadLimit = parseInt(lodashGet(req, ['query', 'threadLimit'], ''), 10);
+    const commentLimit = parseInt(lodashGet(req, ['query', 'commentLimit'], ''), 10);
+    const replyLimit = parseInt(lodashGet(req, ['query', 'replyLimit'], ''), 10);
+    const hardwares = lodashGet(req, ['query', 'hardwares'], '');
+    const categories = lodashGet(req, ['query', 'categories'], '');
+    const keyword = lodashGet(req, ['query', 'keyword'], '');
+    
     
     lodashSet(requestParametersObj, ['urlID'], urlID);
     lodashSet(requestParametersObj, ['threadPage'], threadPage);
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
     lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
+    lodashSet(requestParametersObj, ['hardwares'], hardwares);
+    lodashSet(requestParametersObj, ['categories'], categories);
+    lodashSet(requestParametersObj, ['keyword'], keyword);
     
     
     
@@ -153,8 +164,10 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     if (Object.keys(gameCommunityObj).length === 0) {
+      
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'cHpRTr4cy', messageID: 'Error' }] });
+      
     }
     
     
@@ -237,8 +250,12 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Recruitment
+    //   募集データ取得
     // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   - 引数
+    // ---------------------------------------------
     
     const argumentsObj = {
       
@@ -267,13 +284,79 @@ export default async (req, res) => {
     }
     
     
-    const recruitmentObj = await ModelRecruitmentThreads.findRecruitments(argumentsObj);
+    // ---------------------------------------------
+    //   - hardwareIDsArr
+    // ---------------------------------------------
+    
+    const hardwareIDsArr = hardwares ? hardwares.split(',') : [];
+    
+    if (hardwareIDsArr.length > 0) {
+      argumentsObj.hardwareIDsArr = hardwareIDsArr;
+    }
+    
+    
+    // ---------------------------------------------
+    //   - categoriesArr
+    // ---------------------------------------------
+    
+    let categoriesArr = categories ? categories.split(',') : [];
+    
+    if (categoriesArr.length > 0) {
+      
+      const tempArr = [];
+      
+      for (let value of categoriesArr.values()) {
+        tempArr.push(parseInt(value, 10));
+      }
+      
+      argumentsObj.categoriesArr = tempArr;
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   - keyword
+    // ---------------------------------------------
+    
+    if (await validationKeyword({ throwError: false, required: true, value: keyword }).error === false) {
+      argumentsObj.keyword = keyword;
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB find / Recruitments For Search
+    // --------------------------------------------------
+    
+    let recruitmentObj = {};
+    
+    
+    if (hardwares || categories || keyword) {
+      
+      recruitmentObj = await ModelRecruitmentThreads.findRecruitmentsForSearch(argumentsObj);
+      
+      
+    // --------------------------------------------------
+    //   DB find / Recruitment
+    // --------------------------------------------------
+      
+    } else {
+      
+      recruitmentObj = await ModelRecruitmentThreads.findRecruitments(argumentsObj);
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   returnObj
+    // --------------------------------------------------
     
     returnObj.recruitmentThreadsObj = recruitmentObj.recruitmentThreadsObj;
     returnObj.recruitmentCommentsObj = recruitmentObj.recruitmentCommentsObj;
     returnObj.recruitmentRepliesObj = recruitmentObj.recruitmentRepliesObj;
-      
-      
+    
+    
     
     
     // --------------------------------------------------
@@ -285,22 +368,36 @@ export default async (req, res) => {
     //   /pages/api/v2/gc/[urlID]/rec.js
     // `);
     
+    // console.log(chalk`
+    //   urlID: {green ${urlID}}
+      
+    //   threadPage: {green ${threadPage}}
+    //   threadLimit: {green ${threadLimit}}
+    //   commentLimit: {green ${commentLimit}}
+    //   replyLimit: {green ${replyLimit}}
+      
+    //   hardwares: {green ${hardwares}}
+    //   categories: {green ${categories}}
+    //   keyword: {green ${keyword}}
+    // `);
+    
+    // console.log(`
+    //   ----- hardwareIDsArr -----\n
+    //   ${util.inspect(hardwareIDsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- categoriesArr -----\n
+    //   ${util.inspect(categoriesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    // console.log(chalk`
-    //   urlID: {green ${urlID}}
-    //   threadPage: {green ${threadPage}}
-    //   threadLimit: {green ${threadLimit}}
-    //   commentLimit: {green ${commentLimit}}
-    //   replyLimit: {green ${replyLimit}}
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    // `);
-    
-    
     
     
     
@@ -324,7 +421,8 @@ export default async (req, res) => {
       errorObj,
       endpointID: 't22TWi-ct',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
       
     });

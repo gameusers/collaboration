@@ -673,46 +673,23 @@ const findRecruitmentsForSearch = async ({
     ];
     
     
-    // console.log(`
-    //   ----- recruitmentThreads_idsArr -----\n
-    //   ${util.inspect(recruitmentThreads_idsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- andArr -----\n
+      ${util.inspect(andArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- andArr -----\n
-    //   ${util.inspect(andArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- matchConditionArr -----\n
+      ${util.inspect(matchConditionArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- matchConditionArr -----\n
-    //   ${util.inspect(matchConditionArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- threadCountConditionObj -----\n
-    //   ${util.inspect(threadCountConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // const threadCount2 = await count({
-      
-    //   conditionObj: {
-    //     $or:
-    //       [
-    //         { 'localesArr.title': { $regex: 'イベント' } },
-    //         { 'localesArr.comment': { $regex: '東京へ' } },
-    //       ]
-    //   }
-      
-    // });
-    
-    // console.log(chalk`
-    //   threadCount2: {green ${threadCount2}}
-    // `);
+    console.log(`
+      ----- threadCountConditionObj -----\n
+      ${util.inspect(threadCountConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -827,14 +804,28 @@ const findRecruitmentsForSearch = async ({
     // `);
     
     // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   threadPage: {green ${threadPage}}
-    //   threadLimit: {green ${threadLimit}}
-    //   commentPage: {green ${commentPage}}
-    //   commentLimit: {green ${commentLimit}}
-    //   replyPage: {green ${replyPage}}
-    //   replyLimit: {green ${replyLimit}}
+    //   findRecruitmentsForSearch
+      
+    //   gameCommunities_id: {green ${gameCommunities_id} / ${typeof gameCommunities_id}}
+    //   keyword: {green ${keyword} / ${typeof keyword}}
+    //   threadPage: {green ${threadPage} / ${typeof threadPage}}
+    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
+    //   commentPage: {green ${commentPage} / ${typeof commentPage}}
+    //   commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
+    //   replyPage: {green ${replyPage} / ${typeof replyPage}}
+    //   replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
+    // `);
+    
+    // console.log(`
+    //   ----- hardwareIDsArr -----\n
+    //   ${util.inspect(hardwareIDsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- categoriesArr -----\n
+    //   ${util.inspect(categoriesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(`
@@ -923,12 +914,18 @@ const aggregate = async ({
     
     
     // --------------------------------------------------
-    //   Parse
+    //   parseInt
     // --------------------------------------------------
     
-    const intThreadLimit = parseInt(threadLimit, 10);
+    const intThreadLimit = parseInt((threadLimit || process.env.RECRUITMENT_THREAD_LIMIT), 10);
     
     
+    // console.log(chalk`
+    //   aggregate
+    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
+    //   process.env.RECRUITMENT_THREAD_LIMIT: {green ${process.env.RECRUITMENT_THREAD_LIMIT} / ${typeof process.env.RECRUITMENT_THREAD_LIMIT}}
+    //   intThreadLimit: {green ${intThreadLimit}}
+    // `);
     
     
     // --------------------------------------------------

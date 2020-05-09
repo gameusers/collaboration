@@ -14,6 +14,7 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
+import Router from 'next/router';
 import { action, observable } from 'mobx';
 import moment from 'moment';
 import Cookies from 'js-cookie';
@@ -234,10 +235,6 @@ class Store {
       
       if (
         
-        // validationKeyword({ value: category }).error ||
-        
-        // validationRecruitmentThreadsTitle({ value: title }).error ||
-        // validationHandleName({ value: name }).error ||
         validationKeyword({ value: keyword }).error
         
       ) {
@@ -332,7 +329,7 @@ class Store {
       
       
       
-        
+      
       // ---------------------------------------------
       //   Scroll
       // ---------------------------------------------
@@ -349,6 +346,24 @@ class Store {
       
       
       
+      
+      // ---------------------------------------------
+      //   Router.push
+      // ---------------------------------------------
+      
+      // let linkHref = `/gc/[urlID]/rec/[recruitmentID]?urlID=${urlID}&recruitmentID=${recruitmentThreads_id}`;
+      // let linkAs = `/gc/${urlID}/rec/${recruitmentThreads_id}`;
+      
+      const url = `/gc/[urlID]/rec/[...slug]?urlID=Dead-by-Daylight&hardwares=&categories=1&keyword=&page=1`;
+      const as = `/gc/Dead-by-Daylight/rec/search?hardwares=&categories=1&keyword=&page=1`;
+      
+      Router.push(url, as, { shallow: true });
+      
+      
+      // Router.push({
+      //   pathname: '/gc/Dead-by-Daylight/rec/search',
+      //   query: { name: 'Zeit' },
+      // });
       
       
       
@@ -435,6 +450,7 @@ class Store {
    * スレッドを読み込む
    * @param {Array} pathArr - パス
    * @param {string} temporaryDataID - ページの固有ID　例）/gc/Dead-by-Daylight/rec
+   * @param {string} urlID - ゲームのURLになるID　例）Dead-by-Daylight
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
    * @param {number} page - スレッドのページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
@@ -444,6 +460,7 @@ class Store {
     
     pathArr,
     temporaryDataID,
+    urlID,
     gameCommunities_id,
     page,
     changeLimit,
@@ -468,6 +485,43 @@ class Store {
       let threadLimit = parseInt((storeData.getCookie({ key: 'recruitmentThreadLimit' }) || process.env.RECRUITMENT_THREAD_LIMIT), 10);
       const commentLimit = parseInt((storeData.getCookie({ key: 'recruitmentCommentLimit' }) || process.env.RECRUITMENT_COMMENT_LIMIT), 10);
       const replyLimit = parseInt((storeData.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.RECRUITMENT_REPLY_LIMIT), 10);
+      
+      
+      // ---------------------------------------------
+      //   For Search
+      // ---------------------------------------------
+      
+      const pathNavigationArr = [gameCommunities_id, 'recruitment', 'navigation'];
+      
+      
+      const hardwaresArr = lodashGet(storeHardware, ['dataObj', ...pathNavigationArr, 'hardwaresArr'], []);
+      
+      const hardwareIDsArr = [];
+      
+      for (let valueObj of hardwaresArr.values()) {
+        hardwareIDsArr.push(valueObj.hardwareID);
+      }
+      
+      
+      const categoriesArr = lodashGet(this.dataObj, [...pathNavigationArr, 'categoriesArr'], []);
+      const keyword = lodashGet(this.dataObj, [...pathNavigationArr, 'keyword'], '');
+      
+      
+      // ---------------------------------------------
+      //   Router.push 用
+      // ---------------------------------------------
+      
+      const urlHardwares = hardwareIDsArr.length > 0 ? `hardwares=${hardwareIDsArr.join(',')}&` : '';
+      const urlCategories = categoriesArr.length > 0 ? `categories=${categoriesArr.join(',')}&` : '';
+      const urlKeyword = keyword ? `keyword=${encodeURI(keyword)}&` : '';
+      
+      const url = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
+      const as = `/gc/${urlID}/rec/search?${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
+      
+      console.log(chalk`
+        url: {green ${url}}
+        as: {green ${as}}
+      `);
       
       
       
@@ -523,6 +577,23 @@ class Store {
       //   replyLimit: {green ${replyLimit}}
       //   loadedDate: {green ${loadedDate}}
       //   changeLimit：{green ${changeLimit}}
+      // `);
+      
+      
+      // console.log(`
+      //   ----- hardwareIDsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(hardwareIDsArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- categoriesArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(categoriesArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(chalk`
+      //   keyword: {green ${keyword}}
       // `);
       
       // console.log(`
@@ -624,6 +695,14 @@ class Store {
         
         
         // ---------------------------------------------
+        //   Router.push - History API pushState()
+        // ---------------------------------------------
+        
+        Router.push(url, as);
+        // Router.push(url, as, { shallow: true });
+        
+        
+        // ---------------------------------------------
         //   Return
         // ---------------------------------------------
         
@@ -653,6 +732,9 @@ class Store {
       const formDataObj = {
         
         gameCommunities_id,
+        hardwareIDsArr,
+        categoriesArr,
+        keyword,
         threadPage: page,
         threadLimit,
         commentPage: 1,
@@ -680,8 +762,6 @@ class Store {
       //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
       
       
       // ---------------------------------------------
@@ -795,6 +875,16 @@ class Store {
       // ---------------------------------------------
       
       storeData.setTemporaryData({ pathname: temporaryDataID, key: 'recruitmentThreadPage', value: page });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Router.push = History API pushState()
+      // ---------------------------------------------
+      
+      Router.push(url, as);
+      // Router.push(url, as, { shallow: true });
       
       
     } catch (errorObj) {
@@ -4318,6 +4408,81 @@ export default function initStoreGcRecruitment({ propsObj }) {
     const gameCommunities_id = lodashGet(propsObj, ['gameCommunities_id'], '');
     
     
+    
+    // console.log(`
+    //     ----- propsObj -----\n
+    //     ${util.inspect(propsObj, { colors: true, depth: null })}\n
+    //     --------------------\n
+    //   `);
+    
+    // --------------------------------------------------
+    //   hardwareIDsArr
+    // --------------------------------------------------
+    
+    const hardwaresArr = lodashGet(propsObj, ['hardwaresArr'], null);
+    
+    if (hardwaresArr) {
+      
+      // console.log(`
+      //   ----- hardwaresArr -----\n
+      //   ${util.inspect(hardwaresArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      lodashSet(storeHardware, ['dataObj', gameCommunities_id, 'recruitment', 'navigation', 'hardwaresArr'], hardwaresArr);
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   categoriesArr
+    // --------------------------------------------------
+    
+    const categories = lodashGet(propsObj, ['recruitmentNavigationObj', 'categories'], null);
+    const categoriesArr = categories ? categories.split(',') : [];
+    
+    // console.log(chalk`
+    //   categories: {green ${categories}}
+    // `);
+    
+    // console.log(`
+    //   ----- categoriesArr -----\n
+    //   ${util.inspect(categoriesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    if (categoriesArr.length > 0) {
+      
+      const tempArr = [];
+      
+      for (let value of categoriesArr.values()) {
+        tempArr.push(parseInt(value, 10));
+      }
+      
+      // console.log(`
+      //   ----- tempArr -----\n
+      //   ${util.inspect(tempArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      lodashSet(storeGcRecruitment, ['dataObj', gameCommunities_id, 'recruitment', 'navigation', 'categoriesArr'], tempArr);
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   keyword
+    // --------------------------------------------------
+    
+    const keyword = lodashGet(propsObj, ['recruitmentNavigationObj', 'keyword'], null);
+    
+    if (keyword) {
+      lodashSet(storeGcRecruitment, ['dataObj', gameCommunities_id, 'recruitment', 'navigation', 'keyword'], keyword);
+    }
+    
+    
+    
+    
     // --------------------------------------------------
     //   recruitmentThreadsObj
     // --------------------------------------------------
@@ -4325,22 +4490,6 @@ export default function initStoreGcRecruitment({ propsObj }) {
     const recruitmentThreadsObj = lodashGet(propsObj, ['recruitmentThreadsObj'], null);
     
     if (recruitmentThreadsObj) {
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/gc/rec/stores/store.js
-      // `);
-      
-      // console.log(`
-      //   ----- recruitmentThreadsObj -----\n
-      //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      // `);
-      
       lodashSet(storeGcRecruitment, ['dataObj', gameCommunities_id, 'recruitmentThreadsObj'], recruitmentThreadsObj);
     }
     

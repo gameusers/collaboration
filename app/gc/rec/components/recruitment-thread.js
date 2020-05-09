@@ -1031,6 +1031,7 @@ export default injectIntl(class extends React.Component {
                 onChange={(page) => handleReadRecruitmentThreads({
                   pathArr: this.pathArr,
                   temporaryDataID,
+                  urlID,
                   gameCommunities_id,
                   page,
                 })}
@@ -1056,6 +1057,7 @@ export default injectIntl(class extends React.Component {
                 onChange={(eventObj) => handleReadRecruitmentThreads({
                   pathArr: this.pathArr,
                   temporaryDataID,
+                  urlID,
                   gameCommunities_id,
                   page: 1,
                   changeLimit: eventObj.target.value,

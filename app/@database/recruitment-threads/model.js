@@ -673,23 +673,23 @@ const findRecruitmentsForSearch = async ({
     ];
     
     
-    console.log(`
-      ----- andArr -----\n
-      ${util.inspect(andArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- andArr -----\n
+    //   ${util.inspect(andArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- matchConditionArr -----\n
-      ${util.inspect(matchConditionArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- matchConditionArr -----\n
+    //   ${util.inspect(matchConditionArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- threadCountConditionObj -----\n
-      ${util.inspect(threadCountConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- threadCountConditionObj -----\n
+    //   ${util.inspect(threadCountConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -984,14 +984,14 @@ const aggregate = async ({
         $lookup:
           {
             from: 'card-players',
-            let: { recruitmentThreadsUsers_id: '$users_id' },
+            let: { letUsers_id: '$users_id' },
             pipeline: [
               { $match:
                 { $expr:
                   { $and:
                     [
                       { $eq: ['$language', language] },
-                      { $eq: ['$users_id', '$$recruitmentThreadsUsers_id'] },
+                      { $eq: ['$users_id', '$$letUsers_id'] },
                     ]
                   },
                 }
@@ -1006,11 +1006,11 @@ const aggregate = async ({
                 $lookup:
                   {
                     from: 'images-and-videos',
-                    let: { cardPlayersImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                    let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
                     pipeline: [
                       { $match:
                         { $expr:
-                          { $eq: ['$_id', '$$cardPlayersImagesAndVideosThumbnail_id'] },
+                          { $eq: ['$_id', '$$letImagesAndVideosThumbnail_id'] },
                         }
                       },
                       { $project:
@@ -1062,11 +1062,11 @@ const aggregate = async ({
         $lookup:
           {
             from: 'users',
-            let: { recruitmentThreadsUsers_id: '$users_id' },
+            let: { letUsers_id: '$users_id' },
             pipeline: [
               { $match:
                 { $expr:
-                  { $eq: ['$_id', '$$recruitmentThreadsUsers_id'] },
+                  { $eq: ['$_id', '$$letUsers_id'] },
                 }
               },
               { $project:
@@ -1099,11 +1099,11 @@ const aggregate = async ({
         $lookup:
           {
             from: 'images-and-videos',
-            let: { recruitmentThreadsImagesAndVideos_id: '$imagesAndVideos_id' },
+            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
               { $match:
                 { $expr:
-                  { $eq: ['$_id', '$$recruitmentThreadsImagesAndVideos_id'] },
+                  { $eq: ['$_id', '$$letImagesAndVideos_id'] },
                 }
               },
               { $project:
@@ -1135,7 +1135,7 @@ const aggregate = async ({
         $lookup:
           {
             from: 'hardwares',
-            let: { recruitmentThreadsHardwareIDsArr: '$hardwareIDsArr' },
+            let: { letHardwareIDsArr: '$hardwareIDsArr' },
             pipeline: [
               { $match:
                 { $expr:
@@ -1143,7 +1143,7 @@ const aggregate = async ({
                     [
                       { $eq: ['$language', language] },
                       { $eq: ['$country', country] },
-                      { $in: ['$hardwareID', '$$recruitmentThreadsHardwareIDsArr'] }
+                      { $in: ['$hardwareID', '$$letHardwareIDsArr'] }
                     ]
                   },
                 }
@@ -1170,16 +1170,16 @@ const aggregate = async ({
           {
             from: 'ids',
             let: {
-              recruitmentThreadsIDs_idArr: '$ids_idsArr',
-              recruitmentThreadsUsers_id: '$users_id',
+              letIDs_idArr: '$ids_idsArr',
+              letUsers_id: '$users_id',
             },
             pipeline: [
               { $match:
                 { $expr:
                   { $and:
                     [
-                      { $eq: ['$users_id', '$$recruitmentThreadsUsers_id'] },
-                      { $in: ['$_id', '$$recruitmentThreadsIDs_idArr'] }
+                      { $eq: ['$users_id', '$$letUsers_id'] },
+                      { $in: ['$_id', '$$letIDs_idArr'] }
                     ]
                   },
                 }
@@ -1194,7 +1194,7 @@ const aggregate = async ({
                 $lookup:
                   {
                     from: 'games',
-                    let: { idsGameCommunities_id: '$gameCommunities_id' },
+                    let: { letGameCommunities_id: '$gameCommunities_id' },
                     pipeline: [
                       { $match:
                         { $expr:
@@ -1202,7 +1202,7 @@ const aggregate = async ({
                             [
                               { $eq: ['$language', language] },
                               { $eq: ['$country', country] },
-                              { $eq: ['$gameCommunities_id', '$$idsGameCommunities_id'] }
+                              { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
                             ]
                           },
                         }
@@ -1217,11 +1217,11 @@ const aggregate = async ({
                         $lookup:
                           {
                             from: 'images-and-videos',
-                            let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                            let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
                             pipeline: [
                               { $match:
                                 { $expr:
-                                  { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
+                                  { $eq: ['$_id', '$$letImagesAndVideosThumbnail_id'] },
                                 }
                               },
                               { $project:

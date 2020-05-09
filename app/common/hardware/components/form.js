@@ -236,6 +236,12 @@ export default injectIntl(class extends React.Component {
     //   --------------------\n
     // `);
     
+    // console.log(`
+    //   ----- storeHardware.dataObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(storeHardware.dataObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     // console.log(chalk`
     //   value: {green ${value}}
     //   alternativeText: {green ${alternativeText}}

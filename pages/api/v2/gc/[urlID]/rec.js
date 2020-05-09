@@ -24,6 +24,7 @@ import lodashHas from 'lodash/has';
 // ---------------------------------------------
 
 import ModelGameCommunities from '../../../../../app/@database/game-communities/model.js';
+import ModelHardwares from '../../../../../app/@database/hardwares/model.js';
 import ModelRecruitmentThreads from '../../../../../app/@database/recruitment-threads/model.js';
 
 
@@ -355,6 +356,20 @@ export default async (req, res) => {
     returnObj.recruitmentThreadsObj = recruitmentObj.recruitmentThreadsObj;
     returnObj.recruitmentCommentsObj = recruitmentObj.recruitmentCommentsObj;
     returnObj.recruitmentRepliesObj = recruitmentObj.recruitmentRepliesObj;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   ハードウェア情報 - 募集検索用
+    // --------------------------------------------------
+    
+    returnObj.hardwaresArr = await ModelHardwares.findHardwaresArr({
+      
+      localeObj,
+      hardwareIDsArr,
+      
+    });
     
     
     

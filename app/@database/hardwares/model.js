@@ -21,7 +21,7 @@ const lodashGet = require('lodash/get');
 //   Model
 // ---------------------------------------------
 
-const Schema = require('./schema');
+const SchemaHardwares = require('./schema.js');
 
 
 
@@ -58,7 +58,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await Schema.findOne(conditionObj).exec();
+    return await SchemaHardwares.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -101,7 +101,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.find(conditionObj).exec();
+    return await SchemaHardwares.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -143,7 +143,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.countDocuments(conditionObj).exec();
+    return await SchemaHardwares.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -190,7 +190,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await SchemaHardwares.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -232,7 +232,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await Schema.insertMany(saveArr);
+    return await SchemaHardwares.insertMany(saveArr);
     
     
   } catch (err) {
@@ -275,7 +275,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await Schema.deleteMany(conditionObj);
+    return await SchemaHardwares.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -321,7 +321,7 @@ const findForSuggestion = async ({ localeObj, keyword }) => {
     
     const pattern = new RegExp(`.*${keyword}.*`);
     
-    return await Schema.find(
+    return await SchemaHardwares.find(
       { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } },
     ).select('hardwareID name').exec();
     
@@ -331,6 +331,104 @@ const findForSuggestion = async ({ localeObj, keyword }) => {
     throw err;
     
   }
+  
+};
+
+
+
+
+/**
+ * ハードウェアデータを取得する
+ * @param {Object} localeObj - ロケール
+ * @param {Array} hardwareIDsArr - DB hardwares _id / _id の入った配列
+ * @return {Array} 取得データ
+ */
+const findHardwaresArr = async ({
+  
+  localeObj,
+  hardwareIDsArr = [],
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Language & Country
+    // --------------------------------------------------
+    
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Aggregation
+    // --------------------------------------------------
+    
+    const docArr = await SchemaHardwares.aggregate([
+      
+      
+      // --------------------------------------------------
+      //   Match Condition
+      // --------------------------------------------------
+      
+      {
+        $match: {
+          language,
+          country,
+          hardwareID: { $in: hardwareIDsArr },
+        }
+      },
+      
+      
+      {
+        $project: {
+          _id: 0,
+          hardwareID: 1,
+          name: 1,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/hardwares/model.js - findHardwaresArr
+    // `);
+    
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return docArr;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
   
 };
 
@@ -351,5 +449,6 @@ module.exports = {
   deleteMany,
   
   findForSuggestion,
+  findHardwaresArr,
   
 };

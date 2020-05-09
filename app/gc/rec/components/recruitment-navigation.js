@@ -55,7 +55,7 @@ import { validationKeyword } from '../../../@validations/keyword.js';
 //   Components
 // ---------------------------------------------
 
-import Panel from '../../../common/layout/components/panel';
+import Panel from '../../../common/layout/components/panel.js';
 import FormHardwares from '../../../common/hardware/components/form.js';
 
 
@@ -211,8 +211,20 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(`
+    //   ----- this.pathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(this.pathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
     //   ----- categoriesArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(categoriesArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- dataObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

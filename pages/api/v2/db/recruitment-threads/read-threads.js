@@ -39,7 +39,11 @@ import { returnErrorsArr } from '../../../../../app/@modules/log/log.js';
 // ---------------------------------------------
 
 import { validationInteger } from '../../../../../app/@validations/integer.js';
+import { validationKeyword } from '../../../../../app/@validations/keyword.js';
+
 import { validationGameCommunities_idServer } from '../../../../../app/@database/game-communities/validations/_id-server.js';
+import { validationHardwareIDsArrServer } from '../../../../../app/@database/hardwares/validations/id-server.js';
+import { validationRecruitmentThreadsCategoriesArr } from '../../../../../app/@database/recruitment-threads/validations/category.js';
 import { validationRecruitmentThreadsLimit } from '../../../../../app/@database/recruitment-threads/validations/limit.js';
 import { validationRecruitmentCommentsLimit } from '../../../../../app/@database/recruitment-comments/validations/limit.js';
 import { validationRecruitmentRepliesLimit } from '../../../../../app/@database/recruitment-replies/validations/limit.js';
@@ -108,6 +112,9 @@ export default async (req, res) => {
     const { 
       
       gameCommunities_id,
+      hardwareIDsArr,
+      categoriesArr,
+      keyword,
       threadPage,
       threadLimit,
       commentPage, 
@@ -119,6 +126,9 @@ export default async (req, res) => {
     
     
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
+    lodashSet(requestParametersObj, ['hardwareIDsArr'], hardwareIDsArr);
+    lodashSet(requestParametersObj, ['categoriesArr'], categoriesArr);
+    lodashSet(requestParametersObj, ['keyword'], keyword);
     lodashSet(requestParametersObj, ['threadPage'], threadPage);
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentPage'], commentPage);
@@ -144,6 +154,10 @@ export default async (req, res) => {
     
     await validationGameCommunities_idServer({ value: gameCommunities_id });
     
+    await validationHardwareIDsArrServer({ throwError: true, arr: hardwareIDsArr });
+    await validationRecruitmentThreadsCategoriesArr({ throwError: true, arr: categoriesArr });
+    await validationKeyword({ throwError: true, value: keyword });
+    
     // Thread Page & Limit
     await validationInteger({ throwError: true, required: true, value: threadPage });
     await validationRecruitmentThreadsLimit({ throwError: true, required: true, value: threadLimit });
@@ -160,23 +174,54 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Recruitments
+    //   DB find / Recruitments For Search
     // --------------------------------------------------
     
-    const recruitmentObj = await ModelRecruitmentThreads.findRecruitments({
+    let recruitmentObj = {};
+    
+    if (hardwareIDsArr.length > 0 || categoriesArr.length > 0 || keyword) {
       
-      req,
-      localeObj,
-      loginUsers_id,
-      gameCommunities_id,
-      threadPage,
-      threadLimit,
-      commentPage,
-      commentLimit,
-      replyPage,
-      replyLimit,
+      recruitmentObj = await ModelRecruitmentThreads.findRecruitmentsForSearch({
+        
+        req,
+        localeObj,
+        loginUsers_id,
+        gameCommunities_id,
+        hardwareIDsArr,
+        categoriesArr,
+        keyword,
+        threadPage,
+        threadLimit,
+        commentPage,
+        commentLimit,
+        replyPage,
+        replyLimit,
+        
+      });
+    
       
-    });
+    // --------------------------------------------------
+    //   DB find / Recruitments
+    // --------------------------------------------------
+      
+    } else {
+      
+      recruitmentObj = await ModelRecruitmentThreads.findRecruitments({
+        
+        req,
+        localeObj,
+        loginUsers_id,
+        gameCommunities_id,
+        threadPage,
+        threadLimit,
+        commentPage,
+        commentLimit,
+        replyPage,
+        replyLimit,
+        
+      });
+      
+    }
     
     returnObj.recruitmentThreadsObj = recruitmentObj.recruitmentThreadsObj;
     returnObj.recruitmentCommentsObj = recruitmentObj.recruitmentCommentsObj;
@@ -208,21 +253,37 @@ export default async (req, res) => {
     //   console.log
     // ---------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/db/recruitment-threads/read-threads.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/db/recruitment-threads/read-threads.js
+    `);
     
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   threadPage: {green ${threadPage} / ${typeof threadPage}}
-    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
-    //   commentPage: {green ${commentPage} / ${typeof commentPage}}
-    //   commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
-    //   replyPage: {green ${replyPage} / ${typeof replyPage}}
-    //   replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
-    // `);
+    console.log(chalk`
+      loginUsers_id: {green ${loginUsers_id}}
+      gameCommunities_id: {green ${gameCommunities_id}}
+      threadPage: {green ${threadPage} / ${typeof threadPage}}
+      threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
+      commentPage: {green ${commentPage} / ${typeof commentPage}}
+      commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
+      replyPage: {green ${replyPage} / ${typeof replyPage}}
+      replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
+    `);
+    
+    console.log(chalk`
+      keyword: {green ${keyword} / ${typeof keyword}}
+    `);
+    
+    console.log(`
+      ----- hardwareIDsArr -----\n
+      ${util.inspect(hardwareIDsArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- categoriesArr -----\n
+      ${util.inspect(categoriesArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(`
     //   ----- returnObj -----\n

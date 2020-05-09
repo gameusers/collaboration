@@ -85,7 +85,10 @@ export default class GcRec extends React.Component {
     
     super(props);
     
-    
+    console.log(`
+      ----------------------------------------\n
+      /pages/gc/[urlID]/rec/[...slug].js - constructor
+    `);
     
     
     // --------------------------------------------------
@@ -100,6 +103,14 @@ export default class GcRec extends React.Component {
     
     const gameCommunities_id = lodashGet(propsObj, ['gameCommunityObj', '_id'], '');
     const accessLevel = lodashGet(propsObj, ['accessLevel'], 1);
+    
+    const recruitmentNavigationObj = {
+      
+      // hardwares: props.hardwares,
+      categories: props.categories,
+      keyword: props.keyword,
+      
+    };
     
     
     // --------------------------------------------------
@@ -152,7 +163,7 @@ export default class GcRec extends React.Component {
     //   Stores
     // --------------------------------------------------
     
-    propsObj = { ...propsObj, ISO8601, pathname, pathArr, headerNavMainArr, gameCommunities_id };
+    propsObj = { ...propsObj, ISO8601, pathname, pathArr, headerNavMainArr, gameCommunities_id, recruitmentNavigationObj };
     
     initStoreRoot({ propsObj });
     
@@ -391,14 +402,14 @@ export async function getServerSideProps({ req, res, query }) {
   
   console.log(`
     ----------------------------------------\n
-    /pages/gc/[urlID]/rec/[...slug].js
+    /pages/gc/[urlID]/rec/[...slug].js - getServerSideProps
   `);
   
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  console.log(`
+    ----- resultObj -----\n
+    ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    --------------------\n
+  `);
   
   // console.log(chalk`
   //   threadPage: {green ${threadPage}}
@@ -407,11 +418,11 @@ export async function getServerSideProps({ req, res, query }) {
   //   replyLimit: {green ${replyLimit}}
   // `);
   
-  console.log(`
-    ----- query -----\n
-    ${util.inspect(query, { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- query -----\n
+  //   ${util.inspect(query, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   // console.log(`
   //   ----- reqHeadersCookie -----\n
@@ -440,6 +451,9 @@ export async function getServerSideProps({ req, res, query }) {
       ISO8601,
       statusCode,
       propsObj,
+      hardwares,
+      categories,
+      keyword,
       
     }
     

@@ -243,7 +243,7 @@ export default injectIntl(class extends React.Component {
       >
         
         
-        <p>条件を設定して募集を検索することができます。</p>
+        <p>条件を設定して募集を検索することができます。{stores.data.datetimeCurrent}</p>
         
         
         

@@ -48,7 +48,7 @@ import IconPermIdentity from '@material-ui/icons/PermIdentity';
 //   Class
 // --------------------------------------------------
 
-@inject('stores', 'storeFollow')
+@inject('stores')
 @observer
 export default class extends React.Component {
   
@@ -111,7 +111,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeFollow, cssEmotion, buttonSize, users_id, followsObj, showNumberOfPeople } = this.props;
+    const { stores, cssEmotion, buttonSize, users_id, followsObj, showNumberOfPeople } = this.props;
     
     const { 
       
@@ -119,7 +119,7 @@ export default class extends React.Component {
       handleEdit,
       handleFollowUr,
       
-    } = storeFollow;
+    } = stores.follow;
     
     
     const login = stores.data.getLogin();

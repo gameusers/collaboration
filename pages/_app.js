@@ -31,7 +31,7 @@ import SimpleReactLightbox from 'simple-react-lightbox';
 
 import lodashGet from 'lodash/get';
 
-
+// import moment from 'moment';
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
@@ -44,14 +44,14 @@ import theme from '../app/@css/material-ui/theme';
 //   Locales
 // ---------------------------------------------
 
-import { locale } from '../app/@locales/locale';
+import { locale } from '../app/@locales/locale.js';
 
 
 // ---------------------------------------------
 //   Stores
 // ---------------------------------------------
 
-import initStoreRoot from '../app/@stores/root';
+import initStoreRoot from '../app/@stores/root.js';
 
 
 // ---------------------------------------------
@@ -142,10 +142,6 @@ class MyApp extends App {
         
         const reqAcceptLanguage = lodashGet(props, ['pageProps', 'reqAcceptLanguage'], '');
         
-        // console.log(chalk`
-        //   reqAcceptLanguage: {green ${reqAcceptLanguage}}
-        // `);
-        
         const localeObj = locale({
           acceptLanguage: reqAcceptLanguage
         });
@@ -153,8 +149,6 @@ class MyApp extends App {
         this.stores.data.replaceLocaleObj(localeObj);
         
       }
-      
-      
       
       
       // --------------------------------------------------
@@ -179,7 +173,9 @@ class MyApp extends App {
       
       
     } catch (e) {
+      
       this.error = true;
+      
     }
     
     
@@ -266,6 +262,24 @@ class MyApp extends App {
     // --------------------------------------------------
     
     const { Component, pageProps } = this.props;
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----- pageProps -----\n
+    //   ${util.inspect(pageProps, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- this.stores.data -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(this.stores.data)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     
     
     

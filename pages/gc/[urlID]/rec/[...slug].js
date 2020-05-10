@@ -45,7 +45,6 @@ import initStoreIDForm from '../../../../app/common/id/stores/form.js';
 import initStoreGameForm from '../../../../app/common/game/stores/form.js';
 import initStoreImageAndVideo from '../../../../app/common/image-and-video/stores/image-and-video.js';
 import initStoreImageAndVideoForm from '../../../../app/common/image-and-video/stores/form.js';
-import initStoreFollow from '../../../../app/common/follow/stores/store.js';
 import initStoreGood from '../../../../app/common/good/stores/store.js';
 import initStoreHardware from '../../../../app/common/hardware/stores/store.js';
 
@@ -59,6 +58,54 @@ import RecruitmentNavigation from '../../../../app/gc/rec/components/recruitment
 import RecruitmentThread from '../../../../app/gc/rec/components/recruitment-thread.js';
 
 
+
+
+
+
+/**
+ * ストアを初期化する / 更新する
+ * @param {Object} propsObj - ストアに入れる値
+ */
+const initializeStore = ({ propsObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Stores
+  // --------------------------------------------------
+  
+  initStoreRoot({ propsObj });
+  
+  const storeGcRecruitment = initStoreGcRecruitment({ propsObj });
+  const storeCardPlayer = initStoreCardPlayer({});
+  const storeForum = initStoreForum({ propsObj });
+  const storeIDForm = initStoreIDForm({});
+  const storeGameForm = initStoreGameForm({});
+  const storeImageAndVideo = initStoreImageAndVideo({});
+  const storeImageAndVideoForm = initStoreImageAndVideoForm({});
+  const storeGood = initStoreGood({});
+  const storeHardware = initStoreHardware({});
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return {
+    
+    storeGcRecruitment,
+    storeCardPlayer,
+    storeForum,
+    storeIDForm,
+    storeGameForm,
+    storeImageAndVideo,
+    storeImageAndVideoForm,
+    storeGood,
+    storeHardware,
+    
+  };
+  
+  
+};
 
 
 
@@ -85,114 +132,66 @@ export default class GcRec extends React.Component {
     
     super(props);
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/gc/[urlID]/rec/[...slug].js - constructor
-    `);
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/gc/[urlID]/rec/[...slug].js - constructor
+    // `);
+    
+    // console.log(`
+    //   ----- this.props.propsObj -----\n
+    //   ${util.inspect(this.props.propsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
-    //   Props
+    //   Initialize Store
     // --------------------------------------------------
     
-    const urlID = props.urlID;
-    const pathname = props.pathname;
-    const ISO8601 = props.ISO8601;
+    this.storesObj = initializeStore({ propsObj: this.props.propsObj });
     
-    let propsObj = props.propsObj;
     
-    const gameCommunities_id = lodashGet(propsObj, ['gameCommunityObj', '_id'], '');
-    const accessLevel = lodashGet(propsObj, ['accessLevel'], 1);
+  }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   componentDidUpdate / Router.push でページを移動し、そこからブラウザで戻ったときの処理
+  //   まず getServerSideProps でデータを取得し、次に componentDidUpdate でデータを更新する
+  // --------------------------------------------------
+  
+  componentDidUpdate(prevProps) {
     
-    const recruitmentNavigationObj = {
+    // console.log('componentDidUpdate');
+    
+    
+    // console.log(`
+    //   ----- prevProps -----\n
+    //   ${util.inspect(prevProps, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   this.props.ISO8601: {green ${this.props.ISO8601}}
+    //   prevProps.ISO8601: {green ${prevProps.ISO8601}}
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Update Store
+    // --------------------------------------------------
+    
+    if (this.props.ISO8601 !== prevProps.ISO8601) {
       
-      // hardwares: props.hardwares,
-      categories: props.categories,
-      keyword: props.keyword,
+      // const propsObj = { ISO8601: this.props.ISO8601 };
       
-    };
-    
-    
-    // --------------------------------------------------
-    //   Path Array
-    // --------------------------------------------------
-    
-    const pathArr = ['gc', urlID];
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Header Navigation Link
-    // --------------------------------------------------
-    
-    const headerNavMainArr = [
-      {
-        name: 'トップ',
-        href: `/gc/[urlID]/index?urlID=${urlID}`,
-        as: `/gc/${urlID}`,
-      },
-      {
-        name: '募集',
-        href: `/gc/[urlID]/rec?urlID=${urlID}`,
-        as: `/gc/${urlID}/rec`,
-      },
-      {
-        name: 'フォロワー',
-        href: '/',
-        as: '/',
-        // href: `/gc/[urlID]/followers?urlID=${urlID}`,
-        // as: `/gc/${urlID}/followers`,
-      }
-    ];
-    
-    if (accessLevel === 100) {
-      headerNavMainArr.push(
-        {
-          name: '設定',
-          href: `/gc/[urlID]/settings?urlID=${urlID}`,
-          as: `/gc/${urlID}/settings`,
-        }
-      );
+      // initStoreRoot({ propsObj });
+      
+      initializeStore({ propsObj: this.props.propsObj });
+      
     }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Stores
-    // --------------------------------------------------
-    
-    propsObj = { ...propsObj, ISO8601, pathname, pathArr, headerNavMainArr, gameCommunities_id, recruitmentNavigationObj };
-    
-    initStoreRoot({ propsObj });
-    
-    const storeGcRecruitment = initStoreGcRecruitment({ propsObj });
-    const storeCardPlayer = initStoreCardPlayer({});
-    const storeForum = initStoreForum({ propsObj });
-    const storeIDForm = initStoreIDForm({});
-    const storeGameForm = initStoreGameForm({});
-    const storeImageAndVideo = initStoreImageAndVideo({});
-    const storeImageAndVideoForm = initStoreImageAndVideoForm({});
-    const storeFollow = initStoreFollow({});
-    const storeGood = initStoreGood({});
-    const storeHardware = initStoreHardware({});
-    
-    
-    this.storesObj = {
-      
-      storeGcRecruitment,
-      storeCardPlayer,
-      storeForum,
-      storeIDForm,
-      storeGameForm,
-      storeImageAndVideo,
-      storeImageAndVideoForm,
-      storeFollow,
-      storeGood,
-      storeHardware,
-      
-    };
     
     
   }
@@ -295,6 +294,7 @@ export default class GcRec extends React.Component {
     
   }
   
+  
 }
 
 
@@ -358,6 +358,7 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
   
   const pathname = `/gc/${urlID}/rec`;
+  const pathArr = ['gc', urlID];
   const temporaryDataID = `/gc/${urlID}/rec`;
   const ISO8601 = moment().utc().toISOString();
   
@@ -371,10 +372,7 @@ export async function getServerSideProps({ req, res, query }) {
   const commentLimit = stores.data.getCookie({ key: 'recruitmentCommentLimit' });
   const replyLimit = stores.data.getCookie({ key: 'recruitmentReplyLimit' });
   
-  // console.log(chalk`
-  //   /pages/gc/[urlID]/rec/[...slug].js
-  //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
-  // `);
+  
   
   
   // --------------------------------------------------
@@ -391,7 +389,66 @@ export async function getServerSideProps({ req, res, query }) {
   });
   
   const statusCode = lodashGet(resultObj, ['statusCode'], 400);
-  const propsObj = lodashGet(resultObj, ['data'], {});
+  const dataObj = lodashGet(resultObj, ['data'], {});
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   dataObj
+  // --------------------------------------------------
+  
+  const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
+  const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
+  
+  const recruitmentNavigationObj = {
+    
+    categories,
+    keyword,
+    
+  };
+  
+  
+  // --------------------------------------------------
+  //   Header Navigation Link
+  // --------------------------------------------------
+  
+  const headerNavMainArr = [
+    {
+      name: 'トップ',
+      href: `/gc/[urlID]/index?urlID=${urlID}`,
+      as: `/gc/${urlID}`,
+    },
+    {
+      name: '募集',
+      href: `/gc/[urlID]/rec?urlID=${urlID}`,
+      as: `/gc/${urlID}/rec`,
+    },
+    {
+      name: 'フォロワー',
+      href: '/',
+      as: '/',
+      // href: `/gc/[urlID]/followers?urlID=${urlID}`,
+      // as: `/gc/${urlID}/followers`,
+    }
+  ];
+  
+  if (accessLevel === 100) {
+    headerNavMainArr.push(
+      {
+        name: '設定',
+        href: `/gc/[urlID]/settings?urlID=${urlID}`,
+        as: `/gc/${urlID}/settings`,
+      }
+    );
+  }
+  
+  
+  // --------------------------------------------------
+  //   propsObj
+  // --------------------------------------------------
+  
+  const propsObj = { ...dataObj, ISO8601, pathname, pathArr, headerNavMainArr, gameCommunities_id, recruitmentNavigationObj };
   
   
   
@@ -400,16 +457,16 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
   
-  console.log(`
-    ----------------------------------------\n
-    /pages/gc/[urlID]/rec/[...slug].js - getServerSideProps
-  `);
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /pages/gc/[urlID]/rec/[...slug].js - getServerSideProps
+  // `);
   
-  console.log(`
-    ----- resultObj -----\n
-    ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- resultObj -----\n
+  //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   // console.log(chalk`
   //   threadPage: {green ${threadPage}}
@@ -446,14 +503,14 @@ export async function getServerSideProps({ req, res, query }) {
     props: {
       
       urlID,
-      pathname,
+      // pathname,
       temporaryDataID,
       ISO8601,
       statusCode,
       propsObj,
-      hardwares,
-      categories,
-      keyword,
+      // hardwares,
+      // categories,
+      // keyword,
       
     }
     

@@ -48,7 +48,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 //   Class
 // --------------------------------------------------
 
-@inject('stores', 'storeFollow')
+@inject('stores')
 @observer
 export default class extends React.Component {
   
@@ -106,7 +106,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeFollow, userCommunities_id, followsObj } = this.props;
+    const { stores, userCommunities_id, followsObj } = this.props;
     
     const { 
       
@@ -114,7 +114,7 @@ export default class extends React.Component {
       handleEdit,
       handleFollow,
       
-    } = storeFollow;
+    } = stores.follow;
     
     
     const login = stores.data.getLogin();

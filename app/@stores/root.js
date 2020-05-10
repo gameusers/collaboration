@@ -2,9 +2,10 @@
 //   Import
 // --------------------------------------------------
 
-import initStoreLayout from '../common/layout/stores/layout';
-import initStoreData from './data';
-import initStoreWebPush from './web-push';
+import initStoreLayout from '../common/layout/stores/layout.js';
+import initStoreData from './data.js';
+import initStoreWebPush from './web-push.js';
+import initStoreFollow from '../common/follow/stores/store.js';
 
 
 // --------------------------------------------------
@@ -18,6 +19,7 @@ export default function initStoreRoot({ propsObj }) {
     layout: initStoreLayout({ propsObj }),
     data: initStoreData({ propsObj }),
     webPush: initStoreWebPush({ propsObj }),
+    follow: initStoreFollow({ propsObj }),
     
   };
   

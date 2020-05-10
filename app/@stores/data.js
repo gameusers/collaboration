@@ -424,6 +424,12 @@ export default function initStoreData({ propsObj }) {
     // --------------------------------------------------
     
     if (lodashHas(propsObj, ['ISO8601'])) {
+      // console.log(chalk`
+      //   initStoreData
+      //   propsObj.ISO8601: {green ${propsObj.ISO8601}}
+      // `);
+      
+      // storeData.datetimeCurrent = propsObj.ISO8601;
       storeData.setDatetimeCurrent({ ISO8601: propsObj.ISO8601 });
     }
     

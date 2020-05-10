@@ -45,7 +45,7 @@ import initStoreIDForm from '../../../../app/common/id/stores/form.js';
 import initStoreGameForm from '../../../../app/common/game/stores/form.js';
 import initStoreImageAndVideo from '../../../../app/common/image-and-video/stores/image-and-video.js';
 import initStoreImageAndVideoForm from '../../../../app/common/image-and-video/stores/form.js';
-import initStoreFollow from '../../../../app/common/follow/stores/store.js';
+// import initStoreFollow from '../../../../app/common/follow/stores/store.js';
 import initStoreGood from '../../../../app/common/good/stores/store.js';
 import initStoreHardware from '../../../../app/common/hardware/stores/store.js';
 
@@ -65,7 +65,7 @@ import RecruitmentThread from '../../../../app/gc/rec/components/recruitment-thr
 
 // --------------------------------------------------
 //   Class
-//   URL: https://dev-1.gameusers.org/gc/***/rec
+//   URL: https://dev-1.gameusers.org/gc/***
 // --------------------------------------------------
 
 @observer
@@ -163,7 +163,7 @@ export default class GcRec extends React.Component {
     const storeGameForm = initStoreGameForm({});
     const storeImageAndVideo = initStoreImageAndVideo({});
     const storeImageAndVideoForm = initStoreImageAndVideoForm({});
-    const storeFollow = initStoreFollow({});
+    // const storeFollow = initStoreFollow({});
     const storeGood = initStoreGood({});
     const storeHardware = initStoreHardware({});
     
@@ -177,7 +177,7 @@ export default class GcRec extends React.Component {
       storeGameForm,
       storeImageAndVideo,
       storeImageAndVideoForm,
-      storeFollow,
+      // storeFollow,
       storeGood,
       storeHardware,
       

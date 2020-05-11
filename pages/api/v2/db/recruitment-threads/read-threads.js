@@ -253,37 +253,37 @@ export default async (req, res) => {
     //   console.log
     // ---------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/db/recruitment-threads/read-threads.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/recruitment-threads/read-threads.js
+    // `);
     
-    console.log(chalk`
-      loginUsers_id: {green ${loginUsers_id}}
-      gameCommunities_id: {green ${gameCommunities_id}}
-      threadPage: {green ${threadPage} / ${typeof threadPage}}
-      threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
-      commentPage: {green ${commentPage} / ${typeof commentPage}}
-      commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
-      replyPage: {green ${replyPage} / ${typeof replyPage}}
-      replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
-    `);
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   threadPage: {green ${threadPage} / ${typeof threadPage}}
+    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
+    //   commentPage: {green ${commentPage} / ${typeof commentPage}}
+    //   commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
+    //   replyPage: {green ${replyPage} / ${typeof replyPage}}
+    //   replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
+    // `);
     
-    console.log(chalk`
-      keyword: {green ${keyword} / ${typeof keyword}}
-    `);
+    // console.log(chalk`
+    //   keyword: {green ${keyword} / ${typeof keyword}}
+    // `);
     
-    console.log(`
-      ----- hardwareIDsArr -----\n
-      ${util.inspect(hardwareIDsArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- hardwareIDsArr -----\n
+    //   ${util.inspect(hardwareIDsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- categoriesArr -----\n
-      ${util.inspect(categoriesArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- categoriesArr -----\n
+    //   ${util.inspect(categoriesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- returnObj -----\n

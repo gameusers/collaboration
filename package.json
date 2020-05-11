@@ -87,7 +87,7 @@
     "smooth-scrollbar": "^8.5.2",
     "validator": "^13.0.0",
     "velocity-react": "^1.4.3",
-    "web-push": "^3.4.3",
+    "web-push": "^3.4.4",
     "winston": "^3.2.1",
     "zxcvbn": "^4.4.2"
   },

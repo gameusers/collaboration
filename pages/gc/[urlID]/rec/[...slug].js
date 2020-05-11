@@ -56,6 +56,7 @@ import initStoreHardware from '../../../../app/common/hardware/stores/store.js';
 import Layout from '../../../../app/common/layout/components/layout-ver2.js';
 import RecruitmentNavigation from '../../../../app/gc/rec/components/recruitment-navigation.js';
 import RecruitmentThread from '../../../../app/gc/rec/components/recruitment-thread.js';
+import Breadcrumbs from '../../../../app/common/layout/components/breadcrumbs.js';
 
 
 
@@ -112,7 +113,7 @@ const initializeStore = ({ propsObj }) => {
 
 // --------------------------------------------------
 //   Class
-//   URL: https://dev-1.gameusers.org/gc/***/rec
+//   URL: https://dev-1.gameusers.org/gc/***/rec/***
 // --------------------------------------------------
 
 @observer
@@ -133,10 +134,10 @@ export default class GcRec extends React.Component {
     super(props);
     
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/gc/[urlID]/rec/[...slug].js - constructor
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /pages/gc/[urlID]/rec/[...slug].js - constructor
+    `);
     
     // console.log(`
     //   ----- this.props.propsObj -----\n
@@ -152,6 +153,25 @@ export default class GcRec extends React.Component {
     this.storesObj = initializeStore({ propsObj: this.props.propsObj });
     
     
+    // ---------------------------------------------
+    //   Scroll
+    // ---------------------------------------------
+    
+    // Router.events.on('routeChangeComplete', () => { 
+      
+    //   storeLayout.handleScrollTo({
+        
+    //     to: 'recruitmentThreads',
+    //     duration: 0,
+    //     delay: 0,
+    //     smooth: 'easeInOutQuart',
+    //     offset: -50,
+        
+    //   });
+      
+    // });
+    
+    
   }
   
   
@@ -164,7 +184,7 @@ export default class GcRec extends React.Component {
   
   componentDidUpdate(prevProps) {
     
-    // console.log('componentDidUpdate');
+    console.log('componentDidUpdate');
     
     
     // console.log(`
@@ -185,6 +205,7 @@ export default class GcRec extends React.Component {
     
     if (this.props.ISO8601 !== prevProps.ISO8601) {
       
+      console.log('Update Store');
       // const propsObj = { ISO8601: this.props.ISO8601 };
       
       // initStoreRoot({ propsObj });
@@ -254,7 +275,6 @@ export default class GcRec extends React.Component {
     
     const componentSidebar =
       <RecruitmentNavigation
-        temporaryDataID={this.props.temporaryDataID}
         urlID={this.props.urlID}
         gameCommunities_id={gameCommunities_id}
       />
@@ -267,12 +287,19 @@ export default class GcRec extends React.Component {
     //   Component - Contents
     // --------------------------------------------------
     
-    const componentContent = 
-      <RecruitmentThread
-        temporaryDataID={this.props.temporaryDataID}
-        urlID={this.props.urlID}
-        gameCommunities_id={gameCommunities_id}
-      />
+    const componentContent =
+      <React.Fragment>
+        
+        <Breadcrumbs
+          arr={this.props.breadcrumbsArr}
+        />
+        
+        <RecruitmentThread
+          urlID={this.props.urlID}
+          gameCommunities_id={gameCommunities_id}
+        />
+        
+      </React.Fragment>
     ;
     
     
@@ -358,8 +385,7 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
   
   const pathname = `/gc/${urlID}/rec`;
-  const pathArr = ['gc', urlID];
-  const temporaryDataID = `/gc/${urlID}/rec`;
+  const pathArr = ['gc', urlID, 'rec'];
   const ISO8601 = moment().utc().toISOString();
   
   
@@ -367,7 +393,6 @@ export async function getServerSideProps({ req, res, query }) {
   //   Get Cookie Data & Temporary Data for Fetch
   // --------------------------------------------------
   
-  // const threadPage = stores.data.getTemporaryData({ pathname: temporaryDataID, key: 'recruitmentThreadPage' });
   const threadLimit = stores.data.getCookie({ key: 'recruitmentThreadLimit' });
   const commentLimit = stores.data.getCookie({ key: 'recruitmentCommentLimit' });
   const replyLimit = stores.data.getCookie({ key: 'recruitmentReplyLimit' });
@@ -454,12 +479,50 @@ export async function getServerSideProps({ req, res, query }) {
   
   
   // --------------------------------------------------
+  //   パンくずリスト
+  // --------------------------------------------------
+  
+  const breadcrumbsArr = [
+    
+    {
+      type: 'gc',
+      anchorText: lodashGet(dataObj, ['headerObj', 'name'], ''),
+      href: `/gc/[urlID]/index?urlID=${urlID}`,
+      as: `/gc/${urlID}`,
+    },
+    
+    {
+      type: 'gc/rec',
+      anchorText: '',
+      href: `/gc/[urlID]/rec/index?urlID=${urlID}`,
+      as: `/gc/${urlID}/rec`,
+    },
+    
+    {
+      type: 'gc/rec/search',
+      anchorText: '',
+      href: '',
+      as: '',
+    },
+    
+  ];
+  
+  
+  
+  
+  // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
   
   // console.log(`
   //   ----------------------------------------\n
   //   /pages/gc/[urlID]/rec/[...slug].js - getServerSideProps
+  // `);
+  
+  // console.log(`
+  //   ----- resultObj.data.recruitmentThreadsObj -----\n
+  //   ${util.inspect(resultObj.data.recruitmentThreadsObj, { colors: true, depth: null })}\n
+  //   --------------------\n
   // `);
   
   // console.log(`
@@ -503,14 +566,10 @@ export async function getServerSideProps({ req, res, query }) {
     props: {
       
       urlID,
-      // pathname,
-      temporaryDataID,
       ISO8601,
       statusCode,
       propsObj,
-      // hardwares,
-      // categories,
-      // keyword,
+      breadcrumbsArr,
       
     }
     

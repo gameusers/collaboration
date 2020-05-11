@@ -287,7 +287,7 @@ export default injectIntl(class extends React.Component {
                 }
               }
             `}
-            id="hardwareActive"
+            id={`hardwareActive-${pathArr.join('-')}`}
             label="ハードウェア名"
             value={keyword}
             onChange={(eventObj) => handleHardwaresKeyword({

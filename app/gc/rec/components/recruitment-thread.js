@@ -177,7 +177,6 @@ export default injectIntl(class extends React.Component {
       stores,
       storeGcRecruitment,
       intl,
-      temporaryDataID,
       urlID,
       gameCommunities_id,
       individual,
@@ -1030,7 +1029,6 @@ export default injectIntl(class extends React.Component {
                 disabled={buttonDisabled}
                 onChange={(page) => handleReadRecruitmentThreads({
                   pathArr: this.pathArr,
-                  temporaryDataID,
                   urlID,
                   gameCommunities_id,
                   page,
@@ -1056,7 +1054,6 @@ export default injectIntl(class extends React.Component {
                 value={limit}
                 onChange={(eventObj) => handleReadRecruitmentThreads({
                   pathArr: this.pathArr,
-                  temporaryDataID,
                   urlID,
                   gameCommunities_id,
                   page: 1,

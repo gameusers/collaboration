@@ -346,7 +346,7 @@ class Store {
       // ---------------------------------------------
       
       let resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/users/upsert-create-account`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/upsert-create-account`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)
       });
@@ -410,7 +410,7 @@ class Store {
       // ---------------------------------------------
       
       resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/login/login`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v1/login/login`,
         methodType: 'POST',
         formData: formData,
       });
@@ -429,7 +429,7 @@ class Store {
       // ---------------------------------------------
       
       const userID = lodashGet(resultObj, ['data', 'userID'], '');
-      window.location.href = `${process.env.URL_BASE}ur/${userID}`;
+      window.location.href = `${process.env.NEXT_PUBLIC_URL_BASE}ur/${userID}`;
       
       
     } catch (errorObj) {

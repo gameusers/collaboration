@@ -217,7 +217,7 @@ export default async (req, res) => {
       },
     });
     
-    if (count > process.env.ID_INSERT_LIMIT) {
+    if (count > parseInt(process.env.NEXT_PUBLIC_ID_INSERT_LIMIT, 10)) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: '8XcKQ7hce', messageID: 'NRO3Y1hnC' }] });
     }
     

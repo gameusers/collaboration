@@ -280,7 +280,7 @@ class Store {
       // ---------------------------------------------
       
       let resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/email-confirmations/upsert-reset-password`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/email-confirmations/upsert-reset-password`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)
       });

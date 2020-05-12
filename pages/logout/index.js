@@ -126,7 +126,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v2/common/initial-props`),
+      urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/common/initial-props`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,

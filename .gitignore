@@ -36,7 +36,7 @@ desktop.ini
 !/db/server3/log/.gitkeep
 
 # .env
-.env-dev
+.env.development.local
 
 # 一時的に複製したファイル
-__*.
+__*.js

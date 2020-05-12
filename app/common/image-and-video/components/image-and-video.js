@@ -73,7 +73,7 @@ const cssPreviewBox = css`
 const ComponentBigImage = ({ width, src, srcSet, caption, setMaxHeight, handleLightboxOpen, pathArr }) => {
 
   // Custom Hook
-  const openLightbox = useLightbox();
+  const { openLightbox } = useLightbox();
   
   
   return (

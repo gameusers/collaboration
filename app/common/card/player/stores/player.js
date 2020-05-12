@@ -172,7 +172,7 @@ class Store {
         
         const resultObj = await fetchWrapper({
           
-          urlApi: `${process.env.URL_API}/v2/db/card-players/find-player`,
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/card-players/find-player`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj)
           
@@ -314,7 +314,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/login/follow`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v1/login/follow`,
         methodType: 'POST',
         formData: formData
       });
@@ -584,7 +584,7 @@ class Store {
       
       const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.URL_API}/v2/db/card-players/get-edit-data`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/card-players/get-edit-data`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
         
@@ -1051,7 +1051,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/hardwares/read-suggestion`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/hardwares/read-suggestion`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
       });
@@ -1282,7 +1282,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/hardwares/read-suggestion`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/hardwares/read-suggestion`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
       });
@@ -1549,7 +1549,7 @@ class Store {
       
       const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.URL_API}/v2/db/card-players/upsert`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/card-players/upsert`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
         

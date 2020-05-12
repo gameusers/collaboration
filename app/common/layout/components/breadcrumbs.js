@@ -195,7 +195,9 @@ export default class extends React.Component {
           padding: 10px 12px;
         `}
       >
-        
+        {/*<p>NEXT_PUBLIC_APP_LOCALE = {process.env.NEXT_PUBLIC_APP_LOCALE}</p>
+        <p>NEXT_PUBLIC_APP_LOCALE2 = {process.env.NEXT_PUBLIC_APP_LOCALE2}</p>*/}
+        {/*<p>TEST_VALUE={process.env.TEST_VALUE}</p>*/}
         
         <Breadcrumbs separator="›" aria-label="breadcrumb">
           
@@ -242,7 +244,7 @@ export default class extends React.Component {
           
           
           
-          <div
+          {/*<div
             css={css`
               display: flex;
               flex-flow: row wrap;
@@ -327,7 +329,7 @@ export default class extends React.Component {
               
             </div>
             
-          </div>
+          </div>*/}
           
           
         </Breadcrumbs>

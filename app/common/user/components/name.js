@@ -371,7 +371,7 @@ export default class extends React.Component {
       //     `}
       //     key="gameBox"
       //   >
-      //     <Link href={`${process.env.URL_BASE}gc/${gameUrlID}`}>
+      //     <Link href={`${process.env.NEXT_PUBLIC_URL_BASE}gc/${gameUrlID}`}>
       //       <a>{gameName}</a>
       //     </Link>
       //   </div>

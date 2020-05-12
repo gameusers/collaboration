@@ -139,7 +139,7 @@ class Store {
       
       let type = lodashGet(this.dataObj, [...pathArr, 'type'], 'member');
       
-      let limit = parseInt((storeData.getCookie({ key: 'memberLimit' }) || process.env.COMMUNITY_MEMBER_LIMIT), 10);
+      let limit = parseInt((storeData.getCookie({ key: 'memberLimit' }) || process.env.NEXT_PUBLIC_COMMUNITY_MEMBER_LIMIT), 10);
       const arr = lodashGet(this.dataObj, [...pathArr, 'membersObj', `page${page}Obj`, 'arr'], []);
       
       const membersObj = lodashGet(this.dataObj, [...pathArr, 'membersObj'], {});
@@ -202,7 +202,7 @@ class Store {
       } else if (loadedDate) {
         
         const datetimeNow = moment().utcOffset(0);
-        const datetimeReloadLimit = moment(loadedDate).add(process.env.COMMUNITY_MEMBER_RELOAD_MINUTES, 'm').utcOffset(0);
+        const datetimeReloadLimit = moment(loadedDate).add(process.env.NEXT_PUBLIC_COMMUNITY_MEMBER_RELOAD_MINUTES, 'm').utcOffset(0);
         
         if (datetimeNow.isAfter(datetimeReloadLimit)) {
           reload = true;
@@ -350,7 +350,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/user-communities/read-members`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/user-communities/read-members`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
       });
@@ -681,7 +681,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/follows/upsert-manage-members`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/upsert-manage-members`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
       });

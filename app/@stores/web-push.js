@@ -179,7 +179,7 @@ class Store {
       //   本番環境でない場合、必要なデータがない場合は処理停止
       // ---------------------------------------------
       
-      if (process.env.NODE_ENV !== 'production' || !process.env.WEB_PUSH_VAPID_PUBLIC_KEY) {
+      if (process.env.NODE_ENV !== 'production' || !process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY) {
         return;
       }
       
@@ -244,7 +244,7 @@ class Store {
         
       };
       
-      const convertedVapidKey = urlBase64ToUint8Array(process.env.WEB_PUSH_VAPID_PUBLIC_KEY);
+      const convertedVapidKey = urlBase64ToUint8Array(process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY);
       
       
       
@@ -272,7 +272,7 @@ class Store {
       
       // console.log(chalk`
       //   process.env.NODE_ENV: {green ${process.env.NODE_ENV}}
-      //   process.env.WEB_PUSH_VAPID_PUBLIC_KEY: {green ${process.env.WEB_PUSH_VAPID_PUBLIC_KEY}}
+      //   process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY: {green ${process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY}}
       //   convertedVapidKey: {green ${convertedVapidKey}}
       // `);
       
@@ -338,7 +338,7 @@ class Store {
       //   本番環境でない場合、必要なデータがない場合は処理停止
       // ---------------------------------------------
       
-      if (process.env.NODE_ENV !== 'production' || !process.env.WEB_PUSH_VAPID_PUBLIC_KEY) {
+      if (process.env.NODE_ENV !== 'production' || !process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY) {
         return;
       }
       

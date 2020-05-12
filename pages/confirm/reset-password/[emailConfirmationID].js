@@ -128,7 +128,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v2/confirm/reset-password/${emailConfirmationID}`),
+      urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/confirm/reset-password/${emailConfirmationID}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -290,8 +290,8 @@ export default class extends React.Component {
     //   https://github.com/codeep/react-recaptcha-v3
     // --------------------------------------------------
     
-    if (process.env.VERIFY_RECAPTCHA === '1' && process.env.RECAPTCHA_SITE_KEY) {
-      loadReCaptcha(process.env.RECAPTCHA_SITE_KEY);
+    if (process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1' && process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
+      loadReCaptcha(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
     }
     
     
@@ -399,10 +399,10 @@ export default class extends React.Component {
               
               
               {/* reCAPTCHA */}
-              {(process.env.VERIFY_RECAPTCHA === '1' && process.env.RECAPTCHA_SITE_KEY) &&
+              {(process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1' && process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) &&
                 <ReCaptcha
                   ref={ref => this.recaptcha = ref}
-                  sitekey={process.env.RECAPTCHA_SITE_KEY}
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
                   action='resetPassword'
                   verifyCallback={(response) => this.storesObj.storeConfirmResetPassword.handleRecaptchaResponse({
                     response,

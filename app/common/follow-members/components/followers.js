@@ -188,7 +188,7 @@ export default injectIntl(class extends React.Component {
     
     const page = lodashGet(dataObj, [...pathArr, 'followMembersObj', `${controlType}Obj`, 'page'], 1);
     const count = lodashGet(dataObj, [...pathArr, 'followMembersObj', `${controlType}Obj`, 'count'], 0);
-    const limit = parseInt((stores.data.getCookie({ key: 'followLimit' }) || process.env.FOLLOWERS_LIMIT), 10);
+    const limit = parseInt((stores.data.getCookie({ key: 'followLimit' }) || process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT), 10);
     const arr = lodashGet(dataObj, [...pathArr, 'followMembersObj', `${controlType}Obj`, `page${page}Obj`, 'arr'], []);
     
     let approvalCount = lodashGet(dataObj, [...pathArr, 'followMembersObj', 'approvalObj', 'count'], 0);

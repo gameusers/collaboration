@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -14,7 +14,7 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-const fetch = require('isomorphic-unfetch');
+// const fetch = require('isomorphic-unfetch');
 
 
 
@@ -39,7 +39,7 @@ const fetchWrapper = ({ urlApi, methodType, formData, reqHeadersCookie, reqAccep
   //   Property
   // ---------------------------------------------
   
-  let resultObj = {
+  const resultObj = {
     statusCode: 400
   };
   
@@ -72,11 +72,13 @@ const fetchWrapper = ({ urlApi, methodType, formData, reqHeadersCookie, reqAccep
   
   
   return fetch(urlApi, {
+    
     method: methodType,
     credentials: 'same-origin',
     mode: 'same-origin',
     headers: headersObj,
-    body: formData
+    body: formData,
+    
   })
     .then((response) => {
       
@@ -130,5 +132,7 @@ const fetchWrapper = ({ urlApi, methodType, formData, reqHeadersCookie, reqAccep
 // --------------------------------------------------
 
 module.exports = {
+  
   fetchWrapper
+  
 };

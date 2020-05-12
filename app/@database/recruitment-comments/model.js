@@ -344,9 +344,9 @@ const findCommentsAndReplies = async ({
   recruitmentThreads_idsArr,
   recruitmentThreadsObj,
   commentPage = 1,
-  commentLimit = process.env.RECRUITMENT_COMMENT_LIMIT,
+  commentLimit = process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT,
   replyPage = 1,
-  replyLimit = process.env.RECRUITMENT_REPLY_LIMIT,
+  replyLimit = process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT,
   
 }) => {
   

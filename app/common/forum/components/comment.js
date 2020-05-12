@@ -206,7 +206,7 @@ export default injectIntl(class extends React.Component {
     
     const page = lodashGet(dataObj, [communities_id, 'forumCommentsObj', forumThreads_id, 'page'], 1);
     const count = lodashGet(dataObj, [communities_id, 'forumCommentsObj', forumThreads_id, 'count'], 0);
-    const limit = parseInt((stores.data.getCookie({ key: 'forumCommentLimit' }) || process.env.FORUM_COMMENT_LIMIT), 10);
+    const limit = parseInt((stores.data.getCookie({ key: 'forumCommentLimit' }) || process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT), 10);
     const arr = lodashGet(dataObj, [communities_id, 'forumCommentsObj', forumThreads_id, `page${page}Obj`, 'arr'], []);
     
     

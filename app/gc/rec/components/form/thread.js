@@ -186,7 +186,12 @@ export default injectIntl(class extends React.Component {
     const twitter = lodashGet(dataObj, [...pathArr, 'twitter'], false);
     const webPush = lodashGet(dataObj, [...pathArr, 'webPush'], false);
     
-    const limitHardwares = parseInt(process.env.RECRUITMENT_THREAD_HARDWARES_LIMIT, 10);
+    const limitHardwares = parseInt(process.env.NEXT_PUBLIC_NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT, 10);
+    
+    // console.log(chalk`
+    //   process.env.NEXT_PUBLIC_NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT: {green ${process.env.NEXT_PUBLIC_NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT} / ${typeof process.env.NEXT_PUBLIC_NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT}}
+    //   limitHardwares: {green ${limitHardwares} / ${typeof limitHardwares}}
+    // `);
     
     
     // --------------------------------------------------
@@ -201,7 +206,7 @@ export default injectIntl(class extends React.Component {
     //   Limit
     // --------------------------------------------------
     
-    const limit = parseInt(process.env.RECRUITMENT_THREAD_IMAGES_AND_VIDEOS_LIMIT, 10);
+    const limit = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_IMAGES_AND_VIDEOS_LIMIT, 10);
     
     
     // --------------------------------------------------

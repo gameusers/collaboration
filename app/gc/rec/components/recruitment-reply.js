@@ -217,7 +217,7 @@ export default injectIntl(class extends React.Component {
     
     const page = lodashGet(dataObj, [gameCommunities_id, 'recruitmentRepliesObj', recruitmentComments_id, 'page'], 1);
     const count = lodashGet(dataObj, [gameCommunities_id, 'recruitmentRepliesObj', recruitmentComments_id, 'count'], 0);
-    const limit = parseInt((stores.data.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.RECRUITMENT_REPLY_LIMIT), 10);
+    const limit = parseInt((stores.data.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
     const arr = lodashGet(dataObj, [gameCommunities_id, 'recruitmentRepliesObj', recruitmentComments_id, `page${page}Obj`, 'arr'], []);
     
     

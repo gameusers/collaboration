@@ -194,7 +194,7 @@ export default injectIntl(class extends React.Component {
     //   Limit
     // --------------------------------------------------
     
-    const limit = parseInt(process.env.RECRUITMENT_COMMENT_IMAGES_AND_VIDEOS_LIMIT, 10);
+    const limit = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_IMAGES_AND_VIDEOS_LIMIT, 10);
     
     
     // --------------------------------------------------

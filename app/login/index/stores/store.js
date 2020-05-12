@@ -280,7 +280,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/login/login`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v1/login/login`,
         methodType: 'POST',
         formData
       });
@@ -327,7 +327,7 @@ class Store {
       // ---------------------------------------------
       
       const userID = lodashGet(resultObj, ['data', 'userID'], '');
-      window.location.href = `${process.env.URL_BASE}ur/${userID}`;
+      window.location.href = `${process.env.NEXT_PUBLIC_URL_BASE}ur/${userID}`;
       
       
     } catch (errorObj) {

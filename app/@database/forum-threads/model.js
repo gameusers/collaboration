@@ -339,7 +339,7 @@ const findForThreadsList = async ({
   gameCommunities_id,
   userCommunities_id,
   page = 1,
-  limit = process.env.FORUM_THREAD_LIST_LIMIT
+  limit = process.env.NEXT_PUBLIC_FORUM_THREAD_LIST_LIMIT
   
 }) => {
   
@@ -606,11 +606,11 @@ const findForForum = async ({
   userCommunities_id,
   forumThreads_idArr = [],
   threadPage = 1,
-  threadLimit = process.env.FORUM_THREAD_LIMIT,
+  threadLimit = process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT,
   commentPage = 1,
-  commentLimit = process.env.FORUM_COMMENT_LIMIT,
+  commentLimit = process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT,
   replyPage = 1,
-  replyLimit = process.env.FORUM_REPLY_LIMIT,
+  replyLimit = process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT,
   
 }) => {
   
@@ -937,11 +937,11 @@ const findForForumBy_forumID = async ({
   _id,
   userCommunities_id,
   threadPage = 1,
-  threadLimit = process.env.FORUM_THREAD_LIMIT,
+  threadLimit = process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT,
   commentPage = 1,
-  commentLimit = process.env.FORUM_COMMENT_LIMIT,
+  commentLimit = process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT,
   replyPage = 1,
-  replyLimit = process.env.FORUM_REPLY_LIMIT,
+  replyLimit = process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT,
   
 }) => {
   

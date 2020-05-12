@@ -473,12 +473,12 @@ class Store {
       //   Property
       // ---------------------------------------------
       
-      // const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
-      // const clonedObj = lodashCloneDeep(recruitmentObj);
+      const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
+      const clonedObj = lodashCloneDeep(recruitmentObj);
       
-      // const loadedDate = lodashGet(recruitmentObj, ['recruitmentThreadsObj', `page${page}Obj`, 'loadedDate'], '');
-      // const arr = lodashGet(recruitmentObj, ['recruitmentThreadsObj', `page${page}Obj`, 'arr'], []);
-      // const reloadThreads = lodashGet(recruitmentObj, ['reloadThreads'], false);
+      const loadedDate = lodashGet(recruitmentObj, ['recruitmentThreadsObj', `page${page}Obj`, 'loadedDate'], '');
+      const arr = lodashGet(recruitmentObj, ['recruitmentThreadsObj', `page${page}Obj`, 'arr'], []);
+      const reloadThreads = lodashGet(recruitmentObj, ['reloadThreads'], false);
       
       
       // ---------------------------------------------
@@ -609,12 +609,250 @@ class Store {
       
       
       
+      // ---------------------------------------------
+      //   再読込するかどうか
+      // ---------------------------------------------
+      
+      let reload = false;
+      
       
       // ---------------------------------------------
-      //   コメント　次回の読み込み時に強制リロード
+      //   1ページに表示する件数を変更した場合、再読込
       // ---------------------------------------------
       
-      // lodashSet(clonedObj, ['reloadComments'], false);
+      if (changeLimit || reloadThreads) {
+        // console.log('1ページに表示する件数を変更した場合、再読込');
+        
+        // ---------------------------------------------
+        //   スレッド＆コメント　次回の読み込み時に強制リロード
+        // ---------------------------------------------
+        
+        lodashSet(clonedObj, ['reloadThreads'], false);
+        lodashSet(clonedObj, ['reloadComments'], false);
+        
+        
+        // ---------------------------------------------
+        //   再読込
+        // ---------------------------------------------
+        
+        reload = true;
+        
+      
+      // ---------------------------------------------
+      //   最後の読み込み以降に募集の更新があった場合
+      //   または最後の読み込みからある程度時間（10分）が経っていた場合、再読込する
+      // ---------------------------------------------
+        
+      } else if (loadedDate) {
+        
+        const recruitmentUpdatedDate = lodashGet(recruitmentObj, ['updatedDateObj', 'recruitment'], '0000-01-01T00:00:00Z');
+        
+        const datetimeLoaded = moment(loadedDate).utcOffset(0);
+        const datetimeRecruitmentUpdated = moment(recruitmentUpdatedDate).utcOffset(0);
+        const datetimeNow = moment().utcOffset(0);
+        const datetimeReloadLimit = moment(loadedDate).add(process.env.NEXT_PUBLIC_RECRUITMENT_RELOAD_MINUTES, 'm').utcOffset(0);
+        
+        if (datetimeRecruitmentUpdated.isAfter(datetimeLoaded) || datetimeNow.isAfter(datetimeReloadLimit)) {
+          
+          reload = true;
+          
+        }
+        
+        // console.log(chalk`
+        //   process.env.NEXT_PUBLIC_RECRUITMENT_RELOAD_MINUTES: {green ${process.env.NEXT_PUBLIC_RECRUITMENT_RELOAD_MINUTES}}
+        //   datetimeLoaded: {green ${datetimeLoaded}}
+        //   datetimeRecruitmentUpdated: {green ${datetimeRecruitmentUpdated}}
+        //   datetimeNow: {green ${datetimeNow}}
+        //   datetimeReloadLimit: {green ${datetimeReloadLimit}}
+        //   datetimeRecruitmentUpdated.isAfter(datetimeLoaded): {green ${datetimeRecruitmentUpdated.isAfter(datetimeLoaded)}}
+        //   datetimeNow.isAfter(datetimeReloadLimit)：{green ${datetimeNow.isAfter(datetimeReloadLimit)}}
+        // `);
+        
+      }
+      
+      
+      // console.log(chalk`
+      //   reload: {green ${reload}}
+      // `);
+      
+      
+      // ---------------------------------------------
+      //   すでにデータを読み込んでいる場合は、ストアのデータを表示する
+      // ---------------------------------------------
+      
+      if (!reload && arr.length > 0) {
+        
+        
+        console.log('store / Router.push - shallow: true');
+        
+        
+        // ---------------------------------------------
+        //   Page 更新
+        // ---------------------------------------------
+        
+        clonedObj.recruitmentThreadsObj.page = page;
+        
+        this.handleEdit({
+          pathArr: [gameCommunities_id],
+          value: clonedObj
+        });
+        
+        
+        // ---------------------------------------------
+        //   Router.push - History API pushState()
+        // ---------------------------------------------
+        
+        Router.push(url, as, { shallow: true });
+        // Router.push(url, as);
+        
+        
+        // ---------------------------------------------
+        //   Return
+        // ---------------------------------------------
+        
+        return;
+        
+        
+      }
+      
+      console.log('Router.push');
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      // storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      // const formDataObj = {
+        
+      //   gameCommunities_id,
+      //   hardwareIDsArr,
+      //   categoriesArr,
+      //   keyword,
+      //   threadPage: page,
+      //   threadLimit,
+      //   commentPage: 1,
+      //   commentLimit,
+      //   replyPage: 1,
+      //   replyLimit,
+        
+      // };
+      
+      
+      // // ---------------------------------------------
+      // //   Fetch
+      // // ---------------------------------------------
+      
+      // const resultObj = await fetchWrapper({
+        
+      //   urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/read-threads`,
+      //   methodType: 'POST',
+      //   formData: JSON.stringify(formDataObj),
+        
+      // });
+      
+      // // console.log(`
+      // //   ----- resultObj -----\n
+      // //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      // //   --------------------\n
+      // // `);
+      
+      
+      // // ---------------------------------------------
+      // //   Error
+      // // ---------------------------------------------
+      
+      // if ('errorsArr' in resultObj) {
+      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
+      // }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   recruitmentThreadsObj
+      // ---------------------------------------------
+      
+      // const recruitmentThreadsOldObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj'], {});
+      // const recruitmentThreadsNewObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {});
+      
+      // // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+      // const recruitmentThreadsMergedObj = reload ? recruitmentThreadsNewObj : lodashMerge(recruitmentThreadsOldObj, recruitmentThreadsNewObj);
+      
+      // clonedObj.recruitmentThreadsObj = recruitmentThreadsMergedObj;
+      
+      // // console.log(`
+      // //   ----- recruitmentThreadsOldObj -----\n
+      // //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreadsOldObj)), { colors: true, depth: null })}\n
+      // //   --------------------\n
+      // // `);
+      
+      // // console.log(`
+      // //   ----- recruitmentThreadsNewObj -----\n
+      // //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreadsNewObj)), { colors: true, depth: null })}\n
+      // //   --------------------\n
+      // // `);
+      
+      // // console.log(`
+      // //   ----- recruitmentThreadsMergedObj -----\n
+      // //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreadsMergedObj)), { colors: true, depth: null })}\n
+      // //   --------------------\n
+      // // `);
+      
+      
+      
+      
+      // // ---------------------------------------------
+      // //   recruitmentCommentsObj
+      // // ---------------------------------------------
+      
+      // const recruitmentCommentsOldObj = lodashGet(recruitmentObj, ['recruitmentCommentsObj'], {});
+      // const recruitmentCommentsNewObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
+      
+      // // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+      // const recruitmentCommentsMergedObj = reload ? recruitmentCommentsNewObj : lodashMerge(recruitmentCommentsOldObj, recruitmentCommentsNewObj);
+      
+      // clonedObj.recruitmentCommentsObj = recruitmentCommentsMergedObj;
+      
+      
+      // // ---------------------------------------------
+      // //   recruitmentRepliesObj
+      // // ---------------------------------------------
+      
+      // const recruitmentRepliesOldObj = lodashGet(recruitmentObj, ['recruitmentRepliesObj'], {});
+      // const recruitmentRepliesNewObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
+      
+      // // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+      // const recruitmentRepliesMergedObj = reload ? recruitmentRepliesNewObj : lodashMerge(recruitmentRepliesOldObj, recruitmentRepliesNewObj);
+      
+      // clonedObj.recruitmentRepliesObj = recruitmentRepliesMergedObj;
+      
+      
+      
+      
+      // // ---------------------------------------------
+      // //   Page
+      // // ---------------------------------------------
+      
+      // clonedObj.recruitmentThreadsObj.page = page;
+      
+      
+      // // --------------------------------------------------
+      // //   Community UpdatedDateObj
+      // // --------------------------------------------------
+      
+      // const updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+      // clonedObj.updatedDateObj = updatedDateObj;
       
       
       
@@ -4257,49 +4495,55 @@ export default function initStoreGcRecruitment({ propsObj }) {
     //   recruitmentThreadsObj
     // --------------------------------------------------
     
-    // const recruitmentThreadsNewObj = lodashGet(propsObj, ['recruitmentThreadsObj'], null);
+    const recruitmentThreadsNewObj = lodashGet(propsObj, ['recruitmentThreadsObj'], null);
     
-    // if (recruitmentThreadsNewObj) {
+    if (recruitmentThreadsNewObj) {
       
-    //   const recruitmentThreadsOldObj = lodashGet(storeGcRecruitment, ['dataObj', gameCommunities_id, 'recruitmentThreadsObj'], {});
-      
-      
-    //   // console.log(`
-    //   //   ----- recruitmentThreadsOldObj -----\n
-    //   //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreadsOldObj)), { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
-      
-    //   // console.log(`
-    //   //   ----- recruitmentThreadsNewObj -----\n
-    //   //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreadsNewObj)), { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
+      const recruitmentThreadsOldObj = lodashGet(storeGcRecruitment, ['dataObj', gameCommunities_id, 'recruitmentThreadsObj'], {});
       
       
-    //   const recruitmentThreadsMergedObj = lodashMerge(recruitmentThreadsOldObj, recruitmentThreadsNewObj);
-    //   lodashSet(storeGcRecruitment, ['dataObj', gameCommunities_id, 'recruitmentThreadsObj'], recruitmentThreadsMergedObj);
+      // console.log(`
+      //   ----- recruitmentThreadsOldObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreadsOldObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- recruitmentThreadsNewObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreadsNewObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
-    //   // console.log(`
-    //   //   ----- recruitmentThreadsMergedObj -----\n
-    //   //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreadsMergedObj)), { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
+      const recruitmentThreadsMergedObj = lodashMerge(recruitmentThreadsOldObj, recruitmentThreadsNewObj);
+      lodashSet(storeGcRecruitment, ['dataObj', gameCommunities_id, 'recruitmentThreadsObj'], recruitmentThreadsMergedObj);
+      
+      
+      // console.log(`
+      //   ----- recruitmentThreadsMergedObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreadsMergedObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       
-    // }
+    }
     
     // --------------------------------------------------
     //   recruitmentThreadsObj
     // --------------------------------------------------
     
-    const recruitmentThreadsObj = lodashGet(propsObj, ['recruitmentThreadsObj'], null);
+    // const recruitmentThreadsObj = lodashGet(propsObj, ['recruitmentThreadsObj'], null);
     
-    if (recruitmentThreadsObj) {
-      lodashSet(storeGcRecruitment, ['dataObj', gameCommunities_id, 'recruitmentThreadsObj'], recruitmentThreadsObj);
-    }
+    // if (recruitmentThreadsObj) {
+      
+    //   const recruitmentThreadsOldObj = lodashGet(storeGcRecruitment, ['recruitmentThreadsObj'], {});
+    //   // const recruitmentThreadsNewObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {});
+      
+    //   const recruitmentThreadsMergedObj = lodashMerge(recruitmentThreadsOldObj, recruitmentThreadsNewObj);
+      
+    //   // lodashSet(storeGcRecruitment, ['dataObj', gameCommunities_id, 'recruitmentThreadsObj'], recruitmentThreadsObj);
+    // }
     
     
     // --------------------------------------------------

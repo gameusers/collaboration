@@ -89,8 +89,8 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/login/logout`,
-        // urlApi: `${process.env.URL_API}/v2/logout/logout`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v1/login/logout`,
+        // urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/logout/logout`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)
       });
@@ -126,8 +126,8 @@ class Store {
       //   Page Transition / トップページに移動
       // ---------------------------------------------
       
-      window.location.href = process.env.URL_BASE;
-      // window.location.href = `${process.env.URL_BASE}login`;
+      window.location.href = process.env.NEXT_PUBLIC_URL_BASE;
+      // window.location.href = `${process.env.NEXT_PUBLIC_URL_BASE}login`;
       
       
     } catch (errorObj) {

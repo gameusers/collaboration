@@ -177,7 +177,7 @@ export default injectIntl(class extends React.Component {
     //   Limit
     // --------------------------------------------------
     
-    const limit = parseInt(process.env.FORUM_THREAD_IMAGES_AND_VIDEOS_LIMIT, 10);
+    const limit = parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_IMAGES_AND_VIDEOS_LIMIT, 10);
     
     
     // --------------------------------------------------

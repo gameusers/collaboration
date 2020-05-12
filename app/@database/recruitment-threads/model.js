@@ -347,11 +347,11 @@ const findRecruitments = async ({
   gameCommunities_id,
   recruitmentThreads_idsArr = [],
   threadPage = 1,
-  threadLimit = process.env.RECRUITMENT_THREAD_LIMIT,
+  threadLimit = process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT,
   commentPage = 1,
-  commentLimit = process.env.RECRUITMENT_COMMENT_LIMIT,
+  commentLimit = process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT,
   replyPage = 1,
-  replyLimit = process.env.RECRUITMENT_REPLY_LIMIT,
+  replyLimit = process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT,
   
 }) => {
   
@@ -575,11 +575,11 @@ const findRecruitmentsForSearch = async ({
   categoriesArr = [],
   keyword,
   threadPage = 1,
-  threadLimit = process.env.RECRUITMENT_THREAD_LIMIT,
+  threadLimit = process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT,
   commentPage = 1,
-  commentLimit = process.env.RECRUITMENT_COMMENT_LIMIT,
+  commentLimit = process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT,
   replyPage = 1,
-  replyLimit = process.env.RECRUITMENT_REPLY_LIMIT,
+  replyLimit = process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT,
   
 }) => {
   
@@ -897,7 +897,7 @@ const aggregate = async ({
   loginUsers_id,
   matchConditionArr = [],
   threadPage = 1,
-  threadLimit = process.env.RECRUITMENT_THREAD_LIMIT,
+  threadLimit = process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT,
   
 }) => {
   
@@ -917,13 +917,13 @@ const aggregate = async ({
     //   parseInt
     // --------------------------------------------------
     
-    const intThreadLimit = parseInt((threadLimit || process.env.RECRUITMENT_THREAD_LIMIT), 10);
+    const intThreadLimit = parseInt((threadLimit || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
     
     
     // console.log(chalk`
     //   aggregate
     //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
-    //   process.env.RECRUITMENT_THREAD_LIMIT: {green ${process.env.RECRUITMENT_THREAD_LIMIT} / ${typeof process.env.RECRUITMENT_THREAD_LIMIT}}
+    //   process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT: {green ${process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT} / ${typeof process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT}}
     //   intThreadLimit: {green ${intThreadLimit}}
     // `);
     

@@ -72,7 +72,7 @@ const validationCardPlayersSpecialSkill = ({ throwError = false, required = fals
     //   保存できる最大数を超えているかチェック
     // ---------------------------------------------
     
-    const limit = parseInt(process.env.CARD_PLAYER_SPECIAL_SKILL_LIMIT, 10);
+    const limit = parseInt(process.env.NEXT_PUBLIC_CARD_PLAYER_SPECIAL_SKILL_LIMIT, 10);
     
     if (valueArr.length > limit) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'HRNgyWTiT', messageID: 'qnWsuPcrJ' }] });

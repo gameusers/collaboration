@@ -144,7 +144,7 @@ class Store {
         // --------------------------------------------------
         
         const resultObj = await fetchWrapper({
-          urlApi: `${process.env.URL_API}/v2/db/ids/read-edit-form`,
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/ids/read-edit-form`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
         });
@@ -694,7 +694,7 @@ class Store {
       // --------------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/ids/upsert`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/ids/upsert`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
       });
@@ -944,7 +944,7 @@ class Store {
       // --------------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/ids/delete`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/ids/delete`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
       });
@@ -1189,7 +1189,7 @@ class Store {
       // --------------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/ids/upsert`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/ids/upsert`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
       });

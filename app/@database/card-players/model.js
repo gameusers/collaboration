@@ -2035,7 +2035,7 @@ const findForMember = async ({
   loginUsers_id,
   users_idsArr,
   page = 1,
-  limit = process.env.COMMUNITY_MEMBER_LIMIT,
+  limit = process.env.NEXT_PUBLIC_COMMUNITY_MEMBER_LIMIT,
   
 }) => {
   
@@ -2529,7 +2529,7 @@ const findForFollowers = async ({
     // --------------------------------------------------
     
     let intPage = 1;
-    let intLimit = parseInt(process.env.FOLLOWERS_LIMIT, 10);
+    let intLimit = parseInt(process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT, 10);
     
     if (page) {
       intPage = parseInt(page, 10);
@@ -2743,7 +2743,7 @@ const findForFollowers = async ({
     //   limit: {green ${limit}}
     //   intPage: {green ${intPage} / ${typeof intPage}}
     //   intLimit: {green ${intLimit} / ${typeof intLimit}}
-    //   process.env.FOLLOWERS_LIMIT: {green ${process.env.FOLLOWERS_LIMIT} / ${typeof process.env.FOLLOWERS_LIMIT}}
+    //   process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT: {green ${process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT} / ${typeof process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT}}
     // `);
     
     // console.log(`

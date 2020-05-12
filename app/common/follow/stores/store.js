@@ -122,7 +122,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/follows/upsert-follow`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/upsert-follow`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)
       });
@@ -342,7 +342,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/follows/upsert-follow-ur`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/upsert-follow-ur`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)
       });

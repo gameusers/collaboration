@@ -62,7 +62,7 @@ const verifyRecaptcha = async ({ response, remoteip }) => {
   // --------------------------------------------------
   
   // console.log(chalk`
-  //   process.env.VERIFY_RECAPTCHA: {green ${process.env.VERIFY_RECAPTCHA} / ${typeof process.env.VERIFY_RECAPTCHA}}
+  //   process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA: {green ${process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA} / ${typeof process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA}}
   //   process.env.RECAPTCHA_SECRET_KEY: {green ${process.env.RECAPTCHA_SECRET_KEY}}
   //   response: {green ${response}}
   //   remoteip: {green ${remoteip}}
@@ -70,10 +70,10 @@ const verifyRecaptcha = async ({ response, remoteip }) => {
   
   
   // --------------------------------------------------
-  //   製品版 / VERIFY_RECAPTCHA === '1' のときは検証する
+  //   製品版 / NEXT_PUBLIC_VERIFY_RECAPTCHA === '1' のときは検証する
   // --------------------------------------------------
   
-  if (process.env.NODE_ENV === 'production' || process.env.VERIFY_RECAPTCHA === '1') {
+  if (process.env.NODE_ENV === 'production' || process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1') {
     
     
     // ---------------------------------------------
@@ -130,7 +130,7 @@ const verifyRecaptcha = async ({ response, remoteip }) => {
   
   
   // --------------------------------------------------
-  //   開発時、VERIFY_RECAPTCHA === '0' のときは検証スルー
+  //   開発時、NEXT_PUBLIC_VERIFY_RECAPTCHA === '0' のときは検証スルー
   // --------------------------------------------------
   
   // return true;

@@ -209,7 +209,7 @@ class Store {
     }
     
     // ファイルサイズが設定より大きすぎないかチェック
-    if (fileObj.size > process.env.UPLOAD_IMAGE_SIZE_UPPER_LIMIT) {
+    if (fileObj.size > process.env.NEXT_PUBLIC_UPLOAD_IMAGE_SIZE_UPPER_LIMIT) {
       
       storeLayout.handleSnackbarOpen({
         variant: 'error',

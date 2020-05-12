@@ -196,7 +196,7 @@ export default injectIntl(class extends React.Component {
     //   additionalGameLimit
     // --------------------------------------------------
     
-    const additionalGameLimit = parseInt(process.env.COMMUNITY_ADDITIONAL_GAME_LIMIT, 10);
+    const additionalGameLimit = parseInt(process.env.NEXT_PUBLIC_COMMUNITY_ADDITIONAL_GAME_LIMIT, 10);
     
     
     

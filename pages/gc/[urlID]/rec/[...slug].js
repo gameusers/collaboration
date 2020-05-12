@@ -16,6 +16,7 @@ import util from 'util';
 
 import React from 'react';
 import Error from 'next/error';
+import Router from 'next/router';
 import { observer } from 'mobx-react';
 import moment from 'moment';
 
@@ -29,34 +30,50 @@ import lodashGet from 'lodash/get';
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from '../../../../app/@modules/fetch.js';
-import { createCsrfToken } from '../../../../app/@modules/csrf.js';
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { createCsrfToken } from 'app/@modules/csrf.js';
 
 
 // ---------------------------------------------
 //   Stores
 // ---------------------------------------------
 
-import initStoreRoot from '../../../../app/@stores/root.js';
-import initStoreGcRecruitment from '../../../../app/gc/rec/stores/store.js';
-import initStoreCardPlayer from '../../../../app/common/card/player/stores/player.js';
-import initStoreForum from '../../../../app/common/forum/stores/store.js';
-import initStoreIDForm from '../../../../app/common/id/stores/form.js';
-import initStoreGameForm from '../../../../app/common/game/stores/form.js';
-import initStoreImageAndVideo from '../../../../app/common/image-and-video/stores/image-and-video.js';
-import initStoreImageAndVideoForm from '../../../../app/common/image-and-video/stores/form.js';
-import initStoreGood from '../../../../app/common/good/stores/store.js';
-import initStoreHardware from '../../../../app/common/hardware/stores/store.js';
+import initStoreRoot from 'app/@stores/root.js';
+import initStoreGcRecruitment from 'app/gc/rec/stores/store.js';
+import initStoreCardPlayer from 'app/common/card/player/stores/player.js';
+import initStoreForum from 'app/common/forum/stores/store.js';
+import initStoreIDForm from 'app/common/id/stores/form.js';
+import initStoreGameForm from 'app/common/game/stores/form.js';
+import initStoreImageAndVideo from 'app/common/image-and-video/stores/image-and-video.js';
+import initStoreImageAndVideoForm from 'app/common/image-and-video/stores/form.js';
+import initStoreGood from 'app/common/good/stores/store.js';
+import initStoreHardware from 'app/common/hardware/stores/store.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import Layout from '../../../../app/common/layout/components/layout-ver2.js';
-import RecruitmentNavigation from '../../../../app/gc/rec/components/recruitment-navigation.js';
-import RecruitmentThread from '../../../../app/gc/rec/components/recruitment-thread.js';
-import Breadcrumbs from '../../../../app/common/layout/components/breadcrumbs.js';
+import Layout from 'app/common/layout/components/layout-ver2.js';
+import RecruitmentNavigation from 'app/gc/rec/components/recruitment-navigation.js';
+import RecruitmentThread from 'app/gc/rec/components/recruitment-thread.js';
+import Breadcrumbs from 'app/common/layout/components/breadcrumbs.js';
+
+
+
+
+
+
+// ---------------------------------------------
+//   Scroll
+// ---------------------------------------------
+
+// Router.events.on('routeChangeComplete', (url) => {
+  
+//   console.log('routeChangeComplete');
+//   console.log(url);
+  
+// });
 
 
 
@@ -134,10 +151,10 @@ export default class GcRec extends React.Component {
     super(props);
     
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/gc/[urlID]/rec/[...slug].js - constructor
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/gc/[urlID]/rec/[...slug].js - constructor
+    // `);
     
     // console.log(`
     //   ----- this.props.propsObj -----\n
@@ -153,25 +170,6 @@ export default class GcRec extends React.Component {
     this.storesObj = initializeStore({ propsObj: this.props.propsObj });
     
     
-    // ---------------------------------------------
-    //   Scroll
-    // ---------------------------------------------
-    
-    // Router.events.on('routeChangeComplete', () => { 
-      
-    //   storeLayout.handleScrollTo({
-        
-    //     to: 'recruitmentThreads',
-    //     duration: 0,
-    //     delay: 0,
-    //     smooth: 'easeInOutQuart',
-    //     offset: -50,
-        
-    //   });
-      
-    // });
-    
-    
   }
   
   
@@ -184,12 +182,18 @@ export default class GcRec extends React.Component {
   
   componentDidUpdate(prevProps) {
     
-    console.log('componentDidUpdate');
+    // console.log('componentDidUpdate');
     
     
     // console.log(`
     //   ----- prevProps -----\n
     //   ${util.inspect(prevProps, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- this.props -----\n
+    //   ${util.inspect(this.props, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -205,12 +209,26 @@ export default class GcRec extends React.Component {
     
     if (this.props.ISO8601 !== prevProps.ISO8601) {
       
-      console.log('Update Store');
-      // const propsObj = { ISO8601: this.props.ISO8601 };
-      
-      // initStoreRoot({ propsObj });
+      console.log('componentDidUpdate / Update Store');
       
       initializeStore({ propsObj: this.props.propsObj });
+      
+      
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      const stores = initStoreRoot({});
+      
+      stores.layout.handleScrollTo({
+        
+        to: 'recruitmentThreads',
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+        
+      });
       
     }
     
@@ -390,7 +408,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   
   // --------------------------------------------------
-  //   Get Cookie Data & Temporary Data for Fetch
+  //   Get Cookie Data for Fetch
   // --------------------------------------------------
   
   const threadLimit = stores.data.getCookie({ key: 'recruitmentThreadLimit' });
@@ -406,7 +424,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   const resultObj = await fetchWrapper({
     
-    urlApi: encodeURI(`${process.env.URL_API}/v2/gc/${urlID}/rec?threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}&hardwares=${hardwares}&categories=${categories}&keyword=${keyword}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/${urlID}/rec?threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}&hardwares=${hardwares}&categories=${categories}&keyword=${keyword}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,

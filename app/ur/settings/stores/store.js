@@ -188,7 +188,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/users/upsert-settings-pages`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/upsert-settings-pages`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)
       });
@@ -228,7 +228,7 @@ class Store {
       const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
       
       if (pageTransition) {
-        window.location.href = `${process.env.URL_BASE}ur/${userID}/settings`;
+        window.location.href = `${process.env.NEXT_PUBLIC_URL_BASE}ur/${userID}/settings`;
       }
       
       
@@ -371,7 +371,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/users/upsert-settings-account`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/upsert-settings-account`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)
       });
@@ -539,7 +539,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/users/upsert-settings-email`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/upsert-settings-email`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)
       });
@@ -704,7 +704,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/users/delete-settings-email`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/delete-settings-email`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)
       });
@@ -881,7 +881,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/users/upsert-settings-web-push`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/upsert-settings-web-push`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)
       });
@@ -1026,7 +1026,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/users/delete-settings-web-push`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/delete-settings-web-push`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)
       });

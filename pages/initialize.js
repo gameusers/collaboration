@@ -56,8 +56,8 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     this.environment = process.env.NODE_ENV;
-    this.urlBase = process.env.URL_BASE;
-    this.urlApi = process.env.URL_API;
+    this.urlBase = process.env.NEXT_PUBLIC_URL_BASE;
+    this.urlApi = process.env.NEXT_PUBLIC_URL_API;
     
     
   }

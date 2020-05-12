@@ -145,7 +145,7 @@ class Store {
         controlType = lodashGet(this.dataObj, [...pathArr, 'controlType'], 'follow');
       }
       
-      let limit = parseInt((storeData.getCookie({ key: 'followLimit' }) || process.env.FOLLOWERS_LIMIT), 10);
+      let limit = parseInt((storeData.getCookie({ key: 'followLimit' }) || process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT), 10);
       
       const followMembersObj = lodashGet(this.dataObj, [...pathArr, 'followMembersObj'], {});
       const clonedFollowMembersObj = lodashCloneDeep(followMembersObj);
@@ -208,7 +208,7 @@ class Store {
       } else if (loadedDate) {
         
         const datetimeNow = moment().utcOffset(0);
-        const datetimeReloadLimit = moment(loadedDate).add(process.env.FOLLOWERS_RELOAD_MINUTES, 'm').utcOffset(0);
+        const datetimeReloadLimit = moment(loadedDate).add(process.env.NEXT_PUBLIC_FOLLOWERS_RELOAD_MINUTES, 'm').utcOffset(0);
         
         if (datetimeNow.isAfter(datetimeReloadLimit)) {
           reload = true;
@@ -352,7 +352,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/follows/read-followers`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/read-followers`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
       });
@@ -694,7 +694,7 @@ class Store {
         // ---------------------------------------------
         
         resultObj = await fetchWrapper({
-          urlApi: `${process.env.URL_API}/v2/db/follows/upsert-manage-followers-uc`,
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/upsert-manage-followers-uc`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
         });
@@ -720,7 +720,7 @@ class Store {
         // ---------------------------------------------
         
         resultObj = await fetchWrapper({
-          urlApi: `${process.env.URL_API}/v2/db/follows/upsert-manage-followers-ur`,
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/upsert-manage-followers-ur`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
         });

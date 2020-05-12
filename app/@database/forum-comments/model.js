@@ -344,9 +344,9 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
   forumThreads_idsArr,
   forumThreadsObj,
   commentPage = 1,
-  commentLimit = process.env.FORUM_COMMENT_LIMIT,
+  commentLimit = process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT,
   replyPage = 1,
-  replyLimit = process.env.FORUM_REPLY_LIMIT,
+  replyLimit = process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT,
   
 }) => {
   
@@ -927,9 +927,9 @@ const findRepliesByForumComments_idsArr = async ({
   userCommunities_id,
   forumComments_idsArr = [],
   commentPage = 1,
-  commentLimit = process.env.FORUM_COMMENT_LIMIT,
+  commentLimit = process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT,
   replyPage = 1,
-  replyLimit = process.env.FORUM_REPLY_LIMIT,
+  replyLimit = process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT,
   
 }) => {
   
@@ -2397,9 +2397,9 @@ const findRepliesForUpsert = async ({
   forumComments_id,
   forumReplies_id,
   commentPage = 1,
-  commentLimit = process.env.FORUM_COMMENT_LIMIT,
+  commentLimit = process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT,
   replyPage = 1,
-  replyLimit = process.env.FORUM_REPLY_LIMIT,
+  replyLimit = process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT,
   
 }) => {
   

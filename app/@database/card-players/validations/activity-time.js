@@ -74,7 +74,7 @@ const validationCardPlayersActivityTimeObjValueArr = ({ throwError = false, requ
     //   保存できる最大数を超えているかチェック
     // ---------------------------------------------
     
-    const limit = parseInt(process.env.CARD_PLAYER_ACTIVITY_TIME_LIMIT, 10);
+    const limit = parseInt(process.env.NEXT_PUBLIC_CARD_PLAYER_ACTIVITY_TIME_LIMIT, 10);
     
     // console.log(chalk`
     //   valueArr.length: {green ${valueArr.length}}

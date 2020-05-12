@@ -36,7 +36,7 @@ const sendNotifications = async ({ arr }) => {
   //   必要なデータがない場合は処理停止
   // ---------------------------------------------
   
-  if (!process.env.WEB_PUSH_VAPID_PUBLIC_KEY || !process.env.WEB_PUSH_VAPID_PRIVATE_KEY) {
+  if (!process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY || !process.env.WEB_PUSH_VAPID_PRIVATE_KEY) {
     return;
   }
   
@@ -46,8 +46,8 @@ const sendNotifications = async ({ arr }) => {
   // --------------------------------------------------
   
   webpush.setVapidDetails(
-    process.env.URL_BASE,
-    process.env.WEB_PUSH_VAPID_PUBLIC_KEY,
+    process.env.NEXT_PUBLIC_URL_BASE,
+    process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY,
     process.env.WEB_PUSH_VAPID_PRIVATE_KEY
   );
   

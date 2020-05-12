@@ -352,7 +352,7 @@ export default async (req, res) => {
         };
         
         usersSaveObj = {
-          $inc: { exp: - parseInt((users_id ? process.env.EXP_GOOD_BUTTON_LOGIN_USER : process.env.EXP_GOOD_BUTTON), 10) }
+          $inc: { exp: - parseInt((users_id ? process.env.NEXT_PUBLIC_EXP_GOOD_BUTTON_LOGIN_USER : process.env.NEXT_PUBLIC_EXP_GOOD_BUTTON), 10) }
         };
         
       }
@@ -455,7 +455,7 @@ export default async (req, res) => {
         };
         
         usersSaveObj = {
-          $inc: { exp: + parseInt((loginUsers_id ? process.env.EXP_GOOD_BUTTON_LOGIN_USER : process.env.EXP_GOOD_BUTTON), 10) }
+          $inc: { exp: + parseInt((loginUsers_id ? process.env.NEXT_PUBLIC_EXP_GOOD_BUTTON_LOGIN_USER : process.env.NEXT_PUBLIC_EXP_GOOD_BUTTON), 10) }
         };
         
       }

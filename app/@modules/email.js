@@ -145,7 +145,7 @@ const sendMailConfirmation = async ({ to, emailConfirmationID }) => {
     `Game Users - メールアドレス確認
 
 以下のURLにアクセスしてメールアドレスの登録を完了してください。
-${process.env.URL_BASE}confirm/email/${emailConfirmationID}
+${process.env.NEXT_PUBLIC_URL_BASE}confirm/email/${emailConfirmationID}
 
 メールを送信してから24時間以内にアクセスしてください。それ以降はURLが無効になります。
 
@@ -198,7 +198,7 @@ const sendMailResetPassword = async ({ to, emailConfirmationID }) => {
     `Game Users - パスワード再設定
 
 以下のURLにアクセスしてパスワードの再設定を行ってください。
-${process.env.URL_BASE}confirm/reset-password/${emailConfirmationID}
+${process.env.NEXT_PUBLIC_URL_BASE}confirm/reset-password/${emailConfirmationID}
 
 メールを送信してから30分以内にアクセスしてください。それ以降はURLが無効になります。
 このメールは他人に見せないようにしてください。アカウントのパスワードを無断で変更される可能性があります。

@@ -161,7 +161,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}/forum/${forumID}`),
+      urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/uc/${userCommunityID}/forum/${forumID}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,

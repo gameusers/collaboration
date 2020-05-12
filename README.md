@@ -59,19 +59,19 @@ Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、み�
 
 
 ## 2. 環境変数の設定
-パッケージのインストールが終わったら、.env（環境変数を設定する） ファイルを開いて、URL_BASE と URL_API と書かれている部分を、開発環境でアクセスする URL に書き換えて保存してください。
+パッケージのインストールが終わったら、.env（環境変数を設定する） ファイルを開いて、NEXT_PUBLIC_URL_BASE と NEXT_PUBLIC_URL_API と書かれている部分を、開発環境でアクセスする URL に書き換えて保存してください。
 
 
     # URL
-    URL_BASE=https://dev-1.gameusers.org/
-    URL_API=https://dev-1.gameusers.org/api
+    NEXT_PUBLIC_URL_BASE=https://dev-1.gameusers.org/
+    NEXT_PUBLIC_URL_API=https://dev-1.gameusers.org/api
 
 デフォルトでは上記の値に設定されていますが、例えば localhost でアクセスする場合は、以下のように変更してください（ポート番号は 8080 です）
 
 
     # URL
-    URL_BASE=http://localhost:8080/
-    URL_API=http://localhost:8080/api
+    NEXT_PUBLIC_URL_BASE=http://localhost:8080/
+    NEXT_PUBLIC_URL_API=http://localhost:8080/api
 <br />
 
 

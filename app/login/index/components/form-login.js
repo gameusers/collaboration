@@ -198,8 +198,8 @@ export default injectIntl(class extends React.Component {
     
     
     // console.log(chalk`
-    //   process.env.VERIFY_RECAPTCHA: {green ${process.env.VERIFY_RECAPTCHA} / ${typeof process.env.VERIFY_RECAPTCHA}}
-    //   process.env.VERIFY_RECAPTCHA === '0': {green ${process.env.VERIFY_RECAPTCHA === '0'}}
+    //   process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA: {green ${process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA} / ${typeof process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA}}
+    //   process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '0': {green ${process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '0'}}
     // `);
     
     
@@ -223,7 +223,7 @@ export default injectIntl(class extends React.Component {
         
         {/* Form */}
         <form
-          onSubmit={(eventObj) => process.env.VERIFY_RECAPTCHA === '1' ? handleRecaptchaReset({ eventObj, formType: 'login' }) : handleLogin({ eventObj })}
+          onSubmit={(eventObj) => process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1' ? handleRecaptchaReset({ eventObj, formType: 'login' }) : handleLogin({ eventObj })}
         >
           
           

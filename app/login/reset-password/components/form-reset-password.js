@@ -232,7 +232,7 @@ export default injectIntl(class extends React.Component {
         
         {/* Form */}
         <form
-          onSubmit={(eventObj) => process.env.VERIFY_RECAPTCHA === '1' ? handleRecaptchaReset({ eventObj, formType: 'resetPassword' }) : handleResetPassword({ eventObj })}
+          onSubmit={(eventObj) => process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1' ? handleRecaptchaReset({ eventObj, formType: 'resetPassword' }) : handleResetPassword({ eventObj })}
         >
           
           

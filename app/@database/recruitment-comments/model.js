@@ -1787,6 +1787,120 @@ const findForDelete = async ({
 
 
 
+/**
+ * コメントのページ番号を取得する
+ * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
+ * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントID
+ * @param {number} commentLimit - コメントのリミット
+ * @return {Object} 結果データ
+ */
+const getPage = async ({
+  
+  recruitmentThreads_id,
+  recruitmentComments_id,
+  commentLimit,
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // ------------------------------------------------------------
+    //   コメント _id をすべて取得する
+    // ------------------------------------------------------------
+    
+    const recruitmentComments_idsArr = await SchemaRecruitmentComments.aggregate([
+      
+      
+      {
+        $match: {
+          recruitmentThreads_id,
+        },
+      },
+      
+      
+      { '$sort': { 'updatedDate': -1 } },
+      
+      
+      { $project:
+        {
+          _id: 1,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   コメントのページ番号を計算する
+    // --------------------------------------------------
+    
+    const commentIndex = recruitmentComments_idsArr.findIndex((valueObj) => {
+      
+      return valueObj._id === recruitmentComments_id;
+      
+    });
+    
+    
+    let commentPage = Math.ceil(commentIndex / commentLimit) + 1;
+    
+    if (commentPage === 0) {
+      
+      commentPage = 1;
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----- recruitmentComments_idsArr -----\n
+    //   ${util.inspect(recruitmentComments_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+    //   recruitmentComments_id: {green ${recruitmentComments_id}}
+    //   commentIndex: {green ${commentIndex}}
+    //   commentPage: {green ${commentPage}}
+    //   commentLimit: {green ${commentLimit}}
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return {
+      
+      commentPage,
+      
+    };
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
 
 
 // --------------------------------------------------
@@ -2269,6 +2383,7 @@ module.exports = {
   findCommentsAndReplies,
   findOneForEdit,
   findForDelete,
+  getPage,
   
   transactionForUpsert,
   transactionForDelete,

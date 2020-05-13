@@ -1241,6 +1241,190 @@ const findOneForEdit = async ({
 
 
 
+/**
+ * コメントと返信のページ番号を取得する
+ * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
+ * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントID
+ * @param {string} recruitmentReplies_id - DB recruitment-replies _id / 返信ID
+ * @param {number} commentLimit - コメントのリミット
+ * @param {number} replyLimit - 返信のリミット
+ * @return {Object} 結果データ
+ */
+const getPage = async ({
+  
+  recruitmentThreads_id,
+  recruitmentComments_id,
+  recruitmentReplies_id,
+  commentLimit,
+  replyLimit,
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // ------------------------------------------------------------
+    //   コメント _id をすべて取得する
+    // ------------------------------------------------------------
+    
+    const recruitmentComments_idsArr = await SchemaRecruitmentComments.aggregate([
+      
+      
+      {
+        $match: {
+          recruitmentThreads_id,
+        },
+      },
+      
+      
+      { '$sort': { 'updatedDate': -1 } },
+      
+      
+      { $project:
+        {
+          _id: 1,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   コメントのページ番号を計算する
+    // --------------------------------------------------
+    
+    const commentIndex = recruitmentComments_idsArr.findIndex((valueObj) => {
+      
+      return valueObj._id === recruitmentComments_id;
+      
+    });
+    
+    
+    let commentPage = Math.ceil(commentIndex / commentLimit) + 1;
+    
+    if (commentPage === 0) {
+      
+      commentPage = 1;
+      
+    }
+    
+    
+    
+    
+    // ------------------------------------------------------------
+    //   返信 _id をすべて取得する
+    // ------------------------------------------------------------
+    
+    const recruitmentReplies_idsArr = await SchemaRecruitmentReplies.aggregate([
+      
+      
+      {
+        $match: {
+          recruitmentComments_id,
+        },
+      },
+      
+      
+      { '$sort': { 'createdDate': 1 } },
+      
+      
+      { $project:
+        {
+          _id: 1,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   返信のページ番号を計算する
+    // --------------------------------------------------
+    
+    const replyIndex = recruitmentReplies_idsArr.findIndex((valueObj) => {
+      
+      return valueObj._id === recruitmentReplies_id;
+      
+    });
+    
+    
+    let replyPage = Math.ceil(replyIndex / replyLimit) + 1;
+    
+    if (replyPage === 0) {
+      
+      replyPage = 1;
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(`
+      ----- recruitmentComments_idsArr -----\n
+      ${util.inspect(recruitmentComments_idsArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(chalk`
+      recruitmentThreads_id: {green ${recruitmentThreads_id}}
+      recruitmentComments_id: {green ${recruitmentComments_id}}
+      commentIndex: {green ${commentIndex}}
+      commentPage: {green ${commentPage}}
+      commentLimit: {green ${commentLimit}}
+    `);
+    
+    
+    console.log(`
+      ----- recruitmentReplies_idsArr -----\n
+      ${util.inspect(recruitmentReplies_idsArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(chalk`
+      recruitmentReplies_id: {green ${recruitmentReplies_id}}
+      replyIndex: {green ${replyIndex}}
+      replyPage: {green ${replyPage}}
+      replyLimit: {green ${replyLimit}}
+    `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return {
+      
+      commentPage,
+      replyPage,
+      
+    };
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
 
 
 // --------------------------------------------------
@@ -1731,6 +1915,7 @@ module.exports = {
   findReplies,
   findRepliesForUpsert,
   findOneForEdit,
+  getPage,
   
   transactionForUpsert,
   transactionForDelete,

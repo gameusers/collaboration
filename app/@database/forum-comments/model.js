@@ -1919,7 +1919,7 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, forumThreadsObj, comme
 
 
 /**
- * コメントと返信を取得する - forumThreads_idsArr で検索
+ * コメントのページ番号を取得する
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID

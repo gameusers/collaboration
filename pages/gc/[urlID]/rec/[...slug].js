@@ -16,7 +16,7 @@ import util from 'util';
 
 import React from 'react';
 import Error from 'next/error';
-import Router from 'next/router';
+// import Router from 'next/router';
 import { observer } from 'mobx-react';
 import moment from 'moment';
 
@@ -209,7 +209,7 @@ export default class GcRec extends React.Component {
     
     if (this.props.ISO8601 !== prevProps.ISO8601) {
       
-      console.log('componentDidUpdate / Update Store');
+      // console.log('componentDidUpdate / Update Store');
       
       initializeStore({ propsObj: this.props.propsObj });
       
@@ -392,9 +392,16 @@ export async function getServerSideProps({ req, res, query }) {
   const slugsArr = lodashGet(query, ['slug'], []);
   
   let threadPage = lodashGet(query, ['page'], 1);
+  let recruitmentID = '';
   
-  if (slugsArr[0] !== 'search') {
+  if (Math.sign(slugsArr[0]) === 1) {
+    
     threadPage = slugsArr[0];
+    
+  } else if (slugsArr[0] !== 'search') {
+    
+    recruitmentID = slugsArr[0];
+    
   }
   
   
@@ -424,7 +431,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   const resultObj = await fetchWrapper({
     
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/${urlID}/rec?threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}&hardwares=${hardwares}&categories=${categories}&keyword=${keyword}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/${urlID}/rec?recruitmentID=${recruitmentID}&threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}&hardwares=${hardwares}&categories=${categories}&keyword=${keyword}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -538,9 +545,13 @@ export async function getServerSideProps({ req, res, query }) {
   // `);
   
   // console.log(`
-  //   ----- resultObj.data.recruitmentThreadsObj -----\n
-  //   ${util.inspect(resultObj.data.recruitmentThreadsObj, { colors: true, depth: null })}\n
+  //   ----- slugsArr -----\n
+  //   ${util.inspect(slugsArr, { colors: true, depth: null })}\n
   //   --------------------\n
+  // `);
+  
+  // console.log(chalk`
+  //   recruitmentID: {green ${recruitmentID}}
   // `);
   
   // console.log(`

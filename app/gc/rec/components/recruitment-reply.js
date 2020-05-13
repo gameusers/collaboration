@@ -354,8 +354,8 @@ export default injectIntl(class extends React.Component {
       //   Link
       // --------------------------------------------------
       
-      const linkHref = `/gc/[urlID]/rec/[recruitmentID]?urlID=${urlID}&recruitmentID=${recruitmentComments_id}`;
-      const linkAs = `/gc/${urlID}/rec/${recruitmentComments_id}`;
+      const linkHref = `/gc/[urlID]/rec/[recruitmentID]?urlID=${urlID}&recruitmentID=${recruitmentReplies_id}`;
+      const linkAs = `/gc/${urlID}/rec/${recruitmentReplies_id}`;
       
       
       // --------------------------------------------------

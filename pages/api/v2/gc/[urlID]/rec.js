@@ -23,36 +23,36 @@ import lodashHas from 'lodash/has';
 //   Model
 // ---------------------------------------------
 
-import ModelGameCommunities from '../../../../../app/@database/game-communities/model.js';
-import ModelHardwares from '../../../../../app/@database/hardwares/model.js';
-import ModelRecruitmentThreads from '../../../../../app/@database/recruitment-threads/model.js';
+import ModelGameCommunities from 'app/@database/game-communities/model.js';
+import ModelHardwares from 'app/@database/hardwares/model.js';
+import ModelRecruitmentThreads from 'app/@database/recruitment-threads/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-import { returnErrorsArr } from '../../../../../app/@modules/log/log.js';
-import { CustomError } from '../../../../../app/@modules/error/custom.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-import { validationInteger } from '../../../../../app/@validations/integer.js';
-import { validationKeyword } from '../../../../../app/@validations/keyword.js';
+import { validationInteger } from 'app/@validations/integer.js';
+import { validationKeyword } from 'app/@validations/keyword.js';
 
-import { validationRecruitmentThreadsLimit } from '../../../../../app/@database/recruitment-threads/validations/limit.js';
-import { validationRecruitmentCommentsLimit } from '../../../../../app/@database/recruitment-comments/validations/limit.js';
-import { validationRecruitmentRepliesLimit } from '../../../../../app/@database/recruitment-replies/validations/limit.js';
+import { validationRecruitmentThreadsLimit } from 'app/@database/recruitment-threads/validations/limit.js';
+import { validationRecruitmentCommentsLimit } from 'app/@database/recruitment-comments/validations/limit.js';
+import { validationRecruitmentRepliesLimit } from 'app/@database/recruitment-replies/validations/limit.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-import { locale } from '../../../../../app/@locales/locale.js';
+import { locale } from 'app/@locales/locale.js';
 
 
 
@@ -110,6 +110,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const urlID = lodashGet(req, ['query', 'urlID'], '');
+    const recruitmentID = lodashGet(req, ['query', 'recruitmentID'], '');
     const threadPage = parseInt(lodashGet(req, ['query', 'threadPage'], 1), 10);
     const threadLimit = parseInt(lodashGet(req, ['query', 'threadLimit'], ''), 10);
     const commentLimit = parseInt(lodashGet(req, ['query', 'commentLimit'], ''), 10);
@@ -120,6 +121,7 @@ export default async (req, res) => {
     
     
     lodashSet(requestParametersObj, ['urlID'], urlID);
+    lodashSet(requestParametersObj, ['recruitmentID'], recruitmentID);
     lodashSet(requestParametersObj, ['threadPage'], threadPage);
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
@@ -268,6 +270,19 @@ export default async (req, res) => {
     };
     
     
+    // ---------------------------------------------
+    //   - recruitmentID
+    // ---------------------------------------------
+    
+    if (recruitmentID) {
+      argumentsObj.recruitmentID = recruitmentID;
+    }
+    
+    
+    // ---------------------------------------------
+    //   - page & limit
+    // ---------------------------------------------
+    
     if (await validationInteger({ throwError: false, required: true, value: threadPage }).error === false) {
       argumentsObj.threadPage = threadPage;
     }
@@ -324,16 +339,49 @@ export default async (req, res) => {
     }
     
     
+    // await ModelRecruitmentThreads.findRecruitmentByRecruitmentID(argumentsObj);
     
     
     // --------------------------------------------------
-    //   DB find / Recruitments For Search
+    //   DB find / Recruitment by recruitmentID
+    // --------------------------------------------------
+    
+    // let recruitmentObj = {};
+    
+    
+    // if (hardwares || categories || keyword) {
+      
+    //   recruitmentObj = await ModelRecruitmentThreads.findRecruitmentsForSearch(argumentsObj);
+      
+      
+    // // --------------------------------------------------
+    // //   DB find / Recruitment
+    // // --------------------------------------------------
+      
+    // } else {
+      
+    //   recruitmentObj = await ModelRecruitmentThreads.findRecruitments(argumentsObj);
+      
+    // }
+    
+    
+    // --------------------------------------------------
+    //   DB find / Recruitment by recruitmentID
     // --------------------------------------------------
     
     let recruitmentObj = {};
     
     
-    if (hardwares || categories || keyword) {
+    if (recruitmentID) {
+      
+      recruitmentObj = await ModelRecruitmentThreads.findRecruitmentByRecruitmentID(argumentsObj);
+      
+      
+    // --------------------------------------------------
+    //   DB find / Recruitments For Search
+    // --------------------------------------------------
+      
+    } else if (hardwares || categories || keyword) {
       
       recruitmentObj = await ModelRecruitmentThreads.findRecruitmentsForSearch(argumentsObj);
       
@@ -385,6 +433,7 @@ export default async (req, res) => {
     
     // console.log(chalk`
     //   urlID: {green ${urlID}}
+    //   recruitmentID: {green ${recruitmentID}}
       
     //   threadPage: {green ${threadPage}}
     //   threadLimit: {green ${threadLimit}}

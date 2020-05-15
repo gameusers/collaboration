@@ -262,27 +262,6 @@ export default class GcRec extends React.Component {
     // --------------------------------------------------
     
     const gameCommunities_id = lodashGet(this.props, ['propsObj', 'gameCommunityObj', '_id'], '');
-    const gameName = lodashGet(this.props, ['propsObj', 'headerObj', 'name'], '');
-    
-    
-    // console.log(`
-    //   ----- this.props -----\n
-    //   ${util.inspect(this.props, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   this.props.statusCode: {green ${this.props.statusCode}}
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   gameName: {green ${gameName}}
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   Title
-    // --------------------------------------------------
-    
-    const title = `${gameName}`;
     
     
     
@@ -330,7 +309,7 @@ export default class GcRec extends React.Component {
     return (
       <Layout
         storesObj={this.storesObj}
-        title={title}
+        title={this.props.title}
         componentSidebar={componentSidebar}
         componentContent={componentContent}
       />
@@ -394,6 +373,8 @@ export async function getServerSideProps({ req, res, query }) {
   let threadPage = lodashGet(query, ['page'], 1);
   let recruitmentID = '';
   
+  let type = 'recruitment';
+  
   if (Math.sign(slugsArr[0]) === 1) {
     
     threadPage = slugsArr[0];
@@ -401,6 +382,11 @@ export async function getServerSideProps({ req, res, query }) {
   } else if (slugsArr[0] !== 'search') {
     
     recruitmentID = slugsArr[0];
+    type = 'individual';
+    
+  } else if (slugsArr[0] === 'search') {
+    
+    type = 'search';
     
   }
   
@@ -449,6 +435,7 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
   
   const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
+  const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   
   const recruitmentNavigationObj = {
@@ -464,6 +451,7 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
   
   const headerNavMainArr = [
+    
     {
       name: 'トップ',
       href: `/gc/[urlID]/index?urlID=${urlID}`,
@@ -481,9 +469,11 @@ export async function getServerSideProps({ req, res, query }) {
       // href: `/gc/[urlID]/followers?urlID=${urlID}`,
       // as: `/gc/${urlID}/followers`,
     }
+    
   ];
   
   if (accessLevel === 100) {
+    
     headerNavMainArr.push(
       {
         name: '設定',
@@ -491,6 +481,7 @@ export async function getServerSideProps({ req, res, query }) {
         as: `/gc/${urlID}/settings`,
       }
     );
+    
   }
   
   
@@ -501,6 +492,13 @@ export async function getServerSideProps({ req, res, query }) {
   const propsObj = { ...dataObj, ISO8601, pathname, pathArr, headerNavMainArr, gameCommunities_id, recruitmentNavigationObj };
   
   
+  
+  
+  // --------------------------------------------------
+  //   Title
+  // --------------------------------------------------
+  
+  let title = '';
   
   
   // --------------------------------------------------
@@ -523,14 +521,87 @@ export async function getServerSideProps({ req, res, query }) {
       as: `/gc/${urlID}/rec`,
     },
     
-    {
-      type: 'gc/rec/search',
-      anchorText: '',
-      href: '',
-      as: '',
-    },
-    
   ];
+  
+  
+  // --------------------------------------------------
+  //   募集
+  // --------------------------------------------------
+  
+  if (type === 'recruitment') {
+    
+    
+    // ---------------------------------------------
+    //   - Title
+    // ---------------------------------------------
+    
+    title = `募集: Page ${threadPage} - ${gameName}`;
+    
+    
+  // --------------------------------------------------
+  //   個別の募集
+  // --------------------------------------------------
+    
+  } else if (type === 'individual') {
+    
+    
+    // ---------------------------------------------
+    //   - Title
+    // ---------------------------------------------
+    
+    const recruitmentThreadsArr = lodashGet(dataObj, ['recruitmentThreadsObj', 'page1Obj', 'arr'], []);
+    const recruitmentTitle = lodashGet(dataObj, ['recruitmentThreadsObj', 'dataObj', recruitmentThreadsArr[0], 'title'], '');
+    
+    title = `${recruitmentTitle} - ${gameName}`;
+    
+    
+    // ---------------------------------------------
+    //   - パンくずリスト
+    // ---------------------------------------------
+    
+    breadcrumbsArr.push(
+      
+      {
+        type: 'gc/rec/individual',
+        anchorText: recruitmentTitle,
+        href: '',
+        as: '',
+      }
+      
+    );
+    
+    
+  // --------------------------------------------------
+  //   検索
+  // --------------------------------------------------
+    
+  } else if (type === 'search') {
+    
+    
+    // ---------------------------------------------
+    //   - Title
+    // ---------------------------------------------
+    
+    title = `検索 - ${gameName}`;
+    
+    
+    // ---------------------------------------------
+    //   - パンくずリスト
+    // ---------------------------------------------
+    
+    breadcrumbsArr.push(
+      
+      {
+        type: 'gc/rec/search',
+        anchorText: '',
+        href: '',
+        as: '',
+      },
+      
+    );
+    
+    
+  }
   
   
   
@@ -599,6 +670,7 @@ export async function getServerSideProps({ req, res, query }) {
       statusCode,
       propsObj,
       breadcrumbsArr,
+      title,
       
     }
     

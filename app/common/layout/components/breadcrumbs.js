@@ -21,7 +21,7 @@ import { inject, observer } from 'mobx-react';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
-import lodashGet from 'lodash/get';
+// import lodashGet from 'lodash/get';
 // import lodashSet from 'lodash/set';
 // import lodashThrottle from 'lodash/throttle';
 
@@ -41,6 +41,7 @@ import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import IconHome from '@material-ui/icons/Home';
 import IconGames from '@material-ui/icons/Games';
 import IconDescription from '@material-ui/icons/Description';
+import IconIndividual from '@material-ui/icons/DoubleArrow';
 import IconSearch from '@material-ui/icons/Search';
 
 
@@ -68,7 +69,7 @@ export default class extends React.Component {
     
     const { 
       
-      stores,
+      // stores,
       arr = [],
       
     } = this.props;
@@ -101,6 +102,11 @@ export default class extends React.Component {
         
         icon = <IconDescription fontSize="small" />;
         anchorText = '募集';
+        
+      } else if (valueObj.type === 'gc/rec/individual') {
+        
+        icon = <IconIndividual fontSize="small" />;
+        anchorText = valueObj.anchorText;
         
       } else if (valueObj.type === 'gc/rec/search') {
         

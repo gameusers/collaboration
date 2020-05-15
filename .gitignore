@@ -37,6 +37,9 @@ desktop.ini
 
 # .env
 .env.development.local
+.env.production.local
+.env.production
+.env.local
 
 # 一時的に複製したファイル
 __*.js

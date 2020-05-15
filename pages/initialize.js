@@ -21,7 +21,7 @@ import Button from '@material-ui/core/Button';
 //   Modules
 // ---------------------------------------------
 
-const { fetchWrapper } = require('../app/@modules/fetch');
+const { fetchWrapper } = require('../app/@modules/fetch.js');
 
 
 
@@ -35,18 +35,15 @@ class Component extends React.Component {
   
   
   // --------------------------------------------------
-  //   getInitialProps
-  // --------------------------------------------------
-  
-  // static async getInitialProps({ pathname, req, res }) {
-  // }
-  
-  
-  // --------------------------------------------------
   //   constructor
   // --------------------------------------------------
   
   constructor(props) {
+    
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
     
     super(props);
     
@@ -61,6 +58,8 @@ class Component extends React.Component {
     
     
   }
+  
+  
   
   
   async initializeDB() {
@@ -101,11 +100,9 @@ class Component extends React.Component {
   }
   
   
+  
+  
   render() {
-    
-    
-    
-    
     
     
     // --------------------------------------------------
@@ -169,7 +166,9 @@ class Component extends React.Component {
         
       </div>
     );
+    
   }
+  
 }
 
 export default Component;

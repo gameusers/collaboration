@@ -48,15 +48,15 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 //   Validations
 // ---------------------------------------------
 
-import { validationKeyword } from '../../../@validations/keyword.js';
+import { validationKeyword } from 'app/@validations/keyword.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import Panel from '../../../common/layout/components/panel.js';
-import FormHardwares from '../../../common/hardware/components/form.js';
+import Panel from 'app/common/layout/components/panel.js';
+import FormHardwares from 'app/common/hardware/components/form.js';
 
 
 

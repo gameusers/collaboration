@@ -726,7 +726,7 @@ const findRecruitmentByRecruitmentID = async ({
     });
     
     const recruitmentThreadsObj = lodashGet(formattedThreadsObj, ['recruitmentThreadsObj'], {});
-    recruitmentThreadsObj.count = 1;
+    recruitmentThreadsObj.count = 0;
     
     
     

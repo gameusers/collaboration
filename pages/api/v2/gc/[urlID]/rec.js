@@ -339,30 +339,6 @@ export default async (req, res) => {
     }
     
     
-    // await ModelRecruitmentThreads.findRecruitmentByRecruitmentID(argumentsObj);
-    
-    
-    // --------------------------------------------------
-    //   DB find / Recruitment by recruitmentID
-    // --------------------------------------------------
-    
-    // let recruitmentObj = {};
-    
-    
-    // if (hardwares || categories || keyword) {
-      
-    //   recruitmentObj = await ModelRecruitmentThreads.findRecruitmentsForSearch(argumentsObj);
-      
-      
-    // // --------------------------------------------------
-    // //   DB find / Recruitment
-    // // --------------------------------------------------
-      
-    // } else {
-      
-    //   recruitmentObj = await ModelRecruitmentThreads.findRecruitments(argumentsObj);
-      
-    // }
     
     
     // --------------------------------------------------

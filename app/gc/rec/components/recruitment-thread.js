@@ -21,6 +21,7 @@ import { injectIntl } from 'react-intl';
 import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
+import SimpleIcons from 'simple-icons-react-component';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -44,6 +45,7 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Avatar from '@material-ui/core/Avatar';
 
 
 // ---------------------------------------------
@@ -54,7 +56,7 @@ import IconExpandLess from '@material-ui/icons/ExpandLess';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
 import IconPublic from '@material-ui/icons/Public';
 import IconEdit from '@material-ui/icons/Edit';
-import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
+import IconDoubleArrow from '@material-ui/icons/KeyboardReturn';
 import IconReply from '@material-ui/icons/Reply';
 
 
@@ -62,22 +64,19 @@ import IconReply from '@material-ui/icons/Reply';
 //   Components
 // ---------------------------------------------
 
-import Paragraph from '../../../common/layout/components/paragraph';
-import ChipCategory from './chip-category';
-import ChipHardwares from '../../../common/hardware/components/chip';
-import User from '../../../common/user/components/user';
-import ImageAndVideo from '../../../common/image-and-video/components/image-and-video';
-import Panel from '../../../common/layout/components/panel';
+import Paragraph from 'app/common/layout/components/paragraph.js';
+import ChipHardwares from 'app/common/hardware/components/chip.js';
+import User from 'app/common/user/components/user.js';
+import ImageAndVideo from 'app/common/image-and-video/components/image-and-video.js';
+import Panel from 'app/common/layout/components/panel.js';
 
-import RecruitmentComment from './recruitment-comment';
-import FormThread from './form/thread';
-import FormComment from './form/comment';
-import Public from './public';
-// import PublicIDs from './public-ids';
-// import PublicInformations from './public-informations';
-// import PublicSetting from './public-setting';
-import DeadlineDate from './deadline-date';
-import Notification from './notification';
+import ChipCategory from 'app/gc/rec/components/chip-category.js';
+import RecruitmentComment from 'app/gc/rec/components/recruitment-comment.js';
+import FormThread from 'app/gc/rec/components/form/thread.js';
+import FormComment from 'app/gc/rec/components/form/comment.js';
+import Public from 'app/gc/rec/components/public.js';
+import DeadlineDate from 'app/gc/rec/components/deadline-date.js';
+import Notification from 'app/gc/rec/components/notification.js';
 
 
 
@@ -179,7 +178,7 @@ export default injectIntl(class extends React.Component {
       intl,
       urlID,
       gameCommunities_id,
-      individual,
+      // individual,
       
     } = this.props;
     
@@ -231,8 +230,8 @@ export default injectIntl(class extends React.Component {
     //   Link Return Top
     // --------------------------------------------------
     
-    const linkReturnTopHref = `/gc/[urlID]/index?urlID=${urlID}`;
-    const linkReturnTopAs = `/gc/${urlID}`;
+    const linkReturnTopHref = `/gc/[urlID]/rec/index?urlID=${urlID}`;
+    const linkReturnTopAs = `/gc/${urlID}/rec`;
     
     
     
@@ -339,7 +338,7 @@ export default injectIntl(class extends React.Component {
       //   Link
       // --------------------------------------------------
       
-      let linkHref = `/gc/[urlID]/rec/[recruitmentID]?urlID=${urlID}&recruitmentID=${recruitmentThreads_id}`;
+      let linkHref = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}&recruitmentID=${recruitmentThreads_id}`;
       let linkAs = `/gc/${urlID}/rec/${recruitmentThreads_id}`;
       
       
@@ -366,6 +365,14 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: pathRecruitmentThreadArr });
+      
+      
+      // --------------------------------------------------
+      //   Share: Twitter
+      //   参考：https://blog.ikunaga.net/entry/twitter-com-intent-tweet/
+      // --------------------------------------------------
+      
+      const shareTwitter = `https://twitter.com/intent/tweet?text=${encodeURI(title)}&url=${process.env.NEXT_PUBLIC_URL_BASE}gc/${urlID}/rec/${recruitmentThreads_id}`;
       
       
       
@@ -567,59 +574,6 @@ export default injectIntl(class extends React.Component {
                   </div>
                   
                   
-                  
-                  
-                  {/* Edit Button */}
-                  {editable &&
-                    <div
-                      css={css`
-                        display: flex;
-                        flex-flow: row nowrap;
-                        margin: 8px 0 0 auto;
-                      `}
-                    >
-                      <Button
-                        css={css`
-                          && {
-                            font-size: 12px;
-                            height: 22px;
-                            min-width: 54px;
-                            min-height: 22px;
-                            margin: 0 0 0 0;
-                            padding: 0 4px;
-                            
-                            @media screen and (max-width: 480px) {
-                              min-width: 36px;
-                              min-height: 22px;
-                            }
-                          }
-                        `}
-                        variant="outlined"
-                        color="primary"
-                        disabled={buttonDisabled}
-                        onClick={() => handleShowFormRecruitmentThread({
-                          pathArr: pathRecruitmentThreadEditFormArr,
-                          recruitmentThreads_id,
-                        })}
-                      >
-                        <IconEdit
-                          css={css`
-                            && {
-                              font-size: 16px;
-                              margin: 0 2px 3px 0;
-                              
-                              @media screen and (max-width: 480px) {
-                                display: none;
-                              }
-                            }
-                          `}
-                        />
-                        編集
-                      </Button>
-                    </div>
-                  }
-                  
-                  
                 </div>
                 
                 
@@ -791,6 +745,166 @@ export default injectIntl(class extends React.Component {
                           
                         </div>
                       }
+                      
+                      
+                      
+                      
+                      {/* Bottom Container */}
+                      <div
+                        css={css`
+                          display: flex;
+                          flex-flow: row wrap;
+                          margin: 6px 0 0 0;
+                        `}
+                      >
+                        
+                        
+                        {/* Buttons */}
+                        <div
+                          css={css`
+                            display: flex;
+                            flex-flow: row nowrap;
+                            margin-left: auto;
+                            // background-color: pink;
+                          `}
+                        >
+                          
+                          
+                          
+                          <Button
+                            css={css`
+                              && {
+                                font-size: 12px;
+                                height: 22px;
+                                min-width: 54px;
+                                min-height: 22px;
+                                line-height: 1;
+                                margin: 4px 0 0 0;
+                                padding: 0 3px;
+                                
+                                @media screen and (max-width: 480px) {
+                                  min-width: 36px;
+                                  min-height: 22px;
+                                }
+                              }
+                            `}
+                            variant="outlined"
+                            href={shareTwitter}
+                            target="_blank"
+                          >
+                            <Avatar
+                              css={css`
+                                && {
+                                  width: 16px;
+                                  height: 16px;
+                                  line-height: 1;
+                                  background-color: #1DA1F2;
+                                  margin: 0 4px 0 0;
+                                }
+                              `}
+                              alt="PlayStation"
+                              style={{ 'backgroundColor': '#1DA1F2' }}
+                            >
+                              <div style={{ 'width': '80%', 'marginTop': '0px' }}>
+                                <SimpleIcons name="Twitter" color="white" />
+                              </div>
+                            </Avatar>
+                            シェア
+                          </Button>
+                          
+                          
+                          
+                          
+                          
+                          {/*<div
+                            css={css`
+                              display: flex;
+                              flex-flow: row nowrap;
+                              
+                              // margin-left: auto;
+                              // background-color: pink;
+                            `}
+                          >
+                            
+                            <IconButton
+                              css={css`
+                                && {
+                                  margin: 0 4px 0 0;
+                                  padding: 0;
+                                }
+                              `}
+                              aria-label="share"
+                            >
+                              <Avatar
+                                css={css`
+                                  && {
+                                    width: 18px;
+                                    height: 18px;
+                                    line-height: 1;
+                                    background-color: #1DA1F2;
+                                  }
+                                `}
+                                alt="PlayStation"
+                                style={{ 'backgroundColor': '#1DA1F2' }}
+                              >
+                                <div style={{ 'width': '80%', 'marginTop': '0px' }}>
+                                  <SimpleIcons name="Twitter" color="white" />
+                                </div>
+                              </Avatar>
+                            </IconButton>
+                            
+                            シェア
+                          </div>*/}
+                          
+                          
+                          
+                          
+                          {/* Edit Button */}
+                          {editable &&
+                            <Button
+                              css={css`
+                                && {
+                                  font-size: 12px;
+                                  height: 22px;
+                                  min-width: 54px;
+                                  min-height: 22px;
+                                  margin: 4px 0 0 12px;
+                                  padding: 0 4px;
+                                  
+                                  @media screen and (max-width: 480px) {
+                                    min-width: 36px;
+                                    min-height: 22px;
+                                  }
+                                }
+                              `}
+                              variant="outlined"
+                              color="primary"
+                              onClick={() => handleShowFormRecruitmentThread({
+                                pathArr: pathRecruitmentThreadEditFormArr,
+                                recruitmentThreads_id,
+                              })}
+                            >
+                              <IconEdit
+                                css={css`
+                                  && {
+                                    font-size: 16px;
+                                    margin: 0 2px 3px 0;
+                                    
+                                    @media screen and (max-width: 480px) {
+                                      display: none;
+                                    }
+                                  }
+                                `}
+                              />
+                              編集
+                            </Button>
+                          }
+                          
+                          
+                        </div>
+                        
+                        
+                      </div>
                       
                       
                     </div>
@@ -972,12 +1086,12 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Pagination */}
-        {individual ? (
+        {count === 0 ? (
           
           
           <div
             css={css`
-              margin: 24px 0 8px 0;
+              margin: 16px 0 0 0;
             `}
           >
             
@@ -995,8 +1109,8 @@ export default injectIntl(class extends React.Component {
                   variant="outlined"
                   size="small"
                   disabled={buttonDisabled}
+                  startIcon={<IconDoubleArrow />}
                 >
-                  <IconDoubleArrow />
                   募集トップに戻る
                 </Button>
               </Link>

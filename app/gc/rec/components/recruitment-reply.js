@@ -64,11 +64,11 @@ import green from '@material-ui/core/colors/green';
 //   Components
 // ---------------------------------------------
 
-import Paragraph from '../../../common/layout/components/paragraph';
-import User from '../../../common/user/components/user';
-import ImageAndVideo from '../../../common/image-and-video/components/image-and-video';
+import Paragraph from 'app/common/layout/components/paragraph.js';
+import User from 'app/common/user/components/user.js';
+import ImageAndVideo from 'app/common/image-and-video/components/image-and-video.js';
 
-import FormReply from './form/reply';
+import FormReply from 'app/gc/rec/components/form/reply.js';
 
 
 
@@ -354,7 +354,7 @@ export default injectIntl(class extends React.Component {
       //   Link
       // --------------------------------------------------
       
-      const linkHref = `/gc/[urlID]/rec/[recruitmentID]?urlID=${urlID}&recruitmentID=${recruitmentReplies_id}`;
+      const linkHref = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}&recruitmentID=${recruitmentReplies_id}`;
       const linkAs = `/gc/${urlID}/rec/${recruitmentReplies_id}`;
       
       

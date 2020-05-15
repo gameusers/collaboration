@@ -29,34 +29,34 @@ import lodashGet from 'lodash/get';
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from '../../../../app/@modules/fetch.js';
-import { createCsrfToken } from '../../../../app/@modules/csrf.js';
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { createCsrfToken } from 'app/@modules/csrf.js';
 
 
 // ---------------------------------------------
 //   Stores
 // ---------------------------------------------
 
-import initStoreRoot from '../../../../app/@stores/root.js';
-import initStoreGcRecruitment from '../../../../app/gc/rec/stores/store.js';
-import initStoreCardPlayer from '../../../../app/common/card/player/stores/player.js';
-import initStoreForum from '../../../../app/common/forum/stores/store.js';
-import initStoreIDForm from '../../../../app/common/id/stores/form.js';
-import initStoreGameForm from '../../../../app/common/game/stores/form.js';
-import initStoreImageAndVideo from '../../../../app/common/image-and-video/stores/image-and-video.js';
-import initStoreImageAndVideoForm from '../../../../app/common/image-and-video/stores/form.js';
-import initStoreGood from '../../../../app/common/good/stores/store.js';
-import initStoreHardware from '../../../../app/common/hardware/stores/store.js';
+import initStoreRoot from 'app/@stores/root.js';
+import initStoreGcRecruitment from 'app/gc/rec/stores/store.js';
+import initStoreCardPlayer from 'app/common/card/player/stores/player.js';
+import initStoreForum from 'app/common/forum/stores/store.js';
+import initStoreIDForm from 'app/common/id/stores/form.js';
+import initStoreGameForm from 'app/common/game/stores/form.js';
+import initStoreImageAndVideo from 'app/common/image-and-video/stores/image-and-video.js';
+import initStoreImageAndVideoForm from 'app/common/image-and-video/stores/form.js';
+import initStoreGood from 'app/common/good/stores/store.js';
+import initStoreHardware from 'app/common/hardware/stores/store.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import Layout from '../../../../app/common/layout/components/layout-ver2.js';
-import RecruitmentNavigation from '../../../../app/gc/rec/components/recruitment-navigation.js';
-import RecruitmentThread from '../../../../app/gc/rec/components/recruitment-thread.js';
-import Breadcrumbs from '../../../../app/common/layout/components/breadcrumbs.js';
+import Layout from 'app/common/layout/components/layout-ver2.js';
+import RecruitmentNavigation from 'app/gc/rec/components/recruitment-navigation.js';
+import RecruitmentThread from 'app/gc/rec/components/recruitment-thread.js';
+import Breadcrumbs from 'app/common/layout/components/breadcrumbs.js';
 
 
 
@@ -113,7 +113,7 @@ const initializeStore = ({ propsObj }) => {
 
 // --------------------------------------------------
 //   Class
-//   URL: https://dev-1.gameusers.org/gc/***
+//   URL: https://dev-1.gameusers.org/gc/rec
 // --------------------------------------------------
 
 @observer
@@ -170,7 +170,7 @@ export default class GcRec extends React.Component {
     // --------------------------------------------------
     
     const gameCommunities_id = lodashGet(this.props, ['propsObj', 'gameCommunityObj', '_id'], '');
-    const gameName = lodashGet(this.props, ['propsObj', 'headerObj', 'name'], '');
+    // const gameName = lodashGet(this.props, ['propsObj', 'headerObj', 'name'], '');
     
     
     
@@ -179,7 +179,7 @@ export default class GcRec extends React.Component {
     //   Title
     // --------------------------------------------------
     
-    const title = `${gameName}`;
+    // const title = `${gameName}`;
     
     
     
@@ -227,7 +227,7 @@ export default class GcRec extends React.Component {
     return (
       <Layout
         storesObj={this.storesObj}
-        title={title}
+        title={this.props.title}
         componentSidebar={componentSidebar}
         componentContent={componentContent}
       />
@@ -289,7 +289,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   
   // --------------------------------------------------
-  //   Get Cookie Data & Temporary Data for Fetch
+  //   Get Cookie Data for Fetch
   // --------------------------------------------------
   
   const threadPage = 1;
@@ -322,6 +322,7 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
   
   const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
+  const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   
   
@@ -330,6 +331,7 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
   
   const headerNavMainArr = [
+    
     {
       name: 'トップ',
       href: `/gc/[urlID]/index?urlID=${urlID}`,
@@ -347,9 +349,11 @@ export async function getServerSideProps({ req, res, query }) {
       // href: `/gc/[urlID]/followers?urlID=${urlID}`,
       // as: `/gc/${urlID}/followers`,
     }
+    
   ];
   
   if (accessLevel === 100) {
+    
     headerNavMainArr.push(
       {
         name: '設定',
@@ -357,6 +361,7 @@ export async function getServerSideProps({ req, res, query }) {
         as: `/gc/${urlID}/settings`,
       }
     );
+    
   }
   
   
@@ -367,6 +372,13 @@ export async function getServerSideProps({ req, res, query }) {
   const propsObj = { ...dataObj, ISO8601, pathname, pathArr, headerNavMainArr, gameCommunities_id };
   
   
+  
+  
+  // --------------------------------------------------
+  //   Title
+  // --------------------------------------------------
+  
+  const title = `募集 - ${gameName}`;
   
   
   // --------------------------------------------------
@@ -448,6 +460,7 @@ export async function getServerSideProps({ req, res, query }) {
       statusCode,
       propsObj,
       breadcrumbsArr,
+      title,
       
     }
     

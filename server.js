@@ -6,7 +6,7 @@
 //   .env
 // ---------------------------------------------
 
-require('dotenv').config();
+// require('dotenv').config();
 
 
 // ---------------------------------------------
@@ -80,6 +80,9 @@ app.prepare().then(() => {
   
   const server = express();
   
+  // console.log('process.env.NODE_ENV = ' + process.env.NODE_ENV);
+  // console.log('process.env.URL_API = ' + process.env.NEXT_PUBLIC_URL_API);
+  
   
   // --------------------------------------------------
   //   Middleware Settings
@@ -120,8 +123,7 @@ app.prepare().then(() => {
   server.use(passport.initialize());
   server.use(passport.session());
   
-  // console.log('process.env.NODE_ENV2 = ' + process.env.NODE_ENV);
-  // console.log('process.env.URL_AP2I = ' + process.env.NEXT_PUBLIC_URL_API);
+  
   
   
   // --------------------------------------------------

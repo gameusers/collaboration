@@ -64,15 +64,15 @@ import green from '@material-ui/core/colors/green';
 //   Components
 // ---------------------------------------------
 
-import Paragraph from '../../../common/layout/components/paragraph';
-import User from '../../../common/user/components/user';
-import ImageAndVideo from '../../../common/image-and-video/components/image-and-video';
+import Paragraph from 'app/common/layout/components/paragraph.js';
+import User from 'app/common/user/components/user.js';
+import ImageAndVideo from 'app/common/image-and-video/components/image-and-video.js';
 
-import FormComment from './form/comment';
-import FormReply from './form/reply';
-import RecruitmentReply from './recruitment-reply';
-import Public from './public';
-import Notification from './notification';
+import FormComment from 'app/gc/rec/components/form/comment.js';
+import FormReply from 'app/gc/rec/components/form/reply.js';
+import RecruitmentReply from 'app/gc/rec/components/recruitment-reply.js';
+import Public from 'app/gc/rec/components/public.js';
+import Notification from 'app/gc/rec/components/notification.js';
 
 
 
@@ -369,7 +369,7 @@ export default injectIntl(class extends React.Component {
       //   Link
       // --------------------------------------------------
       
-      const linkHref = `/gc/[urlID]/rec/[recruitmentID]?urlID=${urlID}&recruitmentID=${recruitmentComments_id}`;
+      const linkHref = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}&recruitmentID=${recruitmentComments_id}`;
       const linkAs = `/gc/${urlID}/rec/${recruitmentComments_id}`;
       
       

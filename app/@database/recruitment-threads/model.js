@@ -1330,6 +1330,48 @@ const aggregate = async ({
       
       
       // --------------------------------------------------
+      //   games
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'games',
+            let: { letGameCommunities_id: '$gameCommunities_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $and:
+                    [
+                      { $eq: ['$language', language] },
+                      { $eq: ['$country', country] },
+                      { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
+                    ]
+                  },
+                }
+              },
+              
+              
+              { $project:
+                {
+                  _id: 0,
+                  twitterHashtagsArr: 1,
+                }
+              }
+            ],
+            as: 'gamesObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$gamesObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // --------------------------------------------------
       //   game-communities / threadCount 取得用
       // --------------------------------------------------
       

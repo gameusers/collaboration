@@ -170,16 +170,6 @@ export default class GcRec extends React.Component {
     // --------------------------------------------------
     
     const gameCommunities_id = lodashGet(this.props, ['propsObj', 'gameCommunityObj', '_id'], '');
-    // const gameName = lodashGet(this.props, ['propsObj', 'headerObj', 'name'], '');
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Title
-    // --------------------------------------------------
-    
-    // const title = `${gameName}`;
     
     
     

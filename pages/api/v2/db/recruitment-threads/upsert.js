@@ -25,48 +25,48 @@ import lodashSet from 'lodash/set';
 //   Model
 // ---------------------------------------------
 
-import ModelRecruitmentThreads from '../../../../../app/@database/recruitment-threads/model';
-import ModelUsers from '../../../../../app/@database/users/model';
-import ModelGameCommunities from '../../../../../app/@database/game-communities/model';
+import ModelRecruitmentThreads from 'app/@database/recruitment-threads/model';
+import ModelUsers from 'app/@database/users/model';
+import ModelGameCommunities from 'app/@database/game-communities/model';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-import { verifyCsrfToken } from '../../../../../app/@modules/csrf';
-import { returnErrorsArr } from '../../../../../app/@modules/log/log';
-import { CustomError } from '../../../../../app/@modules/error/custom';
-import { formatAndSave } from '../../../../../app/@modules/image/save';
-import { setAuthority } from '../../../../../app/@modules/authority';
+import { verifyCsrfToken } from 'app/@modules/csrf';
+import { returnErrorsArr } from 'app/@modules/log/log';
+import { CustomError } from 'app/@modules/error/custom';
+import { formatAndSave } from 'app/@modules/image/save';
+import { setAuthority } from 'app/@modules/authority';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-import { validationIP } from '../../../../../app/@validations/ip';
-import { validationBoolean } from '../../../../../app/@validations/boolean';
+import { validationIP } from 'app/@validations/ip';
+import { validationBoolean } from 'app/@validations/boolean';
 
-import { validationGameCommunities_idServer } from '../../../../../app/@database/game-communities/validations/_id-server';
-import { validationHardwareIDsArrServer } from '../../../../../app/@database/hardwares/validations/id-server';
-import { validationIDsArrServer } from '../../../../../app/@database/ids/validations/_id-server';
-import { validationUsersWebPushSubscriptionObjEndpointServer, validationUsersWebPushSubscriptionObjKeysP256dhServer, validationUsersWebPushSubscriptionObjKeysAuthServer } from '../../../../../app/@database/users/validations/web-push-server';
+import { validationGameCommunities_idServer } from 'app/@database/game-communities/validations/_id-server';
+import { validationHardwareIDsArrServer } from 'app/@database/hardwares/validations/id-server';
+import { validationIDsArrServer } from 'app/@database/ids/validations/_id-server';
+import { validationUsersWebPushSubscriptionObjEndpointServer, validationUsersWebPushSubscriptionObjKeysP256dhServer, validationUsersWebPushSubscriptionObjKeysAuthServer } from 'app/@database/users/validations/web-push-server';
 
-import { validationRecruitmentThreadsCategory } from '../../../../../app/@database/recruitment-threads/validations/category';
-import { validationRecruitmentThreadsTitle } from '../../../../../app/@database/recruitment-threads/validations/title';
-import { validationRecruitmentThreadsName } from '../../../../../app/@database/recruitment-threads/validations/name';
-import { validationRecruitmentThreadsComment } from '../../../../../app/@database/recruitment-threads/validations/comment';
-import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } from '../../../../../app/@database/recruitment-threads/validations/ids-informations';
-import { validationRecruitmentThreadsDeadlineDate } from '../../../../../app/@database/recruitment-threads/validations/deadline';
-import { validationRecruitmentThreadsLimit } from '../../../../../app/@database/recruitment-threads/validations/limit';
+import { validationRecruitmentThreadsCategory } from 'app/@database/recruitment-threads/validations/category';
+import { validationRecruitmentThreadsTitle } from 'app/@database/recruitment-threads/validations/title';
+import { validationRecruitmentThreadsName } from 'app/@database/recruitment-threads/validations/name';
+import { validationRecruitmentThreadsComment } from 'app/@database/recruitment-threads/validations/comment';
+import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } from 'app/@database/recruitment-threads/validations/ids-informations';
+import { validationRecruitmentThreadsDeadlineDate } from 'app/@database/recruitment-threads/validations/deadline';
+import { validationRecruitmentThreadsLimit } from 'app/@database/recruitment-threads/validations/limit';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-import { locale } from '../../../../../app/@locales/locale';
+import { locale } from 'app/@locales/locale';
 
 
 
@@ -152,7 +152,7 @@ export default async (req, res) => {
       // publicSetting,
       // deadlineDate,
       // webPushSubscriptionObj,
-      twitter,
+      // twitter,
       webPush,
       threadLimit,
       commentLimit,
@@ -207,7 +207,7 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['deadlineDate'], deadlineDate);
     lodashSet(requestParametersObj, ['webPush'], webPush);
     lodashSet(requestParametersObj, ['webPushSubscriptionObj'], {});
-    lodashSet(requestParametersObj, ['twitter'], twitter);
+    // lodashSet(requestParametersObj, ['twitter'], twitter);
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
     lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
@@ -268,7 +268,7 @@ export default async (req, res) => {
     await validationUsersWebPushSubscriptionObjKeysAuthServer({ value: auth });
     
     await validationBoolean({ throwError: true, value: webPush });
-    await validationBoolean({ throwError: true, value: twitter });
+    // await validationBoolean({ throwError: true, value: twitter });
     
     await validationRecruitmentThreadsLimit({ throwError: true, required: true, value: threadLimit });
     // await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
@@ -949,12 +949,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'muKeCPjlC',
       users_id: loginUsers_id,
       ip,
       userAgent,
       requestParametersObj,
+      
     });
     
     
@@ -972,6 +974,10 @@ export default async (req, res) => {
 
 
 
+
+// --------------------------------------------------
+//   config
+// --------------------------------------------------
 
 export const config = {
   api: {

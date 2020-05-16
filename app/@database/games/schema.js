@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 // --------------------------------------------------
 
 const schema = mongoose.Schema({
+  
   _id: { type: String, required: true },
   createdDate: { type: Date, default: Date.now, required: true },
   updatedDate: { type: Date, default: Date.now, required: true },
@@ -23,7 +24,7 @@ const schema = mongoose.Schema({
   subtitle: String,
   searchKeywordsArr: [String],
   sortKeyword: { type: String, required: true },
-  twitterHashtag: String,
+  twitterHashtagsArr: [String],
   genreArr: [String],
   genreSubArr: [String],
   genreTagArr: [String],
@@ -46,6 +47,7 @@ const schema = mongoose.Schema({
       url: { type: String, required: true },
     },
   ]
+  
 });
 
 
@@ -56,9 +58,13 @@ const schema = mongoose.Schema({
 let model = '';
 
 if (mongoose.models.games) {
+  
   model = mongoose.model('games');
+  
 } else {
+  
   model = mongoose.model('games', schema);
+  
 }
 
 module.exports = model;

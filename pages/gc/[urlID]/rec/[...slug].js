@@ -16,7 +16,6 @@ import util from 'util';
 
 import React from 'react';
 import Error from 'next/error';
-// import Router from 'next/router';
 import { observer } from 'mobx-react';
 import moment from 'moment';
 
@@ -58,22 +57,6 @@ import Layout from 'app/common/layout/components/layout-ver2.js';
 import RecruitmentNavigation from 'app/gc/rec/components/recruitment-navigation.js';
 import RecruitmentThread from 'app/gc/rec/components/recruitment-thread.js';
 import Breadcrumbs from 'app/common/layout/components/breadcrumbs.js';
-
-
-
-
-
-
-// ---------------------------------------------
-//   Scroll
-// ---------------------------------------------
-
-// Router.events.on('routeChangeComplete', (url) => {
-  
-//   console.log('routeChangeComplete');
-//   console.log(url);
-  
-// });
 
 
 
@@ -294,6 +277,7 @@ export default class GcRec extends React.Component {
         <RecruitmentThread
           urlID={this.props.urlID}
           gameCommunities_id={gameCommunities_id}
+          individual={this.props.type === 'individual'}
         />
         
       </React.Fragment>
@@ -671,6 +655,7 @@ export async function getServerSideProps({ req, res, query }) {
       propsObj,
       breadcrumbsArr,
       title,
+      type,
       
     }
     

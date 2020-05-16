@@ -178,7 +178,7 @@ export default injectIntl(class extends React.Component {
       intl,
       urlID,
       gameCommunities_id,
-      // individual,
+      individual,
       
     } = this.props;
     
@@ -372,7 +372,21 @@ export default injectIntl(class extends React.Component {
       //   参考：https://blog.ikunaga.net/entry/twitter-com-intent-tweet/
       // --------------------------------------------------
       
-      const shareTwitter = `https://twitter.com/intent/tweet?text=${encodeURI(title)}&url=${process.env.NEXT_PUBLIC_URL_BASE}gc/${urlID}/rec/${recruitmentThreads_id}`;
+      const twitterHashtagsArr = lodashGet(threadsDataObj, ['gamesObj', 'twitterHashtagsArr'], []);
+      
+      let shareTwitterText = title;
+      
+      if (title.length > 50) {
+        shareTwitterText = title.substr(0, 50) + '…';
+      }
+      
+      let shareTwitter = `https://twitter.com/intent/tweet?text=${encodeURI(shareTwitterText)}&url=${process.env.NEXT_PUBLIC_URL_BASE}gc/${urlID}/rec/${recruitmentThreads_id}`;
+      
+      if (twitterHashtagsArr.length > 0) {
+        
+        shareTwitter += `&hashtags=${twitterHashtagsArr.join(',')}`;
+        
+      }
       
       
       
@@ -387,8 +401,14 @@ export default injectIntl(class extends React.Component {
       // `);
       
       // console.log(`
-      //   ----- pathRecruitmentThreadArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(pathRecruitmentThreadArr)), { colors: true, depth: null })}\n
+      //   ----- threadsDataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(threadsDataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- twitterHashtagsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(twitterHashtagsArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -1086,7 +1106,7 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Pagination */}
-        {count === 0 ? (
+        {individual ? (
           
           
           <div

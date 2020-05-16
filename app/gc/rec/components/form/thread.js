@@ -51,18 +51,18 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 //   Validations
 // ---------------------------------------------
 
-import { validationRecruitmentThreadsTitle } from '../../../../@database/recruitment-threads/validations/title.js';
-import { validationRecruitmentThreadsName } from '../../../../@database/recruitment-threads/validations/name.js';
+import { validationRecruitmentThreadsTitle } from 'app/@database/recruitment-threads/validations/title.js';
+import { validationRecruitmentThreadsName } from 'app/@database/recruitment-threads/validations/name.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import FormHardwares from '../../../../common/hardware/components/form-explanation.js';
-import FormIDsInformations from '../form/ids-informations.js';
-import FormDeadline from '../form/deadline.js';
-import ImageAndVideoForm from '../../../../common/image-and-video/components/form.js';
+import FormHardwares from 'app/common/hardware/components/form-explanation.js';
+import FormIDsInformations from 'app/gc/rec/components/form/ids-informations.js';
+import FormDeadline from 'app/gc/rec/components/form/deadline.js';
+import ImageAndVideoForm from 'app/common/image-and-video/components/form.js';
 
 
 
@@ -183,7 +183,7 @@ export default injectIntl(class extends React.Component {
     const title = lodashGet(dataObj, [...pathArr, 'title'], '');
     const name = lodashGet(dataObj, [...pathArr, 'name'], '');
     const comment = lodashGet(dataObj, [...pathArr, 'comment'], '');
-    const twitter = lodashGet(dataObj, [...pathArr, 'twitter'], false);
+    // const twitter = lodashGet(dataObj, [...pathArr, 'twitter'], false);
     const webPush = lodashGet(dataObj, [...pathArr, 'webPush'], false);
     
     const limitHardwares = parseInt(process.env.NEXT_PUBLIC_NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT, 10);
@@ -595,7 +595,7 @@ export default injectIntl(class extends React.Component {
           
           
           {/* Twitter */}
-          <div css={cssBox}>
+          {/*<div css={cssBox}>
             
             <h3
               css={css`
@@ -633,7 +633,7 @@ export default injectIntl(class extends React.Component {
               />
             </div>
             
-          </div>
+          </div>*/}
           
           
           

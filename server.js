@@ -40,12 +40,28 @@ const handle = app.getRequestHandler();
 const mobxReact = require('mobx-react');
 const mongoose = require('mongoose');
 
+const cron = require('node-cron');
+
+
+// ---------------------------------------------
+//   Model
+// ---------------------------------------------
+
+const ModelNotifications = require('./app/@database/notifications/model.js');
+
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
 // const { createCsrfToken } = require('./app/@modules/csrf');
+
+
+// ---------------------------------------------
+//   Locales
+// ---------------------------------------------
+
+const { locale } = require('./app/@locales/locale');
 
 
 // ---------------------------------------------
@@ -146,7 +162,21 @@ app.prepare().then(() => {
   
   
   
-
+  
+  
+  // --------------------------------------------------
+  //   Cron - Notifications
+  // --------------------------------------------------
+  
+  cron.schedule('*/20 * * * * *', async () => {
+    
+    ModelNotifications.sendNotifications({});
+    
+  });
+  
+  
+  
+  
   // --------------------------------------------------
   //   Routing
   // --------------------------------------------------

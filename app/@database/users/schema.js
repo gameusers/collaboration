@@ -33,6 +33,7 @@ const schema = mongoose.Schema({
     value: { type: String },
     confirmation: { type: Boolean, default: false, required: true },
   },
+  language: { type: String, required: true },
   countriesArr: [String],
   termsOfServiceConfirmedDate: { type: Date, required: true },
   exp: { type: Number, default: 0, required: true },

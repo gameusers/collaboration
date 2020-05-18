@@ -29,6 +29,7 @@ const schema = mongoose.Schema({
   ],
   imagesAndVideos_id: { type: String },
   goods: { type: Number, default: 0, required: true },
+  language: { type: String, required: true },
   ip: { type: String, required: true },
   userAgent: { type: String, required: true },
   

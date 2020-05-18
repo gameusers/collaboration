@@ -31,6 +31,7 @@ const schema = mongoose.Schema({
   images: { type: Number, default: 0, required: true },
   videos: { type: Number, default: 0, required: true },
   main: { type: Boolean, required: true },
+  language: { type: String, required: true },
   ip: { type: String, required: true },
   userAgent: { type: String, required: true },
   

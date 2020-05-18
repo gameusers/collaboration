@@ -60,6 +60,7 @@ const schema = mongoose.Schema({
   replies: { type: Number, default: 0, required: true },
   images: { type: Number, default: 0, required: true },
   videos: { type: Number, default: 0, required: true },
+  language: { type: String, required: true },
   ip: { type: String, required: true },
   userAgent: { type: String, required: true },
   

@@ -2,3 +2,13 @@
 {"logID":"ckmIuzS21","date":"2020-05-13T05:23:42.028Z","endpointID":"t22TWi-ct","users_id":"","ip":"133.167.108.234","userAgent":"node-fetch/1.0 (+https://github.com/bitinn/node-fetch)","requestParametersObj":{"urlID":"Dead-by-Daylight","recruitmentID":"jlpBu0RfB","threadPage":1,"threadLimit":null,"commentLimit":null,"replyLimit":null,"hardwares":"","categories":"","keyword":""},"errorsArr":[{"code":"ckmIuzS21","messageID":"Error"}],"level":"error","message":"Cannot read property 'recruitmentThreadsObj' of undefined"}
 {"logID":"l246fgkvW","date":"2020-05-13T05:25:51.605Z","endpointID":"t22TWi-ct","users_id":"","ip":"133.167.108.234","userAgent":"node-fetch/1.0 (+https://github.com/bitinn/node-fetch)","requestParametersObj":{"urlID":"Dead-by-Daylight","recruitmentID":"jlpBu0RfB","threadPage":1,"threadLimit":null,"commentLimit":null,"replyLimit":null,"hardwares":"","categories":"","keyword":""},"errorsArr":[{"code":"l246fgkvW","messageID":"Error"}],"level":"error","message":"Cannot access 'recruitmentObj' before initialization"}
 {"logID":"sS9N-nvKW","date":"2020-05-13T05:36:14.544Z","endpointID":"t22TWi-ct","users_id":"","ip":"133.167.108.234","userAgent":"node-fetch/1.0 (+https://github.com/bitinn/node-fetch)","requestParametersObj":{"urlID":"Dead-by-Daylight","recruitmentID":"jlpBu0RfB","threadPage":1,"threadLimit":null,"commentLimit":null,"replyLimit":null,"hardwares":"","categories":"","keyword":""},"errorsArr":[{"code":"sS9N-nvKW","messageID":"Error"}],"level":"error","message":"ModelRecruitmentThreads.findOne is not a function"}
+{"level":"error","message":""}
+{"level":"error","message":""}
+{"level":"error","message":""}
+{"level":"error","message":""}
+{"level":"error","message":""}
+{"level":"error","message":""}
+{"level":"error","message":""}
+{"level":"error","message":""}
+{"level":"error","message":""}
+{"level":"error","message":""}

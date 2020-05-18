@@ -159,6 +159,37 @@ export default class GcRec extends React.Component {
   
   
   // --------------------------------------------------
+  //   componentDidMount
+  // --------------------------------------------------
+  
+  componentDidMount() {
+    
+    // console.log('componentDidMount');
+    
+    
+    // ---------------------------------------------
+    //   Scroll
+    // ---------------------------------------------
+    
+    const stores = initStoreRoot({});
+    
+    stores.layout.handleScrollTo({
+      
+      to: 'recruitmentThreads',
+      duration: 0,
+      delay: 0,
+      smooth: 'easeInOutQuart',
+      offset: -50,
+      
+    });
+    
+    
+  }
+  
+  
+  
+  
+  // --------------------------------------------------
   //   componentDidUpdate / Router.push でページを移動し、そこからブラウザで戻ったときの処理
   //   まず getServerSideProps でデータを取得し、次に componentDidUpdate でデータを更新する
   // --------------------------------------------------
@@ -212,6 +243,7 @@ export default class GcRec extends React.Component {
         offset: -50,
         
       });
+      
       
     }
     

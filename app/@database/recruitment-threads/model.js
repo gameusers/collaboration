@@ -35,8 +35,6 @@ const SchemaUsers = require('../users/schema.js');
 
 const ModelRecruitmentComments = require('../recruitment-comments/model.js');
 const ModelRecruitmentReplies = require('../recruitment-replies/model.js');
-// const ModelRecruitmentComments = require('app/@database/recruitment-comments/model.js');
-// const ModelRecruitmentReplies = require('app/@database/recruitment-replies/model.js');
 
 
 // ---------------------------------------------
@@ -45,6 +43,13 @@ const ModelRecruitmentReplies = require('../recruitment-replies/model.js');
 
 const { CustomError } = require('../../@modules/error/custom');
 const { verifyAuthority } = require('../../@modules/authority');
+
+
+// ---------------------------------------------
+//   Locales
+// ---------------------------------------------
+
+const { locale } = require('../../@locales/locale');
 
 
 // ---------------------------------------------
@@ -2624,6 +2629,265 @@ const findForDelete = async ({
 
 
 
+/**
+ * 通知用のデータ取得
+ * @param {string} _id - DB recruitment-threads _id / スレッドID
+ * @return {Array} 取得データ
+ */
+const findForNotification = async ({
+  
+  _id,
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   recruitmentThreadsObj / Locale 用
+    // --------------------------------------------------
+    
+    const recruitmentThreadsObj = await findOne({
+      
+      conditionObj: {
+        _id
+      }
+      
+    });
+    
+    
+    // --------------------------------------------------
+    //   Locale
+    // --------------------------------------------------
+    
+    const localeObj = locale({
+      acceptLanguage: lodashGet(recruitmentThreadsObj, ['language'], '')
+    });
+    
+    
+    // --------------------------------------------------
+    //   Language & Country
+    // --------------------------------------------------
+    
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+    
+    
+    
+    // // --------------------------------------------------
+    // //   parseInt
+    // // --------------------------------------------------
+    
+    // const intThreadLimit = parseInt((threadLimit || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
+    
+    
+    // console.log(chalk`
+    //   aggregate
+    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
+    //   process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT: {green ${process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT} / ${typeof process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT}}
+    //   intThreadLimit: {green ${intThreadLimit}}
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Aggregation
+    // --------------------------------------------------
+    
+    const docArr = await SchemaRecruitmentThreads.aggregate([
+      
+      
+      // --------------------------------------------------
+      //   Match Condition
+      // --------------------------------------------------
+      
+      {
+        $match: { _id }
+      },
+      
+      
+      // --------------------------------------------------
+      //   games
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'games',
+            let: { idsGameCommunities_id: '$gameCommunities_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $and:
+                    [
+                      { $eq: ['$language', language] },
+                      { $eq: ['$country', country] },
+                      { $eq: ['$gameCommunities_id', '$$idsGameCommunities_id'] }
+                    ]
+                  },
+                }
+              },
+              
+              
+              // --------------------------------------------------
+              //   games / images-and-videos / サムネイル用
+              // --------------------------------------------------
+              
+              {
+                $lookup:
+                  {
+                    from: 'images-and-videos',
+                    let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
+                        }
+                      },
+                      { $project:
+                        {
+                          createdDate: 0,
+                          updatedDate: 0,
+                          users_id: 0,
+                          __v: 0,
+                        }
+                      }
+                    ],
+                    as: 'imagesAndVideosThumbnailObj'
+                  }
+              },
+              
+              {
+                $unwind: {
+                  path: '$imagesAndVideosThumbnailObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+              
+              
+              { $project:
+                {
+                  _id: 1,
+                  gameCommunities_id: 1,
+                  name: 1,
+                  imagesAndVideosThumbnailObj: 1,
+                }
+              }
+            ],
+            as: 'gamesObj'
+          }
+      },
+      
+      {
+        $unwind:
+          {
+            path: '$gamesObj',
+            preserveNullAndEmptyArrays: true
+          }
+      },
+      
+      
+      // --------------------------------------------------
+      //   users / ユーザーを取得（webPush）
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'users',
+            let: { letUsers_id: '$users_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$letUsers_id'] },
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  // accessDate: 1,
+                  // exp: 1,
+                  // userID: 1,
+                  webPushSubscriptionObj: 1,
+                }
+              }
+            ],
+            as: 'usersObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$usersObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      { $project:
+        {
+          localesArr: 1,
+          gamesObj: 1,
+          webPush: 1,
+          webPushSubscriptionObj: 1,
+          usersObj: 1,
+          // __v: 0,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(`
+      ----------------------------------------\n
+      /app/@database/recruitment-threads/model.js - findForNotification
+    `);
+    
+    console.log(chalk`
+      _id: {green ${_id}}
+    `);
+    
+    console.log(`
+      ----- recruitmentThreadsObj -----\n
+      ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- docArr -----\n
+      ${util.inspect(docArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    // return docArr;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
 
 
 // --------------------------------------------------
@@ -3080,6 +3344,7 @@ module.exports = {
   findRecruitmentsForSearch,
   findOneForEdit,
   findForDelete,
+  findForNotification,
   
   transactionForUpsert,
   transactionForDelete,

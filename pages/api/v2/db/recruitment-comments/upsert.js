@@ -105,9 +105,10 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   IP & User Agent
+  //   Language & IP & User Agent
   // --------------------------------------------------
   
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
@@ -613,6 +614,7 @@ export default async (req, res) => {
       webPushSubscriptionObj,
       goods: 0,
       replies: 0,
+      language,
       ip,
       userAgent,
       

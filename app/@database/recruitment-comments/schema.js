@@ -52,6 +52,7 @@ const schema = mongoose.Schema({
   },
   goods: { type: Number, default: 0, required: true },
   replies: { type: Number, default: 0, required: true },
+  language: { type: String, required: true },
   ip: { type: String, required: true },
   userAgent: { type: String, required: true },
   

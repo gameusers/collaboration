@@ -207,18 +207,6 @@ class Store {
       
       
       // ---------------------------------------------
-      //   Property
-      // ---------------------------------------------
-      
-      // const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
-      // const clonedObj = lodashCloneDeep(recruitmentObj);
-      
-      // const loadedDate = lodashGet(recruitmentObj, ['recruitmentThreadsObj', `page${page}Obj`, 'loadedDate'], '');
-      // const arr = lodashGet(recruitmentObj, ['recruitmentThreadsObj', `page${page}Obj`, 'arr'], []);
-      // const reloadThreads = lodashGet(recruitmentObj, ['reloadThreads'], false);
-      
-      
-      // ---------------------------------------------
       //   For Search
       // ---------------------------------------------
       
@@ -263,13 +251,7 @@ class Store {
       }
       
       
-      // console.log(chalk`
-      //   urlHardwares: {green ${urlHardwares}}
-      //   urlCategories: {green ${urlCategories}}
-      //   urlKeyword: {green ${urlKeyword}}
-      //   url: {green ${url}}
-      //   as: {green ${as}}
-      // `);
+      
       
       
       
@@ -309,14 +291,18 @@ class Store {
       // `);
       
       // console.log(chalk`
+      //   urlHardwares: {green ${urlHardwares}}
+      //   urlCategories: {green ${urlCategories}}
+      //   urlKeyword: {green ${urlKeyword}}
+      //   url: {green ${url}}
+      //   as: {green ${as}}
+      // `);
+      
+      // console.log(chalk`
       //   gameCommunities_id: {green ${gameCommunities_id}}
       //   page: {green ${page}}
       //   loadedDate: {green ${loadedDate}}
       //   changeLimit：{green ${changeLimit}}
-      // `);
-      
-      // console.log(chalk`
-      //   reloadThreads: {green ${reloadThreads}}
       // `);
       
       // console.log(`
@@ -344,41 +330,33 @@ class Store {
       // return;
       
       
-      
-      
-      
-      // ---------------------------------------------
-      //   コメント　次回の読み込み時に強制リロード
-      // ---------------------------------------------
-      
-      // lodashSet(clonedObj, ['reloadComments'], false);
-      
-      
-      
-      
-      // // ---------------------------------------------
-      // //   Update
-      // // ---------------------------------------------
-      
-      // this.handleEdit({
-      //   pathArr: ['recruitmentThreadLimit'],
-      //   value: threadLimit,
-      // });
-      
-      // this.handleEdit({
-      //   pathArr: [gameCommunities_id],
-      //   value: clonedObj
-      // });
-      
-      
-      
-      
       // ---------------------------------------------
       //   Router.push = History API pushState()
       // ---------------------------------------------
       
       // Router.push(url, as, { shallow: true });
-      Router.push(url, as);
+      await Router.push(url, as);
+      
+      
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      if (page === 1) {
+        
+        storeLayout.handleScrollTo({
+          
+          to: 'recruitmentThreads',
+          duration: 0,
+          delay: 0,
+          smooth: 'easeInOutQuart',
+          offset: -50,
+          
+        });
+        
+      }
+      
+      // console.log('AAA');
       
       
     } catch (errorObj) {

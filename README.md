@@ -13,7 +13,7 @@ Game Users を Node.js に書き換えたい！
 Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、みんなで開発できる環境を作ってみました。
 <br><br>
 
-[開発中のウェブサイト（リアルタイムでコードが反映されます）](http://dev-1.gameusers.org:8080/)
+[開発中のウェブサイト（リアルタイムでコードが反映されます）](https://dev-1.gameusers.org/)
 <br><br>
 
 **ゲストアカウント**
@@ -40,13 +40,6 @@ Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、み�
 
 マスターアカウント（master-1～5）でログインできる方は、以下の Cloud9 環境も利用できます。
 <br><br>
-
-※ 2019/2/23 現在停止中です。
-- [開発中のウェブサイト 2](http://dev-1.gameusers.org:8082/)
-- [Cloud9 IDE 2](https://us-west-2.console.aws.amazon.com/cloud9/ide/df44294c8853471b8ddd609c09af06f3)
-- [開発中のウェブサイト 3](http://dev-1.gameusers.org:8083/)
-- [Cloud9 IDE 3](https://us-west-2.console.aws.amazon.com/cloud9/ide/7338aa92de58493393812a0a42b03518)
-<br /><br /><br />
 
 
 ## 1. インストール

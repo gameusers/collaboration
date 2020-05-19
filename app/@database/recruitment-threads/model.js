@@ -57,6 +57,7 @@ const { locale } = require('../../@locales/locale');
 // ---------------------------------------------
 
 const { formatRecruitmentThreadsArr } = require('./format');
+const { formatImagesAndVideosObj } = require('../images-and-videos/format');
 
 
 
@@ -2637,11 +2638,36 @@ const findForDelete = async ({
 const findForNotification = async ({
   
   _id,
+  // targetsArr,
+  // sourceType,
+  // source_id,
   
 }) => {
   
   
   try {
+    
+    
+    // --------------------------------------------------
+    //   recruitmentThreads_id & recruitmentComments_id
+    // --------------------------------------------------
+    
+    // let recruitmentThreads_id = '';
+    // let recruitmentComments_id = '';
+    
+    // for (let valueObj of targetsArr.values()) {
+      
+    //   if (valueObj.targetType === 'recruitment-threads') {
+        
+    //     recruitmentThreads_id = valueObj.target_id;
+        
+    //   } else if (valueObj.targetType === 'recruitment-comments') { {
+        
+    //     recruitmentComments_id = valueObj.target_id;
+        
+    //   }
+      
+    // }
     
     
     // --------------------------------------------------
@@ -2674,20 +2700,6 @@ const findForNotification = async ({
     const country = lodashGet(localeObj, ['country'], '');
     
     
-    
-    // // --------------------------------------------------
-    // //   parseInt
-    // // --------------------------------------------------
-    
-    // const intThreadLimit = parseInt((threadLimit || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
-    
-    
-    // console.log(chalk`
-    //   aggregate
-    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
-    //   process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT: {green ${process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT} / ${typeof process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT}}
-    //   intThreadLimit: {green ${intThreadLimit}}
-    // `);
     
     
     // --------------------------------------------------
@@ -2769,6 +2781,7 @@ const findForNotification = async ({
                 {
                   _id: 1,
                   gameCommunities_id: 1,
+                  urlID: 1,
                   name: 1,
                   imagesAndVideosThumbnailObj: 1,
                 }
@@ -2842,29 +2855,103 @@ const findForNotification = async ({
     
     
     // --------------------------------------------------
+    //   Return Object
+    // --------------------------------------------------
+    
+    const returnObj = {
+      _id
+    };
+    
+    const docObj = lodashGet(docArr, [0], {});
+    
+    
+    // --------------------------------------------------
+    //   urlID
+    // --------------------------------------------------
+    
+    returnObj.urlID = lodashGet(docObj, ['gamesObj', 'urlID'], '');
+    
+    
+    // --------------------------------------------------
+    //   webPushSubscriptionObj
+    // --------------------------------------------------
+    
+    if (docObj.webPush) {
+      
+      returnObj.webPushSubscriptionObj = lodashGet(docObj, ['webPushSubscriptionObj'], {});
+      
+      if (lodashHas(docObj, ['usersObj', 'webPushSubscriptionObj'])) {
+        returnObj.webPushSubscriptionObj = lodashGet(docObj, ['usersObj', 'webPushSubscriptionObj'], {});
+      }
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   Title
+    // --------------------------------------------------
+    
+    const filteredArr = docObj.localesArr.filter((filterObj) => {
+      return filterObj.language === language;
+    });
+    
+    
+    if (lodashHas(filteredArr, [0])) {
+      
+      returnObj.title = lodashGet(filteredArr, [0, 'title'], '');
+      
+    } else {
+      
+      returnObj.title = lodashGet(docObj, ['localesArr', 0, 'title'], '');
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   Format - サムネイル画像
+    // --------------------------------------------------
+    
+    const imagesAndVideosThumbnailObj = lodashGet(docObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
+    
+    const formattedThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosThumbnailObj });
+    
+    if (formattedThumbnailObj) {
+      returnObj.icon = lodashGet(formattedThumbnailObj, ['arr', 0, 'src'], '');
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/recruitment-threads/model.js - findForNotification
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/recruitment-threads/model.js - findForNotification
+    // `);
     
-    console.log(chalk`
-      _id: {green ${_id}}
-    `);
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    // `);
     
-    console.log(`
-      ----- recruitmentThreadsObj -----\n
-      ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- recruitmentThreadsObj -----\n
+    //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- docArr -----\n
-      ${util.inspect(docArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -2873,7 +2960,7 @@ const findForNotification = async ({
     //   Return
     // --------------------------------------------------
     
-    // return docArr;
+    return returnObj;
     
     
   } catch (err) {

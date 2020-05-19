@@ -44,6 +44,13 @@ const { verifyAuthority } = require('../../@modules/authority.js');
 
 
 // ---------------------------------------------
+//   Locales
+// ---------------------------------------------
+
+const { locale } = require('../../@locales/locale');
+
+
+// ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
@@ -1901,6 +1908,219 @@ const getPage = async ({
 
 
 
+/**
+ * 通知用のデータ取得
+ * @param {string} _id - DB recruitment-comments _id / コメントID
+ * @return {Array} 取得データ
+ */
+const findForNotification = async ({
+  
+  _id,
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   recruitmentCommentsObj / Locale 用
+    // --------------------------------------------------
+    
+    const recruitmentCommentsObj = await findOne({
+      
+      conditionObj: {
+        _id
+      }
+      
+    });
+    
+    
+    // --------------------------------------------------
+    //   Locale
+    // --------------------------------------------------
+    
+    const localeObj = locale({
+      acceptLanguage: lodashGet(recruitmentCommentsObj, ['language'], '')
+    });
+    
+    
+    // --------------------------------------------------
+    //   Language & Country
+    // --------------------------------------------------
+    
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Aggregation
+    // --------------------------------------------------
+    
+    const docArr = await SchemaRecruitmentComments.aggregate([
+      
+      
+      // --------------------------------------------------
+      //   Match Condition
+      // --------------------------------------------------
+      
+      {
+        $match: { _id }
+      },
+      
+      
+      // --------------------------------------------------
+      //   users / ユーザーを取得（webPush）
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'users',
+            let: { letUsers_id: '$users_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$letUsers_id'] },
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  webPushSubscriptionObj: 1,
+                }
+              }
+            ],
+            as: 'usersObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$usersObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      { $project:
+        {
+          localesArr: 1,
+          webPush: 1,
+          webPushSubscriptionObj: 1,
+          usersObj: 1,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return Object
+    // --------------------------------------------------
+    
+    const returnObj = {
+      _id
+    };
+    
+    const docObj = lodashGet(docArr, [0], {});
+    
+    
+    // --------------------------------------------------
+    //   webPushSubscriptionObj
+    // --------------------------------------------------
+    
+    if (docObj.webPush) {
+      
+      returnObj.webPushSubscriptionObj = lodashGet(docObj, ['webPushSubscriptionObj'], {});
+      
+      if (lodashHas(docObj, ['usersObj', 'webPushSubscriptionObj'])) {
+        returnObj.webPushSubscriptionObj = lodashGet(docObj, ['usersObj', 'webPushSubscriptionObj'], {});
+      }
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   Comment
+    // --------------------------------------------------
+    
+    const filteredArr = docObj.localesArr.filter((filterObj) => {
+      return filterObj.language === language;
+    });
+    
+    
+    if (lodashHas(filteredArr, [0])) {
+      
+      returnObj.comment = lodashGet(filteredArr, [0, 'comment'], '');
+      
+    } else {
+      
+      returnObj.comment = lodashGet(docObj, ['localesArr', 0, 'comment'], '');
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/recruitment-comments/model.js - findForNotification
+    // `);
+    
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- recruitmentThreadsObj -----\n
+    //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
 
 
 // --------------------------------------------------
@@ -2384,6 +2604,7 @@ module.exports = {
   findOneForEdit,
   findForDelete,
   getPage,
+  findForNotification,
   
   transactionForUpsert,
   transactionForDelete,

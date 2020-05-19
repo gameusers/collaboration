@@ -26,12 +26,20 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Model
 // ---------------------------------------------
 
-const Schema = require('./schema');
+const SchemaNotifications = require('./schema');
 // const SchemaUsers = require('../users/schema');
 
 const ModelRecruitmentThreads = require('../recruitment-threads/model.js');
 const ModelRecruitmentComments = require('../recruitment-comments/model.js');
-// const ModelRecruitmentThreads = require('../recruitment-threads/model.js');
+const ModelRecruitmentReplies = require('../recruitment-replies/model.js');
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { sendNotifications }  = require('../../@modules/web-push');
+
 
 
 
@@ -70,7 +78,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await Schema.findOne(conditionObj).exec();
+    return await SchemaNotifications.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -113,7 +121,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.find(conditionObj).exec();
+    return await SchemaNotifications.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -155,7 +163,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.countDocuments(conditionObj).exec();
+    return await SchemaNotifications.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -202,7 +210,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await SchemaNotifications.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -244,7 +252,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await Schema.insertMany(saveArr);
+    return await SchemaNotifications.insertMany(saveArr);
     
     
   } catch (err) {
@@ -287,7 +295,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await Schema.deleteMany(conditionObj);
+    return await SchemaNotifications.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -308,47 +316,24 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 // --------------------------------------------------
 
 /**
- * 募集（コメント＆返信を含む全てのデータ）を取得する
- * @param {Object} req - リクエスト
- * @param {Object} localeObj - ロケール
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
- * @param {Array} threads_idsArr - DB recruitment-threads _id / スレッドID（threads_idsArr という名前に変更しているのは、下の方に recruitmentThreads_idsArr が存在しているから）
- * @param {number} threadPage - スレッドのページ
- * @param {number} threadLimit - スレッドのリミット
- * @param {number} commentPage - コメントのページ
- * @param {number} commentLimit - コメントのリミット
- * @param {number} replyPage - 返信のページ
- * @param {number} replyLimit - 返信のリミット
+ * 通知を送信する
  * @return {Array} 取得データ
  */
-const sendNotifications = async ({}) => {
+const send = async ({}) => {
   
   
   try {
     
     
     // --------------------------------------------------
-    //   Language & Country
+    //   Property
     // --------------------------------------------------
     
-    // const language = lodashGet(localeObj, ['language'], '');
-    // const country = lodashGet(localeObj, ['country'], '');
-    
-    
-    // --------------------------------------------------
-    //   Parse
-    // --------------------------------------------------
-    
-    // const intThreadLimit = parseInt(threadLimit, 10);
-    // const intCommentLimit = parseInt(commentLimit, 10);
-    // const intReplyLimit = parseInt(replyLimit, 10);
-    
-    
+    const notificationsArr = [];
     
     
     // --------------------------------------------------
-    //   Parse
+    //   notificationsObj
     // --------------------------------------------------
     
     const notificationsObj = await findOne({
@@ -359,22 +344,215 @@ const sendNotifications = async ({}) => {
       
     });
     
+    const arr = lodashGet(notificationsObj, ['arr'], []);
+    const type = lodashGet(notificationsObj, ['type'], '');
     
-    const targetsArr = lodashGet(notificationsObj, ['targetsArr'], []);
     
-    for (let valueObj of targetsArr.values()) {
+    
+    
+    // --------------------------------------------------
+    //   Recruitment
+    // --------------------------------------------------
+    
+    if (type === 'recruitment-comments' || type === 'recruitment-replies') {
       
-      if (valueObj.targetType === 'recruitment-threads') {
+      
+      let recruitmentThreadsObj = {};
+      let recruitmentCommentsObj = {};
+      let recruitmentRepliesObj = {};
+      
+      
+      for (let valueObj of arr.values()) {
         
-        await ModelRecruitmentThreads.findForNotification({
+        
+        // --------------------------------------------------
+        //   recruitment-threads
+        // --------------------------------------------------
+        
+        if (valueObj.db === 'recruitment-threads') {
           
-          _id: valueObj.target_id
+          recruitmentThreadsObj = await ModelRecruitmentThreads.findForNotification({
+            
+            _id: valueObj._id
+            
+          });
           
-        });
+          
+        // --------------------------------------------------
+        //   recruitment-comments
+        // --------------------------------------------------
+          
+        } else if (valueObj.db === 'recruitment-comments') {
+          
+          recruitmentCommentsObj = await ModelRecruitmentComments.findForNotification({
+            
+            _id: valueObj._id
+            
+          });
+          
+          
+        // --------------------------------------------------
+        //   recruitment-replies
+        // --------------------------------------------------
+          
+        } else if (valueObj.db === 'recruitment-replies') {
+          
+          recruitmentRepliesObj = await ModelRecruitmentReplies.findForNotification({
+            
+            _id: valueObj._id
+            
+          });
+          
+        }
+        
         
       }
       
+      
+      
+      console.log(`
+        ----- recruitmentThreadsObj -----\n
+        ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      console.log(`
+        ----- recruitmentCommentsObj -----\n
+        ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      console.log(`
+        ----- recruitmentRepliesObj -----\n
+        ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      
+      
+      
+      // --------------------------------------------------
+      //   body
+      // --------------------------------------------------
+      
+      let body = recruitmentCommentsObj.comment;
+      
+      if (recruitmentRepliesObj.comment) {
+        body = recruitmentRepliesObj.comment;
+      }
+      
+      
+      // --------------------------------------------------
+      //   tag
+      // --------------------------------------------------
+      
+      let tag = recruitmentCommentsObj._id;
+      
+      if (recruitmentRepliesObj._id) {
+        tag = recruitmentRepliesObj._id;
+      }
+      
+      
+      // --------------------------------------------------
+      //   url
+      // --------------------------------------------------
+      
+      let url = `${process.env.NEXT_PUBLIC_URL_BASE}gc/${recruitmentThreadsObj.urlID}/rec/${recruitmentCommentsObj._id}`;
+      
+      if (recruitmentRepliesObj._id) {
+        url = `${process.env.NEXT_PUBLIC_URL_BASE}gc/${recruitmentThreadsObj.urlID}/rec/${recruitmentRepliesObj._id}`;
+      }
+      
+      
+      // --------------------------------------------------
+      //   notificationsArr
+      // --------------------------------------------------
+      
+      notificationsArr.push({
+        
+        subscriptionObj: {
+          endpoint: 'https://fcm.googleapis.com/fcm/send/fCVMofN4BLo:APA91bFShjo-hy02fDaVOpLDHQE_TaRRCPSG1IJIc_2qhndZuqkC67x4_RFbWp5uH4I11SKRdxpVquPQP59QNcomJw4irs0F-EWqOUu6ydVDMZ0Gau92YGmEV36SSO5a63vxUet7wEIo',
+          keys: {
+            p256dh: 'BLPT_K71Dk35Le_w0eyviBXXNRBsaZc-5o1-D0VKp18XW_N4wCPyzilZE-j0V-eJ4Cz5irqOZt0nePNG8zLDdaQ',
+            auth: '0MuLywCY4rbTg5I2_nFEOQ'
+          }
+        },
+        
+        // subscriptionObj: {
+        //   endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
+        //   keys: {
+        //     p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
+        //     auth: 'siDbUa9DCbg-n9AMsvWA1w'
+        //   }
+        // },
+        
+        // subscriptionObj: recruitmentThreadsObj.webPushSubscriptionObj,
+        
+        title: recruitmentThreadsObj.title,
+        body,
+        icon: recruitmentThreadsObj.icon,
+        tag,
+        url,
+        TTL: 120,
+        
+      });
+      
+      // notificationsArr.push({
+        
+      //   subscriptionObj: recruitmentThreadsObj.webPushSubscriptionObj,
+      //   title: recruitmentThreadsObj.title,
+      //   body,
+      //   icon: recruitmentThreadsObj.icon,
+      //   tag,
+      //   url,
+      //   TTL: 120,
+        
+      // });
+      
+      
     }
+    
+    
+    
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   通知送信
+    // --------------------------------------------------
+    
+    // const arr = [{
+      
+    //   subscriptionObj: webPushSubscriptionObj,
+    //   title: 'Game Users',
+    //   body: '通知を許可しました',
+    //   icon: '/img/common/icons/icon-128x128.png',
+    //   tag: 'web-push-subscription',
+    //   url: '',
+    //   TTL: 120,
+      
+    // }];
+    
+    notificationsArr.unshift({
+      
+      subscriptionObj: {
+        endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
+        keys: {
+          p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
+          auth: 'siDbUa9DCbg-n9AMsvWA1w'
+        }
+      },
+      title: 'Game Users',
+      body: 'Test',
+      icon: '/img/common/icons/icon-128x128.png',
+      tag: 'web-push-subscription',
+      url: '',
+      TTL: 120,
+      
+    });
+    
+    sendNotifications({ arr: notificationsArr });
     
     
     console.log(`
@@ -383,11 +561,11 @@ const sendNotifications = async ({}) => {
       --------------------\n
     `);
     
-    // console.log(`
-    //   ----- notificationsObj -----\n
-    //   ${util.inspect(notificationsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- notificationsArr -----\n
+      ${util.inspect(notificationsArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -577,6 +755,6 @@ module.exports = {
   insertMany,
   deleteMany,
   
-  sendNotifications,
+  send,
   
 };

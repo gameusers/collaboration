@@ -1510,7 +1510,7 @@ const aggregate = async ({
                   accessDate: 1,
                   exp: 1,
                   userID: 1,
-                  webPushSubscriptionObj: 1,
+                  // webPushSubscriptionObj: 1,
                 }
               }
             ],
@@ -1521,6 +1521,41 @@ const aggregate = async ({
       {
         $unwind: {
           path: '$usersObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // --------------------------------------------------
+      //   web-pushes
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'web-pushes',
+            let: { letWebPushes_id: '$webPushes_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$letWebPushes_id'] },
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  available: 1,
+                  subscriptionObj: 1,
+                }
+              }
+            ],
+            as: 'webPushesObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$webPushesObj',
           preserveNullAndEmptyArrays: true,
         }
       },
@@ -2032,7 +2067,7 @@ const findOneForEdit = async ({
           publicCommentsUsers_idsArr: 0,
           publicApprovalUsers_idsArrr: 0,
           close: 0,
-          webPushSubscriptionObj: 0,
+          webPushes_id: 0,
           comments: 0,
           replies: 0,
           images: 0,
@@ -2171,19 +2206,6 @@ const findOneForEdit = async ({
     
     delete returnObj.publicIDsArr;
     delete returnObj.publicInformationsArr;
-    
-    // delete returnObj.hardwareIDsArr;
-    // delete returnObj.ids_idsArr;
-    // delete returnObj.publicCommentsUsers_idsArr;
-    // delete returnObj.publicApprovalUsers_idsArrr;
-    // delete returnObj.close;
-    // delete returnObj.webPushSubscriptionObj;
-    // delete returnObj.comments;
-    // delete returnObj.replies;
-    // delete returnObj.images;
-    // delete returnObj.videos;
-    // delete returnObj.ip;
-    // delete returnObj.userAgent;
     
     
     
@@ -2638,36 +2660,11 @@ const findForDelete = async ({
 const findForNotification = async ({
   
   _id,
-  // targetsArr,
-  // sourceType,
-  // source_id,
   
 }) => {
   
   
   try {
-    
-    
-    // --------------------------------------------------
-    //   recruitmentThreads_id & recruitmentComments_id
-    // --------------------------------------------------
-    
-    // let recruitmentThreads_id = '';
-    // let recruitmentComments_id = '';
-    
-    // for (let valueObj of targetsArr.values()) {
-      
-    //   if (valueObj.targetType === 'recruitment-threads') {
-        
-    //     recruitmentThreads_id = valueObj.target_id;
-        
-    //   } else if (valueObj.targetType === 'recruitment-comments') { {
-        
-    //     recruitmentComments_id = valueObj.target_id;
-        
-    //   }
-      
-    // }
     
     
     // --------------------------------------------------
@@ -2801,7 +2798,42 @@ const findForNotification = async ({
       
       
       // --------------------------------------------------
-      //   users / ユーザーを取得（webPush）
+      //   web-pushes
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'web-pushes',
+            let: { letWebPushes_id: '$webPushes_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$letWebPushes_id'] },
+                }
+              },
+              { $project:
+                {
+                  _id: 1,
+                  available: 1,
+                  subscriptionObj: 1,
+                }
+              }
+            ],
+            as: 'webPushesObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$webPushesObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // --------------------------------------------------
+      //   users
       // --------------------------------------------------
       
       {
@@ -2815,13 +2847,47 @@ const findForNotification = async ({
                   { $eq: ['$_id', '$$letUsers_id'] },
                 }
               },
+              
+              
+              // --------------------------------------------------
+              //   users / web-pushes
+              // --------------------------------------------------
+              
+              {
+                $lookup:
+                  {
+                    from: 'web-pushes',
+                    let: { letWebPushes_id: '$webPushes_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $eq: ['$_id', '$$letWebPushes_id'] },
+                        }
+                      },
+                      { $project:
+                        {
+                          _id: 1,
+                          available: 1,
+                          subscriptionObj: 1,
+                        }
+                      }
+                    ],
+                    as: 'webPushesObj'
+                  }
+              },
+              
+              {
+                $unwind: {
+                  path: '$webPushesObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+              
+              
               { $project:
                 {
                   _id: 0,
-                  // accessDate: 1,
-                  // exp: 1,
-                  // userID: 1,
-                  webPushSubscriptionObj: 1,
+                  webPushesObj: 1,
                 }
               }
             ],
@@ -2837,14 +2903,13 @@ const findForNotification = async ({
       },
       
       
+      
       { $project:
         {
           localesArr: 1,
           gamesObj: 1,
-          webPush: 1,
-          webPushSubscriptionObj: 1,
+          webPushesObj: 1,
           usersObj: 1,
-          // __v: 0,
         }
       },
       
@@ -2873,15 +2938,21 @@ const findForNotification = async ({
     
     
     // --------------------------------------------------
-    //   webPushSubscriptionObj
+    //   subscriptionObj
     // --------------------------------------------------
     
-    if (docObj.webPush) {
+    const available = lodashGet(docObj, ['webPushesObj', 'available'], true);
+    
+    if (available) {
       
-      returnObj.webPushSubscriptionObj = lodashGet(docObj, ['webPushSubscriptionObj'], {});
+      returnObj.webPushes_id = lodashGet(docObj, ['webPushesObj', '_id'], '');
+      returnObj.subscriptionObj = lodashGet(docObj, ['webPushesObj', 'subscriptionObj'], {});
       
-      if (lodashHas(docObj, ['usersObj', 'webPushSubscriptionObj'])) {
-        returnObj.webPushSubscriptionObj = lodashGet(docObj, ['usersObj', 'webPushSubscriptionObj'], {});
+      if (lodashHas(docObj, ['usersObj', 'webPushesObj'])) {
+        
+        returnObj.webPushes_id = lodashGet(docObj, ['usersObj', 'webPushesObj', '_id'], '');
+        returnObj.subscriptionObj = lodashGet(docObj, ['usersObj', 'webPushesObj', 'subscriptionObj'], {});
+        
       }
       
     }

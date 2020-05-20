@@ -32,9 +32,7 @@ const lodashSet = require('lodash/set');
  */
 const sendNotifications = async ({ arr }) => {
   
-  // console.log(`
-  //   1
-  // `);
+  
   // ---------------------------------------------
   //   必要なデータがない場合は処理停止
   // ---------------------------------------------
@@ -42,9 +40,9 @@ const sendNotifications = async ({ arr }) => {
   if (!process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY || !process.env.WEB_PUSH_VAPID_PRIVATE_KEY) {
     return;
   }
-  // console.log(`
-  //   2
-  // `);
+  
+  
+  
   
   // --------------------------------------------------
   //   キーを設定
@@ -56,14 +54,16 @@ const sendNotifications = async ({ arr }) => {
     process.env.WEB_PUSH_VAPID_PRIVATE_KEY
   );
   
-  // console.log(`
-  //   3
-  // `);
+  
   
   
   // --------------------------------------------------
   //   Loop
   // --------------------------------------------------
+  
+  const successArr = [];
+  const failureArr = [];
+  
   
   for (let valueObj of arr.values()) {
     
@@ -71,6 +71,8 @@ const sendNotifications = async ({ arr }) => {
     // --------------------------------------------------
     //   Property
     // --------------------------------------------------
+    
+    const _id = valueObj._id;
     
     const subscriptionObj = valueObj.subscriptionObj;
     
@@ -130,15 +132,58 @@ const sendNotifications = async ({ arr }) => {
     };
     
     
+    
+    
     // --------------------------------------------------
     //   送信
     // --------------------------------------------------
     
-    const resultObj = await webpush.sendNotification(
-      subscriptionObj,
-      payload,
-      optionsObj
-    );
+    try {
+      
+      
+      // --------------------------------------------------
+      //   Send
+      // --------------------------------------------------
+      
+      const resultObj = await webpush.sendNotification(
+        subscriptionObj,
+        payload,
+        optionsObj
+      );
+      
+      
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      
+      // --------------------------------------------------
+      //   Success
+      // --------------------------------------------------
+      
+      successArr.push(_id);
+      
+      
+    } catch (errorObj) {
+      
+      
+      console.log(`
+        ----- errorObj -----\n
+        ${util.inspect(errorObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      
+      // --------------------------------------------------
+      //   Failure
+      // --------------------------------------------------
+      
+      failureArr.push(_id);
+      
+      
+    }
     
     
     // --------------------------------------------------
@@ -165,14 +210,22 @@ const sendNotifications = async ({ arr }) => {
       TTL: {green ${TTL}}
     `);
     
-    console.log(`
-      ----- resultObj -----\n
-      ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
     
   }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return {
+    
+    successArr: Array.from(new Set(successArr)),
+    failureArr: Array.from(new Set(failureArr)),
+    
+  };
   
   
 };

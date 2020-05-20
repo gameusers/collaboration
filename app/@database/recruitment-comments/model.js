@@ -1972,7 +1972,42 @@ const findForNotification = async ({
       
       
       // --------------------------------------------------
-      //   users / ユーザーを取得（webPush）
+      //   web-pushes
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'web-pushes',
+            let: { letWebPushes_id: '$webPushes_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$letWebPushes_id'] },
+                }
+              },
+              { $project:
+                {
+                  _id: 1,
+                  available: 1,
+                  subscriptionObj: 1,
+                }
+              }
+            ],
+            as: 'webPushesObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$webPushesObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // --------------------------------------------------
+      //   users
       // --------------------------------------------------
       
       {
@@ -1986,10 +2021,47 @@ const findForNotification = async ({
                   { $eq: ['$_id', '$$letUsers_id'] },
                 }
               },
+              
+              
+              // --------------------------------------------------
+              //   users / web-pushes
+              // --------------------------------------------------
+              
+              {
+                $lookup:
+                  {
+                    from: 'web-pushes',
+                    let: { letWebPushes_id: '$webPushes_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $eq: ['$_id', '$$letWebPushes_id'] },
+                        }
+                      },
+                      { $project:
+                        {
+                          _id: 1,
+                          available: 1,
+                          subscriptionObj: 1,
+                        }
+                      }
+                    ],
+                    as: 'webPushesObj'
+                  }
+              },
+              
+              {
+                $unwind: {
+                  path: '$webPushesObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+              
+              
               { $project:
                 {
                   _id: 0,
-                  webPushSubscriptionObj: 1,
+                  webPushesObj: 1,
                 }
               }
             ],
@@ -2008,8 +2080,7 @@ const findForNotification = async ({
       { $project:
         {
           localesArr: 1,
-          webPush: 1,
-          webPushSubscriptionObj: 1,
+          webPushesObj: 1,
           usersObj: 1,
         }
       },
@@ -2032,15 +2103,21 @@ const findForNotification = async ({
     
     
     // --------------------------------------------------
-    //   webPushSubscriptionObj
+    //   subscriptionObj
     // --------------------------------------------------
     
-    if (docObj.webPush) {
+    const available = lodashGet(docObj, ['webPushesObj', 'available'], true);
+    
+    if (available) {
       
-      returnObj.webPushSubscriptionObj = lodashGet(docObj, ['webPushSubscriptionObj'], {});
+      returnObj.webPushes_id = lodashGet(docObj, ['webPushesObj', '_id'], '');
+      returnObj.subscriptionObj = lodashGet(docObj, ['webPushesObj', 'subscriptionObj'], {});
       
-      if (lodashHas(docObj, ['usersObj', 'webPushSubscriptionObj'])) {
-        returnObj.webPushSubscriptionObj = lodashGet(docObj, ['usersObj', 'webPushSubscriptionObj'], {});
+      if (lodashHas(docObj, ['usersObj', 'webPushesObj'])) {
+        
+        returnObj.webPushes_id = lodashGet(docObj, ['usersObj', 'webPushesObj', '_id'], '');
+        returnObj.subscriptionObj = lodashGet(docObj, ['usersObj', 'webPushesObj', 'subscriptionObj'], {});
+        
       }
       
     }
@@ -2072,26 +2149,26 @@ const findForNotification = async ({
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/@database/recruitment-comments/model.js - findForNotification
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /app/@database/recruitment-comments/model.js - findForNotification
+    `);
     
     // console.log(chalk`
     //   _id: {green ${_id}}
     // `);
     
     // console.log(`
-    //   ----- recruitmentThreadsObj -----\n
-    //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
+    //   ----- recruitmentCommentsObj -----\n
+    //   ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- docArr -----\n
-    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- docArr -----\n
+      ${util.inspect(docArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(`
     //   ----- returnObj -----\n

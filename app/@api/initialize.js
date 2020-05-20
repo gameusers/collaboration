@@ -56,6 +56,7 @@ const SchemaRecruitmentReplies = require('../@database/recruitment-replies/model
 const SchemaFollows = require('../@database/follows/model');
 const SchemaGoods = require('../@database/goods/model');
 const SchemaNotifications = require('../@database/notifications/model');
+const SchemaWebPushes = require('../@database/web-pushes/model');
 
 
 // ---------------------------------------------
@@ -189,20 +190,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
             count: 1,
           }
         ],
-        // webPushSubscriptionObj: {
-        //   endpoint: '',
-        //   keys: {
-        //     p256dh: '',
-        //     auth: ''
-        //   }
-        // },
-        webPushSubscriptionObj: {
-          endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
-          keys: {
-            p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
-            auth: 'siDbUa9DCbg-n9AMsvWA1w'
-          }
-        },
+        webPushes_id: 'nOVilxpSk',
         role: 'user'
       },
       
@@ -228,13 +216,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         termsOfServiceConfirmedDate: ISO8601,
         exp: 10,
         achievementsArr: [],
-        webPushSubscriptionObj: {
-          endpoint: '',
-          keys: {
-            p256dh: '',
-            auth: ''
-          }
-        },
+        webPushes_id: '',
         role: 'user'
       },
       
@@ -260,13 +242,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         termsOfServiceConfirmedDate: ISO8601,
         exp: 0,
         achievementsArr: [],
-        webPushSubscriptionObj: {
-          endpoint: '',
-          keys: {
-            p256dh: '',
-            auth: ''
-          }
-        },
+        webPushes_id: '',
         role: 'user'
       },
     ];
@@ -4151,14 +4127,7 @@ emotion: https://emotion.sh/docs/introduction`,
         publicSetting: 1,
         deadlineDate: '2020-05-31T00:00:00Z',
         close: false,
-        webPush: true,
-        webPushSubscriptionObj: {
-          endpoint: '',
-          keys: {
-            p256dh: '',
-            auth: ''
-          }
-        },
+        webPushes_id: '',
         publicCommentsUsers_idsArr: [],
         publicApprovalUsers_idsArrr: [],
         comments: 2,
@@ -4231,14 +4200,7 @@ emotion: https://emotion.sh/docs/introduction`,
         publicSetting: 2,
         deadlineDate: '2020-04-13T15:00:00Z',
         close: false,
-        webPush: false,
-        webPushSubscriptionObj: {
-          endpoint: '',
-          keys: {
-            p256dh: '',
-            auth: ''
-          }
-        },
+        webPushes_id: 'CLza57t8J',
         publicCommentsUsers_idsArr: [],
         publicApprovalUsers_idsArrr: [],
         comments: 2,
@@ -4302,14 +4264,7 @@ emotion: https://emotion.sh/docs/introduction`,
         publicSetting: 3,
         deadlineDate: '2023-12-31T00:00:00Z',
         close: false,
-        webPush: false,
-        webPushSubscriptionObj: {
-          endpoint: '',
-          keys: {
-            p256dh: '',
-            auth: ''
-          }
-        },
+        webPushes_id: '',
         publicCommentsUsers_idsArr: [],
         publicApprovalUsers_idsArrr: [],
         comments: 0,
@@ -4365,14 +4320,15 @@ emotion: https://emotion.sh/docs/introduction`,
         publicIDsArr: [],
         publicInformationsArr: [],
         publicSetting: 1,
-        webPush: true,
-        webPushSubscriptionObj: {
-          endpoint: '',
-          keys: {
-            p256dh: '',
-            auth: ''
-          }
-        },
+        webPushes_id: '',
+        // webPush: true,
+        // webPushSubscriptionObj: {
+        //   endpoint: '',
+        //   keys: {
+        //     p256dh: '',
+        //     auth: ''
+        //   }
+        // },
         goods: 0,
         replies: 3,
         language: 'ja,en-US;q=0.9,en;q=0.8',
@@ -4411,14 +4367,15 @@ emotion: https://emotion.sh/docs/introduction`,
         publicIDsArr: [],
         publicInformationsArr: [],
         publicSetting: 1,
-        webPush: false,
-        webPushSubscriptionObj: {
-          endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
-          keys: {
-            p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
-            auth: 'siDbUa9DCbg-n9AMsvWA1w'
-          }
-        },
+        webPushes_id: '',
+        // webPush: false,
+        // webPushSubscriptionObj: {
+        //   endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
+        //   keys: {
+        //     p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
+        //     auth: 'siDbUa9DCbg-n9AMsvWA1w'
+        //   }
+        // },
         goods: 0,
         replies: 1,
         language: 'ja,en-US;q=0.9,en;q=0.8',
@@ -4433,7 +4390,7 @@ emotion: https://emotion.sh/docs/introduction`,
         updatedDate: '2020-04-20T00:00:00Z',
         gameCommunities_id: 'Jk92aglWl',
         recruitmentThreads_id: 'jlpBu0RfB',
-        users_id: 'P7UJMuUnx',
+        users_id: '',
         localesArr: [
           {
             _id: 'pJ2DaA5xb',
@@ -4447,14 +4404,15 @@ emotion: https://emotion.sh/docs/introduction`,
         publicIDsArr: [],
         publicInformationsArr: [],
         publicSetting: 1,
-        webPush: false,
-        webPushSubscriptionObj: {
-          endpoint: '',
-          keys: {
-            p256dh: '',
-            auth: ''
-          }
-        },
+        webPushes_id: 'L4D5QB9p4',
+        // webPush: false,
+        // webPushSubscriptionObj: {
+        //   endpoint: '',
+        //   keys: {
+        //     p256dh: '',
+        //     auth: ''
+        //   }
+        // },
         goods: 0,
         replies: 2,
         language: 'ja,en-US;q=0.9,en;q=0.8',
@@ -4469,7 +4427,7 @@ emotion: https://emotion.sh/docs/introduction`,
         updatedDate: '2020-04-20T00:00:00Z',
         gameCommunities_id: 'Jk92aglWl',
         recruitmentThreads_id: 'jlpBu0RfB',
-        users_id: '',
+        users_id: 'P7UJMuUnx',
         localesArr: [
           {
             _id: '5KFh5AcSe',
@@ -4495,14 +4453,15 @@ emotion: https://emotion.sh/docs/introduction`,
           },
         ],
         publicSetting: 1,
-        webPush: false,
-        webPushSubscriptionObj: {
-          endpoint: '',
-          keys: {
-            p256dh: '',
-            auth: ''
-          }
-        },
+        webPushes_id: '',
+        // webPush: false,
+        // webPushSubscriptionObj: {
+        //   endpoint: '',
+        //   keys: {
+        //     p256dh: '',
+        //     auth: ''
+        //   }
+        // },
         goods: 0,
         replies: 0,
         language: 'ja,en-US;q=0.9,en;q=0.8',
@@ -4976,58 +4935,49 @@ emotion: https://emotion.sh/docs/introduction`,
       },
       
       
-      
-      // {
-      //   _id: '9gTlOvikG',
-      //   createdDate: ISO8601,
-      //   done: false,
-      //   targetsArr: [
-      //     {
-      //       _id: 'w4MjPehWL',
-      //       targetType: 'recruitment-threads',
-      //       target_id: 'nEQMNMWDy',
-      //     }
-      //   ],
-      //   sourceType: 'recruitment-comments',
-      //   source_id: 'hSe73CMkq',
-      // },
-      
-      
-      // {
-      //   _id: 'NU5yPlASn',
-      //   createdDate: ISO8601,
-      //   done: false,
-      //   targetsArr: [
-      //     {
-      //       _id: 'u_Zd9Lzq1',
-      //       targetType: 'recruitment-threads',
-      //       target_id: 'nEQMNMWDy',
-      //     }
-      //   ],
-      //   sourceType: 'recruitment-comments',
-      //   source_id: 'oMXuuwr61',
-      // },
+      {
+        _id: 'lNIw3G90G',
+        createdDate: ISO8601,
+        done: false,
+        type: 'recruitment-comments',
+        arr: [
+          {
+            _id: 'jlpBu0RfB',
+            type: 'target',
+            db: 'recruitment-threads',
+          },
+          {
+            _id: 'Aurd8jeZo',
+            type: 'source',
+            db: 'recruitment-comments',
+          }
+        ],
+      },
       
       
-      // {
-      //   _id: 'GH6kxeQcW',
-      //   createdDate: ISO8601,
-      //   done: false,
-      //   targetsArr: [
-      //     {
-      //       _id: 'jWw75zZmz',
-      //       targetType: 'recruitment-threads',
-      //       target_id: 'nEQMNMWDy',
-      //     },
-      //     {
-      //       _id: 'M7tJ_h6GB',
-      //       targetType: 'recruitment-comments',
-      //       target_id: 'hSe73CMkq',
-      //     },
-      //   ],
-      //   sourceType: 'recruitment-replies',
-      //   source_id: 'pd4s2Arht',
-      // },
+      {
+        _id: 'OSJX-B9Zj',
+        createdDate: ISO8601,
+        done: false,
+        type: 'recruitment-replies',
+        arr: [
+          {
+            _id: 'jlpBu0RfB',
+            type: 'target',
+            db: 'recruitment-threads',
+          },
+          {
+            _id: '4obJ8p4vf',
+            type: 'target',
+            db: 'recruitment-comments',
+          },
+          {
+            _id: '7_PH3n0CK',
+            type: 'source',
+            db: 'recruitment-replies',
+          }
+        ],
+      },
       
     ];
     
@@ -5038,6 +4988,83 @@ emotion: https://emotion.sh/docs/introduction`,
     
     await SchemaNotifications.deleteMany({ reset: true });
     returnObj = await SchemaNotifications.insertMany({ saveArr });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB / Web Push
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Save Object
+    // ---------------------------------------------
+    
+    saveArr = [
+      
+      {
+        _id: 'nOVilxpSk',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        sendDate: '',
+        available: true,
+        // target_id: 'jun-deE4J',
+        subscriptionObj: {
+          endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
+          keys: {
+            p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
+            auth: 'siDbUa9DCbg-n9AMsvWA1w'
+          }
+        },
+        // errorTotalCount: 0,
+        errorCount: 0,
+        // errorDatesArr: [],
+      },
+      
+      
+      {
+        _id: 'L4D5QB9p4',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        sendDate: '',
+        available: true,
+        subscriptionObj: {
+          endpoint: 'https://fcm.googleapis.com/fcm/send/fCVMofN4BLo:APA91bFShjo-hy02fDaVOpLDHQE_TaRRCPSG1IJIc_2qhndZuqkC67x4_RFbWp5uH4I11SKRdxpVquPQP59QNcomJw4irs0F-EWqOUu6ydVDMZ0Gau92YGmEV36SSO5a63vxUet7wEIo',
+          keys: {
+            p256dh: 'BLPT_K71Dk35Le_w0eyviBXXNRBsaZc-5o1-D0VKp18XW_N4wCPyzilZE-j0V-eJ4Cz5irqOZt0nePNG8zLDdaQ',
+            auth: '0MuLywCY4rbTg5I2_nFEOQ'
+          }
+        },
+        errorCount: 0,
+      },
+      
+      
+      {
+        _id: 'CLza57t8J',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        sendDate: '',
+        available: true,
+        subscriptionObj: {// 2020/5/20 登録
+          endpoint: 'https://fcm.googleapis.com/fcm/send/e6F4KGu-As8:APA91bG1gOOMc64c2evGr5HuV5aKYEN3chUbX1e-QXeGLo0nNqY8CBAo8g_xlIJe7WdD5lTfmngVIiZ7VeM-Y3IRWmRUaC7aFmLqpJ_Izx8DUyXbQfbgIYgAjbSmpurnYqPWOHQdtWcA',
+          keys: {
+            p256dh: 'BA2MsGrPd4bQ691bM_GphDgxIaWyChKKTiY1OGQWYE6xtfHp0kKCVSUlmElA4sijdO6svSMMJUxYRdt5WlgUKRk',
+            auth: 'YlNqB1Pq8GIaCxe4HQAJ-A'
+          }
+        },
+        errorCount: 0,
+      },
+      
+      
+    ];
+    
+    
+    // ---------------------------------------------
+    //   Insert
+    // ---------------------------------------------
+    
+    await SchemaWebPushes.deleteMany({ reset: true });
+    returnObj = await SchemaWebPushes.insertMany({ saveArr });
     
     
     

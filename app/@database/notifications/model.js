@@ -27,7 +27,6 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 // ---------------------------------------------
 
 const SchemaNotifications = require('./schema');
-// const SchemaUsers = require('../users/schema');
 
 const ModelRecruitmentThreads = require('../recruitment-threads/model.js');
 const ModelRecruitmentComments = require('../recruitment-comments/model.js');
@@ -312,7 +311,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 
 // --------------------------------------------------
-//   find
+//   send
 // --------------------------------------------------
 
 /**
@@ -333,10 +332,10 @@ const send = async ({}) => {
     
     
     // --------------------------------------------------
-    //   notificationsObj
+    //   find
     // --------------------------------------------------
     
-    const notificationsObj = await findOne({
+    const docNotificationsArr = await find({
       
       conditionObj: {
         done: false,
@@ -344,62 +343,204 @@ const send = async ({}) => {
       
     });
     
-    const arr = lodashGet(notificationsObj, ['arr'], []);
-    const type = lodashGet(notificationsObj, ['type'], '');
-    
     
     
     
     // --------------------------------------------------
-    //   Recruitment
+    //   Loop
     // --------------------------------------------------
     
-    if (type === 'recruitment-comments' || type === 'recruitment-replies') {
+    for (let valueObj of docNotificationsArr.values()) {
       
       
-      let recruitmentThreadsObj = {};
-      let recruitmentCommentsObj = {};
-      let recruitmentRepliesObj = {};
+      // --------------------------------------------------
+      //   Property
+      // --------------------------------------------------
+      
+      const arr = lodashGet(valueObj, ['arr'], []);
+      const type = lodashGet(valueObj, ['type'], '');
       
       
-      for (let valueObj of arr.values()) {
+      // --------------------------------------------------
+      //   Recruitment
+      // --------------------------------------------------
+      
+      if (type === 'recruitment-comments' || type === 'recruitment-replies') {
         
         
-        // --------------------------------------------------
-        //   recruitment-threads
-        // --------------------------------------------------
+        let recruitmentThreadsObj = {};
+        let recruitmentCommentsObj = {};
+        let recruitmentRepliesObj = {};
         
-        if (valueObj.db === 'recruitment-threads') {
+        
+        for (let valueObj of arr.values()) {
           
-          recruitmentThreadsObj = await ModelRecruitmentThreads.findForNotification({
+          
+          // --------------------------------------------------
+          //   recruitment-threads
+          // --------------------------------------------------
+          
+          if (valueObj.db === 'recruitment-threads') {
             
-            _id: valueObj._id
+            recruitmentThreadsObj = await ModelRecruitmentThreads.findForNotification({
+              
+              _id: valueObj._id
+              
+            });
+            
+            
+          // --------------------------------------------------
+          //   recruitment-comments
+          // --------------------------------------------------
+            
+          } else if (valueObj.db === 'recruitment-comments') {
+            
+            recruitmentCommentsObj = await ModelRecruitmentComments.findForNotification({
+              
+              _id: valueObj._id
+              
+            });
+            
+            
+          // --------------------------------------------------
+          //   recruitment-replies
+          // --------------------------------------------------
+            
+          } else if (valueObj.db === 'recruitment-replies') {
+            
+            recruitmentRepliesObj = await ModelRecruitmentReplies.findForNotification({
+              
+              _id: valueObj._id
+              
+            });
+            
+          }
+          
+          
+        }
+        
+        
+        
+        
+        console.log(chalk`
+          valueObj._id: {green ${valueObj._id}}
+        `);
+        
+        console.log(`
+          ----- recruitmentThreadsObj -----\n
+          ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
+          --------------------\n
+        `);
+        
+        console.log(`
+          ----- recruitmentCommentsObj -----\n
+          ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
+          --------------------\n
+        `);
+        
+        console.log(`
+          ----- recruitmentRepliesObj -----\n
+          ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
+          --------------------\n
+        `);
+        
+        
+        
+        
+        // --------------------------------------------------
+        //   _id
+        // --------------------------------------------------
+        
+        let _id = recruitmentThreadsObj.webPushes_id;
+        
+        if (recruitmentCommentsObj.webPushes_id) {
+          _id = recruitmentCommentsObj.webPushes_id;
+        }
+        
+        
+        // --------------------------------------------------
+        //   body
+        // --------------------------------------------------
+        
+        let body = recruitmentCommentsObj.comment;
+        
+        if (recruitmentRepliesObj.comment) {
+          body = recruitmentRepliesObj.comment;
+        }
+        
+        
+        // --------------------------------------------------
+        //   tag
+        // --------------------------------------------------
+        
+        let tag = recruitmentCommentsObj._id;
+        
+        if (recruitmentRepliesObj._id) {
+          tag = recruitmentRepliesObj._id;
+        }
+        
+        
+        // --------------------------------------------------
+        //   url
+        // --------------------------------------------------
+        
+        let url = `${process.env.NEXT_PUBLIC_URL_BASE}gc/${recruitmentThreadsObj.urlID}/rec/${recruitmentCommentsObj._id}`;
+        
+        if (recruitmentRepliesObj._id) {
+          url = `${process.env.NEXT_PUBLIC_URL_BASE}gc/${recruitmentThreadsObj.urlID}/rec/${recruitmentRepliesObj._id}`;
+        }
+        
+        
+        // --------------------------------------------------
+        //   notificationsArr
+        // --------------------------------------------------
+        
+        if (recruitmentThreadsObj.subscriptionObj) {
+          
+          notificationsArr.push({
+            
+            // subscriptionObj: {
+            //   endpoint: 'https://fcm.googleapis.com/fcm/send/fCVMofN4BLo:APA91bFShjo-hy02fDaVOpLDHQE_TaRRCPSG1IJIc_2qhndZuqkC67x4_RFbWp5uH4I11SKRdxpVquPQP59QNcomJw4irs0F-EWqOUu6ydVDMZ0Gau92YGmEV36SSO5a63vxUet7wEIo',
+            //   keys: {
+            //     p256dh: 'BLPT_K71Dk35Le_w0eyviBXXNRBsaZc-5o1-D0VKp18XW_N4wCPyzilZE-j0V-eJ4Cz5irqOZt0nePNG8zLDdaQ',
+            //     auth: '0MuLywCY4rbTg5I2_nFEOQ'
+            //   }
+            // },
+            
+            // subscriptionObj: {
+            //   endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
+            //   keys: {
+            //     p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
+            //     auth: 'siDbUa9DCbg-n9AMsvWA1w'
+            //   }
+            // },
+            
+            _id,
+            subscriptionObj: recruitmentThreadsObj.subscriptionObj,
+            title: recruitmentThreadsObj.title,
+            body,
+            icon: recruitmentThreadsObj.icon,
+            tag,
+            url,
+            TTL: 120,
             
           });
           
+        }
+        
+        
+        if (type === 'recruitment-replies' && recruitmentCommentsObj.subscriptionObj && recruitmentThreadsObj.webPushes_id !== recruitmentCommentsObj.webPushes_id) {
           
-        // --------------------------------------------------
-        //   recruitment-comments
-        // --------------------------------------------------
-          
-        } else if (valueObj.db === 'recruitment-comments') {
-          
-          recruitmentCommentsObj = await ModelRecruitmentComments.findForNotification({
+          notificationsArr.push({
             
-            _id: valueObj._id
-            
-          });
-          
-          
-        // --------------------------------------------------
-        //   recruitment-replies
-        // --------------------------------------------------
-          
-        } else if (valueObj.db === 'recruitment-replies') {
-          
-          recruitmentRepliesObj = await ModelRecruitmentReplies.findForNotification({
-            
-            _id: valueObj._id
+            _id,
+            subscriptionObj: recruitmentCommentsObj.subscriptionObj,
+            title: recruitmentThreadsObj.title,
+            body,
+            icon: recruitmentThreadsObj.icon,
+            tag,
+            url,
+            TTL: 120,
             
           });
           
@@ -407,107 +548,6 @@ const send = async ({}) => {
         
         
       }
-      
-      
-      
-      console.log(`
-        ----- recruitmentThreadsObj -----\n
-        ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-      
-      console.log(`
-        ----- recruitmentCommentsObj -----\n
-        ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-      
-      console.log(`
-        ----- recruitmentRepliesObj -----\n
-        ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   body
-      // --------------------------------------------------
-      
-      let body = recruitmentCommentsObj.comment;
-      
-      if (recruitmentRepliesObj.comment) {
-        body = recruitmentRepliesObj.comment;
-      }
-      
-      
-      // --------------------------------------------------
-      //   tag
-      // --------------------------------------------------
-      
-      let tag = recruitmentCommentsObj._id;
-      
-      if (recruitmentRepliesObj._id) {
-        tag = recruitmentRepliesObj._id;
-      }
-      
-      
-      // --------------------------------------------------
-      //   url
-      // --------------------------------------------------
-      
-      let url = `${process.env.NEXT_PUBLIC_URL_BASE}gc/${recruitmentThreadsObj.urlID}/rec/${recruitmentCommentsObj._id}`;
-      
-      if (recruitmentRepliesObj._id) {
-        url = `${process.env.NEXT_PUBLIC_URL_BASE}gc/${recruitmentThreadsObj.urlID}/rec/${recruitmentRepliesObj._id}`;
-      }
-      
-      
-      // --------------------------------------------------
-      //   notificationsArr
-      // --------------------------------------------------
-      
-      notificationsArr.push({
-        
-        subscriptionObj: {
-          endpoint: 'https://fcm.googleapis.com/fcm/send/fCVMofN4BLo:APA91bFShjo-hy02fDaVOpLDHQE_TaRRCPSG1IJIc_2qhndZuqkC67x4_RFbWp5uH4I11SKRdxpVquPQP59QNcomJw4irs0F-EWqOUu6ydVDMZ0Gau92YGmEV36SSO5a63vxUet7wEIo',
-          keys: {
-            p256dh: 'BLPT_K71Dk35Le_w0eyviBXXNRBsaZc-5o1-D0VKp18XW_N4wCPyzilZE-j0V-eJ4Cz5irqOZt0nePNG8zLDdaQ',
-            auth: '0MuLywCY4rbTg5I2_nFEOQ'
-          }
-        },
-        
-        // subscriptionObj: {
-        //   endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
-        //   keys: {
-        //     p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
-        //     auth: 'siDbUa9DCbg-n9AMsvWA1w'
-        //   }
-        // },
-        
-        // subscriptionObj: recruitmentThreadsObj.webPushSubscriptionObj,
-        
-        title: recruitmentThreadsObj.title,
-        body,
-        icon: recruitmentThreadsObj.icon,
-        tag,
-        url,
-        TTL: 120,
-        
-      });
-      
-      // notificationsArr.push({
-        
-      //   subscriptionObj: recruitmentThreadsObj.webPushSubscriptionObj,
-      //   title: recruitmentThreadsObj.title,
-      //   body,
-      //   icon: recruitmentThreadsObj.icon,
-      //   tag,
-      //   url,
-      //   TTL: 120,
-        
-      // });
       
       
     }
@@ -516,56 +556,32 @@ const send = async ({}) => {
     
     
     
-    
-    
     // --------------------------------------------------
-    //   通知送信
+    //   送信
     // --------------------------------------------------
     
-    // const arr = [{
-      
-    //   subscriptionObj: webPushSubscriptionObj,
-    //   title: 'Game Users',
-    //   body: '通知を許可しました',
-    //   icon: '/img/common/icons/icon-128x128.png',
-    //   tag: 'web-push-subscription',
-    //   url: '',
-    //   TTL: 120,
-      
-    // }];
-    
-    notificationsArr.unshift({
-      
-      subscriptionObj: {
-        endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
-        keys: {
-          p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
-          auth: 'siDbUa9DCbg-n9AMsvWA1w'
-        }
-      },
-      title: 'Game Users',
-      body: 'Test',
-      icon: '/img/common/icons/icon-128x128.png',
-      tag: 'web-push-subscription',
-      url: '',
-      TTL: 120,
-      
-    });
-    
-    sendNotifications({ arr: notificationsArr });
+    const resultObj = await sendNotifications({ arr: notificationsArr });
     
     
-    console.log(`
-      ----- notificationsObj -----\n
-      ${util.inspect(notificationsObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- docNotificationsArr -----\n
+    //   ${util.inspect(docNotificationsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     console.log(`
       ----- notificationsArr -----\n
       ${util.inspect(notificationsArr, { colors: true, depth: null })}\n
       --------------------\n
     `);
+    
+    console.log(`
+      ----- resultObj -----\n
+      ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
     
     
     

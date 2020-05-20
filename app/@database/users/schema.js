@@ -46,13 +46,14 @@ const schema = mongoose.Schema({
       count: { type: Number, default: 1, required: true },
     },
   ],
-  webPushSubscriptionObj: {
-    endpoint: { type: String },
-    keys: {
-      p256dh: { type: String },
-      auth: { type: String },
-    },
-  },
+  webPushes_id: { type: String },
+  // webPushSubscriptionObj: {
+  //   endpoint: { type: String },
+  //   keys: {
+  //     p256dh: { type: String },
+  //     auth: { type: String },
+  //   },
+  // },
   role: { type: String, enum: ['user', 'administrator'], required: true },
   
 });

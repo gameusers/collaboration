@@ -1495,46 +1495,9 @@ const findForNotification = async ({
       },
       
       
-      // --------------------------------------------------
-      //   users / ユーザーを取得（webPush）
-      // --------------------------------------------------
-      
-      // {
-      //   $lookup:
-      //     {
-      //       from: 'users',
-      //       let: { letUsers_id: '$users_id' },
-      //       pipeline: [
-      //         { $match:
-      //           { $expr:
-      //             { $eq: ['$_id', '$$letUsers_id'] },
-      //           }
-      //         },
-      //         { $project:
-      //           {
-      //             _id: 0,
-      //             webPushSubscriptionObj: 1,
-      //           }
-      //         }
-      //       ],
-      //       as: 'usersObj'
-      //     }
-      // },
-      
-      // {
-      //   $unwind: {
-      //     path: '$usersObj',
-      //     preserveNullAndEmptyArrays: true,
-      //   }
-      // },
-      
-      
       { $project:
         {
           localesArr: 1,
-          // webPush: 1,
-          // webPushSubscriptionObj: 1,
-          // usersObj: 1,
         }
       },
       
@@ -1596,10 +1559,10 @@ const findForNotification = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/recruitment-replies/model.js - findForNotification
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/recruitment-replies/model.js - findForNotification
+    // `);
     
     // console.log(chalk`
     //   _id: {green ${_id}}
@@ -1611,17 +1574,17 @@ const findForNotification = async ({
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- docArr -----\n
-      ${util.inspect(docArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

@@ -169,17 +169,16 @@ app.prepare().then(() => {
   // --------------------------------------------------
   
   // cron.schedule('*/20 * * * * *', () => {
+    
+  //   ModelNotifications.send({});
+    
+  // });
+  
   cron.schedule('* * * * *', () => {
     
     ModelNotifications.send({});
     
   });
-  
-  // cron.schedule('*/20 * * * * *', async () => {
-    
-  //   ModelNotifications.sendNotifications({});
-    
-  // });
   
   
   

@@ -17,6 +17,7 @@ import util from 'util';
 import { action, observable } from 'mobx';
 import moment from 'moment';
 import Cookies from 'js-cookie';
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
@@ -26,15 +27,15 @@ import lodashHas from 'lodash/has';
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from '../@modules/fetch';
-import { CustomError } from '../@modules/error/custom';
+import { fetchWrapper } from 'app/@modules/fetch';
+import { CustomError } from 'app/@modules/error/custom';
 
 
 // --------------------------------------------------
 //   Stores
 // --------------------------------------------------
 
-import initStoreLayout from '../common/layout/stores/layout';
+import initStoreLayout from 'app/common/layout/stores/layout';
 
 
 
@@ -44,7 +45,7 @@ import initStoreLayout from '../common/layout/stores/layout';
 // --------------------------------------------------
 
 let storeWebPush = null;
-let storeLayout = initStoreLayout({});
+const storeLayout = initStoreLayout({});
 
 
 
@@ -193,8 +194,8 @@ class Store {
       
       const oldSubscriptionObj = await this.webPushRegistrationObj.pushManager.getSubscription();
       
-      // console.log('[1] oldSubscriptionObj: ', JSON.parse(JSON.stringify(oldSubscriptionObj)));
-      // console.log(typeof subscriptionObj);
+      console.log('[1] oldSubscriptionObj: ', JSON.parse(JSON.stringify(oldSubscriptionObj)));
+      console.log(typeof subscriptionObj);
       
       if (oldSubscriptionObj) {
         
@@ -265,10 +266,10 @@ class Store {
       //   console.log
       // --------------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/@stores/web-push.js - webPushSubscribe
-      // `);
+      console.log(`
+        ----------------------------------------\n
+        /app/@stores/web-push.js - webPushSubscribe
+      `);
       
       // console.log(chalk`
       //   process.env.NODE_ENV: {green ${process.env.NODE_ENV}}
@@ -279,8 +280,8 @@ class Store {
       // console.log('[1] oldSubscriptionObj: ', JSON.parse(JSON.stringify(oldSubscriptionObj)));
       // console.log(typeof subscriptionObj);
       
-      // console.log('[2] newSubscriptionObj: ', JSON.stringify(newSubscriptionObj));
-      // console.log(typeof newSubscriptionObj);
+      console.log('[2] newSubscriptionObj: ', JSON.stringify(newSubscriptionObj));
+      console.log(typeof newSubscriptionObj);
       
       // console.log(`
       //   ----- this.webPushRegistrationObj -----\n

@@ -22,19 +22,20 @@ const lodashSet = require('lodash/set');
 //   Model
 // ---------------------------------------------
 
-const Schema = require('./schema');
-const SchemaFollows = require('../follows/schema');
-const SchemaCardPlayers = require('../card-players/schema');
-const SchemaEmailConfirmations = require('../email-confirmations/schema');
-const SchemaImagesAndVideos = require('../images-and-videos/schema');
+const Schema = require('./schema.js');
+const SchemaFollows = require('../follows/schema.js');
+const SchemaCardPlayers = require('../card-players/schema.js');
+const SchemaEmailConfirmations = require('../email-confirmations/schema.js');
+const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
+const SchemaWebPushes = require('../web-pushes/schema.js');
 
 
 // ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosArr, formatImagesAndVideosObj } = require('../images-and-videos/format');
-const { formatFollowsObj } = require('../follows/format');
+const { formatImagesAndVideosArr, formatImagesAndVideosObj } = require('../images-and-videos/format.js');
+const { formatFollowsObj } = require('../follows/format.js');
 
 
 
@@ -370,7 +371,10 @@ const findOneForUser = async ({
       ...matchConditionArr,
       
       
-      // プレイヤーカードを取得（名前＆ステータス）
+      // --------------------------------------------------
+      //   card-players / プレイヤーカードを取得（名前＆ステータス）
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -408,7 +412,10 @@ const findOneForUser = async ({
       },
       
       
-      // 画像と動画を取得 - pagesObj トップ画像
+      // --------------------------------------------------
+      //   images-and-videos / 画像と動画を取得 - pagesObj トップ画像
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -441,7 +448,10 @@ const findOneForUser = async ({
       },
       
       
-      // Follows
+      // --------------------------------------------------
+      //   follows
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -947,6 +957,8 @@ const transactionForEditAccount = async ({ usersConditionObj, usersSaveObj, emai
  * @param {Object} emailConfirmationsSaveObj - DB email-confirmations 保存データ
  * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
  * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
+ * @param {Object} webPushesConditionObj - DB web-pushes 検索条件
+ * @param {Object} webPushesSaveObj - DB web-pushes 保存データ
  * @return {Object} 
  */
 const transactionForUpsert = async ({
@@ -961,6 +973,8 @@ const transactionForUpsert = async ({
   emailConfirmationsSaveObj = {},
   imagesAndVideosConditionObj = {},
   imagesAndVideosSaveObj = {},
+  webPushesConditionObj = {},
+  webPushesSaveObj = {},
   
 }) => {
   
@@ -1067,6 +1081,17 @@ const transactionForUpsert = async ({
         
       }
       
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   web-pushes
+    // --------------------------------------------------
+    
+    if (Object.keys(webPushesConditionObj).length !== 0 && Object.keys(webPushesSaveObj).length !== 0) {
+      await SchemaWebPushes.updateOne(webPushesConditionObj, webPushesSaveObj, { session, upsert: true });
     }
     
     

@@ -6,48 +6,49 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
-const lodashHas = require('lodash/has');
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUsers = require('../../../../../app/@database/users/model');
+import ModelUsers from 'app/@database/users/model.js';
+import ModelWebPushes from 'app/@database/web-pushes/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { decrypt }  = require('../../../../../app/@modules/crypto');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { decrypt }  from 'app/@modules/crypto.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from 'app/@locales/locale.js';
 
 
 // ---------------------------------------------
 //   API
 // ---------------------------------------------
 
-const { initialProps } = require('../../../../../app/@api/v2/common');
+import { initialProps } from 'app/@api/v2/common.js';
 
 
 
@@ -82,6 +83,15 @@ export default async (req, res) => {
   const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
   
   
@@ -209,10 +219,11 @@ export default async (req, res) => {
     
     // --------------------------------------------------
     //   データ取得 / Users
-    //   設定情報を取得するため
+    //   設定情報を取得するために、2回目のデータ取得を行っている
+    //   あまりいい書き方ではないと思う
     // --------------------------------------------------
     
-    const usersSettingsObj = await ModelUsers.findOne({
+    const docUsersObj = await ModelUsers.findOne({
       
       conditionObj: {
         _id: users_id
@@ -225,16 +236,16 @@ export default async (req, res) => {
     //   Login ID
     // --------------------------------------------------
     
-    returnObj.loginID = lodashGet(usersSettingsObj, ['loginID'], '');
+    returnObj.loginID = lodashGet(docUsersObj, ['loginID'], '');
     
     
     // --------------------------------------------------
     //   E-Mail
     // --------------------------------------------------
     
-    const emailValue = lodashGet(usersSettingsObj, ['emailObj', 'value'], '');
+    const emailValue = lodashGet(docUsersObj, ['emailObj', 'value'], '');
     returnObj.email = emailValue ? decrypt(emailValue) : '';
-    returnObj.emailConfirmation = lodashGet(usersSettingsObj, ['emailObj', 'confirmation'], false);
+    returnObj.emailConfirmation = lodashGet(docUsersObj, ['emailObj', 'confirmation'], false);
     
     
     // --------------------------------------------------
@@ -243,18 +254,35 @@ export default async (req, res) => {
     
     returnObj.webPushPermission = false;
     
-    const endpoint = lodashGet(usersSettingsObj, ['webPushSubscriptionObj', 'endpoint'], '');
+    const webPushes_id = lodashGet(docUsersObj, ['webPushes_id'], '');
     
-    if (endpoint) {
-      returnObj.webPushPermission = true;
+    if (webPushes_id) {
+      
+      const docWebPushesObj = await ModelWebPushes.findOne({
+        
+        conditionObj: {
+          _id: webPushes_id
+        }
+        
+      });
+      
+      
+      const available = lodashGet(docWebPushesObj, ['available'], false);
+      const errorCount = lodashGet(docWebPushesObj, ['errorCount'], 0);
+      
+      if (available && errorCount < 5) {
+        
+        returnObj.webPushPermission = true;
+        
+      }
+      
+      // console.log(`
+      //   ----- docWebPushesObj -----\n
+      //   ${util.inspect(docWebPushesObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
     }
-    
-    
-    // console.log(`
-    //   ----- usersSettingsObj -----\n
-    //   ${util.inspect(usersSettingsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     
@@ -287,6 +315,12 @@ export default async (req, res) => {
     // `);
     
     // console.log(`
+    //   ----- docUsersObj -----\n
+    //   ${util.inspect(docUsersObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
@@ -310,11 +344,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'Rounc2BcR',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

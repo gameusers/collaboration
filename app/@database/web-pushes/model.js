@@ -27,37 +27,6 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 // ---------------------------------------------
 
 const SchemaWebPushes = require('./schema.js');
-const SchemaRecruitmentComments = require('../recruitment-comments/schema.js');
-const SchemaRecruitmentReplies = require('../recruitment-replies/schema.js');
-const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
-const SchemaGameCommunities = require('../game-communities/schema.js');
-const SchemaUsers = require('../users/schema.js');
-
-const ModelRecruitmentComments = require('../recruitment-comments/model.js');
-const ModelRecruitmentReplies = require('../recruitment-replies/model.js');
-
-
-// ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-const { CustomError } = require('../../@modules/error/custom');
-const { verifyAuthority } = require('../../@modules/authority');
-
-
-// ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-const { locale } = require('../../@locales/locale');
-
-
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-const { formatRecruitmentThreadsArr } = require('./format');
-const { formatImagesAndVideosObj } = require('../images-and-videos/format');
 
 
 
@@ -243,6 +212,53 @@ const upsert = async ({ conditionObj, saveObj }) => {
 
 
 /**
+ * 大量に更新する
+ * @param {Object} conditionObj - 検索条件
+ * @param {Object} saveObj - 保存するデータ / $set を使うこと
+ * @return {Array}
+ */
+const updateMany = async ({ conditionObj, saveObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    if (!saveObj || !Object.keys(saveObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
+    //   Upsert
+    // --------------------------------------------------
+    
+    return await SchemaWebPushes.updateMany(conditionObj, saveObj).exec();
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
  * 大量に挿入する
  * @param {Array} saveArr - 保存するデータ
  * @return {Array}
@@ -329,6 +345,151 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 
 
+// --------------------------------------------------
+//   
+// --------------------------------------------------
+
+/**
+ * Web Pushを送信後、成功した行は errorCount を 0 に戻し、失敗した行は errorCount を +1 する
+ * 2020/5/21
+ * @param {Array} successesArr - DB web-pushes _id / 通知に成功したIDの入った配列
+ * @param {Array} errorsArr - DB users _id / 通知に失敗したIDの入った配列
+ * @return {Object} 取得データ
+ */
+const successAndFailure = async ({
+  
+  successesArr = [],
+  failuresArr = [],
+  
+}) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // ---------------------------------------------
+    //   Datetime
+    // ---------------------------------------------
+    
+    const ISO8601 = moment().utc().toISOString();
+    
+    
+    // ---------------------------------------------
+    //   Success
+    // ---------------------------------------------
+    
+    if (successesArr.length > 0) {
+      
+      const resultSuccessObj = await upsert({
+        
+        conditionObj: {
+          _id: { $in: successesArr }
+        },
+        
+        saveObj: {
+          sendDate: ISO8601,
+          errorCount: 0,
+        },
+        
+      });
+      
+      // console.log(`
+      //   ----- resultSuccessObj -----\n
+      //   ${util.inspect(resultSuccessObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   Failure
+    // ---------------------------------------------
+    
+    if (failuresArr.length > 0) {
+      
+      const resultFailureObj = await updateMany({
+        
+        conditionObj: {
+          _id: { $in: failuresArr }
+        },
+        
+        saveObj: {
+          $set: {
+            sendDate: ISO8601,
+          },
+          $inc: { errorCount: +1 }
+        },
+        
+      });
+      
+      // console.log(`
+      //   ----- resultFailureObj -----\n
+      //   ${util.inspect(resultFailureObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/web-pushes/model.js - successAndFailure
+    // `);
+    
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- successesArr -----\n
+    //   ${util.inspect(successesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- failuresArr -----\n
+    //   ${util.inspect(failuresArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    // return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
 
 
 
@@ -342,7 +503,10 @@ module.exports = {
   find,
   count,
   upsert,
+  updateMany,
   insertMany,
   deleteMany,
+  
+  successAndFailure,
   
 };

@@ -31,6 +31,7 @@ const SchemaNotifications = require('./schema');
 const ModelRecruitmentThreads = require('../recruitment-threads/model.js');
 const ModelRecruitmentComments = require('../recruitment-comments/model.js');
 const ModelRecruitmentReplies = require('../recruitment-replies/model.js');
+const ModelWebPushes = require('../web-pushes/model.js');
 
 
 // ---------------------------------------------
@@ -224,6 +225,53 @@ const upsert = async ({ conditionObj, saveObj }) => {
 
 
 /**
+ * 大量に更新する
+ * @param {Object} conditionObj - 検索条件
+ * @param {Object} saveObj - 保存するデータ / $set を使うこと
+ * @return {Array}
+ */
+const updateMany = async ({ conditionObj, saveObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    if (!saveObj || !Object.keys(saveObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
+    //   Upsert
+    // --------------------------------------------------
+    
+    return await SchemaNotifications.updateMany(conditionObj, saveObj).exec();
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
  * 大量に挿入する
  * @param {Array} saveArr - 保存するデータ
  * @return {Array}
@@ -315,7 +363,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 // --------------------------------------------------
 
 /**
- * 通知を送信する
+ * 通知を送信する / 2020/5/21
  * @return {Array} 取得データ
  */
 const send = async ({}) => {
@@ -329,19 +377,42 @@ const send = async ({}) => {
     // --------------------------------------------------
     
     const notificationsArr = [];
+    const notifications_idsArr = [];
     
     
     // --------------------------------------------------
-    //   find
+    //   aggregate
     // --------------------------------------------------
     
-    const docNotificationsArr = await find({
+    const docNotificationsArr = await SchemaNotifications.aggregate([
       
-      conditionObj: {
-        done: false,
-      }
+      {
+        $match: {
+          done: false,
+        },
+      },
       
-    });
+      { '$sort': { 'createdDate': 1 } },
+      { $limit: parseInt(process.env.NOTIFICATION_QUEUE_LIMIT, 10) },
+      
+    ]).exec();
+    
+    console.log(`
+      ----- docNotificationsArr -----\n
+      ${util.inspect(docNotificationsArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    // return;
+    
+    
+    // --------------------------------------------------
+    //   Queue がない場合、処理停止
+    // --------------------------------------------------
+    
+    if (docNotificationsArr.length === 0) {
+      return;
+    }
     
     
     
@@ -350,19 +421,28 @@ const send = async ({}) => {
     //   Loop
     // --------------------------------------------------
     
-    for (let valueObj of docNotificationsArr.values()) {
+    for (let value1Obj of docNotificationsArr.values()) {
       
       
       // --------------------------------------------------
       //   Property
       // --------------------------------------------------
       
-      const arr = lodashGet(valueObj, ['arr'], []);
-      const type = lodashGet(valueObj, ['type'], '');
+      const arr = lodashGet(value1Obj, ['arr'], []);
+      const type = lodashGet(value1Obj, ['type'], '');
       
       
       // --------------------------------------------------
-      //   Recruitment
+      //   notifications_idsArr
+      // --------------------------------------------------
+      
+      notifications_idsArr.push(value1Obj._id);
+          
+      
+      
+      
+      // --------------------------------------------------
+      //   Recruitment - 募集投稿
       // --------------------------------------------------
       
       if (type === 'recruitment-comments' || type === 'recruitment-replies') {
@@ -373,18 +453,18 @@ const send = async ({}) => {
         let recruitmentRepliesObj = {};
         
         
-        for (let valueObj of arr.values()) {
+        for (let value2Obj of arr.values()) {
           
           
           // --------------------------------------------------
           //   recruitment-threads
           // --------------------------------------------------
           
-          if (valueObj.db === 'recruitment-threads') {
+          if (value2Obj.db === 'recruitment-threads') {
             
             recruitmentThreadsObj = await ModelRecruitmentThreads.findForNotification({
               
-              _id: valueObj._id
+              _id: value2Obj._id
               
             });
             
@@ -393,11 +473,11 @@ const send = async ({}) => {
           //   recruitment-comments
           // --------------------------------------------------
             
-          } else if (valueObj.db === 'recruitment-comments') {
+          } else if (value2Obj.db === 'recruitment-comments') {
             
             recruitmentCommentsObj = await ModelRecruitmentComments.findForNotification({
               
-              _id: valueObj._id
+              _id: value2Obj._id
               
             });
             
@@ -406,11 +486,11 @@ const send = async ({}) => {
           //   recruitment-replies
           // --------------------------------------------------
             
-          } else if (valueObj.db === 'recruitment-replies') {
+          } else if (value2Obj.db === 'recruitment-replies') {
             
             recruitmentRepliesObj = await ModelRecruitmentReplies.findForNotification({
               
-              _id: valueObj._id
+              _id: value2Obj._id
               
             });
             
@@ -422,127 +502,118 @@ const send = async ({}) => {
         
         
         
-        console.log(chalk`
-          valueObj._id: {green ${valueObj._id}}
-        `);
+        // console.log(chalk`
+        //   value1Obj._id: {green ${value1Obj._id}}
+        // `);
         
-        console.log(`
-          ----- recruitmentThreadsObj -----\n
-          ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
-          --------------------\n
-        `);
+        // console.log(`
+        //   ----- recruitmentThreadsObj -----\n
+        //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
         
-        console.log(`
-          ----- recruitmentCommentsObj -----\n
-          ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
-          --------------------\n
-        `);
+        // console.log(`
+        //   ----- recruitmentCommentsObj -----\n
+        //   ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
         
-        console.log(`
-          ----- recruitmentRepliesObj -----\n
-          ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
-          --------------------\n
-        `);
-        
-        
+        // console.log(`
+        //   ----- recruitmentRepliesObj -----\n
+        //   ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
         
         
-        // --------------------------------------------------
-        //   _id
-        // --------------------------------------------------
-        
-        let _id = recruitmentThreadsObj.webPushes_id;
-        
-        if (recruitmentCommentsObj.webPushes_id) {
-          _id = recruitmentCommentsObj.webPushes_id;
-        }
         
         
         // --------------------------------------------------
-        //   body
+        //   コメントが投稿された場合
         // --------------------------------------------------
         
-        let body = recruitmentCommentsObj.comment;
-        
-        if (recruitmentRepliesObj.comment) {
-          body = recruitmentRepliesObj.comment;
-        }
-        
-        
-        // --------------------------------------------------
-        //   tag
-        // --------------------------------------------------
-        
-        let tag = recruitmentCommentsObj._id;
-        
-        if (recruitmentRepliesObj._id) {
-          tag = recruitmentRepliesObj._id;
-        }
-        
-        
-        // --------------------------------------------------
-        //   url
-        // --------------------------------------------------
-        
-        let url = `${process.env.NEXT_PUBLIC_URL_BASE}gc/${recruitmentThreadsObj.urlID}/rec/${recruitmentCommentsObj._id}`;
-        
-        if (recruitmentRepliesObj._id) {
-          url = `${process.env.NEXT_PUBLIC_URL_BASE}gc/${recruitmentThreadsObj.urlID}/rec/${recruitmentRepliesObj._id}`;
-        }
-        
-        
-        // --------------------------------------------------
-        //   notificationsArr
-        // --------------------------------------------------
-        
-        if (recruitmentThreadsObj.subscriptionObj) {
+        if (type === 'recruitment-comments' && Object.keys(recruitmentThreadsObj.subscriptionObj).length !== 0) {
+          
+          
+          // --------------------------------------------------
+          //   スレッド投稿者に通知
+          // --------------------------------------------------
           
           notificationsArr.push({
             
-            // subscriptionObj: {
-            //   endpoint: 'https://fcm.googleapis.com/fcm/send/fCVMofN4BLo:APA91bFShjo-hy02fDaVOpLDHQE_TaRRCPSG1IJIc_2qhndZuqkC67x4_RFbWp5uH4I11SKRdxpVquPQP59QNcomJw4irs0F-EWqOUu6ydVDMZ0Gau92YGmEV36SSO5a63vxUet7wEIo',
-            //   keys: {
-            //     p256dh: 'BLPT_K71Dk35Le_w0eyviBXXNRBsaZc-5o1-D0VKp18XW_N4wCPyzilZE-j0V-eJ4Cz5irqOZt0nePNG8zLDdaQ',
-            //     auth: '0MuLywCY4rbTg5I2_nFEOQ'
-            //   }
-            // },
+            notifications_id: value1Obj._id,
             
-            // subscriptionObj: {
-            //   endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
-            //   keys: {
-            //     p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
-            //     auth: 'siDbUa9DCbg-n9AMsvWA1w'
-            //   }
-            // },
-            
-            _id,
+            webPushes_id: recruitmentThreadsObj.webPushes_id,
             subscriptionObj: recruitmentThreadsObj.subscriptionObj,
             title: recruitmentThreadsObj.title,
-            body,
+            body: recruitmentCommentsObj.comment,
             icon: recruitmentThreadsObj.icon,
-            tag,
-            url,
+            tag: recruitmentCommentsObj._id,
+            url: `${process.env.NEXT_PUBLIC_URL_BASE}gc/${recruitmentThreadsObj.urlID}/rec/${recruitmentCommentsObj._id}`,
             TTL: 120,
             
           });
           
-        }
-        
-        
-        if (type === 'recruitment-replies' && recruitmentCommentsObj.subscriptionObj && recruitmentThreadsObj.webPushes_id !== recruitmentCommentsObj.webPushes_id) {
           
-          notificationsArr.push({
+        // --------------------------------------------------
+        //   返信が投稿された場合
+        // --------------------------------------------------
+          
+        } else if (type === 'recruitment-replies') {
+          
+          
+          // --------------------------------------------------
+          //   スレッド投稿者に通知
+          // --------------------------------------------------
+          
+          if (Object.keys(recruitmentThreadsObj.subscriptionObj).length !== 0) {
             
-            _id,
-            subscriptionObj: recruitmentCommentsObj.subscriptionObj,
-            title: recruitmentThreadsObj.title,
-            body,
-            icon: recruitmentThreadsObj.icon,
-            tag,
-            url,
-            TTL: 120,
+            notificationsArr.push({
+              
+              notifications_id: value1Obj._id,
+              
+              webPushes_id: recruitmentThreadsObj.webPushes_id,
+              subscriptionObj: recruitmentThreadsObj.subscriptionObj,
+              title: recruitmentThreadsObj.title,
+              body: recruitmentRepliesObj.comment,
+              icon: recruitmentThreadsObj.icon,
+              tag: recruitmentRepliesObj._id,
+              url: `${process.env.NEXT_PUBLIC_URL_BASE}gc/${recruitmentThreadsObj.urlID}/rec/${recruitmentRepliesObj._id}`,
+              TTL: 120,
+              
+            });
             
-          });
+          }
+          
+          
+          // --------------------------------------------------
+          //   コメント投稿者に通知
+          // --------------------------------------------------
+          
+          if (
+            
+            recruitmentCommentsObj.subscriptionObj &&
+            Object.keys(recruitmentRepliesObj).length !== 0 &&
+            recruitmentThreadsObj.webPushes_id !== recruitmentCommentsObj.webPushes_id
+            
+          ) {
+            
+            notificationsArr.push({
+              
+              notifications_id: value1Obj._id,
+              
+              webPushes_id: recruitmentCommentsObj.webPushes_id,
+              subscriptionObj: recruitmentCommentsObj.subscriptionObj,
+              title: recruitmentThreadsObj.title,
+              body: recruitmentRepliesObj.comment,
+              icon: recruitmentThreadsObj.icon,
+              tag: recruitmentRepliesObj._id,
+              url: `${process.env.NEXT_PUBLIC_URL_BASE}gc/${recruitmentThreadsObj.urlID}/rec/${recruitmentRepliesObj._id}`,
+              TTL: 120,
+              
+            });
+            
+          }
+          
           
         }
         
@@ -556,18 +627,115 @@ const send = async ({}) => {
     
     
     
+    
     // --------------------------------------------------
     //   送信
     // --------------------------------------------------
     
     const resultObj = await sendNotifications({ arr: notificationsArr });
     
+    const successesArr = lodashGet(resultObj, ['successesArr'], []);
+    const failuresArr = lodashGet(resultObj, ['failuresArr'], []);
+    
+    // const resultObj = {
+      
+    //   successesArr: ['nOVilxpSk'],
+    //   failuresArr: ['CLza57t8J', 'L4D5QB9p4'],
+      
+    // };
+    
+    
+    // --------------------------------------------------
+    //   送信後の処理
+    //   成功した行は errorCount を 0 に戻し、失敗した行は errorCount を +1 する
+    // --------------------------------------------------
+    
+    await ModelWebPushes.successAndFailure({
+      
+      successesArr,
+      failuresArr,
+      
+    });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Notifications / 処理が終わった通知は削除する
+    // --------------------------------------------------
+    
+    if (notifications_idsArr.length > 0) {
+      
+      const resultArr = await deleteMany({
+        
+        conditionObj: {
+          _id: { $in: notifications_idsArr }
+        },
+        
+      });
+      
+      // console.log(`
+      //   ----- resultArr -----\n
+      //   ${util.inspect(resultArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Notifications / done: true / 通知を処理済みにする
+    // --------------------------------------------------
+    
+    // if (notifications_idsArr.length > 0) {
+      
+    //   const resultArr = await updateMany({
+        
+    //     conditionObj: {
+    //       _id: { $in: notifications_idsArr }
+    //     },
+        
+    //     saveObj: {
+    //       $set: {
+    //         done: true,
+    //       },
+    //     },
+        
+    //   });
+      
+    //   // console.log(`
+    //   //   ----- resultArr -----\n
+    //   //   ${util.inspect(resultArr, { colors: true, depth: null })}\n
+    //   //   --------------------\n
+    //   // `);
+      
+    // }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(`
+      ----------------------------------------\n
+      /app/@database/notifications/model.js - send
+    `);
     
     // console.log(`
     //   ----- docNotificationsArr -----\n
     //   ${util.inspect(docNotificationsArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    console.log(`
+      ----- notifications_idsArr -----\n
+      ${util.inspect(notifications_idsArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     console.log(`
       ----- notificationsArr -----\n
@@ -580,168 +748,6 @@ const send = async ({}) => {
       ${util.inspect(resultObj, { colors: true, depth: null })}\n
       --------------------\n
     `);
-    
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Match Condition Array
-    // --------------------------------------------------
-    
-    // let matchConditionArr = [];
-    
-    // matchConditionArr = [
-    //   {
-    //     $match: { gameCommunities_id }
-    //   },
-    // ];
-    
-    
-    // // ---------------------------------------------
-    // //   - コメント更新時
-    // // ---------------------------------------------
-    
-    // if (recruitmentThreads_idsArr.length > 0) {
-      
-    //   matchConditionArr = [
-    //     {
-    //       $match: {
-    //         $and:
-    //           [
-    //             { gameCommunities_id },
-    //             { _id: { $in: recruitmentThreads_idsArr } }
-    //           ]
-    //       }
-    //     },
-    //   ];
-      
-    // }
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   Aggregate
-    // // --------------------------------------------------
-    
-    // const docArr = await aggregate({
-      
-    //   req,
-    //   localeObj,
-    //   loginUsers_id,
-    //   matchConditionArr,
-    //   threadPage,
-    //   threadLimit,
-      
-    // });
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   Format
-    // // --------------------------------------------------
-    
-    // const formattedThreadsObj = formatRecruitmentThreadsArr({
-      
-    //   req,
-    //   localeObj,
-    //   loginUsers_id,
-    //   arr: docArr,
-    //   threadPage,
-    //   // threadCount,
-      
-    // });
-    
-    // const recruitmentThreadsObj = lodashGet(formattedThreadsObj, ['recruitmentThreadsObj'], {});
-    // // const recruitmentThreads_idsArr = lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []);
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   DB find / Comments & Replies
-    // // --------------------------------------------------
-    
-    // const formattedCommentsAndRepliesObj = await ModelRecruitmentComments.findCommentsAndReplies({
-      
-    //   req,
-    //   localeObj,
-    //   loginUsers_id,
-    //   recruitmentThreads_idsArr: lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []),
-    //   recruitmentThreadsObj,
-    //   commentPage,
-    //   commentLimit: intCommentLimit,
-    //   replyPage,
-    //   replyLimit: intReplyLimit,
-      
-    // });
-    
-    // const recruitmentCommentsObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentCommentsObj'], {});
-    // const recruitmentRepliesObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentRepliesObj'], {});
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/@database/recruitment-threads/model.js - findRecruitments
-    // `);
-    
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   threadPage: {green ${threadPage}}
-    //   threadLimit: {green ${threadLimit}}
-    //   commentPage: {green ${commentPage}}
-    //   commentLimit: {green ${commentLimit}}
-    //   replyPage: {green ${replyPage}}
-    //   replyLimit: {green ${replyLimit}}
-    // `);
-    
-    // console.log(`
-    //   ----- docArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- recruitmentThreadsObj -----\n
-    //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- recruitmentCommentsObj -----\n
-    //   ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- recruitmentRepliesObj -----\n
-    //   ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    // return {
-      
-    //   recruitmentThreadsObj,
-    //   recruitmentCommentsObj,
-    //   recruitmentRepliesObj,
-      
-    // };
     
     
   } catch (err) {
@@ -768,6 +774,7 @@ module.exports = {
   find,
   count,
   upsert,
+  updateMany,
   insertMany,
   deleteMany,
   

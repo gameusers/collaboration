@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
@@ -24,27 +25,27 @@ import lodashHas from 'lodash/has';
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from '../../../@modules/fetch';
-import { CustomError } from '../../../@modules/error/custom';
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-import { validationUsersLoginID } from '../../../@database/users/validations/login-id';
-import { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } from '../../../@database/users/validations/login-password';
-import { validationUsersEmail } from '../../../@database/users/validations/email';
+import { validationUsersLoginID } from 'app/@database/users/validations/login-id.js';
+import { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } from 'app/@database/users/validations/login-password.js';
+import { validationUsersEmail } from 'app/@database/users/validations/email.js';
 
 
 // --------------------------------------------------
 //   Stores
 // --------------------------------------------------
 
-import initStoreData from '../../../@stores/data';
-import initStoreWebPush from '../../../@stores/web-push';
-import initStoreLayout from '../../../common/layout/stores/layout';
-import initStoreImageAndVideoForm from '../../../common/image-and-video/stores/form';
+import initStoreData from 'app/@stores/data.js';
+import initStoreWebPush from 'app/@stores/web-push.js';
+import initStoreLayout from 'app/common/layout/stores/layout.js';
+import initStoreImageAndVideoForm from 'app/common/image-and-video/stores/form.js';
 
 
 // --------------------------------------------------
@@ -52,10 +53,10 @@ import initStoreImageAndVideoForm from '../../../common/image-and-video/stores/f
 // --------------------------------------------------
 
 let storeUrSettings = null;
-let storeData = initStoreData({});
-let storeWebPush = initStoreWebPush({});
-let storeLayout = initStoreLayout({});
-let storeImageAndVideoForm = initStoreImageAndVideoForm({});
+// const storeData = initStoreData({});
+const storeWebPush = initStoreWebPush({});
+const storeLayout = initStoreLayout({});
+const storeImageAndVideoForm = initStoreImageAndVideoForm({});
       
 
 
@@ -1026,9 +1027,11 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
+        
         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/delete-settings-web-push`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)
+        
       });
       
       

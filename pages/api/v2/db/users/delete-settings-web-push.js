@@ -6,40 +6,42 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const moment = require('moment');
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import moment from 'moment';
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUsers = require('../../../../../app/@database/users/model');
+import ModelUsers from 'app/@database/users/model.js';
+import ModelWebPushes from 'app/@database/web-pushes/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
+import { validationIP } from 'app/@validations/ip.js';
 
 
 
@@ -65,6 +67,15 @@ export default async (req, res) => {
   const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
   
   
@@ -104,22 +115,24 @@ export default async (req, res) => {
     //   Validations
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: req.ip });
+    await validationIP({ throwError: true, value: ip });
     
     
     
     
-    // --------------------------------------------------
-    //   webPushSubscriptionObj
-    // --------------------------------------------------
+    // ---------------------------------------------
+    //   webPushes_id
+    // ---------------------------------------------
     
-    const webPushSubscriptionObj = {
-      endpoint: '',
-      keys: {
-        p256dh: '',
-        auth: '',
+    const docUsersObj = await ModelUsers.findOne({
+      
+      conditionObj: {
+        _id: loginUsers_id
       }
-    };
+      
+    });
+    
+    const webPushes_id = docUsersObj.webPushes_id;
     
     
     
@@ -128,39 +141,56 @@ export default async (req, res) => {
     //   Upsert 
     // --------------------------------------------------
     
-    // ---------------------------------------------
-    //   - Datetime
-    // ---------------------------------------------
-    
-    const ISO8601 = moment().utc().toISOString();
-    
-    
-    // ---------------------------------------------
-    //   - users
-    // ---------------------------------------------
-    
-    const conditionObj = {
-      _id: loginUsers_id
-    };
-    
-    const saveObj = {
-      $set: {
-        updatedDate: ISO8601,
-        webPushSubscriptionObj,
-      }
-    };
-    
-    
-    // ---------------------------------------------
-    //   - update
-    // ---------------------------------------------
-    
-    await ModelUsers.upsert({
+    if (webPushes_id) {
       
-      conditionObj,
-      saveObj,
       
-    });
+      // ---------------------------------------------
+      //   - Datetime
+      // ---------------------------------------------
+      
+      const ISO8601 = moment().utc().toISOString();
+      
+      
+      // ---------------------------------------------
+      //   - users
+      // ---------------------------------------------
+      
+      const conditionObj = {
+        _id: webPushes_id
+      };
+      
+      const saveObj = {
+        
+        $set: {
+          updatedDate: ISO8601,
+          sendDate: '',
+          available: false,
+          subscriptionObj: {
+            endpoint: '',
+            keys: {
+              p256dh: '',
+              auth: '',
+            }
+          },
+          errorCount: 0,
+        }
+        
+      };
+      
+      
+      // ---------------------------------------------
+      //   - update
+      // ---------------------------------------------
+      
+      await ModelWebPushes.upsert({
+        
+        conditionObj,
+        saveObj,
+        
+      });
+      
+      
+    }
     
     
     
@@ -208,11 +238,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'VfBJS7Mz2',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

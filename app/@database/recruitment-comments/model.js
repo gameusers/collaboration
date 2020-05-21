@@ -1953,6 +1953,13 @@ const findForNotification = async ({
     const country = lodashGet(localeObj, ['country'], '');
     
     
+    // --------------------------------------------------
+    //   Error Count Limit
+    // --------------------------------------------------
+    
+    const errorCountLimit = parseInt(process.env.WEB_PUSH_ERROR_COUNT_LIMIT, 10);
+    
+    
     
     
     // --------------------------------------------------
@@ -1983,7 +1990,12 @@ const findForNotification = async ({
             pipeline: [
               { $match:
                 { $expr:
-                  { $eq: ['$_id', '$$letWebPushes_id'] },
+                  { $and:
+                    [
+                      { $eq: ['$_id', '$$letWebPushes_id'] },
+                      { $lt: ['$errorCount', errorCountLimit] },
+                    ]
+                  }
                 }
               },
               { $project:
@@ -2035,7 +2047,12 @@ const findForNotification = async ({
                     pipeline: [
                       { $match:
                         { $expr:
-                          { $eq: ['$_id', '$$letWebPushes_id'] },
+                          { $and:
+                            [
+                              { $eq: ['$_id', '$$letWebPushes_id'] },
+                              { $lt: ['$errorCount', errorCountLimit] },
+                            ]
+                          }
                         }
                       },
                       { $project:
@@ -2149,10 +2166,10 @@ const findForNotification = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/recruitment-comments/model.js - findForNotification
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/recruitment-comments/model.js - findForNotification
+    // `);
     
     // console.log(chalk`
     //   _id: {green ${_id}}
@@ -2164,11 +2181,11 @@ const findForNotification = async ({
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- docArr -----\n
-      ${util.inspect(docArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- returnObj -----\n

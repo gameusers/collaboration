@@ -4936,7 +4936,7 @@ emotion: https://emotion.sh/docs/introduction`,
       
       
       {
-        _id: 'lNIw3G90G',
+        _id: 'lNIw3G90G',// 要チェック
         createdDate: ISO8601,
         done: false,
         type: 'recruitment-comments',
@@ -5009,11 +5009,11 @@ emotion: https://emotion.sh/docs/introduction`,
         sendDate: '',
         available: true,
         // target_id: 'jun-deE4J',
-        subscriptionObj: {
-          endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
+        subscriptionObj: {// 2020/5/21 登録
+          endpoint: 'https://fcm.googleapis.com/fcm/send/cOsJ3EXpj2E:APA91bHnycUwE37fsnmlRNYEuJYx_kf67jaq7CFmr7oFIGzIqRk8tXi8BhHmtCfL7MlMjhyYoFwhhvLMx7sfUCqh00wDXVIovAp5hamTe2UWGDF4QUd4Z8VRNkNcrQadHGUuy7k-Jqbd',
           keys: {
-            p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
-            auth: 'siDbUa9DCbg-n9AMsvWA1w'
+            p256dh: 'BCCZ55xYxmC_6JNemzKc1FzAiz-fUEz4xCA3WXqVq2MRBaSJA3SUKtlY_G_747sT2C0Xm6QJD4L7KKzunNtj-Zo',
+            auth: 'EYpxeXGdImUIaTpBqVca0A'
           }
         },
         // errorTotalCount: 0,
@@ -5028,7 +5028,7 @@ emotion: https://emotion.sh/docs/introduction`,
         updatedDate: ISO8601,
         sendDate: '',
         available: true,
-        subscriptionObj: {
+        subscriptionObj: {// 無効
           endpoint: 'https://fcm.googleapis.com/fcm/send/fCVMofN4BLo:APA91bFShjo-hy02fDaVOpLDHQE_TaRRCPSG1IJIc_2qhndZuqkC67x4_RFbWp5uH4I11SKRdxpVquPQP59QNcomJw4irs0F-EWqOUu6ydVDMZ0Gau92YGmEV36SSO5a63vxUet7wEIo',
           keys: {
             p256dh: 'BLPT_K71Dk35Le_w0eyviBXXNRBsaZc-5o1-D0VKp18XW_N4wCPyzilZE-j0V-eJ4Cz5irqOZt0nePNG8zLDdaQ',
@@ -5045,7 +5045,7 @@ emotion: https://emotion.sh/docs/introduction`,
         updatedDate: ISO8601,
         sendDate: '',
         available: true,
-        subscriptionObj: {// 2020/5/20 登録
+        subscriptionObj: {// 無効
           endpoint: 'https://fcm.googleapis.com/fcm/send/e6F4KGu-As8:APA91bG1gOOMc64c2evGr5HuV5aKYEN3chUbX1e-QXeGLo0nNqY8CBAo8g_xlIJe7WdD5lTfmngVIiZ7VeM-Y3IRWmRUaC7aFmLqpJ_Izx8DUyXbQfbgIYgAjbSmpurnYqPWOHQdtWcA',
           keys: {
             p256dh: 'BA2MsGrPd4bQ691bM_GphDgxIaWyChKKTiY1OGQWYE6xtfHp0kKCVSUlmElA4sijdO6svSMMJUxYRdt5WlgUKRk',

@@ -27,17 +27,17 @@ const lodashSet = require('lodash/set');
 // --------------------------------------------------
 
 /**
- * 通知を送信する
+ * 通知を送信する / 2020/5/21
  * @param {Array} arr - 送信に必要なデータが入った配列
  */
-const sendNotifications = async ({ arr }) => {
+const sendNotifications = async ({ arr = [] }) => {
   
   
   // ---------------------------------------------
   //   必要なデータがない場合は処理停止
   // ---------------------------------------------
   
-  if (!process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY || !process.env.WEB_PUSH_VAPID_PRIVATE_KEY) {
+  if (!process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY || !process.env.WEB_PUSH_VAPID_PRIVATE_KEY || arr.length === 0) {
     return;
   }
   
@@ -61,8 +61,8 @@ const sendNotifications = async ({ arr }) => {
   //   Loop
   // --------------------------------------------------
   
-  const successArr = [];
-  const failureArr = [];
+  const successesArr = [];
+  const failuresArr = [];
   
   
   for (let valueObj of arr.values()) {
@@ -72,7 +72,7 @@ const sendNotifications = async ({ arr }) => {
     //   Property
     // --------------------------------------------------
     
-    const _id = valueObj._id;
+    const webPushes_id = valueObj.webPushes_id;
     
     const subscriptionObj = valueObj.subscriptionObj;
     
@@ -163,7 +163,7 @@ const sendNotifications = async ({ arr }) => {
       //   Success
       // --------------------------------------------------
       
-      successArr.push(_id);
+      successesArr.push(webPushes_id);
       
       
     } catch (errorObj) {
@@ -177,10 +177,10 @@ const sendNotifications = async ({ arr }) => {
       
       
       // --------------------------------------------------
-      //   Failure
+      //   Error
       // --------------------------------------------------
       
-      failureArr.push(_id);
+      failuresArr.push(webPushes_id);
       
       
     }
@@ -190,25 +190,25 @@ const sendNotifications = async ({ arr }) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@modules/web-push.js - sendNotifications
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@modules/web-push.js - sendNotifications
+    // `);
     
-    console.log(`
-      ----- subscriptionObj -----\n
-      ${util.inspect(subscriptionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- subscriptionObj -----\n
+    //   ${util.inspect(subscriptionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(chalk`
-      title: {green ${title}}
-      body: {green ${body}}
-      icon: {green ${icon}}
-      tag: {green ${tag}}
-      url: {green ${url}}
-      TTL: {green ${TTL}}
-    `);
+    // console.log(chalk`
+    //   title: {green ${title}}
+    //   body: {green ${body}}
+    //   icon: {green ${icon}}
+    //   tag: {green ${tag}}
+    //   url: {green ${url}}
+    //   TTL: {green ${TTL}}
+    // `);
     
     
   }
@@ -222,8 +222,8 @@ const sendNotifications = async ({ arr }) => {
   
   return {
     
-    successArr: Array.from(new Set(successArr)),
-    failureArr: Array.from(new Set(failureArr)),
+    successesArr: Array.from(new Set(successesArr)),
+    failuresArr: Array.from(new Set(failuresArr)),
     
   };
   

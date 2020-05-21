@@ -174,11 +174,11 @@ app.prepare().then(() => {
     
   // });
   
-  cron.schedule('* * * * *', () => {
+  // cron.schedule('* * * * *', () => {
     
-    ModelNotifications.send({});
+  //   ModelNotifications.send({});
     
-  });
+  // });
   
   
   

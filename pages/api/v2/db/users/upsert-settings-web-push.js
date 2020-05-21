@@ -6,43 +6,44 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const moment = require('moment');
+import shortid from 'shortid';
+import moment from 'moment';
 
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUsers = require('../../../../../app/@database/users/model');
+import ModelUsers from 'app/@database/users/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
-const { sendNotifications }  = require('../../../../../app/@modules/web-push');
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
+import { sendNotifications }  from 'app/@modules/web-push.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationUsersWebPushSubscriptionObjEndpointServer, validationUsersWebPushSubscriptionObjKeysP256dhServer, validationUsersWebPushSubscriptionObjKeysAuthServer } = require('../../../../../app/@database/users/validations/web-push-server');
+import { validationIP } from 'app/@validations/ip';
+import { validationUsersWebPushSubscriptionObjEndpointServer, validationUsersWebPushSubscriptionObjKeysP256dhServer, validationUsersWebPushSubscriptionObjKeysAuthServer } from 'app/@database/users/validations/web-push-server.js';
 
 
 
@@ -68,6 +69,15 @@ export default async (req, res) => {
   const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
   
   
@@ -96,16 +106,6 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['subscriptionObj'], subscriptionObj ? '******' : {});
     
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/db/users/upsert-settings-web-push.js
-    // `);
-    
-    // console.log(`
-    //   ----- subscriptionObj -----\n
-    //   ${util.inspect(subscriptionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     // ---------------------------------------------
@@ -142,7 +142,7 @@ export default async (req, res) => {
     //   Validations
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: req.ip });
+    await validationIP({ throwError: true, value: ip });
     
     await validationUsersWebPushSubscriptionObjEndpointServer({ required: true, value: endpoint });
     await validationUsersWebPushSubscriptionObjKeysP256dhServer({ required: true, value: p256dh });
@@ -156,12 +156,31 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const webPushSubscriptionObj = {
+      
       endpoint,
       keys: {
         p256dh,
         auth,
       }
+      
     };
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   webPushes_id
+    // ---------------------------------------------
+    
+    const docUsersObj = await ModelUsers.findOne({
+      
+      conditionObj: {
+        _id: loginUsers_id
+      }
+      
+    });
+    
+    const webPushes_id = docUsersObj.webPushes_id || shortid.generate();
     
     
     
@@ -178,29 +197,50 @@ export default async (req, res) => {
     
     
     // ---------------------------------------------
-    //   - users
+    //   - web-pushes
     // ---------------------------------------------
     
-    const conditionObj = {
+    const usersConditionObj = {
       _id: loginUsers_id
     };
     
-    const saveObj = {
+    const usersSaveObj = {
       $set: {
-        updatedDate: ISO8601,
-        webPushSubscriptionObj,
+        webPushes_id
       }
     };
     
     
     // ---------------------------------------------
-    //   - update
+    //   - users
     // ---------------------------------------------
     
-    await ModelUsers.upsert({
+    const webPushesConditionObj = {
+      _id: webPushes_id
+    };
+    
+    const webPushesSaveObj = {
       
-      conditionObj,
-      saveObj,
+      createdDate: ISO8601,
+      updatedDate: ISO8601,
+      sendDate: '',
+      available: true,
+      subscriptionObj: webPushSubscriptionObj,
+      errorCount: 0,
+      
+    };
+    
+    
+    // ---------------------------------------------
+    //   - transaction
+    // ---------------------------------------------
+    
+    await ModelUsers.transactionForUpsert({
+      
+      usersConditionObj,
+      usersSaveObj,
+      webPushesConditionObj,
+      webPushesSaveObj,
       
     });
     
@@ -237,10 +277,21 @@ export default async (req, res) => {
     //   /pages/api/v2/db/users/upsert-settings-web-push.js
     // `);
     
+    // console.log(`
+    //   ----- subscriptionObj -----\n
+    //   ${util.inspect(subscriptionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
-    //   email: {green ${email}}
-    //   emailConfirmationID: {green ${emailConfirmationID}}
+    //   webPushes_id: {green ${webPushes_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- docUsersObj -----\n
+    //   ${util.inspect(docUsersObj, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(`
@@ -273,11 +324,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'uVdh-Q9Y9',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

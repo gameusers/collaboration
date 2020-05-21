@@ -15,8 +15,8 @@ import util from 'util';
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
-import moment from 'moment';
-import Cookies from 'js-cookie';
+// import moment from 'moment';
+// import Cookies from 'js-cookie';
 
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
@@ -27,15 +27,15 @@ import lodashHas from 'lodash/has';
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from 'app/@modules/fetch';
-import { CustomError } from 'app/@modules/error/custom';
+// import { fetchWrapper } from 'app/@modules/fetch.js';
+// import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // --------------------------------------------------
 //   Stores
 // --------------------------------------------------
 
-import initStoreLayout from 'app/common/layout/stores/layout';
+import initStoreLayout from 'app/common/layout/stores/layout.js';
 
 
 
@@ -51,7 +51,7 @@ const storeLayout = initStoreLayout({});
 
 
 /**
- * 通知を送信する
+ * parse
  * @param {Object} obj - pushManager.getSubscription / pushManager.subscribe の返り値
  */
 const parse = ({ obj }) => {
@@ -141,15 +141,16 @@ class Store {
         
       // ---------------------------------------------
       //   登録されている Service Worker を全て削除する
+      //   unregister で削除するとデータベースに登録済みの endpoint & p256dh & auth も無効になるため、削除していはいけない。2020/5/21
       // ---------------------------------------------
         
       } else {
         
-        this.webPushRegistrationObj = await navigator.serviceWorker.getRegistrations();
+        // this.webPushRegistrationObj = await navigator.serviceWorker.getRegistrations();
         
-        for (let registration of this.webPushRegistrationObj) {
-          registration.unregister();
-        }
+        // for (let registration of this.webPushRegistrationObj) {
+        //   registration.unregister();
+        // }
         
         // console.log('unregister');
         
@@ -194,8 +195,18 @@ class Store {
       
       const oldSubscriptionObj = await this.webPushRegistrationObj.pushManager.getSubscription();
       
-      console.log('[1] oldSubscriptionObj: ', JSON.parse(JSON.stringify(oldSubscriptionObj)));
-      console.log(typeof subscriptionObj);
+      
+      console.log(`
+        ----------------------------------------\n
+        /app/@stores/web-push.js - webPushSubscribe
+      `);
+      
+      console.log(`
+        ----- oldSubscriptionObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(oldSubscriptionObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
       
       if (oldSubscriptionObj) {
         
@@ -266,10 +277,10 @@ class Store {
       //   console.log
       // --------------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/@stores/web-push.js - webPushSubscribe
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/@stores/web-push.js - webPushSubscribe
+      // `);
       
       // console.log(chalk`
       //   process.env.NODE_ENV: {green ${process.env.NODE_ENV}}
@@ -277,11 +288,11 @@ class Store {
       //   convertedVapidKey: {green ${convertedVapidKey}}
       // `);
       
-      // console.log('[1] oldSubscriptionObj: ', JSON.parse(JSON.stringify(oldSubscriptionObj)));
-      // console.log(typeof subscriptionObj);
-      
-      console.log('[2] newSubscriptionObj: ', JSON.stringify(newSubscriptionObj));
-      console.log(typeof newSubscriptionObj);
+      console.log(`
+        ----- newSubscriptionObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(newSubscriptionObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       // console.log(`
       //   ----- this.webPushRegistrationObj -----\n

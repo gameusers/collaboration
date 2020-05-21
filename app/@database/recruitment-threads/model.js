@@ -2697,6 +2697,16 @@ const findForNotification = async ({
     const country = lodashGet(localeObj, ['country'], '');
     
     
+    // --------------------------------------------------
+    //   Error Count Limit
+    // --------------------------------------------------
+    
+    const errorCountLimit = parseInt(process.env.WEB_PUSH_ERROR_COUNT_LIMIT, 10);
+    
+    // console.log(chalk`
+    //   errorCountLimit: {green ${errorCountLimit}}
+    // `);
+    
     
     
     // --------------------------------------------------
@@ -2809,7 +2819,13 @@ const findForNotification = async ({
             pipeline: [
               { $match:
                 { $expr:
-                  { $eq: ['$_id', '$$letWebPushes_id'] },
+                  { $and:
+                    [
+                      { $eq: ['$_id', '$$letWebPushes_id'] },
+                      { $lt: ['$errorCount', errorCountLimit] },
+                    ]
+                  },
+                  
                 }
               },
               { $project:
@@ -2861,7 +2877,12 @@ const findForNotification = async ({
                     pipeline: [
                       { $match:
                         { $expr:
-                          { $eq: ['$_id', '$$letWebPushes_id'] },
+                          { $and:
+                            [
+                              { $eq: ['$_id', '$$letWebPushes_id'] },
+                              { $lt: ['$errorCount', errorCountLimit] },
+                            ]
+                          }
                         }
                       },
                       { $project:

@@ -153,6 +153,8 @@ const sendNotifications = async ({ arr = [] }) => {
       
       
       console.log(`
+        /app/@modules/web-push.js - sendNotifications
+        
         ----- resultObj -----\n
         ${util.inspect(resultObj, { colors: true, depth: null })}\n
         --------------------\n
@@ -170,6 +172,8 @@ const sendNotifications = async ({ arr = [] }) => {
       
       
       console.log(`
+        /app/@modules/web-push.js - sendNotifications
+      
         ----- errorObj -----\n
         ${util.inspect(errorObj, { colors: true, depth: null })}\n
         --------------------\n

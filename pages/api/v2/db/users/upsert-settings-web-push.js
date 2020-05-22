@@ -225,7 +225,10 @@ export default async (req, res) => {
       updatedDate: ISO8601,
       sendDate: '',
       available: true,
+      users_id: loginUsers_id,
       subscriptionObj: webPushSubscriptionObj,
+      sendTotalCount: 0,
+      sendTodayCount: 0,
       errorCount: 0,
       
     };

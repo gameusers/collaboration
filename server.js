@@ -48,6 +48,7 @@ const cron = require('node-cron');
 // ---------------------------------------------
 
 const ModelNotifications = require('./app/@database/notifications/model.js');
+const ModelWebPushes = require('./app/@database/web-pushes/model.js');
 
 
 // ---------------------------------------------
@@ -61,7 +62,7 @@ const ModelNotifications = require('./app/@database/notifications/model.js');
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('./app/@locales/locale');
+// const { locale } = require('./app/@locales/locale');
 
 
 // ---------------------------------------------
@@ -165,20 +166,39 @@ app.prepare().then(() => {
   
   
   // --------------------------------------------------
-  //   Cron - Notifications
+  //   Cron - https://github.com/node-cron/node-cron
   // --------------------------------------------------
   
+  // ---------------------------------------------
+  //   - Notifications
+  // ---------------------------------------------
+  
+  cron.schedule('* * * * *', () => {
   // cron.schedule('*/20 * * * * *', () => {
     
-  //   ModelNotifications.send({});
+    ModelNotifications.send({});
     
-  // });
+  });
   
   // cron.schedule('* * * * *', () => {
     
   //   ModelNotifications.send({});
     
   // });
+  
+  
+  // ---------------------------------------------
+  //   - Web Push Reset sendTodayCount
+  // ---------------------------------------------
+  
+  cron.schedule('0 0 0 * * *', () => {
+  // cron.schedule('0 30 18 * * *', () => {
+  // cron.schedule('*/20 * * * * *', () => {
+    
+    ModelWebPushes.resetSendTodayCount({});
+    
+  });
+  
   
   
   

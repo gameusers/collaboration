@@ -397,11 +397,11 @@ const send = async ({}) => {
       
     ]).exec();
     
-    console.log(`
-      ----- docNotificationsArr -----\n
-      ${util.inspect(docNotificationsArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- docNotificationsArr -----\n
+    //   ${util.inspect(docNotificationsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // return;
     
@@ -500,10 +500,25 @@ const send = async ({}) => {
         }
         
         
+        // --------------------------------------------------
+        //   Send Today Limit
+        // --------------------------------------------------
+        
+        const threadsSendTodayLimit = parseInt((recruitmentThreadsObj.users_id ? process.env.WEB_PUSH_SEND_TODAY_LIMIT_LOGIN_USER : process.env.WEB_PUSH_SEND_TODAY_LIMIT), 10);
+        
+        const commentsSendTodayLimit = parseInt((recruitmentCommentsObj.users_id ? process.env.WEB_PUSH_SEND_TODAY_LIMIT_LOGIN_USER : process.env.WEB_PUSH_SEND_TODAY_LIMIT), 10);
+        
+        
         
         
         // console.log(chalk`
         //   value1Obj._id: {green ${value1Obj._id}}
+          
+        //   threadsSendTodayLimit: {green ${threadsSendTodayLimit}}
+        //   recruitmentThreadsObj.sendTodayCount: {green ${recruitmentThreadsObj.sendTodayCount}}
+          
+        //   commentsSendTodayLimit: {green ${commentsSendTodayLimit}}
+        //   recruitmentCommentsObj.sendTodayCount: {green ${recruitmentCommentsObj.sendTodayCount}}
         // `);
         
         // console.log(`
@@ -531,7 +546,13 @@ const send = async ({}) => {
         //   コメントが投稿された場合
         // --------------------------------------------------
         
-        if (type === 'recruitment-comments' && Object.keys(recruitmentThreadsObj.subscriptionObj).length !== 0) {
+        if (
+          
+          type === 'recruitment-comments' &&
+          Object.keys(recruitmentThreadsObj.subscriptionObj).length !== 0 &&
+          threadsSendTodayLimit >= recruitmentThreadsObj.sendTodayCount
+          
+        ) {
           
           
           // --------------------------------------------------
@@ -565,7 +586,12 @@ const send = async ({}) => {
           //   スレッド投稿者に通知
           // --------------------------------------------------
           
-          if (Object.keys(recruitmentThreadsObj.subscriptionObj).length !== 0) {
+          if (
+            
+            Object.keys(recruitmentThreadsObj.subscriptionObj).length !== 0 &&
+            threadsSendTodayLimit >= recruitmentThreadsObj.sendTodayCount
+            
+          ) {
             
             notificationsArr.push({
               
@@ -593,7 +619,8 @@ const send = async ({}) => {
             
             recruitmentCommentsObj.subscriptionObj &&
             Object.keys(recruitmentRepliesObj).length !== 0 &&
-            recruitmentThreadsObj.webPushes_id !== recruitmentCommentsObj.webPushes_id
+            recruitmentThreadsObj.webPushes_id !== recruitmentCommentsObj.webPushes_id &&
+            commentsSendTodayLimit >= recruitmentCommentsObj.sendTodayCount
             
           ) {
             
@@ -634,15 +661,24 @@ const send = async ({}) => {
     
     const resultObj = await sendNotifications({ arr: notificationsArr });
     
-    const successesArr = lodashGet(resultObj, ['successesArr'], []);
-    const failuresArr = lodashGet(resultObj, ['failuresArr'], []);
+    // const resultObj = {
+      
+    //   successesArr: ['nOVilxpSk', 'CLza57t8J', 'L4D5QB9p4'],
+    //   failuresArr: [],
+      
+    // };
     
     // const resultObj = {
       
-    //   successesArr: ['nOVilxpSk'],
-    //   failuresArr: ['CLza57t8J', 'L4D5QB9p4'],
+    //   successesArr: [],
+    //   failuresArr: ['nOVilxpSk', 'CLza57t8J', 'L4D5QB9p4'],
       
     // };
+    
+    const successesArr = lodashGet(resultObj, ['successesArr'], []);
+    const failuresArr = lodashGet(resultObj, ['failuresArr'], []);
+    
+    
     
     
     // --------------------------------------------------
@@ -661,15 +697,21 @@ const send = async ({}) => {
     
     
     // --------------------------------------------------
-    //   Notifications / 処理が終わった通知は削除する
+    //   Notifications / done: true / 通知を処理済みにする
     // --------------------------------------------------
     
     if (notifications_idsArr.length > 0) {
       
-      const resultArr = await deleteMany({
+      const resultArr = await updateMany({
         
         conditionObj: {
           _id: { $in: notifications_idsArr }
+        },
+        
+        saveObj: {
+          $set: {
+            done: true,
+          },
         },
         
       });
@@ -681,37 +723,6 @@ const send = async ({}) => {
       // `);
       
     }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Notifications / done: true / 通知を処理済みにする
-    // --------------------------------------------------
-    
-    // if (notifications_idsArr.length > 0) {
-      
-    //   const resultArr = await updateMany({
-        
-    //     conditionObj: {
-    //       _id: { $in: notifications_idsArr }
-    //     },
-        
-    //     saveObj: {
-    //       $set: {
-    //         done: true,
-    //       },
-    //     },
-        
-    //   });
-      
-    //   // console.log(`
-    //   //   ----- resultArr -----\n
-    //   //   ${util.inspect(resultArr, { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
-      
-    // }
     
     
     
@@ -731,11 +742,11 @@ const send = async ({}) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- notifications_idsArr -----\n
-      ${util.inspect(notifications_idsArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- notifications_idsArr -----\n
+    //   ${util.inspect(notifications_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     console.log(`
       ----- notificationsArr -----\n
@@ -743,11 +754,11 @@ const send = async ({}) => {
       --------------------\n
     `);
     
-    console.log(`
-      ----- resultObj -----\n
-      ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
   } catch (err) {

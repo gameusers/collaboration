@@ -16,7 +16,7 @@ const schema = mongoose.Schema({
   updatedDate: { type: Date, required: true },
   sendDate: { type: Date },
   available: { type: Boolean, required: true },
-  // target_id: { type: String, required: true },
+  users_id: { type: String },
   subscriptionObj: {
     endpoint: { type: String },
     keys: {
@@ -24,9 +24,9 @@ const schema = mongoose.Schema({
       auth: { type: String },
     },
   },
-  // errorTotalCount: { type: Number, default: 0, required: true },
+  sendTotalCount: { type: Number, default: 0, required: true },
+  sendTodayCount: { type: Number, default: 0, required: true },
   errorCount: { type: Number, default: 0, required: true },
-  // errorDatesArr: [String],
   
 });
 

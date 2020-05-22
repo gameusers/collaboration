@@ -384,18 +384,34 @@ const successAndFailure = async ({
     
     if (successesArr.length > 0) {
       
-      const resultSuccessObj = await upsert({
+      const resultSuccessObj = await updateMany({
         
         conditionObj: {
           _id: { $in: successesArr }
         },
         
         saveObj: {
-          sendDate: ISO8601,
-          errorCount: 0,
+          $set: {
+            sendDate: ISO8601,
+            errorCount: 0,
+          },
+          $inc: { sendTotalCount: 1, sendTodayCount: 1 }
         },
         
       });
+      
+      // const resultSuccessObj = await upsert({
+        
+      //   conditionObj: {
+      //     _id: { $in: successesArr }
+      //   },
+        
+      //   saveObj: {
+      //     sendDate: ISO8601,
+      //     errorCount: 0,
+      //   },
+        
+      // });
       
       // console.log(`
       //   ----- resultSuccessObj -----\n
@@ -422,7 +438,7 @@ const successAndFailure = async ({
           $set: {
             sendDate: ISO8601,
           },
-          $inc: { errorCount: +1 }
+          $inc: { errorCount: 1 }
         },
         
       });
@@ -491,6 +507,77 @@ const successAndFailure = async ({
 
 
 
+/**
+ * 毎日一度 sendTodayCount（その日に送信したプッシュ通知の数） を 0 にする
+ * それにより次の日また決まった数送信できるようになる
+ * 2020/5/22
+ */
+const resetSendTodayCount = async ({}) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // ---------------------------------------------
+    //   Datetime
+    // ---------------------------------------------
+    
+    const ISO8601 = moment().utc().toISOString();
+    
+    
+    // ---------------------------------------------
+    //   Success
+    // ---------------------------------------------
+    
+    const resultObj = await updateMany({
+      
+      conditionObj: {
+        sendDate: { '$ne': null },
+      },
+      
+      saveObj: {
+        $set: {
+          sendTodayCount: 0,
+        },
+      },
+      
+    });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/web-pushes/model.js - resetSendTodayCount
+    // `);
+    
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
 
 
 // --------------------------------------------------
@@ -508,5 +595,6 @@ module.exports = {
   deleteMany,
   
   successAndFailure,
+  resetSendTodayCount,
   
 };

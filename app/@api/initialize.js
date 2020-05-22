@@ -5008,7 +5008,7 @@ emotion: https://emotion.sh/docs/introduction`,
         updatedDate: ISO8601,
         sendDate: '',
         available: true,
-        // target_id: 'jun-deE4J',
+        users_id: 'jun-deE4J',
         subscriptionObj: {// 2020/5/21 登録
           endpoint: 'https://fcm.googleapis.com/fcm/send/cOsJ3EXpj2E:APA91bHnycUwE37fsnmlRNYEuJYx_kf67jaq7CFmr7oFIGzIqRk8tXi8BhHmtCfL7MlMjhyYoFwhhvLMx7sfUCqh00wDXVIovAp5hamTe2UWGDF4QUd4Z8VRNkNcrQadHGUuy7k-Jqbd',
           keys: {
@@ -5016,9 +5016,9 @@ emotion: https://emotion.sh/docs/introduction`,
             auth: 'EYpxeXGdImUIaTpBqVca0A'
           }
         },
-        // errorTotalCount: 0,
+        sendTotalCount: 0,
+        sendTodayCount: 0,
         errorCount: 0,
-        // errorDatesArr: [],
       },
       
       
@@ -5028,6 +5028,7 @@ emotion: https://emotion.sh/docs/introduction`,
         updatedDate: ISO8601,
         sendDate: '',
         available: true,
+        users_id: '',
         subscriptionObj: {// 無効
           endpoint: 'https://fcm.googleapis.com/fcm/send/fCVMofN4BLo:APA91bFShjo-hy02fDaVOpLDHQE_TaRRCPSG1IJIc_2qhndZuqkC67x4_RFbWp5uH4I11SKRdxpVquPQP59QNcomJw4irs0F-EWqOUu6ydVDMZ0Gau92YGmEV36SSO5a63vxUet7wEIo',
           keys: {
@@ -5035,6 +5036,8 @@ emotion: https://emotion.sh/docs/introduction`,
             auth: '0MuLywCY4rbTg5I2_nFEOQ'
           }
         },
+        sendTotalCount: 0,
+        sendTodayCount: 0,
         errorCount: 0,
       },
       
@@ -5045,6 +5048,7 @@ emotion: https://emotion.sh/docs/introduction`,
         updatedDate: ISO8601,
         sendDate: '',
         available: true,
+        users_id: '',
         subscriptionObj: {// 無効
           endpoint: 'https://fcm.googleapis.com/fcm/send/e6F4KGu-As8:APA91bG1gOOMc64c2evGr5HuV5aKYEN3chUbX1e-QXeGLo0nNqY8CBAo8g_xlIJe7WdD5lTfmngVIiZ7VeM-Y3IRWmRUaC7aFmLqpJ_Izx8DUyXbQfbgIYgAjbSmpurnYqPWOHQdtWcA',
           keys: {
@@ -5052,6 +5056,8 @@ emotion: https://emotion.sh/docs/introduction`,
             auth: 'YlNqB1Pq8GIaCxe4HQAJ-A'
           }
         },
+        sendTotalCount: 0,
+        sendTodayCount: 0,
         errorCount: 0,
       },
       

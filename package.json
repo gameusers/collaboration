@@ -73,7 +73,7 @@
     "react-autosize-textarea": "^7.0.0",
     "react-dom": "^16.13.1",
     "react-id-swiper": "^1.6.9",
-    "react-intl": "^4.5.5",
+    "react-intl": "^4.5.8",
     "react-measure": "^2.3.0",
     "react-modal-video": "^1.2.3",
     "react-recaptcha-v3": "^1.1.0",

@@ -172,6 +172,8 @@ export default async (req, res) => {
               auth: '',
             }
           },
+          sendTotalCount: 0,
+          sendTodayCount: 0,
           errorCount: 0,
         }
         

@@ -2698,13 +2698,13 @@ const findForNotification = async ({
     
     
     // --------------------------------------------------
-    //   Error Count Limit
+    //   Error Limit
     // --------------------------------------------------
     
-    const errorCountLimit = parseInt(process.env.WEB_PUSH_ERROR_COUNT_LIMIT, 10);
+    const errorLimit = parseInt(process.env.WEB_PUSH_ERROR_LIMIT, 10);
     
     // console.log(chalk`
-    //   errorCountLimit: {green ${errorCountLimit}}
+    //   errorLimit: {green ${errorLimit}}
     // `);
     
     
@@ -2822,7 +2822,8 @@ const findForNotification = async ({
                   { $and:
                     [
                       { $eq: ['$_id', '$$letWebPushes_id'] },
-                      { $lt: ['$errorCount', errorCountLimit] },
+                      { $eq: ['$available', true] },
+                      { $lt: ['$errorCount', errorLimit] },
                     ]
                   },
                   
@@ -2832,7 +2833,9 @@ const findForNotification = async ({
                 {
                   _id: 1,
                   available: 1,
+                  users_id: 1,
                   subscriptionObj: 1,
+                  sendTodayCount: 1,
                 }
               }
             ],
@@ -2880,7 +2883,8 @@ const findForNotification = async ({
                           { $and:
                             [
                               { $eq: ['$_id', '$$letWebPushes_id'] },
-                              { $lt: ['$errorCount', errorCountLimit] },
+                              { $eq: ['$available', true] },
+                              { $lt: ['$errorCount', errorLimit] },
                             ]
                           }
                         }
@@ -2889,7 +2893,9 @@ const findForNotification = async ({
                         {
                           _id: 1,
                           available: 1,
+                          users_id: 1,
                           subscriptionObj: 1,
+                          sendTodayCount: 1,
                         }
                       }
                     ],
@@ -2967,12 +2973,16 @@ const findForNotification = async ({
     if (available) {
       
       returnObj.webPushes_id = lodashGet(docObj, ['webPushesObj', '_id'], '');
+      returnObj.users_id = lodashGet(docObj, ['webPushesObj', 'users_id'], '');
       returnObj.subscriptionObj = lodashGet(docObj, ['webPushesObj', 'subscriptionObj'], {});
+      returnObj.sendTodayCount = lodashGet(docObj, ['webPushesObj', 'sendTodayCount'], 0);
       
       if (lodashHas(docObj, ['usersObj', 'webPushesObj'])) {
         
         returnObj.webPushes_id = lodashGet(docObj, ['usersObj', 'webPushesObj', '_id'], '');
+        returnObj.users_id = lodashGet(docObj, ['usersObj', 'webPushesObj', 'users_id'], '');
         returnObj.subscriptionObj = lodashGet(docObj, ['usersObj', 'webPushesObj', 'subscriptionObj'], {});
+        returnObj.sendTodayCount = lodashGet(docObj, ['usersObj', 'webPushesObj', 'sendTodayCount'], 0);
         
       }
       

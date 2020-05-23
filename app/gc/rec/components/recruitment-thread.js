@@ -26,6 +26,11 @@ import SimpleIcons from 'simple-icons-react-component';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 
@@ -790,7 +795,6 @@ export default injectIntl(class extends React.Component {
                         >
                           
                           
-                          
                           <Button
                             css={css`
                               && {
@@ -831,50 +835,6 @@ export default injectIntl(class extends React.Component {
                             </Avatar>
                             シェア
                           </Button>
-                          
-                          
-                          
-                          
-                          
-                          {/*<div
-                            css={css`
-                              display: flex;
-                              flex-flow: row nowrap;
-                              
-                              // margin-left: auto;
-                              // background-color: pink;
-                            `}
-                          >
-                            
-                            <IconButton
-                              css={css`
-                                && {
-                                  margin: 0 4px 0 0;
-                                  padding: 0;
-                                }
-                              `}
-                              aria-label="share"
-                            >
-                              <Avatar
-                                css={css`
-                                  && {
-                                    width: 18px;
-                                    height: 18px;
-                                    line-height: 1;
-                                    background-color: #1DA1F2;
-                                  }
-                                `}
-                                alt="PlayStation"
-                                style={{ 'backgroundColor': '#1DA1F2' }}
-                              >
-                                <div style={{ 'width': '80%', 'marginTop': '0px' }}>
-                                  <SimpleIcons name="Twitter" color="white" />
-                                </div>
-                              </Avatar>
-                            </IconButton>
-                            
-                            シェア
-                          </div>*/}
                           
                           
                           

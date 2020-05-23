@@ -402,10 +402,10 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/gc/[urlID]/rec.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/gc/[urlID]/rec.js
+    `);
     
     // console.log(chalk`
     //   urlID: {green ${urlID}}
@@ -433,11 +433,11 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     

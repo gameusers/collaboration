@@ -42,6 +42,7 @@ const schema = mongoose.Schema({
     }
   ],
   publicSetting: { type: Number, default: 1, required: true },
+  webPushAvailable: { type: Boolean, required: true },
   webPushes_id: { type: String },
   // webPush: { type: Boolean, required: true },
   // webPushSubscriptionObj: {

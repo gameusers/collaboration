@@ -180,7 +180,7 @@ export default injectIntl(class extends React.Component {
     
     const name = lodashGet(dataObj, [...pathArr, 'name'], '');
     const comment = lodashGet(dataObj, [...pathArr, 'comment'], '');
-    const webPush = lodashGet(dataObj, [...pathArr, 'webPush'], false);
+    const webPushAvailable = lodashGet(dataObj, [...pathArr, 'webPushAvailable'], false);
     
     
     // --------------------------------------------------
@@ -451,7 +451,7 @@ export default injectIntl(class extends React.Component {
                 }}
                 control={
                   <Checkbox
-                    checked={webPush}
+                    checked={webPushAvailable}
                     onChange={(eventObj) => handleGetWebPushSubscribeObj({
                       pathArr,
                       checked: eventObj.target.checked

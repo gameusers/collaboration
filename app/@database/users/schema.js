@@ -46,6 +46,7 @@ const schema = mongoose.Schema({
       count: { type: Number, default: 1, required: true },
     },
   ],
+  webPushAvailable: { type: Boolean, required: true },
   webPushes_id: { type: String },
   // webPushSubscriptionObj: {
   //   endpoint: { type: String },

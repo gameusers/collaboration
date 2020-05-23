@@ -197,7 +197,7 @@ export default async (req, res) => {
     
     
     // ---------------------------------------------
-    //   - web-pushes
+    //   - users
     // ---------------------------------------------
     
     const usersConditionObj = {
@@ -206,13 +206,14 @@ export default async (req, res) => {
     
     const usersSaveObj = {
       $set: {
-        webPushes_id
+        webPushAvailable: true,
+        webPushes_id,
       }
     };
     
     
     // ---------------------------------------------
-    //   - users
+    //   - web-pushes
     // ---------------------------------------------
     
     const webPushesConditionObj = {
@@ -224,7 +225,7 @@ export default async (req, res) => {
       createdDate: ISO8601,
       updatedDate: ISO8601,
       sendDate: '',
-      available: true,
+      // available: true,
       users_id: loginUsers_id,
       subscriptionObj: webPushSubscriptionObj,
       sendTotalCount: 0,

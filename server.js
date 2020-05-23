@@ -180,12 +180,6 @@ app.prepare().then(() => {
     
   });
   
-  // cron.schedule('* * * * *', () => {
-    
-  //   ModelNotifications.send({});
-    
-  // });
-  
   
   // ---------------------------------------------
   //   - Web Push Reset sendTodayCount

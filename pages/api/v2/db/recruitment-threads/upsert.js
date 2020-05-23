@@ -17,6 +17,11 @@ import util from 'util';
 import shortid from 'shortid';
 import moment from 'moment';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 
@@ -25,48 +30,48 @@ import lodashSet from 'lodash/set';
 //   Model
 // ---------------------------------------------
 
-import ModelRecruitmentThreads from 'app/@database/recruitment-threads/model';
-import ModelUsers from 'app/@database/users/model';
-import ModelGameCommunities from 'app/@database/game-communities/model';
+import ModelRecruitmentThreads from 'app/@database/recruitment-threads/model.js';
+import ModelUsers from 'app/@database/users/model.js';
+import ModelGameCommunities from 'app/@database/game-communities/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-import { verifyCsrfToken } from 'app/@modules/csrf';
-import { returnErrorsArr } from 'app/@modules/log/log';
-import { CustomError } from 'app/@modules/error/custom';
-import { formatAndSave } from 'app/@modules/image/save';
-import { setAuthority } from 'app/@modules/authority';
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
+import { formatAndSave } from 'app/@modules/image/save.js';
+import { setAuthority } from 'app/@modules/authority.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-import { validationIP } from 'app/@validations/ip';
-import { validationBoolean } from 'app/@validations/boolean';
+import { validationIP } from 'app/@validations/ip.js';
+import { validationBoolean } from 'app/@validations/boolean.js';
 
-import { validationGameCommunities_idServer } from 'app/@database/game-communities/validations/_id-server';
-import { validationHardwareIDsArrServer } from 'app/@database/hardwares/validations/id-server';
-import { validationIDsArrServer } from 'app/@database/ids/validations/_id-server';
-import { validationUsersWebPushSubscriptionObjEndpointServer, validationUsersWebPushSubscriptionObjKeysP256dhServer, validationUsersWebPushSubscriptionObjKeysAuthServer } from 'app/@database/users/validations/web-push-server';
+import { validationGameCommunities_idServer } from 'app/@database/game-communities/validations/_id-server.js';
+import { validationHardwareIDsArrServer } from 'app/@database/hardwares/validations/id-server.js';
+import { validationIDsArrServer } from 'app/@database/ids/validations/_id-server.js';
+import { validationUsersWebPushSubscriptionObjEndpointServer, validationUsersWebPushSubscriptionObjKeysP256dhServer, validationUsersWebPushSubscriptionObjKeysAuthServer } from 'app/@database/users/validations/web-push-server.js';
 
-import { validationRecruitmentThreadsCategory } from 'app/@database/recruitment-threads/validations/category';
-import { validationRecruitmentThreadsTitle } from 'app/@database/recruitment-threads/validations/title';
-import { validationRecruitmentThreadsName } from 'app/@database/recruitment-threads/validations/name';
-import { validationRecruitmentThreadsComment } from 'app/@database/recruitment-threads/validations/comment';
-import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } from 'app/@database/recruitment-threads/validations/ids-informations';
-import { validationRecruitmentThreadsDeadlineDate } from 'app/@database/recruitment-threads/validations/deadline';
-import { validationRecruitmentThreadsLimit } from 'app/@database/recruitment-threads/validations/limit';
+import { validationRecruitmentThreadsCategory } from 'app/@database/recruitment-threads/validations/category.js';
+import { validationRecruitmentThreadsTitle } from 'app/@database/recruitment-threads/validations/title.js';
+import { validationRecruitmentThreadsName } from 'app/@database/recruitment-threads/validations/name.js';
+import { validationRecruitmentThreadsComment } from 'app/@database/recruitment-threads/validations/comment.js';
+import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } from 'app/@database/recruitment-threads/validations/ids-informations.js';
+import { validationRecruitmentThreadsDeadlineDate } from 'app/@database/recruitment-threads/validations/deadline.js';
+import { validationRecruitmentThreadsLimit } from 'app/@database/recruitment-threads/validations/limit.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-import { locale } from 'app/@locales/locale';
+import { locale } from 'app/@locales/locale.js';
 
 
 
@@ -153,8 +158,7 @@ export default async (req, res) => {
       // publicSetting,
       // deadlineDate,
       // webPushSubscriptionObj,
-      // twitter,
-      webPush,
+      webPushAvailable,
       threadLimit,
       commentLimit,
       replyLimit,
@@ -206,9 +210,8 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['information5'], information5);
     lodashSet(requestParametersObj, ['publicSetting'], publicSetting);
     lodashSet(requestParametersObj, ['deadlineDate'], deadlineDate);
-    lodashSet(requestParametersObj, ['webPush'], webPush);
+    lodashSet(requestParametersObj, ['webPushAvailable'], webPushAvailable);
     lodashSet(requestParametersObj, ['webPushSubscriptionObj'], {});
-    // lodashSet(requestParametersObj, ['twitter'], twitter);
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
     lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
@@ -268,12 +271,12 @@ export default async (req, res) => {
     await validationUsersWebPushSubscriptionObjKeysP256dhServer({ value: p256dh });
     await validationUsersWebPushSubscriptionObjKeysAuthServer({ value: auth });
     
-    await validationBoolean({ throwError: true, value: webPush });
-    // await validationBoolean({ throwError: true, value: twitter });
+    await validationBoolean({ throwError: true, value: webPushAvailable });
     
     await validationRecruitmentThreadsLimit({ throwError: true, required: true, value: threadLimit });
     // await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
     // await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
+    
     
     // console.log(`
     //   ----- ids_idsArr -----\n
@@ -318,6 +321,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     let oldImagesAndVideosObj = {};
+    let webPushes_id = '';
     
     
     // --------------------------------------------------
@@ -340,13 +344,14 @@ export default async (req, res) => {
         
       });
       
-      // console.log(`
-      //   ----- tempOldObj -----\n
-      //   ${util.inspect(tempOldObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- tempOldObj -----\n
+        ${util.inspect(tempOldObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       oldImagesAndVideosObj = lodashGet(tempOldObj, ['imagesAndVideosObj'], {});
+      webPushes_id = lodashGet(tempOldObj, ['webPushes_id'], '');
       
       
     // --------------------------------------------------
@@ -540,13 +545,70 @@ export default async (req, res) => {
     //   webPushSubscriptionObj
     // --------------------------------------------------
     
-    webPushSubscriptionObj = {
-      endpoint,
-      keys: {
-        p256dh,
-        auth,
-      }
-    };
+    // webPushSubscriptionObj = {
+    //   endpoint,
+    //   keys: {
+    //     p256dh,
+    //     auth,
+    //   }
+    // };
+    
+    
+    // ---------------------------------------------
+    //   webPushes_id
+    // ---------------------------------------------
+    
+    // if (webPush) {
+      
+    //   if (loginUsers_id) {
+        
+    //     const docUsersObj = await ModelUsers.findOne({
+          
+    //       conditionObj: {
+    //         _id: loginUsers_id
+    //       }
+          
+    //     });
+        
+    //     webPushes_id = docUsersObj.webPushes_id;
+        
+    //   } else {
+        
+        
+        
+    //   }
+      
+    //   // webPushes_id = shortid.generate();
+      
+    // }
+    
+    
+    
+    
+    
+    // if (webPush && webPushes_id === '') {
+      
+    //   webPushes_id = shortid.generate();
+      
+    // }
+    
+    // // let webPushes_id = shortid.generate();
+    
+    // if (loginUsers_id) {
+      
+    //   const docUsersObj = await ModelUsers.findOne({
+        
+    //     conditionObj: {
+    //       _id: loginUsers_id
+    //     }
+        
+    //   });
+      
+    //   webPushes_id = docUsersObj.webPushes_id;
+      
+    // }
+    
+    
     
     
     
@@ -657,8 +719,8 @@ export default async (req, res) => {
       publicSetting,
       deadlineDate,
       close: false,
-      webPush,
-      webPushSubscriptionObj,
+      webPushAvailable,
+      webPushes_id,
       publicCommentsUsers_idsArr: [],
       publicApprovalUsers_idsArrr: [],
       comments: 0,
@@ -690,6 +752,43 @@ export default async (req, res) => {
     };
     
     
+    
+    
+    // ---------------------------------------------
+    //   - web-pushes
+    // ---------------------------------------------
+    
+    let webPushesConditionObj = {};
+    let webPushesSaveObj = {};
+    
+    if (webPushAvailable) {
+      
+      webPushesConditionObj = {
+        _id: webPushes_id
+      };
+      
+      webPushesSaveObj = {
+        
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        sendDate: '',
+        users_id: loginUsers_id,
+        subscriptionObj: {
+          endpoint,
+          keys: {
+            p256dh,
+            auth,
+          }
+        },
+        sendTotalCount: 0,
+        sendTodayCount: 0,
+        errorCount: 0,
+        
+      };
+      
+    }
+    
+    
     // ---------------------------------------------
     //   - users
     // ---------------------------------------------
@@ -698,24 +797,34 @@ export default async (req, res) => {
     let usersSaveObj = {};
     
     
-    if (webPush && loginUsers_id) {
+    if (webPushAvailable && loginUsers_id) {
       
-      const docUsersObj = await ModelUsers.findOne({
+      // const docUsersObj = await ModelUsers.findOne({
         
-        conditionObj: {
-          _id: loginUsers_id
-        }
+      //   conditionObj: {
+      //     _id: loginUsers_id
+      //   }
         
-      });
+      // });
       
-      const usersEndpoint = lodashGet(docUsersObj, ['webPushSubscriptionObj', 'endpoint'], '');
+      // const webPushes_id = docUsersObj.webPushes_id;
+      
+      // const docUsersObj = await ModelUsers.findOne({
+        
+      //   conditionObj: {
+      //     _id: loginUsers_id
+      //   }
+        
+      // });
+      
+      // const usersEndpoint = lodashGet(docUsersObj, ['webPushSubscriptionObj', 'endpoint'], '');
       
       
       // ---------------------------------------------
       //   webPushSubscriptionObj を更新する
       // ---------------------------------------------
       
-      if (!usersEndpoint) {
+      if (!webPushes_id) {
         
         usersConditionObj = {
           _id: loginUsers_id,
@@ -724,7 +833,7 @@ export default async (req, res) => {
         usersSaveObj = {
           $set: {
             updatedDate: ISO8601,
-            webPushSubscriptionObj,
+            webPushes_id,
           }
         };
         
@@ -733,16 +842,18 @@ export default async (req, res) => {
       
       // ---------------------------------------------
       //   ログインしている場合
-      //   recruitmentThreads の webPushSubscriptionObj は空にする
+      //   recruitmentThreads の webPushes_id は空にする
       // ---------------------------------------------
       
-      recruitmentThreadsSaveObj.webPushSubscriptionObj = {
-        endpoint: '',
-        keys: {
-          p256dh: '',
-          auth: ''
-        }
-      };
+      recruitmentThreadsSaveObj.webPushes_id = '';
+      
+      // recruitmentThreadsSaveObj.webPushSubscriptionObj = {
+      //   endpoint: '',
+      //   keys: {
+      //     p256dh: '',
+      //     auth: ''
+      //   }
+      // };
       
       
       // console.log(`

@@ -184,7 +184,7 @@ export default injectIntl(class extends React.Component {
     const name = lodashGet(dataObj, [...pathArr, 'name'], '');
     const comment = lodashGet(dataObj, [...pathArr, 'comment'], '');
     // const twitter = lodashGet(dataObj, [...pathArr, 'twitter'], false);
-    const webPush = lodashGet(dataObj, [...pathArr, 'webPush'], false);
+    const webPushAvailable = lodashGet(dataObj, [...pathArr, 'webPushAvailable'], false);
     
     const limitHardwares = parseInt(process.env.NEXT_PUBLIC_NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT, 10);
     
@@ -578,7 +578,7 @@ export default injectIntl(class extends React.Component {
                 }}
                 control={
                   <Checkbox
-                    checked={webPush}
+                    checked={webPushAvailable}
                     onChange={(eventObj) => handleGetWebPushSubscribeObj({
                       pathArr,
                       checked: eventObj.target.checked

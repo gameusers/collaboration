@@ -19,6 +19,11 @@ import { action, observable } from 'mobx';
 import moment from 'moment';
 import Cookies from 'js-cookie';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
@@ -2122,10 +2127,8 @@ class Store {
       
       const deadlineDate = lodashGet(this.dataObj, [...pathArr, 'deadlineDate'], '');
       
-      const webPush = lodashGet(this.dataObj, [...pathArr, 'webPush'], false);
+      const webPushAvailable = lodashGet(this.dataObj, [...pathArr, 'webPushAvailable'], false);
       const webPushSubscriptionObj = lodashGet(this.dataObj, [...pathArr, 'webPushSubscriptionObj'], {});
-      
-      // const twitter = lodashGet(this.dataObj, [...pathArr, 'twitter'], false);
       
       
       const threadLimit = parseInt((storeData.getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
@@ -2171,8 +2174,7 @@ class Store {
         
         validationRecruitmentThreadsDeadlineDate({ value: deadlineDate }).error ||
         
-        validationBoolean({ value: webPush }).error
-        // validationBoolean({ value: twitter }).error
+        validationBoolean({ value: webPushAvailable }).error
         
       ) {
         
@@ -2231,8 +2233,7 @@ class Store {
         information5,
         publicSetting,
         deadlineDate,
-        webPush,
-        // twitter,
+        webPushAvailable,
         threadLimit,
         commentLimit,
         replyLimit,
@@ -2243,7 +2244,7 @@ class Store {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
       
-      if (webPush && Object.keys(webPushSubscriptionObj).length !== 0) {
+      if (webPushAvailable && Object.keys(webPushSubscriptionObj).length !== 0) {
         formDataObj.webPushSubscriptionObj = webPushSubscriptionObj;
       }
       
@@ -2571,7 +2572,7 @@ class Store {
       
       const publicSetting = lodashGet(this.dataObj, [...pathArr, 'publicSetting'], 1);
       
-      const webPush = lodashGet(this.dataObj, [...pathArr, 'webPush'], false);
+      const webPushAvailable = lodashGet(this.dataObj, [...pathArr, 'webPushAvailable'], false);
       const webPushSubscriptionObj = lodashGet(this.dataObj, [...pathArr, 'webPushSubscriptionObj'], {});
       
       
@@ -2613,7 +2614,7 @@ class Store {
         
         validationRecruitmentThreadsPublicSetting({ value: publicSetting }).error ||
         
-        validationBoolean({ value: webPush }).error
+        validationBoolean({ value: webPushAvailable }).error
         
       ) {
         
@@ -2669,7 +2670,7 @@ class Store {
         information4,
         information5,
         publicSetting,
-        webPush,
+        webPushAvailable,
         threadLimit,
         commentLimit,
         replyLimit,
@@ -2680,7 +2681,7 @@ class Store {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
       
-      if (webPush && Object.keys(webPushSubscriptionObj).length !== 0) {
+      if (webPushAvailable && Object.keys(webPushSubscriptionObj).length !== 0) {
         formDataObj.webPushSubscriptionObj = webPushSubscriptionObj;
       }
       
@@ -3800,7 +3801,7 @@ class Store {
       //   Check Box
       // ---------------------------------------------
       
-      lodashSet(this.dataObj, [...pathArr, 'webPush'], checked);
+      lodashSet(this.dataObj, [...pathArr, 'webPushAvailable'], checked);
       
       
       

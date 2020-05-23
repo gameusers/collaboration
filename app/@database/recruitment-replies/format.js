@@ -246,6 +246,7 @@ const formatRecruitmentRepliesArr = ({
     delete clonedObj.localesArr;
     delete clonedObj.replyToObj;
     delete clonedObj.recruitmentCommentsObj;
+    delete clonedObj.language;
     delete clonedObj.ip;
     delete clonedObj.userAgent;
     delete clonedObj.__v;

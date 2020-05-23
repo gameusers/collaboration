@@ -16,6 +16,11 @@ const util = require('util');
 
 const moment = require('moment');
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
@@ -47,7 +52,7 @@ const { verifyAuthority } = require('../../@modules/authority.js');
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../@locales/locale');
+const { locale } = require('../../@locales/locale.js');
 
 
 // ---------------------------------------------
@@ -387,6 +392,7 @@ const findCommentsAndReplies = async ({
     
     const intCommentLimit = parseInt(commentLimit, 10);
     const intReplyLimit = parseInt(replyLimit, 10);
+    const errorLimit = parseInt(process.env.WEB_PUSH_ERROR_LIMIT, 10);
     
     
     
@@ -495,7 +501,51 @@ const findCommentsAndReplies = async ({
         
         
         // --------------------------------------------------
-        //   users - アクセス日時＆経験値＆プレイヤーID用
+        //   web-pushes
+        // --------------------------------------------------
+        
+        {
+          $lookup:
+            {
+              from: 'web-pushes',
+              let: { letWebPushes_id: '$webPushes_id' },
+              pipeline: [
+                { $match:
+                  { $expr:
+                    { $and:
+                      [
+                        { $eq: ['$_id', '$$letWebPushes_id'] },
+                        // { $eq: ['$available', true] },
+                        { $lt: ['$errorCount', errorLimit] },
+                      ]
+                    },
+                    
+                  }
+                },
+                { $project:
+                  {
+                    _id: 1,
+                    // available: 1,
+                    users_id: 1,
+                    subscriptionObj: 1,
+                    sendTodayCount: 1,
+                  }
+                }
+              ],
+              as: 'webPushesObj'
+            }
+        },
+        
+        {
+          $unwind: {
+            path: '$webPushesObj',
+            preserveNullAndEmptyArrays: true,
+          }
+        },
+        
+        
+        // --------------------------------------------------
+        //   users
         // --------------------------------------------------
         
         {
@@ -509,13 +559,58 @@ const findCommentsAndReplies = async ({
                     { $eq: ['$_id', '$$letUsers_id'] },
                   }
                 },
+                
+                
+                // --------------------------------------------------
+                //   users / web-pushes
+                // --------------------------------------------------
+                
+                {
+                  $lookup:
+                    {
+                      from: 'web-pushes',
+                      let: { letWebPushes_id: '$webPushes_id' },
+                      pipeline: [
+                        { $match:
+                          { $expr:
+                            { $and:
+                              [
+                                { $eq: ['$_id', '$$letWebPushes_id'] },
+                                // { $eq: ['$available', true] },
+                                { $lt: ['$errorCount', errorLimit] },
+                              ]
+                            }
+                          }
+                        },
+                        { $project:
+                          {
+                            _id: 1,
+                            // available: 1,
+                            users_id: 1,
+                            subscriptionObj: 1,
+                            sendTodayCount: 1,
+                          }
+                        }
+                      ],
+                      as: 'webPushesObj'
+                    }
+                },
+                
+                {
+                  $unwind: {
+                    path: '$webPushesObj',
+                    preserveNullAndEmptyArrays: true,
+                  }
+                },
+                
+                
                 { $project:
                   {
                     _id: 0,
                     accessDate: 1,
                     exp: 1,
                     userID: 1,
-                    webPushSubscriptionObj: 1,
+                    webPushesObj: 1,
                   }
                 }
               ],
@@ -529,6 +624,43 @@ const findCommentsAndReplies = async ({
             preserveNullAndEmptyArrays: true,
           }
         },
+        
+        
+        // --------------------------------------------------
+        //   users - アクセス日時＆経験値＆プレイヤーID用
+        // --------------------------------------------------
+        
+        // {
+        //   $lookup:
+        //     {
+        //       from: 'users',
+        //       let: { letUsers_id: '$users_id' },
+        //       pipeline: [
+        //         { $match:
+        //           { $expr:
+        //             { $eq: ['$_id', '$$letUsers_id'] },
+        //           }
+        //         },
+        //         { $project:
+        //           {
+        //             _id: 0,
+        //             accessDate: 1,
+        //             exp: 1,
+        //             userID: 1,
+        //             webPushSubscriptionObj: 1,
+        //           }
+        //         }
+        //       ],
+        //       as: 'usersObj'
+        //     }
+        // },
+        
+        // {
+        //   $unwind: {
+        //     path: '$usersObj',
+        //     preserveNullAndEmptyArrays: true,
+        //   }
+        // },
         
         
         // --------------------------------------------------
@@ -967,13 +1099,22 @@ const findCommentsAndReplies = async ({
         },
         
         
+        // --------------------------------------------------
+        //   $project
+        // --------------------------------------------------
+        
         { $project:
           {
             imagesAndVideos_id: 0,
+            webPushes_id: 0,
             __v: 0,
           }
         },
         
+        
+        // --------------------------------------------------
+        //   $sort / $skip / $limit
+        // --------------------------------------------------
         
         { '$sort': { 'updatedDate': -1 } },
         { $skip: (commentPage - 1) * intCommentLimit },
@@ -1993,7 +2134,7 @@ const findForNotification = async ({
                   { $and:
                     [
                       { $eq: ['$_id', '$$letWebPushes_id'] },
-                      { $eq: ['$available', true] },
+                      // { $eq: ['$available', true] },
                       { $lt: ['$errorCount', errorLimit] },
                     ]
                   }
@@ -2002,7 +2143,7 @@ const findForNotification = async ({
               { $project:
                 {
                   _id: 1,
-                  available: 1,
+                  // available: 1,
                   users_id: 1,
                   subscriptionObj: 1,
                   sendTodayCount: 1,
@@ -2053,7 +2194,7 @@ const findForNotification = async ({
                           { $and:
                             [
                               { $eq: ['$_id', '$$letWebPushes_id'] },
-                              { $eq: ['$available', true] },
+                              // { $eq: ['$available', true] },
                               { $lt: ['$errorCount', errorLimit] },
                             ]
                           }
@@ -2062,7 +2203,7 @@ const findForNotification = async ({
                       { $project:
                         {
                           _id: 1,
-                          available: 1,
+                          // available: 1,
                           users_id: 1,
                           subscriptionObj: 1,
                           sendTodayCount: 1,
@@ -2129,9 +2270,10 @@ const findForNotification = async ({
     //   subscriptionObj
     // --------------------------------------------------
     
-    const available = lodashGet(docObj, ['webPushesObj', 'available'], true);
+    const webPushAvailable = lodashGet(recruitmentCommentsObj, ['webPushAvailable'], false);
+    // const available = lodashGet(docObj, ['webPushesObj', 'available'], true);
     
-    if (available) {
+    if (webPushAvailable) {
       
       returnObj.webPushes_id = lodashGet(docObj, ['webPushesObj', '_id'], '');
       returnObj.users_id = lodashGet(docObj, ['webPushesObj', 'users_id'], '');

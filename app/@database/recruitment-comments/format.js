@@ -16,6 +16,11 @@ const util = require('util');
 
 const moment = require('moment');
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 // const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
@@ -26,16 +31,15 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Modules
 // ---------------------------------------------
 
-// const { CustomError } = require('../../@modules/error/custom');
-const { verifyAuthority } = require('../../@modules/authority');
+const { verifyAuthority } = require('../../@modules/authority.js');
 
 
 // ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosObj } = require('../images-and-videos/format');
-const { formatRecruitmentRepliesArr } = require('../recruitment-replies/format');
+const { formatImagesAndVideosObj } = require('../images-and-videos/format.js');
+const { formatRecruitmentRepliesArr } = require('../recruitment-replies/format.js');
 
 
 
@@ -137,9 +141,9 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
     
     const users_id = lodashGet(valueObj, ['users_id'], '');
-    const webPush = lodashGet(valueObj, ['webPush'], false);
-    const webPushEndpoint = lodashGet(valueObj, ['webPushSubscriptionObj', 'endpoint'], '');
-    const webPushUsersEndpoint = lodashGet(valueObj, ['usersObj', 'webPushSubscriptionObj', 'endpoint'], '');
+    // const webPush = lodashGet(valueObj, ['webPush'], false);
+    // const webPushEndpoint = lodashGet(valueObj, ['webPushSubscriptionObj', 'endpoint'], '');
+    // const webPushUsersEndpoint = lodashGet(valueObj, ['usersObj', 'webPushSubscriptionObj', 'endpoint'], '');
     
     
     // --------------------------------------------------
@@ -455,11 +459,17 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     //   通知
     // --------------------------------------------------
     
-    if ((webPush && webPushEndpoint) || (webPush && users_id && webPushUsersEndpoint)) {
+    if (lodashHas(valueObj, ['usersObj', 'webPushesObj', '_id']) || lodashHas(valueObj, ['webPushesObj', '_id'])) {
       
       clonedObj.notification = 'webpush';
       
     }
+    
+    // if ((webPush && webPushEndpoint) || (webPush && users_id && webPushUsersEndpoint)) {
+      
+    //   clonedObj.notification = 'webpush';
+      
+    // }
     
     
     
@@ -473,13 +483,15 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     delete clonedObj.users_id;
     delete clonedObj.ids_idsArr;
     delete clonedObj.localesArr;
-    delete clonedObj.webPushSubscriptionObj;
+    delete clonedObj.webPushAvailable;
+    delete clonedObj.webPushesObj;
+    delete clonedObj.language;
     delete clonedObj.ip;
     delete clonedObj.userAgent;
     delete clonedObj.__v;
     
-    if (lodashHas(clonedObj, ['usersObj', 'webPushSubscriptionObj'])) {
-      delete clonedObj.usersObj.webPushSubscriptionObj;
+    if (lodashHas(clonedObj, ['usersObj', 'webPushesObj', '_id'])) {
+      delete clonedObj.usersObj.webPushesObj;
     }
     
     

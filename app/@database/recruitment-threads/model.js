@@ -41,23 +41,23 @@ const ModelRecruitmentReplies = require('../recruitment-replies/model.js');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../@modules/error/custom');
-const { verifyAuthority } = require('../../@modules/authority');
+const { CustomError } = require('../../@modules/error/custom.js');
+const { verifyAuthority } = require('../../@modules/authority.js');
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../@locales/locale');
+const { locale } = require('../../@locales/locale.js');
 
 
 // ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatRecruitmentThreadsArr } = require('./format');
-const { formatImagesAndVideosObj } = require('../images-and-videos/format');
+const { formatRecruitmentThreadsArr } = require('./format.js');
+const { formatImagesAndVideosObj } = require('../images-and-videos/format.js');
 
 
 
@@ -1307,10 +1307,11 @@ const aggregate = async ({
     
     
     // --------------------------------------------------
-    //   parseInt
+    //   Limit
     // --------------------------------------------------
     
     const intThreadLimit = parseInt((threadLimit || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
+    const errorLimit = parseInt(process.env.WEB_PUSH_ERROR_LIMIT, 10);
     
     
     // console.log(chalk`
@@ -1490,40 +1491,75 @@ const aggregate = async ({
       
       
       // --------------------------------------------------
+      //   web-pushes
+      // --------------------------------------------------
+      
+      // {
+      //   $lookup:
+      //     {
+      //       from: 'web-pushes',
+      //       let: { letWebPushes_id: '$webPushes_id' },
+      //       pipeline: [
+      //         { $match:
+      //           { $expr:
+      //             { $eq: ['$_id', '$$letWebPushes_id'] },
+      //           }
+      //         },
+      //         { $project:
+      //           {
+      //             _id: 0,
+      //             available: 1,
+      //             subscriptionObj: 1,
+      //           }
+      //         }
+      //       ],
+      //       as: 'webPushesObj'
+      //     }
+      // },
+      
+      // {
+      //   $unwind: {
+      //     path: '$webPushesObj',
+      //     preserveNullAndEmptyArrays: true,
+      //   }
+      // },
+      
+      
+      // --------------------------------------------------
       //   users / ユーザーを取得（アクセス日時＆経験値＆プレイヤーID用）
       // --------------------------------------------------
       
-      {
-        $lookup:
-          {
-            from: 'users',
-            let: { letUsers_id: '$users_id' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$letUsers_id'] },
-                }
-              },
-              { $project:
-                {
-                  _id: 0,
-                  accessDate: 1,
-                  exp: 1,
-                  userID: 1,
-                  // webPushSubscriptionObj: 1,
-                }
-              }
-            ],
-            as: 'usersObj'
-          }
-      },
+      // {
+      //   $lookup:
+      //     {
+      //       from: 'users',
+      //       let: { letUsers_id: '$users_id' },
+      //       pipeline: [
+      //         { $match:
+      //           { $expr:
+      //             { $eq: ['$_id', '$$letUsers_id'] },
+      //           }
+      //         },
+      //         { $project:
+      //           {
+      //             _id: 0,
+      //             accessDate: 1,
+      //             exp: 1,
+      //             userID: 1,
+      //             // webPushSubscriptionObj: 1,
+      //           }
+      //         }
+      //       ],
+      //       as: 'usersObj'
+      //     }
+      // },
       
-      {
-        $unwind: {
-          path: '$usersObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
+      // {
+      //   $unwind: {
+      //     path: '$usersObj',
+      //     preserveNullAndEmptyArrays: true,
+      //   }
+      // },
       
       
       // --------------------------------------------------
@@ -1538,14 +1574,23 @@ const aggregate = async ({
             pipeline: [
               { $match:
                 { $expr:
-                  { $eq: ['$_id', '$$letWebPushes_id'] },
+                  { $and:
+                    [
+                      { $eq: ['$_id', '$$letWebPushes_id'] },
+                      // { $eq: ['$available', true] },
+                      { $lt: ['$errorCount', errorLimit] },
+                    ]
+                  },
+                  
                 }
               },
               { $project:
                 {
-                  _id: 0,
-                  available: 1,
+                  _id: 1,
+                  // available: 1,
+                  users_id: 1,
                   subscriptionObj: 1,
+                  sendTodayCount: 1,
                 }
               }
             ],
@@ -1556,6 +1601,88 @@ const aggregate = async ({
       {
         $unwind: {
           path: '$webPushesObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // --------------------------------------------------
+      //   users
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'users',
+            let: { letUsers_id: '$users_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$letUsers_id'] },
+                }
+              },
+              
+              
+              // --------------------------------------------------
+              //   users / web-pushes
+              // --------------------------------------------------
+              
+              {
+                $lookup:
+                  {
+                    from: 'web-pushes',
+                    let: { letWebPushes_id: '$webPushes_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $and:
+                            [
+                              { $eq: ['$_id', '$$letWebPushes_id'] },
+                              // { $eq: ['$available', true] },
+                              { $lt: ['$errorCount', errorLimit] },
+                            ]
+                          }
+                        }
+                      },
+                      { $project:
+                        {
+                          _id: 1,
+                          // available: 1,
+                          users_id: 1,
+                          subscriptionObj: 1,
+                          sendTodayCount: 1,
+                        }
+                      }
+                    ],
+                    as: 'webPushesObj'
+                  }
+              },
+              
+              {
+                $unwind: {
+                  path: '$webPushesObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+              
+              
+              { $project:
+                {
+                  _id: 0,
+                  accessDate: 1,
+                  exp: 1,
+                  userID: 1,
+                  webPushesObj: 1,
+                }
+              }
+            ],
+            as: 'usersObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$usersObj',
           preserveNullAndEmptyArrays: true,
         }
       },
@@ -1752,13 +1879,23 @@ const aggregate = async ({
       },
       
       
+      
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+      
       { $project:
         {
           imagesAndVideos_id: 0,
+          webPushes_id: 0,
           __v: 0,
         }
       },
       
+      
+      // --------------------------------------------------
+      //   $sort / $skip / $limit
+      // --------------------------------------------------
       
       { '$sort': { 'updatedDate': -1 } },
       { $skip: (threadPage - 1) * intThreadLimit },
@@ -2067,7 +2204,7 @@ const findOneForEdit = async ({
           publicCommentsUsers_idsArr: 0,
           publicApprovalUsers_idsArrr: 0,
           close: 0,
-          webPushes_id: 0,
+          // webPushes_id: 0,
           comments: 0,
           replies: 0,
           images: 0,
@@ -2822,7 +2959,7 @@ const findForNotification = async ({
                   { $and:
                     [
                       { $eq: ['$_id', '$$letWebPushes_id'] },
-                      { $eq: ['$available', true] },
+                      // { $eq: ['$available', true] },
                       { $lt: ['$errorCount', errorLimit] },
                     ]
                   },
@@ -2832,7 +2969,7 @@ const findForNotification = async ({
               { $project:
                 {
                   _id: 1,
-                  available: 1,
+                  // available: 1,
                   users_id: 1,
                   subscriptionObj: 1,
                   sendTodayCount: 1,
@@ -2883,7 +3020,7 @@ const findForNotification = async ({
                           { $and:
                             [
                               { $eq: ['$_id', '$$letWebPushes_id'] },
-                              { $eq: ['$available', true] },
+                              // { $eq: ['$available', true] },
                               { $lt: ['$errorCount', errorLimit] },
                             ]
                           }
@@ -2892,7 +3029,7 @@ const findForNotification = async ({
                       { $project:
                         {
                           _id: 1,
-                          available: 1,
+                          // available: 1,
                           users_id: 1,
                           subscriptionObj: 1,
                           sendTodayCount: 1,
@@ -2968,9 +3105,10 @@ const findForNotification = async ({
     //   subscriptionObj
     // --------------------------------------------------
     
-    const available = lodashGet(docObj, ['webPushesObj', 'available'], true);
+    const webPushAvailable = lodashGet(recruitmentThreadsObj, ['webPushAvailable'], false);
+    // const available = lodashGet(docObj, ['webPushesObj', 'available'], true);
     
-    if (available) {
+    if (webPushAvailable) {
       
       returnObj.webPushes_id = lodashGet(docObj, ['webPushesObj', '_id'], '');
       returnObj.users_id = lodashGet(docObj, ['webPushesObj', 'users_id'], '');

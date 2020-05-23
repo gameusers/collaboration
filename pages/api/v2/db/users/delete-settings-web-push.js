@@ -1,5 +1,5 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
@@ -16,6 +16,11 @@ import util from 'util';
 
 import moment from 'moment';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 
@@ -25,7 +30,7 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import ModelUsers from 'app/@database/users/model.js';
-import ModelWebPushes from 'app/@database/web-pushes/model.js';
+// import ModelWebPushes from 'app/@database/web-pushes/model.js';
 
 
 // ---------------------------------------------
@@ -155,16 +160,31 @@ export default async (req, res) => {
       //   - users
       // ---------------------------------------------
       
-      const conditionObj = {
+      const usersConditionObj = {
+        _id: loginUsers_id
+      };
+      
+      const usersSaveObj = {
+        $set: {
+          webPushAvailable: false,
+        }
+      };
+      
+      
+      // ---------------------------------------------
+      //   - web-push
+      // ---------------------------------------------
+      
+      const webPushesConditionObj = {
         _id: webPushes_id
       };
       
-      const saveObj = {
+      const webPushesSaveObj = {
         
         $set: {
           updatedDate: ISO8601,
           sendDate: '',
-          available: false,
+          // available: false,
           subscriptionObj: {
             endpoint: '',
             keys: {
@@ -184,12 +204,21 @@ export default async (req, res) => {
       //   - update
       // ---------------------------------------------
       
-      await ModelWebPushes.upsert({
+      await ModelUsers.transactionForUpsert({
         
-        conditionObj,
-        saveObj,
+        usersConditionObj,
+        usersSaveObj,
+        webPushesConditionObj,
+        webPushesSaveObj,
         
       });
+      
+      // await ModelWebPushes.upsert({
+        
+      //   conditionObj,
+      //   saveObj,
+        
+      // });
       
       
     }

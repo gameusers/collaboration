@@ -16,6 +16,11 @@ const util = require('util');
 
 const moment = require('moment');
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
@@ -26,7 +31,7 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Model
 // ---------------------------------------------
 
-const SchemaNotifications = require('./schema');
+const SchemaNotifications = require('./schema.js');
 
 const ModelRecruitmentThreads = require('../recruitment-threads/model.js');
 const ModelRecruitmentComments = require('../recruitment-comments/model.js');
@@ -38,7 +43,7 @@ const ModelWebPushes = require('../web-pushes/model.js');
 //   Modules
 // ---------------------------------------------
 
-const { sendNotifications }  = require('../../@modules/web-push');
+const { sendNotifications }  = require('../../@modules/web-push.js');
 
 
 
@@ -731,10 +736,10 @@ const send = async ({}) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/notifications/model.js - send
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/notifications/model.js - send
+    // `);
     
     // console.log(`
     //   ----- docNotificationsArr -----\n
@@ -748,11 +753,11 @@ const send = async ({}) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- notificationsArr -----\n
-      ${util.inspect(notificationsArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- notificationsArr -----\n
+    //   ${util.inspect(notificationsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- resultObj -----\n

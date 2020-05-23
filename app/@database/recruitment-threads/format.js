@@ -16,6 +16,11 @@ const util = require('util');
 
 const moment = require('moment');
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 // const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
@@ -26,14 +31,14 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Modules
 // ---------------------------------------------
 
-const { verifyAuthority } = require('../../@modules/authority');
+const { verifyAuthority } = require('../../@modules/authority.js');
 
 
 // ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosObj } = require('../images-and-videos/format');
+const { formatImagesAndVideosObj } = require('../images-and-videos/format.js');
 
 
 
@@ -89,6 +94,7 @@ const formatRecruitmentThreadsArr = ({
   //     --------------------\n
   //   `);
   
+  
   // --------------------------------------------------
   //   Loop
   // --------------------------------------------------
@@ -114,10 +120,11 @@ const formatRecruitmentThreadsArr = ({
     
     const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
     
-    const users_id = lodashGet(valueObj, ['users_id'], '');
-    const webPush = lodashGet(valueObj, ['webPush'], false);
-    const webPushEndpoint = lodashGet(valueObj, ['webPushSubscriptionObj', 'endpoint'], '');
-    const webPushUsersEndpoint = lodashGet(valueObj, ['usersObj', 'webPushSubscriptionObj', 'endpoint'], '');
+    // const users_id = lodashGet(valueObj, ['users_id'], '');
+    
+    // const webPush = lodashGet(valueObj, ['webPush'], false);
+    // const webPushEndpoint = lodashGet(valueObj, ['webPushSubscriptionObj', 'endpoint'], '');
+    // const webPushUsersEndpoint = lodashGet(valueObj, ['usersObj', 'webPushSubscriptionObj', 'endpoint'], '');
     
     const deadlineDate = lodashGet(valueObj, ['deadlineDate'], '');
     
@@ -418,11 +425,17 @@ const formatRecruitmentThreadsArr = ({
     //   通知
     // --------------------------------------------------
     
-    if ((webPush && webPushEndpoint) || (webPush && users_id && webPushUsersEndpoint)) {
+    if (lodashHas(valueObj, ['usersObj', 'webPushesObj', '_id']) || lodashHas(valueObj, ['webPushesObj', '_id'])) {
       
       clonedObj.notification = 'webpush';
       
     }
+    
+    // if ((webPush && webPushEndpoint) || (webPush && users_id && webPushUsersEndpoint)) {
+      
+    //   clonedObj.notification = 'webpush';
+      
+    // }
     
     
     
@@ -433,31 +446,20 @@ const formatRecruitmentThreadsArr = ({
     
     delete clonedObj._id;
     delete clonedObj.createdDate;
-    // delete clonedObj.users_id;
     delete clonedObj.hardwareIDsArr;
     delete clonedObj.ids_idsArr;
     delete clonedObj.localesArr;
     delete clonedObj.close;
-    delete clonedObj.webPushSubscriptionObj;
+    delete clonedObj.webPushAvailable;
+    delete clonedObj.webPushesObj;
+    delete clonedObj.language;
     delete clonedObj.ip;
     delete clonedObj.userAgent;
     delete clonedObj.__v;
     
-    if (lodashHas(clonedObj, ['usersObj', 'webPushSubscriptionObj'])) {
-      delete clonedObj.usersObj.webPushSubscriptionObj;
+    if (lodashHas(clonedObj, ['usersObj', 'webPushesObj', '_id'])) {
+      delete clonedObj.usersObj.webPushesObj;
     }
-    
-    
-    // --------------------------------------------------
-    //   匿名の場合の処理
-    // --------------------------------------------------
-    
-    // if (anonymity) {
-      
-    //   delete clonedObj.cardPlayersObj;
-    //   delete clonedObj.usersObj;
-      
-    // }
     
     
     

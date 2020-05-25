@@ -17,6 +17,11 @@ import util from 'util';
 import shortid from 'shortid';
 import moment from 'moment';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 
@@ -25,49 +30,45 @@ import lodashSet from 'lodash/set';
 //   Model
 // ---------------------------------------------
 
-import ModelRecruitmentThreads from '../../../../../app/@database/recruitment-threads/model';
-import ModelRecruitmentComments from '../../../../../app/@database/recruitment-comments/model';
-import ModelUsers from '../../../../../app/@database/users/model';
-import ModelGameCommunities from '../../../../../app/@database/game-communities/model';
+import ModelRecruitmentThreads from 'app/@database/recruitment-threads/model.js';
+import ModelRecruitmentComments from 'app/@database/recruitment-comments/model.js';
+import ModelUsers from 'app/@database/users/model.js';
+import ModelGameCommunities from 'app/@database/game-communities/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-import { verifyCsrfToken } from '../../../../../app/@modules/csrf';
-import { returnErrorsArr } from '../../../../../app/@modules/log/log';
-import { CustomError } from '../../../../../app/@modules/error/custom';
-import { formatAndSave } from '../../../../../app/@modules/image/save';
-import { setAuthority } from '../../../../../app/@modules/authority';
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
+import { formatAndSave } from 'app/@modules/image/save.js';
+import { setAuthority } from 'app/@modules/authority.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-import { validationIP } from '../../../../../app/@validations/ip';
-import { validationBoolean } from '../../../../../app/@validations/boolean';
+import { validationIP } from 'app/@validations/ip.js';
+import { validationBoolean } from 'app/@validations/boolean.js';
 
-import { validationGameCommunities_idServer } from '../../../../../app/@database/game-communities/validations/_id-server';
-// import { validationHardwareIDsArrServer } from '../../../../../app/@database/hardwares/validations/id-server';
-import { validationIDsArrServer } from '../../../../../app/@database/ids/validations/_id-server';
-import { validationUsersWebPushSubscriptionObjEndpointServer, validationUsersWebPushSubscriptionObjKeysP256dhServer, validationUsersWebPushSubscriptionObjKeysAuthServer } from '../../../../../app/@database/users/validations/web-push-server';
+import { validationGameCommunities_idServer } from 'app/@database/game-communities/validations/_id-server.js';
+import { validationIDsArrServer } from 'app/@database/ids/validations/_id-server.js';
+import { validationWebPushesSubscriptionObjEndpointServer, validationWebPushesSubscriptionObjKeysP256dhServer, validationWebPushesSubscriptionObjKeysAuthServer } from 'app/@database/web-pushes/validations/subscription-server.js';
 
-// import { validationRecruitmentThreadsCategory } from '../../../../../app/@database/recruitment-threads/validations/category';
-// import { validationRecruitmentThreadsTitle } from '../../../../../app/@database/recruitment-threads/validations/title';
-import { validationRecruitmentThreadsName } from '../../../../../app/@database/recruitment-threads/validations/name';
-import { validationRecruitmentThreadsComment } from '../../../../../app/@database/recruitment-threads/validations/comment';
-import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } from '../../../../../app/@database/recruitment-threads/validations/ids-informations';
-// import { validationRecruitmentThreadsDeadlineDate } from '../../../../../app/@database/recruitment-threads/validations/deadline';
-import { validationRecruitmentThreadsLimit } from '../../../../../app/@database/recruitment-threads/validations/limit';
+import { validationRecruitmentThreadsName } from 'app/@database/recruitment-threads/validations/name.js';
+import { validationRecruitmentThreadsComment } from 'app/@database/recruitment-threads/validations/comment.js';
+import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } from 'app/@database/recruitment-threads/validations/ids-informations.js';
+import { validationRecruitmentThreadsLimit } from 'app/@database/recruitment-threads/validations/limit.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-import { locale } from '../../../../../app/@locales/locale';
+import { locale } from 'app/@locales/locale.js';
 
 
 
@@ -242,9 +243,9 @@ export default async (req, res) => {
     
     await validationRecruitmentThreadsPublicSetting({ throwError: true, value: publicSetting });
     
-    await validationUsersWebPushSubscriptionObjEndpointServer({ value: endpoint });
-    await validationUsersWebPushSubscriptionObjKeysP256dhServer({ value: p256dh });
-    await validationUsersWebPushSubscriptionObjKeysAuthServer({ value: auth });
+    await validationWebPushesSubscriptionObjEndpointServer({ value: endpoint });
+    await validationWebPushesSubscriptionObjKeysP256dhServer({ value: p256dh });
+    await validationWebPushesSubscriptionObjKeysAuthServer({ value: auth });
     
     await validationBoolean({ throwError: true, value: webPush });
     

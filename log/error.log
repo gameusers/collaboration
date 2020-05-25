@@ -26,3 +26,4 @@
 {"level":"error","message":""}
 {"level":"error","message":""}
 {"level":"error","message":""}
+{"logID":"OlhQW1unN","date":"2020-05-25T03:38:39.173Z","endpointID":"ZVCmdUTHQ","users_id":"","ip":"::ffff:127.0.0.1","userAgent":"","requestParametersObj":{"loginID":"******","loginPassword":"******"},"errorsArr":[{"code":"OlhQW1unN","messageID":"Error"}],"level":"error","message":"CSRF: Invalid Token"}

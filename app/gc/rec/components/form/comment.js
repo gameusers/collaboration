@@ -23,6 +23,11 @@ import TextareaAutosize from 'react-autosize-textarea';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 
@@ -34,12 +39,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-// import InputLabel from '@material-ui/core/InputLabel';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import FormControl from '@material-ui/core/FormControl';
 import Checkbox from '@material-ui/core/Checkbox';
-// import MenuItem from '@material-ui/core/MenuItem';
-// import Select from '@material-ui/core/Select';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -51,15 +52,15 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 //   Validations
 // ---------------------------------------------
 
-import { validationRecruitmentThreadsName } from '../../../../@database/recruitment-threads/validations/name';
+import { validationRecruitmentThreadsName } from 'app/@database/recruitment-threads/validations/name.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import FormIDsInformations from '../form/ids-informations';
-import ImageAndVideoForm from '../../../../common/image-and-video/components/form';
+import FormIDsInformations from 'app/gc/rec/components/form/ids-informations.js';
+import ImageAndVideoForm from 'app/common/image-and-video/components/form.js';
 
 
 

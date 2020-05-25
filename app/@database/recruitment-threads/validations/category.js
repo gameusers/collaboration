@@ -30,10 +30,11 @@ const { CustomError } = require('../../../@modules/error/custom.js');
 /**
  * Category
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationRecruitmentThreadsCategory = ({ throwError = false, value }) => {
+const validationRecruitmentThreadsCategory = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -60,6 +61,21 @@ const validationRecruitmentThreadsCategory = ({ throwError = false, value }) => 
   
   
   try {
+    
+    
+    // ---------------------------------------------
+    //   空の場合、処理停止
+    // ---------------------------------------------
+    
+    if (validator.isEmpty(data)) {
+      
+      if (required) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: '67sSDd3ZE', messageID: 'cFbXmuFVh' }] });
+      }
+      
+      return resultObj;
+      
+    }
     
     
     // ---------------------------------------------

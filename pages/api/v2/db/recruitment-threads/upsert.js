@@ -33,6 +33,7 @@ import lodashSet from 'lodash/set';
 import ModelRecruitmentThreads from 'app/@database/recruitment-threads/model.js';
 import ModelUsers from 'app/@database/users/model.js';
 import ModelGameCommunities from 'app/@database/game-communities/model.js';
+import ModelWebPushes from 'app/@database/web-pushes/model.js';
 
 
 // ---------------------------------------------
@@ -56,7 +57,7 @@ import { validationBoolean } from 'app/@validations/boolean.js';
 import { validationGameCommunities_idServer } from 'app/@database/game-communities/validations/_id-server.js';
 import { validationHardwareIDsArrServer } from 'app/@database/hardwares/validations/id-server.js';
 import { validationIDsArrServer } from 'app/@database/ids/validations/_id-server.js';
-import { validationUsersWebPushSubscriptionObjEndpointServer, validationUsersWebPushSubscriptionObjKeysP256dhServer, validationUsersWebPushSubscriptionObjKeysAuthServer } from 'app/@database/users/validations/web-push-server.js';
+import { validationWebPushesSubscriptionObjEndpointServer, validationWebPushesSubscriptionObjKeysP256dhServer, validationWebPushesSubscriptionObjKeysAuthServer } from 'app/@database/web-pushes/validations/subscription-server.js';
 
 import { validationRecruitmentThreadsCategory } from 'app/@database/recruitment-threads/validations/category.js';
 import { validationRecruitmentThreadsTitle } from 'app/@database/recruitment-threads/validations/title.js';
@@ -267,9 +268,9 @@ export default async (req, res) => {
     await validationRecruitmentThreadsPublicSetting({ throwError: true, value: publicSetting });
     await validationRecruitmentThreadsDeadlineDate({ throwError: true, value: deadlineDate });
     
-    await validationUsersWebPushSubscriptionObjEndpointServer({ value: endpoint });
-    await validationUsersWebPushSubscriptionObjKeysP256dhServer({ value: p256dh });
-    await validationUsersWebPushSubscriptionObjKeysAuthServer({ value: auth });
+    await validationWebPushesSubscriptionObjEndpointServer({ value: endpoint });
+    await validationWebPushesSubscriptionObjKeysP256dhServer({ value: p256dh });
+    await validationWebPushesSubscriptionObjKeysAuthServer({ value: auth });
     
     await validationBoolean({ throwError: true, value: webPushAvailable });
     
@@ -321,7 +322,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     let oldImagesAndVideosObj = {};
-    let webPushes_id = '';
+    let currentWebPushes_id = '';
     
     
     // --------------------------------------------------
@@ -344,14 +345,14 @@ export default async (req, res) => {
         
       });
       
-      console.log(`
-        ----- tempOldObj -----\n
-        ${util.inspect(tempOldObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- tempOldObj -----\n
+      //   ${util.inspect(tempOldObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       oldImagesAndVideosObj = lodashGet(tempOldObj, ['imagesAndVideosObj'], {});
-      webPushes_id = lodashGet(tempOldObj, ['webPushes_id'], '');
+      currentWebPushes_id = lodashGet(tempOldObj, ['webPushes_id'], '');
       
       
     // --------------------------------------------------
@@ -370,7 +371,7 @@ export default async (req, res) => {
         
         conditionObj: {
           gameCommunities_id,
-          'localesArr.name': name,
+          'localesArr.title': title,
         }
         
       });
@@ -542,78 +543,6 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   webPushSubscriptionObj
-    // --------------------------------------------------
-    
-    // webPushSubscriptionObj = {
-    //   endpoint,
-    //   keys: {
-    //     p256dh,
-    //     auth,
-    //   }
-    // };
-    
-    
-    // ---------------------------------------------
-    //   webPushes_id
-    // ---------------------------------------------
-    
-    // if (webPush) {
-      
-    //   if (loginUsers_id) {
-        
-    //     const docUsersObj = await ModelUsers.findOne({
-          
-    //       conditionObj: {
-    //         _id: loginUsers_id
-    //       }
-          
-    //     });
-        
-    //     webPushes_id = docUsersObj.webPushes_id;
-        
-    //   } else {
-        
-        
-        
-    //   }
-      
-    //   // webPushes_id = shortid.generate();
-      
-    // }
-    
-    
-    
-    
-    
-    // if (webPush && webPushes_id === '') {
-      
-    //   webPushes_id = shortid.generate();
-      
-    // }
-    
-    // // let webPushes_id = shortid.generate();
-    
-    // if (loginUsers_id) {
-      
-    //   const docUsersObj = await ModelUsers.findOne({
-        
-    //     conditionObj: {
-    //       _id: loginUsers_id
-    //     }
-        
-    //   });
-      
-    //   webPushes_id = docUsersObj.webPushes_id;
-      
-    // }
-    
-    
-    
-    
-    
-    
-    // --------------------------------------------------
     //   画像と動画の処理
     // --------------------------------------------------
     
@@ -687,6 +616,259 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     // ---------------------------------------------
+    //   - users
+    // ---------------------------------------------
+    
+    let usersConditionObj = {};
+    let usersSaveObj = {};
+    
+    
+    // ---------------------------------------------
+    //   - web-pushes
+    // ---------------------------------------------
+    
+    let webPushesConditionObj = {
+      _id: shortid.generate(),
+    };
+    
+    let webPushesSaveObj = {
+      
+      createdDate: ISO8601,
+      updatedDate: ISO8601,
+      sendDate: '',
+      users_id: loginUsers_id,
+      subscriptionObj: {
+        endpoint,
+        keys: {
+          p256dh,
+          auth,
+        }
+      },
+      sendTotalCount: 0,
+      sendTodayCount: 0,
+      errorCount: 0,
+      
+    };
+    
+    
+    let webPushes_id = '';
+    
+    if (webPushAvailable && endpoint && p256dh && auth) {
+      
+      
+      // ---------------------------------------------
+      //   現在、DB users で使われている webPushes_id を取得する
+      // ---------------------------------------------
+      
+      let currentUsersWebPushes_id = '';
+      
+      if (loginUsers_id) {
+        
+        const docUsersObj = await ModelUsers.findOne({
+          
+          conditionObj: {
+            _id: loginUsers_id
+          }
+          
+        });
+        
+        currentUsersWebPushes_id = docUsersObj.webPushes_id;
+        
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   - 更新
+      // ---------------------------------------------
+      
+      if (currentWebPushes_id || currentUsersWebPushes_id) {
+        
+        webPushes_id = currentWebPushes_id || currentUsersWebPushes_id;
+        
+        
+        // ---------------------------------------------
+        //   既存のドキュメントを取得
+        // ---------------------------------------------
+        
+        const docWebPushesObj = await ModelWebPushes.findOne({
+          
+          conditionObj: {
+            _id: webPushes_id,
+          }
+          
+        });
+        
+        
+        // ---------------------------------------------
+        //   subscription に変更があった場合のみ更新
+        // ---------------------------------------------
+        
+        if (
+          
+          docWebPushesObj.subscriptionObj.endpoint !== endpoint ||
+          docWebPushesObj.subscriptionObj.keys.p256dh !== p256dh ||
+          docWebPushesObj.subscriptionObj.keys.auth !== auth
+          
+        ) {
+          
+          webPushesConditionObj._id = webPushes_id;
+          
+          webPushesSaveObj = {
+            
+            $set: {
+              updatedDate: ISO8601,
+              sendDate: '',
+              subscriptionObj: {
+                endpoint,
+                keys: {
+                  p256dh,
+                  auth,
+                }
+              },
+              sendTotalCount: 0,
+              sendTodayCount: 0,
+              errorCount: 0,
+            }
+            
+          };
+          
+          
+        // ---------------------------------------------
+        //   subscription に変更がない場合は、DB web-pushes のドキュメントは更新しない
+        // ---------------------------------------------
+          
+        } else {
+          
+          webPushesConditionObj = {};
+          webPushesSaveObj = {};
+          
+        }
+        
+        
+        console.log(chalk`
+          currentWebPushes_id: {green ${currentWebPushes_id}}
+          currentUsersWebPushes_id: {green ${currentUsersWebPushes_id}}
+        `);
+        
+        console.log(`
+          ----------------------------------------\n
+          web-pushes 更新
+          
+          ----- docWebPushesObj -----\n
+          ${util.inspect(docWebPushesObj, { colors: true, depth: null })}\n
+          --------------------\n
+        `);
+        
+        
+      // ---------------------------------------------
+      //   - ログイン / 更新
+      // ---------------------------------------------
+        
+      // } else if (currentUsersWebPushes_id) {
+        
+      //   webPushes_id = currentUsersWebPushes_id;
+      //   webPushesConditionObj._id = currentUsersWebPushes_id;
+      //   webPushesSaveObj = webPushesSaveForEditObj;
+        
+        
+      // ---------------------------------------------
+      //   - 挿入
+      // ---------------------------------------------
+        
+      } else {
+        
+        
+        // ---------------------------------------------
+        //   既存のデータを取得
+        // ---------------------------------------------
+        
+        const docWebPushesObj = await ModelWebPushes.findOne({
+          
+          conditionObj: {
+            'subscriptionObj.endpoint': endpoint,
+            'subscriptionObj.keys.p256dh': p256dh,
+            'subscriptionObj.keys.auth': auth,
+          }
+          
+        });
+        
+        
+        // ---------------------------------------------
+        //   同じ subscription がすでに存在する場合、既存のものを利用し DB web-pushes に挿入はしない
+        // ---------------------------------------------
+        
+        if (docWebPushesObj) {
+          
+          webPushes_id = docWebPushesObj._id;
+          
+          webPushesConditionObj = {};
+          webPushesSaveObj = {};
+          
+          
+        // ---------------------------------------------
+        //   同じ subscription が存在しない場合、挿入
+        // ---------------------------------------------
+          
+        } else {
+          
+          webPushes_id = webPushesConditionObj._id;
+          
+        }
+        
+        
+        
+        // ---------------------------------------------
+        //   ログインしている場合、DB users に webPushes_id を保存
+        // ---------------------------------------------
+        
+        if (loginUsers_id) {
+          
+          usersConditionObj = {
+            _id: loginUsers_id,
+          };
+          
+          usersSaveObj = {
+            $set: {
+              updatedDate: ISO8601,
+              webPushes_id,
+            }
+          };
+          
+        }
+        
+        
+        // console.log(chalk`
+        //   endpoint: {green ${endpoint}}
+        //   p256dh: {green ${p256dh}}
+        //   auth: {green ${auth}}
+        // `);
+        
+        console.log(`
+          ----------------------------------------\n
+          web-pushes 挿入
+          
+          ----- docWebPushesObj -----\n
+          ${util.inspect(docWebPushesObj, { colors: true, depth: null })}\n
+          --------------------\n
+        `);
+        
+        
+      }
+      
+      
+    } else {
+      
+      webPushesConditionObj = {};
+      webPushesSaveObj = {};
+      
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
     //   - recruitment-threads
     // ---------------------------------------------
     
@@ -754,129 +936,6 @@ export default async (req, res) => {
     
     
     
-    // ---------------------------------------------
-    //   - web-pushes
-    // ---------------------------------------------
-    
-    let webPushesConditionObj = {};
-    let webPushesSaveObj = {};
-    
-    if (webPushAvailable) {
-      
-      webPushesConditionObj = {
-        _id: webPushes_id
-      };
-      
-      webPushesSaveObj = {
-        
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        sendDate: '',
-        users_id: loginUsers_id,
-        subscriptionObj: {
-          endpoint,
-          keys: {
-            p256dh,
-            auth,
-          }
-        },
-        sendTotalCount: 0,
-        sendTodayCount: 0,
-        errorCount: 0,
-        
-      };
-      
-    }
-    
-    
-    // ---------------------------------------------
-    //   - users
-    // ---------------------------------------------
-    
-    let usersConditionObj = {};
-    let usersSaveObj = {};
-    
-    
-    if (webPushAvailable && loginUsers_id) {
-      
-      // const docUsersObj = await ModelUsers.findOne({
-        
-      //   conditionObj: {
-      //     _id: loginUsers_id
-      //   }
-        
-      // });
-      
-      // const webPushes_id = docUsersObj.webPushes_id;
-      
-      // const docUsersObj = await ModelUsers.findOne({
-        
-      //   conditionObj: {
-      //     _id: loginUsers_id
-      //   }
-        
-      // });
-      
-      // const usersEndpoint = lodashGet(docUsersObj, ['webPushSubscriptionObj', 'endpoint'], '');
-      
-      
-      // ---------------------------------------------
-      //   webPushSubscriptionObj を更新する
-      // ---------------------------------------------
-      
-      if (!webPushes_id) {
-        
-        usersConditionObj = {
-          _id: loginUsers_id,
-        };
-        
-        usersSaveObj = {
-          $set: {
-            updatedDate: ISO8601,
-            webPushes_id,
-          }
-        };
-        
-      }
-      
-      
-      // ---------------------------------------------
-      //   ログインしている場合
-      //   recruitmentThreads の webPushes_id は空にする
-      // ---------------------------------------------
-      
-      recruitmentThreadsSaveObj.webPushes_id = '';
-      
-      // recruitmentThreadsSaveObj.webPushSubscriptionObj = {
-      //   endpoint: '',
-      //   keys: {
-      //     p256dh: '',
-      //     auth: ''
-      //   }
-      // };
-      
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /pages/api/v2/db/recruitment-threads/upsert.js
-      // `);
-      
-      // console.log(chalk`
-      //   usersEndpoint: {green ${usersEndpoint}}
-      // `);
-      
-      // console.log(`
-      //   ----- docUsersObj -----\n
-      //   ${util.inspect(docUsersObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-    }
-    
-    
-    
-    
     // --------------------------------------------------
     //   Update - 編集の場合、更新しない方がいいフィールドを削除する
     // --------------------------------------------------
@@ -925,6 +984,8 @@ export default async (req, res) => {
       imagesAndVideosSaveObj,
       gameCommunitiesConditionObj,
       gameCommunitiesSaveObj,
+      webPushesConditionObj,
+      webPushesSaveObj,
       usersConditionObj,
       usersSaveObj,
       

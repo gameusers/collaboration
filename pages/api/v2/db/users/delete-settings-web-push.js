@@ -160,15 +160,15 @@ export default async (req, res) => {
       //   - users
       // ---------------------------------------------
       
-      const usersConditionObj = {
-        _id: loginUsers_id
-      };
+      // const usersConditionObj = {
+      //   _id: loginUsers_id
+      // };
       
-      const usersSaveObj = {
-        $set: {
-          webPushAvailable: false,
-        }
-      };
+      // const usersSaveObj = {
+      //   $set: {
+      //     webPushAvailable: false,
+      //   }
+      // };
       
       
       // ---------------------------------------------
@@ -206,8 +206,8 @@ export default async (req, res) => {
       
       await ModelUsers.transactionForUpsert({
         
-        usersConditionObj,
-        usersSaveObj,
+        // usersConditionObj,
+        // usersSaveObj,
         webPushesConditionObj,
         webPushesSaveObj,
         

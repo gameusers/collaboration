@@ -21,7 +21,7 @@ const validator = require('validator');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom.js');
 
 
 
@@ -32,7 +32,7 @@ const { CustomError } = require('../../../@modules/error/custom');
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationUsersWebPushSubscriptionObjEndpointServer = async ({ required = false, value }) => {
+const validationWebPushesSubscriptionObjEndpointServer = async ({ required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -98,7 +98,7 @@ const validationUsersWebPushSubscriptionObjEndpointServer = async ({ required = 
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationUsersWebPushSubscriptionObjKeysP256dhServer = async ({ required = false, value }) => {
+const validationWebPushesSubscriptionObjKeysP256dhServer = async ({ required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -164,7 +164,7 @@ const validationUsersWebPushSubscriptionObjKeysP256dhServer = async ({ required 
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationUsersWebPushSubscriptionObjKeysAuthServer = async ({ required = false, value }) => {
+const validationWebPushesSubscriptionObjKeysAuthServer = async ({ required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -230,8 +230,8 @@ const validationUsersWebPushSubscriptionObjKeysAuthServer = async ({ required = 
 
 module.exports = {
   
-  validationUsersWebPushSubscriptionObjEndpointServer,
-  validationUsersWebPushSubscriptionObjKeysP256dhServer,
-  validationUsersWebPushSubscriptionObjKeysAuthServer,
+  validationWebPushesSubscriptionObjEndpointServer,
+  validationWebPushesSubscriptionObjKeysP256dhServer,
+  validationWebPushesSubscriptionObjKeysAuthServer,
   
 };

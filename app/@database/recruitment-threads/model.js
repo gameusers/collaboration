@@ -16,6 +16,11 @@ const util = require('util');
 
 const moment = require('moment');
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
@@ -31,6 +36,7 @@ const SchemaRecruitmentComments = require('../recruitment-comments/schema.js');
 const SchemaRecruitmentReplies = require('../recruitment-replies/schema.js');
 const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
 const SchemaGameCommunities = require('../game-communities/schema.js');
+const SchemaWebPushes = require('../web-pushes/schema.js');
 const SchemaUsers = require('../users/schema.js');
 
 const ModelRecruitmentComments = require('../recruitment-comments/model.js');
@@ -3231,6 +3237,8 @@ const findForNotification = async ({
  * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
  * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
  * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
+ * @param {Object} webPushesConditionObj - DB web-pushes 検索条件
+ * @param {Object} webPushesSaveObj - DB web-pushes 保存データ
  * @param {Object} usersConditionObj - DB users 検索条件
  * @param {Object} usersSaveObj - DB users 保存データ
  * @return {Object} 
@@ -3243,6 +3251,8 @@ const transactionForUpsert = async ({
   imagesAndVideosSaveObj = {},
   gameCommunitiesConditionObj = {},
   gameCommunitiesSaveObj = {},
+  webPushesConditionObj = {},
+  webPushesSaveObj = {},
   usersConditionObj = {},
   usersSaveObj = {},
   
@@ -3331,6 +3341,17 @@ const transactionForUpsert = async ({
     
     
     // ---------------------------------------------
+    //   - web-pushes
+    // ---------------------------------------------
+    
+    if (Object.keys(webPushesConditionObj).length !== 0 && Object.keys(webPushesSaveObj).length !== 0) {
+      
+      await SchemaWebPushes.updateOne(webPushesConditionObj, webPushesSaveObj, { session });
+      
+    }
+    
+    
+    // ---------------------------------------------
     //   - users
     // ---------------------------------------------
     
@@ -3346,7 +3367,7 @@ const transactionForUpsert = async ({
     //   Transaction / Commit
     // --------------------------------------------------
     
-    await session.commitTransaction();
+    // await session.commitTransaction();
     // console.log('--------コミット-----------');
     
     session.endSession();
@@ -3358,64 +3379,76 @@ const transactionForUpsert = async ({
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/@database/recruitment-threads/model.js - transactionForUpsert
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /app/@database/recruitment-threads/model.js - transactionForUpsert
+    `);
     
-    // console.log(`
-    //   ----- recruitmentThreadsConditionObj -----\n
-    //   ${util.inspect(recruitmentThreadsConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- recruitmentThreadsConditionObj -----\n
+      ${util.inspect(recruitmentThreadsConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- recruitmentThreadsSaveObj -----\n
-    //   ${util.inspect(recruitmentThreadsSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- recruitmentThreadsSaveObj -----\n
+      ${util.inspect(recruitmentThreadsSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- imagesAndVideosConditionObj -----\n
-    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- imagesAndVideosConditionObj -----\n
+      ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- imagesAndVideosSaveObj -----\n
-    //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- imagesAndVideosSaveObj -----\n
+      ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- gameCommunitiesConditionObj -----\n
-    //   ${util.inspect(gameCommunitiesConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- gameCommunitiesConditionObj -----\n
+      ${util.inspect(gameCommunitiesConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- gameCommunitiesSaveObj -----\n
-    //   ${util.inspect(gameCommunitiesSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- gameCommunitiesSaveObj -----\n
+      ${util.inspect(gameCommunitiesSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- usersConditionObj -----\n
-    //   ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- webPushesConditionObj -----\n
+      ${util.inspect(webPushesConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- usersSaveObj -----\n
-    //   ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- webPushesSaveObj -----\n
+      ${util.inspect(webPushesSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- usersConditionObj -----\n
+      ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- usersSaveObj -----\n
+      ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     

@@ -17,6 +17,11 @@ import util from 'util';
 import shortid from 'shortid';
 import moment from 'moment';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 
@@ -43,7 +48,7 @@ import { sendNotifications }  from 'app/@modules/web-push.js';
 // ---------------------------------------------
 
 import { validationIP } from 'app/@validations/ip';
-import { validationUsersWebPushSubscriptionObjEndpointServer, validationUsersWebPushSubscriptionObjKeysP256dhServer, validationUsersWebPushSubscriptionObjKeysAuthServer } from 'app/@database/users/validations/web-push-server.js';
+import { validationWebPushesSubscriptionObjEndpointServer, validationWebPushesSubscriptionObjKeysP256dhServer, validationWebPushesSubscriptionObjKeysAuthServer } from 'app/@database/web-pushes/validations/subscription-server.js';
 
 
 
@@ -144,9 +149,9 @@ export default async (req, res) => {
     
     await validationIP({ throwError: true, value: ip });
     
-    await validationUsersWebPushSubscriptionObjEndpointServer({ required: true, value: endpoint });
-    await validationUsersWebPushSubscriptionObjKeysP256dhServer({ required: true, value: p256dh });
-    await validationUsersWebPushSubscriptionObjKeysAuthServer({ required: true, value: auth });
+    await validationWebPushesSubscriptionObjEndpointServer({ required: true, value: endpoint });
+    await validationWebPushesSubscriptionObjKeysP256dhServer({ required: true, value: p256dh });
+    await validationWebPushesSubscriptionObjKeysAuthServer({ required: true, value: auth });
     
     
     
@@ -206,7 +211,7 @@ export default async (req, res) => {
     
     const usersSaveObj = {
       $set: {
-        webPushAvailable: true,
+        // webPushAvailable: true,
         webPushes_id,
       }
     };

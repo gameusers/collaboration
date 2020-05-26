@@ -18,12 +18,18 @@ import React from 'react';
 import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import { useSpring, animated } from 'react-spring';
-import lodashGet from 'lodash/get';
-// import lodashSet from 'lodash/set';
-// import lodashThrottle from 'lodash/throttle';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
+// import lodashSet from 'lodash/set';
+// import lodashThrottle from 'lodash/throttle';
 
 
 // ---------------------------------------------
@@ -39,6 +45,8 @@ import IconButton from '@material-ui/core/IconButton';
 // ---------------------------------------------
 
 import IconMenu from '@material-ui/icons/Menu';
+
+
 
 
 
@@ -86,9 +94,9 @@ export default class extends React.Component {
   //   constructor
   // --------------------------------------------------
   
-  constructor(props) {
-    super(props);
-  }
+  // constructor(props) {
+  //   super(props);
+  // }
   
   
   

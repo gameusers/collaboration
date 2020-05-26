@@ -1249,7 +1249,7 @@ const findOneForEdit = async ({
 
 
 /**
- * コメントと返信のページ番号を取得する
+ * コメントと返信のページ番号を取得する / 個別の募集を読み込む際に利用する　例）https://dev-1.gameusers.org/gc/Dead-by-Daylight/rec/bq215vgzyr
  * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
  * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントID
  * @param {string} recruitmentReplies_id - DB recruitment-replies _id / 返信ID
@@ -1688,14 +1688,14 @@ const transactionForUpsert = async ({
     //   - recruitment-comments
     // ---------------------------------------------
     
-    await SchemaRecruitmentComments.updateOne(recruitmentCommentsConditionObj, recruitmentCommentsSaveObj, { session, upsert: true });
+    await SchemaRecruitmentComments.updateOne(recruitmentCommentsConditionObj, recruitmentCommentsSaveObj, { session });
     
     
     // ---------------------------------------------
     //   - recruitment-threads
     // ---------------------------------------------
     
-    await SchemaRecruitmentThreads.updateOne(recruitmentThreadsConditionObj, recruitmentThreadsSaveObj, { session, upsert: true });
+    await SchemaRecruitmentThreads.updateOne(recruitmentThreadsConditionObj, recruitmentThreadsSaveObj, { session });
     
     
     // ---------------------------------------------

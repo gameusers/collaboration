@@ -22,6 +22,11 @@ import { useSpring, animated } from 'react-spring';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashThrottle from 'lodash/throttle';
@@ -72,6 +77,8 @@ const stylesObj = {
   },
   
 };
+
+
 
 
 
@@ -340,7 +347,18 @@ export default class extends React.Component {
       // ---------------------------------------------
       
       lodashSet(this.props, ['stores', 'layout', 'lowerNavMain'], false);
-      lodashSet(this.props, ['stores', 'layout', 'lowerSidebar'], false);
+      // lodashSet(this.props, ['stores', 'layout', 'lowerSidebar'], false);
+      
+      // ページトップに戻ったときは、サイドバーを下げない
+      if (scrollY === 0) {
+        
+        lodashSet(this.props, ['stores', 'layout', 'lowerSidebar'], false);
+        
+      } else {
+        
+        lodashSet(this.props, ['stores', 'layout', 'lowerSidebar'], true);
+        
+      }
       
       
       // ---------------------------------------------

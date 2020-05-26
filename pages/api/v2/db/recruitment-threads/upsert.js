@@ -77,6 +77,8 @@ import { locale } from 'app/@locales/locale.js';
 
 
 
+
+
 // --------------------------------------------------
 //   endpointID: muKeCPjlC
 // --------------------------------------------------
@@ -275,21 +277,6 @@ export default async (req, res) => {
     await validationBoolean({ throwError: true, value: webPushAvailable });
     
     await validationRecruitmentThreadsLimit({ throwError: true, required: true, value: threadLimit });
-    // await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
-    // await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
-    
-    
-    // console.log(`
-    //   ----- ids_idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     // --------------------------------------------------
@@ -350,6 +337,15 @@ export default async (req, res) => {
       //   ${util.inspect(tempOldObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
+      
+      // --------------------------------------------------
+      //   gameCommunities_id が不正な値の場合はエラー
+      // --------------------------------------------------
+      
+      // if (tempOldObj.gameCommunities_id !== gameCommunities_id) {
+      //   throw new CustomError({ level: 'warn', errorsArr: [{ code: '07FHI1SbZ', messageID: '3mDvfqZHV' }] });
+      // }
+      
       
       oldImagesAndVideosObj = lodashGet(tempOldObj, ['imagesAndVideosObj'], {});
       currentWebPushes_id = lodashGet(tempOldObj, ['webPushes_id'], '');
@@ -747,30 +743,19 @@ export default async (req, res) => {
         }
         
         
-        console.log(chalk`
-          currentWebPushes_id: {green ${currentWebPushes_id}}
-          currentUsersWebPushes_id: {green ${currentUsersWebPushes_id}}
-        `);
+        // console.log(chalk`
+        //   currentWebPushes_id: {green ${currentWebPushes_id}}
+        //   currentUsersWebPushes_id: {green ${currentUsersWebPushes_id}}
+        // `);
         
-        console.log(`
-          ----------------------------------------\n
-          web-pushes 更新
+        // console.log(`
+        //   ----------------------------------------\n
+        //   web-pushes 更新
           
-          ----- docWebPushesObj -----\n
-          ${util.inspect(docWebPushesObj, { colors: true, depth: null })}\n
-          --------------------\n
-        `);
-        
-        
-      // ---------------------------------------------
-      //   - ログイン / 更新
-      // ---------------------------------------------
-        
-      // } else if (currentUsersWebPushes_id) {
-        
-      //   webPushes_id = currentUsersWebPushes_id;
-      //   webPushesConditionObj._id = currentUsersWebPushes_id;
-      //   webPushesSaveObj = webPushesSaveForEditObj;
+        //   ----- docWebPushesObj -----\n
+        //   ${util.inspect(docWebPushesObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
         
         
       // ---------------------------------------------
@@ -845,14 +830,14 @@ export default async (req, res) => {
         //   auth: {green ${auth}}
         // `);
         
-        console.log(`
-          ----------------------------------------\n
-          web-pushes 挿入
+        // console.log(`
+        //   ----------------------------------------\n
+        //   web-pushes 挿入
           
-          ----- docWebPushesObj -----\n
-          ${util.inspect(docWebPushesObj, { colors: true, depth: null })}\n
-          --------------------\n
-        `);
+        //   ----- docWebPushesObj -----\n
+        //   ${util.inspect(docWebPushesObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
         
         
       }

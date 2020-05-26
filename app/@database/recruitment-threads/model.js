@@ -1500,78 +1500,6 @@ const aggregate = async ({
       //   web-pushes
       // --------------------------------------------------
       
-      // {
-      //   $lookup:
-      //     {
-      //       from: 'web-pushes',
-      //       let: { letWebPushes_id: '$webPushes_id' },
-      //       pipeline: [
-      //         { $match:
-      //           { $expr:
-      //             { $eq: ['$_id', '$$letWebPushes_id'] },
-      //           }
-      //         },
-      //         { $project:
-      //           {
-      //             _id: 0,
-      //             available: 1,
-      //             subscriptionObj: 1,
-      //           }
-      //         }
-      //       ],
-      //       as: 'webPushesObj'
-      //     }
-      // },
-      
-      // {
-      //   $unwind: {
-      //     path: '$webPushesObj',
-      //     preserveNullAndEmptyArrays: true,
-      //   }
-      // },
-      
-      
-      // --------------------------------------------------
-      //   users / ユーザーを取得（アクセス日時＆経験値＆プレイヤーID用）
-      // --------------------------------------------------
-      
-      // {
-      //   $lookup:
-      //     {
-      //       from: 'users',
-      //       let: { letUsers_id: '$users_id' },
-      //       pipeline: [
-      //         { $match:
-      //           { $expr:
-      //             { $eq: ['$_id', '$$letUsers_id'] },
-      //           }
-      //         },
-      //         { $project:
-      //           {
-      //             _id: 0,
-      //             accessDate: 1,
-      //             exp: 1,
-      //             userID: 1,
-      //             // webPushSubscriptionObj: 1,
-      //           }
-      //         }
-      //       ],
-      //       as: 'usersObj'
-      //     }
-      // },
-      
-      // {
-      //   $unwind: {
-      //     path: '$usersObj',
-      //     preserveNullAndEmptyArrays: true,
-      //   }
-      // },
-      
-      
-      // --------------------------------------------------
-      //   web-pushes
-      // --------------------------------------------------
-      
       {
         $lookup:
           {
@@ -1583,7 +1511,6 @@ const aggregate = async ({
                   { $and:
                     [
                       { $eq: ['$_id', '$$letWebPushes_id'] },
-                      // { $eq: ['$available', true] },
                       { $lt: ['$errorCount', errorLimit] },
                     ]
                   },
@@ -1593,7 +1520,6 @@ const aggregate = async ({
               { $project:
                 {
                   _id: 1,
-                  // available: 1,
                   users_id: 1,
                   subscriptionObj: 1,
                   sendTodayCount: 1,
@@ -1629,56 +1555,12 @@ const aggregate = async ({
               },
               
               
-              // --------------------------------------------------
-              //   users / web-pushes
-              // --------------------------------------------------
-              
-              {
-                $lookup:
-                  {
-                    from: 'web-pushes',
-                    let: { letWebPushes_id: '$webPushes_id' },
-                    pipeline: [
-                      { $match:
-                        { $expr:
-                          { $and:
-                            [
-                              { $eq: ['$_id', '$$letWebPushes_id'] },
-                              // { $eq: ['$available', true] },
-                              { $lt: ['$errorCount', errorLimit] },
-                            ]
-                          }
-                        }
-                      },
-                      { $project:
-                        {
-                          _id: 1,
-                          // available: 1,
-                          users_id: 1,
-                          subscriptionObj: 1,
-                          sendTodayCount: 1,
-                        }
-                      }
-                    ],
-                    as: 'webPushesObj'
-                  }
-              },
-              
-              {
-                $unwind: {
-                  path: '$webPushesObj',
-                  preserveNullAndEmptyArrays: true,
-                }
-              },
-              
-              
               { $project:
                 {
                   _id: 0,
                   accessDate: 1,
                   exp: 1,
                   userID: 1,
-                  webPushesObj: 1,
                 }
               }
             ],
@@ -2200,6 +2082,10 @@ const findOneForEdit = async ({
           }
       },
       
+      
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
       
       { $project:
         {
@@ -2965,7 +2851,6 @@ const findForNotification = async ({
                   { $and:
                     [
                       { $eq: ['$_id', '$$letWebPushes_id'] },
-                      // { $eq: ['$available', true] },
                       { $lt: ['$errorCount', errorLimit] },
                     ]
                   },
@@ -2975,7 +2860,6 @@ const findForNotification = async ({
               { $project:
                 {
                   _id: 1,
-                  // available: 1,
                   users_id: 1,
                   subscriptionObj: 1,
                   sendTodayCount: 1,
@@ -2995,91 +2879,14 @@ const findForNotification = async ({
       
       
       // --------------------------------------------------
-      //   users
+      //   $project
       // --------------------------------------------------
-      
-      {
-        $lookup:
-          {
-            from: 'users',
-            let: { letUsers_id: '$users_id' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$letUsers_id'] },
-                }
-              },
-              
-              
-              // --------------------------------------------------
-              //   users / web-pushes
-              // --------------------------------------------------
-              
-              {
-                $lookup:
-                  {
-                    from: 'web-pushes',
-                    let: { letWebPushes_id: '$webPushes_id' },
-                    pipeline: [
-                      { $match:
-                        { $expr:
-                          { $and:
-                            [
-                              { $eq: ['$_id', '$$letWebPushes_id'] },
-                              // { $eq: ['$available', true] },
-                              { $lt: ['$errorCount', errorLimit] },
-                            ]
-                          }
-                        }
-                      },
-                      { $project:
-                        {
-                          _id: 1,
-                          // available: 1,
-                          users_id: 1,
-                          subscriptionObj: 1,
-                          sendTodayCount: 1,
-                        }
-                      }
-                    ],
-                    as: 'webPushesObj'
-                  }
-              },
-              
-              {
-                $unwind: {
-                  path: '$webPushesObj',
-                  preserveNullAndEmptyArrays: true,
-                }
-              },
-              
-              
-              { $project:
-                {
-                  _id: 0,
-                  webPushesObj: 1,
-                }
-              }
-            ],
-            as: 'usersObj'
-          }
-      },
-      
-      {
-        $unwind: {
-          path: '$usersObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
-      
-      
       
       { $project:
         {
           localesArr: 1,
           gamesObj: 1,
           webPushesObj: 1,
-          usersObj: 1,
         }
       },
       
@@ -3112,7 +2919,6 @@ const findForNotification = async ({
     // --------------------------------------------------
     
     const webPushAvailable = lodashGet(recruitmentThreadsObj, ['webPushAvailable'], false);
-    // const available = lodashGet(docObj, ['webPushesObj', 'available'], true);
     
     if (webPushAvailable) {
       
@@ -3120,15 +2926,6 @@ const findForNotification = async ({
       returnObj.users_id = lodashGet(docObj, ['webPushesObj', 'users_id'], '');
       returnObj.subscriptionObj = lodashGet(docObj, ['webPushesObj', 'subscriptionObj'], {});
       returnObj.sendTodayCount = lodashGet(docObj, ['webPushesObj', 'sendTodayCount'], 0);
-      
-      if (lodashHas(docObj, ['usersObj', 'webPushesObj'])) {
-        
-        returnObj.webPushes_id = lodashGet(docObj, ['usersObj', 'webPushesObj', '_id'], '');
-        returnObj.users_id = lodashGet(docObj, ['usersObj', 'webPushesObj', 'users_id'], '');
-        returnObj.subscriptionObj = lodashGet(docObj, ['usersObj', 'webPushesObj', 'subscriptionObj'], {});
-        returnObj.sendTodayCount = lodashGet(docObj, ['usersObj', 'webPushesObj', 'sendTodayCount'], 0);
-        
-      }
       
     }
     
@@ -3229,7 +3026,6 @@ const findForNotification = async ({
 
 /**
  * Transaction 挿入 / 更新する
- * スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
  * 
  * @param {Object} recruitmentThreadsConditionObj - DB recruitment-threads 検索条件
  * @param {Object} recruitmentThreadsSaveObj - DB recruitment-threads 保存データ
@@ -3346,7 +3142,7 @@ const transactionForUpsert = async ({
     
     if (Object.keys(webPushesConditionObj).length !== 0 && Object.keys(webPushesSaveObj).length !== 0) {
       
-      await SchemaWebPushes.updateOne(webPushesConditionObj, webPushesSaveObj, { session });
+      await SchemaWebPushes.updateOne(webPushesConditionObj, webPushesSaveObj, { session, upsert: true });
       
     }
     
@@ -3367,7 +3163,7 @@ const transactionForUpsert = async ({
     //   Transaction / Commit
     // --------------------------------------------------
     
-    // await session.commitTransaction();
+    await session.commitTransaction();
     // console.log('--------コミット-----------');
     
     session.endSession();
@@ -3379,76 +3175,76 @@ const transactionForUpsert = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/recruitment-threads/model.js - transactionForUpsert
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/recruitment-threads/model.js - transactionForUpsert
+    // `);
     
-    console.log(`
-      ----- recruitmentThreadsConditionObj -----\n
-      ${util.inspect(recruitmentThreadsConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- recruitmentThreadsConditionObj -----\n
+    //   ${util.inspect(recruitmentThreadsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- recruitmentThreadsSaveObj -----\n
-      ${util.inspect(recruitmentThreadsSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- recruitmentThreadsSaveObj -----\n
+    //   ${util.inspect(recruitmentThreadsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- imagesAndVideosConditionObj -----\n
-      ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosConditionObj -----\n
+    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- imagesAndVideosSaveObj -----\n
-      ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosSaveObj -----\n
+    //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- gameCommunitiesConditionObj -----\n
-      ${util.inspect(gameCommunitiesConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gameCommunitiesConditionObj -----\n
+    //   ${util.inspect(gameCommunitiesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- gameCommunitiesSaveObj -----\n
-      ${util.inspect(gameCommunitiesSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gameCommunitiesSaveObj -----\n
+    //   ${util.inspect(gameCommunitiesSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- webPushesConditionObj -----\n
-      ${util.inspect(webPushesConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- webPushesConditionObj -----\n
+    //   ${util.inspect(webPushesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- webPushesSaveObj -----\n
-      ${util.inspect(webPushesSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- webPushesSaveObj -----\n
+    //   ${util.inspect(webPushesSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- usersConditionObj -----\n
-      ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- usersConditionObj -----\n
+    //   ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- usersSaveObj -----\n
-      ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- usersSaveObj -----\n
+    //   ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

@@ -44,6 +44,8 @@ const { formatRecruitmentRepliesArr } = require('../recruitment-replies/format.j
 
 
 
+
+
 // --------------------------------------------------
 //   Function
 // --------------------------------------------------
@@ -459,17 +461,11 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     //   通知
     // --------------------------------------------------
     
-    if (lodashHas(valueObj, ['usersObj', 'webPushesObj', '_id']) || lodashHas(valueObj, ['webPushesObj', '_id'])) {
+    if (lodashHas(valueObj, ['webPushesObj', '_id'])) {
       
       clonedObj.notification = 'webpush';
       
     }
-    
-    // if ((webPush && webPushEndpoint) || (webPush && users_id && webPushUsersEndpoint)) {
-      
-    //   clonedObj.notification = 'webpush';
-      
-    // }
     
     
     
@@ -489,10 +485,6 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     delete clonedObj.ip;
     delete clonedObj.userAgent;
     delete clonedObj.__v;
-    
-    if (lodashHas(clonedObj, ['usersObj', 'webPushesObj', '_id'])) {
-      delete clonedObj.usersObj.webPushesObj;
-    }
     
     
     

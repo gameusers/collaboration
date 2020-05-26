@@ -22,6 +22,11 @@ import moment from 'moment';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+// import { Element } from 'react-scroll';
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 
@@ -62,6 +67,10 @@ import Breadcrumbs from 'app/common/layout/components/breadcrumbs.js';
 
 
 
+
+// --------------------------------------------------
+//   Store
+// --------------------------------------------------
 
 /**
  * ストアを初期化する / 更新する
@@ -142,6 +151,101 @@ export default class GcRec extends React.Component {
     
     
   }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   componentDidMount
+  // --------------------------------------------------
+  
+  componentDidMount() {
+    
+    console.log('componentDidMount');
+    
+    
+    // ---------------------------------------------
+    //   Scroll
+    // ---------------------------------------------
+    //to: 'recruitmentThreads',
+    const stores = initStoreRoot({});
+    
+    stores.layout.handleScrollTo({
+      
+      to: 'recruitmentThreads',
+      duration: 0,
+      delay: 0,
+      smooth: 'easeInOutQuart',
+      offset: -50,
+      
+    });
+    
+    
+  }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   componentDidUpdate / Router.push でページを移動し、そこからブラウザで戻ったときの処理
+  //   まず getServerSideProps でデータを取得し、次に componentDidUpdate でデータを更新する
+  // --------------------------------------------------
+  
+  // componentDidUpdate(prevProps) {
+    
+  //   console.log('componentDidUpdate');
+    
+    
+  //   // console.log(`
+  //   //   ----- prevProps -----\n
+  //   //   ${util.inspect(prevProps, { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
+    
+  //   // console.log(`
+  //   //   ----- this.props -----\n
+  //   //   ${util.inspect(this.props, { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
+    
+  //   console.log(chalk`
+  //     this.props.ISO8601: {green ${this.props.ISO8601}}
+  //     prevProps.ISO8601: {green ${prevProps.ISO8601}}
+  //   `);
+    
+    
+  //   // --------------------------------------------------
+  //   //   Update Store
+  //   // --------------------------------------------------
+    
+  //   if (this.props.ISO8601 !== prevProps.ISO8601) {
+      
+  //     // console.log('componentDidUpdate / Update Store');
+      
+  //     initializeStore({ propsObj: this.props.propsObj });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Scroll
+  //     // ---------------------------------------------
+      
+  //     const stores = initStoreRoot({});
+      
+  //     stores.layout.handleScrollTo({
+        
+  //       to: 'recruitmentThreads',
+  //       duration: 0,
+  //       delay: 0,
+  //       smooth: 'easeInOutQuart',
+  //       offset: -50,
+        
+  //     });
+      
+      
+  //   }
+    
+    
+  // }
   
   
   

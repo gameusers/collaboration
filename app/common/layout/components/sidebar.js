@@ -21,9 +21,16 @@ import { useSpring, animated } from 'react-spring';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 // import lodashSet from 'lodash/set';
 // import lodashThrottle from 'lodash/throttle';
+
+
 
 
 
@@ -46,8 +53,11 @@ const Container = ({ children, showNavTop, lowerSidebar }) => {
     ypx = 105;
   }
   
+  // ypx = 105;
   
   // console.log(chalk`
+  //   showNavTop: {green ${showNavTop}}
+  //   lowerSidebar: {green ${lowerSidebar}}
   //   ypx: {green ${ypx}}
   // `);
   
@@ -75,6 +85,7 @@ const Container = ({ children, showNavTop, lowerSidebar }) => {
   >
     {children}
   </animated.div>;
+  
   
 };
 

@@ -2259,13 +2259,13 @@ class Store {
       // };
       
       // L4D5QB9p4
-      formDataObj.webPushSubscriptionObj = {
-        endpoint: 'https://fcm.googleapis.com/fcm/send/fCVMofN4BLo:APA91bFShjo-hy02fDaVOpLDHQE_TaRRCPSG1IJIc_2qhndZuqkC67x4_RFbWp5uH4I11SKRdxpVquPQP59QNcomJw4irs0F-EWqOUu6ydVDMZ0Gau92YGmEV36SSO5a63vxUet7wEIo',
-        keys: {
-          p256dh: 'BLPT_K71Dk35Le_w0eyviBXXNRBsaZc-5o1-D0VKp18XW_N4wCPyzilZE-j0V-eJ4Cz5irqOZt0nePNG8zLDdaQ',
-          auth: '0MuLywCY4rbTg5I2_nFEOQ'
-        }
-      };
+      // formDataObj.webPushSubscriptionObj = {
+      //   endpoint: 'https://fcm.googleapis.com/fcm/send/fCVMofN4BLo:APA91bFShjo-hy02fDaVOpLDHQE_TaRRCPSG1IJIc_2qhndZuqkC67x4_RFbWp5uH4I11SKRdxpVquPQP59QNcomJw4irs0F-EWqOUu6ydVDMZ0Gau92YGmEV36SSO5a63vxUet7wEIo',
+      //   keys: {
+      //     p256dh: 'BLPT_K71Dk35Le_w0eyviBXXNRBsaZc-5o1-D0VKp18XW_N4wCPyzilZE-j0V-eJ4Cz5irqOZt0nePNG8zLDdaQ',
+      //     auth: '0MuLywCY4rbTg5I2_nFEOQ'
+      //   }
+      // };
       
       // Error
       // formDataObj.webPushSubscriptionObj = {
@@ -2359,9 +2359,6 @@ class Store {
         });
         
       }
-      
-      
-      
       
       
       
@@ -2716,6 +2713,34 @@ class Store {
       }
       
       
+      // nOVilxpSk
+      formDataObj.webPushSubscriptionObj = {
+        endpoint: 'https://fcm.googleapis.com/fcm/send/cOsJ3EXpj2E:APA91bHnycUwE37fsnmlRNYEuJYx_kf67jaq7CFmr7oFIGzIqRk8tXi8BhHmtCfL7MlMjhyYoFwhhvLMx7sfUCqh00wDXVIovAp5hamTe2UWGDF4QUd4Z8VRNkNcrQadHGUuy7k-Jqbd',
+        keys: {
+          p256dh: 'BCCZ55xYxmC_6JNemzKc1FzAiz-fUEz4xCA3WXqVq2MRBaSJA3SUKtlY_G_747sT2C0Xm6QJD4L7KKzunNtj-Zo',
+          auth: 'EYpxeXGdImUIaTpBqVca0A'
+        }
+      };
+      
+      // L4D5QB9p4
+      // formDataObj.webPushSubscriptionObj = {
+      //   endpoint: 'https://fcm.googleapis.com/fcm/send/fCVMofN4BLo:APA91bFShjo-hy02fDaVOpLDHQE_TaRRCPSG1IJIc_2qhndZuqkC67x4_RFbWp5uH4I11SKRdxpVquPQP59QNcomJw4irs0F-EWqOUu6ydVDMZ0Gau92YGmEV36SSO5a63vxUet7wEIo',
+      //   keys: {
+      //     p256dh: 'BLPT_K71Dk35Le_w0eyviBXXNRBsaZc-5o1-D0VKp18XW_N4wCPyzilZE-j0V-eJ4Cz5irqOZt0nePNG8zLDdaQ',
+      //     auth: '0MuLywCY4rbTg5I2_nFEOQ'
+      //   }
+      // };
+      
+      // Error
+      // formDataObj.webPushSubscriptionObj = {
+      //   endpoint: 'https://fcm.googleapis.com/fcm/send/aaa',
+      //   keys: {
+      //     p256dh: 'bbb',
+      //     auth: 'ccc'
+      //   }
+      // };
+      
+      
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
@@ -2768,34 +2793,55 @@ class Store {
       
       
       // ---------------------------------------------
+      //   Hide Form
+      // ---------------------------------------------
+      
+      lodashSet(this.dataObj, [...pathArr, 'showFormComment'], false);
+      
+      
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      storeLayout.handleScrollTo({
+        
+        to: recruitmentComments_id,
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+        
+      });
+      
+      // ---------------------------------------------
       //   編集の場合
       // ---------------------------------------------
       
-      if (recruitmentComments_id) {
+      // if (recruitmentComments_id) {
         
         
-        // ---------------------------------------------
-        //   Hide Form
-        // ---------------------------------------------
+      //   // ---------------------------------------------
+      //   //   Hide Form
+      //   // ---------------------------------------------
         
-        lodashSet(this.dataObj, [...pathArr, 'showFormComment'], false);
+      //   lodashSet(this.dataObj, [...pathArr, 'showFormComment'], false);
         
         
-        // ---------------------------------------------
-        //   Scroll
-        // ---------------------------------------------
+      //   // ---------------------------------------------
+      //   //   Scroll
+      //   // ---------------------------------------------
         
-        storeLayout.handleScrollTo({
+      //   storeLayout.handleScrollTo({
           
-          to: recruitmentComments_id,
-          duration: 0,
-          delay: 0,
-          smooth: 'easeInOutQuart',
-          offset: -50,
+      //     to: recruitmentComments_id,
+      //     duration: 0,
+      //     delay: 0,
+      //     smooth: 'easeInOutQuart',
+      //     offset: -50,
           
-        });
+      //   });
         
-      }
+      // }
       
       
       
@@ -3998,44 +4044,6 @@ export default function initStoreGcRecruitment({ propsObj }) {
     
     
     
-    
-    // --------------------------------------------------
-    //   recruitmentThreadsObj
-    // --------------------------------------------------
-    
-    // const recruitmentThreadsNewObj = lodashGet(propsObj, ['recruitmentThreadsObj'], null);
-    
-    // if (recruitmentThreadsNewObj) {
-      
-    //   const recruitmentThreadsOldObj = lodashGet(storeGcRecruitment, ['dataObj', gameCommunities_id, 'recruitmentThreadsObj'], {});
-      
-      
-    //   // console.log(`
-    //   //   ----- recruitmentThreadsOldObj -----\n
-    //   //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreadsOldObj)), { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
-      
-    //   // console.log(`
-    //   //   ----- recruitmentThreadsNewObj -----\n
-    //   //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreadsNewObj)), { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
-      
-      
-    //   const recruitmentThreadsMergedObj = lodashMerge(recruitmentThreadsOldObj, recruitmentThreadsNewObj);
-    //   lodashSet(storeGcRecruitment, ['dataObj', gameCommunities_id, 'recruitmentThreadsObj'], recruitmentThreadsMergedObj);
-      
-      
-    //   // console.log(`
-    //   //   ----- recruitmentThreadsMergedObj -----\n
-    //   //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreadsMergedObj)), { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
-      
-      
-      
-    // }
     
     // --------------------------------------------------
     //   recruitmentThreadsObj

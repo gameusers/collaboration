@@ -37,7 +37,9 @@ const SchemaRecruitmentThreads = require('../recruitment-threads/schema.js');
 const SchemaRecruitmentReplies = require('../recruitment-replies/schema.js');
 const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
 const SchemaGameCommunities = require('../game-communities/schema.js');
+const SchemaWebPushes = require('../web-pushes/schema.js');
 const SchemaUsers = require('../users/schema.js');
+const SchemaNotifications = require('../notifications/schema.js');
 
 
 // ---------------------------------------------
@@ -561,56 +563,12 @@ const findCommentsAndReplies = async ({
                 },
                 
                 
-                // --------------------------------------------------
-                //   users / web-pushes
-                // --------------------------------------------------
-                
-                {
-                  $lookup:
-                    {
-                      from: 'web-pushes',
-                      let: { letWebPushes_id: '$webPushes_id' },
-                      pipeline: [
-                        { $match:
-                          { $expr:
-                            { $and:
-                              [
-                                { $eq: ['$_id', '$$letWebPushes_id'] },
-                                // { $eq: ['$available', true] },
-                                { $lt: ['$errorCount', errorLimit] },
-                              ]
-                            }
-                          }
-                        },
-                        { $project:
-                          {
-                            _id: 1,
-                            // available: 1,
-                            users_id: 1,
-                            subscriptionObj: 1,
-                            sendTodayCount: 1,
-                          }
-                        }
-                      ],
-                      as: 'webPushesObj'
-                    }
-                },
-                
-                {
-                  $unwind: {
-                    path: '$webPushesObj',
-                    preserveNullAndEmptyArrays: true,
-                  }
-                },
-                
-                
                 { $project:
                   {
                     _id: 0,
                     accessDate: 1,
                     exp: 1,
                     userID: 1,
-                    webPushesObj: 1,
                   }
                 }
               ],
@@ -624,43 +582,6 @@ const findCommentsAndReplies = async ({
             preserveNullAndEmptyArrays: true,
           }
         },
-        
-        
-        // --------------------------------------------------
-        //   users - アクセス日時＆経験値＆プレイヤーID用
-        // --------------------------------------------------
-        
-        // {
-        //   $lookup:
-        //     {
-        //       from: 'users',
-        //       let: { letUsers_id: '$users_id' },
-        //       pipeline: [
-        //         { $match:
-        //           { $expr:
-        //             { $eq: ['$_id', '$$letUsers_id'] },
-        //           }
-        //         },
-        //         { $project:
-        //           {
-        //             _id: 0,
-        //             accessDate: 1,
-        //             exp: 1,
-        //             userID: 1,
-        //             webPushSubscriptionObj: 1,
-        //           }
-        //         }
-        //       ],
-        //       as: 'usersObj'
-        //     }
-        // },
-        
-        // {
-        //   $unwind: {
-        //     path: '$usersObj',
-        //     preserveNullAndEmptyArrays: true,
-        //   }
-        // },
         
         
         // --------------------------------------------------
@@ -1433,6 +1354,10 @@ const findOneForEdit = async ({
       },
       
       
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+      
       { $project:
         {
           createdDate: 0,
@@ -1936,7 +1861,7 @@ const findForDelete = async ({
 
 
 /**
- * コメントのページ番号を取得する
+ * コメントのページ番号を取得する / 個別の募集を読み込む際に利用する　例）https://dev-1.gameusers.org/gc/Dead-by-Daylight/rec/bq215vgzyr
  * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
  * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントID
  * @param {number} commentLimit - コメントのリミット
@@ -2134,7 +2059,6 @@ const findForNotification = async ({
                   { $and:
                     [
                       { $eq: ['$_id', '$$letWebPushes_id'] },
-                      // { $eq: ['$available', true] },
                       { $lt: ['$errorCount', errorLimit] },
                     ]
                   }
@@ -2143,7 +2067,6 @@ const findForNotification = async ({
               { $project:
                 {
                   _id: 1,
-                  // available: 1,
                   users_id: 1,
                   subscriptionObj: 1,
                   sendTodayCount: 1,
@@ -2163,89 +2086,13 @@ const findForNotification = async ({
       
       
       // --------------------------------------------------
-      //   users
+      //   $project
       // --------------------------------------------------
-      
-      {
-        $lookup:
-          {
-            from: 'users',
-            let: { letUsers_id: '$users_id' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$letUsers_id'] },
-                }
-              },
-              
-              
-              // --------------------------------------------------
-              //   users / web-pushes
-              // --------------------------------------------------
-              
-              {
-                $lookup:
-                  {
-                    from: 'web-pushes',
-                    let: { letWebPushes_id: '$webPushes_id' },
-                    pipeline: [
-                      { $match:
-                        { $expr:
-                          { $and:
-                            [
-                              { $eq: ['$_id', '$$letWebPushes_id'] },
-                              // { $eq: ['$available', true] },
-                              { $lt: ['$errorCount', errorLimit] },
-                            ]
-                          }
-                        }
-                      },
-                      { $project:
-                        {
-                          _id: 1,
-                          // available: 1,
-                          users_id: 1,
-                          subscriptionObj: 1,
-                          sendTodayCount: 1,
-                        }
-                      }
-                    ],
-                    as: 'webPushesObj'
-                  }
-              },
-              
-              {
-                $unwind: {
-                  path: '$webPushesObj',
-                  preserveNullAndEmptyArrays: true,
-                }
-              },
-              
-              
-              { $project:
-                {
-                  _id: 0,
-                  webPushesObj: 1,
-                }
-              }
-            ],
-            as: 'usersObj'
-          }
-      },
-      
-      {
-        $unwind: {
-          path: '$usersObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
-      
       
       { $project:
         {
           localesArr: 1,
           webPushesObj: 1,
-          usersObj: 1,
         }
       },
       
@@ -2271,7 +2118,6 @@ const findForNotification = async ({
     // --------------------------------------------------
     
     const webPushAvailable = lodashGet(recruitmentCommentsObj, ['webPushAvailable'], false);
-    // const available = lodashGet(docObj, ['webPushesObj', 'available'], true);
     
     if (webPushAvailable) {
       
@@ -2279,15 +2125,6 @@ const findForNotification = async ({
       returnObj.users_id = lodashGet(docObj, ['webPushesObj', 'users_id'], '');
       returnObj.subscriptionObj = lodashGet(docObj, ['webPushesObj', 'subscriptionObj'], {});
       returnObj.sendTodayCount = lodashGet(docObj, ['webPushesObj', 'sendTodayCount'], 0);
-      
-      if (lodashHas(docObj, ['usersObj', 'webPushesObj'])) {
-        
-        returnObj.webPushes_id = lodashGet(docObj, ['usersObj', 'webPushesObj', '_id'], '');
-        returnObj.users_id = lodashGet(docObj, ['usersObj', 'webPushesObj', 'users_id'], '');
-        returnObj.subscriptionObj = lodashGet(docObj, ['usersObj', 'webPushesObj', 'subscriptionObj'], {});
-        returnObj.sendTodayCount = lodashGet(docObj, ['usersObj', 'webPushesObj', 'sendTodayCount'], 0);
-        
-      }
       
     }
     
@@ -2383,8 +2220,12 @@ const findForNotification = async ({
  * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
  * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
  * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
+ * @param {Object} webPushesConditionObj - DB web-pushes 検索条件
+ * @param {Object} webPushesSaveObj - DB web-pushes 保存データ
  * @param {Object} usersConditionObj - DB users 検索条件
  * @param {Object} usersSaveObj - DB users 保存データ
+ * @param {Object} notificationsConditionObj - DB notifications 検索条件
+ * @param {Object} notificationsSaveObj - DB notifications 保存データ
  * @return {Object} 
  */
 const transactionForUpsert = async ({
@@ -2397,8 +2238,12 @@ const transactionForUpsert = async ({
   imagesAndVideosSaveObj = {},
   gameCommunitiesConditionObj = {},
   gameCommunitiesSaveObj = {},
+  webPushesConditionObj = {},
+  webPushesSaveObj = {},
   usersConditionObj = {},
   usersSaveObj = {},
+  notificationsConditionObj = {},
+  notificationsSaveObj = {},
   
 }) => {
   
@@ -2445,7 +2290,7 @@ const transactionForUpsert = async ({
     //   - recruitment-threads
     // ---------------------------------------------
     
-    await SchemaRecruitmentThreads.updateOne(recruitmentThreadsConditionObj, recruitmentThreadsSaveObj, { session, upsert: true });
+    await SchemaRecruitmentThreads.updateOne(recruitmentThreadsConditionObj, recruitmentThreadsSaveObj, { session });
     
     
     // ---------------------------------------------
@@ -2491,12 +2336,34 @@ const transactionForUpsert = async ({
     
     
     // ---------------------------------------------
+    //   - web-pushes
+    // ---------------------------------------------
+    
+    if (Object.keys(webPushesConditionObj).length !== 0 && Object.keys(webPushesSaveObj).length !== 0) {
+      
+      await SchemaWebPushes.updateOne(webPushesConditionObj, webPushesSaveObj, { session, upsert: true });
+      
+    }
+    
+    
+    // ---------------------------------------------
     //   - users
     // ---------------------------------------------
     
     if (Object.keys(usersConditionObj).length !== 0 && Object.keys(usersSaveObj).length !== 0) {
       
       await SchemaUsers.updateOne(usersConditionObj, usersSaveObj, { session });
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   - notifications
+    // ---------------------------------------------
+    
+    if (Object.keys(notificationsConditionObj).length !== 0 && Object.keys(notificationsSaveObj).length !== 0) {
+      
+      await SchemaNotifications.updateOne(notificationsConditionObj, notificationsSaveObj, { session, upsert: true });
       
     }
     
@@ -2572,6 +2439,18 @@ const transactionForUpsert = async ({
     // `);
     
     // console.log(`
+    //   ----- webPushesConditionObj -----\n
+    //   ${util.inspect(webPushesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- webPushesSaveObj -----\n
+    //   ${util.inspect(webPushesSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
     //   ----- usersConditionObj -----\n
     //   ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
@@ -2580,6 +2459,18 @@ const transactionForUpsert = async ({
     // console.log(`
     //   ----- usersSaveObj -----\n
     //   ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- notificationsConditionObj -----\n
+    //   ${util.inspect(notificationsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- notificationsSaveObj -----\n
+    //   ${util.inspect(notificationsSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

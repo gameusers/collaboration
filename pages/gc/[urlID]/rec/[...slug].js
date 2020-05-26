@@ -22,6 +22,11 @@ import moment from 'moment';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 
@@ -62,6 +67,10 @@ import Breadcrumbs from 'app/common/layout/components/breadcrumbs.js';
 
 
 
+
+// --------------------------------------------------
+//   Store
+// --------------------------------------------------
 
 /**
  * ストアを初期化する / 更新する

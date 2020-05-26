@@ -16,6 +16,12 @@ import util from 'util';
 
 import { action, observable } from 'mobx';
 import { animateScroll as scroll, scrollSpy, scroller, Events } from 'react-scroll';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
@@ -34,6 +40,8 @@ import lodashHas from 'lodash/has';
 // --------------------------------------------------
 
 let storeLayout = null;
+
+
 
 
 
@@ -740,5 +748,6 @@ export default function initStoreLayout({ propsObj }) {
   // --------------------------------------------------
   
   return storeLayout;
+  
   
 }

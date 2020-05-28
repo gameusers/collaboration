@@ -1,55 +1,56 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelGameCommunities = require('../../../../../app/@database/game-communities/model');
-const ModelRecruitmentReplies = require('../../../../../app/@database/recruitment-replies/model');
+import ModelGameCommunities from 'app/@database/game-communities/model.js';
+import ModelRecruitmentReplies from 'app/@database/recruitment-replies/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationInteger } = require('../../../../../app/@validations/integer');
-const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
-// const { validationRecruitmentThreadsLimit } = require('../../../../../app/@database/recruitment-threads/validations/limit');
-const { validationRecruitmentCommentsLimit } = require('../../../../../app/@database/recruitment-comments/validations/limit');
-const { validationRecruitmentRepliesLimit } = require('../../../../../app/@database/recruitment-replies/validations/limit');
+import { validationInteger } from 'app/@validations/integer.js';
+import { validationGameCommunities_idServer } from 'app/@database/game-communities/validations/_id-server.js';
+import { validationRecruitmentCommentsLimit } from 'app/@database/recruitment-comments/validations/limit.js';
+import { validationRecruitmentRepliesLimit } from 'app/@database/recruitment-replies/validations/limit.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from 'app/@locales/locale.js';
+
+
 
 
 
@@ -87,9 +88,10 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   IP & User Agent
+  //   Language & IP & User Agent
   // --------------------------------------------------
   
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
@@ -158,7 +160,7 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Comments & Replies
+    //   DB find / Replies
     // --------------------------------------------------
     
     returnObj.recruitmentRepliesObj = await ModelRecruitmentReplies.findReplies({

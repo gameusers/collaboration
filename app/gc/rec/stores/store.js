@@ -63,6 +63,7 @@ import initStoreData from 'app/@stores/data.js';
 import initStoreWebPush from 'app/@stores/web-push.js';
 import initStoreLayout from 'app/common/layout/stores/layout.js';
 import initStoreHardware from 'app/common/hardware/stores/store.js';
+// import initStoreIDForm from 'app/common/id/stores/form.js';
 import initStoreImageAndVideoForm from 'app/common/image-and-video/stores/form.js';
 
 let storeGcRecruitment = null;
@@ -70,7 +71,15 @@ const storeData = initStoreData({});
 const storeWebPush = initStoreWebPush({});
 const storeLayout = initStoreLayout({});
 const storeHardware = initStoreHardware({});
+// const storeIDForm = initStoreIDForm({});
 const storeImageAndVideoForm = initStoreImageAndVideoForm({});
+
+// let storeData = null;
+// let storeWebPush = null;
+// let storeLayout = null;
+// let storeHardware = null;
+// let storeIDForm = null;
+// let storeImageAndVideoForm = null;
 
 
 
@@ -2283,58 +2292,51 @@ class Store {
       //   Fetch
       // ---------------------------------------------
       
-      const resultObj = await fetchWrapper({
+      // const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/upsert`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
+      //   urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/upsert`,
+      //   methodType: 'POST',
+      //   formData: JSON.stringify(formDataObj),
         
-      });
+      // });
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      // // console.log(`
+      // //   ----- resultObj -----\n
+      // //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+      // //   --------------------\n
+      // // `);
       
       
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   Error
+      // // ---------------------------------------------
       
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   スレッド更新
-      // ---------------------------------------------
-      
-      const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
-      const clonedObj = lodashCloneDeep(recruitmentObj);
-      
-      clonedObj.recruitmentThreadsObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {});
-      clonedObj.recruitmentCommentsObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
-      clonedObj.recruitmentRepliesObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
-      clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
-      
-      this.handleEdit({
-        pathArr: [gameCommunities_id],
-        value: clonedObj
-      });
+      // if ('errorsArr' in resultObj) {
+      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
+      // }
       
       
       
       
-      // ---------------------------------------------
-      //   Hide Form
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   スレッド更新
+      // // ---------------------------------------------
       
-      lodashSet(this.dataObj, [...pathArr, 'showFormThread'], false);
+      // const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
+      // const clonedObj = lodashCloneDeep(recruitmentObj);
+      
+      // clonedObj.recruitmentThreadsObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {});
+      // clonedObj.recruitmentCommentsObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
+      // clonedObj.recruitmentRepliesObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
+      // clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+      
+      // this.handleEdit({
+      //   pathArr: [gameCommunities_id],
+      //   value: clonedObj
+      // });
+      
+      
       
       
       // ---------------------------------------------
@@ -2342,6 +2344,13 @@ class Store {
       // ---------------------------------------------
       
       if (recruitmentThreads_id) {
+        
+        
+        // ---------------------------------------------
+        //   Hide Form
+        // ---------------------------------------------
+        
+        lodashSet(this.dataObj, [...pathArr, 'showFormThread'], false);
         
         
         // ---------------------------------------------
@@ -2358,6 +2367,107 @@ class Store {
           
         });
         
+        
+      // ---------------------------------------------
+      //   新規投稿の場合
+      // ---------------------------------------------
+        
+      } else {
+        
+        
+        // ---------------------------------------------
+        //   Reset Form
+        // ---------------------------------------------
+        
+        // ----------------------------------------
+        //   - Hardware
+        // ----------------------------------------
+        
+        // storeHardware.handleHardwaresKeyword({
+        //   pathArr,
+        //   value: '',
+        // });
+        
+        // lodashSet(storeHardware, ['dataObj', ...pathArr, 'hardwaresArr'], []);
+        storeHardware.handleResetForm({ pathArr });
+        
+        
+        // ----------------------------------------
+        //   - Image and Video
+        // ----------------------------------------
+        
+        storeImageAndVideoForm.handleResetForm({ pathArr });
+        
+        
+        // ----------------------------------------
+        //   - ID
+        // ----------------------------------------
+        
+        // storeIDForm.handleResetForm({ pathArr });
+        
+        
+        // ----------------------------------------
+        //   - Form
+        // ----------------------------------------
+        
+        lodashSet(this.dataObj, pathArr, {});
+        // lodashSet(this.dataObj, [...pathArr, 'category'], '');
+        
+        
+        
+        
+        
+        
+        
+        // const category = lodashGet(this.dataObj, [...pathArr, 'category'], '');
+        // const title = lodashGet(this.dataObj, [...pathArr, 'title'], '');
+        // const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
+        // const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
+        // const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj', ...pathArr, 'imagesAndVideosObj'], {});
+        
+        // const idsArr = lodashGet(this.dataObj, [...pathArr, 'idsArr'], []);
+        
+        // const platform1 = lodashGet(this.dataObj, [...pathArr, 'platform1'], 'Other');
+        // const platform2 = lodashGet(this.dataObj, [...pathArr, 'platform2'], 'Other');
+        // const platform3 = lodashGet(this.dataObj, [...pathArr, 'platform3'], 'Other');
+        
+        // const id1 = lodashGet(this.dataObj, [...pathArr, 'id1'], '');
+        // const id2 = lodashGet(this.dataObj, [...pathArr, 'id2'], '');
+        // const id3 = lodashGet(this.dataObj, [...pathArr, 'id3'], '');
+        
+        // const informationTitle1 = lodashGet(this.dataObj, [...pathArr, 'informationTitle1'], '');
+        // const informationTitle2 = lodashGet(this.dataObj, [...pathArr, 'informationTitle2'], '');
+        // const informationTitle3 = lodashGet(this.dataObj, [...pathArr, 'informationTitle3'], '');
+        // const informationTitle4 = lodashGet(this.dataObj, [...pathArr, 'informationTitle4'], '');
+        // const informationTitle5 = lodashGet(this.dataObj, [...pathArr, 'informationTitle5'], '');
+        
+        // const information1 = lodashGet(this.dataObj, [...pathArr, 'information1'], '');
+        // const information2 = lodashGet(this.dataObj, [...pathArr, 'information2'], '');
+        // const information3 = lodashGet(this.dataObj, [...pathArr, 'information3'], '');
+        // const information4 = lodashGet(this.dataObj, [...pathArr, 'information4'], '');
+        // const information5 = lodashGet(this.dataObj, [...pathArr, 'information5'], '');
+        
+        // const publicSetting = lodashGet(this.dataObj, [...pathArr, 'publicSetting'], 1);
+        
+        // const deadlineDate = lodashGet(this.dataObj, [...pathArr, 'deadlineDate'], '');
+        
+        // const webPushAvailable = lodashGet(this.dataObj, [...pathArr, 'webPushAvailable'], false);
+        // const webPushSubscriptionObj = lodashGet(this.dataObj, [...pathArr, 'webPushSubscriptionObj'], {});
+        
+        console.log(`
+          ----- [] -----\n
+          ${util.inspect(JSON.parse(JSON.stringify(lodashGet(this.dataObj, pathArr, []))), { colors: true, depth: null })}\n
+          --------------------\n
+        `);
+        
+        
+        // ---------------------------------------------
+        //   パネルを閉じる
+        // ---------------------------------------------
+        
+        storeLayout.handlePanelExpand({ pathArr });
+        
+        
       }
       
       
@@ -2367,16 +2477,16 @@ class Store {
       //   console.log
       // --------------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/gc/rec/stores/store.js / handleRecruitment
-      // `);
+      console.log(`
+        ----------------------------------------\n
+        /app/gc/rec/stores/store.js / handleRecruitment
+      `);
       
-      // console.log(`
-      //   ----- pathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- pathArr -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       // console.log(`
       //   ----- this.dataObj -----\n
@@ -2714,13 +2824,13 @@ class Store {
       
       
       // nOVilxpSk
-      formDataObj.webPushSubscriptionObj = {
-        endpoint: 'https://fcm.googleapis.com/fcm/send/cOsJ3EXpj2E:APA91bHnycUwE37fsnmlRNYEuJYx_kf67jaq7CFmr7oFIGzIqRk8tXi8BhHmtCfL7MlMjhyYoFwhhvLMx7sfUCqh00wDXVIovAp5hamTe2UWGDF4QUd4Z8VRNkNcrQadHGUuy7k-Jqbd',
-        keys: {
-          p256dh: 'BCCZ55xYxmC_6JNemzKc1FzAiz-fUEz4xCA3WXqVq2MRBaSJA3SUKtlY_G_747sT2C0Xm6QJD4L7KKzunNtj-Zo',
-          auth: 'EYpxeXGdImUIaTpBqVca0A'
-        }
-      };
+      // formDataObj.webPushSubscriptionObj = {
+      //   endpoint: 'https://fcm.googleapis.com/fcm/send/cOsJ3EXpj2E:APA91bHnycUwE37fsnmlRNYEuJYx_kf67jaq7CFmr7oFIGzIqRk8tXi8BhHmtCfL7MlMjhyYoFwhhvLMx7sfUCqh00wDXVIovAp5hamTe2UWGDF4QUd4Z8VRNkNcrQadHGUuy7k-Jqbd',
+      //   keys: {
+      //     p256dh: 'BCCZ55xYxmC_6JNemzKc1FzAiz-fUEz4xCA3WXqVq2MRBaSJA3SUKtlY_G_747sT2C0Xm6QJD4L7KKzunNtj-Zo',
+      //     auth: 'EYpxeXGdImUIaTpBqVca0A'
+      //   }
+      // };
       
       // L4D5QB9p4
       // formDataObj.webPushSubscriptionObj = {
@@ -3954,6 +4064,14 @@ export default function initStoreGcRecruitment({ propsObj }) {
   if (storeGcRecruitment === null) {
     storeGcRecruitment = new Store();
   }
+  
+  
+  // storeData = initStoreData({});
+  // storeWebPush = initStoreWebPush({});
+  // storeLayout = initStoreLayout({});
+  // storeHardware = initStoreHardware({});
+  // storeIDForm = initStoreIDForm({});
+  // storeImageAndVideoForm = initStoreImageAndVideoForm({});
   
   
   // --------------------------------------------------

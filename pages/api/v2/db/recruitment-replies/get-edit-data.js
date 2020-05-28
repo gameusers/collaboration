@@ -1,5 +1,5 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
@@ -22,22 +22,24 @@ import lodashSet from 'lodash/set';
 //   Model
 // ---------------------------------------------
 
-import ModelRecruitmentReplies from '../../../../../app/@database/recruitment-replies/model.js';
+import ModelRecruitmentReplies from 'app/@database/recruitment-replies/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-import { verifyCsrfToken } from '../../../../../app/@modules/csrf';
-import { returnErrorsArr } from '../../../../../app/@modules/log/log';
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-import { locale } from '../../../../../app/@locales/locale';
+import { locale } from 'app/@locales/locale.js';
+
+
 
 
 
@@ -74,9 +76,10 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   IP & User Agent
+  //   Language & IP & User Agent
   // --------------------------------------------------
   
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   

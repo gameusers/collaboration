@@ -1,5 +1,5 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
@@ -17,6 +17,11 @@ import util from 'util';
 import moment from 'moment';
 import rimraf from 'rimraf';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 
@@ -25,38 +30,38 @@ import lodashSet from 'lodash/set';
 //   Model
 // ---------------------------------------------
 
-import ModelGameCommunities from '../../../../../app/@database/game-communities/model.js';
-import ModelRecruitmentThreads from '../../../../../app/@database/recruitment-threads/model.js';
-import ModelRecruitmentReplies from '../../../../../app/@database/recruitment-replies/model.js';
+import ModelGameCommunities from 'app/@database/game-communities/model.js';
+import ModelRecruitmentThreads from 'app/@database/recruitment-threads/model.js';
+import ModelRecruitmentReplies from 'app/@database/recruitment-replies/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-import { verifyCsrfToken } from '../../../../../app/@modules/csrf.js';
-import { returnErrorsArr } from '../../../../../app/@modules/log/log.js';
-import { CustomError } from '../../../../../app/@modules/error/custom.js';
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-import { validationIP } from '../../../../../app/@validations/ip.js';
+import { validationIP } from 'app/@validations/ip.js';
 
-import { validationGameCommunities_idServer } from '../../../../../app/@database/game-communities/validations/_id-server.js';
-
-import { validationRecruitmentThreadsLimit } from '../../../../../app/@database/recruitment-threads/validations/limit.js';
-import { validationRecruitmentCommentsLimit } from '../../../../../app/@database/recruitment-comments/validations/limit.js';
-import { validationRecruitmentRepliesLimit } from '../../../../../app/@database/recruitment-replies/validations/limit.js';
+import { validationRecruitmentThreadsLimit } from 'app/@database/recruitment-threads/validations/limit.js';
+import { validationRecruitmentCommentsLimit } from 'app/@database/recruitment-comments/validations/limit.js';
+import { validationRecruitmentRepliesLimit } from 'app/@database/recruitment-replies/validations/limit.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale.js');
+import { locale } from 'app/@locales/locale.js';
+
+
 
 
 
@@ -94,9 +99,10 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   IP & User Agent
+  //   Language & IP & User Agent
   // --------------------------------------------------
   
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   

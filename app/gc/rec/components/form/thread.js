@@ -23,6 +23,11 @@ import TextareaAutosize from 'react-autosize-textarea';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 
@@ -91,6 +96,8 @@ const stylesObj = {
   },
   
 };
+
+
 
 
 
@@ -183,13 +190,12 @@ export default injectIntl(class extends React.Component {
     const title = lodashGet(dataObj, [...pathArr, 'title'], '');
     const name = lodashGet(dataObj, [...pathArr, 'name'], '');
     const comment = lodashGet(dataObj, [...pathArr, 'comment'], '');
-    // const twitter = lodashGet(dataObj, [...pathArr, 'twitter'], false);
     const webPushAvailable = lodashGet(dataObj, [...pathArr, 'webPushAvailable'], false);
     
-    const limitHardwares = parseInt(process.env.NEXT_PUBLIC_NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT, 10);
+    const limitHardwares = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT, 10);
     
     // console.log(chalk`
-    //   process.env.NEXT_PUBLIC_NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT: {green ${process.env.NEXT_PUBLIC_NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT} / ${typeof process.env.NEXT_PUBLIC_NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT}}
+    //   process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT: {green ${process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT} / ${typeof process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT}}
     //   limitHardwares: {green ${limitHardwares} / ${typeof limitHardwares}}
     // `);
     
@@ -590,50 +596,6 @@ export default injectIntl(class extends React.Component {
             </div>
             
           </div>
-          
-          
-          
-          
-          {/* Twitter */}
-          {/*<div css={cssBox}>
-            
-            <h3
-              css={css`
-                font-weight: bold;
-                margin: 0 0 2px 0;
-              `}
-            >
-              Twitter
-            </h3>
-            
-            <p
-              css={css`
-                margin: 0 0 12px 0;
-              `}
-            >
-              Twitterアカウントをお持ちの場合、自分のTwitterアカウントを利用して募集を告知することができます。チェックしない場合は、Game UsersのTwitterアカウントで告知が行われます。
-            </p>
-            
-            
-            <div>
-              <FormControlLabel
-                classes={{
-                  label: classes.label
-                }}
-                control={
-                  <Checkbox
-                    checked={twitter}
-                    onChange={(eventObj) => handleEdit({
-                      pathArr: [...pathArr, 'twitter'],
-                      value: eventObj.target.checked
-                    })}
-                  />
-                }
-                label="自分のTwitterアカウントで告知する"
-              />
-            </div>
-            
-          </div>*/}
           
           
           

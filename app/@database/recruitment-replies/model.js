@@ -16,6 +16,11 @@ const util = require('util');
 
 const moment = require('moment');
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
@@ -32,6 +37,7 @@ const SchemaRecruitmentThreads = require('../recruitment-threads/schema.js');
 const SchemaRecruitmentComments = require('../recruitment-comments/schema.js');
 const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
 const SchemaGameCommunities = require('../game-communities/schema.js');
+const SchemaNotifications = require('../notifications/schema.js');
 
 const ModelRecruitmentComments = require('../../@database/recruitment-comments/model.js');
 
@@ -48,7 +54,7 @@ const { verifyAuthority } = require('../../@modules/authority.js');
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../@locales/locale');
+const { locale } = require('../../@locales/locale.js');
 
 
 // ---------------------------------------------
@@ -968,7 +974,7 @@ const findRepliesForUpsert = async ({
       
       
       const replies = lodashGet(docRecruitmentCommentsObj, ['replies'], 1);
-      replyPage = Math.ceil(replies / replyLimit);
+      replyPage = replies ? Math.ceil(replies / replyLimit) : 1;
       
       
       
@@ -982,6 +988,11 @@ const findRepliesForUpsert = async ({
       //   ----- docRecruitmentCommentsObj -----\n
       //   ${util.inspect(docRecruitmentCommentsObj, { colors: true, depth: null })}\n
       //   --------------------\n
+      // `);
+      
+      // console.log(chalk`
+      //   replies: {green ${replies}}
+      //   replyPage: {green ${replyPage}}
       // `);
       
       
@@ -1616,7 +1627,6 @@ const findForNotification = async ({
 
 /**
  * Transaction 挿入 / 更新する
- * スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
  * 
  * @param {Object} recruitmentThreadsConditionObj - DB recruitment-threads 検索条件
  * @param {Object} recruitmentThreadsSaveObj - DB recruitment-threads 保存データ
@@ -1628,6 +1638,8 @@ const findForNotification = async ({
  * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
  * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
  * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
+ * @param {Object} notificationsConditionObj - DB notifications 検索条件
+ * @param {Object} notificationsSaveObj - DB notifications 保存データ
  * @return {Object} 
  */
 const transactionForUpsert = async ({
@@ -1642,6 +1654,8 @@ const transactionForUpsert = async ({
   imagesAndVideosSaveObj = {},
   gameCommunitiesConditionObj = {},
   gameCommunitiesSaveObj = {},
+  notificationsConditionObj = {},
+  notificationsSaveObj = {},
   
 }) => {
   
@@ -1740,6 +1754,16 @@ const transactionForUpsert = async ({
     }
     
     
+    // ---------------------------------------------
+    //   - notifications
+    // ---------------------------------------------
+    
+    if (Object.keys(notificationsConditionObj).length !== 0 && Object.keys(notificationsSaveObj).length !== 0) {
+      
+      await SchemaNotifications.updateOne(notificationsConditionObj, notificationsSaveObj, { session, upsert: true });
+      
+    }
+    
     
     // --------------------------------------------------
     //   Transaction / Commit
@@ -1819,6 +1843,18 @@ const transactionForUpsert = async ({
     // console.log(`
     //   ----- gameCommunitiesSaveObj -----\n
     //   ${util.inspect(gameCommunitiesSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- notificationsConditionObj -----\n
+    //   ${util.inspect(notificationsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- notificationsSaveObj -----\n
+    //   ${util.inspect(notificationsSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

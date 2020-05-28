@@ -321,9 +321,9 @@ export default async (req, res) => {
       //   recruitmentThreads_id が不正な値の場合はエラー
       // --------------------------------------------------
       
-      // if (tempOldObj.recruitmentThreads_id !== recruitmentThreads_id) {
-      //   throw new CustomError({ level: 'warn', errorsArr: [{ code: '9gonCKlHZ', messageID: '3mDvfqZHV' }] });
-      // }
+      if (tempOldObj.recruitmentThreads_id !== recruitmentThreads_id) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: '9gonCKlHZ', messageID: '3mDvfqZHV' }] });
+      }
       
       
       oldImagesAndVideosObj = lodashGet(tempOldObj, ['imagesAndVideosObj'], {});
@@ -896,6 +896,46 @@ export default async (req, res) => {
     
     
     
+    // ---------------------------------------------
+    //   - notifications / 新規挿入の場合のみ
+    // ---------------------------------------------
+    
+    let notificationsConditionObj = {};
+    let notificationsSaveObj = {};
+    
+    
+    if (!recruitmentComments_id) {
+      
+      notificationsConditionObj = {
+        _id: shortid.generate(),
+      };
+      
+      
+      notificationsSaveObj = {
+        
+        createdDate: ISO8601,
+        done: false,
+        type: 'recruitment-comments',
+        arr: [
+          {
+            _id: recruitmentThreadsConditionObj._id,
+            type: 'target',
+            db: 'recruitment-threads',
+          },
+          {
+            _id: recruitmentCommentsConditionObj._id,
+            type: 'source',
+            db: 'recruitment-comments',
+          }
+        ],
+        
+      };
+      
+    }
+    
+    
+    
+    
     // --------------------------------------------------
     //   Update - 編集の場合、更新しない方がいいフィールドを削除する
     // --------------------------------------------------
@@ -922,48 +962,6 @@ export default async (req, res) => {
       // ---------------------------------------------
       
       delete recruitmentThreadsSaveObj.$inc.comments;
-      
-      
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   - notifications / 新規挿入の場合のみ
-    // ---------------------------------------------
-    
-    let notificationsConditionObj = {};
-    let notificationsSaveObj = {};
-    
-    
-    if (!recruitmentComments_id) {
-      
-      
-      notificationsConditionObj = {
-        _id: shortid.generate(),
-      };
-      
-      
-      notificationsSaveObj = {
-        
-        createdDate: ISO8601,
-        done: false,
-        type: 'recruitment-comments',
-        arr: [
-          {
-            _id: recruitmentThreadsConditionObj._id,
-            type: 'target',
-            db: 'recruitment-threads',
-          },
-          {
-            _id: recruitmentCommentsConditionObj._id,
-            type: 'source',
-            db: 'recruitment-comments',
-          }
-        ],
-        
-      };
       
       
     }

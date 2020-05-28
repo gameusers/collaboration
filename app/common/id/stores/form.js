@@ -1,55 +1,56 @@
-// -------------------------------------------------------
+// --------------------------------------------------
 //   Import
-// -------------------------------------------------------
+// --------------------------------------------------
 
-// --------------------------------------------------
+// ---------------------------------------------
 //   Console
-// --------------------------------------------------
+// ---------------------------------------------
 
 import chalk from 'chalk';
 import util from 'util';
 
 
-// --------------------------------------------------
+// ---------------------------------------------
 //   Node Packages
-// --------------------------------------------------
+// ---------------------------------------------
 
 import { action, observable } from 'mobx';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
 import lodashCloneDeep from 'lodash/cloneDeep';
 
 
-// --------------------------------------------------
+// ---------------------------------------------
 //   Modules
-// --------------------------------------------------
+// ---------------------------------------------
 
-import { fetchWrapper } from '../../../@modules/fetch';
-import { CustomError } from '../../../@modules/error/custom';
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
-// -------------------------------------------------------
+// ---------------------------------------------
 //   Stores
-// -------------------------------------------------------
+// ---------------------------------------------
 
-import initStoreLayout from '../..//layout/stores/layout';
-import initStoreCardPlayer from '../../card/player/stores/player';
-import initStoreGameForm from '../../game/stores/form';
-import initStoreGcRecruitment from '../../../gc/rec/stores/store';
-
-
-
-
-// -------------------------------------------------------
-//   Store
-// -------------------------------------------------------
+import initStoreLayout from 'app/common/layout/stores/layout.js';
+import initStoreCardPlayer from 'app/common/card/player/stores/player.js';
+import initStoreGameForm from 'app/common/game/stores/form.js';
+import initStoreGcRecruitment from 'app/gc/rec/stores/store.js';
 
 let storeIDForm = null;
 const storeLayout = initStoreLayout({});
 const storeCardPlayer = initStoreCardPlayer({});
 const storeGameForm = initStoreGameForm({});
 const storeGcRecruitment = initStoreGcRecruitment({});
+
+
 
 
 
@@ -364,7 +365,7 @@ class Store {
   /**
    * 選択を確定するボタンを押したときに実行される
    * @param {Array} pathArr - パス
-   * @param {string} type - IDフォームの呼び出し元の種類 / cardPlayerForm / 
+   * @param {string} type - IDフォームの呼び出し元の種類 / cardPlayerForm, recruitment
    * @param {string} _id - cardPlayers_id / 
    * @param {Array} idsArr - 選択されたIDの配列
    * @param {Array} forUpdateOtherStorePathArr - 別のストア更新用のパスが入った配列
@@ -1020,7 +1021,7 @@ class Store {
       //   フォームを空にする
       // --------------------------------------------------
       
-      this.handleClearForm({ pathArr });
+      this.handleResetForm({ pathArr });
       
       
       // --------------------------------------------------
@@ -1289,7 +1290,7 @@ class Store {
       //   フォームを空にする
       // --------------------------------------------------
       
-      this.handleClearForm({ pathArr });
+      this.handleResetForm({ pathArr });
       
       
       // --------------------------------------------------
@@ -1356,10 +1357,10 @@ class Store {
   
   /**
    * フォームを空にする
-   * @param {string} _id
+   * @param {Array} pathArr - パス
    */
   @action.bound
-  handleClearForm({ pathArr }) {
+  handleResetForm({ pathArr }) {
     
     lodashSet(this.dataObj, [...pathArr, '_id'], '');
     lodashSet(this.dataObj, [...pathArr, 'platform'], '');
@@ -1382,10 +1383,21 @@ class Store {
 
 export default function initStoreIDForm({}) {
   
+  
+  // --------------------------------------------------
+  //   Store
+  // --------------------------------------------------
+  
   if (storeIDForm === null) {
     storeIDForm = new Store();
   }
   
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
   return storeIDForm;
+  
   
 }

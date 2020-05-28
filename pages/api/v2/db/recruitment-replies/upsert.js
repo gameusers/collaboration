@@ -17,6 +17,11 @@ import util from 'util';
 import shortid from 'shortid';
 import moment from 'moment';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 
@@ -25,44 +30,44 @@ import lodashSet from 'lodash/set';
 //   Model
 // ---------------------------------------------
 
-import ModelRecruitmentThreads from '../../../../../app/@database/recruitment-threads/model.js';
-import ModelRecruitmentReplies from '../../../../../app/@database/recruitment-replies/model.js';
-import ModelGameCommunities from '../../../../../app/@database/game-communities/model';
+// import ModelRecruitmentThreads from 'app/@database/recruitment-threads/model.js';
+import ModelRecruitmentReplies from 'app/@database/recruitment-replies/model.js';
+import ModelGameCommunities from 'app/@database/game-communities/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-import { verifyCsrfToken } from '../../../../../app/@modules/csrf.js';
-import { returnErrorsArr } from '../../../../../app/@modules/log/log.js';
-import { CustomError } from '../../../../../app/@modules/error/custom.js';
-import { formatAndSave } from '../../../../../app/@modules/image/save.js';
-import { setAuthority } from '../../../../../app/@modules/authority.js';
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
+import { formatAndSave } from 'app/@modules/image/save.js';
+import { setAuthority } from 'app/@modules/authority.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-import { validationIP } from '../../../../../app/@validations/ip.js';
-import { validationHandleName } from '../../../../../app/@validations/name.js';
+import { validationIP } from 'app/@validations/ip.js';
+import { validationHandleName } from 'app/@validations/name.js';
 
-import { validationGameCommunities_idServer } from '../../../../../app/@database/game-communities/validations/_id-server.js';
+import { validationGameCommunities_idServer } from 'app/@database/game-communities/validations/_id-server.js';
 
-import { validationRecruitmentThreadsComment } from '../../../../../app/@database/recruitment-threads/validations/comment.js';
-import { validationRecruitmentThreadsLimit } from '../../../../../app/@database/recruitment-threads/validations/limit.js';
-import { validationRecruitmentCommentsLimit } from '../../../../../app/@database/recruitment-comments/validations/limit.js';
-import { validationRecruitmentRepliesLimit } from '../../../../../app/@database/recruitment-replies/validations/limit.js';
-
-
+import { validationRecruitmentThreadsComment } from 'app/@database/recruitment-threads/validations/comment.js';
+import { validationRecruitmentThreadsLimit } from 'app/@database/recruitment-threads/validations/limit.js';
+import { validationRecruitmentCommentsLimit } from 'app/@database/recruitment-comments/validations/limit.js';
+import { validationRecruitmentRepliesLimit } from 'app/@database/recruitment-replies/validations/limit.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-import { locale } from '../../../../../app/@locales/locale.js';
+import { locale } from 'app/@locales/locale.js';
+
+
 
 
 
@@ -215,6 +220,16 @@ export default async (req, res) => {
       //   ${util.inspect(tempOldObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
+      
+      
+      // --------------------------------------------------
+      //   recruitmentThreads_id & recruitmentComments_id が不正な値の場合はエラー
+      // --------------------------------------------------
+      
+      if (tempOldObj.recruitmentThreads_id !== recruitmentThreads_id || tempOldObj.recruitmentComments_id !== recruitmentComments_id) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'v_u14HJN3', messageID: '3mDvfqZHV' }] });
+      }
+      
       
       oldImagesAndVideosObj = lodashGet(tempOldObj, ['imagesAndVideosObj'], {});
       
@@ -442,7 +457,7 @@ export default async (req, res) => {
     
     let recruitmentCommentsSaveObj = {
       updatedDate: ISO8601,
-      $inc: { replies: 1, images, videos }
+      $inc: { replies: 1 }
     };
     
     
@@ -459,6 +474,51 @@ export default async (req, res) => {
       updatedDate: ISO8601,
       'updatedDateObj.recruitment': ISO8601,
     };
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   - notifications / 新規挿入の場合のみ
+    // ---------------------------------------------
+    
+    let notificationsConditionObj = {};
+    let notificationsSaveObj = {};
+    
+    
+    if (!recruitmentReplies_id) {
+      
+      notificationsConditionObj = {
+        _id: shortid.generate(),
+      };
+      
+      
+      notificationsSaveObj = {
+        
+        createdDate: ISO8601,
+        done: false,
+        type: 'recruitment-replies',
+        arr: [
+          {
+            _id: recruitmentThreadsConditionObj._id,
+            type: 'target',
+            db: 'recruitment-threads',
+          },
+          {
+            _id: recruitmentCommentsConditionObj._id,
+            type: 'target',
+            db: 'recruitment-comments',
+          },
+          {
+            _id: recruitmentRepliesConditionObj._id,
+            type: 'source',
+            db: 'recruitment-replies',
+          }
+        ],
+        
+      };
+      
+    }
     
     
     
@@ -496,7 +556,7 @@ export default async (req, res) => {
       //   - recruitment-comments / replies（コメントに記録する返信総数）を増やさない
       // ---------------------------------------------
       
-      delete recruitmentCommentsSaveObj.$inc.replies;
+      delete recruitmentCommentsSaveObj.$inc;
       
       
     }
@@ -520,6 +580,8 @@ export default async (req, res) => {
       imagesAndVideosSaveObj,
       gameCommunitiesConditionObj,
       gameCommunitiesSaveObj,
+      notificationsConditionObj,
+      notificationsSaveObj,
       
     });
     
@@ -538,7 +600,7 @@ export default async (req, res) => {
     
     
     // -------------------------------------------------------
-    //   新規投稿または編集後の返信を表示するために、データを取得する
+    //   新規投稿後または編集後の返信を表示するために、データを取得する
     // -------------------------------------------------------
     
     returnObj.recruitmentRepliesObj = await ModelRecruitmentReplies.findRepliesForUpsert({

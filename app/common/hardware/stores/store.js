@@ -17,6 +17,11 @@ import util from 'util';
 import { action, observable } from 'mobx';
 import keycode from 'keycode';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 
@@ -25,19 +30,21 @@ import lodashSet from 'lodash/set';
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from '../../../@modules/fetch';
-import { CustomError } from '../../../@modules/error/custom';
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
-// --------------------------------------------------
+// ---------------------------------------------
 //   Stores
-// --------------------------------------------------
+// ---------------------------------------------
 
-import initStoreLayout from '../../../common/layout/stores/layout';
+import initStoreLayout from 'app/common/layout/stores/layout.js';
 
 let storeHardware = null;
 const storeLayout = initStoreLayout({});
       
+
+
 
 
 
@@ -397,7 +404,26 @@ class Store {
   };
   
   
+  
+  
+  /**
+   * フォームを空にする
+   * @param {Array} pathArr - パス
+   */
+  @action.bound
+  handleResetForm({ pathArr }) {
+    
+    lodashSet(this.dataObj, [...pathArr, 'hardwaresArr'], []);
+    lodashSet(this.dataObj, [...pathArr, 'keyword'], '');
+    lodashSet(this.dataObj, [...pathArr, 'suggestionSelectedIndex'], 0);
+    lodashSet(this.dataObj, [...pathArr, 'suggestionsArr'], []);
+    
+  };
+  
+  
 }
+
+
 
 
 

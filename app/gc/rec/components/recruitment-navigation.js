@@ -164,7 +164,7 @@ export default injectIntl(class extends React.Component {
     
     
     const showHardwareExplanation = lodashGet(dataObj, [...this.pathArr, 'showHardwareExplanation'], false);
-    const limitHardwares = parseInt(process.env.NEXT_PUBLIC_NEXT_PUBLIC_RECRUITMENT_SEARCH_HARDWARES_LIMIT, 10);
+    const limitHardwares = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_SEARCH_HARDWARES_LIMIT, 10);
     
     const categoriesArr = lodashGet(dataObj, [...this.pathArr, 'categoriesArr'], []);
     const keyword = lodashGet(dataObj, [...this.pathArr, 'keyword'], '');

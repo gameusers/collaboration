@@ -44,14 +44,6 @@ const schema = mongoose.Schema({
   publicSetting: { type: Number, default: 1, required: true },
   webPushAvailable: { type: Boolean, required: true },
   webPushes_id: { type: String },
-  // webPush: { type: Boolean, required: true },
-  // webPushSubscriptionObj: {
-  //   endpoint: { type: String },
-  //   keys: {
-  //     p256dh: { type: String },
-  //     auth: { type: String },
-  //   },
-  // },
   goods: { type: Number, default: 0, required: true },
   replies: { type: Number, default: 0, required: true },
   language: { type: String, required: true },

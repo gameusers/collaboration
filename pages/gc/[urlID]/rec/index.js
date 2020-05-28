@@ -22,7 +22,7 @@ import moment from 'moment';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
-// import { Element } from 'react-scroll';
+
 // ---------------------------------------------
 //   Lodash
 // ---------------------------------------------
@@ -161,7 +161,7 @@ export default class GcRec extends React.Component {
   
   componentDidMount() {
     
-    console.log('componentDidMount');
+    // console.log('componentDidMount');
     
     
     // ---------------------------------------------

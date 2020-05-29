@@ -45,7 +45,7 @@ import { CustomError } from 'app/@modules/error/custom.js';
 
 import { validationBoolean } from 'app/@validations/boolean.js';
 import { validationHandleName } from 'app/@validations/name.js';
-import { validationKeyword } from 'app/@validations/keyword.js';
+// import { validationKeyword } from 'app/@validations/keyword.js';
 
 import { validationRecruitmentThreadsCategory } from 'app/@database/recruitment-threads/validations/category.js';
 import { validationRecruitmentThreadsTitle } from 'app/@database/recruitment-threads/validations/title.js';
@@ -63,7 +63,7 @@ import initStoreData from 'app/@stores/data.js';
 import initStoreWebPush from 'app/@stores/web-push.js';
 import initStoreLayout from 'app/common/layout/stores/layout.js';
 import initStoreHardware from 'app/common/hardware/stores/store.js';
-// import initStoreIDForm from 'app/common/id/stores/form.js';
+import initStoreIDForm from 'app/common/id/stores/form.js';
 import initStoreImageAndVideoForm from 'app/common/image-and-video/stores/form.js';
 
 let storeGcRecruitment = null;
@@ -71,7 +71,7 @@ const storeData = initStoreData({});
 const storeWebPush = initStoreWebPush({});
 const storeLayout = initStoreLayout({});
 const storeHardware = initStoreHardware({});
-// const storeIDForm = initStoreIDForm({});
+const storeIDForm = initStoreIDForm({});
 const storeImageAndVideoForm = initStoreImageAndVideoForm({});
 
 // let storeData = null;
@@ -2383,12 +2383,6 @@ class Store {
         //   - Hardware
         // ----------------------------------------
         
-        // storeHardware.handleHardwaresKeyword({
-        //   pathArr,
-        //   value: '',
-        // });
-        
-        // lodashSet(storeHardware, ['dataObj', ...pathArr, 'hardwaresArr'], []);
         storeHardware.handleResetForm({ pathArr });
         
         
@@ -2403,7 +2397,7 @@ class Store {
         //   - ID
         // ----------------------------------------
         
-        // storeIDForm.handleResetForm({ pathArr });
+        storeIDForm.handleResetForm({ pathArr });
         
         
         // ----------------------------------------
@@ -2411,54 +2405,13 @@ class Store {
         // ----------------------------------------
         
         lodashSet(this.dataObj, pathArr, {});
-        // lodashSet(this.dataObj, [...pathArr, 'category'], '');
         
         
-        
-        
-        
-        
-        
-        // const category = lodashGet(this.dataObj, [...pathArr, 'category'], '');
-        // const title = lodashGet(this.dataObj, [...pathArr, 'title'], '');
-        // const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
-        // const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
-        // const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj', ...pathArr, 'imagesAndVideosObj'], {});
-        
-        // const idsArr = lodashGet(this.dataObj, [...pathArr, 'idsArr'], []);
-        
-        // const platform1 = lodashGet(this.dataObj, [...pathArr, 'platform1'], 'Other');
-        // const platform2 = lodashGet(this.dataObj, [...pathArr, 'platform2'], 'Other');
-        // const platform3 = lodashGet(this.dataObj, [...pathArr, 'platform3'], 'Other');
-        
-        // const id1 = lodashGet(this.dataObj, [...pathArr, 'id1'], '');
-        // const id2 = lodashGet(this.dataObj, [...pathArr, 'id2'], '');
-        // const id3 = lodashGet(this.dataObj, [...pathArr, 'id3'], '');
-        
-        // const informationTitle1 = lodashGet(this.dataObj, [...pathArr, 'informationTitle1'], '');
-        // const informationTitle2 = lodashGet(this.dataObj, [...pathArr, 'informationTitle2'], '');
-        // const informationTitle3 = lodashGet(this.dataObj, [...pathArr, 'informationTitle3'], '');
-        // const informationTitle4 = lodashGet(this.dataObj, [...pathArr, 'informationTitle4'], '');
-        // const informationTitle5 = lodashGet(this.dataObj, [...pathArr, 'informationTitle5'], '');
-        
-        // const information1 = lodashGet(this.dataObj, [...pathArr, 'information1'], '');
-        // const information2 = lodashGet(this.dataObj, [...pathArr, 'information2'], '');
-        // const information3 = lodashGet(this.dataObj, [...pathArr, 'information3'], '');
-        // const information4 = lodashGet(this.dataObj, [...pathArr, 'information4'], '');
-        // const information5 = lodashGet(this.dataObj, [...pathArr, 'information5'], '');
-        
-        // const publicSetting = lodashGet(this.dataObj, [...pathArr, 'publicSetting'], 1);
-        
-        // const deadlineDate = lodashGet(this.dataObj, [...pathArr, 'deadlineDate'], '');
-        
-        // const webPushAvailable = lodashGet(this.dataObj, [...pathArr, 'webPushAvailable'], false);
-        // const webPushSubscriptionObj = lodashGet(this.dataObj, [...pathArr, 'webPushSubscriptionObj'], {});
-        
-        console.log(`
-          ----- [] -----\n
-          ${util.inspect(JSON.parse(JSON.stringify(lodashGet(this.dataObj, pathArr, []))), { colors: true, depth: null })}\n
-          --------------------\n
-        `);
+        // console.log(`
+        //   ----- [] -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(lodashGet(this.dataObj, pathArr, []))), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
         
         
         // ---------------------------------------------
@@ -3926,6 +3879,56 @@ class Store {
       
       
     }
+    
+    
+  };
+  
+  
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   ID Form
+  // ---------------------------------------------
+  
+  /**
+   * ID 選択・編集フォームで利用する
+   * @param {Array} pathArr - パス
+   * @param {Array} idsArr - DB ids _id が入っている配列
+   */
+  @action.bound
+  async handleSetIDsArr({ pathArr, idsArr }) {
+    
+    
+    // ---------------------------------------------
+    //   Set
+    // ---------------------------------------------
+    
+    const clonedArr = lodashCloneDeep(idsArr);
+    lodashSet(this.dataObj, [...pathArr, 'idsArr'], clonedArr);
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/gc/rec/stores/store.js - handleSetIDsArr
+    // `);
+    
+    // console.log(`
+    //   ----- pathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
   };

@@ -40,15 +40,11 @@ import { CustomError } from 'app/@modules/error/custom.js';
 // ---------------------------------------------
 
 import initStoreLayout from 'app/common/layout/stores/layout.js';
-import initStoreCardPlayer from 'app/common/card/player/stores/player.js';
 import initStoreGameForm from 'app/common/game/stores/form.js';
-import initStoreGcRecruitment from 'app/gc/rec/stores/store.js';
 
 let storeIDForm = null;
 const storeLayout = initStoreLayout({});
-const storeCardPlayer = initStoreCardPlayer({});
 const storeGameForm = initStoreGameForm({});
-const storeGcRecruitment = initStoreGcRecruitment({});
 
 
 
@@ -96,11 +92,10 @@ class Store {
    * フォーム（ダイアログ）を開く
    * Fetchでユーザーが登録しているIDをすべて取得する
    * @param {Array} pathArr - パス
-   * @param {string} _id
    * @param {Array} idsArr - 選択されているIDが入っている配列
    */
   @action.bound
-  async handleDialogOpen({ pathArr, _id, idsArr }) {
+  async handleDialogOpen({ pathArr, idsArr }) {
     
     
     try {
@@ -365,13 +360,17 @@ class Store {
   /**
    * 選択を確定するボタンを押したときに実行される
    * @param {Array} pathArr - パス
-   * @param {string} type - IDフォームの呼び出し元の種類 / cardPlayerForm, recruitment
-   * @param {string} _id - cardPlayers_id / 
+   * @param {string} handleSetIDsArr - idsArr を設定する関数 / 親のコンポーネントから受け取る
    * @param {Array} idsArr - 選択されたIDの配列
-   * @param {Array} forUpdateOtherStorePathArr - 別のストア更新用のパスが入った配列
    */
   @action.bound
-  handleSelectButton({ pathArr, type, _id, idsArr, forUpdateOtherStorePathArr }) {
+  handleSelectButton({
+    
+    pathArr,
+    handleSetIDsArr,
+    idsArr,
+    
+  }) {
     
     
     // --------------------------------------------------
@@ -390,17 +389,6 @@ class Store {
     // `);
     
     // console.log(`
-    //   ----- forUpdateOtherStorePathArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forUpdateOtherStorePathArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   type: {green ${type}}
-    //   _id: {green ${_id}}
-    // `);
-    
-    // console.log(`
     //   ----- idsArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
@@ -411,24 +399,19 @@ class Store {
     //   プレイヤーカードのフォーム
     // --------------------------------------------------
     
-    if (type === 'cardPlayerForm') {
+    // if (type === 'cardPlayerForm') {
       
-      const clonedArr = lodashCloneDeep(idsArr);
-      lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'idsArr'], clonedArr);
+    //   const clonedArr = lodashCloneDeep(idsArr);
+    //   lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'idsArr'], clonedArr);
       
-    }
+    // }
     
     
     // --------------------------------------------------
-    //   募集フォーム
+    //   受け取った関数を実行する / Set idsArr
     // --------------------------------------------------
     
-    if (type === 'recruitment') {
-      
-      const clonedArr = lodashCloneDeep(idsArr);
-      lodashSet(storeGcRecruitment, ['dataObj', ...forUpdateOtherStorePathArr, 'idsArr'], clonedArr);
-      
-    }
+    handleSetIDsArr({ pathArr, idsArr });
     
     
     // --------------------------------------------------
@@ -453,11 +436,10 @@ class Store {
    * 編集時に編集するIDを選択する（各フォームの値を設定する）
    * 編集フォームの ID (Chip) をクリックしたときに発動
    * @param {Array} pathArr - パス
-   * @param {string} _id - ID
    * @param {string} ids_id - DB IDs _id
    */
   @action.bound
-  handleChangeEditID({ pathArr, _id, ids_id }) {
+  handleChangeEditID({ pathArr, ids_id }) {
     
     
     // --------------------------------------------------
@@ -525,7 +507,6 @@ class Store {
     // `);
     
     // console.log(chalk`
-    //   _id: {green ${_id}}
     //   ids_id: {green ${ids_id}}
     // `);
     
@@ -553,7 +534,7 @@ class Store {
   
   /**
    * 削除ダイアログを開く
-   * @param {string} _id
+   * @param {Array} pathArr - パス
    */
   @action.bound
   handleDeleteDialogOpen({ pathArr }) {
@@ -579,9 +560,14 @@ class Store {
       return;
       
     }
-      
+    
+    
+    // --------------------------------------------------
+    //   Dialog Open
+    // --------------------------------------------------
     
     lodashSet(this.dataObj, [...pathArr, 'deleteDialogOpen'], true);
+    
     
   };
   
@@ -603,13 +589,17 @@ class Store {
   /**
    * 編集フォームを送信する
    * @param {Array} pathArr - パス
-   * @param {string} type
-   * @param {string} _id
-   * @param {Array} idsArr - 選択されているID情報の入った配列
-   * @param {Array} forUpdateOtherStorePathArr - 別のストア更新用のパスが入った配列
+   * @param {string} handleSetIDsArr - idsArr を設定する関数 / 親のコンポーネントから受け取る
+   * @param {Array} idsArr - 選択されたIDの配列
    */
   @action.bound
-  async handleEditSubmit({ pathArr, type, _id, idsArr, forUpdateOtherStorePathArr }) {
+  async handleEditSubmit({
+    
+    pathArr,
+    handleSetIDsArr,
+    idsArr,
+    
+  }) {
     
     
     try {
@@ -695,9 +685,11 @@ class Store {
       // --------------------------------------------------
       
       const resultObj = await fetchWrapper({
+        
         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/ids/upsert`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
+        
       });
       
       
@@ -758,12 +750,12 @@ class Store {
       //   プレイヤーカードのフォーム更新
       // --------------------------------------------------
       
-      if (type === 'cardPlayerForm') {
+      // if (type === 'cardPlayerForm') {
         
-        const clonedArr = lodashCloneDeep(updatedIDsArr);
-        lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'idsArr'], clonedArr);
+      //   const clonedArr = lodashCloneDeep(updatedIDsArr);
+      //   lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'idsArr'], clonedArr);
         
-      }
+      // }
       
       
       
@@ -789,18 +781,12 @@ class Store {
       
       
       
+      
       // --------------------------------------------------
-      //   募集フォーム
+      //   受け取った関数を実行する / Set idsArr
       // --------------------------------------------------
       
-      if (type === 'recruitment') {
-        
-        const clonedArr = lodashCloneDeep(updatedIDsArr);
-        lodashSet(storeGcRecruitment, ['dataObj', ...forUpdateOtherStorePathArr, 'idsArr'], clonedArr);
-        
-      }
-      
-      
+      handleSetIDsArr({ pathArr, idsArr: updatedIDsArr });
       
       
       // --------------------------------------------------
@@ -821,7 +807,11 @@ class Store {
       // --------------------------------------------------
       
       // console.log(chalk`
-      //   _id: {green ${_id}}
+      //   platform: {green ${platform}}
+      //   label: {green ${label}}
+      //   id: {green ${id}}
+      //   publicSetting: {green ${publicSetting}}
+      //   search: {green ${search}}
       // `);
       
       // console.log(`
@@ -895,13 +885,17 @@ class Store {
   /**
    * 削除フォームを送信する
    * @param {Array} pathArr - パス
-   * @param {string} type
-   * @param {string} _id
-   * @param {Array} idsArr - 選択されているID情報の入った配列
-   * @param {Array} forUpdateOtherStorePathArr - 別のストア更新用のパスが入った配列
+   * @param {string} handleSetIDsArr - idsArr を設定する関数 / 親のコンポーネントから受け取る
+   * @param {Array} idsArr - 選択されたIDの配列
    */
   @action.bound
-  async handleDeleteSubmit({ pathArr, type, _id, idsArr, forUpdateOtherStorePathArr }) {
+  async handleDeleteSubmit({ 
+    
+    pathArr,
+    handleSetIDsArr,
+    idsArr,
+    
+  }) {
     
     
     try {
@@ -945,9 +939,11 @@ class Store {
       // --------------------------------------------------
       
       const resultObj = await fetchWrapper({
+        
         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/ids/delete`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
+        
       });
       
       
@@ -995,24 +991,19 @@ class Store {
       //   プレイヤーカードのフォーム更新
       // --------------------------------------------------
       
-      if (type === 'cardPlayerForm') {
+      // if (type === 'cardPlayerForm') {
         
-        const clonedArr = lodashCloneDeep(updatedIDsArr);
-        lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'idsArr'], clonedArr);
+      //   const clonedArr = lodashCloneDeep(updatedIDsArr);
+      //   lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'idsArr'], clonedArr);
         
-      }
+      // }
       
       
       // --------------------------------------------------
-      //   募集フォーム
+      //   受け取った関数を実行する / Set idsArr
       // --------------------------------------------------
       
-      if (type === 'recruitment') {
-        
-        const clonedArr = lodashCloneDeep(updatedIDsArr);
-        lodashSet(storeGcRecruitment, ['dataObj', ...forUpdateOtherStorePathArr, 'idsArr'], clonedArr);
-        
-      }
+      handleSetIDsArr({ pathArr, idsArr: updatedIDsArr });
       
       
       
@@ -1028,7 +1019,7 @@ class Store {
       //   ゲームフォームを空にする
       // --------------------------------------------------
       
-      storeGameForm.handleReset({ pathArr });
+      storeGameForm.handleResetForm({ pathArr });
       
       
       // --------------------------------------------------
@@ -1119,10 +1110,10 @@ class Store {
   /**
    * 登録フォームを送信する
    * @param {Array} pathArr - パス
-   * @param {string} _id
+   * @param {Array} selectAndEditPathArr - 選択と編集で使っているパス
    */
   @action.bound
-  async handleRegisterSubmit({ pathArr, _id }) {
+  async handleRegisterSubmit({ pathArr, selectAndEditPathArr }) {
     
     
     try {
@@ -1190,9 +1181,11 @@ class Store {
       // --------------------------------------------------
       
       const resultObj = await fetchWrapper({
+        
         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/ids/upsert`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
+        
       });
       
       
@@ -1213,22 +1206,54 @@ class Store {
       //   Data 更新
       // --------------------------------------------------
       
-      const newPathArr = [_id, 'idFormObj'];
-      
-      lodashSet(this.dataObj, [...newPathArr, 'dataArr'], resultObj.data);
+      lodashSet(this.dataObj, [...selectAndEditPathArr, 'dataArr'], resultObj.data);
       
       
       // --------------------------------------------------
       //   未選択IDに追加 / _id のみでいい
       // --------------------------------------------------
       
-      const dataArr = lodashGet(this.dataObj, [...newPathArr, 'dataArr'], []);
-      const unselectedArr = lodashGet(this.dataObj, [...newPathArr, 'unselectedArr'], []);
+      const dataArr = lodashGet(this.dataObj, [...selectAndEditPathArr, 'dataArr'], []);
+      const unselectedArr = lodashGet(this.dataObj, [...selectAndEditPathArr, 'unselectedArr'], []);
       unselectedArr.push(dataArr[dataArr.length - 1]._id);
       
-      lodashSet(this.dataObj, [...newPathArr, 'unselectedArr'], unselectedArr);
+      lodashSet(this.dataObj, [...selectAndEditPathArr, 'unselectedArr'], unselectedArr);
       
       
+      
+      
+      // --------------------------------------------------
+      //   フォームを空にする
+      // --------------------------------------------------
+      
+      this.handleResetForm({ pathArr });
+      
+      
+      // --------------------------------------------------
+      //   ゲームフォームを空にする
+      // --------------------------------------------------
+      
+      storeGameForm.handleResetForm({ pathArr });
+      
+      
+      
+      
+      // --------------------------------------------------
+      //   Snackbar: Success
+      // --------------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: 'As9-T8q9N',
+        horizontal: 'right',
+      });
+      
+      
+      
+      
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
       
       // console.log(`
       //   ----------------------------------------\n
@@ -1282,48 +1307,6 @@ class Store {
       // `);
       
       
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   フォームを空にする
-      // --------------------------------------------------
-      
-      this.handleResetForm({ pathArr });
-      
-      
-      // --------------------------------------------------
-      //   ゲームフォームを空にする
-      // --------------------------------------------------
-      
-      storeGameForm.handleReset({ pathArr });
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   Snackbar: Success
-      // --------------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'success',
-        messageID: 'As9-T8q9N',
-        horizontal: 'right',
-      });
-      
-      
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
     } catch (errorObj) {
       
       
@@ -1373,6 +1356,8 @@ class Store {
   
   
 }
+
+
 
 
 

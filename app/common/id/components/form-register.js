@@ -44,17 +44,17 @@ import Select from '@material-ui/core/Select';
 //   Validations
 // ---------------------------------------------
 
-import { validationIDsPlatform } from '../../../@database/ids/validations/platform';
-import { validationIDsLabel } from '../../../@database/ids/validations/label';
-import { validationIDsID } from '../../../@database/ids/validations/id';
-import { validationIDsPublicSetting } from '../../../@database/ids/validations/public-setting';
+import { validationIDsPlatform } from 'app/@database/ids/validations/platform.js';
+import { validationIDsLabel } from 'app/@database/ids/validations/label.js';
+import { validationIDsID } from 'app/@database/ids/validations/id.js';
+import { validationIDsPublicSetting } from 'app/@database/ids/validations/public-setting.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import GameForm from '../../game/components/form';
+import GameForm from 'app/common/game/components/form.js';
 
 
 
@@ -100,6 +100,8 @@ const cssTextField = css`
 
 
 
+
+
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -123,12 +125,20 @@ export default injectIntl(class extends React.Component {
     
     super(props);
     
+    // console.log(`
+    //   ----- props.pathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(props.pathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // --------------------------------------------------
     //   Path Array
+    //   Edit と Register で同じフォームを利用しているのでパスを変える必要がある
     // --------------------------------------------------
     
-    this.pathArr = [props._id, 'idFormRegisterOObj'];
+    // this.pathArr = ['Jk92aglWl', 'aaa', 'register'];
+    this.selectAndEditPathArr = props.pathArr;
+    this.pathArr = [props.pathArr.join('-'), 'register'];
     
     
   }
@@ -166,17 +176,26 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeIDForm, storeGameForm, intl, _id, additionalGameLimit } = this.props;
+    const {
+      
+      classes,
+      stores,
+      storeIDForm,
+      storeGameForm,
+      intl,
+      additionalGameLimit
+      
+    } = this.props;
+    
     
     const {
       
       dataObj,
       handleEdit,
-      // handleGame,
-      // handleGameDelete,
       handleRegisterSubmit,
       
     } = storeIDForm;
+    
     
     const {
       
@@ -327,7 +346,7 @@ export default injectIntl(class extends React.Component {
             
             <Select
               id="platform"
-              value={validationPlatformObj.value}
+              value={platform}
               onChange={(eventObj) => handleEdit({
                 pathArr: [...this.pathArr, 'platform'],
                 value: eventObj.target.value
@@ -375,7 +394,7 @@ export default injectIntl(class extends React.Component {
             css={cssTextField}
             id="label"
             label="ラベル"
-            value={validationLabelObj.value}
+            value={label}
             onChange={(eventObj) => handleEdit({
               pathArr: [...this.pathArr, 'label'],
               value: eventObj.target.value
@@ -390,13 +409,15 @@ export default injectIntl(class extends React.Component {
         </div>
         
         
+        
+        
         {/* ID */}
         <div>
           <TextField
             css={cssTextField}
             id="id"
             label="ID"
-            value={validationIDObj.value}
+            value={id}
             onChange={(eventObj) => handleEdit({
               pathArr: [...this.pathArr, 'id'],
               value: eventObj.target.value
@@ -411,6 +432,8 @@ export default injectIntl(class extends React.Component {
         </div>
         
         
+        
+        
         {/* 公開設定 */}
         <div css={cssPlatformBox}>
           
@@ -423,7 +446,7 @@ export default injectIntl(class extends React.Component {
             
             <Select
               id="publicSetting"
-              value={validationPublicSettingObj.value}
+              value={publicSetting}
               onChange={(eventObj) => handleEdit({
                 pathArr: [...this.pathArr, 'publicSetting'],
                 value: eventObj.target.value
@@ -441,6 +464,8 @@ export default injectIntl(class extends React.Component {
           </FormControl>
           
         </div>
+        
+        
         
         
         {/* 検索可能 */}
@@ -480,7 +505,7 @@ export default injectIntl(class extends React.Component {
             color="primary"
             onClick={() => handleRegisterSubmit({
               pathArr: this.pathArr,
-              _id,
+              selectAndEditPathArr: this.selectAndEditPathArr,
             })}
             disabled={buttonDisabled}
           >

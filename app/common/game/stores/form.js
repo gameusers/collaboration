@@ -308,10 +308,9 @@ class Store {
   /**
    * フォームをリセットする
    * @param {Array} pathArr - パス
-   * @param {string} _id - ID
    */
   @action.bound
-  handleReset({ pathArr, _id }) {
+  handleResetForm({ pathArr }) {
     
     
     // ---------------------------------------------

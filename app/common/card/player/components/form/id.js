@@ -20,6 +20,11 @@ import { inject, observer } from 'mobx-react';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 
@@ -27,8 +32,10 @@ import lodashGet from 'lodash/get';
 //   Components
 // ---------------------------------------------
 
-import IDChip from '../../../../id/components/chip';
-import IDForm from '../../../../id/components/form';
+import IDChip from 'app/common/id/components/chip.js';
+import IDForm from 'app/common/id/components/form.js';
+
+
 
 
 
@@ -42,17 +49,6 @@ export default class extends React.Component {
   
   
   // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  // constructor(props) {
-  //   super(props);
-  // }
-  
-  
-  
-  
-  // --------------------------------------------------
   //   render
   // --------------------------------------------------
   
@@ -63,7 +59,17 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { type, _id, idsArr } = this.props;
+    const {
+      
+      // type,
+      // _id,
+      // idsArr,
+      
+      pathArr,
+      handleSetIDsArr,
+      idsArr,
+      
+    } = this.props;
     
     
     
@@ -167,8 +173,8 @@ export default class extends React.Component {
           `}
         >
           <IDForm
-            type={type}
-            _id={_id}
+            pathArr={pathArr}
+            handleSetIDsArr={handleSetIDsArr}
             idsArr={idsArr}
           />
         </div>

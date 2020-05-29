@@ -15,52 +15,53 @@ import util from 'util';
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import keycode from 'keycode';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
-// import lodashCloneDeep from 'lodash/cloneDeep';
+import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from '../../../../@modules/fetch';
-import { CustomError } from '../../../../@modules/error/custom';
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationCardPlayersName } = require('../../../../@database/card-players/validations/name');
-const { validationCardPlayersStatus } = require('../../../../@database/card-players/validations/status');
-// const { validationCardPlayersActivityTimeObjValueArr } = require('../../../../@database/card-players/validations/activity-time');
-// const { validationCardPlayersLinkArr } = require('../../../../@database/card-players/validations/link');
+const { validationCardPlayersName } = require('app/@database/card-players/validations/name.js');
+const { validationCardPlayersStatus } = require('app/@database/card-players/validations/status.js');
+// const { validationCardPlayersActivityTimeObjValueArr } = require('app/@database/card-players/validations/activity-time');
+// const { validationCardPlayersLinkArr } = require('app/@database/card-players/validations/link');
 
 
 // --------------------------------------------------
 //   Stores
 // --------------------------------------------------
 
-import initStoreLayout from '../../../layout/stores/layout';
-import initStoreData from '../../../../@stores/data';
-import initStoreImageAndVideoForm from '../../../image-and-video/stores/form';
+import initStoreLayout from 'app/common/layout/stores/layout.js';
+import initStoreData from 'app/@stores/data.js';
+import initStoreImageAndVideoForm from 'app/common/image-and-video/stores/form.js';
 // import initStoreGameForm from '../../../game/stores/form';
-
-
-
-
-// --------------------------------------------------
-//   Store
-// --------------------------------------------------
 
 let storeCardPlayer = null;
 const storeLayout = initStoreLayout({});
 const storeData = initStoreData({});
 const storeImageAndVideoForm = initStoreImageAndVideoForm({});
 // const storeGameForm = initStoreGameForm({});
+
+
 
 
 
@@ -1651,6 +1652,67 @@ class Store {
       
       
     }
+    
+    
+  };
+  
+  
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   ID Form
+  // ---------------------------------------------
+  
+  /**
+   * ID 選択・編集フォームで利用する
+   * @param {Array} pathArr - パス
+   * @param {Array} idsArr - DB ids _id が入っている配列
+   */
+  @action.bound
+  async handleSetIDsArr({ pathArr, idsArr }) {
+    
+    
+    // ---------------------------------------------
+    //   Set
+    // ---------------------------------------------
+    
+    const clonedArr = lodashCloneDeep(idsArr);
+    lodashSet(this.cardPlayerEditFormDataObj, [pathArr[0], 'idsArr'], clonedArr);
+    
+    // pathArr[0]としている理由は、pathArr がこのようになっているため
+    // pathArr={[cardPlayers_id, 'extraElement']}// cardPlayers_id だけだとエラーになるため、extraElementを入れている
+    // 本当は以下のようにしたい
+    // lodashSet(this.cardPlayerEditFormDataObj, [...pathArr, 'idsArr'], clonedArr);
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/card/player/stores/player.js - handleSetIDsArr
+    // `);
+    
+    // console.log(`
+    //   ----- pathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- this.cardPlayerEditFormDataObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(this.cardPlayerEditFormDataObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
   };

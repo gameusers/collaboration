@@ -21,6 +21,11 @@ import { injectIntl } from 'react-intl';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 
@@ -41,14 +46,16 @@ import Select from '@material-ui/core/Select';
 //   Validations
 // ---------------------------------------------
 
-import { validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation } from '../../../../@database/recruitment-threads/validations/ids-informations';
+import { validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation } from 'app/@database/recruitment-threads/validations/ids-informations.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import FormIDs from './ids';
+import FormIDs from 'app/gc/rec/components/form/ids.js';
+
+
 
 
 
@@ -92,6 +99,7 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
+      handleSetIDsArr,
       
     } = storeGcRecruitment;
     
@@ -619,10 +627,9 @@ export default injectIntl(class extends React.Component {
         
         {(showForm === 'id' && login) &&
           <FormIDs
-            type="recruitment"
-            _id={recruitmentComments_id || recruitmentThreads_id || gameCommunities_id}
+            pathArr={pathArr}
+            handleSetIDsArr={handleSetIDsArr}
             idsArr={idsArr}
-            forUpdateOtherStorePathArr={pathArr}
           />
         }
         

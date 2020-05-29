@@ -20,6 +20,11 @@ import { inject, observer } from 'mobx-react';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 
@@ -48,9 +53,11 @@ import IconSettings from '@material-ui/icons/Settings';
 //   Components
 // ---------------------------------------------
 
-import FormSelect from './form-select';
-import FormEdit from './form-edit';
-import FormRegister from './form-register';
+import FormSelect from 'app/common/id/components/form-select.js';
+import FormEdit from 'app/common/id/components/form-edit.js';
+import FormRegister from 'app/common/id/components/form-register.js';
+
+
 
 
 
@@ -82,7 +89,8 @@ export default class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    this.pathArr = [props._id, 'idFormObj'];
+    this.pathArr = props.pathArr;
+    // this.pathArr = [props._id, 'idFormObj'];
     
     
   }
@@ -124,10 +132,8 @@ export default class extends React.Component {
       
       stores,
       storeIDForm,
-      type,
-      _id,
+      handleSetIDsArr,
       idsArr,
-      forUpdateOtherStorePathArr = [],
       
     } = this.props;
     
@@ -172,9 +178,8 @@ export default class extends React.Component {
       componentContent =
         <FormSelect
           pathArr={this.pathArr}
-          type={type}
-          _id={_id}
-          forUpdateOtherStorePathArr={forUpdateOtherStorePathArr}
+          handleSetIDsArr={handleSetIDsArr}
+          idsArr={idsArr}
         />
       ;
       
@@ -183,11 +188,9 @@ export default class extends React.Component {
       componentContent =
         <FormEdit
           pathArr={this.pathArr}
-          type={type}
-          _id={_id}
+          handleSetIDsArr={handleSetIDsArr}
           idsArr={idsArr}
           additionalGameLimit={1}
-          forUpdateOtherStorePathArr={forUpdateOtherStorePathArr}
         />
       ;
       
@@ -196,7 +199,6 @@ export default class extends React.Component {
       componentContent =
         <FormRegister
           pathArr={this.pathArr}
-          _id={_id}
           additionalGameLimit={1}
         />
       ;
@@ -242,7 +244,6 @@ export default class extends React.Component {
           color="primary"
           onClick={() => handleDialogOpen({
             pathArr: this.pathArr,
-            _id,
             idsArr,
           })}
           disabled={buttonDisabled}
@@ -285,6 +286,8 @@ export default class extends React.Component {
               </Typography>
             </Toolbar>
           </AppBar>
+          
+          
           
           
           {/* ボタン */}
@@ -354,6 +357,8 @@ export default class extends React.Component {
             </ButtonGroup>
             
           </div>
+          
+          
           
           
           {/* コンテンツ */}

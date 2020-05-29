@@ -160,7 +160,8 @@ export default class extends React.Component {
       handleCardPlayerEditFormUndoDataDialogClose,
       handleCardPlayerEditFormUndoData,
       handleHideForm,
-      handleEditFormSubmit
+      handleEditFormSubmit,
+      handleSetIDsArr,
       
     } = storeCardPlayer;
     
@@ -462,8 +463,8 @@ export default class extends React.Component {
           {/* ID */}
           <div css={cssBox}>
             <ID
-              type="cardPlayerForm"
-              _id={cardPlayers_id}
+              pathArr={[cardPlayers_id, 'extraElement']}// cardPlayers_id だけだとエラーになるため、extraElementを入れている
+              handleSetIDsArr={handleSetIDsArr}
               idsArr={idsArr}
             />
           </div>

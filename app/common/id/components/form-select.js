@@ -20,6 +20,11 @@ import { inject, observer } from 'mobx-react';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 
@@ -34,7 +39,7 @@ import Button from '@material-ui/core/Button';
 //   Components
 // ---------------------------------------------
 
-import IDChip from './chip';
+import IDChip from 'app/common/id/components/chip.js';
 
 
 
@@ -66,6 +71,8 @@ const cssIDBox = css`
 
 
 
+
+
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -73,51 +80,6 @@ const cssIDBox = css`
 @inject('stores', 'storeIDForm')
 @observer
 export default class extends React.Component {
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  // constructor(props) {
-    
-    
-  //   // --------------------------------------------------
-  //   //   super
-  //   // --------------------------------------------------
-    
-  //   super(props);
-    
-    
-  //   // --------------------------------------------------
-  //   //   Path Array
-  //   // --------------------------------------------------
-    
-  //   // this.pathArr = [props._id, 'idFormSelectObj'];
-    
-    
-  // }
-  
-  
-  
-  
-  // // --------------------------------------------------
-  // //   componentDidMount
-  // // --------------------------------------------------
-  
-  // componentDidMount() {
-    
-    
-  //   // --------------------------------------------------
-  //   //   Button - Enable
-  //   // --------------------------------------------------
-    
-  //   // this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
-    
-    
-  // }
-  
-  
   
   
   // --------------------------------------------------
@@ -136,9 +98,7 @@ export default class extends React.Component {
       stores,
       storeIDForm,
       pathArr,
-      type,
-      _id,
-      forUpdateOtherStorePathArr,
+      handleSetIDsArr,
       
     } = this.props;
     
@@ -267,10 +227,10 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/common/id/components/form-select.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/id/components/form-select.js
+    // `);
     
     // console.log(chalk`
     //   _id: {green ${_id}}
@@ -282,13 +242,11 @@ export default class extends React.Component {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- forUpdateOtherStorePathArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(forUpdateOtherStorePathArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    
+    // console.log(`
+    //   ----- forUpdateOtherStorePathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forUpdateOtherStorePathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -349,10 +307,8 @@ export default class extends React.Component {
           color="primary"
           onClick={() => handleSelectButton({
             pathArr,
-            type,
-            _id,
+            handleSetIDsArr,
             idsArr: selectedIDsArr,
-            forUpdateOtherStorePathArr,
           })}
           disabled={buttonDisabled}
         >

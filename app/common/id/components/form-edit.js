@@ -21,6 +21,11 @@ import { injectIntl } from 'react-intl';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 
@@ -51,18 +56,18 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 //   Validations
 // ---------------------------------------------
 
-import { validationIDsPlatform } from '../../../@database/ids/validations/platform';
-import { validationIDsLabel } from '../../../@database/ids/validations/label';
-import { validationIDsID } from '../../../@database/ids/validations/id';
-import { validationIDsPublicSetting } from '../../../@database/ids/validations/public-setting';
+import { validationIDsPlatform } from 'app/@database/ids/validations/platform.js';
+import { validationIDsLabel } from 'app/@database/ids/validations/label.js';
+import { validationIDsID } from 'app/@database/ids/validations/id.js';
+import { validationIDsPublicSetting } from 'app/@database/ids/validations/public-setting.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import IDChip from './chip';
-import GameForm from '../../game/components/form';
+import IDChip from 'app/common/id/components/chip.js';
+import GameForm from 'app/common/game/components/form.js';
 
 
 
@@ -122,6 +127,8 @@ const cssTextField = css`
 
 
 
+
+
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -130,51 +137,6 @@ const cssTextField = css`
 @inject('stores', 'storeIDForm', 'storeGameForm')
 @observer
 export default injectIntl(class extends React.Component {
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  // constructor(props) {
-    
-    
-  //   // --------------------------------------------------
-  //   //   super
-  //   // --------------------------------------------------
-    
-  //   super(props);
-    
-    
-  //   // --------------------------------------------------
-  //   //   Path Array
-  //   // --------------------------------------------------
-    
-  //   // this.pathArr = [props._id, 'idFormObj'];
-    
-    
-  // }
-  
-  
-  
-  
-  // // --------------------------------------------------
-  // //   componentDidMount
-  // // --------------------------------------------------
-  
-  // componentDidMount() {
-    
-    
-  //   // --------------------------------------------------
-  //   //   Button - Enable
-  //   // --------------------------------------------------
-    
-  //   // this.props.stores.layout.handleButtonEnable({ pathArr });
-    
-    
-  // }
-  
-  
   
   
   // --------------------------------------------------
@@ -196,11 +158,12 @@ export default injectIntl(class extends React.Component {
       storeGameForm,
       intl,
       pathArr,
-      type,
-      _id,
+      // type,
+      // _id,
+      handleSetIDsArr,
       idsArr,
       additionalGameLimit,
-      forUpdateOtherStorePathArr,
+      // forUpdateOtherStorePathArr,
       
     } = this.props;
     
@@ -253,7 +216,7 @@ export default injectIntl(class extends React.Component {
         <div
           css={cssIDBox}
           key={index}
-          onClick={() => handleChangeEditID({ pathArr, _id, ids_id: valueObj._id })}
+          onClick={() => handleChangeEditID({ pathArr, ids_id: valueObj._id })}
         >
           <IDChip
             platform={valueObj.platform}
@@ -286,7 +249,7 @@ export default injectIntl(class extends React.Component {
     // ゲーム選択フォームを表示するかどうか　配列内のプラットフォームの場合、表示しない
     const gameSelectForm = ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line'].indexOf(validationPlatformObj.value) === -1;
     
-    const gamesArr = handleGetGamesArr({ pathArr });
+    // const gamesArr = handleGetGamesArr({ pathArr });
     
     
     
@@ -566,10 +529,8 @@ export default injectIntl(class extends React.Component {
             color="primary"
             onClick={() => handleEditSubmit({
               pathArr,
-              type,
-              _id,
+              handleSetIDsArr,
               idsArr,
-              forUpdateOtherStorePathArr,
             })}
             disabled={buttonDisabled}
           >
@@ -613,10 +574,8 @@ export default injectIntl(class extends React.Component {
             <Button
               onClick={() => handleDeleteSubmit({
                 pathArr,
-                type,
-                _id,
+                handleSetIDsArr,
                 idsArr,
-                forUpdateOtherStorePathArr,
               })}
               color="primary"
               autoFocus

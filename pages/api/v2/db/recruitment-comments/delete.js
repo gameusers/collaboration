@@ -177,7 +177,7 @@ export default async (req, res) => {
     const replies = lodashGet(docObj, ['replies'], 0);
     const imagesAndVideos_idsArr = lodashGet(docObj, ['imagesAndVideos_idsArr'], []);
     const images = lodashGet(docObj, ['images'], 0);
-    const videos = lodashGet(docObj, ['images'], 0);
+    const videos = lodashGet(docObj, ['videos'], 0);
     
     
     
@@ -379,20 +379,6 @@ export default async (req, res) => {
     returnObj.updatedDateObj = updatedDateObj;
     
     
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   userCommunities_id: {green ${userCommunities_id}}
-    //   forumThreads_id: {green ${forumThreads_id}}
-    //   forumComments_id: {green ${forumComments_id}}
-    //   anonymity: {green ${anonymity} / ${typeof anonymity}}
-    //   IP: {green ${ip}}
-    //   User Agent: {green ${req.headers['user-agent']}}
-    // `);
     
     
     // ---------------------------------------------

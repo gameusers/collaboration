@@ -142,17 +142,18 @@ class Store {
       // ---------------------------------------------
       //   登録されている Service Worker を全て削除する
       //   unregister で削除するとデータベースに登録済みの endpoint & p256dh & auth も無効になるため、削除していはいけない。2020/5/21
+      //   dev 環境で unregister を行わないと、Chrome で「使用できるソケットを待機しています」と出て固まってしまう。2020/5/30
       // ---------------------------------------------
         
       } else {
         
-        // this.webPushRegistrationObj = await navigator.serviceWorker.getRegistrations();
+        this.webPushRegistrationObj = await navigator.serviceWorker.getRegistrations();
         
-        // for (let registration of this.webPushRegistrationObj) {
-        //   registration.unregister();
-        // }
+        for (let registration of this.webPushRegistrationObj) {
+          registration.unregister();
+        }
         
-        // console.log('unregister');
+        console.log('Service Worker / registration.unregister()');
         
       }
       

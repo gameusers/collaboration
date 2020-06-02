@@ -21,6 +21,11 @@ import { injectIntl } from 'react-intl';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 
@@ -43,6 +48,8 @@ import IconDeal from '@material-ui/icons/MonetizationOn';
 
 
 
+
+
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -50,17 +57,6 @@ import IconDeal from '@material-ui/icons/MonetizationOn';
 @inject('stores', 'storeGcRecruitment')
 @observer
 export default injectIntl(class extends React.Component {
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  constructor(props) {
-    super(props);
-  }
-  
-  
   
   
   // --------------------------------------------------
@@ -81,6 +77,7 @@ export default injectIntl(class extends React.Component {
       category,
       
     } = this.props;
+    
     
     
     
@@ -186,6 +183,8 @@ export default injectIntl(class extends React.Component {
       </React.Fragment>
     );
     
+    
   }
+  
   
 });

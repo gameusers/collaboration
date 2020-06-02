@@ -21,6 +21,11 @@ import { injectIntl } from 'react-intl';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 
@@ -57,6 +62,8 @@ import { validationKeyword } from 'app/@validations/keyword.js';
 
 import Panel from 'app/common/layout/components/panel.js';
 import FormHardwares from 'app/common/hardware/components/form.js';
+
+
 
 
 
@@ -128,7 +135,6 @@ export default injectIntl(class extends React.Component {
     
     const {
       
-      classes,
       stores,
       storeGcRecruitment,
       intl,

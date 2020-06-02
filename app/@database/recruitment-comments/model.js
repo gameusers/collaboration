@@ -1572,16 +1572,6 @@ const findForDelete = async ({
     
     
     // --------------------------------------------------
-    //   Property
-    // --------------------------------------------------
-    
-    // const language = lodashGet(localeObj, ['language'], '');
-    // const country = lodashGet(localeObj, ['country'], '');
-    
-    
-    
-    
-    // --------------------------------------------------
     //   Aggregate
     // --------------------------------------------------
     
@@ -1700,6 +1690,10 @@ const findForDelete = async ({
       },
       
       
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+      
       {
         $project: {
           _id: 1,
@@ -1776,8 +1770,11 @@ const findForDelete = async ({
       imagesAndVideos_idsArr.push(imagesAndVideos_id);
     }
     
-    let images = - lodashGet(docCommentObj, ['imagesAndVideosObj', 'images'], 0);
-    let videos = - lodashGet(docCommentObj, ['imagesAndVideosObj', 'videos'], 0);
+    let images = 0;
+    let videos = 0;
+    
+    images -= lodashGet(docCommentObj, ['imagesAndVideosObj', 'images'], 0);
+    videos -= lodashGet(docCommentObj, ['imagesAndVideosObj', 'videos'], 0);
     
     
     for (let valueObj of recruitmentRepliesArr.values()) {
@@ -1792,6 +1789,12 @@ const findForDelete = async ({
     }
     
     
+    
+    
+    // --------------------------------------------------
+    //   returnObj
+    // --------------------------------------------------
+    
     const returnObj = {
       
       gameCommunities_id,
@@ -1803,7 +1806,11 @@ const findForDelete = async ({
       
     };
     
-    
+    // console.log(chalk`
+    //   return
+    //   images: {green ${images} / ${typeof images}}
+    //   videos: {green ${videos} / ${typeof videos}}
+    // `);
     
     
     // --------------------------------------------------

@@ -188,7 +188,7 @@ const ja_JP = {
   '5v_7KvIq1': '募集タイトルを入力してください',
   
   // /app/@database/recruitment-threads/validations/deadline.js
-  'SFC7guhlr': '募集の締切日を選んでください',
+  'SFC7guhlr': '募集の締切日時を選んでください',
   'zZBe6dTLB': '過去の日付は選べません',
   
   

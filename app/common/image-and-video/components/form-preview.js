@@ -21,6 +21,11 @@ import { injectIntl } from 'react-intl';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 
@@ -29,6 +34,7 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import Fab from '@material-ui/core/Fab';
+import Tooltip from '@material-ui/core/Tooltip';
 
 
 // ---------------------------------------------
@@ -49,16 +55,8 @@ import cyan from '@material-ui/core/colors/cyan';
 //   Modules
 // ---------------------------------------------
 
-import { imageCalculateSize } from '../../../@modules/image/calculate';
-import { formatImagesAndVideosObj } from '../../../@database/images-and-videos/format';
-
-
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
-// import { SRLWrapper } from 'simple-react-lightbox';
-// import LightboxWrapper from '../../image-and-video/components/lightbox';
+import { imageCalculateSize } from 'app/@modules/image/calculate.js';
+import { formatImagesAndVideosObj } from 'app/@database/images-and-videos/format.js';
 
 
 
@@ -95,6 +93,8 @@ const cssPreviewRemoveFab = css`
 
 
 
+
+
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -102,17 +102,6 @@ const cssPreviewRemoveFab = css`
 @inject('stores', 'storeImageAndVideo', 'storeImageAndVideoForm')
 @observer
 export default injectIntl(class extends React.Component {
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  constructor(props) {
-    super(props);
-  }
-  
-  
   
   
   // --------------------------------------------------
@@ -139,8 +128,6 @@ export default injectIntl(class extends React.Component {
     
     const {
       
-      // handleLightboxOpen,
-      // handleLightboxClose,
       handleModalVideoOpen,
       
     } = storeImageAndVideo;
@@ -234,9 +221,6 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const componentsPreviewArr = [];
-    // const imagesArr = [];
-    
-    // let imageIndex = 0;
     
     
     for (const [index, valueObj] of arr.entries()) {
@@ -255,12 +239,10 @@ export default injectIntl(class extends React.Component {
       
       if (valueObj.type === 'image') {
         
-        // Lightboxで開く画像Noを設定する
-        // const currentNo = imageIndex;
-        
         const src = valueObj.src;
         const width = valueObj.width;
         const height = valueObj.height;
+        const caption = lodashGet(valueObj, ['caption'], '');
         
         
         // ---------------------------------------------
@@ -292,20 +274,29 @@ export default injectIntl(class extends React.Component {
             <div css={cssPreviewBox} key={index}>
               
               {/* Image */}
-              <img
-                css={css`
-                  min-height: 108px;
-                  max-height: 108px;
-                  
-                  @media screen and (max-width: 480px) {
-                    min-height: 68px;
-                    max-height: 68px;
-                  }
-                `}
-                src={src}
-                alt={imageType}
-                // onClick={() => handleLightboxOpen({ pathArr, currentNo })}
-              />
+              <Tooltip title={caption}>
+              
+                <img
+                  css={css`
+                    // width: 108px;
+                    height: 108px;
+                    min-height: 108px;
+                    max-height: 108px;
+                    
+                    @media screen and (max-width: 480px) {
+                      // width: 68px;
+                      height: 68px;
+                      min-height: 68px;
+                      max-height: 68px;
+                    }
+                  `}
+                  src={src}
+                  // width="108px"
+                  // height="108px"
+                  alt={imageType}
+                />
+              
+              </Tooltip>
               
               
               {/* Remove Button */}
@@ -331,24 +322,27 @@ export default injectIntl(class extends React.Component {
             <div css={cssPreviewBox} key={index}>
               
               {/* Image */}
-              <div
-                css={css`
-                  background-repeat: no-repeat;
-                  background-position: center center;
-                  
-                  max-width: 108px;
-                  max-height: 108px;
-                  width: ${calculatedObj.width}px;
-                  height: ${calculatedObj.height}px;
-                  background-image: url(${src});
-                  
-                  @media screen and (max-width: 480px) {
-                    max-width: 68px;
-                    max-height: 68px;
-                  }
-                `}
-                // onClick={() => handleLightboxOpen({ pathArr, currentNo })}
-              />
+              <Tooltip title={caption}>
+                
+                <div
+                  css={css`
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                    
+                    max-width: 108px;
+                    max-height: 108px;
+                    width: ${calculatedObj.width}px;
+                    height: ${calculatedObj.height}px;
+                    background-image: url(${src});
+                    
+                    @media screen and (max-width: 480px) {
+                      max-width: 68px;
+                      max-height: 68px;
+                    }
+                  `}
+                />
+                
+              </Tooltip>
               
               
               {/* Remove Button */}
@@ -364,9 +358,6 @@ export default injectIntl(class extends React.Component {
           );
           
         }
-        
-        // imageIndex += 1;
-        // imagesArr.push(valueObj);
         
         
       // ---------------------------------------------
@@ -471,43 +462,6 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Options
-    // --------------------------------------------------
-    
-    // const optionsObj = {
-      
-    //   enablePanzoom: false,
-      
-    // };
-    
-    // // 画像がひとつの場合は「オートプレイボタン」と「一覧で表示されるサムネイル画像」を非表示にする
-    // if (arr.length === 1) {
-      
-    //   optionsObj.autoplaySpeed = 0;
-    //   optionsObj.showThumbnails = false;
-      
-    // }
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   Callbacks
-    // // --------------------------------------------------
-    
-    // const callbacksObj = {
-      
-    //   // onCountSlides: total => countSlides(total),
-    //   // onSlideChange: object => handleSlideChange(object),
-    //   onLightboxClosed: () => handleLightboxClose({ pathArr }),
-    //   onLightboxOpened: () => handleLightboxOpen({ pathArr }),
-      
-    // };
-    
-    
-    
-    
-    // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
@@ -519,11 +473,8 @@ export default injectIntl(class extends React.Component {
     //   _id: {green ${_id}}
     // `);
     
-    // <SRLWrapper
-    //     options={optionsObj}
-    //     callbacks={callbacksObj}
-    //   >
-    // </SRLWrapper>
+    
+    
     
     // --------------------------------------------------
     //   Return

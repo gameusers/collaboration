@@ -15,7 +15,12 @@ import util from 'util';
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
-// import shortid from 'shortid';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
@@ -26,17 +31,12 @@ import lodashCloneDeep from 'lodash/cloneDeep';
 //   Stores
 // --------------------------------------------------
 
-import initStoreLayout from '../../../common/layout/stores/layout';
-
-
-
-
-// --------------------------------------------------
-//   Store
-// --------------------------------------------------
+import initStoreLayout from 'app/common/layout/stores/layout.js';
 
 let storeImageAndVideoForm = null;
-let storeLayout = initStoreLayout({});;
+const storeLayout = initStoreLayout({});;
+
+
 
 
 
@@ -689,6 +689,8 @@ class Store {
   
   
 }
+
+
 
 
 

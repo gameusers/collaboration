@@ -554,7 +554,8 @@ const send = async ({}) => {
         if (
           
           type === 'recruitment-comments' &&
-          Object.keys(recruitmentThreadsObj.subscriptionObj).length !== 0 &&
+          recruitmentThreadsObj.subscriptionObj &&
+          // Object.keys(recruitmentThreadsObj.subscriptionObj).length !== 0 &&
           threadsSendTodayLimit >= recruitmentThreadsObj.sendTodayCount
           
         ) {
@@ -593,7 +594,8 @@ const send = async ({}) => {
           
           if (
             
-            Object.keys(recruitmentThreadsObj.subscriptionObj).length !== 0 &&
+            recruitmentThreadsObj.subscriptionObj &&
+            // Object.keys(recruitmentThreadsObj.subscriptionObj).length !== 0 &&
             threadsSendTodayLimit >= recruitmentThreadsObj.sendTodayCount
             
           ) {

@@ -163,7 +163,7 @@ export default async (req, res) => {
     //   データが存在しない、編集権限がない場合はエラーが投げられる
     // --------------------------------------------------
     
-    const docObj = await ModelRecruitmentReplies.findOneForEdit({
+    const docRepliesObj = await ModelRecruitmentReplies.findOneForEdit({
       
       req,
       localeObj,
@@ -172,12 +172,15 @@ export default async (req, res) => {
       
     });
     
-    const gameCommunities_id = lodashGet(docObj, ['gameCommunities_id'], '');
-    const recruitmentThreads_id = lodashGet(docObj, ['recruitmentThreads_id'], '');
-    const recruitmentComments_id = lodashGet(docObj, ['recruitmentComments_id'], '');
-    const imagesAndVideos_id = lodashGet(docObj, ['imagesAndVideos_id'], '');
-    const images = lodashGet(docObj, ['images'], 0);
-    const videos = lodashGet(docObj, ['images'], 0);
+    const gameCommunities_id = lodashGet(docRepliesObj, ['gameCommunities_id'], '');
+    const recruitmentThreads_id = lodashGet(docRepliesObj, ['recruitmentThreads_id'], '');
+    const recruitmentComments_id = lodashGet(docRepliesObj, ['recruitmentComments_id'], '');
+    const imagesAndVideos_id = lodashGet(docRepliesObj, ['imagesAndVideosObj', '_id'], '');
+    
+    let images = 0;
+    let videos = 0;
+    images -= lodashGet(docRepliesObj, ['imagesAndVideosObj', 'images'], 0);
+    videos -= lodashGet(docRepliesObj, ['imagesAndVideosObj', 'videos'], 0);
     
     
     
@@ -208,8 +211,8 @@ export default async (req, res) => {
     // `);
     
     // console.log(`
-    //   ----- docObj -----\n
-    //   ${util.inspect(docObj, { colors: true, depth: null })}\n
+    //   ----- docRepliesObj -----\n
+    //   ${util.inspect(docRepliesObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -324,7 +327,9 @@ export default async (req, res) => {
     
     const dirPath = `public/img/recruitment/${imagesAndVideos_id}`;
     
-    if (imagesAndVideos_id && images !== 0) {
+    if (imagesAndVideos_id) {
+      
+      // console.log(dirPath);
       
       rimraf(dirPath, (err) => {
         if (err) {
@@ -380,20 +385,6 @@ export default async (req, res) => {
     returnObj.updatedDateObj = updatedDateObj;
     
     
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   userCommunities_id: {green ${userCommunities_id}}
-    //   forumThreads_id: {green ${forumThreads_id}}
-    //   forumComments_id: {green ${forumComments_id}}
-    //   anonymity: {green ${anonymity} / ${typeof anonymity}}
-    //   IP: {green ${ip}}
-    //   User Agent: {green ${req.headers['user-agent']}}
-    // `);
     
     
     // ---------------------------------------------

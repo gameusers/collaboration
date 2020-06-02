@@ -23,7 +23,9 @@ import ModalVideo from 'react-modal-video';
 //   Stores
 // ---------------------------------------------
 
-import initStoreImageAndVideo from '../stores/image-and-video';
+import initStoreImageAndVideo from 'app/common/image-and-video/stores/image-and-video.js';
+
+
 
 
 
@@ -42,6 +44,11 @@ export default class extends React.Component {
   
   constructor(props) {
     
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
     
     
@@ -51,7 +58,10 @@ export default class extends React.Component {
     
     this.storeImageAndVideo = initStoreImageAndVideo({});
     
+    
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -75,5 +85,6 @@ export default class extends React.Component {
     );
     
   }
+  
   
 };

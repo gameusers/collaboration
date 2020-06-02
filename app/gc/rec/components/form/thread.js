@@ -186,7 +186,7 @@ export default injectIntl(class extends React.Component {
     //   Property
     // --------------------------------------------------
     
-    const category = lodashGet(dataObj, [...pathArr, 'category'], '');
+    const category = lodashGet(dataObj, [...pathArr, 'category'], '') || '';
     const title = lodashGet(dataObj, [...pathArr, 'title'], '');
     const name = lodashGet(dataObj, [...pathArr, 'name'], '');
     const comment = lodashGet(dataObj, [...pathArr, 'comment'], '');
@@ -194,10 +194,7 @@ export default injectIntl(class extends React.Component {
     
     const limitHardwares = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT, 10);
     
-    // console.log(chalk`
-    //   process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT: {green ${process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT} / ${typeof process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT}}
-    //   limitHardwares: {green ${limitHardwares} / ${typeof limitHardwares}}
-    // `);
+    
     
     
     // --------------------------------------------------
@@ -254,6 +251,10 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(chalk`
+    //   category: {green ${category} / ${typeof category}}
+    // `);
+    
+    // console.log(chalk`
     //   gameCommunities_id: {green ${gameCommunities_id}}
     //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
     //   login: {green ${login}}
@@ -279,6 +280,7 @@ export default injectIntl(class extends React.Component {
       >
         
         
+        {/* Form */}
         <form
           name={elementName}
           onSubmit={(eventObj) => handleSubmitRecruitmentThread({
@@ -290,6 +292,7 @@ export default injectIntl(class extends React.Component {
         >
           
           
+          {/* Heading & Explanation */}
           {recruitmentThreads_id &&
             <React.Fragment>
             
@@ -371,7 +374,7 @@ export default injectIntl(class extends React.Component {
                   }
                 `}
                 labelId="categoryLabel"
-                _id="category"
+                id={`${elementName}-category`}
                 value={category}
                 onChange={(eventObj) => handleEdit({
                   pathArr: [...pathArr, 'category'],
@@ -395,6 +398,8 @@ export default injectIntl(class extends React.Component {
           {/* Title & Handle Name & Comment */}
           <div css={cssBox}>
             
+            
+            {/* Title */}
             <TextField
               css={css`
                 && {
@@ -403,7 +408,7 @@ export default injectIntl(class extends React.Component {
                   ${recruitmentThreads_id && `margin-top: 4px;`}
                 }
               `}
-              id="threadTitle"
+              id={`${elementName}-threadTitle`}
               label="募集タイトル"
               value={validationRecruitmentThreadsTitleObj.value}
               onChange={(eventObj) => handleEdit({
@@ -431,7 +436,7 @@ export default injectIntl(class extends React.Component {
                     ${recruitmentThreads_id && `margin-top: 4px;`}
                   }
                 `}
-                id="threadName"
+                id={`${elementName}-name`}
                 label="ハンドルネーム"
                 value={validationRecruitmentThreadsNameObj.value}
                 onChange={(eventObj) => handleEdit({
@@ -729,6 +734,8 @@ export default injectIntl(class extends React.Component {
       </Element>
     );
     
+    
   }
+  
   
 });

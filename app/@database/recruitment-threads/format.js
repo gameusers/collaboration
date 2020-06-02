@@ -445,7 +445,7 @@ const formatRecruitmentThreadsArr = ({
     delete clonedObj.hardwareIDsArr;
     delete clonedObj.ids_idsArr;
     delete clonedObj.localesArr;
-    delete clonedObj.close;
+    // delete clonedObj.close;
     delete clonedObj.webPushAvailable;
     delete clonedObj.webPushesObj;
     delete clonedObj.language;

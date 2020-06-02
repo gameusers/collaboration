@@ -17,10 +17,16 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -56,6 +62,8 @@ const cssFontRed = css`
 
 
 
+
+
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -63,15 +71,6 @@ const cssFontRed = css`
 @inject('storeImageAndVideoForm')
 @observer
 export default injectIntl(class extends React.Component {
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  constructor(props) {
-    super(props);
-  }
   
   
   // --------------------------------------------------
@@ -85,7 +84,18 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideoForm, intl, pathArr = [], type, heading, description, limit = 1 } = this.props;
+    const {
+      
+      storeImageAndVideoForm,
+      intl,
+      pathArr = [],
+      type,
+      heading,
+      description,
+      limit = 1
+      
+    } = this.props;
+    
     
     const {
       
@@ -94,6 +104,7 @@ export default injectIntl(class extends React.Component {
       handleAddVideo,
       
     } = storeImageAndVideoForm;
+    
     
     const videoChannel = lodashGet(dataObj, [...pathArr, 'videoChannel'], 'youtube');
     const videoURL = lodashGet(dataObj, [...pathArr, 'videoURL'], '');

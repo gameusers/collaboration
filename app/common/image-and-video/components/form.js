@@ -17,10 +17,16 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -42,6 +48,8 @@ import FormVideo from './form-video';
 
 
 
+
+
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -49,17 +57,6 @@ import FormVideo from './form-video';
 @inject('storeImageAndVideoForm')
 @observer
 export default injectIntl(class extends React.Component {
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  constructor(props) {
-    super(props);
-  }
-  
-  
   
   
   // --------------------------------------------------
@@ -91,16 +88,10 @@ export default injectIntl(class extends React.Component {
     const {
       
       dataObj,
-      // handleGetImagesAndVideosObj,
       handleShowFormImage,
       handleShowFormVideo,
       
     } = storeImageAndVideoForm;
-    
-    // const { dataObj, handleGetImagesAndVideosObj, handleRemovePreview } = storeImageAndVideoForm;
-    
-    
-    // const imagesAndVideosObj = handleGetImagesAndVideosObj({ pathArr });
     
     
     const showFormImage = lodashGet(dataObj, [...pathArr, 'showFormImage'], false);
@@ -144,7 +135,6 @@ export default injectIntl(class extends React.Component {
         {/* Preview */}
         <FormPreview
           pathArr={pathArr}
-          // imagesAndVideosObj={imagesAndVideosObj}
         />
         
         

@@ -45,7 +45,6 @@ import { CustomError } from 'app/@modules/error/custom.js';
 
 import { validationBoolean } from 'app/@validations/boolean.js';
 import { validationHandleName } from 'app/@validations/name.js';
-// import { validationKeyword } from 'app/@validations/keyword.js';
 
 import { validationRecruitmentThreadsCategory } from 'app/@database/recruitment-threads/validations/category.js';
 import { validationRecruitmentThreadsTitle } from 'app/@database/recruitment-threads/validations/title.js';
@@ -73,13 +72,6 @@ const storeLayout = initStoreLayout({});
 const storeHardware = initStoreHardware({});
 const storeIDForm = initStoreIDForm({});
 const storeImageAndVideoForm = initStoreImageAndVideoForm({});
-
-// let storeData = null;
-// let storeWebPush = null;
-// let storeLayout = null;
-// let storeHardware = null;
-// let storeIDForm = null;
-// let storeImageAndVideoForm = null;
 
 
 
@@ -267,9 +259,6 @@ class Store {
       
       
       
-      
-      
-      
       // ---------------------------------------------
       //   Change Limit / Set Cookie
       // ---------------------------------------------
@@ -277,6 +266,10 @@ class Store {
       if (changeLimit) {
         
         Cookies.set('recruitmentThreadLimit', changeLimit);
+        
+        // console.log(chalk`
+        //   changeLimit: {green ${changeLimit}}
+        // `);
         
       }
       
@@ -370,58 +363,12 @@ class Store {
         
       }
       
-      // console.log('AAA');
-      
       
     } catch (errorObj) {
       
       
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      // storeLayout.handleSnackbarOpen({
-      //   variant: 'error',
-      //   errorObj,
-      // });
-      
       
     } finally {
-      
-      
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      // storeLayout.handleButtonEnable({ pathArr });
-      
-      
-      // ---------------------------------------------
-      //   Scroll
-      // ---------------------------------------------
-      
-      // Router.events.on('routeChangeComplete', () => { 
-        
-      //   storeLayout.handleScrollTo({
-          
-      //     to: 'recruitmentThreads',
-      //     duration: 0,
-      //     delay: 0,
-      //     smooth: 'easeInOutQuart',
-      //     offset: -50,
-          
-      //   });
-        
-      // });
-      // storeLayout.handleScrollTo({
-        
-      //   to: 'recruitmentThreads',
-      //   duration: 0,
-      //   delay: 0,
-      //   smooth: 'easeInOutQuart',
-      //   offset: -50,
-        
-      // });
       
       
       
@@ -1945,7 +1892,7 @@ class Store {
     // ---------------------------------------------
       
     } else if (!recruitmentReplies_id && replyToRecruitmentReplies_id) {
-      
+      // console.log('Insert - 返信対象が存在する');
       lodashSet(this.dataObj, [...pathArr, 'showFormReplyTo'], false);
       scrollToTarget = replyToRecruitmentReplies_id;
       
@@ -1974,12 +1921,30 @@ class Store {
     
     
     
-    // console.log(chalk`
-    //   recruitmentComments_id: {green ${recruitmentComments_id}}
-    //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
-    //   replyToRecruitmentReplies_id: {green ${replyToRecruitmentReplies_id}}
-    //   scrollToTarget_id: {green ${scrollToTarget_id}}
-    // `);
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(`
+      ----------------------------------------\n
+      /app/gc/rec/stores/store.js - handleHideFormRecruitmentReply
+    `);
+    
+    console.log(`
+      ----- pathArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(chalk`
+      recruitmentComments_id: {green ${recruitmentComments_id}}
+      recruitmentReplies_id: {green ${recruitmentReplies_id}}
+      replyToRecruitmentReplies_id: {green ${replyToRecruitmentReplies_id}}
+      scrollTo: {green ${scrollTo}}
+    `);
+    
+    
     
     
     // ---------------------------------------------
@@ -2292,49 +2257,49 @@ class Store {
       //   Fetch
       // ---------------------------------------------
       
-      // const resultObj = await fetchWrapper({
+      const resultObj = await fetchWrapper({
         
-      //   urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/upsert`,
-      //   methodType: 'POST',
-      //   formData: JSON.stringify(formDataObj),
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/upsert`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
         
-      // });
+      });
       
       
-      // // console.log(`
-      // //   ----- resultObj -----\n
-      // //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
-      // // ---------------------------------------------
-      // //   Error
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
       
-      // if ('errorsArr' in resultObj) {
-      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
-      // }
-      
-      
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
       
       
-      // // ---------------------------------------------
-      // //   スレッド更新
-      // // ---------------------------------------------
       
-      // const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
-      // const clonedObj = lodashCloneDeep(recruitmentObj);
       
-      // clonedObj.recruitmentThreadsObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {});
-      // clonedObj.recruitmentCommentsObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
-      // clonedObj.recruitmentRepliesObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
-      // clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+      // ---------------------------------------------
+      //   スレッド更新
+      // ---------------------------------------------
       
-      // this.handleEdit({
-      //   pathArr: [gameCommunities_id],
-      //   value: clonedObj
-      // });
+      const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
+      const clonedObj = lodashCloneDeep(recruitmentObj);
+      
+      clonedObj.recruitmentThreadsObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {});
+      clonedObj.recruitmentCommentsObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
+      clonedObj.recruitmentRepliesObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
+      clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+      
+      this.handleEdit({
+        pathArr: [gameCommunities_id],
+        value: clonedObj
+      });
       
       
       
@@ -2351,21 +2316,6 @@ class Store {
         // ---------------------------------------------
         
         lodashSet(this.dataObj, [...pathArr, 'showFormThread'], false);
-        
-        
-        // ---------------------------------------------
-        //   Scroll
-        // ---------------------------------------------
-        
-        storeLayout.handleScrollTo({
-          
-          to: recruitmentThreads_id,
-          duration: 0,
-          delay: 0,
-          smooth: 'easeInOutQuart',
-          offset: -50,
-          
-        });
         
         
       // ---------------------------------------------
@@ -2407,13 +2357,6 @@ class Store {
         lodashSet(this.dataObj, pathArr, {});
         
         
-        // console.log(`
-        //   ----- [] -----\n
-        //   ${util.inspect(JSON.parse(JSON.stringify(lodashGet(this.dataObj, pathArr, []))), { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-        
-        
         // ---------------------------------------------
         //   パネルを閉じる
         // ---------------------------------------------
@@ -2426,20 +2369,37 @@ class Store {
       
       
       
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      storeLayout.handleScrollTo({
+        
+        to: recruitmentThreads_id || 'recruitmentThreads',
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+        
+      });
+      
+      
+      
+      
       // --------------------------------------------------
       //   console.log
       // --------------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/gc/rec/stores/store.js / handleRecruitment
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/gc/rec/stores/store.js / handleRecruitment
+      // `);
       
-      console.log(`
-        ----- pathArr -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       // console.log(`
       //   ----- this.dataObj -----\n
@@ -3176,11 +3136,11 @@ class Store {
       });
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
       // ---------------------------------------------
@@ -3223,7 +3183,8 @@ class Store {
         
         pathArr,
         recruitmentComments_id,
-        recruitmentReplies_id: lodashGet(resultObj, ['data', 'scrollTo_id'], ''),
+        recruitmentReplies_id,
+        // recruitmentReplies_id: lodashGet(resultObj, ['data', 'scrollTo_id'], ''),
         replyToRecruitmentReplies_id,
         
       });
@@ -4067,14 +4028,6 @@ export default function initStoreGcRecruitment({ propsObj }) {
   if (storeGcRecruitment === null) {
     storeGcRecruitment = new Store();
   }
-  
-  
-  // storeData = initStoreData({});
-  // storeWebPush = initStoreWebPush({});
-  // storeLayout = initStoreLayout({});
-  // storeHardware = initStoreHardware({});
-  // storeIDForm = initStoreIDForm({});
-  // storeImageAndVideoForm = initStoreImageAndVideoForm({});
   
   
   // --------------------------------------------------

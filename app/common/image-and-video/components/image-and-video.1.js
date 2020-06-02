@@ -22,7 +22,6 @@ import { SRLWrapper } from 'simple-react-lightbox';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
-// import shortid from 'shortid';
 
 // ---------------------------------------------
 //   Lodash
@@ -130,15 +129,15 @@ export default injectIntl(class extends React.Component {
     for (const [index, valueObj] of arr.entries()) {
       
       
-      // console.log(chalk`
-      //   index: {green ${index}}
-      // `);
+      console.log(chalk`
+        index: {green ${index}}
+      `);
       
-      // console.log(`
-      //   ----- valueObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(valueObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- valueObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(valueObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
       // ---------------------------------------------
@@ -271,6 +270,10 @@ export default injectIntl(class extends React.Component {
         
         if (valueObj.type === 'image') {
           
+          const src = valueObj.src;
+          // const width = valueObj.width;
+          // const height = valueObj.height;
+          
           
           // ---------------------------------------------
           //   横幅・高さを計算する
@@ -283,6 +286,12 @@ export default injectIntl(class extends React.Component {
           //   ----- calculatedObj -----\n
           //   ${util.inspect(calculatedObj, { colors: true, depth: null })}\n
           //   --------------------\n
+          // `);
+          
+          // console.log(chalk`
+          //   src: {green ${src}}
+          //   width: {green ${width}}
+          //   height: {green ${height}}
           // `);
           
           
@@ -301,11 +310,72 @@ export default injectIntl(class extends React.Component {
                     max-height: 68px;
                   }
                 `}
-                src={valueObj.src}
+                src={src}
               />
               
             </div>
           );
+          
+          
+          // ---------------------------------------------
+          //   普通の画像
+          // ---------------------------------------------
+          
+          // if (src.indexOf('data:image/svg') === -1) {
+          //   console.log('普通の画像');
+          //   componentsSmallImagesArr.push(
+          //     <div css={cssPreviewBox} key={index}>
+                
+          //       <img
+          //         css={css`
+          //           height: 108px;
+          //           min-height: 108px;
+          //           max-height: 108px;
+                    
+          //           @media screen and (max-width: 480px) {
+          //             height: 68px;
+          //             min-height: 68px;
+          //             max-height: 68px;
+          //           }
+          //         `}
+          //         src={src}
+          //       />
+                
+          //     </div>
+          //   );
+            
+            
+          // // ---------------------------------------------
+          // //   SVG
+          // // ---------------------------------------------
+            
+          // } else {
+          //   console.log('SVG');
+          //   componentsSmallImagesArr.push(
+          //     <div css={cssPreviewBox} key={index}>
+                
+          //       <div
+          //         css={css`
+          //           background-repeat: no-repeat;
+          //           background-position: center center;
+                    
+          //           max-width: 108px;
+          //           max-height: 108px;
+          //           width: ${calculatedObj.width}px;
+          //           height: ${calculatedObj.height}px;
+          //           background-image: url(${src});
+                    
+          //           @media screen and (max-width: 480px) {
+          //             max-width: 68px;
+          //             max-height: 68px;
+          //           }
+          //         `}
+          //       />
+                
+          //     </div>
+          //   );
+            
+          // }
           
           
         // ---------------------------------------------
@@ -315,7 +385,7 @@ export default injectIntl(class extends React.Component {
         } else if (valueObj.type === 'video') {
           
           componentsSmallImagesArr.push(
-            <div css={cssPreviewBox} key={`${imagesAndVideosObj._id}-${index}`}>
+            <div css={cssPreviewBox} key={index}>
               
               <div
                 css={css`
@@ -433,62 +503,35 @@ export default injectIntl(class extends React.Component {
     //   Options
     // --------------------------------------------------
     
-    // const optionsObj = {
-      
-    //   settings: {
-        
-    //     disablePanzoom: true,
-        
-    //   }
-      
-    // };
-    
-    // // 画像がひとつの場合は「サムネイル」と「オートプレイ」「次」「前」「サムネイル」ボタンを非表示にする
-    // if (arr.length === 1) {
-      
-    //   optionsObj.buttons = {
-        
-    //     showAutoplayButton: false,
-    //     showNextButton: false,
-    //     showPrevButton: false,
-    //     showThumbnailsButton: false,
-        
-    //   };
-      
-    //   optionsObj.thumbnails = {
-        
-    //     showThumbnails: false,
-        
-    //   };
-      
-    // }
-    
-    
-    // バグでスレッド、コメント、返信の画像がごちゃまぜで表示されるので、サムネイルを削除して、画像をひとつずつ表示することにしている
     const optionsObj = {
       
       settings: {
         
         disablePanzoom: true,
         
-      },
+      }
       
-      buttons: {
+    };
+    
+    // 画像がひとつの場合は「サムネイル」と「オートプレイ」「次」「前」「サムネイル」ボタンを非表示にする
+    if (arr.length === 1) {
+      
+      optionsObj.buttons = {
         
         showAutoplayButton: false,
         showNextButton: false,
         showPrevButton: false,
         showThumbnailsButton: false,
         
-      },
+      };
       
-      thumbnails: {
+      optionsObj.thumbnails = {
         
         showThumbnails: false,
         
-      },
+      };
       
-    };
+    }
     
     
     
@@ -517,40 +560,25 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   key
-    // --------------------------------------------------
-    
-    const key = pathArr.join('-');
-    // const key = `${pathArr.join('-')}-${imagesAndVideosObj._id}`;
-    // const key = shortid.generate();
-    
-    
-    
-    
-    // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/common/image-and-video/components/image-and-video.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /app/common/image-and-video/components/image-and-video.js
+    `);
     
-    // console.log(`
-    //   ----- pathArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- pathArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- imagesAndVideosObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   key: {green ${key}}
-    // `);
+    console.log(`
+      ----- imagesAndVideosObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -563,7 +591,7 @@ export default injectIntl(class extends React.Component {
       <SRLWrapper
         options={optionsObj}
         callbacks={callbacksObj}
-        key={key}// ページ遷移を行っても最初に表示した画像が表示され続ける状態（バグ？）を防ぐため、key を入れている
+        key={pathArr.join('-')}// ページ遷移を行っても最初に表示した画像が表示され続ける状態（バグ？）を防ぐため、key を入れている
       >
         
         

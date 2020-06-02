@@ -23,6 +23,11 @@ import TextareaAutosize from 'react-autosize-textarea';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 
@@ -50,14 +55,16 @@ import IconReply from '@material-ui/icons/Reply';
 //   Validations
 // ---------------------------------------------
 
-import { validationHandleName } from '../../../../@validations/name';
+import { validationHandleName } from 'app/@validations/name.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import ImageAndVideoForm from '../../../../common/image-and-video/components/form';
+import ImageAndVideoForm from 'app/common/image-and-video/components/form.js';
+
+
 
 
 
@@ -103,7 +110,6 @@ export default injectIntl(class extends React.Component {
     
     const {
       
-      classes,
       stores,
       storeGcRecruitment,
       intl,
@@ -326,7 +332,7 @@ export default injectIntl(class extends React.Component {
                     margin-top: ${replyTo ? '4px' : '0'};
                   }
                 `}
-                id="threadName"
+                id={`${pathArr.join('-')}-name`}
                 label="ハンドルネーム"
                 value={validationHandleNameObj.value}
                 onChange={(eventObj) => handleEdit({
@@ -538,6 +544,8 @@ export default injectIntl(class extends React.Component {
       </Element>
     );
     
+    
   }
+  
   
 });

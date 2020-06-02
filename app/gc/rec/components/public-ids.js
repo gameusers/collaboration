@@ -20,6 +20,11 @@ import { inject, observer } from 'mobx-react';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 
@@ -34,7 +39,9 @@ import IconStyle from '@material-ui/icons/Style';
 //   Components
 // ---------------------------------------------
 
-import IDChip from '../../../common/id/components/chip';
+import IDChip from 'app/common/id/components/chip.js';
+
+
 
 
 
@@ -215,6 +222,8 @@ export default class extends React.Component {
       </React.Fragment>
     );
     
+    
   }
+  
   
 };

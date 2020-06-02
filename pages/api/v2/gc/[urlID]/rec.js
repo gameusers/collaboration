@@ -11,7 +11,7 @@ import util from 'util';
 
 
 // ---------------------------------------------
-//   Node Packages
+//   Lodash
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';

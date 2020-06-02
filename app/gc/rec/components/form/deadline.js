@@ -18,10 +18,16 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import moment from 'moment';
-import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -35,7 +41,9 @@ import TextField from '@material-ui/core/TextField';
 //   Validations
 // ---------------------------------------------
 
-import { validationRecruitmentThreadsDeadlineDate } from '../../../../@database/recruitment-threads/validations/deadline';
+import { validationRecruitmentThreadsDeadlineDate } from 'app/@database/recruitment-threads/validations/deadline.js';
+
+
 
 
 
@@ -47,17 +55,6 @@ import { validationRecruitmentThreadsDeadlineDate } from '../../../../@database/
 @inject('stores', 'storeGcRecruitment')
 @observer
 export default injectIntl(class extends React.Component {
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  constructor(props) {
-    super(props);
-  }
-  
-  
   
   
   // --------------------------------------------------
@@ -81,10 +78,8 @@ export default injectIntl(class extends React.Component {
     } = this.props;
     
     
-    
-    
     // --------------------------------------------------
-    //   Forum
+    //   storeGcRecruitment
     // --------------------------------------------------
     
     const {
@@ -93,6 +88,8 @@ export default injectIntl(class extends React.Component {
       handleEdit,
       
     } = storeGcRecruitment;
+    
+    
     
     
     // --------------------------------------------------
@@ -113,7 +110,9 @@ export default injectIntl(class extends React.Component {
     //   日付のフォーマット
     // --------------------------------------------------
     
-    const formattedDate = deadlineDate ? moment(deadlineDate).format('YYYY-MM-DD') : '';
+    // const formattedDate = deadlineDate || '';
+    // const formattedDate = deadlineDate ? moment(deadlineDate).format('YYYY-MM-DDThh:mm:ss') : '';
+    const formattedDate = deadlineDate ? moment(deadlineDate).format('YYYY-MM-DDTHH:mm') : '';
     
     
     
@@ -160,10 +159,19 @@ export default injectIntl(class extends React.Component {
         
         <p
           css={css`
+            // margin: 0 0 24px 0;
+          `}
+        >
+          募集期間を設定する場合は、募集の締切日時を設定してください。募集期間が過ぎると、募集者とコメントをした方のID・情報が自動的に非表示になります。無期限に募集を掲載したい場合は未記入にしてください。
+        </p>
+        
+        <p
+          css={css`
+            color: red;
             margin: 0 0 24px 0;
           `}
         >
-          募集期間を設定する場合は、募集の締切日を設定してください。募集期間が過ぎると、募集者とコメントをした方のID・情報が自動的に非表示になります。無期限に募集を掲載したい場合は未記入にしてください。
+          すぐに募集を締め切りたい場合は、この欄で過去の日付を入力してください。
         </p>
         
         
@@ -178,9 +186,9 @@ export default injectIntl(class extends React.Component {
               }
             }
           `}
-          id="deadlineDate"
-          label="募集の締切日"
-          type="date"
+          id={`${pathArr.join('-')}-deadlineDate`}
+          label="募集の締切日時"
+          type="datetime-local"
           value={formattedDate}
           onChange={(eventObj) => handleEdit({
             pathArr: [...pathArr, 'deadlineDate'],
@@ -195,10 +203,11 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        
       </React.Fragment>
     );
     
+    
   }
+  
   
 });

@@ -93,6 +93,8 @@ const stylesObj = {
 
 
 
+
+
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -148,19 +150,8 @@ export default injectIntl(class extends React.Component {
     } = this.props;
     
     
-    
-    
     // --------------------------------------------------
-    //   Button - Disabled
-    // --------------------------------------------------
-    
-    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr });
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Forum
+    //   storeGcRecruitment
     // --------------------------------------------------
     
     const {
@@ -173,6 +164,17 @@ export default injectIntl(class extends React.Component {
       handleHideFormRecruitmentComment,
       
     } = storeGcRecruitment;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Button - Disabled
+    // --------------------------------------------------
+    
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr });
+    
+    
     
     
     // --------------------------------------------------
@@ -309,7 +311,7 @@ export default injectIntl(class extends React.Component {
                     ${recruitmentThreads_id && `margin-top: 4px;`}
                   }
                 `}
-                id="threadName"
+                id={`${elementName}-name`}
                 label="ハンドルネーム"
                 value={validationRecruitmentThreadsNameObj.value}
                 onChange={(eventObj) => handleEdit({
@@ -597,6 +599,8 @@ export default injectIntl(class extends React.Component {
       </Element>
     );
     
+    
   }
+  
   
 });

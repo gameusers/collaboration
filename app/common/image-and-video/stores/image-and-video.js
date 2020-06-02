@@ -16,6 +16,11 @@ import util from 'util';
 
 import { action, observable } from 'mobx';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 
@@ -24,10 +29,12 @@ import lodashSet from 'lodash/set';
 //   Stores
 // --------------------------------------------------
 
-import initStoreLayout from '../../../common/layout/stores/layout';
+import initStoreLayout from 'app/common/layout/stores/layout.js';
 
 let storeImageAndVideo = null;
-let storeLayout = initStoreLayout({});
+const storeLayout = initStoreLayout({});
+
+
 
 
 
@@ -47,6 +54,34 @@ class Store {
    * Lightboxのデータを入れるオブジェクト
    * @type {Object}
    */
+  // @observable imagesArr = [];
+  
+  // @observable imagesArr = [{
+    
+  //   src: 'https://dev-1.gameusers.org/img/recruitment/X9243NyQr/aaD-LQqCRT/800w.jpg',
+  //   thumbnail: 'https://dev-1.gameusers.org/img/recruitment/X9243NyQr/aaD-LQqCRT/800w.jpg',
+  //   caption: 'caption',
+  //   width: 800,
+  //   height: 'auto'
+    
+  // }];
+  
+  // @observable imagesArr = [{
+    
+  //   src: 'https://dev-1.gameusers.org/img/common/advertisement/300x250.jpg',
+  //   thumbnail: 'https://dev-1.gameusers.org/img/common/advertisement/300x250.jpg',
+  //   caption: 'caption',
+  //   width: 300,
+  //   height: 'auto'
+    
+  // }];
+  
+  
+  
+  /**
+   * Lightboxのデータを入れるオブジェクト
+   * @type {Object}
+   */
   @observable lightboxObj = {};
   
   
@@ -55,20 +90,35 @@ class Store {
    * @param {Array} pathArr - データを保存する場所を配列で指定する
    */
   @action.bound
-  handleLightboxOpen({ pathArr = [] }) {
-    
-    // console.log(chalk`
-    //   handleLightboxOpen
-    //   storeLayout.hideNavForLightbox: {green ${storeLayout.hideNavForLightbox}}
-    // `);
+  handleLightboxOpen({ object = {}, pathArr = [] }) {
     
     
     // lodashSet(this.lightboxObj, [...pathArr, 'currentNo'], currentNo);
-    lodashSet(this.lightboxObj, [...pathArr, 'open'], true);
+    // lodashSet(this.lightboxObj, [...pathArr, 'open'], true);
     
     storeLayout.hideNavForLightbox = true;
     
-    // openLightbox(0);
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/image-and-video/stores/image-and-video.js - handleLightboxOpen
+    // `);
+    
+    // console.log(`
+    //   ----- object -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(object)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- this.lightboxObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(this.lightboxObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
   };
   
@@ -78,18 +128,81 @@ class Store {
    * @param {Array} pathArr - データを保存する場所を配列で指定する
    */
   @action.bound
-  handleLightboxClose({ pathArr = [] }) {
+  handleLightboxClose({ object = {} }) {
     
     // console.log(chalk`
     //   handleLightboxClose
     //   storeLayout.hideNavForLightbox: {green ${storeLayout.hideNavForLightbox}}
     // `);
     
-    lodashSet(this.lightboxObj, [...pathArr, 'open'], false);
+    // lodashSet(this.lightboxObj, [...pathArr, 'open'], false);
     
     storeLayout.hideNavForLightbox = false;
     
   };
+  
+  
+  
+  
+  /**
+   * Lightboxを開く
+   * @param {Array} pathArr - データを保存する場所を配列で指定する
+   */
+  // @action.bound
+  // handleLightboxOpen({  }) {
+    
+    
+  //   // lodashSet(this.lightboxObj, [...pathArr, 'currentNo'], currentNo);
+  //   // lodashSet(this.lightboxObj, [...pathArr, 'open'], true);
+    
+  //   storeLayout.hideNavForLightbox = true;
+    
+    
+  //   this.imagesArr.push({
+      
+  //     src: 'https://dev-1.gameusers.org/img/recruitment/X9243NyQr/aaD-LQqCRT/800w.jpg',
+  //     thumbnail: 'https://dev-1.gameusers.org/img/recruitment/X9243NyQr/aaD-LQqCRT/800w.jpg',
+  //     caption: 'caption',
+  //     width: 800,
+  //     height: 'auto'
+      
+  //   });
+    
+  //   // this.imagesArr = [{
+      
+  //   //   src: 'https://dev-1.gameusers.org/img/recruitment/X9243NyQr/aaD-LQqCRT/800w.jpg',
+  //   //   thumbnail: 'https://dev-1.gameusers.org/img/recruitment/X9243NyQr/aaD-LQqCRT/800w.jpg',
+  //   //   caption: 'caption',
+  //   //   width: 800,
+  //   //   height: 'auto'
+      
+  //   // }];
+    
+  //   // openLightbox(0);
+    
+    
+  //   // --------------------------------------------------
+  //   //   console.log
+  //   // --------------------------------------------------
+    
+  //   console.log(`
+  //     ----------------------------------------\n
+  //     /app/common/image-and-video/stores/image-and-video.js - handleLightboxOpen
+  //   `);
+    
+  //   // console.log(`
+  //   //   ----- object -----\n
+  //   //   ${util.inspect(JSON.parse(JSON.stringify(object)), { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
+    
+  //   console.log(`
+  //     ----- this.imagesArr -----\n
+  //     ${util.inspect(JSON.parse(JSON.stringify(this.imagesArr)), { colors: true, depth: null })}\n
+  //     --------------------\n
+  //   `);
+    
+  // };
   
   
   /**
@@ -165,6 +278,8 @@ class Store {
   
   
 }
+
+
 
 
 

@@ -29,6 +29,11 @@ import { observer, Provider } from 'mobx-react';
 import { IntlProvider } from 'react-intl';
 import SimpleReactLightbox from 'simple-react-lightbox';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 // import moment from 'moment';
@@ -37,33 +42,35 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import { ThemeProvider } from '@material-ui/styles';
-import theme from '../app/@css/material-ui/theme';
+import theme from 'app/@css/material-ui/theme';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-import { locale } from '../app/@locales/locale.js';
+import { locale } from 'app/@locales/locale.js';
 
 
 // ---------------------------------------------
 //   Stores
 // ---------------------------------------------
 
-import initStoreRoot from '../app/@stores/root.js';
+import initStoreRoot from 'app/@stores/root.js';
 
 
 // ---------------------------------------------
 //   CSS
 // ---------------------------------------------
 
-import '../app/@css/reset.css';
+import 'app/@css/reset.css';
 import 'react-id-swiper/src/styles/css/swiper.css';
 import 'rc-pagination/assets/index.css';
 import 'react-modal-video/css/modal-video.min.css';
 import 'nprogress/nprogress.css';
-import '../app/@css/style.css';
+import 'app/@css/style.css';
+
+
 
 
 
@@ -291,6 +298,7 @@ class MyApp extends App {
     return (
       <React.Fragment>
         
+        
         <Head>
           <title>Game Users</title>
         </Head>
@@ -312,11 +320,14 @@ class MyApp extends App {
             {/* Material UI Theme Provider */}
             <ThemeProvider theme={theme}>
               
+              
+              {/* Simple React Light-box */}
               <SimpleReactLightbox>
                 
                 <Component {...pageProps} />
                 
               </SimpleReactLightbox>
+              
               
             </ThemeProvider>
             
@@ -325,6 +336,7 @@ class MyApp extends App {
           
           
         </Provider>
+        
         
       </React.Fragment>
     );

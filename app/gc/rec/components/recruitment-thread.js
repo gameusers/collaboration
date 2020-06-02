@@ -1182,9 +1182,20 @@ export default injectIntl(class extends React.Component {
         )}
         
         
+        
+        {/*<Link
+          href={`/gc/[urlID]/rec/[...slug]?urlID=Dead-by-Daylight&recruitmentID=RptgCrCS-v`}
+          as={`/gc/Dead-by-Daylight/rec/RptgCrCS-v`}
+        >
+          <a>RptgCrCS-v</a>
+        </Link>*/}
+        
+        
       </Element>
     );
     
+    
   }
+  
   
 });

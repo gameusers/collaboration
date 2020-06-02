@@ -24,6 +24,11 @@ import Measure from 'react-measure';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 
@@ -31,16 +36,17 @@ import lodashGet from 'lodash/get';
 //   Components
 // ---------------------------------------------
 
-import HeaderNavTop from './header/nav-top.js';
-import HeroImage from './header/hero-image.js';
-import HeaderNavMain from './header/nav-main.js';
-import Footer from './footer.js';
-import Sidebar from './sidebar.js';
-import Drawer from './drawer.js';
-import CardPlayerDialog from '../../card/player/components/dialog.js';
-import VideoModal from '../../image-and-video/components/video-modal.js';
-import Snackbar from './snackbar.js';
-import Loading from './loading.js';
+import HeaderNavTop from 'app/common/layout/components/header/nav-top.js';
+import HeroImage from 'app/common/layout/components/header/hero-image.js';
+import HeaderNavMain from 'app/common/layout/components/header/nav-main.js';
+import Footer from 'app/common/layout/components/footer.js';
+import Sidebar from 'app/common/layout/components/sidebar.js';
+import Drawer from 'app/common/layout/components/drawer.js';
+import CardPlayerDialog from 'app/common/card/player/components/dialog.js';
+import VideoModal from 'app/common/image-and-video/components/video-modal.js';
+import Snackbar from 'app/common/layout/components/snackbar.js';
+import Loading from 'app/common/layout/components/loading.js';
+// import ImagesAndVideos from 'app/common/image-and-video/components/images-and-videos.js';
 
 
 
@@ -57,6 +63,8 @@ Router.events.on('routeChangeStart', url => {
 });
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
+
+
 
 
 
@@ -282,6 +290,11 @@ export default class Layout extends React.Component {
         
         {/* プレイヤーカードを表示するダイアログ */}
         <CardPlayerDialog />
+        
+        
+        
+        {/*<ImagesAndVideos />*/}
+        
         
         
         {/* 動画表示用モーダル */}

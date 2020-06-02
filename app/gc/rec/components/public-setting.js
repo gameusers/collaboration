@@ -31,6 +31,8 @@ import IconWarning from '@material-ui/icons/Warning';
 
 
 
+
+
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -166,6 +168,8 @@ export default injectIntl(class extends React.Component {
       </div>
     );
     
+    
   }
+  
   
 });

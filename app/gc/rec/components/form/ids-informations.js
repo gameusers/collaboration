@@ -87,9 +87,9 @@ export default injectIntl(class extends React.Component {
       intl,
       type,
       pathArr,
-      gameCommunities_id,
-      recruitmentThreads_id,
-      recruitmentComments_id,
+      // gameCommunities_id,
+      // recruitmentThreads_id,
+      // recruitmentComments_id,
       publicSettingThread,
       
     } = this.props;
@@ -215,7 +215,7 @@ export default injectIntl(class extends React.Component {
           css={css`
             display: flex;
             flex-flow: row nowrap;
-            padding: 0 0 0 16px;
+            // padding: 0 0 0 8px;
             
             @media screen and (max-width: 480px) {
               flex-flow: column wrap;
@@ -357,7 +357,7 @@ export default injectIntl(class extends React.Component {
             display: flex;
             flex-flow: row nowrap;
             margin: 8px 0 0 0;
-            padding: 0 0 0 16px;
+            // padding: 0 0 0 0;
             
             @media screen and (max-width: 480px) {
               flex-flow: column wrap;
@@ -645,7 +645,7 @@ export default injectIntl(class extends React.Component {
             
             
             <p>
-              左側の選択フォームで入力するIDに関連しているハードを選んでください。該当するハードがない場合は最初に表示されている「ID」を選択してください。右側のフォームにはIDを入力します。
+              左側は入力するIDに関連しているハードを選んでください。該当するハードがない場合は最初に表示されている「ID」を選択してください。右側にはIDを入力します。
             </p>
             
             
@@ -715,7 +715,7 @@ export default injectIntl(class extends React.Component {
               }
             `}
             labelId="publicSettingLabel"
-            _id="publicSetting"
+            id={`${pathArr.join('-')}-publicSetting`}
             label="ID・情報の公開設定"
             value={publicSetting}
             onChange={(eventObj) => handleEdit({
@@ -736,6 +736,8 @@ export default injectIntl(class extends React.Component {
       </React.Fragment>
     );
     
+    
   }
+  
   
 });

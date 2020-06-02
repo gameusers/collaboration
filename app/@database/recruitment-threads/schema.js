@@ -17,7 +17,7 @@ const schema = mongoose.Schema({
   gameCommunities_id: { type: String, required: true },
   users_id: { type: String },
   hardwareIDsArr: [String],
-  category: { type: Number, default: 1, required: true },
+  category: { type: Number },
   localesArr: [
     {
       _id: { type: String, required: true },
@@ -47,17 +47,9 @@ const schema = mongoose.Schema({
   publicCommentsUsers_idsArr: [String],
   publicApprovalUsers_idsArrr: [String],
   deadlineDate: { type: Date },
-  close: { type: Boolean, required: true },
+  // close: { type: Boolean, required: true },
   webPushAvailable: { type: Boolean, required: true },
   webPushes_id: { type: String },
-  // webPush: { type: Boolean, required: true },
-  // webPushSubscriptionObj: {
-  //   endpoint: { type: String },
-  //   keys: {
-  //     p256dh: { type: String },
-  //     auth: { type: String },
-  //   },
-  // },
   comments: { type: Number, default: 0, required: true },
   replies: { type: Number, default: 0, required: true },
   images: { type: Number, default: 0, required: true },

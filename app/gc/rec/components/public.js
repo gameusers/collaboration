@@ -25,9 +25,11 @@ import { css, jsx } from '@emotion/core';
 //   Components
 // ---------------------------------------------
 
-import PublicIDs from './public-ids';
-import PublicInformations from './public-informations';
-import PublicSetting from './public-setting';
+import PublicIDs from 'app/gc/rec/components/public-ids.js';
+import PublicInformations from 'app/gc/rec/components/public-informations.js';
+import PublicSetting from 'app/gc/rec/components/public-setting.js';
+
+
 
 
 
@@ -182,6 +184,8 @@ export default class extends React.Component {
       </div>
     );
     
+    
   }
+  
   
 };

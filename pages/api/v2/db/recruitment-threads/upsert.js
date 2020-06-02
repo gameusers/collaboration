@@ -136,18 +136,10 @@ export default async (req, res) => {
       gameCommunities_id,
       recruitmentThreads_id,
       hardwareIDsArr,
-      category,
+      category = '',
       title,
       comment,
       imagesAndVideosObj,
-      // anonymity,
-      // ids_idsArr,
-      // platform1,
-      // platform2,
-      // platform3,
-      // id1,
-      // id2,
-      // id3,
       informationTitle1,
       informationTitle2,
       informationTitle3,
@@ -158,9 +150,6 @@ export default async (req, res) => {
       information3,
       information4,
       information5,
-      // publicSetting,
-      // deadlineDate,
-      // webPushSubscriptionObj,
       webPushAvailable,
       threadLimit,
       commentLimit,
@@ -185,7 +174,9 @@ export default async (req, res) => {
       
     } = bodyObj;
     
-    
+    // console.log(chalk`
+    //   category: {green ${category} / typeof ${category}}
+    // `);
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['recruitmentThreads_id'], recruitmentThreads_id);
     lodashSet(requestParametersObj, ['hardwareIDsArr'], hardwareIDsArr);
@@ -885,7 +876,7 @@ export default async (req, res) => {
       publicInformationsArr,
       publicSetting,
       deadlineDate,
-      close: false,
+      // close: false,
       webPushAvailable,
       webPushes_id,
       publicCommentsUsers_idsArr: [],

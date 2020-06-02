@@ -17,10 +17,16 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -55,6 +61,8 @@ const cssFontRed = css`
 
 
 
+
+
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -62,15 +70,6 @@ const cssFontRed = css`
 @inject('storeImageAndVideoForm')
 @observer
 export default injectIntl(class extends React.Component {
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  constructor(props) {
-    super(props);
-  }
   
   
   // --------------------------------------------------
@@ -84,7 +83,19 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideoForm, intl, pathArr = [], type, heading, description, showImageCaption = false, limit = 1 } = this.props;
+    const {
+      
+      storeImageAndVideoForm,
+      intl,
+      pathArr = [],
+      type,
+      heading,
+      description,
+      showImageCaption = false,
+      limit = 1
+      
+    } = this.props;
+    
     
     const {
       
@@ -98,10 +109,6 @@ export default injectIntl(class extends React.Component {
     
     const imageCaption = lodashGet(dataObj, [...pathArr, 'imageCaption'], '');
     const showImageCaptionDescription = lodashGet(dataObj, [...pathArr, 'showImageCaptionDescription'], false);
-    
-    // const type = lodashGet(dataObj, [...pathArr, 'type'], '');
-    // const arr = lodashGet(dataObj, [...pathArr, 'arr'], []);
-    // const imagesAndVideosArr = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj', arrayName], []);
     
     
     

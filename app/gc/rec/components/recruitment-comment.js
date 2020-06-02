@@ -26,6 +26,11 @@ import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 
@@ -91,6 +96,8 @@ const stylesObj = {
   },
   
 };
+
+
 
 
 
@@ -168,7 +175,6 @@ export default injectIntl(class extends React.Component {
       storeGcRecruitment,
       storeGood,
       intl,
-      temporaryDataID,
       urlID,
       gameCommunities_id,
       recruitmentThreads_id,
@@ -1008,6 +1014,8 @@ export default injectIntl(class extends React.Component {
       </Element>
     );
     
+    
   }
+  
   
 });

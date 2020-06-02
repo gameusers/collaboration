@@ -176,7 +176,7 @@ export default async (req, res) => {
     // const replies = lodashGet(docObj, ['replies'], 0);
     const imagesAndVideos_idsArr = lodashGet(docObj, ['imagesAndVideos_idsArr'], []);
     // const images = lodashGet(docObj, ['images'], 0);
-    // const videos = lodashGet(docObj, ['images'], 0);
+    // const videos = lodashGet(docObj, ['videos'], 0);
     
     
     

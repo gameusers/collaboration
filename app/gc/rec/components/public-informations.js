@@ -21,6 +21,11 @@ import { injectIntl } from 'react-intl';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 
 
@@ -37,6 +42,9 @@ import Avatar from '@material-ui/core/Avatar';
 
 import IconDescription from '@material-ui/icons/Description';
 import IconInformation from '@material-ui/icons/MenuBook';
+
+
+
 
 
 
@@ -230,6 +238,8 @@ export default injectIntl(class extends React.Component {
       </React.Fragment>
     );
     
+    
   }
+  
   
 });

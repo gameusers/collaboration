@@ -18,18 +18,23 @@ import { action, observable } from 'mobx';
 import moment from 'moment';
 import Cookies from 'js-cookie';
 
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
 
 
-
-
 // --------------------------------------------------
-//   Property
+//   Stores
 // --------------------------------------------------
 
 let storeData = null;
+
+
 
 
 
@@ -281,6 +286,15 @@ class Store {
   
   
   // ---------------------------------------------
+  //   Access Level
+  // ---------------------------------------------
+  
+  @observable accessLevel = 1;
+  
+  
+  
+  
+  // ---------------------------------------------
   //   Users Data
   // ---------------------------------------------
   
@@ -467,6 +481,15 @@ export default function initStoreData({ propsObj }) {
     
     if (lodashHas(propsObj, ['loginUsersObj'])) {
       storeData.loginUsersObj = propsObj.loginUsersObj;
+    }
+    
+    
+    // --------------------------------------------------
+    //   Access Level
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['accessLevel'])) {
+      storeData.accessLevel = propsObj.accessLevel;
     }
     
     

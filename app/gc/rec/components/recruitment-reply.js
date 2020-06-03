@@ -54,6 +54,7 @@ import Select from '@material-ui/core/Select';
 import IconPublic from '@material-ui/icons/Public';
 import IconUpdate from '@material-ui/icons/Update';
 import IconThumbUp from '@material-ui/icons/ThumbUp';
+import IconDelete from '@material-ui/icons/Delete';
 import IconEdit from '@material-ui/icons/Edit';
 import IconReply from '@material-ui/icons/Reply';
 
@@ -171,24 +172,12 @@ export default injectIntl(class extends React.Component {
       storeGcRecruitment,
       storeGood,
       intl,
-      // temporaryDataID,
       urlID,
       gameCommunities_id,
       recruitmentThreads_id,
       recruitmentComments_id,
       
     } = this.props;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Button - Disabled
-    // --------------------------------------------------
-    
-    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
-    
-    
     
     
     // --------------------------------------------------
@@ -201,6 +190,7 @@ export default injectIntl(class extends React.Component {
       handleEdit,
       handleReadRecruitmentReplies,
       handleShowFormRecruitmentReply,
+      handleShowDeleteDialog,
       
     } = storeGcRecruitment;
     
@@ -216,6 +206,13 @@ export default injectIntl(class extends React.Component {
     } = storeGood;
     
     
+    
+    
+    // --------------------------------------------------
+    //   Button - Disabled
+    // --------------------------------------------------
+    
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
     
     
     // --------------------------------------------------
@@ -545,116 +542,132 @@ export default injectIntl(class extends React.Component {
                   css={css`
                     display: flex;
                     flex-flow: row wrap;
-                    margin: 6px 0 0 0;
+                    margin: 12px 0 0 0;
+                    
+                    @media screen and (max-width: 480px) {
+                      flex-flow: column wrap;
+                    }
                   `}
                 >
                   
                   
-                  {/* Good Button */}
-                  <Button
+                  {/* Good Button & Updated Date & recruitmentComments_id */}
+                  <div
                     css={css`
-                      && {
-                        background-color: ${green[500]};
-                        &:hover {
-                          background-color: ${green[700]};
+                      display: flex;
+                      flex-flow: row nowrap;
+                    `}
+                  >
+                    
+                    
+                    {/* Good Button */}
+                    <Button
+                      css={css`
+                        && {
+                          background-color: ${green[500]};
+                          &:hover {
+                            background-color: ${green[700]};
+                          }
+                          
+                          color: white;
+                          font-size: 12px;
+                          height: 22px;
+                          min-width: 20px;
+                          margin: 4px 12px 0 0;
+                          padding: 0 5px;
+                          
+                          @media screen and (max-width: 480px) {
+                            margin: 4px 8px 0 0;
+                          }
                         }
-                        
-                        color: white;
-                        font-size: 12px;
-                        height: 22px;
-                        min-width: 20px;
+                      `}
+                      variant="outlined"
+                      onClick={() => handleSubmitGood({
+                        pathArr: this.pathArr,
+                        goodsPathArr: [gameCommunities_id, 'recruitmentRepliesObj', 'dataObj', recruitmentReplies_id],
+                        type: 'recruitmentReply',
+                        target_id: recruitmentReplies_id,
+                      })}
+                      disabled={buttonDisabled}
+                    >
+                      <IconThumbUp
+                        css={css`
+                          && {
+                            font-size: 14px;
+                            margin: 0 4px 2px 0;
+                          }
+                        `}
+                      />
+                      {goods}
+                    </Button>
+                    
+                    
+                    
+                    
+                    {/* Updated Date */}
+                    <div
+                      css={css`
+                        display: flex;
+                        flex-flow: row nowrap;
                         margin: 4px 12px 0 0;
-                        padding: 0 5px;
                         
                         @media screen and (max-width: 480px) {
                           margin: 4px 8px 0 0;
                         }
-                      }
-                    `}
-                    
-                    variant="outlined"
-                    onClick={() => handleSubmitGood({
-                      pathArr: this.pathArr,
-                      goodsPathArr: [gameCommunities_id, 'recruitmentRepliesObj', 'dataObj', recruitmentReplies_id],
-                      type: 'recruitmentReply',
-                      target_id: recruitmentReplies_id,
-                    })}
-                  >
-                    <IconThumbUp
-                      css={css`
-                        && {
-                          font-size: 14px;
-                          margin: 0 4px 2px 0;
-                        }
                       `}
-                    />
-                    {goods}
-                  </Button>
-                  
-                  
-                  
-                  
-                  {/* Updated Date */}
-                  <div
-                    css={css`
-                      display: flex;
-                      flex-flow: row nowrap;
-                      margin: 4px 12px 0 0;
+                    >
+                      <IconUpdate
+                        css={css`
+                          && {
+                            font-size: 22px;
+                            margin: 0 2px 0 0;
+                          }
+                        `}
+                      />
                       
-                      @media screen and (max-width: 480px) {
-                        margin: 4px 8px 0 0;
-                      }
-                    `}
-                  >
-                    <IconUpdate
-                      css={css`
-                        && {
-                          font-size: 22px;
-                          margin: 0 2px 0 0;
-                        }
-                      `}
-                    />
+                      <div
+                        css={css`
+                          font-size: 12px;
+                          margin: 1px 0 0 0;
+                        `}
+                      >
+                        {datetimeFrom}
+                      </div>
+                    </div>
                     
+                    
+                    
+                    
+                    {/* recruitmentComments_id */}
                     <div
                       css={css`
-                        font-size: 12px;
+                        display: flex;
+                        flex-flow: row nowrap;
                         margin: 1px 0 0 0;
                       `}
                     >
-                      {datetimeFrom}
+                      <IconPublic
+                        css={css`
+                          && {
+                            font-size: 20px;
+                            margin: 3px 2px 0 0;
+                          }
+                        `}
+                      />
+                      <div
+                        css={css`
+                          font-size: 12px;
+                          color: #009933;
+                          margin: 4px 0 0 0;
+                        `}
+                      >
+                        <Link href={linkHref} as={linkAs}>
+                          <a>{recruitmentReplies_id}</a>
+                        </Link>
+                      </div>
                     </div>
-                  </div>
                   
                   
-                  
-                  
-                  {/* recruitmentComments_id */}
-                  <div
-                    css={css`
-                      display: flex;
-                      flex-flow: row nowrap;
-                      margin: 1px 0 0 0;
-                    `}
-                  >
-                    <IconPublic
-                      css={css`
-                        && {
-                          font-size: 20px;
-                          margin: 3px 2px 0 0;
-                        }
-                      `}
-                    />
-                    <div
-                      css={css`
-                        font-size: 12px;
-                        color: #009933;
-                        margin: 4px 0 0 0;
-                      `}
-                    >
-                      <Link href={linkHref} as={linkAs}>
-                        <a>{recruitmentReplies_id}</a>
-                      </Link>
-                    </div>
                   </div>
                   
                   
@@ -666,7 +679,10 @@ export default injectIntl(class extends React.Component {
                       display: flex;
                       flex-flow: row nowrap;
                       margin-left: auto;
-                      // background-color: pink;
+                      
+                      @media screen and (max-width: 480px) {
+                        margin-top: 12px;
+                      }
                     `}
                   >
                     
@@ -677,7 +693,7 @@ export default injectIntl(class extends React.Component {
                           height: 22px;
                           min-width: 54px;
                           min-height: 22px;
-                          margin: 4px 12px 0 0;
+                          // margin: 4px 0 0 0;
                           padding: 0 3px;
                           
                           @media screen and (max-width: 480px) {
@@ -691,29 +707,62 @@ export default injectIntl(class extends React.Component {
                         pathArr: [...pathRecruitmentReplyNewFormReplyToArr, 'showFormReplyTo'],
                         value: !showFormReplyTo
                       })}
-                      // onClick={() => handleShowFormRecruitmentReply({
-                      //   pathArr: pathRecruitmentReplyNewFormArr,
-                      //   recruitmentReplies_id,
-                      // })}
-                      // onClick={() => handleEdit({
-                      //   pathArr: [recruitmentComments_id, 'formReplyObj', 'show'],
-                      //   value: !showFormReply
-                      // })}
+                      disabled={buttonDisabled}
                     >
                       <IconReply
                         css={css`
                           && {
                             font-size: 16px;
                             margin: 0 1px 3px 0;
-                            
-                            @media screen and (max-width: 480px) {
-                              display: none;
-                            }
                           }
                         `}
                       />
                       返信
                     </Button>
+                    
+                    
+                    
+                    
+                    {/* Delete Button */}
+                    {editable &&
+                      <Button
+                        css={css`
+                          && {
+                            font-size: 12px;
+                            height: 22px;
+                            min-width: 54px;
+                            min-height: 22px;
+                            margin: 0 0 0 12px;
+                            padding: 0 4px;
+                            
+                            @media screen and (max-width: 480px) {
+                              min-width: 36px;
+                              min-height: 22px;
+                            }
+                          }
+                        `}
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() => handleShowDeleteDialog({
+                          pathArr: this.pathArr,
+                          gameCommunities_id,
+                          recruitmentThreads_id,
+                          recruitmentComments_id,
+                          recruitmentReplies_id,
+                        })}
+                        disabled={buttonDisabled}
+                      >
+                        <IconDelete
+                          css={css`
+                            && {
+                              font-size: 16px;
+                              margin: 0 2px 1px 0;
+                            }
+                          `}
+                        />
+                        削除
+                      </Button>
+                    }
                     
                     
                     
@@ -727,7 +776,7 @@ export default injectIntl(class extends React.Component {
                             height: 22px;
                             min-width: 54px;
                             min-height: 22px;
-                            margin: 4px 0 0 0;
+                            margin: 0 0 0 12px;
                             padding: 0 4px;
                             
                             @media screen and (max-width: 480px) {
@@ -742,16 +791,13 @@ export default injectIntl(class extends React.Component {
                           pathArr: pathRecruitmentReplyEditFormArr,
                           recruitmentReplies_id,
                         })}
+                        disabled={buttonDisabled}
                       >
                         <IconEdit
                           css={css`
                             && {
                               font-size: 16px;
                               margin: 0 2px 3px 0;
-                              
-                              @media screen and (max-width: 480px) {
-                                display: none;
-                              }
                             }
                           `}
                         />

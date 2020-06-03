@@ -45,11 +45,11 @@ import FormControl from '@material-ui/core/FormControl';
 import Checkbox from '@material-ui/core/Checkbox';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+// import Dialog from '@material-ui/core/Dialog';
+// import DialogActions from '@material-ui/core/DialogActions';
+// import DialogContent from '@material-ui/core/DialogContent';
+// import DialogContentText from '@material-ui/core/DialogContentText';
+// import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 // ---------------------------------------------
@@ -176,7 +176,7 @@ export default injectIntl(class extends React.Component {
       handleEdit,
       handleSubmitRecruitmentThread,
       handleGetWebPushSubscribeObj,
-      handleDeleteRecruitmentThread,
+      // handleDeleteRecruitmentThread,
       handleHideFormRecruitmentThread,
       
     } = storeGcRecruitment;
@@ -216,7 +216,7 @@ export default injectIntl(class extends React.Component {
     //   募集を削除するか尋ねるダイアログを表示するための変数
     // --------------------------------------------------
     
-    const showDeleteDialog = lodashGet(dataObj, [...pathArr, 'showDeleteDialog'], false);
+    // const showDeleteDialog = lodashGet(dataObj, [...pathArr, 'showDeleteDialog'], false);
     
     
     // --------------------------------------------------
@@ -629,7 +629,7 @@ export default injectIntl(class extends React.Component {
             
             
             {/* Delete */}
-            {recruitmentThreads_id &&
+            {/*{recruitmentThreads_id &&
               <div
                 css={css`
                   margin: 0 0 0 24px;
@@ -647,7 +647,7 @@ export default injectIntl(class extends React.Component {
                   削除する
                 </Button>
               </div>
-            }
+            }*/}
             
             
             {/* Close */}
@@ -677,7 +677,7 @@ export default injectIntl(class extends React.Component {
           
           
           {/* 募集を削除するか尋ねるダイアログ */}
-          <Dialog
+          {/*<Dialog
             open={showDeleteDialog}
             onClose={() => handleEdit({
               pathArr: [...pathArr, 'showDeleteDialog'],
@@ -725,7 +725,7 @@ export default injectIntl(class extends React.Component {
               </Button>
             </DialogActions>
             
-          </Dialog>
+          </Dialog>*/}
           
           
         </form>

@@ -51,6 +51,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Avatar from '@material-ui/core/Avatar';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 // ---------------------------------------------
@@ -60,6 +65,7 @@ import Avatar from '@material-ui/core/Avatar';
 import IconExpandLess from '@material-ui/icons/ExpandLess';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
 import IconPublic from '@material-ui/icons/Public';
+import IconDelete from '@material-ui/icons/Delete';
 import IconEdit from '@material-ui/icons/Edit';
 import IconDoubleArrow from '@material-ui/icons/KeyboardReturn';
 import IconReply from '@material-ui/icons/Reply';
@@ -218,6 +224,8 @@ export default injectIntl(class extends React.Component {
       handleEdit,
       handleReadRecruitmentThreads,
       handleShowFormRecruitmentThread,
+      handleDeleteRecruitment,
+      handleShowDeleteDialog,
       
     } = storeGcRecruitment;
     
@@ -225,6 +233,10 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     //   Thread
     // --------------------------------------------------
+    
+    // const page = lodashGet(dataObj, [...this.pathArr, 'page'], 1);
+    // const count = lodashGet(dataObj, [...this.pathArr, 'count'], 0);
+    // const arr = lodashGet(dataObj, [...this.pathArr, `page${page}Obj`, 'arr'], []);
     
     const page = lodashGet(dataObj, [gameCommunities_id, 'recruitmentThreadsObj', 'page'], 1);
     const count = lodashGet(dataObj, [gameCommunities_id, 'recruitmentThreadsObj', 'count'], 0);
@@ -239,6 +251,41 @@ export default injectIntl(class extends React.Component {
     
     const linkReturnTopHref = `/gc/[urlID]/rec/index?urlID=${urlID}`;
     const linkReturnTopAs = `/gc/${urlID}/rec`;
+    
+    
+    // --------------------------------------------------
+    //   削除するか尋ねるダイアログを表示するための変数
+    // --------------------------------------------------
+    
+    const deleteDialogRecruitmentThreads_id = lodashGet(dataObj, [gameCommunities_id, 'deleteDialogObj', 'recruitmentThreads_id'], '');
+    const deleteDialogRecruitmentComments_id = lodashGet(dataObj, [gameCommunities_id, 'deleteDialogObj', 'recruitmentComments_id'], '');
+    const deleteDialogRecruitmentReplies_id = lodashGet(dataObj, [gameCommunities_id, 'deleteDialogObj', 'recruitmentReplies_id'], '');
+    
+    
+    let deleteDialogShow = true;
+    let deleteDialogTitle = '';
+    let deleteDialogDescription = '';
+    
+    if (deleteDialogRecruitmentReplies_id) {
+      
+      deleteDialogTitle = '返信削除';
+      deleteDialogDescription = '返信を削除しますか？';
+      
+    } else if (deleteDialogRecruitmentComments_id) {
+      
+      deleteDialogTitle = 'コメント削除';
+      deleteDialogDescription = 'コメントを削除しますか？';
+      
+    } else if (deleteDialogRecruitmentThreads_id) {
+      
+      deleteDialogTitle = '募集削除';
+      deleteDialogDescription = '募集を削除しますか？';
+      
+    } else {
+      
+      deleteDialogShow = false;
+      
+    }
     
     
     
@@ -781,7 +828,7 @@ export default injectIntl(class extends React.Component {
                         css={css`
                           display: flex;
                           flex-flow: row wrap;
-                          margin: 6px 0 0 0;
+                          margin: 12px 0 0 0;
                         `}
                       >
                         
@@ -805,7 +852,7 @@ export default injectIntl(class extends React.Component {
                                 min-width: 54px;
                                 min-height: 22px;
                                 line-height: 1;
-                                margin: 4px 0 0 0;
+                                // margin: 4px 0 0 0;
                                 padding: 0 3px;
                                 
                                 @media screen and (max-width: 480px) {
@@ -817,6 +864,7 @@ export default injectIntl(class extends React.Component {
                             variant="outlined"
                             href={shareTwitter}
                             target="_blank"
+                            disabled={buttonDisabled}
                           >
                             <Avatar
                               css={css`
@@ -841,6 +889,48 @@ export default injectIntl(class extends React.Component {
                           
                           
                           
+                          {/* Delete Button */}
+                          {editable &&
+                            <Button
+                              css={css`
+                                && {
+                                  font-size: 12px;
+                                  height: 22px;
+                                  min-width: 54px;
+                                  min-height: 22px;
+                                  margin: 0 0 0 12px;
+                                  padding: 0 4px;
+                                  
+                                  @media screen and (max-width: 480px) {
+                                    min-width: 36px;
+                                    min-height: 22px;
+                                  }
+                                }
+                              `}
+                              variant="outlined"
+                              color="secondary"
+                              onClick={() => handleShowDeleteDialog({
+                                pathArr: this.pathArr,
+                                gameCommunities_id,
+                                recruitmentThreads_id,
+                              })}
+                              disabled={buttonDisabled}
+                            >
+                              <IconDelete
+                                css={css`
+                                  && {
+                                    font-size: 16px;
+                                    margin: 0 2px 1px 0;
+                                  }
+                                `}
+                              />
+                              削除
+                            </Button>
+                          }
+                          
+                          
+                          
+                          
                           {/* Edit Button */}
                           {editable &&
                             <Button
@@ -850,7 +940,7 @@ export default injectIntl(class extends React.Component {
                                   height: 22px;
                                   min-width: 54px;
                                   min-height: 22px;
-                                  margin: 4px 0 0 12px;
+                                  margin: 0 0 0 12px;
                                   padding: 0 4px;
                                   
                                   @media screen and (max-width: 480px) {
@@ -865,16 +955,13 @@ export default injectIntl(class extends React.Component {
                                 pathArr: pathRecruitmentThreadEditFormArr,
                                 recruitmentThreads_id,
                               })}
+                              disabled={buttonDisabled}
                             >
                               <IconEdit
                                 css={css`
                                   && {
                                     font-size: 16px;
                                     margin: 0 2px 3px 0;
-                                    
-                                    @media screen and (max-width: 480px) {
-                                      display: none;
-                                    }
                                   }
                                 `}
                               />
@@ -1183,12 +1270,55 @@ export default injectIntl(class extends React.Component {
         
         
         
-        {/*<Link
-          href={`/gc/[urlID]/rec/[...slug]?urlID=Dead-by-Daylight&recruitmentID=RptgCrCS-v`}
-          as={`/gc/Dead-by-Daylight/rec/RptgCrCS-v`}
+        
+        {/* スレッド・コメント・返信を削除するか尋ねるダイアログ */}
+        <Dialog
+          open={deleteDialogShow}
+          onClose={() => handleEdit({
+            pathArr: [gameCommunities_id, 'showDeleteDialog'],
+            value: false,
+          })}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
         >
-          <a>RptgCrCS-v</a>
-        </Link>*/}
+          
+          <DialogTitle id="alert-dialog-title">{deleteDialogTitle}</DialogTitle>
+          
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {deleteDialogDescription}
+            </DialogContentText>
+          </DialogContent>
+          
+          <DialogActions>
+            <div
+              css={css`
+                margin: 0 auto 0 0;
+              `}
+            >
+              <Button
+                onClick={() => handleDeleteRecruitment({
+                  gameCommunities_id,
+                })}
+                color="primary"
+                autoFocus
+              >
+                はい
+              </Button>
+            </div>
+            
+            <Button
+              onClick={() => handleEdit({
+                pathArr: [gameCommunities_id, 'deleteDialogObj'],
+                value: {},
+              })}
+              color="primary"
+            >
+              いいえ
+            </Button>
+          </DialogActions>
+          
+        </Dialog>
         
         
       </Element>

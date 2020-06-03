@@ -1926,23 +1926,23 @@ class Store {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/gc/rec/stores/store.js - handleHideFormRecruitmentReply
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/gc/rec/stores/store.js - handleHideFormRecruitmentReply
+    // `);
     
-    console.log(`
-      ----- pathArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- pathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(chalk`
-      recruitmentComments_id: {green ${recruitmentComments_id}}
-      recruitmentReplies_id: {green ${recruitmentReplies_id}}
-      replyToRecruitmentReplies_id: {green ${replyToRecruitmentReplies_id}}
-      scrollTo: {green ${scrollTo}}
-    `);
+    // console.log(chalk`
+    //   recruitmentComments_id: {green ${recruitmentComments_id}}
+    //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
+    //   replyToRecruitmentReplies_id: {green ${replyToRecruitmentReplies_id}}
+    //   scrollTo: {green ${scrollTo}}
+    // `);
     
     
     
@@ -3136,11 +3136,11 @@ class Store {
       });
       
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
@@ -3281,6 +3281,172 @@ class Store {
   // ---------------------------------------------
   
   /**
+   * 削除ダイアログを表示する
+   * @param {Array} pathArr - パス
+   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
+   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
+   * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントID
+   * @param {string} recruitmentReplies_id - DB recruitment-replies _id / 返信ID
+   */
+  @action.bound
+  async handleShowDeleteDialog({
+    
+    gameCommunities_id,
+    recruitmentThreads_id,
+    recruitmentComments_id,
+    recruitmentReplies_id,
+    
+  }) {
+    
+    
+    // ---------------------------------------------
+    //   Set deleteDialogObj
+    // ---------------------------------------------
+    
+    const deleteDialogObj = {
+      
+      recruitmentThreads_id,
+      recruitmentComments_id,
+      recruitmentReplies_id,
+      
+    };
+    
+    lodashSet(this.dataObj, [gameCommunities_id, 'deleteDialogObj'], deleteDialogObj);
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/gc/rec/stores/store.js - handleShowDeleteDialog
+    // `);
+    
+    
+  };
+  
+  
+  
+  
+  /**
+   * スレッド・コメント・返信を削除する
+   * @param {Array} pathArr - パス
+   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
+   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
+   * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントID
+   * @param {string} recruitmentReplies_id - DB recruitment-replies _id / 返信ID
+   */
+  @action.bound
+  async handleDeleteRecruitment({
+    
+    gameCommunities_id,
+    
+  }) {
+    
+    
+    // ---------------------------------------------
+    //   Property
+    // ---------------------------------------------
+    
+    const recruitmentThreads_id = lodashGet(this.dataObj, [gameCommunities_id, 'deleteDialogObj', 'recruitmentThreads_id'], '');
+    const recruitmentComments_id = lodashGet(this.dataObj, [gameCommunities_id, 'deleteDialogObj', 'recruitmentComments_id'], '');
+    const recruitmentReplies_id = lodashGet(this.dataObj, [gameCommunities_id, 'deleteDialogObj', 'recruitmentReplies_id'], '');
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Fetch で削除する
+    // ---------------------------------------------
+    
+    // ----------------------------------------
+    //   - Reply
+    // ----------------------------------------
+    
+    if (recruitmentReplies_id) {
+      
+      await this.handleDeleteRecruitmentReply({
+        
+        gameCommunities_id,
+        recruitmentThreads_id,
+        recruitmentComments_id,
+        recruitmentReplies_id,
+        
+      });
+      
+    
+    // ----------------------------------------
+    //   - Comment
+    // ----------------------------------------
+    
+    } else if (recruitmentComments_id) {
+      
+      await this.handleDeleteRecruitmentComment({
+        
+        gameCommunities_id,
+        recruitmentThreads_id,
+        recruitmentComments_id,
+        
+      });
+      
+      
+    // ----------------------------------------
+    //   - Thread
+    // ----------------------------------------
+      
+    } else if (recruitmentThreads_id) {
+      
+      await this.handleDeleteRecruitmentThread({
+        
+        gameCommunities_id,
+        recruitmentThreads_id,
+        
+      });
+      
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   ダイアログを閉じる
+    // ---------------------------------------------
+    
+    lodashSet(this.dataObj, [gameCommunities_id, 'deleteDialogObj'], {});
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(`
+      ----------------------------------------\n
+      /app/gc/rec/stores/store.js / handleDeleteRecruitment
+    `);
+    
+    console.log(chalk`
+      gameCommunities_id: {green ${gameCommunities_id}}
+      recruitmentThreads_id: {green ${recruitmentThreads_id}}
+      recruitmentComments_id: {green ${recruitmentComments_id}}
+      recruitmentReplies_id: {green ${recruitmentReplies_id}}
+    `);
+    
+    console.log(`
+      ----- this.dataObj[gameCommunities_id].recruitmentRepliesObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(this.dataObj[gameCommunities_id].recruitmentRepliesObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+  };
+  
+  
+  
+  
+  /**
    * スレッドを削除する
    * @param {Array} pathArr - パス
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
@@ -3372,35 +3538,75 @@ class Store {
       
       
       // ---------------------------------------------
+      //   DOM 削除
+      // ---------------------------------------------
+      
+      const page = lodashGet(this.dataObj, [gameCommunities_id, 'recruitmentThreadsObj', 'page'], 1);
+      const arr = lodashGet(this.dataObj, [gameCommunities_id, 'recruitmentThreadsObj', `page${page}Obj`, 'arr'], []);
+      const newArr = arr.filter(value => value !== recruitmentThreads_id);
+      lodashSet(this.dataObj, [gameCommunities_id, 'recruitmentThreadsObj', `page${page}Obj`, 'arr'], newArr);
+      
+      const dataObj = lodashGet(this.dataObj, [gameCommunities_id, 'recruitmentThreadsObj', 'dataObj'], {});
+      delete dataObj[recruitmentThreads_id];
+      
+      
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      storeLayout.handleScrollTo({
+        
+        to: 'recruitmentThreads',
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+        
+      });
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: 'j6lSS-Zf5',
+      });
+      
+      
+      
+      
+      // ---------------------------------------------
       //   募集更新
       // ---------------------------------------------
       
-      const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
-      const clonedObj = lodashCloneDeep(recruitmentObj);
+      // const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
+      // const clonedObj = lodashCloneDeep(recruitmentObj);
       
-      clonedObj.recruitmentThreadsObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {});
-      clonedObj.recruitmentCommentsObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
-      clonedObj.recruitmentRepliesObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
-      clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+      // clonedObj.recruitmentThreadsObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {});
+      // clonedObj.recruitmentCommentsObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
+      // clonedObj.recruitmentRepliesObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
+      // clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
       
-      this.handleEdit({
-        pathArr: [gameCommunities_id],
-        value: clonedObj,
-      });
-      
-      
+      // this.handleEdit({
+      //   pathArr: [gameCommunities_id],
+      //   value: clonedObj,
+      // });
       
       
-      // ---------------------------------------------
-      //   Hide Form & Scroll To
-      // ---------------------------------------------
       
-      this.handleHideFormRecruitmentThread({
+      
+      // // ---------------------------------------------
+      // //   Hide Form & Scroll To
+      // // ---------------------------------------------
+      
+      // this.handleHideFormRecruitmentThread({
         
-        pathArr,
-        recruitmentThreads_id,
+      //   pathArr,
+      //   recruitmentThreads_id,
         
-      });
+      // });
       
       
       
@@ -3561,35 +3767,40 @@ class Store {
       
       
       // ---------------------------------------------
-      //   募集更新
+      //   DOM 削除
       // ---------------------------------------------
       
-      const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
-      const clonedObj = lodashCloneDeep(recruitmentObj);
+      const page = lodashGet(this.dataObj, [gameCommunities_id, 'recruitmentCommentsObj', recruitmentThreads_id, 'page'], 1);
+      const arr = lodashGet(this.dataObj, [gameCommunities_id, 'recruitmentCommentsObj', recruitmentThreads_id, `page${page}Obj`, 'arr'], []);
+      const newArr = arr.filter(value => value !== recruitmentComments_id);
+      lodashSet(this.dataObj, [gameCommunities_id, 'recruitmentCommentsObj', recruitmentThreads_id, `page${page}Obj`, 'arr'], newArr);
       
-      clonedObj.recruitmentThreadsObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {});
-      clonedObj.recruitmentCommentsObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
-      clonedObj.recruitmentRepliesObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
-      clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+      const dataObj = lodashGet(this.dataObj, [gameCommunities_id, 'recruitmentCommentsObj', 'dataObj'], {});
+      delete dataObj[recruitmentComments_id];
       
-      this.handleEdit({
-        pathArr: [gameCommunities_id],
-        value: clonedObj,
+      
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      storeLayout.handleScrollTo({
+        
+        to: recruitmentThreads_id,
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+        
       });
       
       
-      
-      
       // ---------------------------------------------
-      //   Hide Form & Scroll To
+      //   Snackbar: Success
       // ---------------------------------------------
       
-      this.handleHideFormRecruitmentComment({
-        
-        pathArr,
-        recruitmentThreads_id,
-        recruitmentComments_id,
-        
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: 'j6lSS-Zf5',
       });
       
       
@@ -3751,36 +3962,40 @@ class Store {
       
       
       // ---------------------------------------------
-      //   募集更新
+      //   DOM 削除
       // ---------------------------------------------
       
-      const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
-      const clonedObj = lodashCloneDeep(recruitmentObj);
+      const page = lodashGet(this.dataObj, [gameCommunities_id, 'recruitmentRepliesObj', recruitmentComments_id, 'page'], 1);
+      const arr = lodashGet(this.dataObj, [gameCommunities_id, 'recruitmentRepliesObj', recruitmentComments_id, `page${page}Obj`, 'arr'], []);
+      const newArr = arr.filter(value => value !== recruitmentReplies_id);
+      lodashSet(this.dataObj, [gameCommunities_id, 'recruitmentRepliesObj', recruitmentComments_id, `page${page}Obj`, 'arr'], newArr);
       
-      clonedObj.recruitmentThreadsObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {});
-      clonedObj.recruitmentCommentsObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
-      clonedObj.recruitmentRepliesObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
-      clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+      const dataObj = lodashGet(this.dataObj, [gameCommunities_id, 'recruitmentRepliesObj', 'dataObj'], {});
+      delete dataObj[recruitmentReplies_id];
       
-      this.handleEdit({
-        pathArr: [gameCommunities_id],
-        value: clonedObj
+      
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      storeLayout.handleScrollTo({
+        
+        to: recruitmentComments_id,
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+        
       });
       
       
-      
-      
       // ---------------------------------------------
-      //   Hide Form & Scroll To
+      //   Snackbar: Success
       // ---------------------------------------------
       
-      this.handleHideFormRecruitmentReply({
-        
-        pathArr,
-        recruitmentComments_id,
-        recruitmentReplies_id,
-        scrollTo: recruitmentComments_id,
-        
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: 'j6lSS-Zf5',
       });
       
       

@@ -463,7 +463,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   propsObj
   // --------------------------------------------------
   
-  const propsObj = { ...dataObj, ISO8601, pathname, pathArr, headerNavMainArr, gameCommunities_id };
+  const propsObj = { ...dataObj, ISO8601, accessLevel, pathname, pathArr, headerNavMainArr, gameCommunities_id };
   
   
   

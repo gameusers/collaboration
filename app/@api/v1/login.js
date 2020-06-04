@@ -20,6 +20,12 @@ const upload = multer({ dest: 'public/' });
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 
@@ -28,26 +34,26 @@ const lodashSet = require('lodash/set');
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../@modules/csrf');
-const { verifyRecaptcha } = require('../../@modules/recaptcha');
-const { returnErrorsArr } = require('../../@modules/log/log');
-const { CustomError } = require('../../@modules/error/custom');
+const { verifyCsrfToken } = require('../../@modules/csrf.js');
+const { verifyRecaptcha } = require('../../@modules/recaptcha.js');
+const { returnErrorsArr } = require('../../@modules/log/log.js');
+const { CustomError } = require('../../@modules/error/custom.js');
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationUsersLoginID } = require('../../@database/users/validations/login-id');
-const { validationUsersLoginPassword } = require('../../@database/users/validations/login-password');
+const { validationUsersLoginID } = require('../../@database/users/validations/login-id.js');
+const { validationUsersLoginPassword } = require('../../@database/users/validations/login-password.js');
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUsers = require('../../@database/users/model');
-const SchemaUsers = require('../../@database/users/schema');
+const ModelUsers = require('../../@database/users/model.js');
+const SchemaUsers = require('../../@database/users/schema.js');
 
 
 // --------------------------------------------------
@@ -55,6 +61,8 @@ const SchemaUsers = require('../../@database/users/schema');
 // --------------------------------------------------
 
 const router = express.Router();
+
+
 
 
 

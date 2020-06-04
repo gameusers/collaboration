@@ -417,7 +417,6 @@ export default injectIntl(class extends React.Component {
       if (showFormReply) {
         
         componentArr.push(
-          
           <Element
             key={index}
             name={recruitmentReplies_id}
@@ -433,7 +432,6 @@ export default injectIntl(class extends React.Component {
             />
             
           </Element>
-          
         );
       
       
@@ -693,7 +691,6 @@ export default injectIntl(class extends React.Component {
                           height: 22px;
                           min-width: 54px;
                           min-height: 22px;
-                          // margin: 4px 0 0 0;
                           padding: 0 3px;
                           
                           @media screen and (max-width: 480px) {

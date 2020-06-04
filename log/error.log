@@ -35,3 +35,4 @@
 {"logID":"OC8SXv0XG","date":"2020-05-29T06:42:27.383Z","endpointID":"73be0Rq9j","users_id":"jun-deE4J","ip":"::ffff:127.0.0.1","userAgent":"","requestParametersObj":{"keyword":"aaa"},"errorsArr":[{"code":"OC8SXv0XG","messageID":"Error"}],"level":"error","message":"CSRF: Invalid Token"}
 {"logID":"v_RgXvQtc","date":"2020-05-29T06:45:56.760Z","endpointID":"73be0Rq9j","users_id":"jun-deE4J","ip":"::ffff:127.0.0.1","userAgent":"","requestParametersObj":{"keyword":"ああ"},"errorsArr":[{"code":"v_RgXvQtc","messageID":"Error"}],"level":"error","message":"CSRF: Invalid Token"}
 {"logID":"k50aRl8rVz","date":"2020-05-29T06:45:56.778Z","endpointID":"73be0Rq9j","users_id":"jun-deE4J","ip":"::1","userAgent":"","requestParametersObj":{"keyword":"あああ"},"errorsArr":[{"code":"k50aRl8rVz","messageID":"Error"}],"level":"error","message":"CSRF: Invalid Token"}
+{"level":"error","message":""}

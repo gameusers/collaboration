@@ -21,6 +21,11 @@ import { inject, observer } from 'mobx-react';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 // import lodashGet from 'lodash/get';
 // import lodashSet from 'lodash/set';
 // import lodashThrottle from 'lodash/throttle';
@@ -43,6 +48,8 @@ import IconGames from '@material-ui/icons/Games';
 import IconDescription from '@material-ui/icons/Description';
 import IconIndividual from '@material-ui/icons/DoubleArrow';
 import IconSearch from '@material-ui/icons/Search';
+
+
 
 
 
@@ -97,6 +104,11 @@ export default class extends React.Component {
         
         icon = <IconGames fontSize="small" />;
         anchorText = valueObj.anchorText;
+        
+      } else if (valueObj.type === 'gc/forum') {
+        
+        icon = <IconDescription fontSize="small" />;
+        anchorText = 'フォーラム';
         
       } else if (valueObj.type === 'gc/rec') {
         
@@ -201,9 +213,7 @@ export default class extends React.Component {
           padding: 10px 12px;
         `}
       >
-        {/*<p>NEXT_PUBLIC_APP_LOCALE = {process.env.NEXT_PUBLIC_APP_LOCALE}</p>
-        <p>NEXT_PUBLIC_APP_LOCALE2 = {process.env.NEXT_PUBLIC_APP_LOCALE2}</p>*/}
-        {/*<p>TEST_VALUE={process.env.TEST_VALUE}</p>*/}
+        
         
         <Breadcrumbs separator="›" aria-label="breadcrumb">
           
@@ -243,99 +253,7 @@ export default class extends React.Component {
           </div>
           
           
-          
-          
           {componentsArr}
-          
-          
-          
-          
-          {/*<div
-            css={css`
-              display: flex;
-              flex-flow: row wrap;
-            `}
-          >
-            
-            <IconGames fontSize="small" />
-            
-            <div
-              css={css`
-                font-size: 14px;
-                cursor: pointer;
-                margin: 0 0 0 4px;
-              `}
-            >
-              
-              <Link href="/gc/[urlID]/rec/[...slug]?urlID=Dead-by-Daylight&categories=1,2,3&page=1" as="/gc/Dead-by-Daylight/rec/search?categories=1,2,3&page=1" scroll={false}>
-                <a>
-                  Test1
-                </a>
-              </Link>
-              
-            </div>
-            
-          </div>
-          
-          
-          
-          
-          <div
-            css={css`
-              display: flex;
-              flex-flow: row wrap;
-            `}
-          >
-            
-            <IconGames fontSize="small" />
-            
-            <div
-              css={css`
-                font-size: 14px;
-                cursor: pointer;
-                margin: 0 0 0 4px;
-              `}
-            >
-              
-              <Link href="/gc/[urlID]/rec/[...slug]?urlID=Dead-by-Daylight&categories=1,2,3&page=2" as="/gc/Dead-by-Daylight/rec/search?categories=1,2,3&page=2" scroll={false}>
-                <a>
-                  Test2
-                </a>
-              </Link>
-              
-            </div>
-            
-          </div>
-          
-          
-          
-          
-          <div
-            css={css`
-              display: flex;
-              flex-flow: row wrap;
-            `}
-          >
-            
-            <IconGames fontSize="small" />
-            
-            <div
-              css={css`
-                font-size: 14px;
-                cursor: pointer;
-                margin: 0 0 0 4px;
-              `}
-            >
-              
-              <Link href="/gc/[urlID]/rec/[...slug]?urlID=Dead-by-Daylight&categories=1,2,3&page=3" as="/gc/Dead-by-Daylight/rec/search?categories=1,2,3&page=3" scroll={false}>
-                <a>
-                  Test3
-                </a>
-              </Link>
-              
-            </div>
-            
-          </div>*/}
           
           
         </Breadcrumbs>

@@ -839,7 +839,6 @@ export default injectIntl(class extends React.Component {
                             display: flex;
                             flex-flow: row nowrap;
                             margin-left: auto;
-                            // background-color: pink;
                           `}
                         >
                           
@@ -852,7 +851,6 @@ export default injectIntl(class extends React.Component {
                                 min-width: 54px;
                                 min-height: 22px;
                                 line-height: 1;
-                                // margin: 4px 0 0 0;
                                 padding: 0 3px;
                                 
                                 @media screen and (max-width: 480px) {

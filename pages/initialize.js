@@ -156,9 +156,12 @@ class Component extends React.Component {
         
         
         <h1>ログイン情報</h1>
+        
         <p>1. ログインID：8OM0dhDak　パスワード：8OM0dhDak0</p>
         <p>2. ログインID：enPLLYBBEg3y　パスワード：enPLLYBBEg3y0</p>
         <p>3. ログインID：nzPR7R9GO　パスワード：nzPR7R9GO0</p>
+        
+        <p>Administrator: ログインID：sTXPyssv8　パスワード：sTXPyssv80</p>
         
         
         <br />

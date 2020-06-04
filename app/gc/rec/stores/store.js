@@ -3422,23 +3422,23 @@ class Store {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/gc/rec/stores/store.js / handleDeleteRecruitment
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/gc/rec/stores/store.js / handleDeleteRecruitment
+    // `);
     
-    console.log(chalk`
-      gameCommunities_id: {green ${gameCommunities_id}}
-      recruitmentThreads_id: {green ${recruitmentThreads_id}}
-      recruitmentComments_id: {green ${recruitmentComments_id}}
-      recruitmentReplies_id: {green ${recruitmentReplies_id}}
-    `);
+    // console.log(chalk`
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+    //   recruitmentComments_id: {green ${recruitmentComments_id}}
+    //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
+    // `);
     
-    console.log(`
-      ----- this.dataObj[gameCommunities_id].recruitmentRepliesObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(this.dataObj[gameCommunities_id].recruitmentRepliesObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- this.dataObj[gameCommunities_id].recruitmentRepliesObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj[gameCommunities_id].recruitmentRepliesObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
   };
@@ -3573,40 +3573,6 @@ class Store {
         variant: 'success',
         messageID: 'j6lSS-Zf5',
       });
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   募集更新
-      // ---------------------------------------------
-      
-      // const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
-      // const clonedObj = lodashCloneDeep(recruitmentObj);
-      
-      // clonedObj.recruitmentThreadsObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {});
-      // clonedObj.recruitmentCommentsObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
-      // clonedObj.recruitmentRepliesObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
-      // clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
-      
-      // this.handleEdit({
-      //   pathArr: [gameCommunities_id],
-      //   value: clonedObj,
-      // });
-      
-      
-      
-      
-      // // ---------------------------------------------
-      // //   Hide Form & Scroll To
-      // // ---------------------------------------------
-      
-      // this.handleHideFormRecruitmentThread({
-        
-      //   pathArr,
-      //   recruitmentThreads_id,
-        
-      // });
       
       
       

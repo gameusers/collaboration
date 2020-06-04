@@ -21,10 +21,17 @@ import { injectIntl } from 'react-intl';
 import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
-import lodashGet from 'lodash/get';
+import SimpleIcons from 'simple-icons-react-component';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -39,11 +46,11 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Paper from '@material-ui/core/Paper';
-
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Avatar from '@material-ui/core/Avatar';
 
 
 // ---------------------------------------------
@@ -54,6 +61,7 @@ import IconExpandLess from '@material-ui/icons/ExpandLess';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
 import IconAssignment from '@material-ui/icons/Assignment';
 import IconPublic from '@material-ui/icons/Public';
+import IconDelete from '@material-ui/icons/Delete';
 import IconEdit from '@material-ui/icons/Edit';
 import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 
@@ -62,11 +70,13 @@ import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 //   Components
 // ---------------------------------------------
 
-import Paragraph from '../../layout/components/paragraph';
-import FormThread from './form-thread';
-import FormComment from './form-comment';
-import Comment from './comment';
-import ImageAndVideo from '../../image-and-video/components/image-and-video';
+import Paragraph from 'app/common/layout/components/paragraph.js';
+import FormThread from 'app/common/forum/components/form-thread.js';
+import FormComment from 'app/common/forum/components/form-comment.js';
+import Comment from 'app/common/forum/components/comment.js';
+import ImageAndVideo from 'app/common/image-and-video/components/image-and-video.js';
+
+
 
 
 
@@ -93,6 +103,8 @@ const stylesObj = {
 
 
 
+
+
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -108,6 +120,11 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
     
     super(props);
     
@@ -221,18 +238,21 @@ export default injectIntl(class extends React.Component {
     let linkReturnTopHref = '';
     let linkReturnTopAs = '';
     
-    
+    // Game Community
     if (urlID) {
       
       linkReturnTopHref = `/gc/[urlID]/index?urlID=${urlID}`;
       linkReturnTopAs = `/gc/${urlID}`;
       
+    // User Community
     } else if (userCommunityID) {
       
       linkReturnTopHref = `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`;
       linkReturnTopAs = `/uc/${userCommunityID}`;
       
     }
+    
+    
     
     
     // --------------------------------------------------
@@ -305,11 +325,13 @@ export default injectIntl(class extends React.Component {
       let linkHref = '';
       let linkAs = '';
       
+      // Game Community
       if (urlID) {
         
         linkHref = `/gc/[urlID]/forum/[forumID]?urlID=${urlID}&forumID=${forumThreads_id}`;
         linkAs = `/gc/${urlID}/forum/${forumThreads_id}`;
         
+      // User Community
       } else if (userCommunityID) {
         
         linkHref = `/uc/[userCommunityID]/forum/[forumID]?userCommunityID=${userCommunityID}&forumID=${forumThreads_id}`;
@@ -337,7 +359,33 @@ export default injectIntl(class extends React.Component {
       const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: [...this.pathArr, forumThreads_id] });
       
       
+      // --------------------------------------------------
+      //   Share: Twitter
+      //   参考：https://blog.ikunaga.net/entry/twitter-com-intent-tweet/
+      // --------------------------------------------------
       
+      const twitterHashtagsArr = lodashGet(threadsDataObj, ['gamesObj', 'twitterHashtagsArr'], []);
+      
+      let shareTwitterText = name;
+      
+      if (name.length > 50) {
+        shareTwitterText = name.substr(0, 50) + '…';
+      }
+      
+      let shareTwitter = `https://twitter.com/intent/tweet?text=${encodeURI(shareTwitterText)}&url=${process.env.NEXT_PUBLIC_URL_BASE}gc/${urlID}/forum/${forumThreads_id}`;
+      
+      if (twitterHashtagsArr.length > 0) {
+        
+        shareTwitter += `&hashtags=${twitterHashtagsArr.join(',')}`;
+        
+      }
+      
+      
+      
+      
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
       
       componentArr.push(
         <Element
@@ -360,7 +408,6 @@ export default injectIntl(class extends React.Component {
                 && {
                   cursor: default !important;
                   background-color: white !important;
-                  // margin: 0 0 20px 0 !important; 
                   
                   @media screen and (max-width: 480px) {
                     padding: 0 16px;
@@ -374,8 +421,7 @@ export default injectIntl(class extends React.Component {
               
               
               {/* Form */}
-              {showForm ? (
-                
+              {showForm &&
                 <div
                   css={css`
                     width: 100%;
@@ -387,10 +433,13 @@ export default injectIntl(class extends React.Component {
                     forumThreads_id={forumThreads_id}
                   />
                 </div>
-                
-              // Thread
-              ) : (
-                
+              }
+              
+              
+              
+              
+              {/* Thread */}
+              {!showForm &&
                 <div
                   css={css`
                     display: flex;
@@ -486,7 +535,6 @@ export default injectIntl(class extends React.Component {
                       flex-flow: row wrap;
                       font-size: 12px;
                       margin: 6px 0 0 0;
-                      // background-color: pink;
                     `}
                   >
                     
@@ -527,6 +575,8 @@ export default injectIntl(class extends React.Component {
                     </div>
                     
                     
+                    
+                    
                     {/* Thread _id */}
                     <div
                       css={css`
@@ -561,8 +611,10 @@ export default injectIntl(class extends React.Component {
                     </div>
                     
                     
+                    
+                    
                     {/* Edit Button */}
-                    {editable &&
+                    {/*{editable &&
                       <div
                         css={css`
                           display: flex;
@@ -577,7 +629,6 @@ export default injectIntl(class extends React.Component {
                               height: 22px;
                               min-width: 54px;
                               min-height: 22px;
-                              margin: 0 0 0 0;
                               padding: 0 4px;
                               
                               @media screen and (max-width: 480px) {
@@ -609,35 +660,221 @@ export default injectIntl(class extends React.Component {
                           編集
                         </Button>
                       </div>
-                    }
+                    }*/}
                     
                     
                   </div>
                   
                   
-                  {/* Comment */}
-                  {showComment &&
+                  
+                  
+                  
+                  <div
+                    css={css`
+                      font-size: 14px;
+                      line-height: 1.6em;
+                      
+                      ${showComment &&
+                        `
+                        border-left: 4px solid #A4A4A4;
+                        margin: 12px 0 10px 0;
+                        padding: 8px 0 8px 16px;
+                        `
+                      }
+                      
+                      @media screen and (max-width: 480px) {
+                        padding: 0 0 8px 12px;
+                      }
+                    `}
+                  >
+                    
+                    
+                    {/* Comment */}
+                    {showComment &&
+                      <Paragraph text={comment} />
+                    }
+                    {/*{showComment &&
+                      <div
+                        css={css`
+                          font-size: 14px;
+                          line-height: 1.6em;
+                          border-left: 4px solid #A4A4A4;
+                          margin: 12px 0 10px 3px;
+                          padding: 0 0 0 16px;
+                          
+                          @media screen and (max-width: 480px) {
+                            padding: 0 0 0 12px;
+                          }
+                        `}
+                      >
+                        <Paragraph text={comment} />
+                      </div>
+                    }*/}
+                    
+                    
+                    
+                    
+                   
+                    
+                    
+                    {/* Bottom Container */}
                     <div
                       css={css`
-                        font-size: 14px;
-                        line-height: 1.6em;
-                        border-left: 4px solid #A4A4A4;
-                        margin: 12px 0 10px 3px;
-                        padding: 0 0 0 16px;
-                        
-                        @media screen and (max-width: 480px) {
-                          padding: 0 0 0 12px;
-                        }
+                        display: flex;
+                        flex-flow: row wrap;
+                        margin: 16px 0 0 0;
                       `}
                     >
-                      <Paragraph text={comment} />
+                      
+                      
+                      {/* Buttons */}
+                      <div
+                        css={css`
+                          display: flex;
+                          flex-flow: row nowrap;
+                          margin-left: auto;
+                        `}
+                      >
+                        
+                        
+                        <Button
+                          css={css`
+                            && {
+                              font-size: 12px;
+                              height: 22px;
+                              min-width: 54px;
+                              min-height: 22px;
+                              line-height: 1;
+                              padding: 0 3px;
+                              
+                              @media screen and (max-width: 480px) {
+                                min-width: 36px;
+                                min-height: 22px;
+                              }
+                            }
+                          `}
+                          variant="outlined"
+                          href={shareTwitter}
+                          target="_blank"
+                          disabled={buttonDisabled}
+                        >
+                          <Avatar
+                            css={css`
+                              && {
+                                width: 16px;
+                                height: 16px;
+                                line-height: 1;
+                                background-color: #1DA1F2;
+                                margin: 0 4px 0 0;
+                              }
+                            `}
+                            alt="PlayStation"
+                            style={{ 'backgroundColor': '#1DA1F2' }}
+                          >
+                            <div style={{ 'width': '80%', 'marginTop': '0px' }}>
+                              <SimpleIcons name="Twitter" color="white" />
+                            </div>
+                          </Avatar>
+                          シェア
+                        </Button>
+                        
+                        
+                        
+                        
+                        {/* Delete Button */}
+                        {editable &&
+                          <Button
+                            css={css`
+                              && {
+                                font-size: 12px;
+                                height: 22px;
+                                min-width: 54px;
+                                min-height: 22px;
+                                margin: 0 0 0 12px;
+                                padding: 0 4px;
+                                
+                                @media screen and (max-width: 480px) {
+                                  min-width: 36px;
+                                  min-height: 22px;
+                                }
+                              }
+                            `}
+                            variant="outlined"
+                            color="secondary"
+                            // onClick={() => handleShowDeleteDialog({
+                            //   pathArr: this.pathArr,
+                            //   gameCommunities_id,
+                            //   recruitmentThreads_id,
+                            // })}
+                            disabled={buttonDisabled}
+                          >
+                            <IconDelete
+                              css={css`
+                                && {
+                                  font-size: 16px;
+                                  margin: 0 2px 1px 0;
+                                }
+                              `}
+                            />
+                            削除
+                          </Button>
+                        }
+                        
+                        
+                        
+                        
+                        {/* Edit Button */}
+                        {editable &&
+                          <Button
+                            css={css`
+                              && {
+                                font-size: 12px;
+                                height: 22px;
+                                min-width: 54px;
+                                min-height: 22px;
+                                margin: 0 0 0 12px;
+                                padding: 0 4px;
+                                
+                                @media screen and (max-width: 480px) {
+                                  min-width: 36px;
+                                  min-height: 22px;
+                                }
+                              }
+                            `}
+                            variant="outlined"
+                            color="primary"
+                            // onClick={() => handleShowFormRecruitmentThread({
+                            //   pathArr: pathRecruitmentThreadEditFormArr,
+                            //   recruitmentThreads_id,
+                            // })}
+                            disabled={buttonDisabled}
+                          >
+                            <IconEdit
+                              css={css`
+                                && {
+                                  font-size: 16px;
+                                  margin: 0 2px 3px 0;
+                                }
+                              `}
+                            />
+                            編集
+                          </Button>
+                        }
+                        
+                        
+                      </div>
+                      
+                      
                     </div>
-                  }
+                    
+                    
+                  </div>
+                  
                   
                   
                 </div>
               　
-              )}
+              }
               
               
             </ExpansionPanelSummary>
@@ -663,12 +900,19 @@ export default injectIntl(class extends React.Component {
                 
                 
                 {/* Form Comment */}
-                <FormComment
-                  gameCommunities_id={gameCommunities_id}
-                  userCommunities_id={userCommunities_id}
-                  forumThreads_id={forumThreads_id}
-                  settingAnonymity={settingAnonymity}
-                />
+                <div
+                  css={css`
+                    border-top: 1px dashed #585858;
+                    padding: 14px 0 0 0;
+                  `}
+                >
+                  <FormComment
+                    gameCommunities_id={gameCommunities_id}
+                    userCommunities_id={userCommunities_id}
+                    forumThreads_id={forumThreads_id}
+                    settingAnonymity={settingAnonymity}
+                  />
+                </div>
                 
                 
                 {/* Comment */}
@@ -693,6 +937,7 @@ export default injectIntl(class extends React.Component {
         </Element>
       );
       
+      
     }
     
     
@@ -703,10 +948,15 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <Element
+        name="forumThreads"
+      >
         
         
+        {/* Forum */}
         {componentArr}
+        
+        
         
         
         {/* Pagination */}
@@ -822,9 +1072,11 @@ export default injectIntl(class extends React.Component {
         )}
         
         
-      </React.Fragment>
+      </Element>
     );
     
+    
   }
+  
   
 });

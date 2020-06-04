@@ -97,20 +97,13 @@ let errorArgumentsObj = {
 
 
 
+
+
 // --------------------------------------------------
 //   Initial Props / endpointID: gUwZx1hDG
 // --------------------------------------------------
 
 router.post('/db', upload.none(), async (req, res, next) => {
-  
-  
-  // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  // const localeObj = locale({
-  //   acceptLanguage: req.headers['accept-language']
-  // });
   
   
   // --------------------------------------------------
@@ -154,6 +147,33 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // ---------------------------------------------
     
     saveArr = [
+      
+      {
+        _id: 'etJp0y_Vt',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        accessDate: ISO8601,
+        userID: 'administrator',
+        pagesObj: {
+          imagesAndVideos_id: '',
+          arr: [],
+        },
+        loginID: 'sTXPyssv8',
+        loginPassword: '$2a$10$4ze0DB.y8MbnodiJ3P.dbOQ23MqkzLNijqdkn64sfldAnicTaNVRO',
+        emailObj: {
+          value: '',
+          confirmation: false,
+        },
+        language: 'ja,en-US;q=0.9,en;q=0.8',
+        countriesArr: ['JP'],
+        termsOfServiceConfirmedDate: ISO8601,
+        exp: 0,
+        achievementsArr: [],
+        webPushes_id: '',
+        role: 'administrator'
+      },
+      
+      
       {
         _id: 'jun-deE4J',
         createdDate: ISO8601,
@@ -190,7 +210,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
             count: 1,
           }
         ],
-        // webPushAvailable: true,
         webPushes_id: 'nOVilxpSk',
         role: 'user'
       },
@@ -217,7 +236,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
         termsOfServiceConfirmedDate: ISO8601,
         exp: 10,
         achievementsArr: [],
-        // webPushAvailable: false,
         webPushes_id: '',
         role: 'user'
       },
@@ -244,10 +262,10 @@ router.post('/db', upload.none(), async (req, res, next) => {
         termsOfServiceConfirmedDate: ISO8601,
         exp: 0,
         achievementsArr: [],
-        // webPushAvailable: false,
         webPushes_id: '',
         role: 'user'
       },
+      
     ];
     
     
@@ -2067,6 +2085,113 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // ---------------------------------------------
     
     saveArr = [
+      
+      {
+        _id: 'Owja1jVAp',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: 'etJp0y_Vt',
+        language: 'ja',
+        nameObj: {
+          value: 'Administrator',
+          search: false,
+        },
+        statusObj: {
+          value: 'Status',
+          search: false,
+        },
+        imagesAndVideos_id: '',
+        imagesAndVideosThumbnail_id: '',
+        commentObj: {
+          value: 'Comment',
+          search: false,
+        },
+        ageObj: {
+          value: '',
+          alternativeText: '',
+          search: false,
+        },
+        sexObj: {
+          value: 'empty',
+          alternativeText: '',
+          search: false,
+        },
+        addressObj: {
+          value: '',
+          alternativeText: '',
+          search: false,
+        },
+        gamingExperienceObj: {
+          value: '',
+          alternativeText: '',
+          search: false,
+        },
+        hobbiesObj: {
+          valueArr: [],
+          search: false,
+        },
+        specialSkillsObj: {
+          valueArr: [],
+          search: false,
+        },
+        smartphoneObj: {
+          model: '',
+          comment: ``,
+          search: false,
+        },
+        tabletObj: {
+          model: '',
+          comment: ``,
+          search: false,
+        },
+        pcObj: {
+          model: '',
+          comment: ``,
+          specsObj: {
+            os: '',
+            cpu: '',
+            cpuCooler: '',
+            motherboard: '',
+            memory: '',
+            storage: '',
+            graphicsCard: '',
+            opticalDrive: '',
+            powerSupply: '',
+            pcCase: '',
+            monitor: '',
+            mouse: '',
+            keyboard: ''
+          },
+          search: false,
+        },
+        hardwareActiveObj: {
+          valueArr: [],
+          search: false,
+        },
+        hardwareInactiveObj: {
+          valueArr: [],
+          search: false,
+        },
+        ids_idsArr: [],
+        activityTimeObj: {
+          valueArr: [],
+          search: false,
+        },
+        lookingForFriendsObj: {
+          value: false,
+          icon: 'emoji_u1f47f',
+          comment: '',
+          search: false,
+        },
+        voiceChatObj: {
+          value: false,
+          comment: '',
+          search: false,
+        },
+        linkArr: []
+      },
+      
+      
       {
         _id: 'zaoOWw89g',
         createdDate: ISO8601,

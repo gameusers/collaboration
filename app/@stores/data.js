@@ -289,7 +289,7 @@ class Store {
   //   Access Level
   // ---------------------------------------------
   
-  @observable accessLevel = 1;
+  // @observable accessLevel = 1;
   
   
   
@@ -488,9 +488,9 @@ export default function initStoreData({ propsObj }) {
     //   Access Level
     // --------------------------------------------------
     
-    if (lodashHas(propsObj, ['accessLevel'])) {
-      storeData.accessLevel = propsObj.accessLevel;
-    }
+    // if (lodashHas(propsObj, ['accessLevel'])) {
+    //   storeData.accessLevel = propsObj.accessLevel;
+    // }
     
     
     // --------------------------------------------------

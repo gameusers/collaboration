@@ -19,11 +19,18 @@ import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 // import TextareaAutosize from 'react-autosize-textarea';
-import Cookies from 'js-cookie';
-import lodashGet from 'lodash/get';
+// import Cookies from 'js-cookie';
+
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -88,7 +95,9 @@ import IconSearch from '@material-ui/icons/Search';
 //   Components
 // ---------------------------------------------
 
-import FormThread from './form-thread';
+import FormThread from 'app/common/forum/components/form-thread.js';
+
+
 
 
 
@@ -133,6 +142,8 @@ const cssTableCell = css`
 
 
 
+
+
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -148,6 +159,11 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
     
     super(props);
     
@@ -208,6 +224,13 @@ export default injectIntl(class extends React.Component {
       userCommunities_id,
       
     } = this.props;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   communities_id
+    // --------------------------------------------------
     
     const communities_id = gameCommunities_id || userCommunities_id;
     
@@ -448,6 +471,7 @@ export default injectIntl(class extends React.Component {
       
       for (const [index, forumThreads_id] of forumThreadsArr.entries()) {
         
+        
         const threadsDataObj = lodashGet(dataObj, [communities_id, 'forumThreadsForListObj', 'dataObj', forumThreads_id], {});
         
         
@@ -458,11 +482,13 @@ export default injectIntl(class extends React.Component {
         let linkHref = '';
         let linkAs = '';
         
+        // Game Community
         if (urlID) {
           
           linkHref = `/gc/[urlID]/forum/[forumID]?urlID=${urlID}&forumID=${forumThreads_id}`;
           linkAs = `/gc/${urlID}/forum/${forumThreads_id}`;
           
+        // User Community
         } else if (userCommunityID) {
           
           linkHref = `/uc/[userCommunityID]/forum/[forumID]?userCommunityID=${userCommunityID}&forumID=${forumThreads_id}`;
@@ -520,6 +546,10 @@ export default injectIntl(class extends React.Component {
         }
         
         
+        // --------------------------------------------------
+        //   push
+        // --------------------------------------------------
+        
         componentTableDataArr.push(
           <TableRow key={index}>
             {tableCellName}
@@ -530,6 +560,7 @@ export default injectIntl(class extends React.Component {
             <TableCell css={cssTableCell} align="right">{threadsDataObj.videos}</TableCell>
           </TableRow>
         );
+        
         
       }
       
@@ -729,6 +760,8 @@ export default injectIntl(class extends React.Component {
             </div>*/}
             
           </div>
+          
+          
           
           
           {/* Expansion Button */}
@@ -1030,6 +1063,8 @@ export default injectIntl(class extends React.Component {
       </ExpansionPanel>
     );
     
+    
   }
+  
   
 });

@@ -76,6 +76,7 @@ import FormComment from 'app/common/forum/components/form-comment.js';
 import Comment from 'app/common/forum/components/comment.js';
 import ImageAndVideo from 'app/common/image-and-video/components/image-and-video.js';
 
+import FormName from 'app/common/form/components/name.js';
 
 
 
@@ -906,6 +907,9 @@ export default injectIntl(class extends React.Component {
                     padding: 14px 0 0 0;
                   `}
                 >
+                  
+                  <FormName />
+                  
                   <FormComment
                     gameCommunities_id={gameCommunities_id}
                     userCommunities_id={userCommunities_id}

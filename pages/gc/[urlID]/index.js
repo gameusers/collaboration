@@ -56,7 +56,7 @@ import initStoreGood from 'app/common/good/stores/store.js';
 //   Components
 // ---------------------------------------------
 
-import Layout from 'app/common/layout/components/layout-ver2.js';
+import Layout from 'app/common/layout/v2/components/layout.js';
 import ForumNavigation from 'app/common/forum/components/navigation.js';
 import ForumThread from 'app/common/forum/components/thread.js';
 import Breadcrumbs from 'app/common/layout/components/breadcrumbs.js';
@@ -295,7 +295,22 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
+    const accessLevel = lodashGet(this.props, ['propsObj', 'accessLevel'], 1);
+    const loginUsersObj = lodashGet(this.props, ['propsObj', 'loginUsersObj'], {});
+  
     const gameCommunities_id = lodashGet(this.props, ['propsObj', 'gameCommunityObj', '_id'], '');
+    
+    
+    // --------------------------------------------------
+    //   Context
+    // --------------------------------------------------
+    
+    const contextObj = {
+      
+      accessLevel,
+      loginUsersObj,
+      
+    };
     
     
     
@@ -345,7 +360,13 @@ export default class extends React.Component {
     
     return (
       <Layout
-        storesObj={this.storesObj}
+        // storesObj={this.storesObj}
+        
+        contextObj={contextObj}
+        
+        // accessLevel={accessLevel}
+        // loginUsersObj={loginUsersObj}
+        
         title={this.props.title}
         componentSidebar={componentSidebar}
         componentContent={componentContent}
@@ -445,9 +466,12 @@ export async function getServerSideProps({ req, res, query }) {
   //   dataObj
   // --------------------------------------------------
   
+  const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
+  // const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
+  
   const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
   const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
-  const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
+  
   
   
   // --------------------------------------------------
@@ -526,10 +550,16 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
   
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/index.js
-  // `);
+  console.log(`
+    ----------------------------------------\n
+    /pages/gc/[urlID]/index.js
+  `);
+  
+  console.log(`
+    ----- resultObj -----\n
+    ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+    --------------------\n
+  `);
   
   // console.log(chalk`
   //   threadListPage: {green ${threadListPage}}
@@ -551,11 +581,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   reqAcceptLanguage: {green ${reqAcceptLanguage}}
   // `);
   
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  
   
   
   

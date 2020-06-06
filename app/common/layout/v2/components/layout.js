@@ -14,7 +14,7 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Head from 'next/head';
 // import { inject, observer, Provider } from 'mobx-react';
 import Router from 'next/router';
@@ -44,7 +44,7 @@ import HeroImage from 'app/common/layout/v2/components/header/hero-image.js';
 // import Drawer from 'app/common/layout/components/drawer.js';
 // import CardPlayerDialog from 'app/common/card/player/components/dialog.js';
 // import VideoModal from 'app/common/image-and-video/components/video-modal.js';
-// import Snackbar from 'app/common/layout/components/snackbar.js';
+import Snackbar from 'app/common/layout/v2/components/snackbar.js';
 // import Loading from 'app/common/layout/components/loading.js';
 
 
@@ -55,7 +55,7 @@ import HeroImage from 'app/common/layout/v2/components/header/hero-image.js';
 import { ContextLoginUser } from 'app/common/context/user.js';
 
 
-
+// import FormName from 'app/common/form/components/name.js';
 
 
 
@@ -86,26 +86,71 @@ Router.events.on('routeChangeError', () => NProgress.done());
  */
 const Component = (props) => {
   
+  
+  // --------------------------------------------------
+  //   Hooks
+  // --------------------------------------------------
+  
   // const [count, setCount] = useState(0);
+  const [snackbarObj, setSnackbarObj] = useState({});
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   props
+  // --------------------------------------------------
   
   const {
     
-    // stores,
-    contextObj,
     title,
     componentSidebar,
     componentContent,
+    // contextObj,
+    loginUsersObj,
+    headerObj,
     
   } = props;
   
   
   
   
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  console.log(`
+    ----------------------------------------\n
+    /app/common/layout/v2/components/layout.js
+  `);
+  
+  console.log(`
+    ----- loginUsersObj -----\n
+    ${util.inspect(JSON.parse(JSON.stringify(loginUsersObj)), { colors: true, depth: null })}\n
+    --------------------\n
+  `);
+  
+  // const test = (eventObj) => {
+    
+  //   eventObj.preventDefault();
+    
+  //   // console.log(`
+  //   //   ----- eventObj -----\n
+  //   //   ${util.inspect(eventObj, { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
+    
+  // };
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
   
   return (
     <React.Fragment>
       
-      <ContextLoginUser.Provider value={contextObj}>
+      <ContextLoginUser.Provider value={loginUsersObj}>
         
         
         {/* Head 内部のタグをここで追記する */}
@@ -121,7 +166,21 @@ const Component = (props) => {
         <HeaderNavTop />
         
         
-        <HeroImage />
+        <HeroImage
+          headerObj={headerObj}
+        />
+        
+        
+        
+        {/*<form
+          name="test"
+          onSubmit={(eventObj) => test(eventObj)}
+        >
+          
+          <FormName />
+          <input type='submit' value="送信" />
+          
+        </form>*/}
         
         
         
@@ -152,10 +211,20 @@ const Component = (props) => {
         </main>
         
         
+        
+        
+        {/* Snackbar 通知用 */}
+        <Snackbar
+          snackbarObj={snackbarObj}
+          setSnackbarObj={setSnackbarObj}
+        />
+        
+        
       </ContextLoginUser.Provider>
       
     </React.Fragment>
   );
+  
   
 };
 

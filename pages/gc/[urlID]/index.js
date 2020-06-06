@@ -14,9 +14,8 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Error from 'next/error';
-import { observer } from 'mobx-react';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -36,20 +35,7 @@ import lodashGet from 'lodash/get';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
-
-
-// ---------------------------------------------
-//   Stores
-// ---------------------------------------------
-
-import initStoreRoot from 'app/@stores/root.js';
-import initStoreGcCommunity from 'app/gc/community/stores/store.js';
-import initStoreCardPlayer from 'app/common/card/player/stores/player.js';
-import initStoreForum from 'app/common/forum/stores/store.js';
-import initStoreImageAndVideo from 'app/common/image-and-video/stores/image-and-video.js';
-import initStoreImageAndVideoForm from 'app/common/image-and-video/stores/form.js';
-import initStoreFollow from 'app/common/follow/stores/store.js';
-import initStoreGood from 'app/common/good/stores/store.js';
+import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
@@ -67,317 +53,179 @@ import Breadcrumbs from 'app/common/layout/components/breadcrumbs.js';
 
 
 // --------------------------------------------------
-//   Store
+//   Function Components
+//   URL: https://dev-1.gameusers.org/gc/***
 // --------------------------------------------------
 
-/**
- * ストアを初期化する / 更新する
- * @param {Object} propsObj - ストアに入れる値
- */
-const initializeStore = ({ propsObj }) => {
+const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Stores
+  //   Hooks
   // --------------------------------------------------
   
-  initStoreRoot({ propsObj });
+  // const contextObj = useContext(ContextLoginUser);
+  // const intl = useIntl();
+  // const [buttonDisabled, setButtonDisabled] = useState(true);
+  // const [open, setOpen] = useState(false);
   
-  const storeGcCommunity = initStoreGcCommunity({});
-  const storeCardPlayer = initStoreCardPlayer({});
-  const storeForum = initStoreForum({ propsObj });
-  const storeImageAndVideo = initStoreImageAndVideo({});
-  const storeImageAndVideoForm = initStoreImageAndVideoForm({});
-  const storeFollow = initStoreFollow({});
-  const storeGood = initStoreGood({});
+  const [loginUsersObj, setLoginUsersObj] = useState(props.loginUsersObj);
+  
+  // const [snackbarObj, setSnackbarObj] = useState({
+    
+  //   key: `snackbar-${new Date().getTime()}`,
+  //   open: false,
+  //   variant: '',
+  //   messageID: 'qnWsuPcrJ',
+  //   vertical: 'bottom',
+  //   horizontal: 'left',
+  //   autoHideDuration: 5000,
+  //   errorObj: {},
+  //   queueArr: [],
+    
+  // });
+  
+  
+  // useEffect(() => {
+    
+  //   setButtonDisabled(false);
+    
+  // }, []);
+  
+  
+  
+  // --------------------------------------------------
+  //   props
+  // --------------------------------------------------
+  
+  // const {
+    
+  //   snackbarObj = {},
+  //   setSnackbarObj,
+    
+  // } = props;
+  
+  
+  
+  // --------------------------------------------------
+  //   Error
+  //   参考：https://github.com/zeit/next.js#custom-error-handling
+  // --------------------------------------------------
+  
+  if (props.statusCode !== 200) {
+    return <Error statusCode={props.statusCode} />;
+  }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Props
+  // --------------------------------------------------
+  
+  // const accessLevel = lodashGet(props, ['propsObj', 'accessLevel'], 1);
+  // const loginUsersObj = lodashGet(props, ['propsObj', 'loginUsersObj'], {});
+  
+  const headerObj = lodashGet(props, ['propsObj', 'headerObj'], {});
+  
+  const gameCommunities_id = lodashGet(props, ['propsObj', 'gameCommunityObj', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   Context
+  // --------------------------------------------------
+  
+  // const contextObj = {
+    
+  //   accessLevel,
+  //   loginUsersObj,
+    
+  // };
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /pages/gc/[urlID]/index.js
+  // `);
+  
+  // console.log(chalk`
+  //   login: {green ${login}}
+  // `);
+  
+  // console.log(`
+  //   ----- linkArr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(linkArr)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Component - Sidebar
+  // --------------------------------------------------
+  
+  const componentSidebar = '';
+  // const componentSidebar =
+  //   <ForumNavigation
+  //     temporaryDataID={this.props.temporaryDataID}
+  //     urlID={this.props.urlID}
+  //     gameCommunities_id={gameCommunities_id}
+  //   />
+  // ;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Component - Contents
+  // --------------------------------------------------
+  
+  const componentContent = '';
+  // const componentContent = 
+  //   <React.Fragment>
+      
+  //     <Breadcrumbs
+  //       arr={this.props.breadcrumbsArr}
+  //     />
+      
+  //     <ForumThread
+  //       temporaryDataID={this.props.temporaryDataID}
+  //       urlID={this.props.urlID}
+  //       gameCommunities_id={gameCommunities_id}
+  //       settingAnonymity={true}
+  //     />
+      
+  //   </React.Fragment>
+  // ;
+  
+  
   
   
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
   
-  return {
-    
-    storeGcCommunity,
-    storeCardPlayer,
-    storeForum,
-    storeImageAndVideo,
-    storeImageAndVideoForm,
-    storeFollow,
-    storeGood,
-    
-  };
+  return (
+    <Layout
+      title={props.title}
+      componentSidebar={componentSidebar}
+      componentContent={componentContent}
+      
+      // contextObj={contextObj}
+      loginUsersObj={loginUsersObj}
+      headerObj={headerObj}
+    />
+  );
   
   
 };
-
-
-
-
-// --------------------------------------------------
-//   Class
-//   URL: https://dev-1.gameusers.org/gc/***
-// --------------------------------------------------
-
-@observer
-export default class extends React.Component {
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  constructor(props) {
-    
-    
-    // --------------------------------------------------
-    //   super
-    // --------------------------------------------------
-    
-    super(props);
-    
-    
-    // --------------------------------------------------
-    //   Initialize Store
-    // --------------------------------------------------
-    
-    this.storesObj = initializeStore({ propsObj: this.props.propsObj });
-    
-    
-  }
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   componentDidMount
-  // --------------------------------------------------
-  
-  componentDidMount() {
-    
-    
-    // ---------------------------------------------
-    //   Scroll
-    // ---------------------------------------------
-    
-    const stores = initStoreRoot({});
-    
-    stores.layout.handleScrollTo({
-      
-      to: 'forumThreads',
-      duration: 0,
-      delay: 0,
-      smooth: 'easeInOutQuart',
-      offset: -50,
-      
-    });
-    
-    
-  }
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   componentDidUpdate / Router.push でページを移動したときの処理
-  //   まず getServerSideProps でデータを取得し、次に componentDidUpdate でデータを更新する
-  // --------------------------------------------------
-  
-  componentDidUpdate(prevProps) {
-    
-    
-    // --------------------------------------------------
-    //   Update Store
-    // --------------------------------------------------
-    
-    if (this.props.ISO8601 !== prevProps.ISO8601) {
-      
-      initializeStore({ propsObj: this.props.propsObj });
-      
-      
-      // ---------------------------------------------
-      //   Scroll
-      // ---------------------------------------------
-      
-      const stores = initStoreRoot({});
-      
-      stores.layout.handleScrollTo({
-        
-        to: 'forumThreads',
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
-        
-      });
-      
-      
-    }
-    
-    
-  }
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  // constructor(props) {
-    
-    
-  //   // --------------------------------------------------
-  //   //   super
-  //   // --------------------------------------------------
-    
-  //   super(props);
-    
-    
-    
-    
-  //   // --------------------------------------------------
-  //   //   Props
-  //   // --------------------------------------------------
-    
-  //   const urlID = props.urlID;
-  //   const pathname = props.pathname;
-  //   const ISO8601 = props.ISO8601;
-    
-  //   let propsObj = props.propsObj;
-    
-  //   const gameCommunities_id = lodashGet(propsObj, ['gameCommunityObj', '_id'], '');
-  //   const accessLevel = lodashGet(propsObj, ['accessLevel'], 1);
-    
-    
-  //   // --------------------------------------------------
-  //   //   Path Array
-  //   // --------------------------------------------------
-    
-  //   const pathArr = ['gc', urlID];
-    
-    
-    
-    
-    
-    
-  //   // --------------------------------------------------
-  //   //   propsObj
-  //   // --------------------------------------------------
-    
-  //   propsObj = { ...propsObj, ISO8601, pathname, pathArr, headerNavMainArr, gameCommunities_id };
-    
-    
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   render
-  // --------------------------------------------------
-  
-  render() {
-    
-    
-    // --------------------------------------------------
-    //   Error
-    //   参考：https://github.com/zeit/next.js#custom-error-handling
-    // --------------------------------------------------
-    
-    if (this.props.statusCode !== 200) {
-      return <Error statusCode={this.props.statusCode} />;
-    }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Props
-    // --------------------------------------------------
-    
-    const accessLevel = lodashGet(this.props, ['propsObj', 'accessLevel'], 1);
-    const loginUsersObj = lodashGet(this.props, ['propsObj', 'loginUsersObj'], {});
-  
-    const gameCommunities_id = lodashGet(this.props, ['propsObj', 'gameCommunityObj', '_id'], '');
-    
-    
-    // --------------------------------------------------
-    //   Context
-    // --------------------------------------------------
-    
-    const contextObj = {
-      
-      accessLevel,
-      loginUsersObj,
-      
-    };
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Component - Sidebar
-    // --------------------------------------------------
-    
-    const componentSidebar =
-      <ForumNavigation
-        temporaryDataID={this.props.temporaryDataID}
-        urlID={this.props.urlID}
-        gameCommunities_id={gameCommunities_id}
-      />
-    ;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Component - Contents
-    // --------------------------------------------------
-    
-    const componentContent = 
-      <React.Fragment>
-        
-        <Breadcrumbs
-          arr={this.props.breadcrumbsArr}
-        />
-        
-        <ForumThread
-          temporaryDataID={this.props.temporaryDataID}
-          urlID={this.props.urlID}
-          gameCommunities_id={gameCommunities_id}
-          settingAnonymity={true}
-        />
-        
-      </React.Fragment>
-    ;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return (
-      <Layout
-        // storesObj={this.storesObj}
-        
-        contextObj={contextObj}
-        
-        // accessLevel={accessLevel}
-        // loginUsersObj={loginUsersObj}
-        
-        title={this.props.title}
-        componentSidebar={componentSidebar}
-        componentContent={componentContent}
-      />
-    );
-    
-    
-  }
-  
-  
-}
 
 
 
@@ -407,14 +255,6 @@ export async function getServerSideProps({ req, res, query }) {
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   
-  const stores = initStoreRoot({
-    
-    propsObj: {
-      cookie: reqHeadersCookie
-    }
-    
-  });
-  
   
   
   
@@ -433,14 +273,15 @@ export async function getServerSideProps({ req, res, query }) {
   //   Get Cookie Data & Temporary Data for Fetch
   // --------------------------------------------------
   
-  const threadListPage = stores.data.getTemporaryData({ pathname: temporaryDataID, key: 'threadListPage' });
-  const threadListLimit = stores.data.getCookie({ key: 'threadListLimit' });
+  // const threadListPage = stores.data.getTemporaryData({ pathname: temporaryDataID, key: 'threadListPage' });
+  const threadListPage = 1;
+  const threadListLimit = getCookie({ key: 'threadListLimit', reqHeadersCookie });
   
   // const threadPage = stores.data.getTemporaryData({ pathname: temporaryDataID, key: 'threadPage' });
   const threadPage = 1;
-  const threadLimit = stores.data.getCookie({ key: 'threadLimit' });
-  const commentLimit = stores.data.getCookie({ key: 'commentLimit' });
-  const replyLimit = stores.data.getCookie({ key: 'replyLimit' });
+  const threadLimit = getCookie({ key: 'threadLimit', reqHeadersCookie });
+  const commentLimit = getCookie({ key: 'commentLimit', reqHeadersCookie });
+  const replyLimit = getCookie({ key: 'replyLimit', reqHeadersCookie });
   
   
   // --------------------------------------------------
@@ -467,7 +308,7 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
   
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
-  // const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
+  const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   
   const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
   const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
@@ -601,6 +442,7 @@ export async function getServerSideProps({ req, res, query }) {
       propsObj,
       breadcrumbsArr,
       title,
+      loginUsersObj,
       
     }
     
@@ -608,3 +450,12 @@ export async function getServerSideProps({ req, res, query }) {
   
   
 }
+
+
+
+
+// --------------------------------------------------
+//   Export
+// --------------------------------------------------
+
+export default Component;

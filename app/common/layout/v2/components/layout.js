@@ -48,14 +48,7 @@ import Snackbar from 'app/common/layout/v2/components/snackbar.js';
 // import Loading from 'app/common/layout/components/loading.js';
 
 
-// ---------------------------------------------
-//   Contexts
-// ---------------------------------------------
 
-import { ContextLoginUser } from 'app/common/context/user.js';
-
-
-// import FormName from 'app/common/form/components/name.js';
 
 
 
@@ -92,7 +85,7 @@ const Component = (props) => {
   // --------------------------------------------------
   
   // const [count, setCount] = useState(0);
-  const [snackbarObj, setSnackbarObj] = useState({});
+  // const [snackbarObj, setSnackbarObj] = useState({});
   
   
   
@@ -106,8 +99,6 @@ const Component = (props) => {
     title,
     componentSidebar,
     componentContent,
-    // contextObj,
-    loginUsersObj,
     headerObj,
     
   } = props;
@@ -119,16 +110,16 @@ const Component = (props) => {
   //   console.log
   // --------------------------------------------------
   
-  console.log(`
-    ----------------------------------------\n
-    /app/common/layout/v2/components/layout.js
-  `);
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /app/common/layout/v2/components/layout.js
+  // `);
   
-  console.log(`
-    ----- loginUsersObj -----\n
-    ${util.inspect(JSON.parse(JSON.stringify(loginUsersObj)), { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- loginUsersObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(loginUsersObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   // const test = (eventObj) => {
     
@@ -143,6 +134,8 @@ const Component = (props) => {
   // };
   
   
+  
+  
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
@@ -150,7 +143,7 @@ const Component = (props) => {
   return (
     <React.Fragment>
       
-      <ContextLoginUser.Provider value={loginUsersObj}>
+      {/*<ContextLoginUser.Provider value={loginUsersObj}>*/}
         
         
         {/* Head 内部のタグをここで追記する */}
@@ -215,12 +208,12 @@ const Component = (props) => {
         
         {/* Snackbar 通知用 */}
         <Snackbar
-          snackbarObj={snackbarObj}
-          setSnackbarObj={setSnackbarObj}
+          // snackbarObj={snackbarObj}
+          // setSnackbarObj={setSnackbarObj}
         />
         
         
-      </ContextLoginUser.Provider>
+      {/*</ContextLoginUser.Provider>*/}
       
     </React.Fragment>
   );

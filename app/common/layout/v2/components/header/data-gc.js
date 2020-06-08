@@ -453,22 +453,22 @@ const Component = (props) => {
   //   console.log
   // --------------------------------------------------
   
-  console.log(`
-    ----------------------------------------\n
-    /app/common/layout/v2/components/header/data-gc.js
-  `);
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /app/common/layout/v2/components/header/data-gc.js
+  // `);
   
-  console.log(chalk`
-    open: {green ${open}}
-    name: {green ${name}}
-    hardware: {green ${hardware}}
-  `);
+  // console.log(chalk`
+  //   open: {green ${open}}
+  //   name: {green ${name}}
+  //   hardware: {green ${hardware}}
+  // `);
   
-  console.log(`
-    ----- hardwareSortedArr -----\n
-    ${util.inspect(JSON.parse(JSON.stringify(hardwareSortedArr)), { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- hardwareSortedArr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(hardwareSortedArr)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   
   

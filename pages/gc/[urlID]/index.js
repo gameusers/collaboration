@@ -48,6 +48,13 @@ import ForumThread from 'app/common/forum/components/thread.js';
 import Breadcrumbs from 'app/common/layout/components/breadcrumbs.js';
 
 
+// ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+// import { ContainerStateLoginUsers } from 'app/@states/login-users.js';
+
+
 
 
 
@@ -64,33 +71,7 @@ const Component = (props) => {
   //   Hooks
   // --------------------------------------------------
   
-  // const contextObj = useContext(ContextLoginUser);
-  // const intl = useIntl();
-  // const [buttonDisabled, setButtonDisabled] = useState(true);
-  // const [open, setOpen] = useState(false);
-  
-  const [loginUsersObj, setLoginUsersObj] = useState(props.loginUsersObj);
-  
-  // const [snackbarObj, setSnackbarObj] = useState({
-    
-  //   key: `snackbar-${new Date().getTime()}`,
-  //   open: false,
-  //   variant: '',
-  //   messageID: 'qnWsuPcrJ',
-  //   vertical: 'bottom',
-  //   horizontal: 'left',
-  //   autoHideDuration: 5000,
-  //   errorObj: {},
-  //   queueArr: [],
-    
-  // });
-  
-  
-  // useEffect(() => {
-    
-  //   setButtonDisabled(false);
-    
-  // }, []);
+  // const [loginUsersObj, setLoginUsersObj] = useState(props.loginUsersObj);
   
   
   
@@ -98,12 +79,20 @@ const Component = (props) => {
   //   props
   // --------------------------------------------------
   
-  // const {
-    
-  //   snackbarObj = {},
-  //   setSnackbarObj,
-    
-  // } = props;
+  // const stateLoginUser = ContainerStateLoginUsers.useContainer();
+  
+  
+  // console.log(`
+  //   ----- props.loginUsersObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(props.loginUsersObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(`
+  //   ----- stateLoginUser.loginUsersObj -----\n
+  //   ${util.inspect(stateLoginUser.loginUsersObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   
   
@@ -219,7 +208,7 @@ const Component = (props) => {
       componentContent={componentContent}
       
       // contextObj={contextObj}
-      loginUsersObj={loginUsersObj}
+      // loginUsersObj={loginUsersObj}
       headerObj={headerObj}
     />
   );
@@ -391,16 +380,16 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
   
-  console.log(`
-    ----------------------------------------\n
-    /pages/gc/[urlID]/index.js
-  `);
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /pages/gc/[urlID]/index.js
+  // `);
   
-  console.log(`
-    ----- resultObj -----\n
-    ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- resultObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   // console.log(chalk`
   //   threadListPage: {green ${threadListPage}}

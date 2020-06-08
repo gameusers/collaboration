@@ -32,8 +32,6 @@ import lodashGet from 'lodash/get';
 //   Material UI
 // ---------------------------------------------
 
-import Button from '@material-ui/core/Button';
-
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import IconButton from '@material-ui/core/IconButton';
@@ -55,6 +53,13 @@ import IconClose from '@material-ui/icons/Close';
 // ---------------------------------------------
 
 import { CustomError } from 'app/@modules/error/custom.js';
+
+
+// ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 
@@ -93,47 +98,30 @@ const Component = (props) => {
   //   Hooks
   // --------------------------------------------------
   
-  // const contextObj = useContext(ContextLoginUser);
   const intl = useIntl();
-  // const [buttonDisabled, setButtonDisabled] = useState(true);
-  // const [open, setOpen] = useState(false);
-  
-  // const [snackbarObj, setSnackbarObj] = useState({});
-  
-  // const [snackbarObj, setSnackbarObj] = useState({
-    
-  //   key: `snackbar-${new Date().getTime()}`,
-  //   open: false,
-  //   variant: '',
-  //   messageID: 'qnWsuPcrJ',
-  //   vertical: 'bottom',
-  //   horizontal: 'left',
-  //   autoHideDuration: 5000,
-  //   errorObj: {},
-  //   queueArr: [],
-    
-  // });
   
   
-  // useEffect(() => {
+  
+  
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateLayout = ContainerStateLayout.useContainer();
+  
+  const {
     
-  //   setButtonDisabled(false);
+    snackbarObj,
+    handleSnackbarClose,
     
-  // }, []);
+  } = stateLayout;
+  
   
   
   
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
-  const {
-    
-    snackbarObj = {},
-    setSnackbarObj,
-    
-  } = props;
-  
   
   // key
   const key = lodashGet(snackbarObj, ['key'], `snackbar-${new Date().getTime()}`);
@@ -158,45 +146,6 @@ const Component = (props) => {
   
   // Error Object
   const errorObj = lodashGet(snackbarObj, ['errorObj'], {});
-  
-  // Queue Array
-  // const queueArr = lodashGet(snackbarObj, ['cqueueArr'], []);
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Function
-  // --------------------------------------------------
-  
-  const handleClick = () => {
-    
-    // setSnackbarObj({
-    //   open: true,
-    // });
-    
-    setSnackbarObj({
-      
-      open: true,
-      variant: 'success',
-      messageID: 'dusYj_Gh3',
-      
-    });
-    
-  };
-  
-  
-  const handleClose = (event, reason) => {
-    
-    if (reason === 'clickaway') {
-      return;
-    }
-    
-    setSnackbarObj({
-      open: false,
-    });
-    
-  };
   
   
   
@@ -298,9 +247,6 @@ const Component = (props) => {
   // --------------------------------------------------
   
   return (
-    <div>
-    <Button onClick={handleClick}>Open simple snackbar</Button>
-    
     <Snackbar
       key={key}
       anchorOrigin={{
@@ -309,7 +255,7 @@ const Component = (props) => {
       }}
       open={open}
       autoHideDuration={autoHideDuration}
-      onClose={handleClose}
+      onClose={handleSnackbarClose}
     >
       
       <SnackbarContent
@@ -336,7 +282,7 @@ const Component = (props) => {
             key="close"
             aria-label="Close"
             color="inherit"
-            onClick={handleClose}
+            onClick={handleSnackbarClose}
           >
             <IconClose />
           </IconButton>,
@@ -344,8 +290,6 @@ const Component = (props) => {
       />
       
     </Snackbar>
-    
-    </div>
   );
   
   

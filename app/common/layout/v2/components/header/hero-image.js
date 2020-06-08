@@ -213,21 +213,21 @@ const Component = (props) => {
   //   console.log
   // --------------------------------------------------
   
-  console.log(chalk`
-    type: {green ${type}}
-  `);
+  // console.log(chalk`
+  //   type: {green ${type}}
+  // `);
   
-  console.log(`
-    ----- imagesAndVideosObj -----\n
-    ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- imagesAndVideosObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
-  console.log(`
-    ----- thumbnailArr -----\n
-    ${util.inspect(JSON.parse(JSON.stringify(thumbnailArr)), { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- thumbnailArr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(thumbnailArr)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   
   

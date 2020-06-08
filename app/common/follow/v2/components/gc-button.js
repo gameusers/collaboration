@@ -26,6 +26,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
 
 
@@ -49,10 +50,11 @@ import IconPermIdentity from '@material-ui/icons/PermIdentity';
 
 
 // ---------------------------------------------
-//   Contexts
+//   States
 // ---------------------------------------------
 
-import { ContextLoginUser } from 'app/common/context/user.js';
+import { ContainerStateLoginUsers } from 'app/@states/login-users.js';
+import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 
@@ -73,7 +75,6 @@ const Component = (props) => {
   //   Hooks
   // --------------------------------------------------
   
-  const contextObj = useContext(ContextLoginUser);
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   
@@ -83,6 +84,20 @@ const Component = (props) => {
     setButtonDisabled(false);
     
   }, []);
+  
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateLoginUser = ContainerStateLoginUsers.useContainer();
+  const stateLayout = ContainerStateLayout.useContainer();
+  
+  const { loginUsersObj } = stateLoginUser;
+  const { handleSnackbarOpen } = stateLayout;
   
   
   
@@ -103,10 +118,220 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
+  //   handle
+  // --------------------------------------------------
+  
+  const handleClick = async () => {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      setButtonDisabled(true);
+      
+      
+      
+      
+      // // ---------------------------------------------
+      // //   FormData
+      // // ---------------------------------------------
+      
+      // const formDataObj = {
+        
+      //   gameCommunities_id,
+      //   userCommunities_id,
+        
+      // };
+      
+      
+      // // ---------------------------------------------
+      // //   Fetch
+      // // ---------------------------------------------
+      
+      // const resultObj = await fetchWrapper({
+        
+      //   urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/upsert-follow`,
+      //   methodType: 'POST',
+      //   formData: JSON.stringify(formDataObj),
+        
+      // });
+      
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      // if ('errorsArr' in resultObj) {
+      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
+      // }
+      
+      
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/follow/stores/store.js - handleFollow
+      // `);
+      
+      // console.log(chalk`
+      //   type: {green ${type}}
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      // `);
+      
+      // console.log(`
+      //   ----- storeData.headerObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(storeData.headerObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // ---------------------------------------------
+      //   メンバーかどうか、メンバー数を変更
+      // ---------------------------------------------
+      
+      // if (lodashHas(resultObj, ['data', 'follow'])) {
+      //   lodashSet(followsObj, ['follow'], resultObj.data.followedCount);
+      // }
+      
+      // if (lodashHas(resultObj, ['data', 'followedCount'])) {
+      //   lodashSet(followsObj, ['followedCount'], resultObj.data.followedCount);
+      // }
+      
+      
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      const type = '';
+      
+      let messageID = 'RTsMTGw-1';
+      
+      switch (type) {
+        
+        case 'followGc':
+          messageID = 'RTsMTGw-1';
+          break;
+          
+        case 'unfollowGc':
+          messageID = '1z127R0YE';
+          break;
+          
+        
+        case 'followUc':
+          messageID = 'SY6WWDyxQ';
+          break;
+          
+        case 'unfollowUc':
+          messageID = 'xWAfTONZ6';
+          break;
+          
+        case 'followApprovalUc':
+          messageID = 'PaC4bsJe2';
+          break;
+          
+        case 'unfollowApprovalUc':
+          messageID = 'HOo6u_sXD';
+          break;
+          
+      }
+      
+      
+      handleSnackbarOpen({
+        
+        variant: 'success',
+        messageID,
+        
+      });
+      
+      
+      
+      // ---------------------------------------------
+      //   リロードする
+      // ---------------------------------------------
+      
+      // const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
+      
+      // if (pageTransition) {
+      //   window.location.reload();
+      // }
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      handleSnackbarOpen({
+        
+        variant: 'error',
+        errorObj,
+        
+      });
+      // storeLayout.handleSnackbarOpen({
+      //   variant: 'error',
+      //   errorObj,
+      // });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      setButtonDisabled(false);
+      
+      
+      // // ---------------------------------------------
+      // //   ダイアログを非表示にする
+      // //   /app/common/follow/components/gc-uc-button.js
+      // // ---------------------------------------------
+      
+      // this.handleEdit({
+      //   pathArr: [...pathArr, 'showDialogUnfollow'],
+      //   value: false,
+      // });
+      
+      // this.handleEdit({
+      //   pathArr: [...pathArr, 'showDialogUnfollowApproval'],
+      //   value: false,
+      // });
+      
+      
+    }
+    
+    
+  };
+  
+  
+  
+  
+  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
-  const login = lodashHas(contextObj, ['loginUsersObj', '_id']);
+  const login = lodashHas(loginUsersObj, ['_id']);
   
   const admin = lodashGet(followsObj, ['admin'], false);
   // const follow = lodashGet(followsObj, ['follow'], false);
@@ -116,25 +341,22 @@ const Component = (props) => {
   
   
   
-  // const { 
-    
-  //   dataObj,
-  //   handleEdit,
-  //   handleFollow,
-    
-  // } = stores.follow;
-  
-  console.log(`
-    ----- contextObj -----\n
-    ${util.inspect(JSON.parse(JSON.stringify(contextObj)), { colors: true, depth: null })}\n
-    --------------------\n
+  console.log(chalk`
+    login: {green ${login}}
+    lodashHas(loginUsersObj, ['_id']): {green ${lodashHas(loginUsersObj, ['_id'])}}
   `);
   
   console.log(`
-    ----- followsObj -----\n
-    ${util.inspect(JSON.parse(JSON.stringify(followsObj)), { colors: true, depth: null })}\n
+    ----- loginUsersObj -----\n
+    ${util.inspect(JSON.parse(JSON.stringify(loginUsersObj)), { colors: true, depth: null })}\n
     --------------------\n
   `);
+  
+  // console.log(`
+  //   ----- followsObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(followsObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   
   
@@ -184,8 +406,6 @@ const Component = (props) => {
   
   if (login && !follow) {
     
-    // component = <FollowButton type="followGc" color="secondary" buttonDisabled={buttonDisabled} />;
-    
     component = 
       <Button
         variant="contained"
@@ -197,12 +417,14 @@ const Component = (props) => {
               () => {}
               
             :
-              () => {}
-              // () => handleFollow({
-              //   pathArr: this.pathArr,
-              //   type: 'followGc',
-              //   gameCommunities_id
-              // })
+              // () => {}
+              () => handleClick({
+                
+                // pathArr: this.pathArr,
+                // type: 'followGc',
+                // gameCommunities_id,
+                
+              })
         }
         disabled={buttonDisabled}
       >
@@ -218,15 +440,6 @@ const Component = (props) => {
   // ---------------------------------------------
   
   if (login && follow) {
-    
-    // component =
-    //   <FollowButton
-    //     type="followGc"
-    //     color="primary"
-    //     buttonDisabled={buttonDisabled}
-    //     func={setDialogOpen}
-    //   />
-    // ;
     
     component = 
       <Button
@@ -247,6 +460,19 @@ const Component = (props) => {
     ;
     
   }
+  
+  
+  component = 
+    <Button
+      variant="contained"
+      color="secondary"
+      size="small"
+      onClick={handleClick}
+      disabled={buttonDisabled}
+    >
+      Snackbar
+    </Button>
+  ;
   
   
   
@@ -281,14 +507,14 @@ const Component = (props) => {
   //   console.log
   // --------------------------------------------------
   
-  console.log(`
-    ----------------------------------------\n
-    /app/common/follow/v2/components/gc-button.js
-  `);
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /app/common/follow/v2/components/gc-button.js
+  // `);
   
-  console.log(chalk`
-    login: {green ${login}}
-  `);
+  // console.log(chalk`
+  //   login: {green ${login}}
+  // `);
   
   // console.log(`
   //   ----- linkArr -----\n

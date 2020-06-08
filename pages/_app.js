@@ -36,7 +36,7 @@ import SimpleReactLightbox from 'simple-react-lightbox';
 
 import lodashGet from 'lodash/get';
 
-// import moment from 'moment';
+
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
@@ -57,6 +57,14 @@ import { locale } from 'app/@locales/locale.js';
 // ---------------------------------------------
 
 import initStoreRoot from 'app/@stores/root.js';
+
+
+// ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLoginUsers } from 'app/@states/login-users.js';
+import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 // ---------------------------------------------
@@ -264,6 +272,8 @@ class MyApp extends App {
     }
     
     
+    
+    
     // --------------------------------------------------
     //   Props
     // --------------------------------------------------
@@ -271,19 +281,29 @@ class MyApp extends App {
     const { Component, pageProps } = this.props;
     
     
+    
+    
+    // --------------------------------------------------
+    //   loginUsersObj
+    // --------------------------------------------------
+    
+    const loginUsersObj = lodashGet(pageProps, ['loginUsersObj'], {});
+    
+    
+    
+    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- pageProps -----\n
-    //   ${util.inspect(pageProps, { colors: true, depth: null })}\n
-    //   --------------------\n
+    //   ----------------------------------------\n
+    //   /pages/_app.js
     // `);
     
     // console.log(`
-    //   ----- this.stores.data -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(this.stores.data)), { colors: true, depth: null })}\n
+    //   ----- pageProps -----\n
+    //   ${util.inspect(pageProps, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -302,6 +322,11 @@ class MyApp extends App {
         <Head>
           <title>Game Users</title>
         </Head>
+        
+        
+        {/* States */}
+        <ContainerStateLoginUsers.Provider initialState={loginUsersObj}>
+        <ContainerStateLayout.Provider>
         
         
         {/* Mobx Provider */}
@@ -338,10 +363,16 @@ class MyApp extends App {
         </Provider>
         
         
+        </ContainerStateLayout.Provider>
+        </ContainerStateLoginUsers.Provider>
+        
+        
       </React.Fragment>
     );
     
+    
   }
+  
   
 }
 

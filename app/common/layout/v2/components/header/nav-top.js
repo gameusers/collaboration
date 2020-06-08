@@ -60,10 +60,10 @@ import IconEject from '@material-ui/icons/Eject';
 
 
 // ---------------------------------------------
-//   Contexts
+//   States
 // ---------------------------------------------
 
-import { ContextLoginUser } from 'app/common/context/user.js';
+import { ContainerStateLoginUsers } from 'app/@states/login-users.js';
 
 
 
@@ -142,7 +142,7 @@ const Component = (props) => {
   //   Hooks
   // --------------------------------------------------
   
-  const contextObj = useContext(ContextLoginUser);
+  // const contextObj = useContext(ContextLoginUser);
   const [showNavTop, setShowNavTop] = useState(true);
   const [loginMenuOpen, setLoginMenuOpen] = useState(false);
   
@@ -416,6 +416,22 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateLoginUser = ContainerStateLoginUsers.useContainer();
+  
+  
+  const {
+    
+    loginUsersObj,
+    
+  } = stateLoginUser;
+  
+  
+  
+  
+  // --------------------------------------------------
   //   props
   // --------------------------------------------------
   
@@ -432,9 +448,9 @@ const Component = (props) => {
   //   loginUsersObj
   // --------------------------------------------------
   
-  const userID = lodashGet(contextObj, ['loginUsersObj', 'userID'], '');
+  const userID = lodashGet(loginUsersObj, ['userID'], '');
   
-  const imagesAndVideosThumbnailArr = lodashGet(contextObj, ['loginUsersObj', 'cardPlayerObj', 'imagesAndVideosThumbnailObj', 'arr'], []);
+  const imagesAndVideosThumbnailArr = lodashGet(loginUsersObj, ['cardPlayerObj', 'imagesAndVideosThumbnailObj', 'arr'], []);
   
   let thumbnailSrc = '/img/common/thumbnail/none.svg';
   let thumbnailSrcSet = '';

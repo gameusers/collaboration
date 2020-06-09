@@ -75,26 +75,6 @@ const Component = (props) => {
   
   
   
-  // --------------------------------------------------
-  //   props
-  // --------------------------------------------------
-  
-  // const stateLoginUser = ContainerStateLoginUsers.useContainer();
-  
-  
-  // console.log(`
-  //   ----- props.loginUsersObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(props.loginUsersObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- stateLoginUser.loginUsersObj -----\n
-  //   ${util.inspect(stateLoginUser.loginUsersObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  
   
   // --------------------------------------------------
   //   Error
@@ -116,20 +96,7 @@ const Component = (props) => {
   // const loginUsersObj = lodashGet(props, ['propsObj', 'loginUsersObj'], {});
   
   const headerObj = lodashGet(props, ['propsObj', 'headerObj'], {});
-  
   const gameCommunities_id = lodashGet(props, ['propsObj', 'gameCommunityObj', '_id'], '');
-  
-  
-  // --------------------------------------------------
-  //   Context
-  // --------------------------------------------------
-  
-  // const contextObj = {
-    
-  //   accessLevel,
-  //   loginUsersObj,
-    
-  // };
   
   
   
@@ -207,8 +174,6 @@ const Component = (props) => {
       componentSidebar={componentSidebar}
       componentContent={componentContent}
       
-      // contextObj={contextObj}
-      // loginUsersObj={loginUsersObj}
       headerObj={headerObj}
     />
   );
@@ -376,6 +341,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   
   
+  
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -410,8 +376,6 @@ export async function getServerSideProps({ req, res, query }) {
   // console.log(chalk`
   //   reqAcceptLanguage: {green ${reqAcceptLanguage}}
   // `);
-  
-  
   
   
   

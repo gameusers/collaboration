@@ -33,14 +33,15 @@ import lodashGet from 'lodash/get';
 //   State
 // --------------------------------------------------
 
-const useLayout = (initialState) => {
+const useLayout = (initialStateObj) => {
   
   
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
-  const [snackbarObj, setSnackbarObj] = useState(initialState);
+  const [snackbarObj, setSnackbarObj] = useState({});
+  const [dialogObj, setDialogOpen] = useState({ open: false });
   
   
   
@@ -48,6 +49,10 @@ const useLayout = (initialState) => {
   // --------------------------------------------------
   //   handle
   // --------------------------------------------------
+  
+  // ---------------------------------------------
+  //   - Snackbar
+  // ---------------------------------------------
   
   const handleSnackbarOpen = ({
     
@@ -59,7 +64,7 @@ const useLayout = (initialState) => {
     errorObj,
     
   }) => {
-    
+    // console.log('handleSnackbarOpen');
     setSnackbarObj({
       
       open: true,
@@ -76,7 +81,7 @@ const useLayout = (initialState) => {
   
   
   const handleSnackbarClose = (event, reason) => {
-    
+    // console.log('handleSnackbarClose');
     if (reason === 'clickaway') {
       return;
     }
@@ -86,6 +91,44 @@ const useLayout = (initialState) => {
     });
     
   };
+  
+  
+  // ---------------------------------------------
+  //   - Dialog
+  // ---------------------------------------------
+  
+  const handleDialogOpen = ({
+    
+    title,
+    description,
+    handle,
+    argumentsObj,
+    
+  }) => {
+    
+    setDialogOpen({
+      
+      open: true,
+      title,
+      description,
+      handle,
+      argumentsObj,
+      
+    });
+    
+  };
+  
+  
+  const handleDialogClose = () => {
+    
+    setDialogOpen({
+      
+      open: false,
+      
+    });
+    
+  };
+  
   
   
   
@@ -100,8 +143,8 @@ const useLayout = (initialState) => {
   // `);
   
   // console.log(`
-  //   ----- loginUsersObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(loginUsersObj)), { colors: true, depth: null })}\n
+  //   ----- initialStateObj -----\n
+  //   ${util.inspect(initialStateObj, { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
   
@@ -117,6 +160,10 @@ const useLayout = (initialState) => {
     snackbarObj,
     handleSnackbarOpen,
     handleSnackbarClose,
+    
+    dialogObj,
+    handleDialogOpen,
+    handleDialogClose,
     
   };
   

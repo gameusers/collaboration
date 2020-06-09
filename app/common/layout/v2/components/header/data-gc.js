@@ -48,7 +48,7 @@ import IconKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 // ---------------------------------------------
 
 import LinkIcons from 'app/common/layout/v2/components/header/link-icons.js';
-import FollowButton from 'app/common/follow/v2/components/gc-button.js';
+import FollowButton from 'app/common/follow/v2/components/follow-button.js';
 
 
 
@@ -109,9 +109,6 @@ const cssTitleClosed = css`
 //   Function Components
 // --------------------------------------------------
 
-/**
- * 
- */
 const Component = (props) => {
   
   
@@ -119,7 +116,6 @@ const Component = (props) => {
   //   Hooks
   // --------------------------------------------------
   
-  // const contextObj = useContext(ContextLoginUser);
   const [open, setOpen] = useState(true);
   
   

@@ -48,6 +48,13 @@ import Snackbar from 'app/common/layout/v2/components/snackbar.js';
 // import Loading from 'app/common/layout/components/loading.js';
 
 
+// ---------------------------------------------
+//   Components
+// ---------------------------------------------
+
+import Dialog from 'app/common/layout/v2/components/dialog.js';
+
+
 
 
 
@@ -143,77 +150,74 @@ const Component = (props) => {
   return (
     <React.Fragment>
       
-      {/*<ContextLoginUser.Provider value={loginUsersObj}>*/}
+      
+      {/* Head 内部のタグをここで追記する */}
+      <Head>
+        <title>{title}</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
+      
+      
+      
+      
+      {/* Header - Navigation Top */}
+      <HeaderNavTop />
+      
+      
+      <HeroImage
+        headerObj={headerObj}
+      />
+      
+      
+      
+      {/*<form
+        name="test"
+        onSubmit={(eventObj) => test(eventObj)}
+      >
         
+        <FormName />
+        <input type='submit' value="送信" />
         
-        {/* Head 内部のタグをここで追記する */}
-        <Head>
-          <title>{title}</title>
-          <meta name="robots" content="noindex,nofollow" />
-        </Head>
-        
-        
-        
-        
-        {/* Header - Navigation Top */}
-        <HeaderNavTop />
-        
-        
-        <HeroImage
-          headerObj={headerObj}
-        />
-        
-        
-        
-        {/*<form
-          name="test"
-          onSubmit={(eventObj) => test(eventObj)}
-        >
+      </form>*/}
+      
+      
+      
+      
+      {/* Main - 2 Column */}
+      <main
+        css={css`
+          display: flex;
+          flex-flow: row nowrap;
+          justify-content: center;
+          margin: 0 auto;
+          padding: 16px;
+          height: 1200px;
+          background-color: pink;
           
-          <FormName />
-          <input type='submit' value="送信" />
-          
-        </form>*/}
-        
-        
-        
-        
-        {/* Main - 2 Column */}
-        <main
-          css={css`
+          @media screen and (max-width: 947px) {
             display: flex;
-            flex-flow: row nowrap;
-            justify-content: center;
-            margin: 0 auto;
-            padding: 16px;
-            height: 1200px;
-            background-color: pink;
-            
-            @media screen and (max-width: 947px) {
-              display: flex;
-              flex-flow: column nowrap;
-              padding: 10px 0 10px 0;
-            }
-          `}
-        >
-          
-          
-          
-          
-          
-        </main>
+            flex-flow: column nowrap;
+            padding: 10px 0 10px 0;
+          }
+        `}
+      >
         
         
         
         
-        {/* Snackbar 通知用 */}
-        <Snackbar
-          // snackbarObj={snackbarObj}
-          // setSnackbarObj={setSnackbarObj}
-        />
         
-        
-      {/*</ContextLoginUser.Provider>*/}
+      </main>
+      
+      
+      
+      
+      {/* Snackbar 通知用 */}
+      <Snackbar/>
+      
+      
+      {/* ダイアログ */}
+      <Dialog />
+      
       
     </React.Fragment>
   );

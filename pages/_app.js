@@ -284,10 +284,16 @@ class MyApp extends App {
     
     
     // --------------------------------------------------
-    //   loginUsersObj
+    //   Initial State
     // --------------------------------------------------
     
     const loginUsersObj = lodashGet(pageProps, ['loginUsersObj'], {});
+    
+    const initialStateObj = {
+      
+      loginUsersObj,
+      
+    };
     
     
     
@@ -304,6 +310,18 @@ class MyApp extends App {
     // console.log(`
     //   ----- pageProps -----\n
     //   ${util.inspect(pageProps, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- initialStateObj -----\n
+    //   ${util.inspect(initialStateObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- loginUsersObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(loginUsersObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -325,45 +343,45 @@ class MyApp extends App {
         
         
         {/* States */}
-        <ContainerStateLoginUsers.Provider initialState={loginUsersObj}>
-        <ContainerStateLayout.Provider>
-        
-        
-        {/* Mobx Provider */}
-        <Provider stores={this.stores}>
-          
-          
-          {/* react-intl(i18n) Provider */}
-          <IntlProvider 
-            locale={this.stores.data.localeObj.languageArr[0]}
-            // locale="en"
-            // locale="ja"
-            messages={this.stores.data.localeObj.dataObj}
-          >
+        <ContainerStateLoginUsers.Provider initialState={initialStateObj}>
+          <ContainerStateLayout.Provider>
             
             
-            {/* Material UI Theme Provider */}
-            <ThemeProvider theme={theme}>
+            {/* Mobx Provider */}
+            <Provider stores={this.stores}>
               
               
-              {/* Simple React Light-box */}
-              <SimpleReactLightbox>
+              {/* react-intl(i18n) Provider */}
+              <IntlProvider 
+                locale={this.stores.data.localeObj.languageArr[0]}
+                // locale="en"
+                // locale="ja"
+                messages={this.stores.data.localeObj.dataObj}
+              >
                 
-                <Component {...pageProps} />
                 
-              </SimpleReactLightbox>
+                {/* Material UI Theme Provider */}
+                <ThemeProvider theme={theme}>
+                  
+                  
+                  {/* Simple React Light-box */}
+                  <SimpleReactLightbox>
+                    
+                    <Component {...pageProps} />
+                    
+                  </SimpleReactLightbox>
+                  
+                  
+                </ThemeProvider>
+                
+                
+              </IntlProvider>
               
               
-            </ThemeProvider>
+            </Provider>
             
             
-          </IntlProvider>
-          
-          
-        </Provider>
-        
-        
-        </ContainerStateLayout.Provider>
+          </ContainerStateLayout.Provider>
         </ContainerStateLoginUsers.Provider>
         
         

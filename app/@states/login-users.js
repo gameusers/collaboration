@@ -33,59 +33,14 @@ import lodashGet from 'lodash/get';
 //   State
 // --------------------------------------------------
 
-const useLoginUsers = (initialState) => {
+const useLoginUsers = (initialStateObj) => {
   
   
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
-  const [loginUsersObj, setLoginUsersObj] = useState(initialState);
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   handle
-  // --------------------------------------------------
-  
-  // const handleSnackbarOpen = ({
-    
-  //   variant,
-  //   messageID,
-  //   vertical,
-  //   horizontal,
-  //   autoHideDuration,
-  //   errorObj,
-    
-  // }) => {
-    
-  //   setSnackbarObj({
-      
-  //     open: true,
-  //     variant,
-  //     messageID,
-  //     vertical,
-  //     horizontal,
-  //     autoHideDuration,
-  //     errorObj,
-      
-  //   });
-    
-  // };
-  
-  
-  // const handleSnackbarClose = (event, reason) => {
-    
-  //   if (reason === 'clickaway') {
-  //     return;
-  //   }
-    
-  //   setSnackbarObj({
-  //     open: false,
-  //   });
-    
-  // };
+  const [loginUsersObj, setLoginUsersObj] = useState(lodashGet(initialStateObj, ['loginUsersObj'], {}));
   
   
   

@@ -88,9 +88,6 @@ const cssIcon = css`
 //   Function Components
 // --------------------------------------------------
 
-/**
- * 
- */
 const Component = (props) => {
   
   

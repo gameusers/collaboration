@@ -6,8 +6,8 @@
 //   Console
 // ---------------------------------------------
 
-import chalk from 'chalk';
-import util from 'util';
+// import chalk from 'chalk';
+// import util from 'util';
 
 
 // ---------------------------------------------
@@ -79,9 +79,9 @@ export async function getServerSideProps() {
   
   const datetimeCurrent = moment().utc().toISOString();
   
-  console.log(chalk`
-    datetimeCurrent: {green ${datetimeCurrent}}
-  `);
+  // console.log(chalk`
+  //   datetimeCurrent: {green ${datetimeCurrent}}
+  // `);
   
   
   // Pass data to the page via props

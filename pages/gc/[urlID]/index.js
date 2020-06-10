@@ -92,11 +92,9 @@ const Component = (props) => {
   //   Props
   // --------------------------------------------------
   
-  // const accessLevel = lodashGet(props, ['propsObj', 'accessLevel'], 1);
-  // const loginUsersObj = lodashGet(props, ['propsObj', 'loginUsersObj'], {});
-  
-  const headerObj = lodashGet(props, ['propsObj', 'headerObj'], {});
-  const gameCommunities_id = lodashGet(props, ['propsObj', 'gameCommunityObj', '_id'], '');
+  const headerObj = lodashGet(props, ['headerObj'], {});
+  const headerNavMainArr = lodashGet(props, ['headerNavMainArr'], {});
+  const gameCommunities_id = lodashGet(props, ['gameCommunities_id'], '');
   
   
   
@@ -110,14 +108,20 @@ const Component = (props) => {
   //   /pages/gc/[urlID]/index.js
   // `);
   
-  // console.log(chalk`
-  //   login: {green ${login}}
+  // console.log(`
+  //   ----- headerObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(headerObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
   // `);
   
   // console.log(`
-  //   ----- linkArr -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(linkArr)), { colors: true, depth: null })}\n
+  //   ----- headerNavMainArr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(headerNavMainArr)), { colors: true, depth: null })}\n
   //   --------------------\n
+  // `);
+  
+  // console.log(chalk`
+  //   gameCommunities_id: {green ${gameCommunities_id}}
   // `);
   
   
@@ -175,6 +179,7 @@ const Component = (props) => {
       componentContent={componentContent}
       
       headerObj={headerObj}
+      headerNavMainArr={headerNavMainArr}
     />
   );
   
@@ -217,9 +222,9 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
   
   const urlID = query.urlID;
-  const pathname = `/gc/${urlID}`;
-  const pathArr = ['gc', urlID];
-  const temporaryDataID = `/gc/${urlID}`;
+  // const pathname = `/gc/${urlID}`;
+  // const pathArr = ['gc', urlID];
+  // const temporaryDataID = `/gc/${urlID}`;
   const ISO8601 = moment().utc().toISOString();
   
   
@@ -262,10 +267,20 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
   
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
-  const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
-  
+  // const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
+  const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
   const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Title
+  // --------------------------------------------------
+  
+  const title = `${gameName} - Game Users`;
+  
   
   
   
@@ -279,16 +294,19 @@ export async function getServerSideProps({ req, res, query }) {
       name: 'トップ',
       href: `/gc/[urlID]/index?urlID=${urlID}`,
       as: `/gc/${urlID}`,
+      active: true,
     },
     {
       name: '募集',
       href: `/gc/[urlID]/rec?urlID=${urlID}`,
       as: `/gc/${urlID}/rec`,
+      active: false,
     },
     {
       name: 'フォロワー',
       href: '/',
       as: '/',
+      active: false,
       // href: `/gc/[urlID]/followers?urlID=${urlID}`,
       // as: `/gc/${urlID}/followers`,
     }
@@ -302,6 +320,7 @@ export async function getServerSideProps({ req, res, query }) {
         name: '設定',
         href: `/gc/[urlID]/settings?urlID=${urlID}`,
         as: `/gc/${urlID}/settings`,
+        active: false,
       }
     );
     
@@ -312,16 +331,9 @@ export async function getServerSideProps({ req, res, query }) {
   //   propsObj
   // --------------------------------------------------
   
-  const propsObj = { ...dataObj, ISO8601, accessLevel, pathname, pathArr, headerNavMainArr, gameCommunities_id };
+  // const propsObj = { ...dataObj, ISO8601, accessLevel, pathname, pathArr, headerNavMainArr, gameCommunities_id };
   
   
-  
-  
-  // --------------------------------------------------
-  //   Title
-  // --------------------------------------------------
-  
-  const title = `${gameName} - Game Users`;
   
   
   // --------------------------------------------------
@@ -389,13 +401,14 @@ export async function getServerSideProps({ req, res, query }) {
     props: {
       
       urlID,
-      temporaryDataID,
       ISO8601,
       statusCode,
-      propsObj,
-      breadcrumbsArr,
+      // loginUsersObj,
       title,
-      loginUsersObj,
+      headerObj,
+      headerNavMainArr,
+      breadcrumbsArr,
+      gameCommunities_id,
       
     }
     

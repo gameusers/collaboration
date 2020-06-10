@@ -42,12 +42,13 @@ const useLayout = (initialStateObj) => {
   
   const [snackbarObj, setSnackbarObj] = useState({});
   const [dialogObj, setDialogOpen] = useState({ open: false });
+  const [heroImageHeight, setHeroImageHeight] = useState(0);
   
   
   
   
   // --------------------------------------------------
-  //   handle
+  //   handler
   // --------------------------------------------------
   
   // ---------------------------------------------
@@ -131,6 +132,28 @@ const useLayout = (initialStateObj) => {
   
   
   
+  const handleSetHeroImageHeight = (contentRect) => {
+    // console.log('handleSnackbarOpen');
+    
+    console.log(`
+      ----- contentRect -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(contentRect)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    const height = lodashGet(contentRect, ['bounds', 'height'], 300);
+    
+    console.log(chalk`
+      contentRect.bounds.height: {green ${contentRect.bounds.height}}
+      height: {green ${height}}
+    `);
+    
+    setHeroImageHeight(height);
+    
+  };
+  
+  
+  
   
   
   // --------------------------------------------------
@@ -164,6 +187,9 @@ const useLayout = (initialStateObj) => {
     dialogObj,
     handleDialogOpen,
     handleDialogClose,
+    
+    heroImageHeight,
+    handleSetHeroImageHeight,
     
   };
   

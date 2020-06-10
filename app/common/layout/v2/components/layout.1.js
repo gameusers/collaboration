@@ -100,7 +100,7 @@ const Component = (props) => {
   
   const [showNavTop, setShowNavTop] = useState(true);
   const [lowerNavMain, setLowerNavMain] = useState(false);
-  const [heroImageHeight, setHeroImageHeight] = useState(640);
+  // const [heroImageHeight, setHeroImageHeight] = useState(300);
   
   
   
@@ -126,9 +126,9 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
   
-  // const stateLayout = ContainerStateLayout.useContainer();
+  const stateLayout = ContainerStateLayout.useContainer();
   
-  // const { handleSetHeroImageHeight } = stateLayout;
+  const { handleSetHeroImageHeight } = stateLayout;
   
   
   
@@ -137,25 +137,25 @@ const Component = (props) => {
   //   handler
   // --------------------------------------------------
   
-  const handleSetHeroImageHeight = (contentRect) => {
-    // console.log('handleSnackbarOpen');
+  // const handleSetHeroImageHeight = (contentRect) => {
+  //   // console.log('handleSnackbarOpen');
     
-    // console.log(`
-    //   ----- contentRect -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(contentRect)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+  //   // console.log(`
+  //   //   ----- contentRect -----\n
+  //   //   ${util.inspect(JSON.parse(JSON.stringify(contentRect)), { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
     
-    const height = lodashGet(contentRect, ['bounds', 'height'], 300);
+  //   const height = lodashGet(contentRect, ['bounds', 'height'], 300);
     
-    // console.log(chalk`
-    //   contentRect.bounds.height: {green ${contentRect.bounds.height}}
-    //   height: {green ${height}}
-    // `);
+  //   console.log(chalk`
+  //     contentRect.bounds.height: {green ${contentRect.bounds.height}}
+  //     height: {green ${height}}
+  //   `);
     
-    setHeroImageHeight(height);
+  //   setHeroImageHeight(height);
     
-  };
+  // };
   
   
   
@@ -200,14 +200,28 @@ const Component = (props) => {
         showNavTop={showNavTop}
         setShowNavTop={setShowNavTop}
         setLowerNavMain={setLowerNavMain}
-        heroImageHeight={heroImageHeight}
+        // heroImageHeight={heroImageHeight}
       />
       
       
       {/* Header - Hero Image */}
       <Measure
         bounds
+        // onResize={(contentRect) => {
+        //   const height = lodashGet(contentRect, ['bounds', 'height'], 300);
+          
+        //   console.log(chalk`
+        //     contentRect.bounds.height: {green ${contentRect.bounds.height}}
+        //     height: {green ${height}}
+        //   `);
+          
+        //   setHeroImageHeight(height);
+        // }}
+        // onResize={(contentRect) => setHeroImageHeight(contentRect.bounds.height)}
         onResize={(contentRect) => handleSetHeroImageHeight(contentRect)}
+        // onResize={(contentRect) => {
+        //   stores.layout.handleHeaderHeroImageSize({ dimensionsObj: contentRect.bounds });
+        // }}
       >
         {({ measureRef }) => (
           <div ref={measureRef}>
@@ -225,7 +239,7 @@ const Component = (props) => {
           background-color: #151515;
           position: sticky;
           top: 0;
-          z-index: 1000;
+          // z-index: 1000;
         `}
       >
         <HeaderNavMain
@@ -235,50 +249,16 @@ const Component = (props) => {
       </div>
       
       
-      {/*<div
-        css={css`
-          width: 100%;
-          // height: 50px;
-          background-color: black;
-          
-          // position: sticky;
-          // top: 0;
-        `}
-      >*/}
+      
+      {/*<form
+        name="test"
+        onSubmit={(eventObj) => test(eventObj)}
+      >
         
-        {/*<div
-          css={css`
-            width: 100%;
-            height: 50px;
-            background-color: pink;
-            
-            position: sticky;
-            top: 0;
-          `}
-        >
-          AAA
-        </div>
+        <FormName />
+        <input type='submit' value="送信" />
         
-        <div
-          css={css`
-            width: 100%;
-            height: 500px;
-            background-color: green;
-          `}
-        />
-        
-        <div
-          css={css`
-            width: 100%;
-            height: 50px;
-            background-color: blue;
-            
-            position: sticky;
-            top: 50px;
-          `}
-        />*/}
-        
-      {/*</div>*/}
+      </form>*/}
       
       
       
@@ -292,7 +272,7 @@ const Component = (props) => {
           margin: 0 auto;
           padding: 16px;
           height: 1600px;
-          // background-color: pink;
+          background-color: pink;
           
           @media screen and (max-width: 947px) {
             display: flex;

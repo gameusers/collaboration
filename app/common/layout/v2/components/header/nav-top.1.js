@@ -14,7 +14,7 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Link from 'next/link';
 import { useSpring, animated } from 'react-spring';
 
@@ -64,7 +64,6 @@ import IconEject from '@material-ui/icons/Eject';
 // ---------------------------------------------
 
 import { ContainerStateLoginUsers } from 'app/@states/login-users.js';
-import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 
@@ -143,8 +142,295 @@ const Component = (props) => {
   //   Hooks
   // --------------------------------------------------
   
-  // const [showNavTop, setShowNavTop] = useState(true);
+  const [showNavTop, setShowNavTop] = useState(true);
   const [loginMenuOpen, setLoginMenuOpen] = useState(false);
+  
+  
+  useEffect(() => {
+    
+    // console.log('useEffect');
+    
+    let scrollYOffset = 0;
+    let navTopHeight = 53;
+    
+    
+    // --------------------------------------------------
+    //   handleScroll
+    // --------------------------------------------------
+    
+    const handleScroll = lodashThrottle(() => {
+      
+      
+      // console.log('BBB');
+      
+      // ---------------------------------------------
+      //   Property
+      // ---------------------------------------------
+      
+      const scrollY = window.scrollY;
+      let scrollUp = false;
+      
+      // const headerHeroImageHeight = lodashGet(this.props, ['stores', 'layout', 'headerHeroImageHeight'], 0);
+      
+      // const showNavTopOld = lodashGet(this.props, ['stores', 'layout', 'showNavTop'], true);
+      // const lowerNavMainOld = lodashGet(this.props, ['stores', 'layout', 'lowerNavMain'], false);
+      // const lowerSidebarOld = lodashGet(this.props, ['stores', 'layout', 'lowerSidebar'], false);
+      
+      let showNavTopNew = true;
+      // let lowerNavMainNew = false;
+      // let lowerSidebarNew = false;
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   scrollY === 0 / スクロールしていない状態
+      // ---------------------------------------------
+      
+      if (scrollY !== 0) {
+        
+        
+        // ---------------------------------------------
+        //   Scroll Up / Scroll Down
+        // ---------------------------------------------
+        
+        if (scrollY > scrollYOffset) {
+          
+          scrollUp = false;
+          
+        } else {
+          
+          scrollUp = true;
+          
+        }
+        
+        
+        // ---------------------------------------------
+        //   ヒーローイメージの高さよりもスクロールが小さい場合（スクロールバーのノブが上の方にある場合）
+        // ---------------------------------------------
+        
+        // if (headerHeroImageHeight < scrollY) {
+          
+          if (scrollUp) {
+            
+            showNavTopNew = true;
+            
+          } else {
+            
+            showNavTopNew = false;
+            
+          }
+          
+        // }
+        
+        
+        // // ---------------------------------------------
+        // //   上向きのスクロールで Navigation Top が表示中の場合、Navigation Main の位置を下げる
+        // // ---------------------------------------------
+        
+        // if (this.navTopHeight + headerHeroImageHeight < scrollY) {
+          
+        //   if (scrollUp && showNavTopNew) {
+        //     lowerNavMainNew = true;
+        //   }
+          
+        //   // サイドバーの位置を下げる
+        //   lowerSidebarNew = true;
+          
+        // }
+        
+        
+      }
+      
+      
+      // ---------------------------------------------
+      //   過去のスクロール量を記録
+      // ---------------------------------------------
+      
+      scrollYOffset = scrollY;
+      
+      
+      
+      
+      // setShowNavTop(showNavTopNew);
+      
+      
+      if (showNavTop !== showNavTopNew) {
+        
+        console.log(chalk`
+          showNavTop: {green ${showNavTop}}
+          showNavTopNew: {green ${showNavTopNew}}
+        `);
+        
+        setShowNavTop(showNavTopNew);
+      }
+      
+      
+      
+      
+      // // ---------------------------------------------
+      // //   デバイスの横幅が狭い場合（スマホなど）はサイドバーの位置を下げない
+      // // ---------------------------------------------
+      
+      // if (window.innerWidth <= 947) {
+      //   lowerSidebarNew = false;
+      // }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/layout/components/header/nav-top.js - handleScroll
+      // `);
+      
+      // console.log(chalk`
+      //   scrollY: {green ${scrollY}}
+      //   scrollUp: {green ${scrollUp}}
+      //   showNavTopNew: {green ${showNavTopNew}}
+      // `);
+      
+      // console.log(chalk`
+      //   scrollY: {green ${scrollY}}
+      //   this.navTopHeight: {green ${this.navTopHeight}}
+      //   headerHeroImageHeight: {green ${headerHeroImageHeight}}
+      //   scrollUp: {green ${scrollUp}}
+      //   showNavTopNew: {green ${showNavTopNew}}
+      //   lowerNavMainNew: {green ${lowerNavMainNew}}
+      //   lowerSidebarNew: {green ${lowerSidebarNew}}
+      // `);
+      
+      
+      
+      
+      // // ---------------------------------------------
+      // //   scrollTo が終わって次のスクロールの処理
+      // // ---------------------------------------------
+      
+      // const scrollToEnd = lodashGet(this.props, ['stores', 'layout', 'scrollToEnd'], false);
+      
+      // // console.log(chalk`
+      // //   scrollToEnd: {green ${scrollToEnd}}
+      // // `);
+      
+      // if (scrollToEnd) {
+        
+      //   // console.log(chalk`
+      //   //   Stop - lodashThrottle
+      //   // `);
+        
+      //   // ---------------------------------------------
+      //   //   コンテンツ量が少ない場合は Navigation Top を表示する
+      //   // ---------------------------------------------
+        
+      //   if (showNavTopNew && !lowerNavMainNew && !lowerSidebarNew) {
+          
+      //     lodashSet(this.props, ['stores', 'layout', 'showNavTop'], true);
+          
+          
+      //   // ---------------------------------------------
+      //   //   コンテンツ量が多い場合は Navigation Top を非表示にする
+      //   // ---------------------------------------------
+          
+      //   } else {
+          
+      //     lodashSet(this.props, ['stores', 'layout', 'showNavTop'], false);
+          
+      //   }
+        
+        
+      //   // ---------------------------------------------
+      //   //   Navigation Top & Sidebar の位置を下げる
+      //   // ---------------------------------------------
+        
+      //   lodashSet(this.props, ['stores', 'layout', 'lowerNavMain'], false);
+      //   // lodashSet(this.props, ['stores', 'layout', 'lowerSidebar'], false);
+        
+      //   // ページトップに戻ったときは、サイドバーを下げない
+      //   if (scrollY === 0) {
+          
+      //     lodashSet(this.props, ['stores', 'layout', 'lowerSidebar'], false);
+          
+      //   } else {
+          
+      //     lodashSet(this.props, ['stores', 'layout', 'lowerSidebar'], true);
+          
+      //   }
+        
+        
+      //   // ---------------------------------------------
+      //   //   scrollTo 終了
+      //   // ---------------------------------------------
+        
+      //   lodashSet(this.props, ['stores', 'layout', 'scrollToEnd'], false);
+        
+        
+      //   // ---------------------------------------------
+      //   //   処理停止 / ストアは更新しない
+      //   // ---------------------------------------------
+        
+      //   return;
+        
+        
+      // }
+      
+      
+      
+      
+      // // ---------------------------------------------
+      // //   setState
+      // // ---------------------------------------------
+      
+      // if (showNavTopOld !== showNavTopNew) {
+      //   lodashSet(this.props, ['stores', 'layout', 'showNavTop'], showNavTopNew);
+      // }
+      
+      // if (lowerNavMainOld !== lowerNavMainNew) {
+      //   lodashSet(this.props, ['stores', 'layout', 'lowerNavMain'], lowerNavMainNew);
+      // }
+      
+      // if (lowerSidebarOld !== lowerSidebarNew) {
+      //   lodashSet(this.props, ['stores', 'layout', 'lowerSidebar'], lowerSidebarNew);
+      // }
+      
+      
+    }, 100);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   EventListener: scroll
+    // ---------------------------------------------
+    
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+    
+    
+  }, []);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateLoginUser = ContainerStateLoginUsers.useContainer();
+  
+  
+  const {
+    
+    loginUsersObj,
+    
+  } = stateLoginUser;
   
   
   
@@ -156,312 +442,8 @@ const Component = (props) => {
   const {
     
     classes,
-    showNavTop,
-    setShowNavTop,
-    setLowerNavMain,
-    heroImageHeight,
     
   } = props;
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-  
-  const stateLoginUser = ContainerStateLoginUsers.useContainer();
-  // const stateLayout = ContainerStateLayout.useContainer();
-  
-  const { loginUsersObj } = stateLoginUser;
-  // const { heroImageHeight } = stateLayout;
-  // const heroImageHeight = 640;
-  
-  console.log(chalk`
-    AAAAAAAAAAAAAAAAA
-    heroImageHeight: {green ${heroImageHeight}}
-  `);
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   
-  // --------------------------------------------------
-  
-  let scrollYOffset = 0;
-  const navTopHeight = 53;
-  
-  
-  const handleScroll = useCallback(lodashThrottle(() => {
-    
-    
-    // ---------------------------------------------
-    //   Property
-    // ---------------------------------------------
-    
-    const scrollY = window.scrollY;
-    let scrollUp = false;
-    
-    // const headerHeroImageHeight = lodashGet(this.props, ['stores', 'layout', 'headerHeroImageHeight'], 0);
-    
-    // const showNavTopOld = lodashGet(this.props, ['stores', 'layout', 'showNavTop'], true);
-    // const lowerNavMainOld = lodashGet(this.props, ['stores', 'layout', 'lowerNavMain'], false);
-    // const lowerSidebarOld = lodashGet(this.props, ['stores', 'layout', 'lowerSidebar'], false);
-    
-    let showNavTopNew = true;
-    let lowerNavMainNew = false;
-    let lowerSidebarNew = false;
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   scrollY === 0 / スクロールしていない状態
-    // ---------------------------------------------
-    
-    if (scrollY !== 0) {
-      
-      
-      // ---------------------------------------------
-      //   Scroll Up / Scroll Down
-      // ---------------------------------------------
-      
-      scrollUp = (scrollY > scrollYOffset) ? false : true;
-      
-      
-      // ---------------------------------------------
-      //   ヒーローイメージの高さよりもスクロールが小さい場合（スクロールバーのノブが上の方にある場合）
-      // ---------------------------------------------
-      
-      if (heroImageHeight < scrollY) {
-        
-        showNavTopNew = (scrollUp) ? true : false;
-        
-      }
-      
-      
-      // ---------------------------------------------
-      //   上向きのスクロールで Navigation Top が表示中の場合、Navigation Main の位置を下げる
-      // ---------------------------------------------
-      
-      if (navTopHeight + heroImageHeight < scrollY) {
-        
-        if (scrollUp && showNavTopNew) {
-          lowerNavMainNew = true;
-        }
-        
-        // サイドバーの位置を下げる
-        lowerSidebarNew = true;
-        
-      }
-      
-      
-    }
-    
-    
-    // ---------------------------------------------
-    //   過去のスクロール量を記録
-    // ---------------------------------------------
-    
-    scrollYOffset = scrollY;
-    
-    console.log(chalk`
-      showNavTop: {green ${showNavTop}}
-      showNavTopNew: {green ${showNavTopNew}}
-    `);
-    
-    
-    setShowNavTop(showNavTopNew);
-    setLowerNavMain(lowerNavMainNew);
-    
-    // if (showNavTop !== showNavTopNew) {
-      
-    //   console.log(chalk`
-    //     AAA
-    //     showNavTop: {green ${showNavTop}}
-    //     showNavTopNew: {green ${showNavTopNew}}
-    //   `);
-      
-    //   setShowNavTop(showNavTopNew);
-    // }
-    
-    
-    
-    
-    // // ---------------------------------------------
-    // //   デバイスの横幅が狭い場合（スマホなど）はサイドバーの位置を下げない
-    // // ---------------------------------------------
-    
-    // if (window.innerWidth <= 947) {
-    //   lowerSidebarNew = false;
-    // }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   console.log
-    // ---------------------------------------------
-    
-    console.log(`
-      ----------------------------------------\n
-      /app/common/layout/components/header/nav-top.js - handleScroll
-    `);
-    
-    console.log(chalk`
-      scrollY: {green ${scrollY}}
-      scrollUp: {green ${scrollUp}}
-      showNavTop: {green ${showNavTop}}
-      showNavTopNew: {green ${showNavTopNew}}
-    `);
-    
-    console.log(chalk`
-      BBBBBBBBBBBBBBBBBBB
-      heroImageHeight: {green ${heroImageHeight}}
-    `);
-    
-    // console.log(chalk`
-    //   CCCCCCCCCCCCCCC
-    //   stateLayout.heroImageHeight: {green ${stateLayout.heroImageHeight}}
-    // `);
-    
-    // console.log(chalk`
-    //   DDDDDDDDDD
-    //   props.heroImageHeight: {green ${props.heroImageHeight}}
-    // `);
-    
-    
-    // console.log(chalk`
-    //   scrollY: {green ${scrollY}}
-    //   this.navTopHeight: {green ${this.navTopHeight}}
-    //   headerHeroImageHeight: {green ${headerHeroImageHeight}}
-    //   scrollUp: {green ${scrollUp}}
-    //   showNavTopNew: {green ${showNavTopNew}}
-    //   lowerNavMainNew: {green ${lowerNavMainNew}}
-    //   lowerSidebarNew: {green ${lowerSidebarNew}}
-    // `);
-    
-    
-    
-    
-    // // ---------------------------------------------
-    // //   scrollTo が終わって次のスクロールの処理
-    // // ---------------------------------------------
-    
-    // const scrollToEnd = lodashGet(this.props, ['stores', 'layout', 'scrollToEnd'], false);
-    
-    // // console.log(chalk`
-    // //   scrollToEnd: {green ${scrollToEnd}}
-    // // `);
-    
-    // if (scrollToEnd) {
-      
-    //   // console.log(chalk`
-    //   //   Stop - lodashThrottle
-    //   // `);
-      
-    //   // ---------------------------------------------
-    //   //   コンテンツ量が少ない場合は Navigation Top を表示する
-    //   // ---------------------------------------------
-      
-    //   if (showNavTopNew && !lowerNavMainNew && !lowerSidebarNew) {
-        
-    //     lodashSet(this.props, ['stores', 'layout', 'showNavTop'], true);
-        
-        
-    //   // ---------------------------------------------
-    //   //   コンテンツ量が多い場合は Navigation Top を非表示にする
-    //   // ---------------------------------------------
-        
-    //   } else {
-        
-    //     lodashSet(this.props, ['stores', 'layout', 'showNavTop'], false);
-        
-    //   }
-      
-      
-    //   // ---------------------------------------------
-    //   //   Navigation Top & Sidebar の位置を下げる
-    //   // ---------------------------------------------
-      
-    //   lodashSet(this.props, ['stores', 'layout', 'lowerNavMain'], false);
-    //   // lodashSet(this.props, ['stores', 'layout', 'lowerSidebar'], false);
-      
-    //   // ページトップに戻ったときは、サイドバーを下げない
-    //   if (scrollY === 0) {
-        
-    //     lodashSet(this.props, ['stores', 'layout', 'lowerSidebar'], false);
-        
-    //   } else {
-        
-    //     lodashSet(this.props, ['stores', 'layout', 'lowerSidebar'], true);
-        
-    //   }
-      
-      
-    //   // ---------------------------------------------
-    //   //   scrollTo 終了
-    //   // ---------------------------------------------
-      
-    //   lodashSet(this.props, ['stores', 'layout', 'scrollToEnd'], false);
-      
-      
-    //   // ---------------------------------------------
-    //   //   処理停止 / ストアは更新しない
-    //   // ---------------------------------------------
-      
-    //   return;
-      
-      
-    // }
-    
-    
-    
-    
-    // // ---------------------------------------------
-    // //   setState
-    // // ---------------------------------------------
-    
-    // if (showNavTopOld !== showNavTopNew) {
-    //   lodashSet(this.props, ['stores', 'layout', 'showNavTop'], showNavTopNew);
-    // }
-    
-    // if (lowerNavMainOld !== lowerNavMainNew) {
-    //   lodashSet(this.props, ['stores', 'layout', 'lowerNavMain'], lowerNavMainNew);
-    // }
-    
-    // if (lowerSidebarOld !== lowerSidebarNew) {
-    //   lodashSet(this.props, ['stores', 'layout', 'lowerSidebar'], lowerSidebarNew);
-    // }
-    
-    
-  }, 100), [heroImageHeight]);
-  
-  
-  
-  
-  useEffect(() => {
-    
-    
-    // ---------------------------------------------
-    //   EventListener: scroll
-    // ---------------------------------------------
-    
-    window.addEventListener('scroll', handleScroll);
-    // window.addEventListener('scroll', { heroImageHeight, handleEvent: handleScroll }, false);
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-    
-    
-  }, [heroImageHeight]);
-  
-  
-  
-  
-  
   
   
   

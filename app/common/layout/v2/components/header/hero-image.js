@@ -55,9 +55,8 @@ const Component = (props) => {
   //   Hooks
   // --------------------------------------------------
   
-  // const contextObj = useContext(ContextLoginUser);
-  const [showNavTop, setShowNavTop] = useState(true);
-  const [loginMenuOpen, setLoginMenuOpen] = useState(false);
+  // const [showNavTop, setShowNavTop] = useState(true);
+  // const [loginMenuOpen, setLoginMenuOpen] = useState(false);
   
   
   

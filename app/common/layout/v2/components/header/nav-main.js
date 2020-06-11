@@ -45,19 +45,12 @@ import IconButton from '@material-ui/core/IconButton';
 import IconMenu from '@material-ui/icons/Menu';
 
 
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateLoginUsers } from 'app/@states/login-users.js';
-
-
 
 
 
 
 // --------------------------------------------------
-//   Components
+//   Function Components
 // --------------------------------------------------
 
 /**
@@ -91,35 +84,9 @@ const Container = ({ children, lowerNavMain }) => {
 
 
 /**
- * 
+ * Export Component
  */
 const Component = (props) => {
-  
-  
-  // --------------------------------------------------
-  //   Hooks
-  // --------------------------------------------------
-  
-  // const [showNavTop, setShowNavTop] = useState(true);
-  // const [loginMenuOpen, setLoginMenuOpen] = useState(false);
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-  
-  const stateLoginUser = ContainerStateLoginUsers.useContainer();
-  
-  
-  const {
-    
-    loginUsersObj,
-    
-  } = stateLoginUser;
-  
-  
   
   
   // --------------------------------------------------
@@ -136,16 +103,6 @@ const Component = (props) => {
   
   // const drawerIconShow = lodashGet(stores, ['layout', 'drawerIconShow'], false);
   // const handleDrawerOpen = lodashGet(stores, ['layout', 'handleDrawerOpen'], () => {});
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   react-spring
-  // --------------------------------------------------
-  
-  // const lowerNavMain = lodashGet(stores, ['layout', 'lowerNavMain'], false);
-  // const lowerNavMain = false;
   
   
   

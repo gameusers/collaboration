@@ -64,7 +64,7 @@ import IconEject from '@material-ui/icons/Eject';
 // ---------------------------------------------
 
 import { ContainerStateLoginUsers } from 'app/@states/login-users.js';
-import { ContainerStateLayout } from 'app/@states/layout.js';
+// import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 
@@ -159,6 +159,7 @@ const Component = (props) => {
     showNavTop,
     setShowNavTop,
     setLowerNavMain,
+    setLowerSidebar,
     heroImageHeight,
     
   } = props;
@@ -177,10 +178,10 @@ const Component = (props) => {
   // const { heroImageHeight } = stateLayout;
   // const heroImageHeight = 640;
   
-  console.log(chalk`
-    AAAAAAAAAAAAAAAAA
-    heroImageHeight: {green ${heroImageHeight}}
-  `);
+  // console.log(chalk`
+  //   AAAAAAAAAAAAAAAAA
+  //   heroImageHeight: {green ${heroImageHeight}}
+  // `);
   
   
   
@@ -266,14 +267,21 @@ const Component = (props) => {
     
     scrollYOffset = scrollY;
     
-    console.log(chalk`
-      showNavTop: {green ${showNavTop}}
-      showNavTopNew: {green ${showNavTopNew}}
-    `);
+    // console.log(chalk`
+    //   showNavTop: {green ${showNavTop}}
+    //   showNavTopNew: {green ${showNavTopNew}}
+    // `);
     
+    
+    
+    
+    // ---------------------------------------------
+    //   更新
+    // ---------------------------------------------
     
     setShowNavTop(showNavTopNew);
     setLowerNavMain(lowerNavMainNew);
+    setLowerSidebar(lowerSidebarNew);
     
     // if (showNavTop !== showNavTopNew) {
       
@@ -304,31 +312,21 @@ const Component = (props) => {
     //   console.log
     // ---------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/common/layout/components/header/nav-top.js - handleScroll
-    `);
-    
-    console.log(chalk`
-      scrollY: {green ${scrollY}}
-      scrollUp: {green ${scrollUp}}
-      showNavTop: {green ${showNavTop}}
-      showNavTopNew: {green ${showNavTopNew}}
-    `);
-    
-    console.log(chalk`
-      BBBBBBBBBBBBBBBBBBB
-      heroImageHeight: {green ${heroImageHeight}}
-    `);
-    
-    // console.log(chalk`
-    //   CCCCCCCCCCCCCCC
-    //   stateLayout.heroImageHeight: {green ${stateLayout.heroImageHeight}}
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/layout/components/header/nav-top.js - handleScroll
     // `);
     
     // console.log(chalk`
-    //   DDDDDDDDDD
-    //   props.heroImageHeight: {green ${props.heroImageHeight}}
+    //   scrollY: {green ${scrollY}}
+    //   scrollUp: {green ${scrollUp}}
+    //   showNavTop: {green ${showNavTop}}
+    //   showNavTopNew: {green ${showNavTopNew}}
+    // `);
+    
+    // console.log(chalk`
+    //   BBBBBBBBBBBBBBBBBBB
+    //   heroImageHeight: {green ${heroImageHeight}}
     // `);
     
     
@@ -457,11 +455,6 @@ const Component = (props) => {
     
     
   }, [heroImageHeight]);
-  
-  
-  
-  
-  
   
   
   

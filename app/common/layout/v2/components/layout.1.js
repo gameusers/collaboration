@@ -134,7 +134,7 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   handler
+  //   Handler
   // --------------------------------------------------
   
   // const handleSetHeroImageHeight = (contentRect) => {

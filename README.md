@@ -2,7 +2,7 @@
 ![Game Users Banner](https://gameusers.org/assets/img/social/ogp_image.jpg)
 
 
-[![node](https://img.shields.io/badge/node-v12.16.2-lightgrey.svg)](https://nodejs.org/ja/)
+[![node](https://img.shields.io/badge/node-v12.18.0-lightgrey.svg)](https://nodejs.org/ja/)
 [![npm](https://img.shields.io/badge/npm-v6.14.4-blue.svg)](https://www.npmjs.com/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-v4.2.6-green.svg)](https://www.mongodb.com/)
 [![David](https://img.shields.io/david/expressjs/express.svg)]()

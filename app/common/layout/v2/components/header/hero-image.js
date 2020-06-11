@@ -15,7 +15,6 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect, useContext } from 'react';
-import { inject, observer } from 'mobx-react';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -46,7 +45,7 @@ import DataGc from 'app/common/layout/v2/components/header/data-gc.js';
 // --------------------------------------------------
 
 /**
- * 
+ * Export Component
  */
 const Component = (props) => {
   
@@ -67,7 +66,6 @@ const Component = (props) => {
   
   const {
     
-    // classes,
     headerObj,
     
   } = props;
@@ -163,7 +161,6 @@ const Component = (props) => {
     
     const thumbnailSrc = lodashGet(thumbnailArr.slice(), [0, 'srcSetArr', 0, 'src'], '');
     const imgSrc = thumbnailSrc || '/img/common/thumbnail/none-game.jpg';
-    // const imgSrc = thumbnailSrc ? thumbnailSrc : '/img/common/thumbnail/none-game.jpg';
     
     
     component = 

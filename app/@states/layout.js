@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect, useContext } from 'react';
+import { animateScroll as scroll, scrollSpy, scroller, Events } from 'react-scroll';
 import { createContainer } from 'unstated-next';
 
 
@@ -42,13 +43,14 @@ const useLayout = (initialStateObj) => {
   
   const [snackbarObj, setSnackbarObj] = useState({});
   const [dialogObj, setDialogOpen] = useState({ open: false });
-  const [heroImageHeight, setHeroImageHeight] = useState(0);
+  const [loadingObj, setLoadingObj] = useState({});
+  // const [heroImageHeight, setHeroImageHeight] = useState(0);
   
   
   
   
   // --------------------------------------------------
-  //   handler
+  //   Handler
   // --------------------------------------------------
   
   // ---------------------------------------------
@@ -65,7 +67,7 @@ const useLayout = (initialStateObj) => {
     errorObj,
     
   }) => {
-    // console.log('handleSnackbarOpen');
+    
     setSnackbarObj({
       
       open: true,
@@ -82,7 +84,7 @@ const useLayout = (initialStateObj) => {
   
   
   const handleSnackbarClose = (event, reason) => {
-    // console.log('handleSnackbarClose');
+    
     if (reason === 'clickaway') {
       return;
     }
@@ -131,26 +133,104 @@ const useLayout = (initialStateObj) => {
   };
   
   
+  // ---------------------------------------------
+  //   - ScrollTo
+  // ---------------------------------------------
   
-  const handleSetHeroImageHeight = (contentRect) => {
-    // console.log('handleSnackbarOpen');
+  const handleScrollTo = ({
     
-    console.log(`
-      ----- contentRect -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(contentRect)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    to,
+    duration = 0,
+    delay = 0,
+    smooth = 'easeInOutQuart',
+    offset = -50
     
-    const height = lodashGet(contentRect, ['bounds', 'height'], 300);
+  }) => {
     
-    console.log(chalk`
-      contentRect.bounds.height: {green ${contentRect.bounds.height}}
-      height: {green ${height}}
-    `);
     
-    setHeroImageHeight(height);
+    // --------------------------------------------------
+    //   to がない場合は処理停止
+    // --------------------------------------------------
+    
+    if (!to) {
+      return;
+    }
+    
+    
+    // --------------------------------------------------
+    //   scrollTo
+    // --------------------------------------------------
+    
+    scroller.scrollTo(to, {
+      
+      duration,
+      delay,
+      smooth,
+      offset,
+      
+    });
+    
+    // Events.scrollEvent.register('end', (to, element) => {
+    //   // console.log('Events.scrollEvent.register(end)');
+    //   this.scrollToEnd = true;
+    // });
+    
     
   };
+  
+  
+  // ---------------------------------------------
+  //   - Loading
+  // ---------------------------------------------
+  
+  const handleLoadingOpen = ({
+    
+    position,
+    
+  }) => {
+    
+    setLoadingObj({
+      
+      open: true,
+      position,
+      
+    });
+    
+  };
+  
+  
+  const handleLoadingClose = () => {
+    
+    setLoadingObj({
+      
+      open: false,
+      
+    });
+    
+  };
+  
+  
+  
+  
+  // const handleSetHeroImageHeight = (contentRect) => {
+  //   // console.log('handleSnackbarOpen');
+    
+  //   console.log(`
+  //     ----- contentRect -----\n
+  //     ${util.inspect(JSON.parse(JSON.stringify(contentRect)), { colors: true, depth: null })}\n
+  //     --------------------\n
+  //   `);
+    
+  //   const height = lodashGet(contentRect, ['bounds', 'height'], 300);
+    
+  //   console.log(chalk`
+  //     contentRect.bounds.height: {green ${contentRect.bounds.height}}
+  //     height: {green ${height}}
+  //   `);
+    
+  //   setHeroImageHeight(height);
+    
+  // };
   
   
   
@@ -188,8 +268,14 @@ const useLayout = (initialStateObj) => {
     handleDialogOpen,
     handleDialogClose,
     
-    heroImageHeight,
-    handleSetHeroImageHeight,
+    // heroImageHeight,
+    // handleSetHeroImageHeight,
+    
+    handleScrollTo,
+    
+    loadingObj,
+    handleLoadingOpen,
+    handleLoadingClose,
     
   };
   

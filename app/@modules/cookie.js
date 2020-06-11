@@ -44,7 +44,7 @@ import Cookies from 'js-cookie';
  * @param {String} key - 取得するキー
  * @param {String} reqHeadersCookie - サーバー側で受信したクッキーのデータ
  */
-const getCookie = async ({ key, reqHeadersCookie = '' }) => {
+const getCookie = ({ key, reqHeadersCookie = '' }) => {
   
   
   // --------------------------------------------------
@@ -70,6 +70,8 @@ const getCookie = async ({ key, reqHeadersCookie = '' }) => {
   // console.log(chalk`
   //   key: {green ${key}}
   //   reqHeadersCookie: {green ${reqHeadersCookie}}
+  //   Cookies.get(key): {green ${Cookies.get(key)}}
+  //   returnValue: {green ${returnValue}}
   // `);
   
   

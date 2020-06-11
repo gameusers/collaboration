@@ -16,7 +16,6 @@ import util from 'util';
 
 import React, { useState, useEffect, useContext } from 'react';
 import Head from 'next/head';
-// import { inject, observer, Provider } from 'mobx-react';
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import Measure from 'react-measure';
@@ -39,19 +38,14 @@ import lodashGet from 'lodash/get';
 import HeaderNavTop from 'app/common/layout/v2/components/header/nav-top.js';
 import HeroImage from 'app/common/layout/v2/components/header/hero-image.js';
 import HeaderNavMain from 'app/common/layout/v2/components/header/nav-main.js';
-// import Footer from 'app/common/layout/components/footer.js';
-// import Sidebar from 'app/common/layout/components/sidebar.js';
+import Sidebar from 'app/common/layout/v2/components/sidebar.js';
+import Footer from 'app/common/layout/v2/components/footer.js';
+
 // import Drawer from 'app/common/layout/components/drawer.js';
 // import CardPlayerDialog from 'app/common/card/player/components/dialog.js';
 // import VideoModal from 'app/common/image-and-video/components/video-modal.js';
 import Snackbar from 'app/common/layout/v2/components/snackbar.js';
-// import Loading from 'app/common/layout/components/loading.js';
-
-
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
+import Loading from 'app/common/layout/v2/components/loading.js';
 import Dialog from 'app/common/layout/v2/components/dialog.js';
 
 
@@ -59,7 +53,7 @@ import Dialog from 'app/common/layout/v2/components/dialog.js';
 //   States
 // ---------------------------------------------
 
-import { ContainerStateLayout } from 'app/@states/layout.js';
+// import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 
@@ -100,6 +94,7 @@ const Component = (props) => {
   
   const [showNavTop, setShowNavTop] = useState(true);
   const [lowerNavMain, setLowerNavMain] = useState(false);
+  const [lowerSidebar, setLowerSidebar] = useState(false);
   const [heroImageHeight, setHeroImageHeight] = useState(640);
   
   
@@ -134,17 +129,14 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   handler
+  //   Handler
   // --------------------------------------------------
   
+  // ---------------------------------------------
+  //   - Header
+  // ---------------------------------------------
+  
   const handleSetHeroImageHeight = (contentRect) => {
-    // console.log('handleSnackbarOpen');
-    
-    // console.log(`
-    //   ----- contentRect -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(contentRect)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     const height = lodashGet(contentRect, ['bounds', 'height'], 300);
     
@@ -156,6 +148,8 @@ const Component = (props) => {
     setHeroImageHeight(height);
     
   };
+  
+  
   
   
   
@@ -200,6 +194,7 @@ const Component = (props) => {
         showNavTop={showNavTop}
         setShowNavTop={setShowNavTop}
         setLowerNavMain={setLowerNavMain}
+        setLowerSidebar={setLowerSidebar}
         heroImageHeight={heroImageHeight}
       />
       
@@ -235,52 +230,6 @@ const Component = (props) => {
       </div>
       
       
-      {/*<div
-        css={css`
-          width: 100%;
-          // height: 50px;
-          background-color: black;
-          
-          // position: sticky;
-          // top: 0;
-        `}
-      >*/}
-        
-        {/*<div
-          css={css`
-            width: 100%;
-            height: 50px;
-            background-color: pink;
-            
-            position: sticky;
-            top: 0;
-          `}
-        >
-          AAA
-        </div>
-        
-        <div
-          css={css`
-            width: 100%;
-            height: 500px;
-            background-color: green;
-          `}
-        />
-        
-        <div
-          css={css`
-            width: 100%;
-            height: 50px;
-            background-color: blue;
-            
-            position: sticky;
-            top: 50px;
-          `}
-        />*/}
-        
-      {/*</div>*/}
-      
-      
       
       
       {/* Main - 2 Column */}
@@ -303,7 +252,44 @@ const Component = (props) => {
       >
         
         
+        {/* Sidebar */}
+        <div
+          css={css`
+            width: 300px;
+            margin: 0 16px 0 0;
+            
+            @media screen and (max-width: 947px) {
+              width: auto;
+              margin: 0 0 16px 0;
+            }
+          `}
+        >
+          
+          <Sidebar
+            showNavTop={showNavTop}
+            lowerSidebar={lowerSidebar}
+          >
+            {componentSidebar}
+          </Sidebar>
+          
+        </div>
         
+        
+        
+        
+        {/* Content */}
+        <div
+          css={css`
+            width: 100%;
+            max-width: 800px;
+            
+            @media screen and (max-width: 947px) {
+              max-width: none;
+            }
+          `}
+        >
+          {componentContent}
+        </div>
         
         
       </main>
@@ -311,8 +297,18 @@ const Component = (props) => {
       
       
       
+      {/* Footer */}
+      <Footer />
+      
+      
+      
+      
       {/* Snackbar 通知用 */}
       <Snackbar/>
+      
+      
+      {/* Loading */}
+      <Loading />
       
       
       {/* ダイアログ */}

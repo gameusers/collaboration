@@ -43,7 +43,7 @@ import { getCookie } from 'app/@modules/cookie.js';
 // ---------------------------------------------
 
 import Layout from 'app/common/layout/v2/components/layout.js';
-import ForumNavigation from 'app/common/forum/components/navigation.js';
+import ForumNavigation from 'app/common/forum/v2/navigation.js';
 import ForumThread from 'app/common/forum/components/thread.js';
 import Breadcrumbs from 'app/common/layout/components/breadcrumbs.js';
 
@@ -89,17 +89,6 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Props
-  // --------------------------------------------------
-  
-  const headerObj = lodashGet(props, ['headerObj'], {});
-  const headerNavMainArr = lodashGet(props, ['headerNavMainArr'], {});
-  const gameCommunities_id = lodashGet(props, ['gameCommunities_id'], '');
-  
-  
-  
-  
-  // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
   
@@ -131,14 +120,15 @@ const Component = (props) => {
   //   Component - Sidebar
   // --------------------------------------------------
   
-  const componentSidebar = '';
-  // const componentSidebar =
-  //   <ForumNavigation
-  //     temporaryDataID={this.props.temporaryDataID}
-  //     urlID={this.props.urlID}
-  //     gameCommunities_id={gameCommunities_id}
-  //   />
-  // ;
+  const componentSidebar =
+    <ForumNavigation
+      urlID={props.urlID}
+      gameCommunities_id={props.gameCommunities_id}
+      gameCommunityObj={props.gameCommunityObj}
+      forumThreadsForListObj={props.forumThreadsForListObj}
+      forumThreadsObj={props.forumThreadsObj}
+    />
+  ;
   
   
   
@@ -178,8 +168,8 @@ const Component = (props) => {
       componentSidebar={componentSidebar}
       componentContent={componentContent}
       
-      headerObj={headerObj}
-      headerNavMainArr={headerNavMainArr}
+      headerObj={props.headerObj}
+      headerNavMainArr={props.headerNavMainArr}
     />
   );
   
@@ -222,9 +212,6 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
   
   const urlID = query.urlID;
-  // const pathname = `/gc/${urlID}`;
-  // const pathArr = ['gc', urlID];
-  // const temporaryDataID = `/gc/${urlID}`;
   const ISO8601 = moment().utc().toISOString();
   
   
@@ -267,10 +254,15 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
   
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
-  // const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
   const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
+  
+  const gameCommunityObj = lodashGet(dataObj, ['gameCommunityObj'], {});
+  const forumThreadsForListObj = lodashGet(dataObj, ['forumThreadsForListObj'], {});
+  const forumThreadsObj = lodashGet(dataObj, ['forumThreadsObj'], {});
+  const forumCommentsObj = lodashGet(dataObj, ['forumCommentsObj'], {});
+  const forumRepliesObj = lodashGet(dataObj, ['forumRepliesObj'], {});
   
   
   
@@ -327,13 +319,6 @@ export async function getServerSideProps({ req, res, query }) {
   }
   
   
-  // --------------------------------------------------
-  //   propsObj
-  // --------------------------------------------------
-  
-  // const propsObj = { ...dataObj, ISO8601, accessLevel, pathname, pathArr, headerNavMainArr, gameCommunities_id };
-  
-  
   
   
   // --------------------------------------------------
@@ -358,16 +343,16 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
   
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/index.js
-  // `);
+  console.log(`
+    ----------------------------------------\n
+    /pages/gc/[urlID]/index.js
+  `);
   
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  console.log(`
+    ----- resultObj -----\n
+    ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+    --------------------\n
+  `);
   
   // console.log(chalk`
   //   threadListPage: {green ${threadListPage}}
@@ -403,12 +388,17 @@ export async function getServerSideProps({ req, res, query }) {
       urlID,
       ISO8601,
       statusCode,
-      // loginUsersObj,
       title,
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,
       gameCommunities_id,
+      
+      gameCommunityObj,
+      forumThreadsForListObj,
+      forumThreadsObj,
+      forumCommentsObj,
+      forumRepliesObj,
       
     }
     

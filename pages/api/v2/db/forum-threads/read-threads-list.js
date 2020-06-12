@@ -1,53 +1,56 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
-//   Node Packages
+//   Lodash
 // ---------------------------------------------
 
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelForumThreads = require('../../../../../app/@database/forum-threads/model');
+import ModelForumThreads from 'app/@database/forum-threads/model.js';
+import ModelGameCommunities from 'app/@database/game-communities/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationInteger } = require('../../../../../app/@validations/integer');
-const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
-const { validationUserCommunities_idAndAuthorityServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
-const { validationForumThreadsListLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
+import { validationInteger } from 'app/@validations/integer.js';
+import { validationGameCommunities_idServer } from 'app/@database/game-communities/validations/_id-server.js';
+import { validationUserCommunities_idAndAuthorityServer } from 'app/@database/user-communities/validations/_id-server.js';
+import { validationForumThreadsListLimit } from 'app/@database/forum-threads/validations/limit.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from 'app/@locales/locale.js';
+
+
 
 
 
@@ -67,15 +70,6 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
@@ -85,11 +79,21 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   IP & User Agent
+  //   Language & IP & User Agent
   // --------------------------------------------------
   
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: language
+  });
   
   
   
@@ -184,6 +188,23 @@ export default async (req, res) => {
     });
     
     
+    // --------------------------------------------------
+    //   DB find / Game Community
+    // --------------------------------------------------
+    
+    returnObj.gameCommunityObj = await ModelGameCommunities.findForGameCommunityByGameCommunities_id({
+      
+      gameCommunities_id,
+      
+    });
+    
+    
+    // console.log(`
+    //   ----- returnObj.gameCommunityObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj.gameCommunityObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     
     
     // ---------------------------------------------
@@ -201,12 +222,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'WqUdtMoNi',
       users_id: loginUsers_id,
       ip,
       userAgent,
       requestParametersObj,
+      
     });
     
     

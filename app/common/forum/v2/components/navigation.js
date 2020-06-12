@@ -91,24 +91,17 @@ import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
-//   Validations
+//   States
 // ---------------------------------------------
 
-// const { validationForumThreadsName } = require('../../../@database/forum-threads/validations/name');
+import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import FormThread from 'app/common/forum/components/form-thread.js';
-
-
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateLayout } from 'app/@states/layout.js';
+import FormThread from 'app/common/forum/v2/components/form-thread.js';
 
 
 
@@ -174,6 +167,9 @@ const Component = (props) => {
   const [panelExpanded, setPanelExpanded] = useState(true);
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [currentTabNo, setCurrentTabNo] = useState(0);
+  const [forumThreadsForListObj, setForumThreadsForListObj] = useState(props.forumThreadsForListObj);
+  const [name, setName] = useState();
+  const [comment, setComment] = useState();
   
   
   useEffect(() => {
@@ -197,7 +193,7 @@ const Component = (props) => {
     userCommunities_id,
     
     gameCommunityObj,
-    forumThreadsForListObj,
+    setGameCommunityObj,
     
   } = props;
   
@@ -252,6 +248,94 @@ const Component = (props) => {
   //   Handler
   // --------------------------------------------------
   
+  const handleSetPage = ({
+    
+    page,
+    
+  }) => {
+    
+    
+    const clonedObj = lodashCloneDeep(forumThreadsForListObj);
+    
+    clonedObj.page = page;
+    
+    setForumThreadsForListObj(clonedObj);
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/forum/v2/navigation.js - handleSetPage
+    // `);
+    
+    // console.log(chalk`
+    //   page: {green ${page}}
+    // `);
+    
+    // console.log(`
+    //   ----- clonedObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(clonedObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+  };
+  
+  
+  const handleSetForumThreadsForListObj = ({
+    
+    reload = false,
+    fetchObj,
+    
+  }) => {
+    
+    
+    const currentObj = forumThreadsForListObj;
+    
+    // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+    const newObj = reload ? fetchObj : lodashMerge(currentObj, fetchObj);
+    
+    setForumThreadsForListObj(newObj);
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/forum/v2/navigation.js - handleSetForumThreadsForListObj
+    // `);
+    
+    // console.log(chalk`
+    //   reload: {green ${reload}}
+    // `);
+    
+    // console.log(`
+    //   ----- currentObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(currentObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- fetchObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(fetchObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- newObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(newObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+  };
+  
+  
   const handleReadThreadsList = async ({
     
     // pathArr,
@@ -276,62 +360,8 @@ const Component = (props) => {
       //   Property
       // ---------------------------------------------
       
-      // const communities_id = gameCommunities_id || userCommunities_id;
-      
-      // const forumObj = lodashGet(this.dataObj, [communities_id], {});
-      // const clonedObj = lodashCloneDeep(forumObj);
-      
       const loadedDate = lodashGet(forumThreadsForListObj, [`page${page}Obj`, 'loadedDate'], '');
       const arr = lodashGet(forumThreadsForListObj, [`page${page}Obj`, 'arr'], []);
-      
-      // let limit = parseInt((getCookie({ key: 'forumThreadListLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIST_LIMIT), 10);
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
-      
-      console.log(`
-        ----------------------------------------\n
-        /app/common/forum/v2/navigation.js - handleReadThreadsList
-      `);
-        
-      console.log(chalk`
-        gameCommunities_id: {green ${gameCommunities_id}}
-        userCommunities_id: {green ${userCommunities_id}}
-        updatedDate: {green ${updatedDate}}
-        count: {green ${count}}
-        page: {green ${page}}
-        limit: {green ${limit}}
-        changeLimit: {green ${changeLimit}}
-        loadedDate: {green ${loadedDate}}
-      `);
-      
-      console.log(`
-        ----- arr -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-      
-      
-      
-      
-      // if (changeLimit) {
-        
-        
-      //   limit = changeLimit;
-        
-        
-      //   // ---------------------------------------------
-      //   //   Set Cookie - forumThreadListLimit
-      //   // ---------------------------------------------
-        
-      //   Cookies.set('threadListLimit', changeLimit);
-        
-        
-      // }
       
       
       
@@ -371,8 +401,6 @@ const Component = (props) => {
         
       } else if (loadedDate) {
         
-        // const forumUpdatedDate = lodashGet(clonedObj, ['updatedDateObj', 'forum'], '0000-01-01T00:00:00Z');
-        
         const datetimeLoaded = moment(loadedDate).utcOffset(0);
         const datetimeForumUpdated = moment(updatedDate).utcOffset(0);
         const datetimeNow = moment().utcOffset(0);
@@ -393,62 +421,57 @@ const Component = (props) => {
       //   すでにデータを読み込んでいる場合は、ストアのデータを表示する
       // ---------------------------------------------
       
-      // if (!reload && arr.length > 0) {
+      if (!reload && arr.length > 0) {
         
-      //   console.log('store');
-        
-        
-      //   // ---------------------------------------------
-      //   //   Page 更新
-      //   // ---------------------------------------------
-        
-      //   clonedObj.forumThreadsForListObj.page = page;
-        
-      //   this.handleEdit({
-      //     pathArr: [communities_id],
-      //     value: clonedObj
-      //   });
+        console.log('store');
         
         
-      //   // ---------------------------------------------
-      //   //   Set Temporary Data - ForumThreadListPage
-      //   // ---------------------------------------------
+        // ---------------------------------------------
+        //   Set Page
+        // ---------------------------------------------
         
-      //   storeData.setTemporaryData({ pathname: temporaryDataID, key: 'forumThreadListPage', value: page });
-        
-        
-      //   // ---------------------------------------------
-      //   //   Return
-      //   // ---------------------------------------------
-        
-      //   return;
+        handleSetPage({ page });
         
         
-      // }
+        // ---------------------------------------------
+        //   Set Temporary Data - ForumThreadListPage
+        // ---------------------------------------------
+        
+        // storeData.setTemporaryData({ pathname: temporaryDataID, key: 'forumThreadListPage', value: page });
+        
+        
+        // ---------------------------------------------
+        //   Return
+        // ---------------------------------------------
+        
+        return;
+        
+        
+      }
       
-      // console.log('fetch');
+      console.log('fetch');
       
       
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   console.log
-      // ---------------------------------------------
-      
-      // console.log(chalk`
-      //   gameCommunities_id  : {green ${gameCommunities_id}}
-      //   userCommunities_id  : {green ${userCommunities_id}}
-      //   page  : {green ${page}}
-      //   limit  : {green ${limit}}
-      //   changeLimit  : {green ${changeLimit}}
-        
-      //   reload  : {green ${reload}}
-      // `);
+      // --------------------------------------------------
       
       // console.log(`
-      //   ----- forumObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
+      //   ----------------------------------------\n
+      //   /app/common/forum/v2/navigation.js - handleReadThreadsList
+      // `);
+        
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   updatedDate: {green ${updatedDate}}
+      //   count: {green ${count}}
+      //   page: {green ${page}}
+      //   limit: {green ${limit}}
+      //   changeLimit: {green ${changeLimit}}
+      //   loadedDate: {green ${loadedDate}}
       // `);
       
       // console.log(`
@@ -496,11 +519,11 @@ const Component = (props) => {
       });
       
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
@@ -512,25 +535,18 @@ const Component = (props) => {
       }
       
       
-      // forumThreadsForListObj = lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {});
       
-      // // ---------------------------------------------
-      // //   Thread Data
-      // // ---------------------------------------------
       
-      // const forumThreadsForListOldObj = lodashGet(forumObj, ['forumThreadsForListObj'], {});
-      // const forumThreadsForListNewObj = lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {});
+      // ---------------------------------------------
+      //   Update
+      // ---------------------------------------------
       
-      // // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
-      // const forumThreadsForListMergedObj = reload ? forumThreadsForListNewObj : lodashMerge(forumThreadsForListOldObj, forumThreadsForListNewObj);
+      const fetchObj = lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {});
+      const gameCommunityObj = lodashGet(resultObj, ['data', 'gameCommunityObj'], {});
       
-      // clonedObj.forumThreadsForListObj = forumThreadsForListMergedObj;
+      handleSetForumThreadsForListObj({ reload, fetchObj });
+      setGameCommunityObj(gameCommunityObj);
       
-      // // console.log(`
-      // //   ----- mergedObj -----\n
-      // //   ${util.inspect(JSON.parse(JSON.stringify(mergedObj)), { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
       
       
       // // ---------------------------------------------
@@ -590,119 +606,6 @@ const Component = (props) => {
     
     
   };
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   communities_id
-  // --------------------------------------------------
-  
-  // const communities_id = gameCommunities_id || userCommunities_id;
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Component - Tab
-  // --------------------------------------------------
-  
-  let componentTabs = '';
-  
-  
-  componentTabs =
-    <React.Fragment>
-      
-      
-      {/* ブラウザの横幅が大きい場合 - タブをテキストで表示する */}
-      <Tabs
-        css={css`
-          && {
-            padding: 0 12px;
-            display: none;
-            
-            @media screen and (max-width: 947px) {
-              display: inline;
-            }
-          }
-        `}
-        value={currentTabNo}
-        indicatorColor="primary"
-        textColor="primary"
-        onChange={(eventObj, value) => setCurrentTabNo(value)}
-      >
-        
-        <Tab label="スレッド一覧" />
-        <Tab label="スレッド作成" />
-        
-      </Tabs>
-      
-      
-      
-      
-      {/* ブラウザの横幅が小さい場合 - タブをアイコンで表示する */}
-      <Tabs
-        css={css`
-          && {
-            padding: 0 12px;
-            
-            @media screen and (max-width: 947px) {
-              display: none;
-            }
-          }
-        `}
-        value={currentTabNo}
-        indicatorColor="primary"
-        textColor="primary"
-        onChange={(eventObj, value) => setCurrentTabNo(value)}
-      >
-        
-        
-        {/* スレッド一覧 */}
-        <Tooltip
-          css={css`
-            && {
-              @media screen and (max-width: 947px) {
-                display: none;
-              }
-            }
-          `}
-          title="スレッド一覧"
-        >
-          <Tab
-            style={{
-              minWidth: '92px',
-            }}
-            icon={<IconListAlt />}
-          />
-        </Tooltip>
-        
-        
-        {/* スレッド作成 */}
-        <Tooltip
-          css={css`
-            && {
-              @media screen and (max-width: 947px) {
-                display: none;
-              }
-            }
-          `}
-          title="スレッド作成"
-        >
-          <Tab
-            style={{
-              minWidth: '92px',
-            }}
-            icon={<IconCreate />}
-          />
-        </Tooltip>
-        
-        
-      </Tabs>
-      
-      
-    </React.Fragment>
-  ;
   
   
   
@@ -884,23 +787,6 @@ const Component = (props) => {
           nextIconButtonProps={{
             'aria-label': 'Next Page',
           }}
-          onChangeRowsPerPage={() => {}}
-          onChangePage={() => {}}
-          // onChangeRowsPerPage={(eventObj) => handleReadThreadsList({
-          //   pathArr: this.pathArr,
-          //   temporaryDataID,
-          //   gameCommunities_id,
-          //   userCommunities_id,
-          //   page: 1,
-          //   changeLimit: eventObj.target.value,
-          // })}
-          // onChangePage={(eventObj, value) => handleReadThreadsList({
-          //   pathArr: this.pathArr,
-          //   temporaryDataID,
-          //   gameCommunities_id,
-          //   userCommunities_id,
-          //   page: value + 1,
-          // })}
           onChangeRowsPerPage={(eventObj) => handleReadThreadsList({
             
             forumThreadsForListObj,
@@ -1144,8 +1030,91 @@ const Component = (props) => {
         >
           
           
-          {/* Tabs */}
-          {componentTabs}
+          {/* ブラウザの横幅が大きい場合 - タブをテキストで表示する */}
+          <Tabs
+            css={css`
+              && {
+                padding: 0 12px;
+                display: none;
+                
+                @media screen and (max-width: 947px) {
+                  display: inline;
+                }
+              }
+            `}
+            value={currentTabNo}
+            indicatorColor="primary"
+            textColor="primary"
+            onChange={(eventObj, value) => setCurrentTabNo(value)}
+          >
+            
+            <Tab label="スレッド一覧" />
+            <Tab label="スレッド作成" />
+            
+          </Tabs>
+          
+          
+          
+          
+          {/* ブラウザの横幅が小さい場合 - タブをアイコンで表示する */}
+          <Tabs
+            css={css`
+              && {
+                padding: 0 12px;
+                
+                @media screen and (max-width: 947px) {
+                  display: none;
+                }
+              }
+            `}
+            value={currentTabNo}
+            indicatorColor="primary"
+            textColor="primary"
+            onChange={(eventObj, value) => setCurrentTabNo(value)}
+          >
+            
+            
+            {/* スレッド一覧 */}
+            <Tooltip
+              css={css`
+                && {
+                  @media screen and (max-width: 947px) {
+                    display: none;
+                  }
+                }
+              `}
+              title="スレッド一覧"
+            >
+              <Tab
+                style={{
+                  minWidth: '92px',
+                }}
+                icon={<IconListAlt />}
+              />
+            </Tooltip>
+            
+            
+            {/* スレッド作成 */}
+            <Tooltip
+              css={css`
+                && {
+                  @media screen and (max-width: 947px) {
+                    display: none;
+                  }
+                }
+              `}
+              title="スレッド作成"
+            >
+              <Tab
+                style={{
+                  minWidth: '92px',
+                }}
+                icon={<IconCreate />}
+              />
+            </Tooltip>
+            
+            
+          </Tabs>
           
           
           
@@ -1171,12 +1140,19 @@ const Component = (props) => {
                 padding: 0 16px 16px;
               `}
             >
-              {/*<FormThread
+              
+              <FormThread
                 gameCommunities_id={gameCommunities_id}
                 userCommunities_id={userCommunities_id}
                 forumThreads_id=""
                 imagesAndVideos_id=""
-              />*/}
+                
+                name={name}
+                setName={setName}
+                comment={comment}
+                setComment={setComment}
+              />
+              
             </div>
           }
           

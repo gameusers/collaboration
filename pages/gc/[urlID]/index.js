@@ -43,7 +43,7 @@ import { getCookie } from 'app/@modules/cookie.js';
 // ---------------------------------------------
 
 import Layout from 'app/common/layout/v2/components/layout.js';
-import ForumNavigation from 'app/common/forum/v2/navigation.js';
+import ForumNavigation from 'app/common/forum/v2/components/navigation.js';
 import ForumThread from 'app/common/forum/components/thread.js';
 import Breadcrumbs from 'app/common/layout/components/breadcrumbs.js';
 
@@ -71,7 +71,7 @@ const Component = (props) => {
   //   Hooks
   // --------------------------------------------------
   
-  // const [loginUsersObj, setLoginUsersObj] = useState(props.loginUsersObj);
+  const [gameCommunityObj, setGameCommunityObj] = useState(props.gameCommunityObj);
   
   
   
@@ -124,7 +124,8 @@ const Component = (props) => {
     <ForumNavigation
       urlID={props.urlID}
       gameCommunities_id={props.gameCommunities_id}
-      gameCommunityObj={props.gameCommunityObj}
+      gameCommunityObj={gameCommunityObj}
+      setGameCommunityObj={setGameCommunityObj}
       forumThreadsForListObj={props.forumThreadsForListObj}
       forumThreadsObj={props.forumThreadsObj}
     />

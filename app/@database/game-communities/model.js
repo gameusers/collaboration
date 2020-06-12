@@ -24,16 +24,18 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Model
 // ---------------------------------------------
 
-const Schema = require('./schema');
-const SchemaGames = require('../games/schema');
+const SchemaGameCommunities = require('./schema.js');
+const SchemaGames = require('../games/schema.js');
 
 
 // ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosObj } = require('../images-and-videos/format');
-const { formatFollowsObj } = require('../follows/format');
+const { formatImagesAndVideosObj } = require('../images-and-videos/format.js');
+const { formatFollowsObj } = require('../follows/format.js');
+
+
 
 
 
@@ -70,7 +72,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await Schema.findOne(conditionObj).exec();
+    return await SchemaGameCommunities.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -113,7 +115,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.find(conditionObj).exec();
+    return await SchemaGameCommunities.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -155,7 +157,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.countDocuments(conditionObj).exec();
+    return await SchemaGameCommunities.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -202,7 +204,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await SchemaGameCommunities.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -244,7 +246,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await Schema.insertMany(saveArr);
+    return await SchemaGameCommunities.insertMany(saveArr);
     
     
   } catch (err) {
@@ -287,7 +289,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await Schema.deleteMany(conditionObj);
+    return await SchemaGameCommunities.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -336,7 +338,7 @@ const findForGameCommunity = async ({ localeObj, loginUsers_id, urlID }) => {
     
     let matchConditionArr = [
       {
-        $match : {
+        $match: {
           
           language,
           country,
@@ -600,10 +602,13 @@ const findForGameCommunity = async ({ localeObj, loginUsers_id, urlID }) => {
               },
               { $project:
                 {
-                  _id: 1,
-                  forumObj: 1,
-                  updatedDateObj: 1,
-                  anonymity: 1,
+                  createdDate: 0,
+                  updatedDate: 0,
+                  __v: 0,
+                  // _id: 1,
+                  // forumObj: 1,
+                  // updatedDateObj: 1,
+                  // anonymity: 1,
                 }
               }
             ],
@@ -794,244 +799,121 @@ const findForGameCommunity = async ({ localeObj, loginUsers_id, urlID }) => {
 
 
 /**
- * Transaction 挿入 / 更新する
- * ユーザーコミュニティ、フォロー、画像＆動画を同時に更新する
- * 
- * @param {Object} userCommunitiesConditionObj - DB user-communities 検索条件
- * @param {Object} userCommunitiesSaveObj - DB user-communities 保存データ
- * @param {Object} followsConditionObj - DB follows 検索条件
- * @param {Object} followsSaveObj - DB follows 保存データ
- * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件 / トップ画像
- * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ / トップ画像
- * @param {Object} imagesAndVideosThumbnailConditionObj - DB images-and-videos 検索条件 / サムネイル画像
- * @param {Object} imagesAndVideosThumbnailSaveObj - DB images-and-videos 保存データ / サムネイル画像
- * @return {Object} 
+ * データを取得する / フォーラム＆募集の更新日時取得用
+ * @param {string} gameCommunities_id - DB game-communities _id / ID
+ * @return {Object} 取得データ
  */
-// const transactionForUpsertSettings = async ({
-  
-//   userCommunitiesConditionObj,
-//   userCommunitiesSaveObj,
-//   followsConditionObj,
-//   followsSaveObj,
-//   imagesAndVideosConditionObj = {},
-//   imagesAndVideosSaveObj = {},
-//   imagesAndVideosThumbnailConditionObj = {},
-//   imagesAndVideosThumbnailSaveObj = {},
-  
-// }) => {
+const findForGameCommunityByGameCommunities_id = async ({ gameCommunities_id }) => {
   
   
-//   // --------------------------------------------------
-//   //   Property
-//   // --------------------------------------------------
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
   
-//   let returnObj = {};
-  
-  
-//   // --------------------------------------------------
-//   //   Transaction / Session
-//   // --------------------------------------------------
-  
-//   const session = await Schema.startSession();
-  
-  
-  
-  
-//   // --------------------------------------------------
-//   //   Database
-//   // --------------------------------------------------
-  
-//   try {
+  try {
     
     
-//     // --------------------------------------------------
-//     //   Transaction / Start
-//     // --------------------------------------------------
+    // --------------------------------------------------
+    //   Match Condition Array
+    // --------------------------------------------------
     
-//     await session.startTransaction();
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   DB user-communities
-//     // --------------------------------------------------
-    
-//     await Schema.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session, upsert: true });
-    
-    
-//     // --------------------------------------------------
-//     //   DB follows 
-//     // --------------------------------------------------
-    
-//     await SchemaFollows.updateOne(followsConditionObj, followsSaveObj, { session, upsert: true });
+    const matchConditionArr = [
+      {
+        $match: {
+          
+          _id: gameCommunities_id,
+          
+        }
+      },
+    ];
     
     
+    // --------------------------------------------------
+    //   Aggregation - game-communities
+    // --------------------------------------------------
     
-//     // --------------------------------------------------
-//     //   DB images-and-videos / トップ画像
-//     // --------------------------------------------------
-    
-//     if (Object.keys(imagesAndVideosConditionObj).length !== 0 && Object.keys(imagesAndVideosSaveObj).length !== 0) {
+    const docGameCommunitiesArr = await SchemaGameCommunities.aggregate([
       
       
-//       // --------------------------------------------------
-//       //   画像＆動画を削除する
-//       // --------------------------------------------------
+      // --------------------------------------------------
+      //   Match Condition Array
+      // --------------------------------------------------
       
-//       const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
-      
-//       if (arr.length === 0) {
-        
-//         await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj, { session });
-        
-        
-//       // --------------------------------------------------
-//       //   画像＆動画を保存
-//       // --------------------------------------------------
-        
-//       } else {
-        
-//         await SchemaImagesAndVideos.updateOne(imagesAndVideosConditionObj, imagesAndVideosSaveObj, { session, upsert: true });
-        
-//       }
-      
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   DB images-and-videos / サムネイル画像
-//     // --------------------------------------------------
-    
-//     if (Object.keys(imagesAndVideosThumbnailConditionObj).length !== 0 && Object.keys(imagesAndVideosThumbnailSaveObj).length !== 0) {
+      ...matchConditionArr,
       
       
-//       // --------------------------------------------------
-//       //   画像＆動画を削除する
-//       // --------------------------------------------------
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
       
-//       const arr = lodashGet(imagesAndVideosThumbnailSaveObj, ['arr'], []);
+      { $project:
+        {
+          createdDate: 0,
+          updatedDate: 0,
+          __v: 0,
+        }
+      },
       
-//       if (arr.length === 0) {
-        
-//         await SchemaImagesAndVideos.deleteOne(imagesAndVideosThumbnailConditionObj, { session });
-        
-        
-//       // --------------------------------------------------
-//       //   画像＆動画を保存
-//       // --------------------------------------------------
-        
-//       } else {
-        
-//         await SchemaImagesAndVideos.updateOne(imagesAndVideosThumbnailConditionObj, imagesAndVideosThumbnailSaveObj, { session, upsert: true });
-        
-//       }
       
-//     }
+    ]).exec();
     
     
     
     
-//     // --------------------------------------------------
-//     //   Transaction / Commit
-//     // --------------------------------------------------
+    // --------------------------------------------------
+    //   returnObj
+    // --------------------------------------------------
     
-//     await session.commitTransaction();
-    
-//     // console.log('--------コミット-----------');
-    
-//     session.endSession();
+    const returnObj = lodashGet(docGameCommunitiesArr, [0], {});
     
     
     
     
-//     // --------------------------------------------------
-//     //   console.log
-//     // --------------------------------------------------
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
     
-//     // console.log(`
-//     //   ----- userCommunitiesConditionObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(userCommunitiesConditionObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/game-communities/model.js - findForGameCommunityByGameCommunities_id
+    // `);
     
-//     // console.log(`
-//     //   ----- userCommunitiesSaveObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(userCommunitiesSaveObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
+    // console.log(chalk`
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    // `);
     
-//     // console.log(`
-//     //   ----- followsConditionObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(followsConditionObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
+    // console.log(`
+    //   ----- docGameCommunitiesArr -----\n
+    //   ${util.inspect(docGameCommunitiesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-//     // console.log(`
-//     //   ----- followsSaveObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(followsSaveObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- imagesAndVideosConditionObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosConditionObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- imagesAndVideosSaveObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosSaveObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- imagesAndVideosThumbnailConditionObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailConditionObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- imagesAndVideosThumbnailSaveObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailSaveObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- returnObj -----\n
-//     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
     
-//     // --------------------------------------------------
-//     //   Return
-//     // --------------------------------------------------
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
     
-//     return returnObj;
-    
-    
-//   } catch (errorObj) {
+    return returnObj;
     
     
-//     // --------------------------------------------------
-//     //   Transaction / Rollback
-//     // --------------------------------------------------
+  } catch (err) {
     
-//     await session.abortTransaction();
+    throw err;
     
-//     // console.log('--------ロールバック-----------');
-    
-//     session.endSession();
-    
-    
-//     throw errorObj;
-    
-//   }
+  }
   
-// };
+  
+};
+
+
 
 
 
@@ -1050,8 +932,6 @@ module.exports = {
   deleteMany,
   
   findForGameCommunity,
-  // findForUserCommunitySettings,
-  
-  // transactionForUpsertSettings,
+  findForGameCommunityByGameCommunities_id,
   
 };

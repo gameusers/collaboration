@@ -3447,7 +3447,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
           threadCount: 3,
         },
         updatedDateObj: {
-          notification: ISO8601,
           forum: ISO8601,
           recruitment: ISO8601,
         },
@@ -3466,7 +3465,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
           threadCount: 0,
         },
         updatedDateObj: {
-          notification: ISO8601,
           forum: ISO8601,
           recruitment: ISO8601,
         },
@@ -3485,7 +3483,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
           threadCount: 0,
         },
         updatedDateObj: {
-          notification: ISO8601,
           forum: ISO8601,
           recruitment: ISO8601,
         },
@@ -3504,7 +3501,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
           threadCount: 0,
         },
         updatedDateObj: {
-          notification: ISO8601,
           forum: ISO8601,
           recruitment: ISO8601,
         },

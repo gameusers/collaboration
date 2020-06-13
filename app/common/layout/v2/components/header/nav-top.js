@@ -63,7 +63,7 @@ import IconEject from '@material-ui/icons/Eject';
 //   States
 // ---------------------------------------------
 
-import { ContainerStateLoginUsers } from 'app/@states/login-users.js';
+import { ContainerStateUser } from 'app/@states/user.js';
 // import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
@@ -171,10 +171,10 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
   
-  const stateLoginUser = ContainerStateLoginUsers.useContainer();
+  const stateUser = ContainerStateUser.useContainer();
   // const stateLayout = ContainerStateLayout.useContainer();
   
-  const { loginUsersObj } = stateLoginUser;
+  const { loginUsersObj } = stateUser;
   // const { heroImageHeight } = stateLayout;
   // const heroImageHeight = 640;
   

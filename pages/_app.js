@@ -63,7 +63,7 @@ import initStoreRoot from 'app/@stores/root.js';
 //   States
 // ---------------------------------------------
 
-import { ContainerStateLoginUsers } from 'app/@states/login-users.js';
+import { ContainerStateUser } from 'app/@states/user.js';
 import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
@@ -288,10 +288,16 @@ class MyApp extends App {
     // --------------------------------------------------
     
     const loginUsersObj = lodashGet(pageProps, ['loginUsersObj'], {});
+    const reqAcceptLanguage = lodashGet(pageProps, ['reqAcceptLanguage'], '');
+    
+    const localeObj = locale({
+      acceptLanguage: reqAcceptLanguage
+    });
     
     const initialStateObj = {
       
       loginUsersObj,
+      localeObj,
       
     };
     
@@ -343,7 +349,7 @@ class MyApp extends App {
         
         
         {/* States */}
-        <ContainerStateLoginUsers.Provider initialState={initialStateObj}>
+        <ContainerStateUser.Provider initialState={initialStateObj}>
           <ContainerStateLayout.Provider>
             
             
@@ -382,7 +388,7 @@ class MyApp extends App {
             
             
           </ContainerStateLayout.Provider>
-        </ContainerStateLoginUsers.Provider>
+        </ContainerStateUser.Provider>
         
         
       </React.Fragment>

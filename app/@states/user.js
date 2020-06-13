@@ -33,7 +33,7 @@ import lodashGet from 'lodash/get';
 //   State
 // --------------------------------------------------
 
-const useLoginUsers = (initialStateObj) => {
+const useUser = (initialStateObj) => {
   
   
   // --------------------------------------------------
@@ -41,6 +41,7 @@ const useLoginUsers = (initialStateObj) => {
   // --------------------------------------------------
   
   const [loginUsersObj, setLoginUsersObj] = useState(lodashGet(initialStateObj, ['loginUsersObj'], {}));
+  const [localeObj, setLocaleObj] = useState(lodashGet(initialStateObj, ['localeObj'], {}));
   
   
   
@@ -71,6 +72,8 @@ const useLoginUsers = (initialStateObj) => {
     
     loginUsersObj,
     setLoginUsersObj,
+    localeObj,
+    setLocaleObj,
     
   };
   
@@ -84,4 +87,4 @@ const useLoginUsers = (initialStateObj) => {
 //   Export
 // --------------------------------------------------
 
-export const ContainerStateLoginUsers = createContainer(useLoginUsers);
+export const ContainerStateUser = createContainer(useUser);

@@ -52,7 +52,7 @@ import Breadcrumbs from 'app/common/layout/components/breadcrumbs.js';
 //   States
 // ---------------------------------------------
 
-// import { ContainerStateLoginUsers } from 'app/@states/login-users.js';
+// import { ContainerStateUser } from 'app/@states/user.js';
 
 
 
@@ -386,6 +386,7 @@ export async function getServerSideProps({ req, res, query }) {
     
     props: {
       
+      reqAcceptLanguage,
       urlID,
       ISO8601,
       statusCode,

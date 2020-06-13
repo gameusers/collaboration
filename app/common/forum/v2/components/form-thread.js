@@ -55,7 +55,7 @@ import { validationForumThreadsName } from 'app/@database/forum-threads/validati
 //   Components
 // ---------------------------------------------
 
-// import ImageAndVideoForm from '../../image-and-video/components/form.js';
+import ImageAndVideoForm from 'app/common/image-and-video/v2/components/form.js';
 
 
 
@@ -268,14 +268,13 @@ const Component = (props) => {
       
       
       {/* Form Images & Videos */}
-      {/*<div
+      <div
         css={css`
           margin: 12px 0 0 0;
         `}
       >
         
         <ImageAndVideoForm
-          pathArr={this.pathArr}
           type="forum"
           descriptionImage="スレッドに表示する画像をアップロードできます。"
           descriptionVideo="スレッドに表示する動画を登録できます。"
@@ -283,7 +282,7 @@ const Component = (props) => {
           limit={limit}
         />
         
-      </div>*/}
+      </div>
       
       
       

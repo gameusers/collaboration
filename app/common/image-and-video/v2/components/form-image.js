@@ -75,6 +75,7 @@ const Component = (props) => {
   const intl = useIntl();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
+  const [inputFileKey, setInputFileKey] = useState(Date.now());
   const [src, setSrc] = useState('');
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
@@ -92,23 +93,11 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-  
-  const stateLayout = ContainerStateLayout.useContainer();
-  
-  const { handleSnackbarOpen } = stateLayout;
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Props
+  //   props
   // --------------------------------------------------
   
   const {
     
-    type,
     heading,
     description,
     showImageCaption = false,
@@ -117,6 +106,17 @@ const Component = (props) => {
     setImagesAndVideosObj,
     
   } = props;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateLayout = ContainerStateLayout.useContainer();
+  
+  const { handleSnackbarOpen } = stateLayout;
   
   
   
@@ -212,10 +212,9 @@ const Component = (props) => {
   /**
    * 選択した画像を追加する
    * 追加すると画像のサムネイルがフォーム内に表示される（プレビューできる）
-   * @param {string} type - imagesAndVideosObjのtype
    * @param {number} limit - 画像を追加できる上限
    */
-  const handleAddImage = ({ type, limit }) => {
+  const handleAddImage = ({ limit }) => {
     
     
     // ---------------------------------------------
@@ -223,11 +222,7 @@ const Component = (props) => {
     // ---------------------------------------------
     
     const clonedImagesAndVideosObj = lodashCloneDeep(imagesAndVideosObj);
-    
     const arr = lodashGet(clonedImagesAndVideosObj, ['arr'], []);
-    
-    // const clonedArr = arr;
-    // const clonedArr = lodashCloneDeep(arr);
     
     
     
@@ -372,6 +367,7 @@ const Component = (props) => {
     //   入力フォームをリセット
     // ---------------------------------------------
     
+    setInputFileKey(Date.now());
     setSrc('');
     setWidth(0);
     setHeight(0);
@@ -384,15 +380,15 @@ const Component = (props) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(chalk`
-      /app/common/image-and-video/v2/components/form-image.js - handleAddImage
-    `);
+    // console.log(chalk`
+    //   /app/common/image-and-video/v2/components/form-image.js - handleAddImage
+    // `);
     
-    console.log(`
-      ----- imagesAndVideosObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
   };
@@ -471,6 +467,7 @@ const Component = (props) => {
             margin: 14px 0 0 0;
           `}
           type="file"
+          key={inputFileKey}
           onChange={(eventObj) => handleSelectImage({ fileObj: eventObj.target.files[0] })}
         />
         
@@ -484,7 +481,7 @@ const Component = (props) => {
             color="secondary"
             size="small"
             disabled={buttonDisabled}
-            onClick={() => handleAddImage({ type, limit })}
+            onClick={() => handleAddImage({ limit })}
           >
             追加
           </Button>

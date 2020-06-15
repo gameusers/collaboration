@@ -43,10 +43,10 @@ import Footer from 'app/common/layout/v2/components/footer.js';
 
 // import Drawer from 'app/common/layout/components/drawer.js';
 // import CardPlayerDialog from 'app/common/card/player/components/dialog.js';
-// import VideoModal from 'app/common/image-and-video/components/video-modal.js';
+import Dialog from 'app/common/layout/v2/components/dialog.js';
+import VideoModal from 'app/common/image-and-video/v2/components/video-modal.js';
 import Snackbar from 'app/common/layout/v2/components/snackbar.js';
 import Loading from 'app/common/layout/v2/components/loading.js';
-import Dialog from 'app/common/layout/v2/components/dialog.js';
 
 
 // ---------------------------------------------
@@ -152,8 +152,6 @@ const Component = (props) => {
   
   
   
-  
-  
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -240,7 +238,7 @@ const Component = (props) => {
           justify-content: center;
           margin: 0 auto;
           padding: 16px;
-          height: 1600px;
+          // height: 1600px;
           // background-color: pink;
           
           @media screen and (max-width: 947px) {
@@ -303,16 +301,20 @@ const Component = (props) => {
       
       
       
+      {/* ダイアログ */}
+      <Dialog />
+      
+      
+      {/* 動画表示用モーダル */}
+      <VideoModal />
+      
+      
       {/* Snackbar 通知用 */}
       <Snackbar/>
       
       
       {/* Loading */}
       <Loading />
-      
-      
-      {/* ダイアログ */}
-      <Dialog />
       
       
     </React.Fragment>

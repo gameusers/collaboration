@@ -15,7 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect, useContext } from 'react';
-import { useIntl } from 'react-intl';
+// import { useIntl } from 'react-intl';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -26,6 +26,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
@@ -63,6 +64,7 @@ import { formatImagesAndVideosObj } from 'app/@database/images-and-videos/format
 // ---------------------------------------------
 
 import { ContainerStateUser } from 'app/@states/user.js';
+import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 
@@ -131,25 +133,20 @@ const Component = (props) => {
   const {
     
     imagesAndVideosObj,
-    // setImagesAndVideosObj,
+    setImagesAndVideosObj,
     
   } = props;
   
   
-  // const {
-    
-  //   handleModalVideoOpen,
-    
-  // } = storeImageAndVideo;
   
   
-  // const {
-    
-  //   dataObj,
-  //   handleGetImagesAndVideosObj,
-  //   handleRemovePreview,
-    
-  // } = storeImageAndVideoForm;
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateLayout = ContainerStateLayout.useContainer();
+  
+  const { handleVideoOpen } = stateLayout;
   
   
   
@@ -166,6 +163,43 @@ const Component = (props) => {
   
   // 画像を追加してもプレビューが更新されないときがある。これを読み込むと正常に更新される。ただいい方法ではない。
   // const imageType = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj', 'type'], '');
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Handler
+  // --------------------------------------------------
+  
+  /**
+   * プレビューを削除する
+   * @param {number} index - 削除する配列のインデックスを数字で指定する
+   */
+  const handleRemovePreview = ({ index }) => {
+    
+    
+    // ---------------------------------------------
+    //   データ取得＆クローン
+    // ---------------------------------------------
+    
+    const clonedImagesAndVideosObj = lodashCloneDeep(imagesAndVideosObj);
+    
+    
+    // ---------------------------------------------
+    //   削除
+    // ---------------------------------------------
+    
+    clonedImagesAndVideosObj.arr.splice(index, 1);
+    
+    
+    // ---------------------------------------------
+    //   更新
+    // ---------------------------------------------
+    
+    setImagesAndVideosObj(clonedImagesAndVideosObj);
+    
+    
+  };
   
   
   
@@ -309,7 +343,7 @@ const Component = (props) => {
             <Fab
               css={cssPreviewRemoveFab}
               color="primary"
-              // onClick={() => handleRemovePreview({ pathArr, index })}
+              onClick={() => handleRemovePreview({ index })}
             >
               <IconClose />
             </Fab>
@@ -355,7 +389,7 @@ const Component = (props) => {
             <Fab
               css={cssPreviewRemoveFab}
               color="primary"
-              // onClick={() => handleRemovePreview({ pathArr, index })}
+              onClick={() => handleRemovePreview({ index })}
             >
               <IconClose />
             </Fab>
@@ -409,7 +443,7 @@ const Component = (props) => {
                 position: absolute;
                 top: 0;
               `}
-              // onClick={() => handleModalVideoOpen({ videoChannel: valueObj.videoChannel, videoID: valueObj.videoID })}
+              onClick={() => handleVideoOpen({ videoChannel: valueObj.videoChannel, videoID: valueObj.videoID })}
             >
               <div
                 css={css`
@@ -449,7 +483,7 @@ const Component = (props) => {
             <Fab
               css={cssPreviewRemoveFab}
               color="primary"
-              // onClick={() => handleRemovePreview({ pathArr, index })}
+              onClick={() => handleRemovePreview({ index })}
             >
               <IconClose />
             </Fab>

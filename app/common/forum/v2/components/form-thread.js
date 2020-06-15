@@ -78,8 +78,17 @@ const Component = (props) => {
   
   const intl = useIntl();
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  // const [name, setName] = useState();
-  // const [comment, setComment] = useState();
+  
+  const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
+    
+    _id: '',
+    createdDate: '',
+    updatedDate: '',
+    users_id: '',
+    type: 'forum',
+    arr: [],
+    
+  });
   
   
   useEffect(() => {
@@ -275,11 +284,12 @@ const Component = (props) => {
       >
         
         <ImageAndVideoForm
-          type="forum"
           descriptionImage="スレッドに表示する画像をアップロードできます。"
           descriptionVideo="スレッドに表示する動画を登録できます。"
           showImageCaption={true}
           limit={limit}
+          imagesAndVideosObj={imagesAndVideosObj}
+          setImagesAndVideosObj={setImagesAndVideosObj}
         />
         
       </div>

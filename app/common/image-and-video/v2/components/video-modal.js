@@ -14,11 +14,7 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React from 'react';
-import { useIntl } from 'react-intl';
-
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import ModalVideo from 'react-modal-video';
 
 
 // ---------------------------------------------
@@ -26,23 +22,6 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-
-
-// ---------------------------------------------
-//   Material UI
-// ---------------------------------------------
-
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-
-
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
-import FormPreview from './form-preview';
-import FormImage from './form-image';
-import FormVideo from './form-video';
 
 
 // ---------------------------------------------
@@ -72,21 +51,18 @@ const Component = (props) => {
   
   const stateLayout = ContainerStateLayout.useContainer();
   
-  const { loadingObj } = stateLayout;
-  
-  const open = lodashGet(loadingObj, ['open'], false);
-  const position = lodashGet(loadingObj, ['position'], 'left');
+  const { videoObj, handleVideoClose } = stateLayout;
   
   
   
   
   // --------------------------------------------------
-  //   ローディング中でない場合、空のコンポーネントを返す
+  //   Property
   // --------------------------------------------------
   
-  if (!open) {
-    return null;
-  }
+  const open = lodashGet(videoObj, ['open'], false);
+  const videoChannel = lodashGet(videoObj, ['videoChannel'], 'youtube');
+  const videoID = lodashGet(videoObj, ['videoID'], '');
   
   
   
@@ -118,26 +94,12 @@ const Component = (props) => {
   // --------------------------------------------------
   
   return (
-    <div
-      css={css`
-        position: fixed;
-        bottom: 20px;
-        margin: 0;
-        padding: 0;
-      `}
-      style={position === 'left' ? { left: '50px' } : { right: '50px' }}
-    >
-      
-      <div className="la-pacman">
-      	<div />
-      	<div />
-      	<div />
-      	<div />
-      	<div />
-      	<div />
-      </div>
-      
-    </div>
+    <ModalVideo
+      channel={videoChannel}
+      isOpen={open}
+      videoId={videoID}
+      onClose={handleVideoClose}
+    />
   );
   
   

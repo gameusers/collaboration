@@ -42,14 +42,14 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 import FormPreview from 'app/common/image-and-video/v2/components/form-preview.js';
 import FormImage from 'app/common/image-and-video/v2/components/form-image.js';
-// import FormVideo from './form-video';
+import FormVideo from 'app/common/image-and-video/v2/components/form-video.js';
 
 
 // ---------------------------------------------
 //   States
 // ---------------------------------------------
 
-import { ContainerStateLayout } from 'app/@states/layout.js';
+// import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 
@@ -75,16 +75,16 @@ const Component = (props) => {
   
   const [showFormImage, setShowFormImage] = useState(false);
   const [showFormVideo, setShowFormVideo] = useState(false);
-  const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
+  // const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
     
-    _id: '',
-    createdDate: '',
-    updatedDate: '',
-    users_id: '',
-    type: props.type,
-    arr: [],
+  //   _id: '',
+  //   createdDate: '',
+  //   updatedDate: '',
+  //   users_id: '',
+  //   type: props.type,
+  //   arr: [],
     
-  });
+  // });
   
   
   useEffect(() => {
@@ -92,6 +92,27 @@ const Component = (props) => {
     setButtonDisabled(false);
     
   }, []);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   props
+  // --------------------------------------------------
+  
+  const {
+    
+    // type,
+    showImageButton = true,
+    showVideoButton = true,
+    descriptionImage,
+    descriptionVideo,
+    showImageCaption,
+    limit,
+    imagesAndVideosObj,
+    setImagesAndVideosObj,
+    
+  } = props;
   
   
   
@@ -111,31 +132,12 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   props
-  // --------------------------------------------------
-  
-  const {
-    
-    type,
-    showImageButton = true,
-    showVideoButton = true,
-    descriptionImage,
-    descriptionVideo,
-    showImageCaption,
-    limit,
-    
-  } = props;
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
   
   const handleShowFormImage = () => {
     
-    setShowFormImage(true);
+    setShowFormImage(!showFormImage);
     setShowFormVideo(false);
     
   };
@@ -144,7 +146,7 @@ const Component = (props) => {
   const handleShowFormVideo = () => {
     
     setShowFormImage(false);
-    setShowFormVideo(true);
+    setShowFormVideo(!showFormVideo);
     
   };
   
@@ -186,7 +188,7 @@ const Component = (props) => {
       {/* Preview */}
       <FormPreview
         imagesAndVideosObj={imagesAndVideosObj}
-        // setImagesAndVideosObj={setImagesAndVideosObj}
+        setImagesAndVideosObj={setImagesAndVideosObj}
       />
       
       
@@ -223,7 +225,6 @@ const Component = (props) => {
         >
           
           <FormImage
-            type={type}
             description={descriptionImage}
             showImageCaption={showImageCaption}
             limit={limit}
@@ -244,12 +245,14 @@ const Component = (props) => {
             margin: 8px 0 0 0;
           `}
         >
-          {/*<FormVideo
-            pathArr={pathArr}
-            type={type}
+          
+          <FormVideo
             description={descriptionVideo}
             limit={limit}
-          />*/}
+            imagesAndVideosObj={imagesAndVideosObj}
+            setImagesAndVideosObj={setImagesAndVideosObj}
+          />
+          
         </div>
       }
       

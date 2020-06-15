@@ -44,7 +44,7 @@ const useLayout = (initialStateObj) => {
   const [snackbarObj, setSnackbarObj] = useState({});
   const [dialogObj, setDialogOpen] = useState({ open: false });
   const [loadingObj, setLoadingObj] = useState({});
-  // const [heroImageHeight, setHeroImageHeight] = useState(0);
+  const [videoObj, setVideoObj] = useState({});
   
   
   
@@ -210,28 +210,47 @@ const useLayout = (initialStateObj) => {
   };
   
   
+  // ---------------------------------------------
+  //   - Video
+  // ---------------------------------------------
+  
+  const handleVideoOpen = ({
+    
+    videoChannel,
+    videoID,
+    
+  }) => {
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@states/layout.js - handleVideoOpen
+    // `);
+    
+    // console.log(chalk`
+    //   videoChannel: {green ${videoChannel}}
+    //   videoID: {green ${videoID}}
+    // `);
+    
+    setVideoObj({
+      
+      open: true,
+      videoChannel,
+      videoID,
+      
+    });
+    
+  };
   
   
-  // const handleSetHeroImageHeight = (contentRect) => {
-  //   // console.log('handleSnackbarOpen');
+  const handleVideoClose = () => {
     
-  //   console.log(`
-  //     ----- contentRect -----\n
-  //     ${util.inspect(JSON.parse(JSON.stringify(contentRect)), { colors: true, depth: null })}\n
-  //     --------------------\n
-  //   `);
+    setVideoObj({
+      
+      open: false,
+      
+    });
     
-  //   const height = lodashGet(contentRect, ['bounds', 'height'], 300);
-    
-  //   console.log(chalk`
-  //     contentRect.bounds.height: {green ${contentRect.bounds.height}}
-  //     height: {green ${height}}
-  //   `);
-    
-  //   setHeroImageHeight(height);
-    
-  // };
-  
+  };
   
   
   
@@ -268,14 +287,15 @@ const useLayout = (initialStateObj) => {
     handleDialogOpen,
     handleDialogClose,
     
-    // heroImageHeight,
-    // handleSetHeroImageHeight,
-    
     handleScrollTo,
     
     loadingObj,
     handleLoadingOpen,
     handleLoadingClose,
+    
+    videoObj,
+    handleVideoOpen,
+    handleVideoClose,
     
   };
   

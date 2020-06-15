@@ -44,8 +44,8 @@ import { getCookie } from 'app/@modules/cookie.js';
 
 import Layout from 'app/common/layout/v2/components/layout.js';
 import ForumNavigation from 'app/common/forum/v2/components/navigation.js';
-import ForumThread from 'app/common/forum/components/thread.js';
-import Breadcrumbs from 'app/common/layout/components/breadcrumbs.js';
+import ForumThread from 'app/common/forum/v2/components/thread.js';
+import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
 
 
 // ---------------------------------------------
@@ -127,7 +127,6 @@ const Component = (props) => {
       gameCommunityObj={gameCommunityObj}
       setGameCommunityObj={setGameCommunityObj}
       forumThreadsForListObj={props.forumThreadsForListObj}
-      forumThreadsObj={props.forumThreadsObj}
     />
   ;
   
@@ -138,23 +137,24 @@ const Component = (props) => {
   //   Component - Contents
   // --------------------------------------------------
   
-  const componentContent = '';
-  // const componentContent = 
-  //   <React.Fragment>
+  // const componentContent = '';
+  const componentContent = 
+    <React.Fragment>
       
-  //     <Breadcrumbs
-  //       arr={this.props.breadcrumbsArr}
-  //     />
+      <Breadcrumbs
+        arr={props.breadcrumbsArr}
+      />
       
-  //     <ForumThread
-  //       temporaryDataID={this.props.temporaryDataID}
-  //       urlID={this.props.urlID}
-  //       gameCommunities_id={gameCommunities_id}
-  //       settingAnonymity={true}
-  //     />
+      <ForumThread
+        // temporaryDataID={this.props.temporaryDataID}
+        urlID={props.urlID}
+        gameCommunities_id={props.gameCommunities_id}
+        forumThreadsObj={props.forumThreadsObj}
+        settingAnonymity={true}
+      />
       
-  //   </React.Fragment>
-  // ;
+    </React.Fragment>
+  ;
   
   
   
@@ -395,7 +395,6 @@ export async function getServerSideProps({ req, res, query }) {
       headerNavMainArr,
       breadcrumbsArr,
       gameCommunities_id,
-      
       gameCommunityObj,
       forumThreadsForListObj,
       forumThreadsObj,

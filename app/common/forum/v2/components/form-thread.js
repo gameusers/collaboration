@@ -14,7 +14,7 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import TextareaAutosize from 'react-autosize-textarea';
 
@@ -45,10 +45,20 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 // ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { CustomError } from 'app/@modules/error/custom.js';
+import { getCookie } from 'app/@modules/cookie.js';
+
+
+// ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
 import { validationForumThreadsName } from 'app/@database/forum-threads/validations/name.js';
+import { validationForumThreadsComment } from 'app/@database/forum-threads/validations/comment.js';
 
 
 // ---------------------------------------------
@@ -70,6 +80,32 @@ import ImageAndVideoForm from 'app/common/image-and-video/v2/components/form.js'
  * Export Component
  */
 const Component = (props) => {
+  
+  
+  // --------------------------------------------------
+  //   props
+  // --------------------------------------------------
+  
+  const {
+    
+    gameCommunities_id,
+    userCommunities_id,
+    forumThreads_id,
+    
+    setGameCommunityObj,
+    setForumThreadsForListObj,
+    setForumThreadsObj,
+    setForumCommentsObj,
+    setForumRepliesObj,
+    
+    name,
+    setName,
+    comment,
+    setComment,
+    
+  } = props;
+  
+  
   
   
   // --------------------------------------------------
@@ -101,32 +137,378 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   props
-  // --------------------------------------------------
-  
-  const {
-    
-    gameCommunities_id,
-    userCommunities_id,
-    forumThreads_id,
-    
-    name,
-    setName,
-    comment,
-    setComment,
-    
-  } = props;
-  
-  
-  
-  
-  // --------------------------------------------------
   //   States
   // --------------------------------------------------
   
   const stateLayout = ContainerStateLayout.useContainer();
   
-  const { handleSnackbarOpen, handleDialogOpen } = stateLayout;
+  const {
+    
+    handleSnackbarOpen,
+    handleDialogOpen,
+    handleLoadingOpen,
+    handleLoadingClose,
+    handleScrollTo,
+    
+  } = stateLayout;
+  
+  // console.log(chalk`
+  //   /app/common/forum/v2/components/form-thread.js
+  // `);
+  
+  
+  // --------------------------------------------------
+  //   Handler
+  // --------------------------------------------------
+  
+  /**
+   * スレッド作成・編集フォームを送信する
+   * @param {Object} eventObj - イベント
+   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
+   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
+   * @param {string} forumThreads_id - DB forum-threads _id / 編集するスレッドのID
+   */
+  const handleSubmit = async ({
+    
+    eventObj,
+    gameCommunities_id,
+    userCommunities_id,
+    forumThreads_id,
+    
+  }) => {
+    
+    
+    // ---------------------------------------------
+    //   フォームの送信処理停止
+    // ---------------------------------------------
+    
+    eventObj.preventDefault();
+    
+    
+    
+    // ---------------------------------------------
+    //   新規投稿時の forumThreads_id
+    // ---------------------------------------------
+    
+    let newForumThreads_id = '';
+    
+    
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Property
+      // ---------------------------------------------
+      
+      const threadListLimit = parseInt((getCookie({ key: 'forumThreadListLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIST_LIMIT), 10);
+      const threadLimit = parseInt((getCookie({ key: 'forumThreadLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT), 10);
+      const commentLimit = parseInt((getCookie({ key: 'forumCommentLimit' }) || process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT), 10);
+      const replyLimit = parseInt((getCookie({ key: 'forumReplyLimit' }) || process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT), 10);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   _id が存在しない場合エラー
+      // ---------------------------------------------
+      
+      if (!gameCommunities_id && !userCommunities_id) {
+        throw new CustomError({ errorsArr: [{ code: '8319EqfHo', messageID: '1YJnibkmh' }] });
+      }
+      
+      
+      // ---------------------------------------------
+      //   Validation
+      // ---------------------------------------------
+      
+      const validationHandleNameObj = validationForumThreadsName({ value: name });
+      const validationForumThreadsCommentObj = validationForumThreadsComment({ value: comment });
+      
+      // console.log(`
+      //   ----- validationHandleNameObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(validationHandleNameObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // ---------------------------------------------
+      //   Validation Error
+      // ---------------------------------------------
+      
+      if (
+        validationHandleNameObj.error ||
+        validationForumThreadsCommentObj.error
+      ) {
+        throw new CustomError({ errorsArr: [{ code: '3NtQODEsb', messageID: 'uwHIKBy7c' }] });
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Loading Open
+      // ---------------------------------------------
+      
+      handleLoadingOpen({});
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      setButtonDisabled(true);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/forum/v2/components/form-thread.js - handleSubmit
+      // `);
+      
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   forumThreads_id: {green ${forumThreads_id}}
+      //   name: {green ${name}}
+      //   comment: {green ${comment}}
+      // `);
+      
+      // console.log(`
+      //   ----- imagesAndVideosObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // return;
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formDataObj = {
+        
+        gameCommunities_id,
+        userCommunities_id,
+        forumThreads_id,
+        name,
+        comment,
+        threadListLimit,
+        threadLimit,
+        commentLimit,
+        replyLimit,
+        
+      };
+      
+      if (imagesAndVideosObj.arr.length !== 0) {
+        formDataObj.imagesAndVideosObj = imagesAndVideosObj;
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      // let resultObj = {};
+      
+      // if (gameCommunities_id) {
+        
+      //   resultObj = await fetchWrapper({
+          
+      //     urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/upsert-gc`,
+      //     methodType: 'POST',
+      //     formData: JSON.stringify(formDataObj),
+          
+      //   });
+        
+      // } else {
+        
+      //   resultObj = await fetchWrapper({
+          
+      //     urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/upsert-uc`,
+      //     methodType: 'POST',
+      //     formData: JSON.stringify(formDataObj),
+          
+      //   });
+        
+      // }
+      
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // // ---------------------------------------------
+      // //   Error
+      // // ---------------------------------------------
+      
+      // if ('errorsArr' in resultObj) {
+      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
+      // }
+      
+      
+      
+      
+      // // --------------------------------------------------
+      // //   gameCommunityObj
+      // // --------------------------------------------------
+      
+      // setGameCommunityObj(lodashGet(resultObj, ['data', 'updatedDateObj'], {}));
+      
+      
+      // // ---------------------------------------------
+      // //   forumThreadsForListObj
+      // // ---------------------------------------------
+      
+      // setForumThreadsForListObj(lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {}));
+      
+      
+      // // ---------------------------------------------
+      // //   forumThreadsObj
+      // // ---------------------------------------------
+      
+      // setForumThreadsObj(lodashGet(resultObj, ['data', 'forumThreadsObj'], {}));
+      
+      
+      // // ---------------------------------------------
+      // //   forumCommentsObj
+      // // ---------------------------------------------
+      
+      // setForumCommentsObj(lodashGet(resultObj, ['data', 'forumCommentsObj'], {}));
+      
+      
+      // // ---------------------------------------------
+      // //   forumRepliesObj
+      // // ---------------------------------------------
+      
+      // setForumRepliesObj(lodashGet(resultObj, ['data', 'forumRepliesObj'], {}));
+      
+      
+      
+      
+      // // ---------------------------------------------
+      // //   Close Form & Reset Form
+      // // ---------------------------------------------
+      
+      // if (forumThreads_id) {
+        
+      //   // lodashSet(this.dataObj, [forumThreads_id, 'showForm'], false);
+        
+      // } else {
+        
+      //   setName('');
+      //   setComment('');
+      //   setImagesAndVideosObj({
+          
+      //     _id: '',
+      //     createdDate: '',
+      //     updatedDate: '',
+      //     users_id: '',
+      //     type: 'forum',
+      //     arr: [],
+          
+      //   });
+        
+      // }
+      
+      
+      
+      
+      // // ---------------------------------------------
+      // //   forumThreads_id
+      // // ---------------------------------------------
+      
+      // newForumThreads_id = lodashGet(resultObj, ['data', 'forumThreadsForListObj', `page1Obj`, 'arr', 0], '');
+      
+      // // forumThreads_id = 'YSYsoS4eo';
+      
+      // console.log(chalk`
+      //   forumThreads_id: {green ${forumThreads_id}}
+      // `);
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      handleSnackbarOpen({
+        variant: 'success',
+        messageID: forumThreads_id ? 'HINAkcSmJ' : 'pInPmleQh',
+      });
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      setButtonDisabled(false);
+      
+      
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
+      
+      handleLoadingClose();
+      
+      
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      // handleScrollTo({
+        
+      //   to: forumThreads_id,
+      //   duration: 0,
+      //   delay: 0,
+      //   smooth: 'easeInOutQuart',
+      //   offset: -50,
+        
+      // });
+      
+      handleScrollTo({
+        
+        to: forumThreads_id || newForumThreads_id || 'forumThreads',
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+        
+      });
+      
+      
+    }
+    
+    
+  };
   
   
   
@@ -148,7 +530,7 @@ const Component = (props) => {
     
   //   dataObj,
   //   handleEdit,
-  //   handleSubmitFormThread,
+  //   handleSubmit,
   //   handleDeleteThread,
     
   // } = storeForum;
@@ -206,14 +588,26 @@ const Component = (props) => {
         padding: 0 0 8px;
       `}
       name={`form-${forumThreads_id}`}
-      // onSubmit={(eventObj) => handleSubmitFormThread({
-      //   eventObj,
-      //   pathArr: this.pathArr,
-      //   gameCommunities_id,
-      //   userCommunities_id,
-      //   forumThreads_id,
-      // })}
+      onSubmit={(eventObj) => handleSubmit({
+        eventObj,
+        gameCommunities_id,
+        userCommunities_id,
+        forumThreads_id,
+      })}
     >
+      
+      
+      {!forumThreads_id &&
+        <p
+          css={css`
+            margin: 0 0 14px 0;
+          `}
+        >
+          スレッドを新しく投稿する場合、こちらのフォームを利用して投稿してください。ログインして投稿するとスレッドをいつでも編集できるようになります。
+        </p>
+      }
+      
+      
       
       
       {/* Name */}
@@ -302,7 +696,7 @@ const Component = (props) => {
         css={css`
           display: flex;
           flex-flow: row nowrap;
-          margin: 24px 0 0 0;
+          margin: 36px 0 0 0;
         `}
       >
         

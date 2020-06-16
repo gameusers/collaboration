@@ -69,11 +69,12 @@ import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 //   Components
 // ---------------------------------------------
 
-import Paragraph from 'app/common/layout/components/paragraph.js';
-import FormThread from 'app/common/forum/components/form-thread.js';
+import Panel from 'app/common/layout/v2/components/panel.js';
+import Paragraph from 'app/common/layout/v2/components/paragraph.js';
+import ImageAndVideo from 'app/common/image-and-video/components/image-and-video.js';
+import FormThread from 'app/common/forum/v2/components/form-thread.js';
 import FormComment from 'app/common/forum/components/form-comment.js';
 import Comment from 'app/common/forum/components/comment.js';
-import ImageAndVideo from 'app/common/image-and-video/components/image-and-video.js';
 
 import FormName from 'app/common/form/components/name.js';
 
@@ -235,7 +236,6 @@ const Thread = ({
   return (
     <Element
       name={forumThreads_id}
-      // key={forumThreads_id}
     >
       
       
@@ -800,6 +800,32 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
+  //   props
+  // --------------------------------------------------
+  
+  const {
+    
+    urlID,
+    gameCommunities_id,
+    userCommunityID,
+    userCommunities_id,
+    
+    setGameCommunityObj,
+    setForumThreadsForListObj,
+    forumThreadsObj,
+    setForumThreadsObj,
+    setForumCommentsObj,
+    setForumRepliesObj,
+    
+    settingAnonymity,
+    individual,
+    
+  } = props;
+  
+  
+  
+  
+  // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
@@ -808,8 +834,8 @@ const Component = (props) => {
   const [panelExpanded, setPanelExpanded] = useState(true);
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
-  const [forumThreadsObj, setForumThreadsObj] = useState(props.forumThreadsObj);
-  // const [url, setUrl] = useState('');
+  const [name, setName] = useState();
+  const [comment, setComment] = useState();
   
   
   useEffect(() => {
@@ -825,35 +851,12 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
   
-  const stateLayout = ContainerStateLayout.useContainer();
+  // const stateLayout = ContainerStateLayout.useContainer();
   
-  const { loadingObj } = stateLayout;
+  // const { loadingObj } = stateLayout;
   
   // const open = lodashGet(loadingObj, ['open'], false);
   // const position = lodashGet(loadingObj, ['position'], 'left');
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   props
-  // --------------------------------------------------
-  
-  const {
-    
-    // classes,
-    // stores,
-    // storeForum,
-    // intl,
-    // temporaryDataID,
-    urlID,
-    gameCommunities_id,
-    userCommunityID,
-    userCommunities_id,
-    settingAnonymity,
-    individual,
-    
-  } = props;
   
   
   
@@ -918,27 +921,27 @@ const Component = (props) => {
   //   console.log
   // --------------------------------------------------
   
-  console.log(`
-    ----------------------------------------\n
-    /app/common/forum/v2/components/thread.js
-  `);
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /app/common/forum/v2/components/thread.js
+  // `);
   
-  console.log(chalk`
-    urlID: {green ${urlID}}
-    gameCommunities_id: {green ${gameCommunities_id}}
-    userCommunityID: {green ${userCommunityID}}
-    userCommunities_id: {green ${userCommunities_id}}
+  // console.log(chalk`
+  //   urlID: {green ${urlID}}
+  //   gameCommunities_id: {green ${gameCommunities_id}}
+  //   userCommunityID: {green ${userCommunityID}}
+  //   userCommunities_id: {green ${userCommunities_id}}
     
-    page: {green ${page}}
-    count: {green ${count}}
-    limit: {green ${limit}}
-  `);
+  //   page: {green ${page}}
+  //   count: {green ${count}}
+  //   limit: {green ${limit}}
+  // `);
   
-  console.log(`
-    ----- arr -----\n
-    ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- arr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   
   
@@ -950,7 +953,7 @@ const Component = (props) => {
   const componentArr = [];
   
   
-  for (const [index, forumThreads_id] of arr.entries()) {
+  for (let forumThreads_id of arr.values()) {
     
     
     // --------------------------------------------------
@@ -991,6 +994,43 @@ const Component = (props) => {
     <Element
       name="forumThreads"
     >
+      
+      
+      {/* Form - Post New Thread */}
+      <div
+        css={css`
+          margin: 0 0 16px 0;
+        `}
+      >
+        
+        <Panel
+          heading="スレッド投稿フォーム"
+          defaultExpanded={false}
+        >
+          
+          <FormThread
+            gameCommunities_id={gameCommunities_id}
+            userCommunities_id={userCommunities_id}
+            forumThreads_id=""
+            
+            setGameCommunityObj={setGameCommunityObj}
+            setForumThreadsForListObj={setForumThreadsForListObj}
+            forumThreadsObj={forumThreadsObj}
+            setForumThreadsObj={setForumThreadsObj}
+            setForumCommentsObj={setForumCommentsObj}
+            setForumRepliesObj={setForumRepliesObj}
+            
+            name={name}
+            setName={setName}
+            comment={comment}
+            setComment={setComment}
+          />
+          
+        </Panel>
+        
+      </div>
+      
+      
       
       
       {/* Forum */}
@@ -1052,6 +1092,7 @@ const Component = (props) => {
             
             <Pagination
               disabled={buttonDisabled}
+              onChange={() => () => {}}
               // onChange={(page) => handleReadThreads({
               //   // pathArr: this.pathArr,
               //   // temporaryDataID,
@@ -1078,6 +1119,7 @@ const Component = (props) => {
             
             <Select
               value={limit}
+              onChange={() => () => {}}
               // onChange={(eventObj) => handleReadThreads({
               //   pathArr: this.pathArr,
               //   temporaryDataID,

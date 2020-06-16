@@ -72,6 +72,10 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const [gameCommunityObj, setGameCommunityObj] = useState(props.gameCommunityObj);
+  const [forumThreadsForListObj, setForumThreadsForListObj] = useState(props.forumThreadsForListObj);
+  const [forumThreadsObj, setForumThreadsObj] = useState(props.forumThreadsObj);
+  const [forumCommentsObj, setForumCommentsObj] = useState(props.forumCommentsObj);
+  const [forumRepliesObj, setForumRepliesObj] = useState(props.forumRepliesObj);
   
   
   
@@ -126,7 +130,8 @@ const Component = (props) => {
       gameCommunities_id={props.gameCommunities_id}
       gameCommunityObj={gameCommunityObj}
       setGameCommunityObj={setGameCommunityObj}
-      forumThreadsForListObj={props.forumThreadsForListObj}
+      forumThreadsForListObj={forumThreadsForListObj}
+      setForumThreadsForListObj={setForumThreadsForListObj}
     />
   ;
   
@@ -137,7 +142,6 @@ const Component = (props) => {
   //   Component - Contents
   // --------------------------------------------------
   
-  // const componentContent = '';
   const componentContent = 
     <React.Fragment>
       
@@ -146,10 +150,17 @@ const Component = (props) => {
       />
       
       <ForumThread
-        // temporaryDataID={this.props.temporaryDataID}
         urlID={props.urlID}
         gameCommunities_id={props.gameCommunities_id}
-        forumThreadsObj={props.forumThreadsObj}
+        setGameCommunityObj={setGameCommunityObj}
+        setForumThreadsForListObj={setForumThreadsForListObj}
+        forumThreadsObj={forumThreadsObj}
+        setForumThreadsObj={setForumThreadsObj}
+        forumCommentsObj={forumCommentsObj}
+        setForumCommentsObj={setForumCommentsObj}
+        forumRepliesObj={forumRepliesObj}
+        setForumRepliesObj={setForumRepliesObj}
+        
         settingAnonymity={true}
       />
       
@@ -222,13 +233,13 @@ export async function getServerSideProps({ req, res, query }) {
   
   // const threadListPage = stores.data.getTemporaryData({ pathname: temporaryDataID, key: 'threadListPage' });
   const threadListPage = 1;
-  const threadListLimit = getCookie({ key: 'threadListLimit', reqHeadersCookie });
+  const threadListLimit = getCookie({ key: 'forumThreadListLimit', reqHeadersCookie });
   
   // const threadPage = stores.data.getTemporaryData({ pathname: temporaryDataID, key: 'threadPage' });
   const threadPage = 1;
-  const threadLimit = getCookie({ key: 'threadLimit', reqHeadersCookie });
-  const commentLimit = getCookie({ key: 'commentLimit', reqHeadersCookie });
-  const replyLimit = getCookie({ key: 'replyLimit', reqHeadersCookie });
+  const threadLimit = getCookie({ key: 'forumThreadLimit', reqHeadersCookie });
+  const commentLimit = getCookie({ key: 'forumCommentLimit', reqHeadersCookie });
+  const replyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
   
   
   // --------------------------------------------------

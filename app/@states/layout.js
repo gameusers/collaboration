@@ -15,7 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect, useContext } from 'react';
-import { animateScroll as scroll, scrollSpy, scroller, Events } from 'react-scroll';
+import { Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll';
 import { createContainer } from 'unstated-next';
 
 
@@ -46,7 +46,10 @@ const useLayout = (initialStateObj) => {
   const [loadingObj, setLoadingObj] = useState({});
   const [videoObj, setVideoObj] = useState({});
   
-  
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /app/@states/layout.js - useLayout
+  // `);
   
   
   // --------------------------------------------------
@@ -67,6 +70,11 @@ const useLayout = (initialStateObj) => {
     errorObj,
     
   }) => {
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@states/layout.js - handleSnackbarOpen
+    // `);
     
     setSnackbarObj({
       
@@ -94,6 +102,8 @@ const useLayout = (initialStateObj) => {
     });
     
   };
+  
+  
   
   
   // ---------------------------------------------
@@ -131,6 +141,86 @@ const useLayout = (initialStateObj) => {
     });
     
   };
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   - Loading
+  // ---------------------------------------------
+  
+  const handleLoadingOpen = ({
+    
+    position,
+    
+  }) => {
+    
+    setLoadingObj({
+      
+      open: true,
+      position,
+      
+    });
+    
+  };
+  
+  
+  const handleLoadingClose = () => {
+    
+    setLoadingObj({
+      
+      open: false,
+      
+    });
+    
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   - Video
+  // ---------------------------------------------
+  
+  const handleVideoOpen = ({
+    
+    videoChannel,
+    videoID,
+    
+  }) => {
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@states/layout.js - handleVideoOpen
+    // `);
+    
+    // console.log(chalk`
+    //   videoChannel: {green ${videoChannel}}
+    //   videoID: {green ${videoID}}
+    // `);
+    
+    setVideoObj({
+      
+      open: true,
+      videoChannel,
+      videoID,
+      
+    });
+    
+  };
+  
+  
+  const handleVideoClose = () => {
+    
+    setVideoObj({
+      
+      open: false,
+      
+    });
+    
+  };
+  
+  
   
   
   // ---------------------------------------------
@@ -179,80 +269,6 @@ const useLayout = (initialStateObj) => {
   };
   
   
-  // ---------------------------------------------
-  //   - Loading
-  // ---------------------------------------------
-  
-  const handleLoadingOpen = ({
-    
-    position,
-    
-  }) => {
-    
-    setLoadingObj({
-      
-      open: true,
-      position,
-      
-    });
-    
-  };
-  
-  
-  const handleLoadingClose = () => {
-    
-    setLoadingObj({
-      
-      open: false,
-      
-    });
-    
-  };
-  
-  
-  // ---------------------------------------------
-  //   - Video
-  // ---------------------------------------------
-  
-  const handleVideoOpen = ({
-    
-    videoChannel,
-    videoID,
-    
-  }) => {
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/@states/layout.js - handleVideoOpen
-    // `);
-    
-    // console.log(chalk`
-    //   videoChannel: {green ${videoChannel}}
-    //   videoID: {green ${videoID}}
-    // `);
-    
-    setVideoObj({
-      
-      open: true,
-      videoChannel,
-      videoID,
-      
-    });
-    
-  };
-  
-  
-  const handleVideoClose = () => {
-    
-    setVideoObj({
-      
-      open: false,
-      
-    });
-    
-  };
-  
-  
   
   
   // --------------------------------------------------
@@ -287,8 +303,6 @@ const useLayout = (initialStateObj) => {
     handleDialogOpen,
     handleDialogClose,
     
-    handleScrollTo,
-    
     loadingObj,
     handleLoadingOpen,
     handleLoadingClose,
@@ -296,6 +310,8 @@ const useLayout = (initialStateObj) => {
     videoObj,
     handleVideoOpen,
     handleVideoClose,
+    
+    handleScrollTo,
     
   };
   

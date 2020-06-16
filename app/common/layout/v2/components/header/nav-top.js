@@ -35,7 +35,7 @@ import lodashThrottle from 'lodash/throttle';
 //   Material UI
 // ---------------------------------------------
 
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
@@ -76,7 +76,7 @@ import { ContainerStateUser } from 'app/@states/user.js';
 //   https://material-ui.com/styles/basics/
 // --------------------------------------------------
 
-const stylesObj = {
+const useStyles = makeStyles({
   
   paper: {
     top: 0,
@@ -85,7 +85,7 @@ const stylesObj = {
     marginRight: 14,
   },
   
-};
+});
 
 
 
@@ -106,10 +106,21 @@ const Container = ({ children, showNavTop }) => {
   //   showNavTop: {green ${showNavTop}}
   // `);
   
+  // --------------------------------------------------
+  //   Hooks
+  // --------------------------------------------------
+  
   const props = useSpring({
+    
     transform: showNavTop ? 'translateY(0px)' : 'translateY(-53px)',
     config: { duration: 250 },
+    
   });
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
   
   return <animated.header
       css={css`
@@ -128,25 +139,16 @@ const Container = ({ children, showNavTop }) => {
       {children}
     </animated.header>;
   
+  
 };
 
 
 
 
 /**
- * 
+ * Export Component
  */
 const Component = (props) => {
-  
-  
-  // --------------------------------------------------
-  //   Hooks
-  // --------------------------------------------------
-  
-  // const [showNavTop, setShowNavTop] = useState(true);
-  const [loginMenuOpen, setLoginMenuOpen] = useState(false);
-  
-  
   
   
   // --------------------------------------------------
@@ -155,14 +157,24 @@ const Component = (props) => {
   
   const {
     
-    classes,
     showNavTop,
     setShowNavTop,
     setLowerNavMain,
     setLowerSidebar,
     heroImageHeight,
+    scrollToBegin,
     
   } = props;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Hooks
+  // --------------------------------------------------
+  
+  const classes = useStyles();
+  const [loginMenuOpen, setLoginMenuOpen] = useState(false);
   
   
   
@@ -172,11 +184,8 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const stateUser = ContainerStateUser.useContainer();
-  // const stateLayout = ContainerStateLayout.useContainer();
   
   const { loginUsersObj } = stateUser;
-  // const { heroImageHeight } = stateLayout;
-  // const heroImageHeight = 640;
   
   // console.log(chalk`
   //   AAAAAAAAAAAAAAAAA
@@ -267,10 +276,16 @@ const Component = (props) => {
     
     scrollYOffset = scrollY;
     
-    // console.log(chalk`
-    //   showNavTop: {green ${showNavTop}}
-    //   showNavTopNew: {green ${showNavTopNew}}
-    // `);
+    
+    
+    
+    // ---------------------------------------------
+    //   デバイスの横幅が狭い場合（スマホなど）はサイドバーの位置を下げない
+    // ---------------------------------------------
+    
+    if (window.innerWidth <= 947) {
+      lowerSidebarNew = false;
+    }
     
     
     
@@ -297,25 +312,18 @@ const Component = (props) => {
     
     
     
-    // // ---------------------------------------------
-    // //   デバイスの横幅が狭い場合（スマホなど）はサイドバーの位置を下げない
-    // // ---------------------------------------------
-    
-    // if (window.innerWidth <= 947) {
-    //   lowerSidebarNew = false;
-    // }
-    
-    
-    
-    
     // ---------------------------------------------
     //   console.log
     // ---------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/common/layout/components/header/nav-top.js - handleScroll
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /app/common/layout/components/header/nav-top.js - handleScroll
+    `);
+    
+    console.log(chalk`
+      scrollToBegin: {green ${scrollToBegin}}
+    `);
     
     // console.log(chalk`
     //   scrollY: {green ${scrollY}}
@@ -434,12 +442,22 @@ const Component = (props) => {
     // }
     
     
-  }, 100), [heroImageHeight]);
+  }, 100), [heroImageHeight, scrollToBegin]);
   
   
   
   
   useEffect(() => {
+    
+    
+    console.log(`
+      ----------------------------------------\n
+      /app/common/layout/components/header/nav-top.js - useEffect
+    `);
+    
+    console.log(chalk`
+      scrollToBegin: {green ${scrollToBegin}}
+    `);
     
     
     // ---------------------------------------------
@@ -454,7 +472,7 @@ const Component = (props) => {
     };
     
     
-  }, [heroImageHeight]);
+  }, [heroImageHeight, scrollToBegin]);
   
   
   
@@ -748,4 +766,4 @@ const Component = (props) => {
 //   Export
 // --------------------------------------------------
 
-export default withStyles(stylesObj)(Component);
+export default Component;

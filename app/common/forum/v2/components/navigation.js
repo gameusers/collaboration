@@ -14,9 +14,9 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 // import TextareaAutosize from 'react-autosize-textarea';
 import moment from 'moment';
 import Cookies from 'js-cookie';
@@ -161,13 +161,34 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
+  //   props
+  // --------------------------------------------------
+  
+  const {
+    
+    urlID,
+    gameCommunities_id,
+    userCommunityID,
+    userCommunities_id,
+    
+    gameCommunityObj,
+    setGameCommunityObj,
+    forumThreadsForListObj,
+    setForumThreadsForListObj,
+    
+  } = props;
+  
+  
+  
+  
+  // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
   const [panelExpanded, setPanelExpanded] = useState(true);
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [currentTabNo, setCurrentTabNo] = useState(0);
-  const [forumThreadsForListObj, setForumThreadsForListObj] = useState(props.forumThreadsForListObj);
+  
   const [name, setName] = useState();
   const [comment, setComment] = useState();
   
@@ -182,26 +203,13 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   props
+  //   Data
   // --------------------------------------------------
-  
-  const {
-    
-    urlID,
-    gameCommunities_id,
-    userCommunityID,
-    userCommunities_id,
-    
-    gameCommunityObj,
-    setGameCommunityObj,
-    
-  } = props;
-  
   
   const updatedDate = lodashGet(gameCommunityObj, ['updatedDateObj', 'forum'], '0000-01-01T00:00:00Z');
   const count = lodashGet(forumThreadsForListObj, ['count'], 1);
   const page = lodashGet(forumThreadsForListObj, ['page'], 1);
-  const limit = parseInt((getCookie({ key: 'threadListLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIST_LIMIT), 10);
+  const limit = parseInt((getCookie({ key: 'forumThreadListLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIST_LIMIT), 10);
   const loadedDate = lodashGet(forumThreadsForListObj, [`page${page}Obj`, 'loadedDate'], '');
   const arr = lodashGet(forumThreadsForListObj, [`page${page}Obj`, 'arr'], []);
   
@@ -384,7 +392,7 @@ const Component = (props) => {
         //   Set Cookie - forumThreadListLimit
         // ---------------------------------------------
         
-        Cookies.set('threadListLimit', changeLimit);
+        Cookies.set('forumThreadListLimit', changeLimit);
         
         
         // ---------------------------------------------
@@ -1049,7 +1057,7 @@ const Component = (props) => {
           >
             
             <Tab label="スレッド一覧" />
-            <Tab label="スレッド作成" />
+            {/*<Tab label="スレッド作成" />*/}
             
           </Tabs>
           
@@ -1095,7 +1103,7 @@ const Component = (props) => {
             
             
             {/* スレッド作成 */}
-            <Tooltip
+            {/*<Tooltip
               css={css`
                 && {
                   @media screen and (max-width: 947px) {
@@ -1111,7 +1119,7 @@ const Component = (props) => {
                 }}
                 icon={<IconCreate />}
               />
-            </Tooltip>
+            </Tooltip>*/}
             
             
           </Tabs>
@@ -1135,7 +1143,7 @@ const Component = (props) => {
           
           {/* スレッド作成フォーム */}
           {currentTabNo === 1 &&
-            <div
+            {/*<div
               css={css`
                 padding: 0 16px 16px;
               `}
@@ -1153,7 +1161,7 @@ const Component = (props) => {
                 setComment={setComment}
               />
               
-            </div>
+            </div>*/}
           }
           
           

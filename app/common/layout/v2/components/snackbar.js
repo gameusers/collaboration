@@ -121,7 +121,7 @@ const Component = (props) => {
   // --------------------------------------------------
   
   // key
-  const key = lodashGet(snackbarObj, ['key'], `snackbar-${new Date().getTime()}`);
+  // const key = lodashGet(snackbarObj, ['key'], `snackbar-${new Date().getTime()}`);
   
   // 開閉を切り替える真偽値
   const open = lodashGet(snackbarObj, ['open'], false);
@@ -245,7 +245,7 @@ const Component = (props) => {
   
   return (
     <Snackbar
-      key={key}
+      // key={key}
       anchorOrigin={{
         vertical,
         horizontal,

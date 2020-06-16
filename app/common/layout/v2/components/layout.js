@@ -14,11 +14,12 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import Measure from 'react-measure';
+import { Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -83,21 +84,9 @@ Router.events.on('routeChangeError', () => NProgress.done());
 // --------------------------------------------------
 
 /**
- * 
+ * Export Component
  */
 const Component = (props) => {
-  
-  
-  // --------------------------------------------------
-  //   Hooks
-  // --------------------------------------------------
-  
-  const [showNavTop, setShowNavTop] = useState(true);
-  const [lowerNavMain, setLowerNavMain] = useState(false);
-  const [lowerSidebar, setLowerSidebar] = useState(false);
-  const [heroImageHeight, setHeroImageHeight] = useState(640);
-  
-  
   
   
   // --------------------------------------------------
@@ -113,6 +102,54 @@ const Component = (props) => {
     headerNavMainArr,
     
   } = props;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Hooks
+  // --------------------------------------------------
+  
+  const [showNavTop, setShowNavTop] = useState(true);
+  const [lowerNavMain, setLowerNavMain] = useState(false);
+  const [lowerSidebar, setLowerSidebar] = useState(false);
+  const [heroImageHeight, setHeroImageHeight] = useState(640);
+  
+  const [scrollToBegin, setScrollToBegin] = useState(false);
+  const [scrollBegin, setScrollBegin] = useState(false);
+  const [scrollEnd, setScrollEnd] = useState(true);
+  
+  
+  useEffect(() => {
+    
+    
+    console.log(`
+      ----------------------------------------\n
+      /app/common/layout/v2/components/layout.js - useEffect
+    `);
+    
+    
+    // ---------------------------------------------
+    //   EventListener: react-scroll
+    //   参考：https://github.com/fisshy/react-scroll
+    // ---------------------------------------------
+    
+    Events.scrollEvent.register('begin', function(to, element) {
+      // setScrollToBegin(!scrollToBegin);
+      // setScrollBegin(true);
+      // setScrollEnd(false);
+      console.log('begin', arguments);
+    });
+
+    Events.scrollEvent.register('end', function(to, element) {
+      setScrollToBegin(!scrollToBegin);
+      // setScrollBegin(false);
+      // setScrollEnd(true);
+      console.log('end', arguments);
+    });
+    
+    
+  }, []);
   
   
   
@@ -194,6 +231,7 @@ const Component = (props) => {
         setLowerNavMain={setLowerNavMain}
         setLowerSidebar={setLowerSidebar}
         heroImageHeight={heroImageHeight}
+        scrollToBegin={scrollToBegin}
       />
       
       

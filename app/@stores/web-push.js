@@ -153,7 +153,7 @@ class Store {
           registration.unregister();
         }
         
-        console.log('Service Worker / registration.unregister()');
+        // console.log('Service Worker / registration.unregister()');
         
       }
       

@@ -24,6 +24,7 @@ import { createContainer } from 'unstated-next';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 
@@ -97,9 +98,32 @@ const useLayout = (initialStateObj) => {
       return;
     }
     
-    setSnackbarObj({
-      open: false,
-    });
+    const clonedObj = lodashCloneDeep(snackbarObj);
+    clonedObj.open = false;
+    
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@states/layout.js - handleSnackbarClose
+    // `);
+    
+    // console.log(`
+    //   ----- snackbarObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(snackbarObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- clonedObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(clonedObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    setSnackbarObj(clonedObj);
+    
+    // setSnackbarObj({
+    //   open: false,
+    // });
     
   };
   

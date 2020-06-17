@@ -129,8 +129,8 @@ const Component = (props) => {
   // 色 [success / error / warning / info]
   const variant = lodashGet(snackbarObj, ['variant'], '');
   
-  // メッセージID
-  let messageID = lodashGet(snackbarObj, ['messageID'], 'qnWsuPcrJ');
+  // メッセージID qnWsuPcrJ
+  let messageID = lodashGet(snackbarObj, ['messageID'], '');
   
   // 表示位置 - 縦方向
   const vertical = lodashGet(snackbarObj, ['vertical'], 'bottom');
@@ -144,6 +144,11 @@ const Component = (props) => {
   // Error Object
   const errorObj = lodashGet(snackbarObj, ['errorObj'], {});
   
+  
+  
+  // if (!messageID) {
+  //   return;
+  // }
   
   
   
@@ -176,13 +181,16 @@ const Component = (props) => {
     
     message = `Error Message: ${errorMessage}`;
     
-  } else {
+  } else if (messageID) {
     
     message = intl.formatMessage({ id: messageID });
     
   }
   
-  
+  // console.log(chalk`
+  //   messageID: {green ${messageID}}
+  //   message: {green ${message}}
+  // `);
   
   
   // --------------------------------------------------

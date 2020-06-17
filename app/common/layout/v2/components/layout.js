@@ -115,37 +115,43 @@ const Component = (props) => {
   const [lowerSidebar, setLowerSidebar] = useState(false);
   const [heroImageHeight, setHeroImageHeight] = useState(640);
   
-  const [scrollToBegin, setScrollToBegin] = useState(false);
-  const [scrollBegin, setScrollBegin] = useState(false);
-  const [scrollEnd, setScrollEnd] = useState(true);
+  const [scrollToEnd, setScrollToEnd] = useState(true);
   
   
   useEffect(() => {
     
     
-    console.log(`
-      ----------------------------------------\n
-      /app/common/layout/v2/components/layout.js - useEffect
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/layout/v2/components/layout.js - useEffect
+    // `);
     
     
     // ---------------------------------------------
-    //   EventListener: react-scroll
+    //   EventListener: react-scroll / header のアニメーションに関係する
     //   参考：https://github.com/fisshy/react-scroll
     // ---------------------------------------------
     
-    Events.scrollEvent.register('begin', function(to, element) {
-      // setScrollToBegin(!scrollToBegin);
-      // setScrollBegin(true);
-      // setScrollEnd(false);
-      console.log('begin', arguments);
-    });
-
     Events.scrollEvent.register('end', function(to, element) {
-      setScrollToBegin(!scrollToBegin);
-      // setScrollBegin(false);
-      // setScrollEnd(true);
-      console.log('end', arguments);
+      
+      if (window.scrollY === 0) {
+        
+        setShowNavTop(true);
+        setLowerNavMain(false);
+        setLowerSidebar(false);
+        
+      } else {
+        
+        setShowNavTop(false);
+        setLowerNavMain(false);
+        setLowerSidebar(true);
+        
+      }
+      
+      setScrollToEnd(true);
+      
+      // console.log('end', arguments);
+      
     });
     
     
@@ -231,7 +237,9 @@ const Component = (props) => {
         setLowerNavMain={setLowerNavMain}
         setLowerSidebar={setLowerSidebar}
         heroImageHeight={heroImageHeight}
-        scrollToBegin={scrollToBegin}
+        // scrollToBegin={scrollToBegin}
+        scrollToEnd={scrollToEnd}
+        setScrollToEnd={setScrollToEnd}
       />
       
       

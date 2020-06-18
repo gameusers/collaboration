@@ -72,6 +72,22 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
+  //   props
+  // --------------------------------------------------
+  
+  const {
+    
+    gameCommunities_id,
+    userCommunities_id,
+    users_id,
+    followsObj = {},
+    
+  } = props;
+  
+  
+  
+  
+  // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
@@ -101,26 +117,10 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   props
-  // --------------------------------------------------
-  
-  const {
-    
-    gameCommunities_id,
-    userCommunities_id,
-    users_id,
-    followsObj = {},
-    
-  } = props;
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
   
-  const handleFetch = async ({
+  const handleFollow = async ({
     
     type,
     gameCommunities_id,
@@ -207,7 +207,7 @@ const Component = (props) => {
         
         // console.log(`
         //   ----------------------------------------\n
-        //   /app/common/follow/v2/components/follow-button.js - handleFetch
+        //   /app/common/follow/v2/components/follow-button.js - handleFollow
         // `);
         
         // console.log(chalk`
@@ -551,19 +551,19 @@ const Component = (props) => {
           variant="contained"
           color="secondary"
           size="small"
+          disabled={buttonDisabled}
           onClick={
             buttonDisabled
               ?
                 () => {}
               :
-                () => handleFetch({
+                () => handleFollow({
                 
                   type: 'followGc',
                   gameCommunities_id,
                   
                 })
           }
-          disabled={buttonDisabled}
         >
           フォローする
         </Button>
@@ -583,6 +583,7 @@ const Component = (props) => {
           variant="contained"
           color="primary"
           size="small"
+          disabled={buttonDisabled}
           onClick={
             buttonDisabled
               ?
@@ -592,7 +593,7 @@ const Component = (props) => {
                 
                   title: 'フォロー解除',
                   description: 'フォローを解除しますか？',
-                  handle: handleFetch,
+                  handle: handleFollow,
                   argumentsObj: {
                     type: 'unfollowGc',
                     gameCommunities_id,
@@ -600,7 +601,6 @@ const Component = (props) => {
                   
                 })
           }
-          disabled={buttonDisabled}
         >
           フォロー中
         </Button>
@@ -655,18 +655,18 @@ const Component = (props) => {
             variant="contained"
             color="secondary"
             size="small"
+            disabled={buttonDisabled}
             onClick={buttonDisabled
               ?
                 () => {}
               :
-                () => handleFetch({
+                () => handleFollow({
                 
                   type: 'followApprovalUc',
                   userCommunities_id,
                   
                 })
             }
-            disabled={buttonDisabled}
           >
             コミュニティに参加申請する
           </Button>
@@ -684,18 +684,18 @@ const Component = (props) => {
             variant="contained"
             color="secondary"
             size="small"
+            disabled={buttonDisabled}
             onClick={buttonDisabled
               ?
                 () => {}
               :
-                () => handleFetch({
+                () => handleFollow({
                 
                   type: 'followUc',
                   userCommunities_id,
                   
                 })
             }
-            disabled={buttonDisabled}
           >
             コミュニティに参加する
           </Button>
@@ -718,6 +718,7 @@ const Component = (props) => {
           variant="contained"
           color="primary"
           size="small"
+          disabled={buttonDisabled}
           onClick={
             buttonDisabled
               ?
@@ -727,7 +728,7 @@ const Component = (props) => {
                 
                   title: 'コミュニティの退会',
                   description: 'コミュニティから退会しますか？',
-                  handle: handleFetch,
+                  handle: handleFollow,
                   argumentsObj: {
                     type: 'unfollowUc',
                     gameCommunities_id,
@@ -735,7 +736,6 @@ const Component = (props) => {
                   
                 })
           }
-          disabled={buttonDisabled}
         >
           コミュニティから退会する
         </Button>
@@ -755,6 +755,7 @@ const Component = (props) => {
           variant="contained"
           color="primary"
           size="small"
+          disabled={buttonDisabled}
           onClick={
             buttonDisabled
               ?
@@ -764,7 +765,7 @@ const Component = (props) => {
                 
                   title: '参加申請の取り下げ',
                   description: '参加申請を取り下げますか？',
-                  handle: handleFetch,
+                  handle: handleFollow,
                   argumentsObj: {
                     type: 'unfollowApprovalUc',
                     gameCommunities_id,
@@ -772,7 +773,6 @@ const Component = (props) => {
                   
                 })
           }
-          disabled={buttonDisabled}
         >
           参加申請を取り下げる
         </Button>
@@ -827,18 +827,18 @@ const Component = (props) => {
             variant="contained"
             color="secondary"
             size="small"
+            disabled={buttonDisabled}
             onClick={buttonDisabled
               ?
                 () => {}
               :
-                () => handleFetch({
+                () => handleFollow({
                 
                   type: 'followApproval',
                   users_id,
                   
                 })
             }
-            disabled={buttonDisabled}
           >
             フォロー申請をする
           </Button>
@@ -856,18 +856,18 @@ const Component = (props) => {
             variant="contained"
             color="secondary"
             size="small"
+            disabled={buttonDisabled}
             onClick={buttonDisabled
               ?
                 () => {}
               :
-                () => handleFetch({
+                () => handleFollow({
                 
                   type: 'follow',
                   users_id,
                   
                 })
             }
-            disabled={buttonDisabled}
           >
             フォローする
           </Button>
@@ -890,6 +890,7 @@ const Component = (props) => {
           variant="contained"
           color="primary"
           size="small"
+          disabled={buttonDisabled}
           onClick={
             buttonDisabled
               ?
@@ -899,7 +900,7 @@ const Component = (props) => {
                 
                   title: 'フォローの解除',
                   description: 'フォローを解除しますか？',
-                  handle: handleFetch,
+                  handle: handleFollow,
                   argumentsObj: {
                     type: 'unfollow',
                     users_id,
@@ -907,7 +908,6 @@ const Component = (props) => {
                   
                 })
           }
-          disabled={buttonDisabled}
         >
           フォロー中
         </Button>
@@ -927,6 +927,7 @@ const Component = (props) => {
           variant="contained"
           color="primary"
           size="small"
+          disabled={buttonDisabled}
           onClick={
             buttonDisabled
               ?
@@ -936,7 +937,7 @@ const Component = (props) => {
                 
                   title: 'フォロー申請の取り下げ',
                   description: 'フォロー申請を取り下げますか？',
-                  handle: handleFetch,
+                  handle: handleFollow,
                   argumentsObj: {
                     type: 'unfollowApproval',
                     users_id,
@@ -944,7 +945,6 @@ const Component = (props) => {
                   
                 })
           }
-          disabled={buttonDisabled}
         >
           フォロー申請を取り下げる
         </Button>
@@ -967,14 +967,14 @@ const Component = (props) => {
         
   //       title: 'フォロー解除2',
   //       description: 'フォローを解除しますか？2',
-  //       handle: handleFetch,
+  //       handle: handleFollow,
   //       argumentsObj: {
   //         type: 'unfollowGc',
   //         gameCommunities_id,
   //       },
         
   //     })}
-  //     // onClick={() => handleFetch()}
+  //     // onClick={() => handleFollow()}
   //     disabled={buttonDisabled}
   //   >
   //     Snackbar

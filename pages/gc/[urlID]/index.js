@@ -44,7 +44,7 @@ import { getCookie } from 'app/@modules/cookie.js';
 
 import Layout from 'app/common/layout/v2/components/layout.js';
 import ForumNavigation from 'app/common/forum/v2/components/navigation.js';
-import ForumThread from 'app/common/forum/v2/components/thread.js';
+import Forum from 'app/common/forum/v2/components/forum.js';
 import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
 
 
@@ -52,7 +52,7 @@ import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
 //   States
 // ---------------------------------------------
 
-// import { ContainerStateUser } from 'app/@states/user.js';
+import { ContainerStateGc } from 'app/@states/gc.js';
 
 
 
@@ -71,12 +71,28 @@ const Component = (props) => {
   //   Hooks
   // --------------------------------------------------
   
-  const [gameCommunityObj, setGameCommunityObj] = useState(props.gameCommunityObj);
-  const [forumThreadsForListObj, setForumThreadsForListObj] = useState(props.forumThreadsForListObj);
-  const [forumThreadsObj, setForumThreadsObj] = useState(props.forumThreadsObj);
-  const [forumCommentsObj, setForumCommentsObj] = useState(props.forumCommentsObj);
-  const [forumRepliesObj, setForumRepliesObj] = useState(props.forumRepliesObj);
+  // const [gameCommunityObj, setGameCommunityObj] = useState(props.gameCommunityObj);
+  // const [forumThreadsForListObj, setForumThreadsForListObj] = useState(props.forumThreadsForListObj);
+  // const [forumThreadsObj, setForumThreadsObj] = useState(props.forumThreadsObj);
+  // const [forumCommentsObj, setForumCommentsObj] = useState(props.forumCommentsObj);
+  // const [forumRepliesObj, setForumRepliesObj] = useState(props.forumRepliesObj);
   
+  
+  
+  
+  // --------------------------------------------------
+  //   unstated-next - Initial State
+  // --------------------------------------------------
+  
+  const initialStateObj = {
+    
+    gameCommunityObj: props.gameCommunityObj,
+    forumThreadsForListObj: props.forumThreadsForListObj,
+    forumThreadsObj: props.forumThreadsObj,
+    forumCommentsObj: props.forumCommentsObj,
+    forumRepliesObj: props.forumRepliesObj,
+    
+  };
   
   
   
@@ -128,10 +144,6 @@ const Component = (props) => {
     <ForumNavigation
       urlID={props.urlID}
       gameCommunities_id={props.gameCommunities_id}
-      gameCommunityObj={gameCommunityObj}
-      setGameCommunityObj={setGameCommunityObj}
-      forumThreadsForListObj={forumThreadsForListObj}
-      setForumThreadsForListObj={setForumThreadsForListObj}
     />
   ;
   
@@ -149,18 +161,9 @@ const Component = (props) => {
         arr={props.breadcrumbsArr}
       />
       
-      <ForumThread
+      <Forum
         urlID={props.urlID}
         gameCommunities_id={props.gameCommunities_id}
-        setGameCommunityObj={setGameCommunityObj}
-        setForumThreadsForListObj={setForumThreadsForListObj}
-        forumThreadsObj={forumThreadsObj}
-        setForumThreadsObj={setForumThreadsObj}
-        forumCommentsObj={forumCommentsObj}
-        setForumCommentsObj={setForumCommentsObj}
-        forumRepliesObj={forumRepliesObj}
-        setForumRepliesObj={setForumRepliesObj}
-        
         settingAnonymity={true}
       />
       
@@ -175,14 +178,18 @@ const Component = (props) => {
   // --------------------------------------------------
   
   return (
-    <Layout
-      title={props.title}
-      componentSidebar={componentSidebar}
-      componentContent={componentContent}
+    <ContainerStateGc.Provider initialState={initialStateObj}>
       
-      headerObj={props.headerObj}
-      headerNavMainArr={props.headerNavMainArr}
-    />
+      <Layout
+        title={props.title}
+        componentSidebar={componentSidebar}
+        componentContent={componentContent}
+        
+        headerObj={props.headerObj}
+        headerNavMainArr={props.headerNavMainArr}
+      />
+      
+    </ContainerStateGc.Provider>
   );
   
   
@@ -265,6 +272,8 @@ export async function getServerSideProps({ req, res, query }) {
   //   dataObj
   // --------------------------------------------------
   
+  const login = lodashGet(dataObj, ['accessLevel'], false);
+  const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
@@ -401,6 +410,8 @@ export async function getServerSideProps({ req, res, query }) {
       urlID,
       ISO8601,
       statusCode,
+      login,
+      loginUsersObj,
       title,
       headerObj,
       headerNavMainArr,

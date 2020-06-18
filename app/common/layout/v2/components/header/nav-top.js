@@ -186,7 +186,7 @@ const Component = (props) => {
   
   const stateUser = ContainerStateUser.useContainer();
   
-  const { loginUsersObj } = stateUser;
+  const { login, loginUsersObj } = stateUser;
   
   
   // console.log(chalk`
@@ -432,8 +432,8 @@ const Component = (props) => {
   // --------------------------------------------------
   
   // console.log(`
-  //   ----- contextObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(contextObj)), { colors: true, depth: null })}\n
+  //   ----- loginUsersObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(loginUsersObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
   
@@ -545,7 +545,7 @@ const Component = (props) => {
           
           
           {/* サムネイルまたはログインページへのリンク */}
-          {userID
+          {login
             ?
               
               <IconButton

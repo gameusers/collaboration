@@ -41,7 +41,7 @@ import lodashMerge from 'lodash/merge';
 //   Material UI
 // ---------------------------------------------
 
-import { withStyles } from '@material-ui/core/styles';
+// import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -94,14 +94,14 @@ import { getCookie } from 'app/@modules/cookie.js';
 //   States
 // ---------------------------------------------
 
-import { ContainerStateLayout } from 'app/@states/layout.js';
+import { ContainerStateGc } from 'app/@states/gc.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import FormThread from 'app/common/forum/v2/components/form-thread.js';
+// import FormThread from 'app/common/forum/v2/components/form-thread.js';
 
 
 
@@ -113,13 +113,13 @@ import FormThread from 'app/common/forum/v2/components/form-thread.js';
 //   https://material-ui.com/styles/basics/
 // --------------------------------------------------
 
-const stylesObj = {
+// const stylesObj = {
   
-  label: {
-    fontSize: 14
-  },
+//   label: {
+//     fontSize: 14
+//   },
   
-};
+// };
 
 
 // --------------------------------------------------
@@ -129,14 +129,14 @@ const stylesObj = {
 
 // Tooltip内のIconButtonにemotionでスタイルを当てると、ビルド時にエラーがでるため、強引にstyleで当てている。
 // 将来的にバグ？が解消するかもしれないので、以下は消さないように
-const cssIconButton = css`
-  && {
-    width: 28px;
-    height: 28px;
-    margin: 0 10px 0 0;
-    padding: 0;
-  }
-`;
+// const cssIconButton = css`
+//   && {
+//     width: 28px;
+//     height: 28px;
+//     margin: 0 10px 0 0;
+//     padding: 0;
+//   }
+// `;
 
 const cssTableCell = css`
   && {
@@ -171,10 +171,10 @@ const Component = (props) => {
     userCommunityID,
     userCommunities_id,
     
-    gameCommunityObj,
-    setGameCommunityObj,
-    forumThreadsForListObj,
-    setForumThreadsForListObj,
+    // gameCommunityObj,
+    // setGameCommunityObj,
+    // forumThreadsForListObj,
+    // setForumThreadsForListObj,
     
   } = props;
   
@@ -189,8 +189,8 @@ const Component = (props) => {
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [currentTabNo, setCurrentTabNo] = useState(0);
   
-  const [name, setName] = useState();
-  const [comment, setComment] = useState();
+  // const [name, setName] = useState();
+  // const [comment, setComment] = useState();
   
   
   useEffect(() => {
@@ -198,6 +198,24 @@ const Component = (props) => {
     setButtonDisabled(false);
     
   }, []);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateGc = ContainerStateGc.useContainer();
+  
+  const {
+    
+    gameCommunityObj,
+    setGameCommunityObj,
+    forumThreadsForListObj,
+    setForumThreadsForListObj,
+    
+  } = stateGc;
   
   
   

@@ -221,6 +221,12 @@ const Component = (props) => {
   
   // console.log(`
   //   ----- imagesAndVideosObj -----\n
+  //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(`
+  //   ----- imagesAndVideosObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);

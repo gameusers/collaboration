@@ -287,6 +287,7 @@ class MyApp extends App {
     //   Initial State
     // --------------------------------------------------
     
+    const login = lodashGet(pageProps, ['login'], false);
     const loginUsersObj = lodashGet(pageProps, ['loginUsersObj'], {});
     const reqAcceptLanguage = lodashGet(pageProps, ['reqAcceptLanguage'], '');
     
@@ -296,6 +297,7 @@ class MyApp extends App {
     
     const initialStateObj = {
       
+      login,
       loginUsersObj,
       localeObj,
       

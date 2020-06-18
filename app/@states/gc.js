@@ -30,19 +30,21 @@ import lodashGet from 'lodash/get';
 
 
 // --------------------------------------------------
-//   State
+//   States
 // --------------------------------------------------
 
-const useUser = (initialStateObj) => {
+const useGc = (initialStateObj) => {
   
   
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
-  const [login, setLogin] = useState(lodashGet(initialStateObj, ['login'], false));
-  const [loginUsersObj, setLoginUsersObj] = useState(lodashGet(initialStateObj, ['loginUsersObj'], {}));
-  const [localeObj, setLocaleObj] = useState(lodashGet(initialStateObj, ['localeObj'], {}));
+  const [gameCommunityObj, setGameCommunityObj] = useState(lodashGet(initialStateObj, ['gameCommunityObj'], {}));
+  const [forumThreadsForListObj, setForumThreadsForListObj] = useState(lodashGet(initialStateObj, ['forumThreadsForListObj'], {}));
+  const [forumThreadsObj, setForumThreadsObj] = useState(lodashGet(initialStateObj, ['forumThreadsObj'], {}));
+  const [forumCommentsObj, setForumCommentsObj] = useState(lodashGet(initialStateObj, ['forumCommentsObj'], {}));
+  const [forumRepliesObj, setForumRepliesObj] = useState(lodashGet(initialStateObj, ['forumRepliesObj'], {}));
   
   
   
@@ -71,12 +73,20 @@ const useUser = (initialStateObj) => {
   
   return {
     
-    login,
-    setLogin,
-    loginUsersObj,
-    setLoginUsersObj,
-    localeObj,
-    setLocaleObj,
+    gameCommunityObj,
+    setGameCommunityObj,
+    
+    forumThreadsForListObj,
+    setForumThreadsForListObj,
+    
+    forumThreadsObj,
+    setForumThreadsObj,
+    
+    forumCommentsObj,
+    setForumCommentsObj,
+    
+    forumRepliesObj,
+    setForumRepliesObj,
     
   };
   
@@ -90,4 +100,4 @@ const useUser = (initialStateObj) => {
 //   Export
 // --------------------------------------------------
 
-export const ContainerStateUser = createContainer(useUser);
+export const ContainerStateGc = createContainer(useGc);

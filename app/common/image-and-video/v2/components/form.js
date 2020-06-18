@@ -67,42 +67,12 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Hooks
-  // --------------------------------------------------
-  
-  const intl = useIntl();
-  const [buttonDisabled, setButtonDisabled] = useState(true);
-  
-  const [showFormImage, setShowFormImage] = useState(false);
-  const [showFormVideo, setShowFormVideo] = useState(false);
-  // const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
-    
-  //   _id: '',
-  //   createdDate: '',
-  //   updatedDate: '',
-  //   users_id: '',
-  //   type: props.type,
-  //   arr: [],
-    
-  // });
-  
-  
-  useEffect(() => {
-    
-    setButtonDisabled(false);
-    
-  }, []);
-  
-  
-  
-  
-  // --------------------------------------------------
   //   props
   // --------------------------------------------------
   
   const {
     
-    // type,
+    type,
     showImageButton = true,
     showVideoButton = true,
     descriptionImage,
@@ -113,6 +83,26 @@ const Component = (props) => {
     setImagesAndVideosObj,
     
   } = props;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Hooks
+  // --------------------------------------------------
+  
+  const intl = useIntl();
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+  
+  const [showFormImage, setShowFormImage] = useState(false);
+  const [showFormVideo, setShowFormVideo] = useState(false);
+  
+  
+  useEffect(() => {
+    
+    setButtonDisabled(false);
+    
+  }, []);
   
   
   
@@ -166,6 +156,10 @@ const Component = (props) => {
   //   ----- pathArr -----\n
   //   ${util.inspect(pathArr, { colors: true, depth: null })}\n
   //   --------------------\n
+  // `);
+  
+  // console.log(chalk`
+  //   type: {green ${type}}
   // `);
   
   // console.log(`

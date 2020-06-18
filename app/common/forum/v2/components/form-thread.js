@@ -65,7 +65,7 @@ import { validationForumThreadsComment } from 'app/@database/forum-threads/valid
 //   Components
 // ---------------------------------------------
 
-import ImageAndVideoForm from 'app/common/image-and-video/v2/components/form.js';
+import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js';
 
 
 
@@ -92,16 +92,14 @@ const Component = (props) => {
     userCommunities_id,
     forumThreads_id,
     
-    setGameCommunityObj,
-    setForumThreadsForListObj,
-    setForumThreadsObj,
-    setForumCommentsObj,
-    setForumRepliesObj,
+    setShowForm,
     
-    name,
-    setName,
-    comment,
-    setComment,
+    // name,
+    // setFormName,
+    // comment,
+    // setFormComment,
+    // imagesAndVideosObj,
+    // setFormImagesAndVideosObj,
     
   } = props;
   
@@ -115,6 +113,8 @@ const Component = (props) => {
   const intl = useIntl();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
+  const [name, setName] = useState();
+  const [comment, setComment] = useState();
   const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
     
     _id: '',
@@ -130,6 +130,16 @@ const Component = (props) => {
   useEffect(() => {
     
     setButtonDisabled(false);
+    
+    
+    // --------------------------------------------------
+    //   編集用データを読み込む
+    // --------------------------------------------------
+    
+    if (forumThreads_id) {
+      handleGetEditData({ forumThreads_id });
+    }
+    
     
   }, []);
   
@@ -152,14 +162,168 @@ const Component = (props) => {
     
   } = stateLayout;
   
-  // console.log(chalk`
-  //   /app/common/forum/v2/components/form-thread.js
-  // `);
+  
   
   
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
+  
+  /**
+   * 編集用データを読み込む
+   * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
+   */
+  const handleGetEditData = async ({ forumThreads_id }) => {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   forumThreads_id が存在しない場合エラー
+      // ---------------------------------------------
+      
+      if (!forumThreads_id) {
+        throw new CustomError({ errorsArr: [{ code: '5bsoal_-V', messageID: 'Error' }] });
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Loading Open
+      // ---------------------------------------------
+      
+      handleLoadingOpen({});
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      setButtonDisabled(true);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formDataObj = {
+        forumThreads_id,
+      };
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      const resultObj = await fetchWrapper({
+        
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/get-edit-data`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
+        
+      });
+      
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Set Form Data
+      // ---------------------------------------------
+      
+      const name = lodashGet(resultObj, ['data', 'name'], '');
+      const comment = lodashGet(resultObj, ['data', 'comment'], '');
+      let imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
+      
+      if (Object.keys(imagesAndVideosObj).length === 0) {
+        
+        imagesAndVideosObj = {
+          
+          _id: '',
+          createdDate: '',
+          updatedDate: '',
+          users_id: '',
+          type: 'forum',
+          arr: [],
+          
+        };
+        
+      }
+      
+      setName(name);
+      setComment(comment);
+      setImagesAndVideosObj(imagesAndVideosObj);
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      setButtonDisabled(false);
+      
+      
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
+      
+      handleLoadingClose();
+      
+      
+      // ---------------------------------------------
+      //   Scroll To
+      // ---------------------------------------------
+      
+      handleScrollTo({
+        
+        to: forumThreads_id,
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+        
+      });
+      
+      
+    }
+    
+    
+  };
+  
   
   /**
    * スレッド作成・編集フォームを送信する
@@ -299,8 +463,8 @@ const Component = (props) => {
         gameCommunities_id,
         userCommunities_id,
         forumThreads_id,
-        name,
-        comment,
+        name: name,
+        comment: comment,
         threadListLimit,
         threadLimit,
         commentLimit,
@@ -481,18 +645,8 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Scroll
+      //   Scroll To
       // ---------------------------------------------
-      
-      // handleScrollTo({
-        
-      //   to: forumThreads_id,
-      //   duration: 0,
-      //   delay: 0,
-      //   smooth: 'easeInOutQuart',
-      //   offset: -50,
-        
-      // });
       
       handleScrollTo({
         
@@ -523,35 +677,10 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Forum
-  // --------------------------------------------------
-  
-  // const {
-    
-  //   dataObj,
-  //   handleEdit,
-  //   handleSubmit,
-  //   handleDeleteThread,
-    
-  // } = storeForum;
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Limit
   // --------------------------------------------------
   
   const limit = parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_IMAGES_AND_VIDEOS_LIMIT, 10);
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   スレッドを削除するか尋ねるダイアログを表示するための変数
-  // --------------------------------------------------
-  
-  // const showDeleteDialog = lodashGet(dataObj, [...this.pathArr, 'showDeleteDialog'], false);
   
   
   
@@ -562,7 +691,13 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/forum/components/form-thread.js
+  //   /app/common/forum/v2/components/form-thread.js
+  // `);
+  
+  // console.log(`
+  //   ----- imagesAndVideosObj -----\n
+  //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
+  //   --------------------\n
   // `);
   
   // console.log(`
@@ -677,7 +812,8 @@ const Component = (props) => {
         `}
       >
         
-        <ImageAndVideoForm
+        <FormImageAndVideo
+          type="forum"
           descriptionImage="スレッドに表示する画像をアップロードできます。"
           descriptionVideo="スレッドに表示する動画を登録できます。"
           showImageCaption={true}
@@ -714,46 +850,6 @@ const Component = (props) => {
         
         
         
-        {/* 削除ボタン */}
-        {forumThreads_id &&
-          <div
-            css={css`
-              margin: 0 0 0 24px;
-            `}
-          >
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={
-                buttonDisabled
-                  ?
-                    () => {}
-                  :
-                    // () => {}
-                    () => handleDialogOpen({
-                    
-                      title: 'スレッド削除',
-                      description: 'スレッドを削除しますか？',
-                      // handle: handleFetch,
-                      handle: () => {},
-                      argumentsObj: {
-                        gameCommunities_id,
-                        userCommunities_id,
-                        forumThreads_id,
-                      },
-                      
-                    })
-              }
-              disabled={buttonDisabled}
-            >
-              削除する
-            </Button>
-          </div>
-        }
-        
-        
-        
-        
         {/* Close */}
         {forumThreads_id &&
           <div
@@ -764,11 +860,8 @@ const Component = (props) => {
             <Button
               variant="outlined"
               color="secondary"
-              // onClick={() => handleEdit({
-              //   pathArr: [forumThreads_id, 'showForm'],
-              //   value: false
-              // })}
               disabled={buttonDisabled}
+              onClick={() => setShowForm(false)}
             >
               閉じる
             </Button>
@@ -776,61 +869,6 @@ const Component = (props) => {
         }
         
       </div>
-      
-      
-      
-      
-      {/* スレッドを削除するか尋ねるダイアログ */}
-      {/*<Dialog
-        open={showDeleteDialog}
-        onClose={() => handleEdit({
-          pathArr: [...this.pathArr, 'showDeleteDialog'],
-          value: false,
-        })}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        
-        <DialogTitle id="alert-dialog-title">スレッド削除</DialogTitle>
-        
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            スレッドを削除しますか？
-          </DialogContentText>
-        </DialogContent>
-        
-        <DialogActions>
-          <div
-            css={css`
-              margin: 0 auto 0 0;
-            `}
-          >
-            <Button
-              onClick={() => handleDeleteThread({
-                pathArr: this.pathArr,
-                gameCommunities_id,
-                userCommunities_id,
-                forumThreads_id,
-              })}
-              color="primary"
-              autoFocus
-            >
-              はい
-            </Button>
-          </div>
-          
-          <Button
-            onClick={() => handleEdit({
-              pathArr: [...this.pathArr, 'showDeleteDialog'],
-              value: false,
-            })}
-            color="primary"
-          >
-            いいえ
-          </Button>
-        </DialogActions>
-        
-      </Dialog>*/}
       
       
     </form>

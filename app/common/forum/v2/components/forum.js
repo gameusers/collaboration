@@ -16,11 +16,14 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Router from 'next/router';
 import { useIntl } from 'react-intl';
 import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
-import SimpleIcons from 'simple-icons-react-component';
+// import SimpleIcons from 'simple-icons-react-component';
+import moment from 'moment';
+import Cookies from 'js-cookie';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -31,6 +34,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
@@ -40,28 +44,28 @@ import lodashGet from 'lodash/get';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+// import IconButton from '@material-ui/core/IconButton';
+// import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+// import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+// import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Paper from '@material-ui/core/Paper';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import Avatar from '@material-ui/core/Avatar';
+// import Avatar from '@material-ui/core/Avatar';
 
 
 // ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
 
-import IconExpandLess from '@material-ui/icons/ExpandLess';
-import IconExpandMore from '@material-ui/icons/ExpandMore';
-import IconAssignment from '@material-ui/icons/Assignment';
-import IconPublic from '@material-ui/icons/Public';
-import IconDelete from '@material-ui/icons/Delete';
-import IconEdit from '@material-ui/icons/Edit';
+// import IconExpandLess from '@material-ui/icons/ExpandLess';
+// import IconExpandMore from '@material-ui/icons/ExpandMore';
+// import IconAssignment from '@material-ui/icons/Assignment';
+// import IconPublic from '@material-ui/icons/Public';
+// import IconDelete from '@material-ui/icons/Delete';
+// import IconEdit from '@material-ui/icons/Edit';
 import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 
 
@@ -70,22 +74,22 @@ import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 // ---------------------------------------------
 
 import Panel from 'app/common/layout/v2/components/panel.js';
-import Paragraph from 'app/common/layout/v2/components/paragraph.js';
-import ImageAndVideo from 'app/common/image-and-video/components/image-and-video.js';
+// import Paragraph from 'app/common/layout/v2/components/paragraph.js';
+// import ImageAndVideo from 'app/common/image-and-video/components/image-and-video.js';
 import Thread from 'app/common/forum/v2/components/thread.js';
 import FormThread from 'app/common/forum/v2/components/form-thread.js';
 import FormComment from 'app/common/forum/components/form-comment.js';
 import Comment from 'app/common/forum/components/comment.js';
 
-import FormName from 'app/common/form/components/name.js';
+// import FormName from 'app/common/form/components/name.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-// import { fetchWrapper } from 'app/@modules/fetch.js';
-// import { CustomError } from 'app/@modules/error/custom.js';
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 import { getCookie } from 'app/@modules/cookie.js';
 
 
@@ -93,7 +97,7 @@ import { getCookie } from 'app/@modules/cookie.js';
 //   States
 // ---------------------------------------------
 
-// import { ContainerStateLayout } from 'app/@states/layout.js';
+import { ContainerStateLayout } from 'app/@states/layout.js';
 import { ContainerStateGc } from 'app/@states/gc.js';
 
 
@@ -177,31 +181,177 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
   
+  const stateLayout = ContainerStateLayout.useContainer();
   const stateGc = ContainerStateGc.useContainer();
   
-  const { forumThreadsObj } = stateGc;
+  const {
+    
+    handleSnackbarOpen,
+    handleDialogOpen,
+    handleLoadingOpen,
+    handleLoadingClose,
+    handleScrollTo,
+    
+  } = stateLayout;
+  
+  const {
+    
+    // gameCommunityObj,
+    // setGameCommunityObj,
+    forumThreadsObj,
+    // setForumThreadsObj,
+    // forumThreadsReload,
+    // setForumThreadsReload,
+    // setForumCommentsReload,
+    
+  } = stateGc;
   
   
-  
-  // console.log(`
-  //   ----- forumThreadsObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
   
   
   // --------------------------------------------------
-  //   Forum
+  //   Handler
   // --------------------------------------------------
   
-  // const {
+  /**
+   * スレッドを読み込む
+   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
+   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
+   * @param {number} page - スレッドのページ
+   * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
+   */
+  const handleReadThreads = async ({
     
-  //   dataObj,
-  //   handleEdit,
-  //   handleReadThreads,
-  //   handleShowFormThread,
+    gameCommunities_id,
+    userCommunities_id,
+    page,
+    changeLimit,
     
-  // } = storeForum;
+  }) => {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Router.push 用
+      // ---------------------------------------------
+      
+      let url = '';
+      let as = '';
+      
+      if (page === 1) {
+        
+        url = `/gc/[urlID]/index?urlID=${urlID}`;
+        as = `/gc/${urlID}`;
+        
+      } else {
+        
+        url = `/gc/[urlID]/forum/[...slug]?urlID=${urlID}&page=${page}`;
+        as = `/gc/${urlID}/forum/${page}`;
+        
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Change Limit / Set Cookie
+      // ---------------------------------------------
+      
+      if (changeLimit) {
+        
+        Cookies.set('forumThreadLimit', changeLimit);
+        
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/forum/v2/components/forum.js - handleReadThreads
+      // `);
+      
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   page: {green ${page}}
+      //   changeLimit: {green ${changeLimit}}
+      // `);
+      
+      // return;
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Router.push = History API pushState()
+      // ---------------------------------------------
+      
+      await Router.push(url, as);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      if (page === 1) {
+        
+        handleScrollTo({
+          
+          to: 'forumThreads',
+          duration: 0,
+          delay: 0,
+          smooth: 'easeInOutQuart',
+          offset: -50,
+          
+        });
+        
+      }
+      
+      
+    } catch (errorObj) {
+      
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      // setButtonDisabled(false);
+      
+      
+      // // ---------------------------------------------
+      // //   Scroll
+      // // ---------------------------------------------
+      
+      // handleScrollTo({
+        
+      //   to: 'forumThreads',
+      //   duration: 0,
+      //   delay: 0,
+      //   smooth: 'easeInOutQuart',
+      //   offset: -50,
+        
+      // });
+      
+      
+    }
+    
+    
+  };
+  
+  
   
   
   // --------------------------------------------------
@@ -210,7 +360,9 @@ const Component = (props) => {
   
   const page = lodashGet(forumThreadsObj, ['page'], 1);
   const count = lodashGet(forumThreadsObj, ['count'], 0);
-  const limit = parseInt((getCookie({ key: 'threadLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT), 10);
+  const limit = lodashGet(forumThreadsObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT, 10));
+  // const limit = 1;
+  // const limit = parseInt((getCookie({ key: 'forumThreadLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT), 10);
   const arr = lodashGet(forumThreadsObj, [`page${page}Obj`, 'arr'], []);
   
   
@@ -252,7 +404,7 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/forum/v2/components/thread.js
+  //   /app/common/forum/v2/components/forum.js
   // `);
   
   // console.log(chalk`
@@ -305,13 +457,6 @@ const Component = (props) => {
         userCommunities_id={userCommunities_id}
         forumThreads_id={forumThreads_id}
         dataObj={dataObj}
-        
-        // setGameCommunityObj={setGameCommunityObj}
-        // setForumThreadsForListObj={setForumThreadsForListObj}
-        // forumThreadsObj={forumThreadsObj}
-        // setForumThreadsObj={setForumThreadsObj}
-        // setForumCommentsObj={setForumCommentsObj}
-        // setForumRepliesObj={setForumRepliesObj}
       />
     );
     
@@ -415,14 +560,11 @@ const Component = (props) => {
             
             <Pagination
               disabled={buttonDisabled}
-              onChange={() => () => {}}
-              // onChange={(page) => handleReadThreads({
-              //   // pathArr: this.pathArr,
-              //   // temporaryDataID,
-              //   gameCommunities_id,
-              //   userCommunities_id,
-              //   page,
-              // })}
+              onChange={(page) => handleReadThreads({
+                gameCommunities_id,
+                userCommunities_id,
+                page,
+              })}
               pageSize={limit}
               current={page}
               total={count}
@@ -442,15 +584,12 @@ const Component = (props) => {
             
             <Select
               value={limit}
-              onChange={() => () => {}}
-              // onChange={(eventObj) => handleReadThreads({
-              //   pathArr: this.pathArr,
-              //   temporaryDataID,
-              //   gameCommunities_id,
-              //   userCommunities_id,
-              //   page: 1,
-              //   changeLimit: eventObj.target.value,
-              // })}
+              onChange={(eventObj) => handleReadThreads({
+                gameCommunities_id,
+                userCommunities_id,
+                page: 1,
+                changeLimit: eventObj.target.value,
+              })}
               input={
                 <OutlinedInput
                   classes={{
@@ -491,4 +630,3 @@ const Component = (props) => {
 // --------------------------------------------------
 
 export default Component;
-// export default withStyles(stylesObj)(Component);

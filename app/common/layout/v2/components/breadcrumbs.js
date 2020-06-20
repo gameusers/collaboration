@@ -14,7 +14,6 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-// import React from 'react';
 import Link from 'next/link';
 
 /** @jsx jsx */
@@ -44,16 +43,11 @@ import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 
 import IconHome from '@material-ui/icons/Home';
 import IconGames from '@material-ui/icons/Games';
+
+import IconForum from '@material-ui/icons/Forum';
 import IconDescription from '@material-ui/icons/Description';
 import IconIndividual from '@material-ui/icons/DoubleArrow';
 import IconSearch from '@material-ui/icons/Search';
-
-
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-// import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 
@@ -106,7 +100,7 @@ const Component = (props) => {
       
     } else if (valueObj.type === 'gc/forum') {
       
-      icon = <IconDescription fontSize="small" />;
+      icon = <IconForum fontSize="small" />;
       anchorText = 'フォーラム';
       
     } else if (valueObj.type === 'gc/rec') {
@@ -114,7 +108,7 @@ const Component = (props) => {
       icon = <IconDescription fontSize="small" />;
       anchorText = '募集';
       
-    } else if (valueObj.type === 'gc/rec/individual') {
+    } else if (valueObj.type === 'gc/forum/individual' || valueObj.type === 'gc/rec/individual') {
       
       icon = <IconIndividual fontSize="small" />;
       anchorText = valueObj.anchorText;

@@ -73,12 +73,12 @@ import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 
 import Panel from 'app/common/layout/v2/components/panel.js';
 import Paragraph from 'app/common/layout/v2/components/paragraph.js';
-import ImageAndVideo from 'app/common/image-and-video/components/image-and-video.js';
+import ImageAndVideo from 'app/common/image-and-video/v2/components/image-and-video.js';
 import FormThread from 'app/common/forum/v2/components/form-thread.js';
 import FormComment from 'app/common/forum/components/form-comment.js';
 import Comment from 'app/common/forum/components/comment.js';
 
-import FormName from 'app/common/form/components/name.js';
+// import FormName from 'app/common/form/components/name.js';
 
 
 // ---------------------------------------------
@@ -173,7 +173,6 @@ const Component = ({
   const stateLayout = ContainerStateLayout.useContainer();
   const stateGc = ContainerStateGc.useContainer();
   
-  
   const {
     
     handleSnackbarOpen,
@@ -184,8 +183,13 @@ const Component = ({
     
   } = stateLayout;
   
-  
-  const { forumThreadsObj, setForumThreadsObj } = stateGc;
+  const {
+    
+    setGameCommunityObj,
+    forumThreadsObj,
+    setForumThreadsObj,
+    
+  } = stateGc;
   
   
   
@@ -243,16 +247,16 @@ const Component = ({
       //   console.log
       // ---------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/common/forum/v2/components/thread.js - handleDelete
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/forum/v2/components/thread.js - handleDelete
+      // `);
       
-      console.log(chalk`
-        gameCommunities_id: {green ${gameCommunities_id}}
-        userCommunities_id: {green ${userCommunities_id}}
-        forumThreads_id: {green ${forumThreads_id}}
-      `);
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   forumThreads_id: {green ${forumThreads_id}}
+      // `);
       
       
       
@@ -266,10 +270,6 @@ const Component = ({
         gameCommunities_id,
         userCommunities_id,
         forumThreads_id,
-        // threadListLimit,
-        // threadLimit,
-        // commentLimit,
-        // replyLimit,
         
       };
       
@@ -278,45 +278,45 @@ const Component = ({
       //   Fetch
       // ---------------------------------------------
       
-      // let resultObj = {};
+      let resultObj = {};
       
-      // if (gameCommunities_id) {
+      if (gameCommunities_id) {
         
-      //   resultObj = await fetchWrapper({
+        resultObj = await fetchWrapper({
           
-      //     urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/delete-gc`,
-      //     methodType: 'POST',
-      //     formData: JSON.stringify(formDataObj),
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/delete-gc`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj),
           
-      //   });
+        });
         
-      // } else if (userCommunities_id) {
+      } else if (userCommunities_id) {
         
-      //   resultObj = await fetchWrapper({
+        resultObj = await fetchWrapper({
           
-      //     urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/delete-uc`,
-      //     methodType: 'POST',
-      //     formData: JSON.stringify(formDataObj),
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/delete-uc`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj),
           
-      //   });
+        });
         
-      // }
+      }
       
       
-      // // console.log(`
-      // //   ----- resultObj -----\n
-      // //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
-      // // ---------------------------------------------
-      // //   Error
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
       
-      // if ('errorsArr' in resultObj) {
-      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
-      // }
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
       
       
       
@@ -343,6 +343,15 @@ const Component = ({
       //   ${util.inspect(clonedForumThreadsObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
+      
+      
+      // ---------------------------------------------
+      //   Game Community データ更新
+      // ---------------------------------------------
+      
+      const gameCommunityObj = lodashGet(resultObj, ['data', 'gameCommunityObj'], {});
+      setGameCommunityObj(gameCommunityObj);
+      
       
       
       
@@ -418,6 +427,7 @@ const Component = ({
   
   let linkHref = '';
   let linkAs = '';
+  
   
   // ---------------------------------------------
   //   - Game Community
@@ -627,7 +637,6 @@ const Component = ({
                 >
                   
                   <ImageAndVideo
-                    pathArr={[...this.pathArr, forumThreads_id, 'imagesAndVideosObj']}
                     imagesAndVideosObj={imagesAndVideosObj}
                   />
                   

@@ -42,6 +42,7 @@ import TextField from '@material-ui/core/TextField';
 // ---------------------------------------------
 
 import { ContainerStateLayout } from 'app/@states/layout.js';
+import { ContainerStateGc } from 'app/@states/gc.js';
 
 
 // ---------------------------------------------
@@ -94,13 +95,6 @@ const Component = (props) => {
     
     setShowForm,
     
-    // name,
-    // setFormName,
-    // comment,
-    // setFormComment,
-    // imagesAndVideosObj,
-    // setFormImagesAndVideosObj,
-    
   } = props;
   
   
@@ -151,16 +145,27 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const stateLayout = ContainerStateLayout.useContainer();
+  const stateGc = ContainerStateGc.useContainer();
   
   const {
     
     handleSnackbarOpen,
-    handleDialogOpen,
+    // handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
     
   } = stateLayout;
+  
+  const {
+    
+    setGameCommunityObj,
+    setForumThreadsForListObj,
+    setForumThreadsObj,
+    setForumCommentsObj,
+    setForumRepliesObj,
+    
+  } = stateGc;
   
   
   
@@ -390,11 +395,6 @@ const Component = (props) => {
       const validationHandleNameObj = validationForumThreadsName({ value: name });
       const validationForumThreadsCommentObj = validationForumThreadsComment({ value: comment });
       
-      // console.log(`
-      //   ----- validationHandleNameObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(validationHandleNameObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       // ---------------------------------------------
       //   Validation Error
@@ -483,29 +483,29 @@ const Component = (props) => {
       //   Fetch
       // ---------------------------------------------
       
-      // let resultObj = {};
+      let resultObj = {};
       
-      // if (gameCommunities_id) {
+      if (gameCommunities_id) {
         
-      //   resultObj = await fetchWrapper({
+        resultObj = await fetchWrapper({
           
-      //     urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/upsert-gc`,
-      //     methodType: 'POST',
-      //     formData: JSON.stringify(formDataObj),
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/upsert-gc`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj),
           
-      //   });
+        });
         
-      // } else {
+      } else {
         
-      //   resultObj = await fetchWrapper({
+        resultObj = await fetchWrapper({
           
-      //     urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/upsert-uc`,
-      //     methodType: 'POST',
-      //     formData: JSON.stringify(formDataObj),
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/upsert-uc`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj),
           
-      //   });
+        });
         
-      // }
+      }
       
       
       // console.log(`
@@ -515,93 +515,93 @@ const Component = (props) => {
       // `);
       
       
-      // // ---------------------------------------------
-      // //   Error
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
       
-      // if ('errorsArr' in resultObj) {
-      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
-      // }
-      
-      
-      
-      
-      // // --------------------------------------------------
-      // //   gameCommunityObj
-      // // --------------------------------------------------
-      
-      // setGameCommunityObj(lodashGet(resultObj, ['data', 'updatedDateObj'], {}));
-      
-      
-      // // ---------------------------------------------
-      // //   forumThreadsForListObj
-      // // ---------------------------------------------
-      
-      // setForumThreadsForListObj(lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {}));
-      
-      
-      // // ---------------------------------------------
-      // //   forumThreadsObj
-      // // ---------------------------------------------
-      
-      // setForumThreadsObj(lodashGet(resultObj, ['data', 'forumThreadsObj'], {}));
-      
-      
-      // // ---------------------------------------------
-      // //   forumCommentsObj
-      // // ---------------------------------------------
-      
-      // setForumCommentsObj(lodashGet(resultObj, ['data', 'forumCommentsObj'], {}));
-      
-      
-      // // ---------------------------------------------
-      // //   forumRepliesObj
-      // // ---------------------------------------------
-      
-      // setForumRepliesObj(lodashGet(resultObj, ['data', 'forumRepliesObj'], {}));
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
       
       
       
       
-      // // ---------------------------------------------
-      // //   Close Form & Reset Form
-      // // ---------------------------------------------
+      // --------------------------------------------------
+      //   gameCommunityObj
+      // --------------------------------------------------
       
-      // if (forumThreads_id) {
+      setGameCommunityObj(lodashGet(resultObj, ['data', 'updatedDateObj'], {}));
+      
+      
+      // ---------------------------------------------
+      //   forumThreadsForListObj
+      // ---------------------------------------------
+      
+      setForumThreadsForListObj(lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {}));
+      
+      
+      // ---------------------------------------------
+      //   forumThreadsObj
+      // ---------------------------------------------
+      
+      setForumThreadsObj(lodashGet(resultObj, ['data', 'forumThreadsObj'], {}));
+      
+      
+      // ---------------------------------------------
+      //   forumCommentsObj
+      // ---------------------------------------------
+      
+      setForumCommentsObj(lodashGet(resultObj, ['data', 'forumCommentsObj'], {}));
+      
+      
+      // ---------------------------------------------
+      //   forumRepliesObj
+      // ---------------------------------------------
+      
+      setForumRepliesObj(lodashGet(resultObj, ['data', 'forumRepliesObj'], {}));
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Close Form & Reset Form
+      // ---------------------------------------------
+      
+      if (forumThreads_id) {
         
-      //   // lodashSet(this.dataObj, [forumThreads_id, 'showForm'], false);
+        setShowForm(false);
         
-      // } else {
+      } else {
         
-      //   setName('');
-      //   setComment('');
-      //   setImagesAndVideosObj({
+        setName('');
+        setComment('');
+        setImagesAndVideosObj({
           
-      //     _id: '',
-      //     createdDate: '',
-      //     updatedDate: '',
-      //     users_id: '',
-      //     type: 'forum',
-      //     arr: [],
+          _id: '',
+          createdDate: '',
+          updatedDate: '',
+          users_id: '',
+          type: 'forum',
+          arr: [],
           
-      //   });
+        });
         
-      // }
+      }
       
       
       
       
-      // // ---------------------------------------------
-      // //   forumThreads_id
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   forumThreads_id
+      // ---------------------------------------------
       
-      // newForumThreads_id = lodashGet(resultObj, ['data', 'forumThreadsForListObj', `page1Obj`, 'arr', 0], '');
-      
-      // // forumThreads_id = 'YSYsoS4eo';
+      newForumThreads_id = lodashGet(resultObj, ['data', 'forumThreadsForListObj', `page1Obj`, 'arr', 0], '');
       
       // console.log(chalk`
       //   forumThreads_id: {green ${forumThreads_id}}
       // `);
+      
+      
       
       
       // ---------------------------------------------
@@ -682,6 +682,10 @@ const Component = (props) => {
   
   const limit = parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_IMAGES_AND_VIDEOS_LIMIT, 10);
   
+  
+  
+  
+  // handleLoadingOpen({});
   
   
   

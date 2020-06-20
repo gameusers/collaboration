@@ -59,10 +59,22 @@ import IconMenu from '@material-ui/icons/Menu';
  */
 const Container = ({ children, lowerNavMain }) => {
   
+  
+  // --------------------------------------------------
+  //   Hooks
+  // --------------------------------------------------
+  
   const props = useSpring({
+    
     transform: lowerNavMain ? 'translateY(53px)' : 'translateY(0px)',
     config: { duration: 250 },
+    
   });
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
   
   return <animated.nav
       css={css`
@@ -77,6 +89,7 @@ const Container = ({ children, lowerNavMain }) => {
     >
       {children}
     </animated.nav>;
+  
   
 };
 

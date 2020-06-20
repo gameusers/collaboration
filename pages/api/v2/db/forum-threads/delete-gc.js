@@ -1,58 +1,60 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const moment = require('moment');
-const rimraf = require('rimraf');
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import moment from 'moment';
+import rimraf from 'rimraf';
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelGameCommunities = require('../../../../../app/@database/game-communities/model');
-const ModelForumThreads = require('../../../../../app/@database/forum-threads/model');
+import ModelGameCommunities from 'app/@database/game-communities/model.js';
+import ModelForumThreads from 'app/@database/forum-threads/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
-const { validationForumThreads_idServerGC } = require('../../../../../app/@database/forum-threads/validations/_id-server');
-const { validationForumThreadsListLimit, validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
-const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
+import { validationIP } from 'app/@validations/ip.js';
+import { validationGameCommunities_idServer } from 'app/@database/game-communities/validations/_id-server.js';
+import { validationForumThreads_idServerGC } from 'app/@database/forum-threads/validations/_id-server.js';
+// import { validationForumThreadsListLimit, validationForumThreadsLimit } from 'app/@database/forum-threads/validations/limit.js';
+// import { validationForumCommentsLimit, validationForumRepliesLimit } from 'app/@database/forum-comments/validations/limit.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from 'app/@locales/locale.js';
+
+
 
 
 
@@ -72,15 +74,6 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
@@ -90,11 +83,21 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   IP & User Agent
+  //   Language & IP & User Agent
   // --------------------------------------------------
   
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: language
+  });
   
   
   
@@ -112,20 +115,20 @@ export default async (req, res) => {
       
       gameCommunities_id,
       forumThreads_id,
-      threadListLimit,
-      threadLimit,
-      commentLimit,
-      replyLimit,
+      // threadListLimit,
+      // threadLimit,
+      // commentLimit,
+      // replyLimit,
       
     } = bodyObj;
     
     
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
-    lodashSet(requestParametersObj, ['threadListLimit'], threadListLimit);
-    lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
-    lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
-    lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
+    // lodashSet(requestParametersObj, ['threadListLimit'], threadListLimit);
+    // lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
+    // lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
+    // lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
     
     
     
@@ -147,10 +150,10 @@ export default async (req, res) => {
     
     await validationGameCommunities_idServer({ value: gameCommunities_id });
     await validationForumThreads_idServerGC({ forumThreads_id, gameCommunities_id });
-    await validationForumThreadsListLimit({ throwError: true, required: true, value: threadListLimit });
-    await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
-    await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
-    await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
+    // await validationForumThreadsListLimit({ throwError: true, required: true, value: threadListLimit });
+    // await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
+    // await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
+    // await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
     
     
     
@@ -291,54 +294,50 @@ export default async (req, res) => {
     //   DB find / Forum Threads List
     // --------------------------------------------------
     
-    returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
+    // returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
       
-      localeObj,
-      loginUsers_id,
+    //   localeObj,
+    //   loginUsers_id,
+    //   gameCommunities_id,
+    //   page: 1,
+    //   limit: threadListLimit,
+      
+    // });
+    
+    
+    // // --------------------------------------------------
+    // //   DB find / Forum Threads
+    // // --------------------------------------------------
+    
+    // const forumObj = await ModelForumThreads.findForForum({
+      
+    //   req,
+    //   localeObj,
+    //   loginUsers_id,
+    //   gameCommunities_id,
+    //   threadPage: 1,
+    //   threadLimit,
+    //   commentPage: 1,
+    //   commentLimit,
+    //   replyPage: 1,
+    //   replyLimit,
+      
+    // });
+    
+    // returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+    // returnObj.forumCommentsObj = forumObj.forumCommentsObj;
+    // returnObj.forumRepliesObj = forumObj.forumRepliesObj;
+    
+    
+    // --------------------------------------------------
+    //   DB find / Game Community
+    // --------------------------------------------------
+    
+    returnObj.gameCommunityObj = await ModelGameCommunities.findForGameCommunityByGameCommunities_id({
+      
       gameCommunities_id,
-      page: 1,
-      limit: threadListLimit,
       
     });
-    
-    
-    // --------------------------------------------------
-    //   DB find / Forum Threads
-    // --------------------------------------------------
-    
-    const forumObj = await ModelForumThreads.findForForum({
-      
-      req,
-      localeObj,
-      loginUsers_id,
-      gameCommunities_id,
-      threadPage: 1,
-      threadLimit,
-      commentPage: 1,
-      commentLimit,
-      replyPage: 1,
-      replyLimit,
-      
-    });
-    
-    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    returnObj.forumRepliesObj = forumObj.forumRepliesObj;
-    
-    
-    // --------------------------------------------------
-    //   DB find / User Communities / 最新の更新日時情報を取得する
-    // --------------------------------------------------
-    
-    const gameCommunityArr = await ModelGameCommunities.find({
-      
-      conditionObj: {
-        _id: gameCommunities_id
-      }
-      
-    });
-    
-    returnObj.updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
     
     
     
@@ -374,12 +373,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: '2yY9Z0oq0',
       users_id: loginUsers_id,
       ip,
       userAgent,
       requestParametersObj,
+      
     });
     
     

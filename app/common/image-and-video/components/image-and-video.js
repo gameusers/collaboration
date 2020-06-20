@@ -18,11 +18,11 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import { SRLWrapper } from 'simple-react-lightbox';
+import shortid from 'shortid';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
-// import shortid from 'shortid';
 
 // ---------------------------------------------
 //   Lodash

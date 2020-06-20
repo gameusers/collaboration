@@ -52,6 +52,7 @@ import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
 //   States
 // ---------------------------------------------
 
+import { ContainerStateLayout } from 'app/@states/layout.js';
 import { ContainerStateGc } from 'app/@states/gc.js';
 
 
@@ -61,49 +62,73 @@ import { ContainerStateGc } from 'app/@states/gc.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/gc/***
+//   URL: https://dev-1.gameusers.org/gc/***/forum/***
 // --------------------------------------------------
 
-const Component = (props) => {
+const ContainerLayout = (props) => {
+  
+  
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateLayout = ContainerStateLayout.useContainer();
+  const stateGc = ContainerStateGc.useContainer();
+  
+  const {
+    
+    handleScrollTo,
+    
+  } = stateLayout;
+  
+  const {
+    
+    setGameCommunityObj,
+    setForumThreadsForListObj,
+    setForumThreadsObj,
+    setForumCommentsObj,
+    setForumRepliesObj,
+    
+  } = stateGc;
+  
+  
   
   
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
-  // const [gameCommunityObj, setGameCommunityObj] = useState(props.gameCommunityObj);
-  // const [forumThreadsForListObj, setForumThreadsForListObj] = useState(props.forumThreadsForListObj);
-  // const [forumThreadsObj, setForumThreadsObj] = useState(props.forumThreadsObj);
-  // const [forumCommentsObj, setForumCommentsObj] = useState(props.forumCommentsObj);
-  // const [forumRepliesObj, setForumRepliesObj] = useState(props.forumRepliesObj);
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   unstated-next - Initial State
-  // --------------------------------------------------
-  
-  const initialStateObj = {
+  useEffect(() => {
     
-    gameCommunityObj: props.gameCommunityObj,
-    forumThreadsForListObj: props.forumThreadsForListObj,
-    forumThreadsObj: props.forumThreadsObj,
-    forumCommentsObj: props.forumCommentsObj,
-    forumRepliesObj: props.forumRepliesObj,
     
-  };
-  
-  
-  
-  // --------------------------------------------------
-  //   Error
-  //   参考：https://github.com/zeit/next.js#custom-error-handling
-  // --------------------------------------------------
-  
-  if (props.statusCode !== 200) {
-    return <Error statusCode={props.statusCode} />;
-  }
+    // --------------------------------------------------
+    //   Router.push でページを移動した際の処理
+    //   getServerSideProps でデータを取得してからデータを更新する
+    // --------------------------------------------------
+    
+    setGameCommunityObj(props.gameCommunityObj);
+    setForumThreadsForListObj(props.forumThreadsForListObj);
+    setForumThreadsObj(props.forumThreadsObj);
+    setForumCommentsObj(props.forumCommentsObj);
+    setForumRepliesObj(props.forumRepliesObj);
+    
+    
+    // ---------------------------------------------
+    //   Scroll To
+    // ---------------------------------------------
+    
+    handleScrollTo({
+      
+      to: 'forumThreads',
+      duration: 0,
+      delay: 0,
+      smooth: 'easeInOutQuart',
+      offset: -50,
+      
+    });
+    
+    
+  }, [props.ISO8601]);
   
   
   
@@ -114,18 +139,18 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/index.js
+  //   /pages/gc/[urlID]/forum/[...slug].js - ContainerLayout
   // `);
   
   // console.log(`
-  //   ----- headerObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(headerObj)), { colors: true, depth: null })}\n
+  //   ----- props -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(props)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
   
   // console.log(`
-  //   ----- headerNavMainArr -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(headerNavMainArr)), { colors: true, depth: null })}\n
+  //   ----- forumThreadsObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
   
@@ -178,16 +203,90 @@ const Component = (props) => {
   // --------------------------------------------------
   
   return (
+    <Layout
+      title={props.title}
+      componentSidebar={componentSidebar}
+      componentContent={componentContent}
+      
+      headerObj={props.headerObj}
+      headerNavMainArr={props.headerNavMainArr}
+    />
+  );
+  
+  
+};
+
+
+
+
+const Component = (props) => {
+  
+  
+  // --------------------------------------------------
+  //   unstated-next - Initial State
+  // --------------------------------------------------
+  
+  const initialStateObj = {
+    
+    gameCommunityObj: props.gameCommunityObj,
+    forumThreadsForListObj: props.forumThreadsForListObj,
+    forumThreadsObj: props.forumThreadsObj,
+    forumCommentsObj: props.forumCommentsObj,
+    forumRepliesObj: props.forumRepliesObj,
+    
+  };
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Error
+  //   参考：https://github.com/zeit/next.js#custom-error-handling
+  // --------------------------------------------------
+  
+  if (props.statusCode !== 200) {
+    return <Error statusCode={props.statusCode} />;
+  }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /pages/gc/[urlID]/forum/[...slug].js - Component
+  // `);
+  
+  // console.log(`
+  //   ----- props.forumThreadsObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(props.forumThreadsObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(`
+  //   ----- forumThreadsObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(chalk`
+  //   gameCommunities_id: {green ${gameCommunities_id}}
+  // `);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return (
     <ContainerStateGc.Provider initialState={initialStateObj}>
       
-      <Layout
-        title={props.title}
-        componentSidebar={componentSidebar}
-        componentContent={componentContent}
-        
-        headerObj={props.headerObj}
-        headerNavMainArr={props.headerNavMainArr}
-      />
+      <ContainerLayout {...props} />
       
     </ContainerStateGc.Provider>
   );
@@ -224,18 +323,54 @@ export async function getServerSideProps({ req, res, query }) {
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   
   
+  
+  
+  // --------------------------------------------------
+  //   Query
+  // --------------------------------------------------
+  
+  const urlID = query.urlID;
+  
+  const slugsArr = lodashGet(query, ['slug'], []);
+  
+  let threadPage = lodashGet(query, ['page'], 2);
+  let forumID = '';
+  let pageType = 'forum';
+  
+  if (Math.sign(slugsArr[0]) === 1) {
+    
+    threadPage = slugsArr[0];
+    
+  } else {
+    
+    forumID = slugsArr[0];
+    pageType = 'individual';
+    
+  }
+  
+  
   // console.log(`
-  //   ----- req.headers -----\n
-  //   ${util.inspect(req.headers, { colors: true, depth: null })}\n
+  //   ----- query -----\n
+  //   ${util.inspect(query, { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
+  
+  // console.log(`
+  //   ----- slugsArr -----\n
+  //   ${util.inspect(slugsArr, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  
+  
   
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
-  const urlID = query.urlID;
   const ISO8601 = moment().utc().toISOString();
+  
+  
   
   
   // --------------------------------------------------
@@ -245,26 +380,12 @@ export async function getServerSideProps({ req, res, query }) {
   const threadListPage = 1;
   const threadListLimit = getCookie({ key: 'forumThreadListLimit', reqHeadersCookie });
   
-  const threadPage = 1;
   const threadLimit = getCookie({ key: 'forumThreadLimit', reqHeadersCookie });
   const commentLimit = getCookie({ key: 'forumCommentLimit', reqHeadersCookie });
   const replyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
   
-  // const threadListPage = 1;
-  // const threadListLimit = 1;
-  // const commentLimit = 1;
-  // const replyLimit = 1;
   
   
-  // console.log(`
-  //   ----- reqHeadersCookie -----\n
-  //   ${util.inspect(reqHeadersCookie, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(chalk`
-  //   threadLimit: {green ${threadLimit}}
-  // `);
   
   // --------------------------------------------------
   //   Fetch
@@ -272,7 +393,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   const resultObj = await fetchWrapper({
     
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/${urlID}?threadListPage=${threadListPage}&threadListLimit=${threadListLimit}&threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/${urlID}?forumID=${forumID}&threadListPage=${threadListPage}&threadListLimit=${threadListLimit}&threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -309,7 +430,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Title
   // --------------------------------------------------
   
-  const title = `${gameName} - Game Users`;
+  let title = `フォーラム: Page ${threadPage} - ${gameName}`;
   
   
   
@@ -368,6 +489,13 @@ export async function getServerSideProps({ req, res, query }) {
     {
       type: 'gc',
       anchorText: gameName,
+      href: `/gc/[urlID]/index?urlID=${urlID}`,
+      as: `/gc/${urlID}`,
+    },
+    
+    {
+      type: 'gc/forum',
+      anchorText: '',
       href: '',
       as: '',
     },
@@ -378,19 +506,57 @@ export async function getServerSideProps({ req, res, query }) {
   
   
   // --------------------------------------------------
+  //   個別のフォーラム
+  // --------------------------------------------------
+    
+  if (pageType === 'individual') {
+    
+    
+    // ---------------------------------------------
+    //   - Title
+    // ---------------------------------------------
+    
+    // const recruitmentThreadsArr = lodashGet(dataObj, ['recruitmentThreadsObj', 'page1Obj', 'arr'], []);
+    // const recruitmentTitle = lodashGet(dataObj, ['recruitmentThreadsObj', 'dataObj', recruitmentThreadsArr[0], 'title'], '');
+    
+    // title = `${recruitmentTitle} - ${gameName}`;
+    
+    
+    // // ---------------------------------------------
+    // //   - パンくずリスト
+    // // ---------------------------------------------
+    
+    // breadcrumbsArr.push(
+      
+    //   {
+    //     type: 'gc/forum/individual',
+    //     anchorText: recruitmentTitle,
+    //     href: '',
+    //     as: '',
+    //   }
+      
+    // );
+    
+    
+  }
+  
+  
+  
+  
+  // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
   
-  console.log(`
-    ----------------------------------------\n
-    /pages/gc/[urlID]/index.js
-  `);
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /pages/gc/[urlID]/forum/[...slug].js
+  // `);
   
-  console.log(`
-    ----- resultObj -----\n
-    ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- resultObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   // console.log(chalk`
   //   threadListPage: {green ${threadListPage}}

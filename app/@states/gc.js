@@ -46,6 +46,10 @@ const useGc = (initialStateObj) => {
   const [forumCommentsObj, setForumCommentsObj] = useState(lodashGet(initialStateObj, ['forumCommentsObj'], {}));
   const [forumRepliesObj, setForumRepliesObj] = useState(lodashGet(initialStateObj, ['forumRepliesObj'], {}));
   
+  const [forumThreadsReload, setForumThreadsReload] = useState(false);
+  const [forumCommentsReload, setForumCommentsReload] = useState(false);
+  const [forumRepliesReload, setForumRepliesReload] = useState(false);
+  
   
   
   
@@ -87,6 +91,15 @@ const useGc = (initialStateObj) => {
     
     forumRepliesObj,
     setForumRepliesObj,
+    
+    forumThreadsReload,
+    setForumThreadsReload,
+    
+    forumCommentsReload,
+    setForumCommentsReload,
+    
+    forumRepliesReload,
+    setForumRepliesReload,
     
   };
   

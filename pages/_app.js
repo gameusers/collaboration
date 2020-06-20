@@ -27,7 +27,7 @@ import App from 'next/app';
 import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
 import { IntlProvider } from 'react-intl';
-import SimpleReactLightbox from 'simple-react-lightbox';
+// import SimpleReactLightbox from 'simple-react-lightbox';
 
 
 // ---------------------------------------------
@@ -373,11 +373,11 @@ class MyApp extends App {
                   
                   
                   {/* Simple React Light-box */}
-                  <SimpleReactLightbox>
+                  {/*<SimpleReactLightbox>*/}
                     
                     <Component {...pageProps} />
                     
-                  </SimpleReactLightbox>
+                  {/*</SimpleReactLightbox>*/}
                   
                   
                 </ThemeProvider>

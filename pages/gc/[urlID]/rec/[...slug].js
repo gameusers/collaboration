@@ -534,7 +534,7 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       type: 'gc',
-      anchorText: lodashGet(dataObj, ['headerObj', 'name'], ''),
+      anchorText: gameName,
       href: `/gc/[urlID]/index?urlID=${urlID}`,
       as: `/gc/${urlID}`,
     },

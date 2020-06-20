@@ -14,7 +14,7 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 
 /** @jsx jsx */
@@ -72,7 +72,7 @@ const Component = (props) => {
   
   const {
     
-    type,
+    // type,
     showImageButton = true,
     showVideoButton = true,
     descriptionImage,

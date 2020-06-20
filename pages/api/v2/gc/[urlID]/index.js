@@ -115,6 +115,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const urlID = req.query.urlID;
+    const forumID = lodashGet(req, ['query', 'forumID'], '');
     const threadListPage = parseInt(req.query.threadListPage, 10);
     const threadListLimit = parseInt(req.query.threadListLimit, 10);
     const threadPage = parseInt(req.query.threadPage, 10);
@@ -123,6 +124,7 @@ export default async (req, res) => {
     const replyLimit = parseInt(req.query.replyLimit, 10);
     
     lodashSet(requestParametersObj, ['urlID'], urlID);
+    lodashSet(requestParametersObj, ['forumID'], forumID);
     lodashSet(requestParametersObj, ['threadListPage'], threadListPage);
     lodashSet(requestParametersObj, ['threadListLimit'], threadListLimit);
     lodashSet(requestParametersObj, ['threadPage'], threadPage);
@@ -140,8 +142,10 @@ export default async (req, res) => {
     returnObj.login = false;
     
     if (req.isAuthenticated() && req.user) {
+      
       returnObj.loginUsersObj = req.user;
       returnObj.login = true;
+      
     }
     
     
@@ -271,8 +275,10 @@ export default async (req, res) => {
     returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList(argumentsObj);
     
     
+    
+    
     // --------------------------------------------------
-    //   DB find / Forum
+    //   フォーラムデータ取得
     // --------------------------------------------------
     
     argumentsObj = {
@@ -283,6 +289,20 @@ export default async (req, res) => {
       gameCommunities_id,
       
     };
+    
+    
+    // ---------------------------------------------
+    //   - forumID
+    // ---------------------------------------------
+    
+    if (forumID) {
+      argumentsObj.forumID = forumID;
+    }
+    
+    
+    // ---------------------------------------------
+    //   - page & limit
+    // ---------------------------------------------
     
     if (await validationInteger({ throwError: false, required: true, value: threadPage }).error === false) {
       argumentsObj.threadPage = threadPage;
@@ -300,13 +320,41 @@ export default async (req, res) => {
       argumentsObj.replyLimit = replyLimit;
     }
     
-    const forumObj = await ModelForumThreads.findForForum(argumentsObj);
+    
+    
+    
+    // --------------------------------------------------
+    //   DB find / Recruitment by recruitmentID
+    // --------------------------------------------------
+    
+    let forumObj = {};
+    
+    
+    if (forumID) {
+      
+      // forumObj = await ModelForumThreads.findRecruitmentByRecruitmentID(argumentsObj);
+      
+      
+    // --------------------------------------------------
+    //   DB find / Forum
+    // --------------------------------------------------
+      
+    } else {
+      
+      forumObj = await ModelForumThreads.findForForum(argumentsObj);
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   returnObj
+    // --------------------------------------------------
     
     returnObj.forumThreadsObj = forumObj.forumThreadsObj;
     returnObj.forumCommentsObj = forumObj.forumCommentsObj;
     returnObj.forumRepliesObj = forumObj.forumRepliesObj;
-      
-      
+    
+    
     
     
     // --------------------------------------------------

@@ -54,7 +54,7 @@ import Loading from 'app/common/layout/v2/components/loading.js';
 //   States
 // ---------------------------------------------
 
-// import { ContainerStateLayout } from 'app/@states/layout.js';
+import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 
@@ -164,9 +164,9 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
   
-  // const stateLayout = ContainerStateLayout.useContainer();
+  const stateLayout = ContainerStateLayout.useContainer();
   
-  // const { handleSetHeroImageHeight } = stateLayout;
+  const { navigationForLightbox } = stateLayout;
   
   
   
@@ -231,16 +231,17 @@ const Component = (props) => {
       
       
       {/* Header - Navigation Top */}
-      <HeaderNavTop
-        showNavTop={showNavTop}
-        setShowNavTop={setShowNavTop}
-        setLowerNavMain={setLowerNavMain}
-        setLowerSidebar={setLowerSidebar}
-        heroImageHeight={heroImageHeight}
-        // scrollToBegin={scrollToBegin}
-        scrollToEnd={scrollToEnd}
-        setScrollToEnd={setScrollToEnd}
-      />
+      {navigationForLightbox && 
+        <HeaderNavTop
+          showNavTop={showNavTop}
+          setShowNavTop={setShowNavTop}
+          setLowerNavMain={setLowerNavMain}
+          setLowerSidebar={setLowerSidebar}
+          heroImageHeight={heroImageHeight}
+          scrollToEnd={scrollToEnd}
+          setScrollToEnd={setScrollToEnd}
+        />
+      }
       
       
       {/* Header - Hero Image */}
@@ -259,19 +260,21 @@ const Component = (props) => {
       
       
       {/* Header - Navigation Main */}
-      <div
-        css={css`
-          background-color: #151515;
-          position: sticky;
-          top: 0;
-          z-index: 1000;
-        `}
-      >
-        <HeaderNavMain
-          lowerNavMain={lowerNavMain}
-          headerNavMainArr={headerNavMainArr}
-        />
-      </div>
+      {navigationForLightbox && 
+        <div
+          css={css`
+            background-color: #151515;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+          `}
+        >
+          <HeaderNavMain
+            lowerNavMain={lowerNavMain}
+            headerNavMainArr={headerNavMainArr}
+          />
+        </div>
+      }
       
       
       

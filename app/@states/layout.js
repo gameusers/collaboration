@@ -46,6 +46,7 @@ const useLayout = (initialStateObj) => {
   const [dialogObj, setDialogOpen] = useState({ open: false });
   const [loadingObj, setLoadingObj] = useState({});
   const [videoObj, setVideoObj] = useState({});
+  const [navigationForLightbox, setNavigationForLightbox] = useState(true);
   
   // console.log(`
   //   ----------------------------------------\n
@@ -295,6 +296,26 @@ const useLayout = (initialStateObj) => {
   
   
   
+  // ---------------------------------------------
+  //   - Show or Hide Navigation for Lightbox
+  // ---------------------------------------------
+  
+  const handleNavigationForLightboxShow = () => {
+    
+    setNavigationForLightbox(true);
+    
+  };
+  
+  
+  const handleNavigationForLightboxHide = () => {
+    
+    setNavigationForLightbox(false);
+    
+  };
+  
+  
+  
+  
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -336,6 +357,10 @@ const useLayout = (initialStateObj) => {
     handleVideoClose,
     
     handleScrollTo,
+    
+    navigationForLightbox,
+    handleNavigationForLightboxShow,
+    handleNavigationForLightboxHide,
     
   };
   

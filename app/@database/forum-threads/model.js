@@ -513,8 +513,11 @@ const findForThreadsList = async ({
     const ISO8601 = moment().utc().toISOString();
     
     const returnObj = {
-      count,
+      
       page,
+      limit: intLimit,
+      count,
+      
     };
     
     lodashSet(returnObj, ['dataObj'], dataObj);
@@ -804,12 +807,15 @@ const findForForum = async ({
     // --------------------------------------------------
     
     const formattedThreadsObj = formatVer2({
+      
       req,
       localeObj,
       loginUsers_id,
       arr: resultArr,
       threadPage,
+      threadLimit: intThreadLimit,
       threadCount,
+      
     });
     
     const forumThreadsObj = lodashGet(formattedThreadsObj, ['forumThreadsObj'], {});
@@ -823,6 +829,7 @@ const findForForum = async ({
     // --------------------------------------------------
     
     const forumCommentsAndRepliesObj = await ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr({
+      
       req,
       localeObj,
       loginUsers_id,
@@ -832,6 +839,7 @@ const findForForum = async ({
       commentLimit: intCommentLimit,
       replyPage,
       replyLimit: intReplyLimit,
+      
     });
     
     const forumCommentsObj = lodashGet(forumCommentsAndRepliesObj, ['forumCommentsObj'], {});
@@ -1105,6 +1113,7 @@ const findForForumBy_forumID = async ({
     // --------------------------------------------------
     
     const formattedThreadsObj = formatVer2({
+      
       req,
       localeObj,
       loginUsers_id,
@@ -1112,6 +1121,7 @@ const findForForumBy_forumID = async ({
       threadPage,
       threadLimit: intThreadLimit,
       threadCount,
+      
     });
     
     const forumThreadsObj = lodashGet(formattedThreadsObj, ['forumThreadsObj'], {});
@@ -1337,14 +1347,28 @@ const findForForumBy_forumID = async ({
 
 
 /**
-* DBから取得した情報をフォーマットする
-* @param {Object} req - リクエスト
-* @param {Object} localeObj - ロケール
-* @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
-* @param {Array} arr - 配列
-* @return {Array} フォーマット後のデータ
-*/
-const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadCount }) => {
+ * DBから取得した情報をフォーマットする
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {Array} arr - 配列
+ * @param {number} threadPage - スレッドのページNo
+ * @param {number} threadLimit - スレッドを1ページに表示する件数
+ * @param {number} threadCount - スレッドの総数
+ * @return {Array} フォーマット後のデータ
+ */
+const formatVer2 = ({
+  
+  req,
+  localeObj,
+  loginUsers_id,
+  arr,
+  threadPage,
+  threadLimit,
+  threadCount,
+  
+  
+}) => {
   
   
   // --------------------------------------------------
@@ -1352,10 +1376,12 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadCoun
   // --------------------------------------------------
   
   const forumThreadsObj = {
+    
     page: threadPage,
-    // limit: threadLimit,
+    limit: threadLimit,
     count: threadCount,
     dataObj: {},
+    
   };
   
   const ISO8601 = moment().utc().toISOString();

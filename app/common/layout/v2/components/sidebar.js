@@ -62,29 +62,41 @@ const Container = ({ children, showNavTop, lowerSidebar }) => {
   // `);
   
   
+  // --------------------------------------------------
+  //   Hooks
+  // --------------------------------------------------
+  
   const props = useSpring({
+    
     transform: lowerSidebar ? `translateY(${ypx}px)` : 'translateY(0px)',
     config: { duration: 250 },
+    
   });
   
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
   return <animated.div
-    css={css`
-      width: 300px;
-      margin: 0 0 50px 0;
-      
-      position: sticky;
-      top: 0;
-      
-      @media screen and (max-width: 947px) {
-        width: 100%;
-        position: static;
-        margin: 0;
-      }
-    `}
-    style={props}
-  >
-    {children}
-  </animated.div>;
+      css={css`
+        width: 300px;
+        margin: 0 0 50px 0;
+        
+        position: sticky;
+        top: 0;
+        
+        @media screen and (max-width: 947px) {
+          width: 100%;
+          position: static;
+          margin: 0;
+        }
+      `}
+      style={props}
+    >
+      {children}
+    </animated.div>;
+  
   
 };
 

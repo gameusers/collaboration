@@ -15,10 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState } from 'react';
-import { inject, observer } from 'mobx-react';
-import { useIntl, injectIntl } from 'react-intl';
-import { Element } from 'react-scroll';
-import TextareaAutosize from 'react-autosize-textarea';
+import { useIntl } from 'react-intl';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -35,12 +32,16 @@ import lodashGet from 'lodash/get';
 //   Material UI
 // ---------------------------------------------
 
-import { withStyles } from '@material-ui/core/styles';
-
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+
+
+// ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateUser } from 'app/@states/user.js';
 
 
 // ---------------------------------------------
@@ -50,54 +51,31 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { validationHandleName } from 'app/@validations/name.js';
 
 
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
-import FormIDsInformations from 'app/gc/rec/components/form/ids-informations.js';
-import ImageAndVideoForm from 'app/common/image-and-video/components/form.js';
 
 
 
 
 // --------------------------------------------------
-//   Emotion
-//   https://emotion.sh/docs/composition
-// --------------------------------------------------
-
-// const cssBox = css`
-//   border-top: 1px dashed #848484;
-//   margin: 24px 0 0 0;
-//   padding: 24px 0 0 0;
-// `;
-
-
-// // --------------------------------------------------
-// //   Material UI Style Overrides
-// //   https://material-ui.com/styles/basics/
-// // --------------------------------------------------
-
-// const stylesObj = {
-  
-//   label: {
-//     fontSize: 14
-//   },
-  
-// };
-
-
-
-
-
-
-// --------------------------------------------------
-//   Components
+//   Function Components
 // --------------------------------------------------
 
 /**
  * ハンドルネーム
  */
-const Name = () => {
+const Name = (props) => {
+  
+  
+  // --------------------------------------------------
+  //   props
+  // --------------------------------------------------
+  
+  const {
+    
+    name,
+    setName,
+    
+  } = props;
+  
   
   
   // --------------------------------------------------
@@ -105,7 +83,8 @@ const Name = () => {
   // --------------------------------------------------
   
   const intl = useIntl();
-  const [name, setName] = useState();
+  
+  
   
   
   // --------------------------------------------------
@@ -124,6 +103,8 @@ const Name = () => {
   } = validationHandleNameObj;
   
   
+  
+  
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -137,33 +118,30 @@ const Name = () => {
   // console.log('AAA');
   
   
+  
+  
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
   
   return (
-    <React.Fragment>
-      
-      <TextField
-        css={css`
-          && {
-            width: 100%;
-            max-width: 500px;
-          }
-        `}
-        // id={`${elementName}-name`}
-        label="ハンドルネーム"
-        value={value}
-        onChange={(eventObj) => setName(eventObj.target.value)}
-        error={error}
-        helperText={intl.formatMessage({ id: messageID }, { numberOfCharacters })}
-        margin="normal"
-        inputProps={{
-          maxLength: 50,
-        }}
-      />
-      
-    </React.Fragment>
+    <TextField
+      css={css`
+        && {
+          width: 100%;
+          max-width: 500px;
+        }
+      `}
+      label="ハンドルネーム"
+      value={value}
+      onChange={(eventObj) => setName(eventObj.target.value)}
+      error={error}
+      helperText={intl.formatMessage({ id: messageID }, { numberOfCharacters })}
+      margin="normal"
+      inputProps={{
+        maxLength: 50,
+      }}
+    />
   );
   
   
@@ -175,14 +153,21 @@ const Name = () => {
 /**
  * 匿名
  */
-const Anonymity = () => {
+const Anonymity = (props) => {
   
   
   // --------------------------------------------------
-  //   Hooks
+  //   props
   // --------------------------------------------------
   
-  const [anonymity, setAnonymity] = useState();
+  const {
+    
+    anonymity,
+    setAnonymity,
+    
+  } = props;
+  
+  
   
   
   // --------------------------------------------------
@@ -214,95 +199,76 @@ const Anonymity = () => {
 
 
 /**
+ * Export Component
  * ログインしていて enableAnonymity が true の場合は、ハンドルネームを匿名にすることができる
  */
 const Component = (props) => {
   
-  // const [count, setCount] = useState(0);
+  
+  // --------------------------------------------------
+  //   props
+  // --------------------------------------------------
   
   const {
     
-    // stores,
-    enableAnonymity
+    name,
+    setName,
+    anonymity,
+    setAnonymity,
+    enableAnonymity,
     
   } = props;
   
   
-  // const login = stores.data.getLogin();
-  const login = false;
   
-  // console.log(chalk`
-  //   props.stores.data.getLogin(): {green ${props.stores.data.getLogin()} / ${typeof props.stores.data.getLogin()}}
-  // `);
   
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateUser = ContainerStateUser.useContainer();
+  
+  const { login } = stateUser;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
   
   return (
     <React.Fragment>
       
+      
       {!login &&
-        <Name />
+        <Name
+          name={name}
+          setName={setName}
+        />
       }
       
       
       {/* Anonymity */}
       {(login && enableAnonymity) &&
-        <Anonymity />
+        <Anonymity
+          anonymity={anonymity}
+          setAnonymity={setAnonymity}
+        />
       }
+      
       
     </React.Fragment>
   );
   
+  
 };
 
 
+
+
+// --------------------------------------------------
+//   Export
+// --------------------------------------------------
+
 export default Component;
-
-
-
-
-// /**
-// * ログインしていて enableAnonymity が true の場合は、ハンドルネームを匿名にすることができる
-// */
-// const Component = (props) => {
-// // const Component = inject('stores')(observer((props) => {
-  
-//   // const [count, setCount] = useState(0);
-  
-//   const {
-    
-//     stores,
-//     enableAnonymity
-    
-//   } = props;
-  
-  
-//   // const login = stores.data.getLogin();
-//   const login = false;
-  
-//   // console.log(chalk`
-//   //   props.stores.data.getLogin(): {green ${props.stores.data.getLogin()} / ${typeof props.stores.data.getLogin()}}
-//   // `);
-  
-  
-//   return (
-//     <React.Fragment>
-      
-//       {!login &&
-//         <Name />
-//       }
-      
-      
-//       {/* Anonymity */}
-//       {(login && enableAnonymity) &&
-//         <Anonymity />
-//       }
-      
-//     </React.Fragment>
-//   );
-  
-// };
-// // }));
-
-
-// export default inject('stores')(observer(Component));
-// // export default Component;

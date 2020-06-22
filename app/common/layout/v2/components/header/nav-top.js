@@ -230,75 +230,38 @@ const Component = (props) => {
     
     
     // ---------------------------------------------
-    //   scrollY === 0 / スクロールしていない状態
+    //   Scroll Up / Scroll Down
     // ---------------------------------------------
     
-    if (scrollY === 0) {
-      
-      // console.log(chalk`
-      //   return - scrollY === 0
-      // `);
-      
-      return;
-      
-      
+    scrollUp = (scrollY > scrollYOffset) ? false : true;
+    
+    
     // ---------------------------------------------
-    //   ScrollTo で移動した場合の処理
+    //   ヒーローイメージの高さよりもスクロールが小さい場合（スクロールバーのノブが上の方にある場合）
     // ---------------------------------------------
     
-    } else if (scrollToEnd) {
+    if (heroImageHeight < scrollY) {
       
-      setScrollToEnd(false);
-      
-      // console.log(chalk`
-      //   return - setScrollToEnd
-      // `);
-      
-      return;
-      
-      
-    // ---------------------------------------------
-    //   通常の処理
-    // ---------------------------------------------
-      
-    } else {
-      
-      
-      // ---------------------------------------------
-      //   Scroll Up / Scroll Down
-      // ---------------------------------------------
-      
-      scrollUp = (scrollY > scrollYOffset) ? false : true;
-      
-      
-      // ---------------------------------------------
-      //   ヒーローイメージの高さよりもスクロールが小さい場合（スクロールバーのノブが上の方にある場合）
-      // ---------------------------------------------
-      
-      if (heroImageHeight < scrollY) {
-        
-        showNavTopNew = (scrollUp) ? true : false;
-        
-      }
-      
-      
-      // ---------------------------------------------
-      //   上向きのスクロールで Navigation Top が表示中の場合、Navigation Main の位置を下げる
-      // ---------------------------------------------
-      
-      if (navTopHeight + heroImageHeight < scrollY) {
-        
-        if (scrollUp && showNavTopNew) {
-          lowerNavMainNew = true;
-        }
-        
-        // サイドバーの位置を下げる
-        lowerSidebarNew = true;
-        
-      }
-      
+      showNavTopNew = (scrollUp) ? true : false;
       
     }
+    
+    
+    // ---------------------------------------------
+    //   上向きのスクロールで Navigation Top が表示中の場合、Navigation Main の位置を下げる
+    // ---------------------------------------------
+    
+    if (navTopHeight + heroImageHeight < scrollY) {
+      
+      if (scrollUp && showNavTopNew) {
+        lowerNavMainNew = true;
+      }
+      
+      // サイドバーの位置を下げる
+      lowerSidebarNew = true;
+      
+    }
+    
     
     
     // ---------------------------------------------
@@ -319,6 +282,67 @@ const Component = (props) => {
     }
     
     
+    
+    
+    // ---------------------------------------------
+    //   scrollY === 0 / スクロールしていない状態、処理停止
+    // ---------------------------------------------
+    
+    if (scrollY === 0) {
+      
+      // console.log(chalk`
+      //   return - scrollY === 0
+      // `);
+      
+      return;
+      
+      
+    // ---------------------------------------------
+    //   ScrollTo で移動した場合の処理
+    // ---------------------------------------------
+    
+    } else if (scrollToEnd) {
+      
+      // setLowerSidebar(false);
+      
+      // ---------------------------------------------
+      //   
+      // ---------------------------------------------
+      
+      // if (!lowerNavMainNew) {
+      //   console.log('aaa');
+      //   setLowerSidebar(false);
+        
+      // }
+      
+      
+      setScrollToEnd(false);
+      
+      
+      // console.log(chalk`
+      //   scrollY: {green ${scrollY}}
+      //   heroImageHeight: {green ${heroImageHeight}}
+      // `);
+      
+      // console.log(chalk`
+      //   return - setScrollToEnd
+      // `);
+      
+      
+      
+      // if (!lowerNavMainNew) {
+      //   setLowerSidebar(false);
+      //   // lowerSidebarNew = false;
+      // }
+      
+      return;
+      
+    }
+    
+    
+    // if (!lowerNavMainNew) {
+    //   lowerSidebarNew = false;
+    // }
     
     
     // ---------------------------------------------

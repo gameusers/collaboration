@@ -16,6 +16,7 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
+import { animateScroll as scroll } from 'react-scroll';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -52,6 +53,7 @@ import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
 //   States
 // ---------------------------------------------
 
+import { ContainerStateLayout } from 'app/@states/layout.js';
 import { ContainerStateGc } from 'app/@states/gc.js';
 
 
@@ -64,20 +66,164 @@ import { ContainerStateGc } from 'app/@states/gc.js';
 //   URL: https://dev-1.gameusers.org/gc/***
 // --------------------------------------------------
 
-const Component = (props) => {
+const ContainerLayout = (props) => {
+  
+  
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateLayout = ContainerStateLayout.useContainer();
+  const stateGc = ContainerStateGc.useContainer();
+  
+  const {
+    
+    handleScrollTo,
+    
+  } = stateLayout;
+  
+  const {
+    
+    setGameCommunityObj,
+    setForumThreadsForListObj,
+    setForumThreadsObj,
+    setForumCommentsObj,
+    setForumRepliesObj,
+    
+  } = stateGc;
+  
+  
   
   
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
-  // const [gameCommunityObj, setGameCommunityObj] = useState(props.gameCommunityObj);
-  // const [forumThreadsForListObj, setForumThreadsForListObj] = useState(props.forumThreadsForListObj);
-  // const [forumThreadsObj, setForumThreadsObj] = useState(props.forumThreadsObj);
-  // const [forumCommentsObj, setForumCommentsObj] = useState(props.forumCommentsObj);
-  // const [forumRepliesObj, setForumRepliesObj] = useState(props.forumRepliesObj);
+  useEffect(() => {
+    
+    
+    // --------------------------------------------------
+    //   Router.push でページを移動した際の処理
+    //   getServerSideProps でデータを取得してからデータを更新する
+    // --------------------------------------------------
+    
+    setGameCommunityObj(props.gameCommunityObj);
+    setForumThreadsForListObj(props.forumThreadsForListObj);
+    setForumThreadsObj(props.forumThreadsObj);
+    setForumCommentsObj(props.forumCommentsObj);
+    setForumRepliesObj(props.forumRepliesObj);
+    
+    
+    // ---------------------------------------------
+    //   Scroll To
+    // ---------------------------------------------
+    
+    // window.scrollTo(0, 0);
+    scroll.scrollToTop({ duration: 0 });
+    
+    // handleScrollTo({
+      
+    //   to: 'forumThreads',
+    //   duration: 0,
+    //   delay: 0,
+    //   smooth: 'easeInOutQuart',
+    //   offset: -50,
+      
+    // });
+    
+    
+  }, [props.ISO8601]);
   
   
+  
+  
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /pages/gc/[urlID]/forum/[...slug].js - ContainerLayout
+  // `);
+  
+  // console.log(`
+  //   ----- props -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(props)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(`
+  //   ----- forumThreadsObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(chalk`
+  //   gameCommunities_id: {green ${gameCommunities_id}}
+  // `);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Component - Sidebar
+  // --------------------------------------------------
+  
+  const componentSidebar =
+    <ForumNavigation
+      urlID={props.urlID}
+      gameCommunities_id={props.gameCommunities_id}
+    />
+  ;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Component - Contents
+  // --------------------------------------------------
+  
+  const componentContent = 
+    <React.Fragment>
+      
+      <Breadcrumbs
+        arr={props.breadcrumbsArr}
+      />
+      
+      <Forum
+        urlID={props.urlID}
+        gameCommunities_id={props.gameCommunities_id}
+        enableAnonymity={true}
+      />
+      
+    </React.Fragment>
+  ;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return (
+    <Layout
+      title={props.title}
+      componentSidebar={componentSidebar}
+      componentContent={componentContent}
+      
+      headerObj={props.headerObj}
+      headerNavMainArr={props.headerNavMainArr}
+    />
+  );
+  
+  
+};
+
+
+
+
+const Component = (props) => {
   
   
   // --------------------------------------------------
@@ -137,57 +283,13 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Component - Sidebar
-  // --------------------------------------------------
-  
-  const componentSidebar =
-    <ForumNavigation
-      urlID={props.urlID}
-      gameCommunities_id={props.gameCommunities_id}
-    />
-  ;
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Component - Contents
-  // --------------------------------------------------
-  
-  const componentContent = 
-    <React.Fragment>
-      
-      <Breadcrumbs
-        arr={props.breadcrumbsArr}
-      />
-      
-      <Forum
-        urlID={props.urlID}
-        gameCommunities_id={props.gameCommunities_id}
-        settingAnonymity={true}
-      />
-      
-    </React.Fragment>
-  ;
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Return
   // --------------------------------------------------
   
   return (
     <ContainerStateGc.Provider initialState={initialStateObj}>
       
-      <Layout
-        title={props.title}
-        componentSidebar={componentSidebar}
-        componentContent={componentContent}
-        
-        headerObj={props.headerObj}
-        headerNavMainArr={props.headerNavMainArr}
-      />
+      <ContainerLayout {...props} />
       
     </ContainerStateGc.Provider>
   );
@@ -224,18 +326,28 @@ export async function getServerSideProps({ req, res, query }) {
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   
   
+  
+  
+  // --------------------------------------------------
+  //   Query
+  // --------------------------------------------------
+  
+  const urlID = query.urlID;
+  
   // console.log(`
-  //   ----- req.headers -----\n
-  //   ${util.inspect(req.headers, { colors: true, depth: null })}\n
+  //   ----- query -----\n
+  //   ${util.inspect(query, { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
+  
   
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
-  const urlID = query.urlID;
   const ISO8601 = moment().utc().toISOString();
+  
+  
   
   
   // --------------------------------------------------
@@ -250,21 +362,8 @@ export async function getServerSideProps({ req, res, query }) {
   const commentLimit = getCookie({ key: 'forumCommentLimit', reqHeadersCookie });
   const replyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
   
-  // const threadListPage = 1;
-  // const threadListLimit = 1;
-  // const commentLimit = 1;
-  // const replyLimit = 1;
   
   
-  // console.log(`
-  //   ----- reqHeadersCookie -----\n
-  //   ${util.inspect(reqHeadersCookie, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(chalk`
-  //   threadLimit: {green ${threadLimit}}
-  // `);
   
   // --------------------------------------------------
   //   Fetch

@@ -15,6 +15,12 @@ const util = require('util');
 // ---------------------------------------------
 
 const moment = require('moment');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
@@ -25,30 +31,32 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Model
 // ---------------------------------------------
 
-const Schema = require('./schema');
-const SchemaForumComments = require('../forum-comments/schema');
-const SchemaImagesAndVideos = require('../images-and-videos/schema');
-const SchemaGameCommunities = require('../game-communities/schema');
-const SchemaUserCommunities = require('../user-communities/schema');
+const SchemaForumThreads = require('./schema.js');
+const SchemaForumComments = require('../forum-comments/schema.js');
+const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
+const SchemaGameCommunities = require('../game-communities/schema.js');
+const SchemaUserCommunities = require('../user-communities/schema.js');
 
-const ModelForumComments = require('../forum-comments/model');
-const ModelGameCommunities = require('../game-communities/model');
-const ModelUserCommunities = require('../user-communities/model');
+const ModelForumComments = require('../forum-comments/model.js');
+const ModelGameCommunities = require('../game-communities/model.js');
+const ModelUserCommunities = require('../user-communities/model.js');
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../@modules/error/custom');
-const { verifyAuthority } = require('../../@modules/authority');
+const { CustomError } = require('../../@modules/error/custom.js');
+const { verifyAuthority } = require('../../@modules/authority.js');
 
 
 // ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosObj } = require('../images-and-videos/format');
+const { formatImagesAndVideosObj } = require('../images-and-videos/format.js');
+
+
 
 
 
@@ -85,7 +93,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await Schema.findOne(conditionObj).exec();
+    return await SchemaForumThreads.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -128,7 +136,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.find(conditionObj).exec();
+    return await SchemaForumThreads.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -170,7 +178,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.countDocuments(conditionObj).exec();
+    return await SchemaForumThreads.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -217,7 +225,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await SchemaForumThreads.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -259,7 +267,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await Schema.insertMany(saveArr);
+    return await SchemaForumThreads.insertMany(saveArr);
     
     
   } catch (err) {
@@ -302,7 +310,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await Schema.deleteMany(conditionObj);
+    return await SchemaForumThreads.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -426,7 +434,7 @@ const findForThreadsList = async ({
     
     const intLimit = parseInt(limit, 10);
     
-    const resultArr = await Schema.find(conditionObj).sort({ updatedDate: -1 }).skip((page - 1) * limit).limit(intLimit).exec();
+    const resultArr = await SchemaForumThreads.find(conditionObj).sort({ updatedDate: -1 }).skip((page - 1) * limit).limit(intLimit).exec();
     
     
     
@@ -743,7 +751,7 @@ const findForForum = async ({
     //   Aggregation
     // --------------------------------------------------
     
-    const resultArr = await Schema.aggregate([
+    const resultArr = await SchemaForumThreads.aggregate([
       
       ...matchConditionArr,
       
@@ -924,6 +932,500 @@ const findForForum = async ({
 
 
 /**
+ * フォーラムデータを取得する - 個別のスレッド表示用 / スレッド、コメント、返信の forumID で検索 【2020/6/22】
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
+ * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティID
+ * @param {number} threadPage - スレッドのページ
+ * @param {number} threadLimit - スレッドのリミット
+ * @param {number} commentPage - コメントのページ
+ * @param {number} commentLimit - コメントのリミット
+ * @param {number} replyPage - 返信のページ
+ * @param {number} replyLimit - 返信のリミット
+ * @return {Array} 取得データ
+ */
+const findForumByforumID = async ({
+  
+  req,
+  localeObj,
+  loginUsers_id,
+  forumID,
+  gameCommunities_id,
+  userCommunities_id,
+  threadPage = 1,
+  threadLimit = process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT,
+  commentPage = 1,
+  commentLimit = process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT,
+  replyPage = 1,
+  replyLimit = process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT,
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Parse
+    // --------------------------------------------------
+    
+    const intThreadLimit = parseInt(threadLimit, 10);
+    const intCommentLimit = parseInt(commentLimit, 10);
+    const intReplyLimit = parseInt(replyLimit, 10);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB find / スレッド、コメント、または返信のIDを取得する
+    // --------------------------------------------------
+    
+    const forumCommentsAndRepliesObj = await ModelForumComments.findOne({
+      
+      conditionObj: {
+        _id: forumID,
+        gameCommunities_id,
+        userCommunities_id,
+      }
+      
+    });
+    
+    const forumThreads_id = lodashGet(forumCommentsAndRepliesObj, ['forumThreads_id'], forumID);
+    
+    
+    let forumComments_id = '';
+    let forumReplies_id = '';
+    
+    if (forumCommentsAndRepliesObj) {
+      
+      if (forumCommentsAndRepliesObj.forumComments_id === '') {
+        
+        forumComments_id = forumCommentsAndRepliesObj._id;
+        forumReplies_id = '';
+        
+      } else {
+        
+        forumComments_id = forumCommentsAndRepliesObj.forumComments_id;
+        forumReplies_id = forumCommentsAndRepliesObj._id;
+        
+      }
+      
+    }
+    
+    
+    
+    
+    // ------------------------------------------------------------
+    //   スレッドのデータを取得する、ここはすべてに共通
+    // ------------------------------------------------------------
+    
+    // --------------------------------------------------
+    //   Match Condition Array
+    // --------------------------------------------------
+    
+    let matchConditionArr = [];
+    
+    if (gameCommunities_id) {
+      
+      matchConditionArr = [
+        {
+          $match: { _id: forumThreads_id, gameCommunities_id }
+        },
+      ];
+      
+    } else {
+      
+      matchConditionArr = [
+        {
+          $match: { _id: forumThreads_id, userCommunities_id }
+        },
+      ];
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Aggregation / スレッドデータ取得
+    // --------------------------------------------------
+    
+    const docArr = await SchemaForumThreads.aggregate([
+      
+      
+      // --------------------------------------------------
+      //   Match Condition Array
+      // --------------------------------------------------
+      
+      ...matchConditionArr,
+      
+      
+      // --------------------------------------------------
+      //   images-and-videos
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$letImagesAndVideos_id'] },
+                }
+              },
+              { $project:
+                {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+      
+      {
+        $project: {
+          imagesAndVideos_id: 0,
+          __v: 0,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   コミュニティデータ取得 - コミュニティのスレッド数取得用
+    // --------------------------------------------------
+    
+    let communityArr = [];
+    
+    
+    // ---------------------------------------------
+    //   - ゲームコミュニティ
+    // ---------------------------------------------
+    
+    if (gameCommunities_id) {
+      
+      communityArr = await ModelGameCommunities.find({
+        
+        conditionObj: {
+          _id: gameCommunities_id
+        }
+        
+      });
+      
+      
+    // ---------------------------------------------
+    //   - ユーザーコミュニティ
+    // ---------------------------------------------
+      
+    } else {
+      
+      communityArr = await ModelUserCommunities.find({
+        
+        conditionObj: {
+          _id: userCommunities_id
+        }
+        
+      });
+      
+    }
+    
+    const threadCount = lodashGet(communityArr, [0, 'forumObj', 'threadCount'], 0);
+    
+    
+    // --------------------------------------------------
+    //   Format
+    // --------------------------------------------------
+    
+    const formattedThreadsObj = formatVer2({
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      arr: docArr,
+      threadPage,
+      threadLimit: intThreadLimit,
+      threadCount,
+      
+    });
+    
+    const forumThreadsObj = lodashGet(formattedThreadsObj, ['forumThreadsObj'], {});
+    const forumThreads_idsForCommentArr = lodashGet(formattedThreadsObj, ['forumThreads_idsForCommentArr'], []);
+    
+    
+    
+    
+    // ------------------------------------------------------------
+    //   コメント＆返信を取得する
+    // ------------------------------------------------------------
+    
+    let forumCommentsObj = {};
+    let forumRepliesObj = {};
+    
+    
+    // --------------------------------------------------
+    //   ForumID がスレッドの場合
+    // --------------------------------------------------
+    
+    if (forumComments_id === '' && forumReplies_id === '') {
+      
+      
+      // --------------------------------------------------
+      //   DB find / Forum Comments & Replies
+      // --------------------------------------------------
+      
+      const forumCommentsAndRepliesObj = await ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr({
+        
+        req,
+        localeObj,
+        loginUsers_id,
+        forumThreads_idsArr: forumThreads_idsForCommentArr,
+        forumThreadsObj,
+        commentPage,
+        commentLimit: intCommentLimit,
+        replyPage,
+        replyLimit: intReplyLimit,
+        
+      });
+      
+      forumCommentsObj = lodashGet(forumCommentsAndRepliesObj, ['forumCommentsObj'], {});
+      forumRepliesObj = lodashGet(forumCommentsAndRepliesObj, ['forumRepliesObj'], {});
+      
+      
+    // --------------------------------------------------
+    //   ForumID がコメントの場合
+    // --------------------------------------------------
+    
+    } else if (forumComments_id && forumReplies_id === '') {
+      
+      
+      // --------------------------------------------------
+      //   DB find / Forum Comments & Replies
+      // --------------------------------------------------
+      
+      const pageObj = await ModelForumComments.getPage({
+        
+        req,
+        localeObj,
+        loginUsers_id,
+        forumThreads_id,
+        forumComments_id,
+        forumReplies_id,
+        commentLimit,
+        replyLimit,
+        
+      });
+      
+      const newCommentPage = lodashGet(pageObj, ['commentPage'], 1);
+      
+      
+      // --------------------------------------------------
+      //   DB find / Forum Comments & Replies
+      // --------------------------------------------------
+      
+      const forumCommentsAndRepliesObj = await ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr({
+        
+        req,
+        localeObj,
+        loginUsers_id,
+        forumThreads_idsArr: forumThreads_idsForCommentArr,
+        forumThreadsObj,
+        commentPage: newCommentPage,
+        commentLimit: intCommentLimit,
+        replyPage,
+        replyLimit: intReplyLimit,
+        
+      });
+      
+      forumCommentsObj = lodashGet(forumCommentsAndRepliesObj, ['forumCommentsObj'], {});
+      forumRepliesObj = lodashGet(forumCommentsAndRepliesObj, ['forumRepliesObj'], {});
+      
+      
+    // --------------------------------------------------
+    //   ForumID が返信の場合
+    // --------------------------------------------------
+      
+    } else if (forumComments_id && forumReplies_id) {
+      
+      
+      // --------------------------------------------------
+      //   DB find / Forum Comments & Replies
+      // --------------------------------------------------
+      
+      const pageObj = await ModelForumComments.getPage({
+        
+        req,
+        localeObj,
+        loginUsers_id,
+        forumThreads_id,
+        forumComments_id,
+        forumReplies_id,
+        commentLimit,
+        replyLimit,
+        
+      });
+      
+      const newCommentPage = lodashGet(pageObj, ['commentPage'], 1);
+      const newReplyPage = lodashGet(pageObj, ['replyPage'], 1);
+      
+      
+      // --------------------------------------------------
+      //   DB find / Forum Comments & Replies
+      // --------------------------------------------------
+      
+      const forumCommentsAndRepliesObj = await ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr({
+        
+        req,
+        localeObj,
+        loginUsers_id,
+        forumThreads_idsArr: forumThreads_idsForCommentArr,
+        forumThreadsObj,
+        commentPage: newCommentPage,
+        commentLimit: intCommentLimit,
+        replyPage: newReplyPage,
+        replyLimit: intReplyLimit,
+        
+      });
+      
+      forumCommentsObj = lodashGet(forumCommentsAndRepliesObj, ['forumCommentsObj'], {});
+      forumRepliesObj = lodashGet(forumCommentsAndRepliesObj, ['forumRepliesObj'], {});
+      
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/forum-threads/model.js - findForumByforumID
+    // `);
+    
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   forumID: {green ${forumID}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   userCommunities_id: {green ${userCommunities_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- forumCommentsAndRepliesObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   forumThreads_id: {green ${forumThreads_id}}
+    //   forumComments_id: {green ${forumComments_id}}
+    //   forumReplies_id: {green ${forumReplies_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- matchConditionArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(matchConditionArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- communityArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(communityArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    // console.log(`
+    //   ----- formattedThreadsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(formattedThreadsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumCommentsAndRepliesObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumThreadsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumCommentsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumRepliesObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumRepliesObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return {
+      
+      forumThreadsObj,
+      forumCommentsObj,
+      forumRepliesObj,
+      
+    };
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
+/**
  * スレッドを取得する - スレッドまたはコメントの _id で検索
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
@@ -1038,7 +1540,7 @@ const findForForumBy_forumID = async ({
     //   Aggregation / スレッドデータ取得
     // --------------------------------------------------
     
-    const resultArr = await Schema.aggregate([
+    const resultArr = await SchemaForumThreads.aggregate([
       
       ...matchConditionArr,
       
@@ -1579,7 +2081,7 @@ const findForDeleteThread = async ({
     //   Thread
     // --------------------------------------------------
     
-    const forumThreadsArr = await Schema.aggregate([
+    const forumThreadsArr = await SchemaForumThreads.aggregate([
       
       
       {
@@ -1764,7 +2266,7 @@ const findForEdit = async ({
     //   Find
     // --------------------------------------------------
     
-    const resultArr = await Schema.aggregate([
+    const resultArr = await SchemaForumThreads.aggregate([
       
       
       // スレッドを取得
@@ -1971,7 +2473,7 @@ const transactionForUpsertThread = async ({
   //   Transaction / Session
   // --------------------------------------------------
   
-  const session = await Schema.startSession();
+  const session = await SchemaForumThreads.startSession();
   
   
   
@@ -1996,7 +2498,7 @@ const transactionForUpsertThread = async ({
     //   - forum-threads
     // ---------------------------------------------
     
-    await Schema.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
+    await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
     
     
     // ---------------------------------------------
@@ -2200,7 +2702,7 @@ const transactionForDeleteThread = async ({
   //   Transaction / Session
   // --------------------------------------------------
   
-  const session = await Schema.startSession();
+  const session = await SchemaForumThreads.startSession();
   
   
   
@@ -2233,7 +2735,7 @@ const transactionForDeleteThread = async ({
     //   - forum-threads / deleteOne
     // --------------------------------------------------
     
-    await Schema.deleteOne(forumThreadsConditionObj, { session });
+    await SchemaForumThreads.deleteOne(forumThreadsConditionObj, { session });
     
     
     // ---------------------------------------------
@@ -2376,6 +2878,7 @@ module.exports = {
   
   findForThreadsList,
   findForForum,
+  findForumByforumID,
   findForForumBy_forumID,
   findForEdit,
   findForDeleteThread,

@@ -75,7 +75,7 @@ import Panel from 'app/common/layout/v2/components/panel.js';
 import Paragraph from 'app/common/layout/v2/components/paragraph.js';
 import ImageAndVideo from 'app/common/image-and-video/v2/components/image-and-video.js';
 import FormThread from 'app/common/forum/v2/components/form-thread.js';
-import FormComment from 'app/common/forum/components/form-comment.js';
+import FormComment from 'app/common/forum/v2/components/form-comment.js';
 import Comment from 'app/common/forum/components/comment.js';
 
 // import FormName from 'app/common/form/components/name.js';
@@ -141,6 +141,7 @@ const Component = ({
   userCommunities_id,
   forumThreads_id,
   dataObj,
+  enableAnonymity,
   
 }) => {
   
@@ -731,7 +732,6 @@ const Component = ({
               
               
               
-              
               <div
                 css={css`
                   font-size: 14px;
@@ -968,23 +968,21 @@ const Component = ({
             
             
             {/* Form Comment */}
-            {/*<div
+            <div
               css={css`
                 border-top: 1px dashed #585858;
                 padding: 14px 0 0 0;
               `}
             >
               
-              <FormName />
-              
               <FormComment
                 gameCommunities_id={gameCommunities_id}
                 userCommunities_id={userCommunities_id}
                 forumThreads_id={forumThreads_id}
-                settingAnonymity={settingAnonymity}
+                enableAnonymity={enableAnonymity}
               />
               
-            </div>*/}
+            </div>
             
             
             {/* Comment */}
@@ -995,7 +993,7 @@ const Component = ({
               userCommunities_id={userCommunities_id}
               forumThreads_id={forumThreads_id}
               comments={comments}
-              settingAnonymity={settingAnonymity}
+              enableAnonymity={enableAnonymity}
             />*/}
             
             

@@ -35,6 +35,13 @@ import lodashGet from 'lodash/get';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 // ---------------------------------------------
@@ -66,6 +73,7 @@ import { validationForumThreadsComment } from 'app/@database/forum-threads/valid
 //   Components
 // ---------------------------------------------
 
+import FormName from 'app/common/form/components/name.js';
 import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js';
 
 
@@ -92,6 +100,8 @@ const Component = (props) => {
     gameCommunities_id,
     userCommunities_id,
     forumThreads_id,
+    forumComments_id,
+    enableAnonymity,
     
     setShowForm,
     
@@ -108,6 +118,7 @@ const Component = (props) => {
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [name, setName] = useState();
+  const [anonymity, setAnonymity] = useState();
   const [comment, setComment] = useState();
   const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
     
@@ -130,9 +141,9 @@ const Component = (props) => {
     //   編集用データを読み込む
     // --------------------------------------------------
     
-    if (forumThreads_id) {
-      handleGetEditData({ forumThreads_id });
-    }
+    // if (forumComments_id) {
+    //   handleGetEditData({ forumComments_id });
+    // }
     
     
   }, []);
@@ -671,7 +682,7 @@ const Component = (props) => {
   //   Validations
   // --------------------------------------------------
   
-  const validationForumThreadsNameObj = validationForumThreadsName({ value: name });
+  // const validationForumThreadsNameObj = validationForumThreadsName({ value: name });
   
   
   
@@ -722,48 +733,24 @@ const Component = (props) => {
       css={css`
         padding: 0 0 8px;
       `}
-      name={`form-${forumThreads_id}`}
+      name={`form-${forumComments_id}`}
       onSubmit={(eventObj) => handleSubmit({
         eventObj,
         gameCommunities_id,
         userCommunities_id,
         forumThreads_id,
+        forumComments_id,
       })}
     >
       
       
-      {!forumThreads_id &&
-        <p
-          css={css`
-            margin: 0 0 14px 0;
-          `}
-        >
-          スレッドを新しく投稿する場合、こちらのフォームを利用して投稿してください。ログインして投稿するとスレッドをいつでも編集できるようになります。
-        </p>
-      }
-      
-      
-      
-      
       {/* Name */}
-      <TextField
-        css={css`
-          && {
-            width: 100%;
-            max-width: 500px;
-            ${forumThreads_id && `margin-top: 4px;`}
-          }
-        `}
-        id="createTreadName"
-        label="スレッド名"
-        value={validationForumThreadsNameObj.value}
-        onChange={(eventObj) => setName(eventObj.target.value)}
-        error={validationForumThreadsNameObj.error}
-        helperText={intl.formatMessage({ id: validationForumThreadsNameObj.messageID }, { numberOfCharacters: validationForumThreadsNameObj.numberOfCharacters })}
-        margin="normal"
-        inputProps={{
-          maxLength: 100,
-        }}
+      <FormName
+        name={name}
+        setName={setName}
+        anonymity={anonymity}
+        setAnonymity={setAnonymity}
+        enableAnonymity={enableAnonymity}
       />
       
       
@@ -793,7 +780,7 @@ const Component = (props) => {
             }
           `}
           rows={5}
-          placeholder="スレッドについての説明、書き込みルールなどがあれば、こちらに記述してください。"
+          placeholder="コメントを書き込んでください。"
           value={comment}
           onChange={(eventObj) => setComment(eventObj.target.value)}
           maxLength={3000}
@@ -814,8 +801,8 @@ const Component = (props) => {
         
         <FormImageAndVideo
           type="forum"
-          descriptionImage="スレッドに表示する画像をアップロードできます。"
-          descriptionVideo="スレッドに表示する動画を登録できます。"
+          descriptionImage="コメントに表示する画像をアップロードできます。"
+          descriptionVideo="コメントに表示する動画を登録できます。"
           showImageCaption={true}
           limit={limit}
           imagesAndVideosObj={imagesAndVideosObj}
@@ -844,14 +831,14 @@ const Component = (props) => {
           color="primary"
           disabled={buttonDisabled}
         >
-          {forumThreads_id ? 'スレッドを編集する' : 'スレッドを作成する'}
+          {forumComments_id ? 'コメントを編集する' : 'コメントを投稿する'}
         </Button>
         
         
         
         
         {/* Close */}
-        {forumThreads_id &&
+        {forumComments_id &&
           <div
             css={css`
               margin: 0 0 0 auto;

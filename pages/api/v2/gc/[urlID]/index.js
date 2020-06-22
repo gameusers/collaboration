@@ -332,7 +332,7 @@ export default async (req, res) => {
     
     if (forumID) {
       
-      // forumObj = await ModelForumThreads.findRecruitmentByRecruitmentID(argumentsObj);
+      forumObj = await ModelForumThreads.findForumByforumID(argumentsObj);
       
       
     // --------------------------------------------------

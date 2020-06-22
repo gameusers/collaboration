@@ -333,7 +333,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   const slugsArr = lodashGet(query, ['slug'], []);
   
-  let threadPage = lodashGet(query, ['page'], 2);
+  let threadPage = lodashGet(query, ['page'], 1);
   let forumID = '';
   let pageType = 'forum';
   
@@ -493,49 +493,65 @@ export async function getServerSideProps({ req, res, query }) {
       as: `/gc/${urlID}`,
     },
     
-    {
-      type: 'gc/forum',
-      anchorText: '',
-      href: '',
-      as: '',
-    },
-    
   ];
   
   
   
   
   // --------------------------------------------------
+  //   通常のフォーラム
+  // --------------------------------------------------
+  
+  if (pageType === 'forum') {
+    
+    
+    // ---------------------------------------------
+    //   - パンくずリスト
+    // ---------------------------------------------
+    
+    breadcrumbsArr.push(
+      
+      {
+        type: 'gc/forum',
+        anchorText: '',
+        href: '',
+        as: '',
+      },
+      
+    );
+  
+  
+  // --------------------------------------------------
   //   個別のフォーラム
   // --------------------------------------------------
     
-  if (pageType === 'individual') {
+  } else if (pageType === 'individual') {
     
     
     // ---------------------------------------------
     //   - Title
     // ---------------------------------------------
     
-    // const recruitmentThreadsArr = lodashGet(dataObj, ['recruitmentThreadsObj', 'page1Obj', 'arr'], []);
-    // const recruitmentTitle = lodashGet(dataObj, ['recruitmentThreadsObj', 'dataObj', recruitmentThreadsArr[0], 'title'], '');
+    const forumThreadsArr = lodashGet(dataObj, ['forumThreadsObj', 'page1Obj', 'arr'], []);
+    const forumName = lodashGet(dataObj, ['forumThreadsObj', 'dataObj', forumThreadsArr[0], 'name'], '');
     
-    // title = `${recruitmentTitle} - ${gameName}`;
+    title = `${forumName} - ${gameName}`;
     
     
-    // // ---------------------------------------------
-    // //   - パンくずリスト
-    // // ---------------------------------------------
+    // ---------------------------------------------
+    //   - パンくずリスト
+    // ---------------------------------------------
     
-    // breadcrumbsArr.push(
+    breadcrumbsArr.push(
       
-    //   {
-    //     type: 'gc/forum/individual',
-    //     anchorText: recruitmentTitle,
-    //     href: '',
-    //     as: '',
-    //   }
+      {
+        type: 'gc/forum/individual',
+        anchorText: forumName,
+        href: '',
+        as: '',
+      }
       
-    // );
+    );
     
     
   }
@@ -547,16 +563,16 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
   
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/forum/[...slug].js
-  // `);
+  console.log(`
+    ----------------------------------------\n
+    /pages/gc/[urlID]/forum/[...slug].js
+  `);
   
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  console.log(`
+    ----- resultObj -----\n
+    ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+    --------------------\n
+  `);
   
   // console.log(chalk`
   //   threadListPage: {green ${threadListPage}}

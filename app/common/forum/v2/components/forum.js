@@ -150,7 +150,7 @@ const Component = (props) => {
     userCommunityID,
     userCommunities_id,
     
-    settingAnonymity,
+    enableAnonymity,
     individual,
     
   } = props;
@@ -181,18 +181,18 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
   
-  const stateLayout = ContainerStateLayout.useContainer();
+  // const stateLayout = ContainerStateLayout.useContainer();
   const stateGc = ContainerStateGc.useContainer();
   
-  const {
+  // const {
     
-    handleSnackbarOpen,
-    handleDialogOpen,
-    handleLoadingOpen,
-    handleLoadingClose,
-    handleScrollTo,
+  //   handleSnackbarOpen,
+  //   handleDialogOpen,
+  //   handleLoadingOpen,
+  //   handleLoadingClose,
+  //   handleScrollTo,
     
-  } = stateLayout;
+  // } = stateLayout;
   
   const {
     
@@ -282,6 +282,9 @@ const Component = (props) => {
       //   userCommunities_id: {green ${userCommunities_id}}
       //   page: {green ${page}}
       //   changeLimit: {green ${changeLimit}}
+        
+      //   url: {green ${url}}
+      //   as: {green ${as}}
       // `);
       
       // return;
@@ -296,54 +299,12 @@ const Component = (props) => {
       await Router.push(url, as);
       
       
-      
-      
-      // ---------------------------------------------
-      //   Scroll
-      // ---------------------------------------------
-      
-      if (page === 1) {
-        
-        handleScrollTo({
-          
-          to: 'forumThreads',
-          duration: 0,
-          delay: 0,
-          smooth: 'easeInOutQuart',
-          offset: -50,
-          
-        });
-        
-      }
-      
-      
     } catch (errorObj) {
       
       
       
     } finally {
       
-      
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      // setButtonDisabled(false);
-      
-      
-      // // ---------------------------------------------
-      // //   Scroll
-      // // ---------------------------------------------
-      
-      // handleScrollTo({
-        
-      //   to: 'forumThreads',
-      //   duration: 0,
-      //   delay: 0,
-      //   smooth: 'easeInOutQuart',
-      //   offset: -50,
-        
-      // });
       
       
     }
@@ -361,8 +322,6 @@ const Component = (props) => {
   const page = lodashGet(forumThreadsObj, ['page'], 1);
   const count = lodashGet(forumThreadsObj, ['count'], 0);
   const limit = lodashGet(forumThreadsObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT, 10));
-  // const limit = 1;
-  // const limit = parseInt((getCookie({ key: 'forumThreadLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT), 10);
   const arr = lodashGet(forumThreadsObj, [`page${page}Obj`, 'arr'], []);
   
   
@@ -457,6 +416,7 @@ const Component = (props) => {
         userCommunities_id={userCommunities_id}
         forumThreads_id={forumThreads_id}
         dataObj={dataObj}
+        enableAnonymity={enableAnonymity}
       />
     );
     

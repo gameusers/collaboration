@@ -76,7 +76,7 @@ import Paragraph from 'app/common/layout/v2/components/paragraph.js';
 import ImageAndVideo from 'app/common/image-and-video/v2/components/image-and-video.js';
 import FormThread from 'app/common/forum/v2/components/form-thread.js';
 import FormComment from 'app/common/forum/v2/components/form-comment.js';
-import Comment from 'app/common/forum/components/comment.js';
+import Comment from 'app/common/forum/v2/components/comment.js';
 
 // import FormName from 'app/common/form/components/name.js';
 
@@ -133,17 +133,26 @@ const useStyles = makeStyles({
 /**
  * Export Component
  */
-const Component = ({ 
+const Component = (props) => {
   
-  urlID,
-  gameCommunities_id,
-  userCommunityID,
-  userCommunities_id,
-  forumThreads_id,
-  dataObj,
-  enableAnonymity,
   
-}) => {
+  // --------------------------------------------------
+  //   props
+  // --------------------------------------------------
+  
+  const {
+    
+    urlID,
+    gameCommunities_id,
+    userCommunityID,
+    userCommunities_id,
+    forumThreads_id,
+    // dataObj,
+    enableAnonymity,
+    
+  } = props;
+  
+  
   
   
   // --------------------------------------------------
@@ -407,6 +416,8 @@ const Component = ({
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
+  
+  const dataObj = lodashGet(forumThreadsObj, ['dataObj', forumThreads_id], {});
   
   const name = lodashGet(dataObj, ['name'], '');
   const comment = lodashGet(dataObj, ['comment'], '');
@@ -986,15 +997,15 @@ const Component = ({
             
             
             {/* Comment */}
-            {/*<Comment
+            <Comment
               urlID={urlID}
               gameCommunities_id={gameCommunities_id}
               userCommunityID={userCommunityID}
               userCommunities_id={userCommunities_id}
               forumThreads_id={forumThreads_id}
-              comments={comments}
+              // comments={comments}
               enableAnonymity={enableAnonymity}
-            />*/}
+            />
             
             
           </div>

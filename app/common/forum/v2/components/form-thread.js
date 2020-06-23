@@ -392,8 +392,8 @@ const Component = (props) => {
       //   Validation
       // ---------------------------------------------
       
-      const validationHandleNameObj = validationForumThreadsName({ value: name });
-      const validationForumThreadsCommentObj = validationForumThreadsComment({ value: comment });
+      // const validationHandleNameObj = validationForumThreadsName({ value: name });
+      // const validationForumThreadsCommentObj = validationForumThreadsComment({ value: comment });
       
       
       // ---------------------------------------------
@@ -401,10 +401,14 @@ const Component = (props) => {
       // ---------------------------------------------
       
       if (
-        validationHandleNameObj.error ||
-        validationForumThreadsCommentObj.error
+        
+        validationForumThreadsName({ value: name }).error ||
+        validationForumThreadsComment({ value: comment }).error
+        
       ) {
+        
         throw new CustomError({ errorsArr: [{ code: '3NtQODEsb', messageID: 'uwHIKBy7c' }] });
+        
       }
       
       
@@ -463,8 +467,8 @@ const Component = (props) => {
         gameCommunities_id,
         userCommunities_id,
         forumThreads_id,
-        name: name,
-        comment: comment,
+        name,
+        comment,
         threadListLimit,
         threadLimit,
         commentLimit,
@@ -592,10 +596,10 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   forumThreads_id
+      //   新規投稿時の forumThreads_id
       // ---------------------------------------------
       
-      newForumThreads_id = lodashGet(resultObj, ['data', 'forumThreadsForListObj', `page1Obj`, 'arr', 0], '');
+      newForumThreads_id = lodashGet(resultObj, ['data', 'forumThreadsObj', 'page1Obj', 'arr', 0], '');
       
       // console.log(chalk`
       //   forumThreads_id: {green ${forumThreads_id}}

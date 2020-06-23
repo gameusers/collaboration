@@ -638,11 +638,15 @@ const findForForum = async ({
     const intReplyLimit = parseInt(replyLimit, 10);
     
     
+    
+    
     // --------------------------------------------------
     //   threadCount
     // --------------------------------------------------
     
     let threadCount = 0;
+    
+    
     
     
     // --------------------------------------------------
@@ -660,7 +664,7 @@ const findForForum = async ({
       
       matchConditionArr = [
         {
-          $match : { gameCommunities_id }
+          $match: { gameCommunities_id }
         },
       ];
       
@@ -703,7 +707,7 @@ const findForForum = async ({
     
       matchConditionArr = [
         {
-          $match : { userCommunities_id }
+          $match: { userCommunities_id }
         },
       ];
       
@@ -747,11 +751,18 @@ const findForForum = async ({
     // `);
     
     
+    
+    
     // --------------------------------------------------
     //   Aggregation
     // --------------------------------------------------
     
     const resultArr = await SchemaForumThreads.aggregate([
+      
+      
+      // --------------------------------------------------
+      //   Match Condition Array
+      // --------------------------------------------------
       
       ...matchConditionArr,
       
@@ -764,11 +775,11 @@ const findForForum = async ({
         $lookup:
           {
             from: 'images-and-videos',
-            let: { forumThreadsImagesAndVideos_id: '$imagesAndVideos_id' },
+            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
               { $match:
                 { $expr:
-                  { $eq: ['$_id', '$$forumThreadsImagesAndVideos_id'] },
+                  { $eq: ['$_id', '$$letImagesAndVideos_id'] },
                 }
               },
               { $project:
@@ -792,13 +803,21 @@ const findForForum = async ({
       },
       
       
-      { $project:
-        {
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+      
+      {
+        $project: {
           imagesAndVideos_id: 0,
           __v: 0,
         }
       },
       
+      
+      // --------------------------------------------------
+      //   $sort / $skip / $limit
+      // --------------------------------------------------
       
       { '$sort': { 'updatedDate': -1 } },
       { $skip: (threadPage - 1) * intThreadLimit },

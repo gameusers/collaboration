@@ -2532,342 +2532,342 @@ class Store {
    * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
    * @param {string} forumComments_id - DB forum-comments _id / コメントのID
    */
-  @action.bound
-  async handleSubmitFormComment({
+  // @action.bound
+  // async handleSubmitFormComment({
     
-    eventObj,
-    pathArr = [],
-    gameCommunities_id,
-    userCommunities_id,
-    forumThreads_id,
-    forumComments_id,
+  //   eventObj,
+  //   pathArr = [],
+  //   gameCommunities_id,
+  //   userCommunities_id,
+  //   forumThreads_id,
+  //   forumComments_id,
     
-  }) {
-    
-    
-    // ---------------------------------------------
-    //   フォームの送信処理停止
-    // ---------------------------------------------
-    
-    eventObj.preventDefault();
+  // }) {
     
     
+  //   // ---------------------------------------------
+  //   //   フォームの送信処理停止
+  //   // ---------------------------------------------
     
-    
-    // ---------------------------------------------
-    //   Property
-    // ---------------------------------------------
-    
-    const communities_id = gameCommunities_id || userCommunities_id;
-    
-    const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
-    const anonymity = lodashGet(this.dataObj, [...pathArr, 'anonymity'], false);
-    const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
-    
-    const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj',  ...pathArr, 'imagesAndVideosObj'], {});
-    
-    const forumObj = lodashGet(this.dataObj, [communities_id], {});
-    const clonedObj = lodashCloneDeep(forumObj);
-    
-    const threadListLimit = parseInt((storeData.getCookie({ key: 'forumThreadListLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIST_LIMIT), 10);
-    const threadLimit = parseInt((storeData.getCookie({ key: 'forumThreadLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT), 10);
-    const commentLimit = parseInt((storeData.getCookie({ key: 'forumCommentLimit' }) || process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT), 10);
-    const replyLimit = parseInt((storeData.getCookie({ key: 'forumReplyLimit' }) || process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT), 10);
-    
-    // const threadListLimit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_LIST_LIMIT, 10));
-    // const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT, 10));
-    // const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT, 10));
-    // const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT, 10));
+  //   eventObj.preventDefault();
     
     
     
     
-    try {
+  //   // ---------------------------------------------
+  //   //   Property
+  //   // ---------------------------------------------
+    
+  //   const communities_id = gameCommunities_id || userCommunities_id;
+    
+  //   const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
+  //   const anonymity = lodashGet(this.dataObj, [...pathArr, 'anonymity'], false);
+  //   const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
+    
+  //   const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj',  ...pathArr, 'imagesAndVideosObj'], {});
+    
+  //   const forumObj = lodashGet(this.dataObj, [communities_id], {});
+  //   const clonedObj = lodashCloneDeep(forumObj);
+    
+  //   const threadListLimit = parseInt((storeData.getCookie({ key: 'forumThreadListLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIST_LIMIT), 10);
+  //   const threadLimit = parseInt((storeData.getCookie({ key: 'forumThreadLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT), 10);
+  //   const commentLimit = parseInt((storeData.getCookie({ key: 'forumCommentLimit' }) || process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT), 10);
+  //   const replyLimit = parseInt((storeData.getCookie({ key: 'forumReplyLimit' }) || process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT), 10);
+    
+  //   // const threadListLimit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_LIST_LIMIT, 10));
+  //   // const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT, 10));
+  //   // const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT, 10));
+  //   // const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT, 10));
+    
+    
+    
+    
+  //   try {
       
       
-      // ---------------------------------------------
-      //   communities_id または forumThreads_id が存在しない場合エラー
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   communities_id または forumThreads_id が存在しない場合エラー
+  //     // ---------------------------------------------
       
-      if (!communities_id || !forumThreads_id) {
-        throw new CustomError({ errorsArr: [{ code: 'ooDR_zAOu', messageID: '1YJnibkmh' }] });
-      }
-      
-      
-      // ---------------------------------------------
-      //   Validation
-      // ---------------------------------------------
-      
-      const validationHandleNameObj = validationHandleName({ value: name });
-      const validationForumCommentsCommentObj = validationForumCommentsComment({ value: comment });
+  //     if (!communities_id || !forumThreads_id) {
+  //       throw new CustomError({ errorsArr: [{ code: 'ooDR_zAOu', messageID: '1YJnibkmh' }] });
+  //     }
       
       
-      // ---------------------------------------------
-      //   Validation Error
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Validation
+  //     // ---------------------------------------------
       
-      if (
-        validationHandleNameObj.error ||
-        validationForumCommentsCommentObj.error
-      ) {
-        throw new CustomError({ errorsArr: [{ code: 'evE70gDt0', messageID: 'uwHIKBy7c' }] });
-      }
+  //     const validationHandleNameObj = validationHandleName({ value: name });
+  //     const validationForumCommentsCommentObj = validationForumCommentsComment({ value: comment });
       
       
+  //     // ---------------------------------------------
+  //     //   Validation Error
+  //     // ---------------------------------------------
       
-      
-      // ---------------------------------------------
-      //   Loading 表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingShow({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   console.log
-      // ---------------------------------------------
-      
-      // console.log(chalk`
-      //   \n---------- handleSubmitFormComment ----------\n
-      // `);
-      
-      // console.log(`
-      //   ----- pathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id}}
-      //   forumThreads_id: {green ${forumThreads_id}}
-      //   forumComments_id: {green ${forumComments_id}}
-      //   name: {green ${name}}
-      //   anonymity: {green ${anonymity}}
-      //   typeof anonymity: {green ${typeof anonymity}}
-      //   comment: {green ${comment}}
-      // `);
-      
-      // console.log(`
-      //   ----- imagesAndVideosObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // return;
+  //     if (
+  //       validationHandleNameObj.error ||
+  //       validationForumCommentsCommentObj.error
+  //     ) {
+  //       throw new CustomError({ errorsArr: [{ code: 'evE70gDt0', messageID: 'uwHIKBy7c' }] });
+  //     }
       
       
       
       
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Loading 表示
+  //     // ---------------------------------------------
       
-      const formDataObj = {
+  //     storeLayout.handleLoadingShow({});
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   console.log
+  //     // ---------------------------------------------
+      
+  //     // console.log(chalk`
+  //     //   \n---------- handleSubmitFormComment ----------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- pathArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(chalk`
+  //     //   gameCommunities_id: {green ${gameCommunities_id}}
+  //     //   userCommunities_id: {green ${userCommunities_id}}
+  //     //   forumThreads_id: {green ${forumThreads_id}}
+  //     //   forumComments_id: {green ${forumComments_id}}
+  //     //   name: {green ${name}}
+  //     //   anonymity: {green ${anonymity}}
+  //     //   typeof anonymity: {green ${typeof anonymity}}
+  //     //   comment: {green ${comment}}
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- imagesAndVideosObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // return;
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
+      
+  //     const formDataObj = {
         
-        gameCommunities_id,
-        userCommunities_id,
-        forumThreads_id,
-        name,
-        comment,
-        threadListLimit,
-        threadLimit,
-        commentLimit,
-        replyLimit,
+  //       gameCommunities_id,
+  //       userCommunities_id,
+  //       forumThreads_id,
+  //       name,
+  //       comment,
+  //       threadListLimit,
+  //       threadLimit,
+  //       commentLimit,
+  //       replyLimit,
         
-      };
+  //     };
       
-      if (forumComments_id) {
-        formDataObj.forumComments_id = forumComments_id;
-      }
+  //     if (forumComments_id) {
+  //       formDataObj.forumComments_id = forumComments_id;
+  //     }
       
-      formDataObj.anonymity = anonymity;
+  //     formDataObj.anonymity = anonymity;
       
-      if (Object.keys(imagesAndVideosObj).length !== 0) {
-        formDataObj.imagesAndVideosObj = imagesAndVideosObj;
-      }
-      
-      
+  //     if (Object.keys(imagesAndVideosObj).length !== 0) {
+  //       formDataObj.imagesAndVideosObj = imagesAndVideosObj;
+  //     }
       
       
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
       
-      let resultObj = {};
       
-      if (gameCommunities_id) {
+  //     // ---------------------------------------------
+  //     //   Fetch
+  //     // ---------------------------------------------
+      
+  //     let resultObj = {};
+      
+  //     if (gameCommunities_id) {
         
-        resultObj = await fetchWrapper({
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/upsert-comment-gc`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-        });
+  //       resultObj = await fetchWrapper({
+  //         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/upsert-comment-gc`,
+  //         methodType: 'POST',
+  //         formData: JSON.stringify(formDataObj),
+  //       });
         
-      } else if (userCommunities_id) {
+  //     } else if (userCommunities_id) {
         
-        resultObj = await fetchWrapper({
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/upsert-comment-uc`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-        });
+  //       resultObj = await fetchWrapper({
+  //         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/upsert-comment-uc`,
+  //         methodType: 'POST',
+  //         formData: JSON.stringify(formDataObj),
+  //       });
         
-      }
+  //     }
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
       
       
-      // ---------------------------------------------
-      //   forumThreadsForListObj
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
       
-      clonedObj.forumThreadsForListObj = lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {});
-      
-      
-      // ---------------------------------------------
-      //   forumThreadsObj
-      // ---------------------------------------------
-      
-      clonedObj.forumThreadsObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
-      
-      
-      // ---------------------------------------------
-      //   forumCommentsObj
-      // ---------------------------------------------
-      
-      clonedObj.forumCommentsObj = lodashGet(resultObj, ['data', 'forumCommentsObj'], {});
-      
-      
-      // ---------------------------------------------
-      //   forumRepliesObj
-      // ---------------------------------------------
-      
-      clonedObj.forumRepliesObj = lodashGet(resultObj, ['data', 'forumRepliesObj'], {});
-      
-      
-      // --------------------------------------------------
-      //   UpdatedDateObj
-      // --------------------------------------------------
-      
-      clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
-      
-      
-      // ---------------------------------------------
-      //   Update
-      // ---------------------------------------------
-      
-      this.handleEdit({
-        pathArr: [communities_id],
-        value: clonedObj
-      });
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
       
       
       
       
-      // ---------------------------------------------
-      //   Close Form & Reset Form
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   forumThreadsForListObj
+  //     // ---------------------------------------------
       
-      if (forumComments_id) {
-        // console.log('Close');
-        lodashSet(this.dataObj, [forumComments_id, 'formCommentObj', 'show'], false);
+  //     clonedObj.forumThreadsForListObj = lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {});
+      
+      
+  //     // ---------------------------------------------
+  //     //   forumThreadsObj
+  //     // ---------------------------------------------
+      
+  //     clonedObj.forumThreadsObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
+      
+      
+  //     // ---------------------------------------------
+  //     //   forumCommentsObj
+  //     // ---------------------------------------------
+      
+  //     clonedObj.forumCommentsObj = lodashGet(resultObj, ['data', 'forumCommentsObj'], {});
+      
+      
+  //     // ---------------------------------------------
+  //     //   forumRepliesObj
+  //     // ---------------------------------------------
+      
+  //     clonedObj.forumRepliesObj = lodashGet(resultObj, ['data', 'forumRepliesObj'], {});
+      
+      
+  //     // --------------------------------------------------
+  //     //   UpdatedDateObj
+  //     // --------------------------------------------------
+      
+  //     clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+      
+      
+  //     // ---------------------------------------------
+  //     //   Update
+  //     // ---------------------------------------------
+      
+  //     this.handleEdit({
+  //       pathArr: [communities_id],
+  //       value: clonedObj
+  //     });
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   Close Form & Reset Form
+  //     // ---------------------------------------------
+      
+  //     if (forumComments_id) {
+  //       // console.log('Close');
+  //       lodashSet(this.dataObj, [forumComments_id, 'formCommentObj', 'show'], false);
         
-      } else {
-        // console.log('Reset');
-        lodashSet(this.dataObj, [...pathArr, 'name'], '');
-        lodashSet(this.dataObj, [...pathArr, 'comment'], '');
+  //     } else {
+  //       // console.log('Reset');
+  //       lodashSet(this.dataObj, [...pathArr, 'name'], '');
+  //       lodashSet(this.dataObj, [...pathArr, 'comment'], '');
         
-        storeImageAndVideoForm.handleResetForm({ pathArr });
+  //       storeImageAndVideoForm.handleResetForm({ pathArr });
         
-      }
+  //     }
       
       
       
       
-      // ---------------------------------------------
-      //   Snackbar: Success
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Snackbar: Success
+  //     // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen({
-        variant: 'success',
-        messageID: forumComments_id ? 'NKsMLWvkt' : 'fhi9lUaap',
-      });
-      
-      
-    } catch (errorObj) {
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'success',
+  //       messageID: forumComments_id ? 'NKsMLWvkt' : 'fhi9lUaap',
+  //     });
       
       
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
+  //   } catch (errorObj) {
       
       
-    } finally {
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
       
       
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
+  //   } finally {
       
       
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
       
-      storeLayout.handleLoadingHide({});
-      
-      
-      // ---------------------------------------------
-      //   Scroll
-      // ---------------------------------------------
-      
-      storeLayout.handleScrollTo({
-        to: forumComments_id,
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
-      });
+  //     storeLayout.handleButtonEnable({ pathArr });
       
       
-    }
+  //     // ---------------------------------------------
+  //     //   Loading 非表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingHide({});
+      
+      
+  //     // ---------------------------------------------
+  //     //   Scroll
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleScrollTo({
+  //       to: forumComments_id,
+  //       duration: 0,
+  //       delay: 0,
+  //       smooth: 'easeInOutQuart',
+  //       offset: -50,
+  //     });
+      
+      
+  //   }
     
     
-  };
+  // };
   
   
   

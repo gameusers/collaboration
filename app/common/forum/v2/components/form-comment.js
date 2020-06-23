@@ -65,8 +65,10 @@ import { getCookie } from 'app/@modules/cookie.js';
 //   Validations
 // ---------------------------------------------
 
-import { validationForumThreadsName } from 'app/@database/forum-threads/validations/name.js';
-import { validationForumThreadsComment } from 'app/@database/forum-threads/validations/comment.js';
+import { validationHandleName } from 'app/@validations/name.js';
+import { validationBoolean } from 'app/@validations/boolean.js';
+// import { validationForumThreadsName } from 'app/@database/forum-threads/validations/name.js';
+import { validationForumCommentsComment } from 'app/@database/forum-comments/validations/comment.js';
 
 
 // ---------------------------------------------
@@ -117,9 +119,9 @@ const Component = (props) => {
   const intl = useIntl();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
-  const [name, setName] = useState();
-  const [anonymity, setAnonymity] = useState();
-  const [comment, setComment] = useState();
+  const [name, setName] = useState('');
+  const [anonymity, setAnonymity] = useState(false);
+  const [comment, setComment] = useState('');
   const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
     
     _id: '',
@@ -342,11 +344,12 @@ const Component = (props) => {
   
   
   /**
-   * スレッド作成・編集フォームを送信する
+   * コメント作成・編集フォームを送信する
    * @param {Object} eventObj - イベント
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
-   * @param {string} forumThreads_id - DB forum-threads _id / 編集するスレッドのID
+   * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
+   * @param {string} forumComments_id - DB forum-comments _id / コメントのID
    */
   const handleSubmit = async ({
     
@@ -354,6 +357,7 @@ const Component = (props) => {
     gameCommunities_id,
     userCommunities_id,
     forumThreads_id,
+    forumComments_id,
     
   }) => {
     
@@ -367,10 +371,10 @@ const Component = (props) => {
     
     
     // ---------------------------------------------
-    //   新規投稿時の forumThreads_id
+    //   新規投稿時の forumComments_id
     // ---------------------------------------------
     
-    let newForumThreads_id = '';
+    let newForumComments_id = '';
     
     
     
@@ -394,8 +398,8 @@ const Component = (props) => {
       //   _id が存在しない場合エラー
       // ---------------------------------------------
       
-      if (!gameCommunities_id && !userCommunities_id) {
-        throw new CustomError({ errorsArr: [{ code: '8319EqfHo', messageID: '1YJnibkmh' }] });
+      if ((!gameCommunities_id && !userCommunities_id) || !forumThreads_id) {
+        throw new CustomError({ errorsArr: [{ code: 'UsXqWgrd6', messageID: '1YJnibkmh' }] });
       }
       
       
@@ -403,8 +407,8 @@ const Component = (props) => {
       //   Validation
       // ---------------------------------------------
       
-      const validationHandleNameObj = validationForumThreadsName({ value: name });
-      const validationForumThreadsCommentObj = validationForumThreadsComment({ value: comment });
+      // const validationHandleNameObj = validationHandleName({ value: name });
+      // const validationForumCommentsCommentObj = validationForumCommentsComment({ value: comment });
       
       
       // ---------------------------------------------
@@ -412,10 +416,15 @@ const Component = (props) => {
       // ---------------------------------------------
       
       if (
-        validationHandleNameObj.error ||
-        validationForumThreadsCommentObj.error
+        
+        validationHandleName({ value: name }).error ||
+        validationBoolean({ value: anonymity }).error ||
+        validationForumCommentsComment({ value: comment }).error
+        
       ) {
-        throw new CustomError({ errorsArr: [{ code: '3NtQODEsb', messageID: 'uwHIKBy7c' }] });
+        
+        throw new CustomError({ errorsArr: [{ code: 'evE70gDt0', messageID: 'uwHIKBy7c' }] });
+        
       }
       
       
@@ -441,24 +450,25 @@ const Component = (props) => {
       //   console.log
       // ---------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/form-thread.js - handleSubmit
-      // `);
+      console.log(`
+        ----------------------------------------\n
+        /app/common/forum/v2/components/form-comment.js - handleSubmit
+      `);
       
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id}}
-      //   forumThreads_id: {green ${forumThreads_id}}
-      //   name: {green ${name}}
-      //   comment: {green ${comment}}
-      // `);
+      console.log(chalk`
+        gameCommunities_id: {green ${gameCommunities_id}}
+        userCommunities_id: {green ${userCommunities_id}}
+        forumThreads_id: {green ${forumThreads_id}}
+        forumComments_id: {green ${forumComments_id}}
+        name: {green ${name}}
+        comment: {green ${comment}}
+      `);
       
-      // console.log(`
-      //   ----- imagesAndVideosObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- imagesAndVideosObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       // return;
       
@@ -474,14 +484,19 @@ const Component = (props) => {
         gameCommunities_id,
         userCommunities_id,
         forumThreads_id,
-        name: name,
-        comment: comment,
+        name,
+        anonymity,
+        comment,
         threadListLimit,
         threadLimit,
         commentLimit,
         replyLimit,
         
       };
+      
+      if (forumComments_id) {
+        formDataObj.forumComments_id = forumComments_id;
+      }
       
       if (imagesAndVideosObj.arr.length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
@@ -500,17 +515,17 @@ const Component = (props) => {
         
         resultObj = await fetchWrapper({
           
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/upsert-gc`,
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/upsert-comment-gc`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
           
         });
         
-      } else {
+      } else if (userCommunities_id) {
         
         resultObj = await fetchWrapper({
           
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/upsert-uc`,
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/upsert-comment-uc`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
           
@@ -519,11 +534,11 @@ const Component = (props) => {
       }
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
       // ---------------------------------------------
@@ -578,13 +593,14 @@ const Component = (props) => {
       //   Close Form & Reset Form
       // ---------------------------------------------
       
-      if (forumThreads_id) {
+      if (forumComments_id) {
         
         setShowForm(false);
         
       } else {
         
         setName('');
+        setAnonymity(false);
         setComment('');
         setImagesAndVideosObj({
           
@@ -603,14 +619,14 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   forumThreads_id
+      //   新規投稿時の forumComments_id
       // ---------------------------------------------
       
-      newForumThreads_id = lodashGet(resultObj, ['data', 'forumThreadsForListObj', `page1Obj`, 'arr', 0], '');
+      newForumComments_id = lodashGet(resultObj, ['data', 'forumCommentsObj', forumThreads_id, 'page1Obj', 'arr', 0], '');
       
-      // console.log(chalk`
-      //   forumThreads_id: {green ${forumThreads_id}}
-      // `);
+      console.log(chalk`
+        newForumComments_id: {green ${newForumComments_id}}
+      `);
       
       
       
@@ -621,7 +637,7 @@ const Component = (props) => {
       
       handleSnackbarOpen({
         variant: 'success',
-        messageID: forumThreads_id ? 'HINAkcSmJ' : 'pInPmleQh',
+        messageID: forumComments_id ? 'NKsMLWvkt' : 'fhi9lUaap',
       });
       
       
@@ -661,7 +677,7 @@ const Component = (props) => {
       
       handleScrollTo({
         
-        to: forumThreads_id || newForumThreads_id || 'forumThreads',
+        to: forumComments_id || newForumComments_id || forumThreads_id || 'forumThreads',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',

@@ -27,7 +27,7 @@ import App from 'next/app';
 import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
 import { IntlProvider } from 'react-intl';
-// import SimpleReactLightbox from 'simple-react-lightbox';
+import moment from 'moment';
 
 
 // ---------------------------------------------
@@ -284,7 +284,7 @@ class MyApp extends App {
     
     
     // --------------------------------------------------
-    //   Initial State
+    //   Initial State - User
     // --------------------------------------------------
     
     const login = lodashGet(pageProps, ['login'], false);
@@ -295,7 +295,7 @@ class MyApp extends App {
       acceptLanguage: reqAcceptLanguage
     });
     
-    const initialStateObj = {
+    const initialStateUserObj = {
       
       login,
       loginUsersObj,
@@ -303,6 +303,18 @@ class MyApp extends App {
       
     };
     
+    
+    // --------------------------------------------------
+    //   Initial State - Layout
+    // --------------------------------------------------
+    
+    const ISO8601 = lodashGet(pageProps, ['ISO8601'], moment().utc().toISOString());
+    
+    const initialStateLayoutObj = {
+      
+      ISO8601,
+      
+    };
     
     
     
@@ -351,8 +363,8 @@ class MyApp extends App {
         
         
         {/* States */}
-        <ContainerStateUser.Provider initialState={initialStateObj}>
-          <ContainerStateLayout.Provider>
+        <ContainerStateUser.Provider initialState={initialStateUserObj}>
+          <ContainerStateLayout.Provider initialState={initialStateLayoutObj}>
             
             
             {/* Mobx Provider */}
@@ -371,14 +383,7 @@ class MyApp extends App {
                 {/* Material UI Theme Provider */}
                 <ThemeProvider theme={theme}>
                   
-                  
-                  {/* Simple React Light-box */}
-                  {/*<SimpleReactLightbox>*/}
-                    
-                    <Component {...pageProps} />
-                    
-                  {/*</SimpleReactLightbox>*/}
-                  
+                  <Component {...pageProps} />
                   
                 </ThemeProvider>
                 

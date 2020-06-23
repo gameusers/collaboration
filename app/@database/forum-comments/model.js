@@ -16,6 +16,11 @@ const util = require('util');
 
 const moment = require('moment');
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
@@ -861,7 +866,9 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
       arr: resultArr,
       forumThreadsObj,
       commentPage,
+      commentLimit: intCommentLimit,
       replyPage,
+      replyLimit: intReplyLimit,
       
     });
     
@@ -1444,7 +1451,9 @@ const findRepliesByForumComments_idsArr = async ({
       arr: docArr,
       forumThreadsObj: {},
       commentPage,
+      commentLimit: intCommentLimit,
       replyPage,
+      replyLimit: intReplyLimit,
       
     });
     
@@ -1516,10 +1525,24 @@ const findRepliesByForumComments_idsArr = async ({
  * @param {Array} arr - コメントと返信情報の入った配列
  * @param {Object} forumThreadsObj - スレッド情報の入ったオブジェクト / カウントの取得に使う
  * @param {number} commentPage - コメントのページ
+ * @param {number} commentLimit - コメントのリミット
  * @param {number} replyPage - 返信のページ
+ * @param {number} replyLimit - 返信のリミット
  * @return {Array} フォーマット後のデータ
  */
-const formatVer2 = ({ req, localeObj, loginUsers_id, arr, forumThreadsObj, commentPage, replyPage }) => {
+const formatVer2 = ({
+  
+  req,
+  localeObj,
+  loginUsers_id,
+  arr,
+  forumThreadsObj,
+  commentPage,
+  commentLimit,
+  replyPage,
+  replyLimit,
+  
+}) => {
   
   
   // --------------------------------------------------
@@ -1657,11 +1680,13 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, forumThreadsObj, comme
       // --------------------------------------------------
       
       clonedObj.editable = verifyAuthority({
+        
         req,
         users_id: valueObj.users_id,
         loginUsers_id,
         ISO8601: valueObj.createdDate,
-        _id: valueObj._id
+        _id: valueObj._id,
+        
       });
       
       
@@ -1871,6 +1896,9 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, forumThreadsObj, comme
   
   forumCommentsObj.dataObj = formattedCommentsObj;
   forumRepliesObj.dataObj = formattedRepliesObj;
+  
+  forumCommentsObj.limit = commentLimit;
+  forumRepliesObj.limit = replyLimit;
   
   
   

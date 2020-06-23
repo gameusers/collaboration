@@ -17,6 +17,7 @@ import util from 'util';
 import React, { useState, useEffect, useContext } from 'react';
 import { Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll';
 import { createContainer } from 'unstated-next';
+import moment from 'moment';
 
 
 // ---------------------------------------------
@@ -41,7 +42,8 @@ const useLayout = (initialStateObj) => {
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+ 
+  const [ISO8601, setISO8601] = useState(lodashGet(initialStateObj, ['ISO8601'], moment().utc().toISOString()));
   const [snackbarObj, setSnackbarObj] = useState({});
   const [dialogObj, setDialogOpen] = useState({ open: false });
   const [loadingObj, setLoadingObj] = useState({});
@@ -339,6 +341,9 @@ const useLayout = (initialStateObj) => {
   // --------------------------------------------------
   
   return {
+    
+    ISO8601,
+    setISO8601,
     
     snackbarObj,
     handleSnackbarOpen,

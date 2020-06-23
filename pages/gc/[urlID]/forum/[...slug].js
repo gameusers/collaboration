@@ -117,6 +117,8 @@ const ContainerLayout = (props) => {
     //   Scroll To
     // ---------------------------------------------
     
+    // if (window.scrollY !== 0) {
+    
     handleScrollTo({
       
       to: 'forumThreads',
@@ -189,7 +191,8 @@ const ContainerLayout = (props) => {
       <Forum
         urlID={props.urlID}
         gameCommunities_id={props.gameCommunities_id}
-        settingAnonymity={true}
+        enableAnonymity={true}
+        individual={props.pageType === 'individual'}
       />
       
     </React.Fragment>
@@ -622,6 +625,7 @@ export async function getServerSideProps({ req, res, query }) {
       forumThreadsObj,
       forumCommentsObj,
       forumRepliesObj,
+      pageType,
       
     }
     

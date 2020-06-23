@@ -22,7 +22,7 @@ import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 // import SimpleIcons from 'simple-icons-react-component';
-import moment from 'moment';
+// import moment from 'moment';
 import Cookies from 'js-cookie';
 
 /** @jsx jsx */
@@ -78,8 +78,8 @@ import Panel from 'app/common/layout/v2/components/panel.js';
 // import ImageAndVideo from 'app/common/image-and-video/components/image-and-video.js';
 import Thread from 'app/common/forum/v2/components/thread.js';
 import FormThread from 'app/common/forum/v2/components/form-thread.js';
-import FormComment from 'app/common/forum/components/form-comment.js';
-import Comment from 'app/common/forum/components/comment.js';
+// import FormComment from 'app/common/forum/components/form-comment.js';
+// import Comment from 'app/common/forum/components/comment.js';
 
 // import FormName from 'app/common/form/components/name.js';
 
@@ -88,16 +88,16 @@ import Comment from 'app/common/forum/components/comment.js';
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from 'app/@modules/fetch.js';
-import { CustomError } from 'app/@modules/error/custom.js';
-import { getCookie } from 'app/@modules/cookie.js';
+// import { fetchWrapper } from 'app/@modules/fetch.js';
+// import { CustomError } from 'app/@modules/error/custom.js';
+// import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
 //   States
 // ---------------------------------------------
 
-import { ContainerStateLayout } from 'app/@states/layout.js';
+// import { ContainerStateLayout } from 'app/@states/layout.js';
 import { ContainerStateGc } from 'app/@states/gc.js';
 
 
@@ -395,18 +395,6 @@ const Component = (props) => {
   
   for (let forumThreads_id of arr.values()) {
     
-    
-    // --------------------------------------------------
-    //   dataObj
-    // --------------------------------------------------
-    
-    const dataObj = lodashGet(forumThreadsObj, ['dataObj', forumThreads_id], {});
-    
-    
-    // --------------------------------------------------
-    //   push
-    // --------------------------------------------------
-    
     componentArr.push(
       <Thread
         key={forumThreads_id}
@@ -415,11 +403,9 @@ const Component = (props) => {
         userCommunityID={userCommunityID}
         userCommunities_id={userCommunities_id}
         forumThreads_id={forumThreads_id}
-        dataObj={dataObj}
         enableAnonymity={enableAnonymity}
       />
     );
-    
     
   }
   

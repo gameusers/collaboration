@@ -134,7 +134,13 @@ const Component = (props) => {
     
     Events.scrollEvent.register('end', function(to, element) {
       
+      // console.log('end', arguments);
+      
+      // setScrollToEnd(true);
+      
       if (window.scrollY === 0) {
+        
+        // console.log('end / window.scrollY === 0');
         
         setShowNavTop(true);
         setLowerNavMain(false);
@@ -142,15 +148,17 @@ const Component = (props) => {
         
       } else {
         
+        // console.log('end / else');
+        
         setShowNavTop(false);
         setLowerNavMain(false);
         setLowerSidebar(true);
         
       }
       
-      setScrollToEnd(true);
       
-      // console.log('end', arguments);
+      setTimeout(setScrollToEnd(true), 500);
+      
       
     });
     

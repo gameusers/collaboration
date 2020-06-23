@@ -264,6 +264,7 @@ const Component = (props) => {
     
     
     
+    
     // ---------------------------------------------
     //   過去のスクロール量を記録
     // ---------------------------------------------
@@ -293,6 +294,10 @@ const Component = (props) => {
       // console.log(chalk`
       //   return - scrollY === 0
       // `);
+      
+      // showNavTopNew = true;
+      // lowerNavMainNew = false;
+      // lowerSidebarNew = false;
       
       return;
       

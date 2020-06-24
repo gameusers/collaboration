@@ -413,7 +413,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   dataObj
   // --------------------------------------------------
   
-  const login = lodashGet(dataObj, ['accessLevel'], false);
+  const login = lodashGet(dataObj, ['login'], false);
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});

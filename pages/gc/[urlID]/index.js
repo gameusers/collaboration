@@ -388,7 +388,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   dataObj
   // --------------------------------------------------
   
-  const login = lodashGet(dataObj, ['accessLevel'], false);
+  const login = lodashGet(dataObj, ['login'], false);
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
@@ -480,16 +480,16 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
   
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/index.js
-  // `);
+  console.log(`
+    ----------------------------------------\n
+    /pages/gc/[urlID]/index.js
+  `);
   
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  console.log(`
+    ----- resultObj -----\n
+    ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+    --------------------\n
+  `);
   
   // console.log(chalk`
   //   threadListPage: {green ${threadListPage}}

@@ -741,6 +741,8 @@ export default injectIntl(class extends React.Component {
                     `}
                   >
                     
+                    
+                    {/* Reply Button */}
                     <Button
                       css={css`
                         && {
@@ -758,11 +760,11 @@ export default injectIntl(class extends React.Component {
                         }
                       `}
                       variant="outlined"
+                      disabled={buttonDisabled}
                       onClick={() => handleEdit({
                         pathArr: [...pathRecruitmentReplyNewFormArr, 'showFormReply'],
                         value: !showFormReply
                       })}
-                      disabled={buttonDisabled}
                     >
                       <IconReply
                         css={css`
@@ -802,13 +804,13 @@ export default injectIntl(class extends React.Component {
                         `}
                         variant="outlined"
                         color="secondary"
+                        disabled={buttonDisabled}
                         onClick={() => handleShowDeleteDialog({
                           pathArr: this.pathArr,
                           gameCommunities_id,
                           recruitmentThreads_id,
                           recruitmentComments_id,
                         })}
-                        disabled={buttonDisabled}
                       >
                         <IconDelete
                           css={css`
@@ -845,11 +847,11 @@ export default injectIntl(class extends React.Component {
                         `}
                         variant="outlined"
                         color="primary"
+                        disabled={buttonDisabled}
                         onClick={() => handleShowFormRecruitmentComment({
                           pathArr: pathRecruitmentCommentEditFormArr,
                           recruitmentComments_id,
                         })}
-                        disabled={buttonDisabled}
                       >
                         <IconEdit
                           css={css`

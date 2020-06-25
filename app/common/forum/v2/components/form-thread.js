@@ -123,6 +123,11 @@ const Component = (props) => {
   
   useEffect(() => {
     
+    
+    // --------------------------------------------------
+    //   Button Enable
+    // --------------------------------------------------
+    
     setButtonDisabled(false);
     
     
@@ -216,7 +221,9 @@ const Component = (props) => {
       // ---------------------------------------------
       
       const formDataObj = {
+        
         forumThreads_id,
+        
       };
       
       

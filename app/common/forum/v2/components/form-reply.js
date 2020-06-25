@@ -37,6 +37,13 @@ import Button from '@material-ui/core/Button';
 
 
 // ---------------------------------------------
+//   Material UI / Icon
+// ---------------------------------------------
+
+import IconReply from '@material-ui/icons/Reply';
+
+
+// ---------------------------------------------
 //   States
 // ---------------------------------------------
 
@@ -76,6 +83,26 @@ import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js'
 
 
 // --------------------------------------------------
+//   Emotion
+//   https://emotion.sh/docs/composition
+// --------------------------------------------------
+
+const cssNew = css`
+  border-top: 1px dashed #BDBDBD;
+  margin: 12px 0 0 0;
+  padding: 12px 0 12px 0;
+`;
+
+const cssEdit = css`
+  padding: 0 0 12px 0;
+`;
+
+
+
+
+
+
+// --------------------------------------------------
 //   Function Components
 // --------------------------------------------------
 
@@ -95,9 +122,11 @@ const Component = (props) => {
     userCommunities_id,
     forumThreads_id,
     forumComments_id,
+    forumReplies_id,
+    replyToForumComments_id,
     enableAnonymity,
     
-    setShowFormComment,
+    setShowFormReply,
     
   } = props;
   
@@ -140,8 +169,8 @@ const Component = (props) => {
     //   編集用データを読み込む
     // --------------------------------------------------
     
-    if (forumComments_id) {
-      handleGetEditData({ forumComments_id });
+    if (forumReplies_id) {
+      handleGetEditData({ forumReplies_id });
     }
     
     
@@ -172,6 +201,7 @@ const Component = (props) => {
     setForumThreadsForListObj,
     setForumThreadsObj,
     setForumCommentsObj,
+    forumRepliesObj,
     setForumRepliesObj,
     
   } = stateGc;
@@ -185,20 +215,20 @@ const Component = (props) => {
   
   /**
    * 編集用データを読み込む
-   * @param {string} forumComments_id - DB forum-comments _id / コメントのID
+   * @param {string} forumReplies_id - DB forum-replies _id / 返信のID
    */
-  const handleGetEditData = async ({ forumComments_id }) => {
+  const handleGetEditData = async ({ forumReplies_id }) => {
     
     
     try {
       
       
       // ---------------------------------------------
-      //   forumComments_id が存在しない場合エラー
+      //   forumReplies_id が存在しない場合エラー
       // ---------------------------------------------
       
-      if (!forumComments_id) {
-        throw new CustomError({ errorsArr: [{ code: '3NtNGg1EG', messageID: 'Error' }] });
+      if (!forumReplies_id) {
+        throw new CustomError({ errorsArr: [{ code: '3cWrPpMq8', messageID: 'Error' }] });
       }
       
       
@@ -226,7 +256,7 @@ const Component = (props) => {
       
       const formDataObj = {
         
-        forumComments_id,
+        forumComments_id: forumReplies_id,
         
       };
       
@@ -717,11 +747,61 @@ const Component = (props) => {
   
   
   
+  
+  // --------------------------------------------------
+  //   Forum
+  // --------------------------------------------------
+  
+  // const {
+    
+  //   dataObj,
+  //   handleEdit,
+  //   handleSubmitFormReply,
+  //   handleDeleteReply,
+    
+  // } = storeForum;
+  
+  // const name = lodashGet(dataObj, [...this.pathArr, 'name'], '');
+  // const anonymity = lodashGet(dataObj, [...this.pathArr, 'anonymity'], false);
+  // const comment = lodashGet(dataObj, [...this.pathArr, 'comment'], '');
+  
+  
   // --------------------------------------------------
   //   Limit
   // --------------------------------------------------
   
-  const limit = parseInt(process.env.NEXT_PUBLIC_FORUM_COMMENT_IMAGES_AND_VIDEOS_LIMIT, 10);
+  const limit = parseInt(process.env.NEXT_PUBLIC_FORUM_REPLY_IMAGES_AND_VIDEOS_LIMIT, 10);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Reply to
+  // --------------------------------------------------
+  
+  let replyToName = '';
+  let repliesDataObj = {};
+  let replyTo = '';
+  
+  if (forumReplies_id) {
+    
+    repliesDataObj = lodashGet(forumRepliesObj, ['dataObj', forumReplies_id], {});
+    replyToName = lodashGet(repliesDataObj, ['replyToName'], '');
+    
+  } else if (replyToForumComments_id) {
+    
+    repliesDataObj = lodashGet(forumRepliesObj, ['dataObj', replyToForumComments_id], {});
+    replyToName = lodashGet(repliesDataObj, ['cardPlayersObj', 'name'], repliesDataObj.name);
+    
+    if (!replyToName) {
+      replyToName = 'ななしさん';
+    }
+    
+  }
+  
+  if (replyToName) {
+    replyTo = `${replyToName} | ${replyToForumComments_id} への返信`;
+  }
   
   
   
@@ -760,18 +840,43 @@ const Component = (props) => {
   
   return (
     <form
-      css={css`
-        padding: 0 0 8px;
-      `}
-      name={`form-${forumComments_id}`}
+      css={forumReplies_id ? cssEdit : cssNew}
+      name={`form-${forumComments_id}-reply`}
       onSubmit={(eventObj) => handleSubmit({
         eventObj,
         gameCommunities_id,
         userCommunities_id,
         forumThreads_id,
         forumComments_id,
+        forumReplies_id,
+        replyToForumComments_id,
       })}
     >
+      
+      
+      {/* Reply To */}
+      {replyTo &&
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            margin: 0 0 12px 0;
+            color: #7401DF;
+          `}
+        >
+          <IconReply
+            css={css`
+              && {
+                font-size: 16px;
+                margin: 4px 4px 0 0;
+              }
+            `}
+          />
+          <p>{replyTo}</p>
+        </div>
+      }
+      
+      
       
       
       {/* Name */}
@@ -810,7 +915,7 @@ const Component = (props) => {
             }
           `}
           rows={5}
-          placeholder="コメントを書き込んでください。"
+          placeholder="返信を書き込んでください。"
           value={comment}
           onChange={(eventObj) => setComment(eventObj.target.value)}
           maxLength={3000}
@@ -831,8 +936,8 @@ const Component = (props) => {
         
         <FormImageAndVideo
           type="forum"
-          descriptionImage="コメントに表示する画像をアップロードできます。"
-          descriptionVideo="コメントに表示する動画を登録できます。"
+          descriptionImage="返信に表示する画像をアップロードできます。"
+          descriptionVideo="返信に表示する動画を登録できます。"
           showImageCaption={true}
           limit={limit}
           imagesAndVideosObj={imagesAndVideosObj}
@@ -861,7 +966,7 @@ const Component = (props) => {
           color="primary"
           disabled={buttonDisabled}
         >
-          {forumComments_id ? 'コメントを編集する' : 'コメントを投稿する'}
+          {forumReplies_id ? '返信を編集する' : '返信を投稿する'}
         </Button>
         
         
@@ -878,7 +983,7 @@ const Component = (props) => {
               variant="outlined"
               color="secondary"
               disabled={buttonDisabled}
-              onClick={() => setShowFormComment(false)}
+              onClick={() => setShowFormReply(false)}
             >
               閉じる
             </Button>

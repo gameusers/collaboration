@@ -2210,25 +2210,31 @@ const findForEdit = async ({
     //   Aggregate
     // --------------------------------------------------
     
-    const resultArr = await SchemaForumComments.aggregate([
+    const docArr = await SchemaForumComments.aggregate([
       
       
-      // スレッドを取得
+      // --------------------------------------------------
+      //   $match
+      // --------------------------------------------------
+      
       {
         $match : { _id: forumComments_id }
       },
       
       
-      // 画像と動画を取得
+      // --------------------------------------------------
+      //   images-and-videos
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
             from: 'images-and-videos',
-            let: { forumCommentsImagesAndVideos_id: '$imagesAndVideos_id' },
+            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
               { $match:
                 { $expr:
-                  { $eq: ['$_id', '$$forumCommentsImagesAndVideos_id'] },
+                  { $eq: ['$_id', '$$letImagesAndVideos_id'] },
                 }
               },
               { $project:
@@ -2253,15 +2259,6 @@ const findForEdit = async ({
       },
       
       
-      // { $project:
-      //   {
-      //     // createdDate: 0,
-      //     imagesAndVideos_id: 0,
-      //     __v: 0,
-      //   }
-      // },
-      
-      
     ]).exec();
     
     
@@ -2271,7 +2268,7 @@ const findForEdit = async ({
     //   配列が空の場合は処理停止
     // --------------------------------------------------
     
-    if (resultArr.length === 0) {
+    if (docArr.length === 0) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: 'hSZgl_T02', messageID: 'cvS0qSAlE' }] });
     }
     
@@ -2283,10 +2280,10 @@ const findForEdit = async ({
     const editable = verifyAuthority({
       
       req,
-      users_id: lodashGet(resultArr, [0, 'users_id'], ''),
+      users_id: lodashGet(docArr, [0, 'users_id'], ''),
       loginUsers_id,
-      ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
-      _id: lodashGet(resultArr, [0, '_id'], ''),
+      ISO8601: lodashGet(docArr, [0, 'createdDate'], ''),
+      _id: lodashGet(docArr, [0, '_id'], ''),
       
     });
     
@@ -2305,8 +2302,9 @@ const findForEdit = async ({
     //   Format
     // --------------------------------------------------
     
-    const _id = lodashGet(resultArr, [0, '_id'], '');
-    const imagesAndVideosObj = lodashGet(resultArr, [0, 'imagesAndVideosObj'], {});
+    const _id = lodashGet(docArr, [0, '_id'], '');
+    const anonymity = lodashGet(docArr, [0, 'anonymity'], false);
+    const imagesAndVideosObj = lodashGet(docArr, [0, 'imagesAndVideosObj'], {});
     let name = '';
     let comment = '';
     
@@ -2315,7 +2313,7 @@ const findForEdit = async ({
     //   Name & Comment
     // --------------------------------------------------
     
-    const filteredArr = resultArr.filter((filterObj) => {
+    const filteredArr = docArr.filter((filterObj) => {
       return filterObj.language === localeObj.language;
     });
     
@@ -2327,8 +2325,8 @@ const findForEdit = async ({
       
     } else {
       
-      name = lodashGet(resultArr, [0, 'localesArr', 0, 'name'], '');
-      comment = lodashGet(resultArr, [0, 'localesArr', 0, 'comment'], '');
+      name = lodashGet(docArr, [0, 'localesArr', 0, 'name'], '');
+      comment = lodashGet(docArr, [0, 'localesArr', 0, 'comment'], '');
       
     }
     
@@ -2343,6 +2341,7 @@ const findForEdit = async ({
       
       _id,
       name,
+      anonymity,
       comment,
       imagesAndVideosObj,
       
@@ -2365,8 +2364,8 @@ const findForEdit = async ({
     // `);
     
     // console.log(`
-    //   ----- resultArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   ----- docArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

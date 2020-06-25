@@ -17,6 +17,11 @@ import util from 'util';
 import shortid from 'shortid';
 import moment from 'moment';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 
@@ -25,42 +30,44 @@ import lodashSet from 'lodash/set';
 //   Model
 // ---------------------------------------------
 
-import ModelGameCommunities from '../../../../../app/@database/game-communities/model.js';
-import ModelForumThreads from '../../../../../app/@database/forum-threads/model.js';
-import ModelForumComments from '../../../../../app/@database/forum-comments/model.js';
+import ModelGameCommunities from 'app/@database/game-communities/model.js';
+import ModelForumThreads from 'app/@database/forum-threads/model.js';
+import ModelForumComments from 'app/@database/forum-comments/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-import { verifyCsrfToken } from '../../../../../app/@modules/csrf.js';
-import { returnErrorsArr } from '../../../../../app/@modules/log/log.js';
-import { CustomError } from '../../../../../app/@modules/error/custom.js';
-import { formatAndSave } from '../../../../../app/@modules/image/save.js';
-import { setAuthority } from '../../../../../app/@modules/authority.js';
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
+import { formatAndSave } from 'app/@modules/image/save.js';
+import { setAuthority } from 'app/@modules/authority.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-import { validationIP } from '../../../../../app/@validations/ip.js';
-import { validationBoolean } from '../../../../../app/@validations/boolean.js';
-import { validationHandleName } from '../../../../../app/@validations/name.js';
+import { validationIP } from 'app/@validations/ip.js';
+import { validationBoolean } from 'app/@validations/boolean.js';
+import { validationHandleName } from 'app/@validations/name.js';
 
-import { validationGameCommunities_idServer } from '../../../../../app/@database/game-communities/validations/_id-server.js';
-import { validationForumThreads_idServerGC } from '../../../../../app/@database/forum-threads/validations/_id-server.js';
-import { validationForumCommentsComment } from '../../../../../app/@database/forum-comments/validations/comment.js';
-import { validationForumThreadsListLimit, validationForumThreadsLimit } from '../../../../../app/@database/forum-threads/validations/limit.js';
-import { validationForumCommentsLimit, validationForumRepliesLimit } from '../../../../../app/@database/forum-comments/validations/limit.js';
+import { validationGameCommunities_idServer } from 'app/@database/game-communities/validations/_id-server.js';
+import { validationForumThreads_idServerGC } from 'app/@database/forum-threads/validations/_id-server.js';
+import { validationForumCommentsComment } from 'app/@database/forum-comments/validations/comment.js';
+import { validationForumThreadsListLimit, validationForumThreadsLimit } from 'app/@database/forum-threads/validations/limit.js';
+import { validationForumCommentsLimit, validationForumRepliesLimit } from 'app/@database/forum-comments/validations/limit.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-import { locale } from '../../../../../app/@locales/locale.js';
+import { locale } from 'app/@locales/locale.js';
+
+
 
 
 
@@ -80,15 +87,6 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
@@ -98,11 +96,21 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   IP & User Agent
+  //   Language & IP & User Agent
   // --------------------------------------------------
   
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: language
+  });
   
   
   

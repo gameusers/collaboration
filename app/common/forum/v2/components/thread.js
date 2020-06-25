@@ -78,8 +78,6 @@ import FormThread from 'app/common/forum/v2/components/form-thread.js';
 import FormComment from 'app/common/forum/v2/components/form-comment.js';
 import Comment from 'app/common/forum/v2/components/comment.js';
 
-// import FormName from 'app/common/form/components/name.js';
-
 
 // ---------------------------------------------
 //   Modules
@@ -147,7 +145,6 @@ const Component = (props) => {
     userCommunityID,
     userCommunities_id,
     forumThreads_id,
-    // dataObj,
     enableAnonymity,
     
   } = props;

@@ -29,15 +29,15 @@ import ModelForumThreads from 'app/@database/forum-threads/model.js';
 //   Modules
 // ---------------------------------------------
 
-import { verifyCsrfToken } from 'app/@modules/csrf';
-import { returnErrorsArr } from 'app/@modules/log/log';
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-import { locale } from 'app/@locales/locale';
+import { locale } from 'app/@locales/locale.js';
 
 
 

@@ -354,7 +354,14 @@ const Component = (props) => {
   // };
   
   
-  const handleReadThreadsList = async ({
+  /**
+   * スレッド一覧を読み込む
+   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
+   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
+   * @param {number} page - スレッド一覧のページ
+   * @param {number} changeLimit - スレッド一覧の1ページの表示件数を変更する場合に入力する
+   */
+  const handleRead = async ({
     
     forumThreadsForListObj,
     gameCommunities_id,
@@ -478,7 +485,7 @@ const Component = (props) => {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/common/forum/v2/navigation.js - handleReadThreadsList
+      //   /app/common/forum/v2/navigation.js - handleRead
       // `);
         
       // console.log(chalk`
@@ -567,11 +574,12 @@ const Component = (props) => {
       //   Update - forumThreadsForListObj
       // ---------------------------------------------
       
-      const fetchObj = lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {});
+      const forumThreadsForListNewObj = lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {});
       
       // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
-      const newObj = reload ? fetchObj : lodashMerge(forumThreadsForListObj, fetchObj);
-      setForumThreadsForListObj(newObj);
+      const forumThreadsForListMergedObj = reload ? forumThreadsForListNewObj : lodashMerge(forumThreadsForListObj, forumThreadsForListNewObj);
+      
+      setForumThreadsForListObj(forumThreadsForListMergedObj);
       
       
     } catch (errorObj) {
@@ -773,7 +781,7 @@ const Component = (props) => {
           nextIconButtonProps={{
             'aria-label': 'Next Page',
           }}
-          onChangeRowsPerPage={(eventObj) => handleReadThreadsList({
+          onChangeRowsPerPage={(eventObj) => handleRead({
             
             forumThreadsForListObj,
             gameCommunities_id,
@@ -786,7 +794,7 @@ const Component = (props) => {
             loadedDate,
             
           })}
-          onChangePage={(eventObj, value) => handleReadThreadsList({
+          onChangePage={(eventObj, value) => handleRead({
             
             forumThreadsForListObj,
             gameCommunities_id,

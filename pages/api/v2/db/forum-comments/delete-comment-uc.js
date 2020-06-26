@@ -347,13 +347,13 @@ export default async (req, res) => {
     //   DB find / User Communities / 最新の更新日時情報を取得する
     // --------------------------------------------------
     
-    const userCommunityArr = await ModelUserCommunities.find({
-      conditionObj: {
-        _id: userCommunities_id
-      }
-    });
+    // const userCommunityArr = await ModelUserCommunities.find({
+    //   conditionObj: {
+    //     _id: userCommunities_id
+    //   }
+    // });
     
-    returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+    // returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
     
     
     

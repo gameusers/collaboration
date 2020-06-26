@@ -541,7 +541,7 @@ const Component = (props) => {
       //   gameCommunityObj
       // --------------------------------------------------
       
-      setGameCommunityObj(lodashGet(resultObj, ['data', 'updatedDateObj'], {}));
+      setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
       
       
       // ---------------------------------------------

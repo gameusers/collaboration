@@ -220,42 +220,53 @@ export default async (req, res) => {
     returnObj.forumCommentsObj = forumObj.forumCommentsObj;
     returnObj.forumRepliesObj = forumObj.forumRepliesObj;
     
-    // returnObj.forumThreadsObj.dataObj['_XDDSTWV_'].name = 'AAA';
+    
     
     
     // --------------------------------------------------
-    //   updatedDateObj
+    //   Community
     // --------------------------------------------------
     
-    let updatedDateObj = {};
+    // let updatedDateObj = {};
     
     if (gameCommunities_id) {
       
-      const gameCommunityArr = await ModelGameCommunities.find({
+      
+      // --------------------------------------------------
+      //   DB find / Game Community
+      // --------------------------------------------------
+      
+      returnObj.gameCommunityObj = await ModelGameCommunities.findForGameCommunityByGameCommunities_id({
         
-        conditionObj: {
-          _id: gameCommunities_id
-        }
+        gameCommunities_id,
         
       });
       
-      updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
+      // const gameCommunityArr = await ModelGameCommunities.find({
+        
+      //   conditionObj: {
+      //     _id: gameCommunities_id
+      //   }
+        
+      // });
+      
+      // updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
       
     } else {
       
-      const userCommunityArr = await ModelUserCommunities.find({
+      // const userCommunityArr = await ModelUserCommunities.find({
         
-        conditionObj: {
-          _id: userCommunities_id
-        }
+      //   conditionObj: {
+      //     _id: userCommunities_id
+      //   }
         
-      });
+      // });
       
-      updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+      // updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
       
     }
     
-    returnObj.updatedDateObj = updatedDateObj;
+    // returnObj.updatedDateObj = updatedDateObj;
     
     
     // --------------------------------------------------

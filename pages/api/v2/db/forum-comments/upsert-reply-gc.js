@@ -31,7 +31,7 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import ModelGameCommunities from 'app/@database/game-communities/model.js';
-import ModelForumThreads from 'app/@database/forum-threads/model.js';
+// import ModelForumThreads from 'app/@database/forum-threads/model.js';
 import ModelForumComments from 'app/@database/forum-comments/model.js';
 
 
@@ -504,15 +504,15 @@ export default async (req, res) => {
     //   DB find / Forum Threads List
     // --------------------------------------------------
     
-    returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
+    // returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
       
-      localeObj,
-      loginUsers_id,
-      gameCommunities_id,
-      page: 1,
-      limit: threadListLimit,
+    //   localeObj,
+    //   loginUsers_id,
+    //   gameCommunities_id,
+    //   page: 1,
+    //   limit: threadListLimit,
       
-    });
+    // });
     
     
     
@@ -561,20 +561,30 @@ export default async (req, res) => {
     
     
     
+    // --------------------------------------------------
+    //   DB find / Game Community
+    // --------------------------------------------------
+    
+    returnObj.gameCommunityObj = await ModelGameCommunities.findForGameCommunityByGameCommunities_id({
+      
+      gameCommunities_id,
+      
+    });
+    
     
     // --------------------------------------------------
     //   DB find / User Communities / 最新の更新日時情報を取得する
     // --------------------------------------------------
     
-    const gameCommunityArr = await ModelGameCommunities.find({
+    // const gameCommunityArr = await ModelGameCommunities.find({
       
-      conditionObj: {
-        _id: gameCommunities_id
-      }
+    //   conditionObj: {
+    //     _id: gameCommunities_id
+    //   }
       
-    });
+    // });
     
-    returnObj.updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
+    // returnObj.updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
     
     
     

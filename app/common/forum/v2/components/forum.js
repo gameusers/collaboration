@@ -220,7 +220,7 @@ const Component = (props) => {
    * @param {number} page - スレッドのページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
-  const handleReadThreads = async ({
+  const handleRead = async ({
     
     gameCommunities_id,
     userCommunities_id,
@@ -274,7 +274,7 @@ const Component = (props) => {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/forum.js - handleReadThreads
+      //   /app/common/forum/v2/components/forum.js - handleRead
       // `);
       
       // console.log(chalk`
@@ -506,7 +506,7 @@ const Component = (props) => {
             
             <Pagination
               disabled={buttonDisabled}
-              onChange={(page) => handleReadThreads({
+              onChange={(page) => handleRead({
                 gameCommunities_id,
                 userCommunities_id,
                 page,
@@ -530,7 +530,7 @@ const Component = (props) => {
             
             <Select
               value={limit}
-              onChange={(eventObj) => handleReadThreads({
+              onChange={(eventObj) => handleRead({
                 gameCommunities_id,
                 userCommunities_id,
                 page: 1,

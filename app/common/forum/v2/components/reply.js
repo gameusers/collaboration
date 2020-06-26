@@ -86,9 +86,7 @@ import Paragraph from 'app/common/layout/v2/components/paragraph.js';
 import User from 'app/common/user/v2/components/user.js';
 import ImageAndVideo from 'app/common/image-and-video/v2/components/image-and-video.js';
 import GoodButton from 'app/common/good/v2/components/button.js';
-import FormComment from 'app/common/forum/v2/components/form-comment.js';
 import FormReply from 'app/common/forum/v2/components/form-reply.js';
-import Reply from 'app/common/forum/v2/components/reply.js';
 
 
 
@@ -128,9 +126,9 @@ const useStyles = makeStyles({
 // --------------------------------------------------
 
 /**
- * Comment
+ * Reply
  */
-const Comment = (props) => {
+const Reply = (props) => {
   
   
   // --------------------------------------------------
@@ -145,9 +143,9 @@ const Comment = (props) => {
     userCommunities_id,
     forumThreads_id,
     forumComments_id,
+    forumReplies_id,
     enableAnonymity,
-    
-    // setReloadForceComment,
+    // setReloadForceReply,
     // page,
     // count,
     // limit,
@@ -182,7 +180,10 @@ const Comment = (props) => {
     // forumThreadsObj,
     // setForumThreadsObj,
     forumCommentsObj,
-    setForumCommentsObj,
+    // setForumCommentsObj,
+    forumRepliesObj,
+    setForumRepliesObj,
+    setReloadForceReply,
     
   } = stateGc;
   
@@ -196,8 +197,8 @@ const Comment = (props) => {
   // const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
-  const [showFormComment, setShowFormComment] = useState(false);
   const [showFormReply, setShowFormReply] = useState(false);
+  const [showFormReplyNew, setShowFormReplyNew] = useState(false);
   const [goods, setGoods] = useState(lodashGet(forumCommentsObj, ['dataObj', forumComments_id, 'goods'], 0));
   
   
@@ -215,11 +216,12 @@ const Comment = (props) => {
   // --------------------------------------------------
   
   /**
-   * コメントを削除する
+   * 返信を削除する
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
    * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
    * @param {string} forumComments_id - DB forum-comments _id / コメントのID
+   * @param {string} forumReplies_id - DB forum-comments _id / 返信のID（コメントと返信は同じコレクションなので、コメントのIDと同じもの）
    */
   const handleDelete = async ({
     
@@ -227,6 +229,7 @@ const Comment = (props) => {
     userCommunities_id,
     forumThreads_id,
     forumComments_id,
+    forumReplies_id,
     
   }) => {
     
@@ -238,8 +241,8 @@ const Comment = (props) => {
       //   _id が存在しない場合エラー
       // ---------------------------------------------
       
-      if ((!gameCommunities_id && !userCommunities_id) || !forumThreads_id || !forumComments_id) {
-        throw new CustomError({ errorsArr: [{ code: '_quWlqMjb', messageID: '1YJnibkmh' }] });
+      if ((!gameCommunities_id && !userCommunities_id) || !forumThreads_id || !forumComments_id || !forumReplies_id) {
+        throw new CustomError({ errorsArr: [{ code: 'cqD8ikZJ_', messageID: '1YJnibkmh' }] });
       }
       
       
@@ -283,99 +286,103 @@ const Comment = (props) => {
       //   FormData
       // ---------------------------------------------
       
-      const formDataObj = {
+      // const formDataObj = {
         
-        gameCommunities_id,
-        userCommunities_id,
-        forumThreads_id,
-        forumComments_id,
+      //   gameCommunities_id,
+      //   userCommunities_id,
+      //   forumThreads_id,
+      //   forumComments_id,
+      //   forumReplies_id,
         
-      };
+      // };
       
       
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   Fetch
+      // // ---------------------------------------------
       
-      let resultObj = {};
+      // let resultObj = {};
       
-      if (gameCommunities_id) {
+      // if (gameCommunities_id) {
         
-        resultObj = await fetchWrapper({
+      //   resultObj = await fetchWrapper({
           
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/delete-comment-gc`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
+      //     urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/delete-reply-gc`,
+      //     methodType: 'POST',
+      //     formData: JSON.stringify(formDataObj),
           
-        });
+      //   });
         
-      } else if (userCommunities_id) {
+      // } else if (userCommunities_id) {
         
-        resultObj = await fetchWrapper({
+      //   resultObj = await fetchWrapper({
           
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/delete-comment-uc`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
+      //     urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/delete-reply-uc`,
+      //     methodType: 'POST',
+      //     formData: JSON.stringify(formDataObj),
           
-        });
+      //   });
         
-      }
+      // }
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      // // console.log(`
+      // //   ----- resultObj -----\n
+      // //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      // //   --------------------\n
+      // // `);
       
       
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   Error
+      // // ---------------------------------------------
       
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
+      // if ('errorsArr' in resultObj) {
+      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
+      // }
       
       
-      // console.log(`
-      //   ----- forumCommentsObj -----\n
-      //   ${util.inspect(forumCommentsObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       
       // ---------------------------------------------
       //   State 削除
       // ---------------------------------------------
       
-      const clonedForumCommentsObj = lodashCloneDeep(forumCommentsObj);
+      const clonedForumRepliesObj = lodashCloneDeep(forumRepliesObj);
       
-      const page = lodashGet(forumCommentsObj, [forumThreads_id, 'page'], 1);
-      const arr = lodashGet(forumCommentsObj, [forumThreads_id, `page${page}Obj`, 'arr'], []);
-      const newArr = arr.filter(value => value !== forumComments_id);
-      lodashSet(clonedForumCommentsObj, [forumThreads_id, `page${page}Obj`, 'arr'], newArr);
+      const page = lodashGet(forumRepliesObj, [forumComments_id, 'page'], 1);
+      const arr = lodashGet(forumRepliesObj, [forumComments_id, `page${page}Obj`, 'arr'], []);
+      const newArr = arr.filter(value => value !== forumReplies_id);
+      lodashSet(clonedForumRepliesObj, [forumComments_id, `page${page}Obj`, 'arr'], newArr);
       
-      const dataObj = lodashGet(clonedForumCommentsObj, ['dataObj'], {});
-      delete dataObj[forumComments_id];
+      const dataObj = lodashGet(clonedForumRepliesObj, ['dataObj'], {});
+      delete dataObj[forumReplies_id];
       
-      setForumCommentsObj(clonedForumCommentsObj);
+      setForumRepliesObj(clonedForumRepliesObj);
       // setForumCommentsObj({ dataObj: {}, limit: 1 });
       
       
-      // console.log(`
-      //   ----- clonedForumCommentsObj -----\n
-      //   ${util.inspect(clonedForumCommentsObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- clonedForumRepliesObj -----\n
+        ${util.inspect(clonedForumRepliesObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
       // ---------------------------------------------
       //   Game Community データ更新
       // ---------------------------------------------
       
-      const gameCommunityObj = lodashGet(resultObj, ['data', 'gameCommunityObj'], {});
-      setGameCommunityObj(gameCommunityObj);
+      // const gameCommunityObj = lodashGet(resultObj, ['data', 'gameCommunityObj'], {});
+      // setGameCommunityObj(gameCommunityObj);
+      
+      
+      
+      // ---------------------------------------------
+      //   次回の読み込み時に強制リロード
+      // ---------------------------------------------
+      
+      setReloadForceReply(true);
       
       
       
@@ -386,7 +393,7 @@ const Comment = (props) => {
       
       handleSnackbarOpen({
         variant: 'success',
-        messageID: 'GERzvKtUN',
+        messageID: 'o4fiADvZR',
       });
       
       
@@ -434,7 +441,7 @@ const Comment = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/forum/v2/components/comment.js
+  //   /app/common/forum/v2/components/reply.js
   // `);
   
   // console.log(chalk`
@@ -459,7 +466,7 @@ const Comment = (props) => {
   //   dataObj
   // --------------------------------------------------
   
-  const dataObj = lodashGet(forumCommentsObj, ['dataObj', forumComments_id], {});
+  const dataObj = lodashGet(forumRepliesObj, ['dataObj', forumReplies_id], {});
   
   // console.log(`
   //   ----- dataObj -----\n
@@ -541,15 +548,30 @@ const Comment = (props) => {
   
   if (urlID) {
     
-    linkHref = `/gc/[urlID]/forum/[forumID]?urlID=${urlID}&forumID=${forumComments_id}`;
-    linkAs = `/gc/${urlID}/forum/${forumComments_id}`;
+    linkHref = `/gc/[urlID]/forum/[forumID]?urlID=${urlID}&forumID=${forumReplies_id}`;
+    linkAs = `/gc/${urlID}/forum/${forumReplies_id}`;
     
   } else if (userCommunityID) {
     
-    linkHref = `/uc/[userCommunityID]/forum/[forumID]?userCommunityID=${userCommunityID}&forumID=${forumComments_id}`;
-    linkAs = `/uc/${userCommunityID}/forum/${forumComments_id}`;
+    linkHref = `/uc/[userCommunityID]/forum/[forumID]?userCommunityID=${userCommunityID}&forumID=${forumReplies_id}`;
+    linkAs = `/uc/${userCommunityID}/forum/${forumReplies_id}`;
     
   }
+  
+  
+  // --------------------------------------------------
+  //   Reply to
+  // --------------------------------------------------
+  
+  const replyToForumComments_id = lodashGet(dataObj, ['replyToForumComments_id'], '');
+  
+  let replyToName = lodashGet(dataObj, ['replyToName'], '');
+  
+  if (!replyToName) {
+    replyToName = 'ななしさん';
+  }
+  
+  const replyTo = `${replyToName} | ${replyToForumComments_id}`;
   
   
   // --------------------------------------------------
@@ -568,31 +590,33 @@ const Comment = (props) => {
   return (
     <Element
       css={css`
-        border-top: 1px solid;
-        border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
-        border-image-slice: 1;
-        padding: 24px 0 0 0;
-        margin: 24px 0 0 0;
+        // border-top: 1px solid;
+        // border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+        // border-image-slice: 1;
+        // padding: 24px 0 0 0;
+        // margin: 24px 0 0 0;
       `}
-      name={forumComments_id}
+      name={forumReplies_id}
     >
       
       
       {/* Form */}
-      {showFormComment &&
+      {showFormReply &&
         <div
           css={css`
             width: 100%;
           `}
         >
           
-          <FormComment
+          <FormReply
             gameCommunities_id={gameCommunities_id}
             userCommunities_id={userCommunities_id}
             forumThreads_id={forumThreads_id}
             forumComments_id={forumComments_id}
+            forumReplies_id={forumReplies_id}
+            replyToForumComments_id={replyToForumComments_id}
             enableAnonymity={enableAnonymity}
-            setShowFormComment={setShowFormComment}
+            setShowFormReply={setShowFormReply}
           />
           
         </div>
@@ -601,343 +625,50 @@ const Comment = (props) => {
       
       
       
-      {/* Comments & Replies */}
-      {!showFormComment &&
-        <React.Fragment>
+      {/* Replies */}
+      {!showFormReply &&
+        <div
+          css={css`
+            display: flex;
+            flex-flow: column nowrap;
+            padding: 12px 0 0 0;
+          `}
+          // key={index}
+        >
           
           
-          {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
-          <User
-            imagesAndVideosThumbnailObj={imagesAndVideosThumbnailObj}
-            name={name}
-            userID={userID}
-            status={status}
-            accessDate={accessDate}
-            exp={exp}
-            cardPlayers_id={cardPlayers_id}
-          />
-          
-          
-          
-          
-          {/* Images and Videos */}
-          {Object.keys(imagesAndVideosObj).length > 0 &&
-            <div
-              css={css`
-                margin: 12px 0 0 0;
-              `}
-            >
-              
-              <ImageAndVideo
-                imagesAndVideosObj={imagesAndVideosObj}
-              />
-              
-            </div>
-          }
-          
-          
-          
-          
-          {/* Comment Container / Left Green Line */}
           <div
             css={css`
-              border-left: 4px solid #84cacb;
-              margin: 12px 0;
-              padding: 8px 0 8px 16px;
-              
-              @media screen and (max-width: 480px) {
-                padding: 0 0 0 12px;
-              }
+              border-top: 1px dashed #BDBDBD;
+              padding: 12px 0 0 0;
             `}
           >
             
             
-            {/* Comment */}
-            <Paragraph text={comment} />
+            {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
+            <User
+              imagesAndVideosThumbnailObj={imagesAndVideosThumbnailObj}
+              name={name}
+              userID={userID}
+              status={status}
+              accessDate={accessDate}
+              exp={exp}
+              cardPlayers_id={cardPlayers_id}
+            />
             
             
             
             
-            {/* Bottom Container */}
-            <div
-              css={css`
-                display: flex;
-                flex-flow: row wrap;
-                margin: 12px 0 0 0;
-                
-                @media screen and (max-width: 480px) {
-                  flex-flow: column wrap;
-                }
-              `}
-            >
-              
-              
-              {/* Good Button & Updated Date & forumComments_id */}
+            {/* Images and Videos */}
+            {Object.keys(imagesAndVideosObj).length > 0 &&
               <div
                 css={css`
-                  display: flex;
-                  flex-flow: row nowrap;
+                  margin: 12px 0 0 0;
                 `}
               >
                 
-                
-                {/* Good Button */}
-                <div
-                  css={css`
-                    && {
-                      margin: 2px 12px 0 0;
-                      
-                      @media screen and (max-width: 480px) {
-                        margin: 2px 8px 0 0;
-                      }
-                    }
-                  `}
-                >
-                  
-                  <GoodButton
-                    goods={goods}
-                    setGoods={setGoods}
-                    type="forumComment"
-                    target_id={forumComments_id}
-                  />
-                  
-                </div>
-                
-                
-                
-                
-                {/* Updated Date */}
-                <div
-                  css={css`
-                    display: flex;
-                    flex-flow: row nowrap;
-                    margin: 4px 12px 0 0;
-                    
-                    @media screen and (max-width: 480px) {
-                      margin: 4px 8px 0 0;
-                    }
-                  `}
-                >
-                  <IconUpdate
-                    css={css`
-                      && {
-                        font-size: 22px;
-                        margin: 0 2px 0 0;
-                      }
-                    `}
-                  />
-                  
-                  <div
-                    css={css`
-                      font-size: 12px;
-                      margin: 1px 0 0 0;
-                    `}
-                  >
-                    {datetimeFrom}
-                  </div>
-                </div>
-                
-                
-                
-                
-                {/* forumComments_id */}
-                <div
-                  css={css`
-                    display: flex;
-                    flex-flow: row nowrap;
-                    margin: 1px 0 0 0;
-                  `}
-                >
-                  <IconPublic
-                    css={css`
-                      && {
-                        font-size: 20px;
-                        margin: 3px 2px 0 0;
-                      }
-                    `}
-                  />
-                  <div
-                    css={css`
-                      font-size: 12px;
-                      color: #009933;
-                      margin: 4px 0 0 0;
-                    `}
-                  >
-                    <Link href={linkHref} as={linkAs}>
-                      <a>{forumComments_id}</a>
-                    </Link>
-                  </div>
-                </div>
-                
-              </div>
-              
-              
-              
-              
-              {/* Buttons */}
-              <div
-                css={css`
-                  display: flex;
-                  flex-flow: row nowrap;
-                  margin-left: auto;
-                  
-                  @media screen and (max-width: 480px) {
-                    margin-top: 12px;
-                  }
-                `}
-              >
-                
-                
-                {/* Reply Button */}
-                <Button
-                  css={css`
-                    && {
-                      font-size: 12px;
-                      height: 22px;
-                      min-width: 54px;
-                      min-height: 22px;
-                      // margin: 4px 12px 0 0;
-                      padding: 0 3px;
-                      
-                      @media screen and (max-width: 480px) {
-                        min-width: 36px;
-                        min-height: 22px;
-                      }
-                    }
-                  `}
-                  variant="outlined"
-                  disabled={buttonDisabled}
-                  onClick={() => setShowFormReply(true)}
-                >
-                  <IconReply
-                    css={css`
-                      && {
-                        font-size: 16px;
-                        margin: 0 1px 3px 0;
-                      }
-                    `}
-                  />
-                  返信
-                </Button>
-                
-                
-                
-                
-                {/* Delete Button */}
-                {editable &&
-                  <Button
-                    css={css`
-                      && {
-                        font-size: 12px;
-                        height: 22px;
-                        min-width: 54px;
-                        min-height: 22px;
-                        margin: 0 0 0 12px;
-                        padding: 0 4px;
-                        
-                        @media screen and (max-width: 480px) {
-                          min-width: 36px;
-                          min-height: 22px;
-                        }
-                      }
-                    `}
-                    variant="outlined"
-                    color="secondary"
-                    disabled={buttonDisabled}
-                    onClick={
-                      buttonDisabled
-                        ?
-                          () => {}
-                        :
-                          () => handleDialogOpen({
-                          
-                            title: 'コメント削除',
-                            description: 'コメントを削除しますか？',
-                            handle: handleDelete,
-                            argumentsObj: {
-                              gameCommunities_id,
-                              userCommunities_id,
-                              forumThreads_id,
-                              forumComments_id,
-                            },
-                            
-                          })
-                    }
-                  >
-                    <IconDelete
-                      css={css`
-                        && {
-                          font-size: 16px;
-                          margin: 0 2px 1px 0;
-                        }
-                      `}
-                    />
-                    削除
-                  </Button>
-                }
-                
-                
-                
-                
-                {/* Edit Button */}
-                {editable &&
-                  <Button
-                    css={css`
-                      && {
-                        font-size: 12px;
-                        height: 22px;
-                        min-width: 54px;
-                        min-height: 22px;
-                        margin: 0 0 0 12px;
-                        padding: 0 4px;
-                        
-                        @media screen and (max-width: 480px) {
-                          min-width: 36px;
-                          min-height: 22px;
-                        }
-                      }
-                    `}
-                    variant="outlined"
-                    color="primary"
-                    disabled={buttonDisabled}
-                    onClick={() => setShowFormComment(true)}
-                  >
-                    <IconEdit
-                      css={css`
-                        && {
-                          font-size: 16px;
-                          margin: 0 2px 3px 0;
-                        }
-                      `}
-                    />
-                    編集
-                  </Button>
-                }
-                
-                
-              </div>
-                
-                
-            </div>
-            
-            
-            
-            
-            {/* Form Reply */}
-            {showFormReply &&
-              <div
-                css={css`
-                  margin: 6px 0 0 0;
-                `}
-              >
-                
-                <FormReply
-                  gameCommunities_id={gameCommunities_id}
-                  userCommunities_id={userCommunities_id}
-                  forumThreads_id={forumThreads_id}
-                  forumComments_id={forumComments_id}
-                  enableAnonymity={enableAnonymity}
-                  setShowFormReply={setShowFormReply}
+                <ImageAndVideo
+                  imagesAndVideosObj={imagesAndVideosObj}
                 />
                 
               </div>
@@ -946,24 +677,349 @@ const Comment = (props) => {
             
             
             
-            {/* Reply */}
-            <Reply
-              urlID={urlID}
-              gameCommunities_id={gameCommunities_id}
-              userCommunityID={userCommunityID}
-              userCommunities_id={userCommunities_id}
-              forumThreads_id={forumThreads_id}
-              forumComments_id={forumComments_id}
-              // replies={replies}
-              enableAnonymity={enableAnonymity}
-              // setReloadForceComment={setReloadForceComment}
-            />
+            {/* Reply Container / Left Purple Line */}
+            <div
+              css={css`
+                border-left: 4px solid #A9A9F5;
+                margin: 10px 0 0 0;
+                padding: 0 0 0 16px;
+                
+                @media screen and (max-width: 480px) {
+                  padding: 0 0 0 12px;
+                }
+              `}
+            >
+              
+              
+              {/* Reply To */}
+              {replyToForumComments_id &&
+                <div
+                  css={css`
+                    display: flex;
+                    flex-flow: row nowrap;
+                    margin: 0 0 12px 0;
+                    color: #7401DF;
+                  `}
+                >
+                  <IconReply
+                    css={css`
+                      && {
+                        font-size: 16px;
+                        margin: 4px 4px 0 0;
+                      }
+                    `}
+                  />
+                  <p>{replyTo}</p>
+                </div>
+              }
+              
+              
+              
+              
+              {/* Comment */}
+              {/*<div
+                css={css`
+                  font-size: 14px;
+                  line-height: 1.6em;
+                  margin 4px 0 0 0;
+                `}
+              >*/}
+              <Paragraph text={comment} />
+              {/*</div>*/}
+              
+              
+              
+              
+              {/* Bottom Container */}
+              <div
+                css={css`
+                  display: flex;
+                  flex-flow: row wrap;
+                  margin: 12px 0 0 0;
+                  
+                  @media screen and (max-width: 480px) {
+                    flex-flow: column wrap;
+                  }
+                `}
+              >
+                
+                
+                {/* Good Button & Updated Date & forumComments_id */}
+                <div
+                  css={css`
+                    display: flex;
+                    flex-flow: row nowrap;
+                  `}
+                >
+                  
+                  
+                  {/* Good Button */}
+                  <div
+                    css={css`
+                      && {
+                        margin: 2px 12px 0 0;
+                        
+                        @media screen and (max-width: 480px) {
+                          margin: 2px 8px 0 0;
+                        }
+                      }
+                    `}
+                  >
+                    
+                    <GoodButton
+                      goods={goods}
+                      setGoods={setGoods}
+                      type="forumReply"
+                      target_id={forumReplies_id}
+                    />
+                    
+                  </div>
+                  
+                  
+                  
+                  
+                  {/* Updated Date */}
+                  <div
+                    css={css`
+                      display: flex;
+                      flex-flow: row nowrap;
+                      margin: 4px 12px 0 0;
+                      
+                      @media screen and (max-width: 480px) {
+                        margin: 4px 8px 0 0;
+                      }
+                    `}
+                  >
+                    <IconUpdate
+                      css={css`
+                        && {
+                          font-size: 22px;
+                          margin: 0 2px 0 0;
+                        }
+                      `}
+                    />
+                    
+                    <div
+                      css={css`
+                        font-size: 12px;
+                        margin: 1px 0 0 0;
+                      `}
+                    >
+                      {datetimeFrom}
+                    </div>
+                  </div>
+                  
+                  
+                  
+                  
+                  {/* forumReplies_id */}
+                  <div
+                    css={css`
+                      display: flex;
+                      flex-flow: row nowrap;
+                      margin: 1px 0 0 0;
+                    `}
+                  >
+                    <IconPublic
+                      css={css`
+                        && {
+                          font-size: 20px;
+                          margin: 3px 2px 0 0;
+                        }
+                      `}
+                    />
+                    <div
+                      css={css`
+                        font-size: 12px;
+                        color: #009933;
+                        margin: 4px 0 0 0;
+                      `}
+                    >
+                      <Link href={linkHref} as={linkAs}>
+                        <a>{forumReplies_id}</a>
+                      </Link>
+                    </div>
+                  </div>
+                  
+                  
+                </div>
+                
+                
+                
+                
+                {/* Buttons */}
+                <div
+                  css={css`
+                    display: flex;
+                    flex-flow: row nowrap;
+                    margin-left: auto;
+                    
+                    @media screen and (max-width: 480px) {
+                      margin-top: 12px;
+                    }
+                  `}
+                >
+                  
+                  
+                  {/* Reply Button */}
+                  <Button
+                    css={css`
+                      && {
+                        font-size: 12px;
+                        height: 22px;
+                        min-width: 54px;
+                        min-height: 22px;
+                        // margin: 4px 12px 0 0;
+                        padding: 0 3px;
+                        
+                        @media screen and (max-width: 480px) {
+                          min-width: 36px;
+                          min-height: 22px;
+                          // margin: 4px 8px 0 0;
+                        }
+                      }
+                    `}
+                    variant="outlined"
+                    disabled={buttonDisabled}
+                    onClick={() => setShowFormReplyNew(true)}
+                  >
+                    <IconReply
+                      css={css`
+                        && {
+                          font-size: 16px;
+                          margin: 0 1px 3px 0;
+                        }
+                      `}
+                    />
+                    返信
+                  </Button>
+                  
+                  
+                  
+                  
+                  {/* Delete Button */}
+                  {editable &&
+                    <Button
+                      css={css`
+                        && {
+                          font-size: 12px;
+                          height: 22px;
+                          min-width: 54px;
+                          min-height: 22px;
+                          margin: 0 0 0 12px;
+                          padding: 0 4px;
+                          
+                          @media screen and (max-width: 480px) {
+                            min-width: 36px;
+                            min-height: 22px;
+                          }
+                        }
+                      `}
+                      variant="outlined"
+                      color="secondary"
+                      disabled={buttonDisabled}
+                      onClick={
+                        buttonDisabled
+                          ?
+                            () => {}
+                          :
+                            () => handleDialogOpen({
+                            
+                              title: '返信削除',
+                              description: '返信を削除しますか？',
+                              handle: handleDelete,
+                              argumentsObj: {
+                                gameCommunities_id,
+                                userCommunities_id,
+                                forumThreads_id,
+                                forumComments_id,
+                                forumReplies_id,
+                              },
+                              
+                            })
+                      }
+                    >
+                      <IconDelete
+                        css={css`
+                          && {
+                            font-size: 16px;
+                            margin: 0 2px 1px 0;
+                          }
+                        `}
+                      />
+                      削除
+                    </Button>
+                  }
+                  
+                  
+                  
+                  
+                  {/* Edit Button */}
+                  {editable &&
+                    <Button
+                      css={css`
+                        && {
+                          font-size: 12px;
+                          height: 22px;
+                          min-width: 54px;
+                          min-height: 22px;
+                          margin: 0 0 0 12px;
+                          padding: 0 4px;
+                          
+                          @media screen and (max-width: 480px) {
+                            min-width: 36px;
+                            min-height: 22px;
+                          }
+                        }
+                      `}
+                      variant="outlined"
+                      color="primary"
+                      disabled={buttonDisabled}
+                      onClick={() => setShowFormReply(true)}
+                    >
+                      <IconEdit
+                        css={css`
+                          && {
+                            font-size: 16px;
+                            margin: 0 2px 3px 0;
+                          }
+                        `}
+                      />
+                      編集
+                    </Button>
+                  }
+                  
+                  
+                </div>
+                
+                
+              </div>
+              
+              
+              
+              
+              {/* Form Reply */}
+              {showFormReplyNew &&
+                <FormReply
+                  gameCommunities_id={gameCommunities_id}
+                  userCommunities_id={userCommunities_id}
+                  forumThreads_id={forumThreads_id}
+                  forumComments_id={forumComments_id}
+                  // forumReplies_id={forumReplies_id}
+                  replyToForumComments_id={forumReplies_id}
+                  enableAnonymity={enableAnonymity}
+                  setShowFormReply={setShowFormReplyNew}
+                />
+              }
+              
+              
+            </div>
             
             
           </div>
-        
-        
-        </React.Fragment>
+          
+          
+        </div>
       }
     
     
@@ -993,7 +1049,10 @@ const Component = (props) => {
     userCommunityID,
     userCommunities_id,
     forumThreads_id,
+    forumComments_id,
     enableAnonymity,
+    
+    // setReloadForceComment,
     
   } = props;
   
@@ -1007,7 +1066,7 @@ const Component = (props) => {
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
-  // const [reloadForceComment, setReloadForceComment] = useState(false);
+  // const [reloadForceReply, setReloadForceReply] = useState(false);
   
   
   useEffect(() => {
@@ -1042,13 +1101,14 @@ const Component = (props) => {
     gameCommunityObj,
     setGameCommunityObj,
     forumThreadsObj,
-    setForumThreadsObj,
+    // setForumThreadsObj,
     forumCommentsObj,
-    setForumCommentsObj,
+    // setForumCommentsObj,
     forumRepliesObj,
     setForumRepliesObj,
-    reloadForceComment,
     setReloadForceComment,
+    reloadForceReply,
+    setReloadForceReply,
     
   } = stateGc;
   
@@ -1070,18 +1130,17 @@ const Component = (props) => {
   // --------------------------------------------------
   
   /**
-   * コメントを読み込む
+   * 返信を読み込む
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
-   * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
-   * @param {number} page - コメントのページ
+   * @param {string} forumComments_id - DB forum-comments _id / コメントのID
+   * @param {number} page - 返信のページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
   const handleRead = async ({
     
     gameCommunities_id,
     userCommunities_id,
-    forumThreads_id,
     forumComments_id,
     page,
     changeLimit,
@@ -1096,12 +1155,12 @@ const Component = (props) => {
       //   Property
       // ---------------------------------------------
       
-      const loadedDate = lodashGet(forumCommentsObj, [forumThreads_id, `page${page}Obj`, 'loadedDate'], '');
-      const arr = lodashGet(forumCommentsObj, [forumThreads_id, `page${page}Obj`, 'arr'], []);
+      const loadedDate = lodashGet(forumRepliesObj, [forumComments_id, `page${page}Obj`, 'loadedDate'], '');
+      const arr = lodashGet(forumRepliesObj, [forumComments_id, `page${page}Obj`, 'arr'], []);
       
-      const threadLimit = parseInt((getCookie({ key: 'forumThreadLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT), 10);
-      let commentLimit = parseInt((getCookie({ key: 'forumCommentLimit' }) || process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT), 10);
-      const replyLimit = parseInt((getCookie({ key: 'forumReplyLimit' }) || process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT), 10);
+      // const threadLimit = parseInt((getCookie({ key: 'forumThreadLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT), 10);
+      const commentLimit = parseInt((getCookie({ key: 'forumCommentLimit' }) || process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT), 10);
+      let replyLimit = parseInt((getCookie({ key: 'forumReplyLimit' }) || process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT), 10);
       
       
       
@@ -1113,14 +1172,14 @@ const Component = (props) => {
       if (changeLimit) {
         
         
-        commentLimit = changeLimit;
+        replyLimit = changeLimit;
         
         
         // ---------------------------------------------
-        //   Set Cookie - forumCommentLimit
+        //   Set Cookie - forumReplyLimit
         // ---------------------------------------------
         
-        Cookies.set('forumCommentLimit', changeLimit);
+        Cookies.set('forumReplyLimit', changeLimit);
         
         
       }
@@ -1139,14 +1198,15 @@ const Component = (props) => {
       //   1ページに表示する件数を変更した場合、再読込
       // ---------------------------------------------
       
-      if (changeLimit || reloadForceComment) {
+      if (changeLimit || reloadForceReply) {
+      // if (changeLimit) {
         
         
         // ---------------------------------------------
-        //   次回の読み込み時に強制リロード
+        //   次回の読み込み時にコメントを強制リロード
         // ---------------------------------------------
         
-        // setReloadForceComment(true);
+        setReloadForceComment(true);
         
         
         // ---------------------------------------------
@@ -1175,13 +1235,21 @@ const Component = (props) => {
       }
       
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/comment.js - handleRead
-      // `);
       
-      // console.log(chalk`
-      //   reloadForceComment: {green ${reloadForceComment}}
+      console.log(`
+        ----------------------------------------\n
+        /app/common/forum/v2/components/reply.js - handleRead
+      `);
+      
+      console.log(chalk`
+        reloadForceReply: {green ${reloadForceReply}}
+        reload: {green ${reload}}
+      `);
+      
+      // console.log(`
+      //   ----- arr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+      //   --------------------\n
       // `);
       
       
@@ -1198,9 +1266,9 @@ const Component = (props) => {
         //   Set Page
         // ---------------------------------------------
         
-        const clonedObj = lodashCloneDeep(forumCommentsObj);
-        lodashSet(clonedObj, [forumThreads_id, 'page'], page);
-        setForumCommentsObj(clonedObj);
+        const clonedObj = lodashCloneDeep(forumRepliesObj);
+        lodashSet(clonedObj, [forumComments_id, 'page'], page);
+        setForumRepliesObj(clonedObj);
         
         
         // ---------------------------------------------
@@ -1227,16 +1295,28 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   forumThreads_idArr
+      //   forumComments_idsArr
       // ---------------------------------------------
       
-      let forumThreads_idArr = [forumThreads_id];
+      let forumComments_idsArr = [forumComments_id];
       
-      // 表示件数を変更する場合は他のスレッドも一緒に更新するため、現在表示されているスレッドのIDを取得する
+      // 表示件数を変更する場合は他の返信も一緒に更新するため、現在表示されているコメントのIDを取得する
       if (changeLimit) {
         
         const forumThreadsPage = lodashGet(forumThreadsObj, ['page'], 1);
-        forumThreads_idArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
+        const forumThreads_idArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
+        
+        
+        forumComments_idsArr = [];
+        
+        for (let forumThreads_id of forumThreads_idArr.values()) {
+          
+          const forumCommentsPage = lodashGet(forumCommentsObj, [forumThreads_id, 'page'], 1);
+          const tempForumComments_idArr = lodashGet(forumCommentsObj, [forumThreads_id, `page${forumCommentsPage}Obj`, 'arr'], []);
+          
+          forumComments_idsArr = forumComments_idsArr.concat(tempForumComments_idArr);
+          
+        }
         
       }
       
@@ -1249,7 +1329,7 @@ const Component = (props) => {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/comment.js - handleRead
+      //   /app/common/forum/v2/components/reply.js - handleRead
       // `);
       
       // console.log(chalk`
@@ -1257,11 +1337,13 @@ const Component = (props) => {
       //   userCommunities_id: {green ${userCommunities_id}}
       //   forumThreads_id: {green ${forumThreads_id}}
       //   forumComments_id: {green ${forumComments_id}}
+      //   commentLimit: {green ${commentLimit}}
+      //   replyLimit: {green ${replyLimit}}
       // `);
       
       // console.log(`
-      //   ----- forumThreads_idArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
+      //   ----- forumComments_idsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(forumComments_idsArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -1276,12 +1358,10 @@ const Component = (props) => {
         
         gameCommunities_id,
         userCommunities_id,
-        forumThreads_idArr,
-        threadPage: 1,
-        threadLimit,
-        commentPage: page,
+        forumComments_idsArr,
+        commentPage: 1,
         commentLimit,
-        replyPage: 1,
+        replyPage: page,
         replyLimit,
         
       };
@@ -1293,7 +1373,7 @@ const Component = (props) => {
       
       const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/read-comments`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/read-replies`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
         
@@ -1327,48 +1407,6 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Update - forumThreadsObj - dataObj / [データオブジェクトのみ]
-      //   再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
-      // ---------------------------------------------
-      
-      const clonedForumThreadsObj = lodashCloneDeep(forumThreadsObj);
-      
-      const forumThreadsOldDataObj = lodashGet(forumThreadsObj, ['dataObj'], {});
-      const forumThreadsNewDataObj = lodashGet(resultObj, ['data', 'forumThreadsObj', 'dataObj'], {});
-      clonedForumThreadsObj.dataObj = lodashMerge(forumThreadsOldDataObj, forumThreadsNewDataObj);
-      
-      setForumThreadsObj(clonedForumThreadsObj);
-      
-      
-      // console.log(`
-      //   ----- forumThreadsOldDataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsOldDataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- forumThreadsNewDataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsNewDataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- clonedForumThreadsObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(clonedForumThreadsObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      // ---------------------------------------------
-      //   Update - forumCommentsObj
-      // ---------------------------------------------
-      
-      const forumCommentsNewObj = lodashGet(resultObj, ['data', 'forumCommentsObj'], {});
-      const forumCommentsMergedObj = reload ? forumCommentsNewObj : lodashMerge(forumCommentsObj, forumCommentsNewObj);
-      setForumCommentsObj(forumCommentsMergedObj);
-      
-      
-      // ---------------------------------------------
       //   Update - forumRepliesObj
       // ---------------------------------------------
       
@@ -1378,10 +1416,10 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   コメントの強制リロード解除
+      //   返信の強制リロード解除
       // ---------------------------------------------
       
-      setReloadForceComment(false);
+      setReloadForceReply(false);
       
       
     } catch (errorObj) {
@@ -1413,7 +1451,7 @@ const Component = (props) => {
       
       handleScrollTo({
         
-        to: `forumComments-${forumThreads_id}`,
+        to: `forumReplies-${forumComments_id}`,
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -1434,10 +1472,10 @@ const Component = (props) => {
   //   Property
   // --------------------------------------------------
   
-  const page = lodashGet(forumCommentsObj, [forumThreads_id, 'page'], 1);
-  const count = lodashGet(forumCommentsObj, [forumThreads_id, 'count'], 0);
-  const limit = parseInt((forumCommentsObj.limit || process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT), 10);
-  const arr = lodashGet(forumCommentsObj, [forumThreads_id, `page${page}Obj`, 'arr'], []);
+  const page = lodashGet(forumRepliesObj, [forumComments_id, 'page'], 1);
+  const count = lodashGet(forumRepliesObj, [forumComments_id, 'count'], 0);
+  const limit = parseInt((forumRepliesObj.limit || process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT), 10);
+  const arr = lodashGet(forumRepliesObj, [forumComments_id, `page${page}Obj`, 'arr'], []);
   
   
   
@@ -1448,7 +1486,7 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/forum/v2/components/comment.js
+  //   /app/common/forum/v2/components/reply.js
   // `);
   
   // console.log(chalk`
@@ -1492,19 +1530,20 @@ const Component = (props) => {
   
   const componentArr = [];
   
-  for (let forumComments_id of arr.values()) {
+  for (let forumReplies_id of arr.values()) {
     
     componentArr.push(
-      <Comment
-        key={forumComments_id}
+      <Reply
+        key={forumReplies_id}
         urlID={urlID}
         gameCommunities_id={gameCommunities_id}
         userCommunityID={userCommunityID}
         userCommunities_id={userCommunities_id}
         forumThreads_id={forumThreads_id}
         forumComments_id={forumComments_id}
+        forumReplies_id={forumReplies_id}
         enableAnonymity={enableAnonymity}
-        // setReloadForceComment={setReloadForceComment}
+        // setReloadForceReply={setReloadForceReply}
         // page={page}
         // count={count}
         // limit={limit}
@@ -1522,10 +1561,10 @@ const Component = (props) => {
   
   return (
     <Element
-      css={css`
-        margin: 24px 0 0 0;
-      `}
-      name={`forumComments-${forumThreads_id}`}
+      // css={css`
+      //   margin: 24px 0 0 0;
+      // `}
+      name={`forumReplies-${forumComments_id}`}
     >
       
       
@@ -1562,7 +1601,7 @@ const Component = (props) => {
             onChange={(page) => handleRead({
               gameCommunities_id,
               userCommunities_id,
-              forumThreads_id,
+              forumComments_id,
               page,
             })}
             pageSize={limit}
@@ -1589,7 +1628,7 @@ const Component = (props) => {
             onChange={(eventObj) => handleRead({
               gameCommunities_id,
               userCommunities_id,
-              forumThreads_id,
+              forumComments_id,
               page: 1,
               changeLimit: eventObj.target.value,
             })}
@@ -1598,7 +1637,7 @@ const Component = (props) => {
                 classes={{
                   input: classes.input
                 }}
-                name="forum-comments-pagination"
+                name="forum-replies-pagination"
               />
             }
           >

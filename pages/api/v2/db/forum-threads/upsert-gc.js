@@ -483,16 +483,27 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
+    //   DB find / Game Community
+    // --------------------------------------------------
+    
+    returnObj.gameCommunityObj = await ModelGameCommunities.findForGameCommunityByGameCommunities_id({
+      
+      gameCommunities_id,
+      
+    });
+    
+    
+    // --------------------------------------------------
     //   DB find / Game Communities / 最新の更新日時情報を取得する
     // --------------------------------------------------
     
-    const gameCommunityArr = await ModelGameCommunities.find({
-      conditionObj: {
-        _id: gameCommunities_id
-      }
-    });
+    // const gameCommunityArr = await ModelGameCommunities.find({
+    //   conditionObj: {
+    //     _id: gameCommunities_id
+    //   }
+    // });
     
-    returnObj.updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
+    // returnObj.updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
     
     
     

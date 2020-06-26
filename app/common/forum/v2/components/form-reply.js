@@ -374,12 +374,14 @@ const Component = (props) => {
   
   
   /**
-   * コメント作成・編集フォームを送信する
+   * 返信作成・編集フォームを送信する
    * @param {Object} eventObj - イベント
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
    * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
    * @param {string} forumComments_id - DB forum-comments _id / コメントのID
+   * @param {string} forumReplies_id - DB forum-comments _id / 返信のID（コメントと返信は同じコレクションなので、コメントのIDと同じもの）
+   * @param {string} replyToForumComments_id - DB forum-comments _id / 返信先のID
    */
   const handleSubmit = async ({
     
@@ -388,6 +390,8 @@ const Component = (props) => {
     userCommunities_id,
     forumThreads_id,
     forumComments_id,
+    forumReplies_id,
+    replyToForumComments_id,
     
   }) => {
     
@@ -401,10 +405,10 @@ const Component = (props) => {
     
     
     // ---------------------------------------------
-    //   新規投稿時の forumComments_id
+    //   新規投稿時の forumReplies_id
     // ---------------------------------------------
     
-    let newForumComments_id = '';
+    let newForumReplies_id = '';
     
     
     
@@ -428,8 +432,8 @@ const Component = (props) => {
       //   _id が存在しない場合エラー
       // ---------------------------------------------
       
-      if ((!gameCommunities_id && !userCommunities_id) || !forumThreads_id) {
-        throw new CustomError({ errorsArr: [{ code: 'UsXqWgrd6', messageID: '1YJnibkmh' }] });
+      if ((!gameCommunities_id && !userCommunities_id) || !forumThreads_id || !forumComments_id) {
+        throw new CustomError({ errorsArr: [{ code: 'ooDR_zAOu', messageID: '1YJnibkmh' }] });
       }
       
       
@@ -445,7 +449,7 @@ const Component = (props) => {
         
       ) {
         
-        throw new CustomError({ errorsArr: [{ code: 'evE70gDt0', messageID: 'uwHIKBy7c' }] });
+        throw new CustomError({ errorsArr: [{ code: 'keP5ra5TO', messageID: 'uwHIKBy7c' }] });
         
       }
       
@@ -472,19 +476,22 @@ const Component = (props) => {
       //   console.log
       // ---------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/form-comment.js - handleSubmit
-      // `);
+      console.log(`
+        ----------------------------------------\n
+        /app/common/forum/v2/components/form-reply.js - handleSubmit
+      `);
       
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id}}
-      //   forumThreads_id: {green ${forumThreads_id}}
-      //   forumComments_id: {green ${forumComments_id}}
-      //   name: {green ${name}}
-      //   comment: {green ${comment}}
-      // `);
+      console.log(chalk`
+        gameCommunities_id: {green ${gameCommunities_id}}
+        userCommunities_id: {green ${userCommunities_id}}
+        forumThreads_id: {green ${forumThreads_id}}
+        forumComments_id: {green ${forumComments_id}}
+        forumReplies_id: {green ${forumReplies_id}}
+        replyToForumComments_id: {green ${replyToForumComments_id}}
+        name: {green ${name}}
+        anonymity: {green ${anonymity}}
+        comment: {green ${comment}}
+      `);
       
       // console.log(`
       //   ----- imagesAndVideosObj -----\n
@@ -506,6 +513,7 @@ const Component = (props) => {
         gameCommunities_id,
         userCommunities_id,
         forumThreads_id,
+        forumComments_id,
         name,
         anonymity,
         comment,
@@ -516,8 +524,12 @@ const Component = (props) => {
         
       };
       
-      if (forumComments_id) {
-        formDataObj.forumComments_id = forumComments_id;
+      if (forumReplies_id) {
+        formDataObj.forumReplies_id = forumReplies_id;
+      }
+      
+      if (replyToForumComments_id) {
+        formDataObj.replyToForumComments_id = replyToForumComments_id;
       }
       
       if (imagesAndVideosObj.arr.length !== 0) {
@@ -537,7 +549,7 @@ const Component = (props) => {
         
         resultObj = await fetchWrapper({
           
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/upsert-comment-gc`,
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/upsert-reply-gc`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
           
@@ -547,7 +559,7 @@ const Component = (props) => {
         
         resultObj = await fetchWrapper({
           
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/upsert-comment-uc`,
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/upsert-reply-uc`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
           
@@ -556,11 +568,11 @@ const Component = (props) => {
       }
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
       // ---------------------------------------------
@@ -578,28 +590,28 @@ const Component = (props) => {
       //   gameCommunityObj
       // --------------------------------------------------
       
-      setGameCommunityObj(lodashGet(resultObj, ['data', 'updatedDateObj'], {}));
+      // setGameCommunityObj(lodashGet(resultObj, ['data', 'updatedDateObj'], {}));
       
       
-      // ---------------------------------------------
-      //   forumThreadsForListObj
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   forumThreadsForListObj
+      // // ---------------------------------------------
       
-      setForumThreadsForListObj(lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {}));
-      
-      
-      // ---------------------------------------------
-      //   forumThreadsObj
-      // ---------------------------------------------
-      
-      setForumThreadsObj(lodashGet(resultObj, ['data', 'forumThreadsObj'], {}));
+      // setForumThreadsForListObj(lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {}));
       
       
-      // ---------------------------------------------
-      //   forumCommentsObj
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   forumThreadsObj
+      // // ---------------------------------------------
       
-      setForumCommentsObj(lodashGet(resultObj, ['data', 'forumCommentsObj'], {}));
+      // setForumThreadsObj(lodashGet(resultObj, ['data', 'forumThreadsObj'], {}));
+      
+      
+      // // ---------------------------------------------
+      // //   forumCommentsObj
+      // // ---------------------------------------------
+      
+      // setForumCommentsObj(lodashGet(resultObj, ['data', 'forumCommentsObj'], {}));
       
       
       // ---------------------------------------------
@@ -644,7 +656,7 @@ const Component = (props) => {
       //   新規投稿時の forumComments_id
       // ---------------------------------------------
       
-      newForumComments_id = lodashGet(resultObj, ['data', 'forumCommentsObj', forumThreads_id, 'page1Obj', 'arr', 0], '');
+      newForumReplies_id = lodashGet(resultObj, ['data', 'forumRepliesObj', forumComments_id, 'page1Obj', 'arr', 0], '');
       
       // console.log(chalk`
       //   newForumComments_id: {green ${newForumComments_id}}
@@ -701,7 +713,7 @@ const Component = (props) => {
       
       if (forumComments_id) {
         
-        setShowFormComment(false);
+        setShowFormReply(false);
         
       } else {
         
@@ -730,7 +742,7 @@ const Component = (props) => {
       
       handleScrollTo({
         
-        to: forumComments_id || newForumComments_id || forumThreads_id || 'forumThreads',
+        to: forumComments_id || newForumReplies_id || forumComments_id || forumThreads_id || 'forumThreads',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',

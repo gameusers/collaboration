@@ -31,7 +31,7 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import ModelUserCommunities from 'app/@database/user-communities/model.js';
-import ModelForumThreads from 'app/@database/forum-threads/model.js';
+// import ModelForumThreads from 'app/@database/forum-threads/model.js';
 import ModelForumComments from 'app/@database/forum-comments/model.js';
 
 
@@ -538,15 +538,15 @@ export default async (req, res) => {
     //   DB find / Forum Threads List
     // --------------------------------------------------
     
-    returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
+    // returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
       
-      localeObj,
-      loginUsers_id,
-      userCommunities_id,
-      page: 1,
-      limit: threadListLimit,
+    //   localeObj,
+    //   loginUsers_id,
+    //   userCommunities_id,
+    //   page: 1,
+    //   limit: threadListLimit,
       
-    });
+    // });
     
     
     
@@ -576,15 +576,15 @@ export default async (req, res) => {
     //   DB find / User Communities / 最新の更新日時情報を取得する
     // --------------------------------------------------
     
-    const userCommunityArr = await ModelUserCommunities.find({
+    // const userCommunityArr = await ModelUserCommunities.find({
       
-      conditionObj: {
-        _id: userCommunities_id
-      }
+    //   conditionObj: {
+    //     _id: userCommunities_id
+    //   }
       
-    });
+    // });
     
-    returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+    // returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
     
     
     

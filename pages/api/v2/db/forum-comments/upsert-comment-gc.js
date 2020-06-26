@@ -256,7 +256,7 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB findOne / User Communities / 匿名
+    //   DB findOne / Game Communities / 匿名
     // --------------------------------------------------
     
     const docGameCommunitiesObj = await ModelGameCommunities.findOne({
@@ -267,16 +267,16 @@ export default async (req, res) => {
       
     });
     
-    const settingAnonymity = lodashGet(docGameCommunitiesObj, ['anonymity'], false);
+    const enableAnonymity = lodashGet(docGameCommunitiesObj, ['anonymity'], false);
     
     // 匿名での投稿ができないのに匿名にしようとした場合、エラー
-    if (!settingAnonymity && anonymity) {
+    if (!enableAnonymity && anonymity) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'A2aYwNx-X', messageID: 'qnWsuPcrJ' }] });
     }
     
     
     // console.log(chalk`
-    //   settingAnonymity: {green ${settingAnonymity}}
+    //   enableAnonymity: {green ${enableAnonymity}}
     //   anonymity: {green ${anonymity}}
     // `);
     
@@ -537,18 +537,29 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / User Communities / 最新の更新日時情報を取得する
+    //   DB find / Game Community
     // --------------------------------------------------
     
-    const gameCommunityArr = await ModelGameCommunities.find({
+    returnObj.gameCommunityObj = await ModelGameCommunities.findForGameCommunityByGameCommunities_id({
       
-      conditionObj: {
-        _id: gameCommunities_id
-      }
+      gameCommunities_id,
       
     });
     
-    returnObj.updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
+    
+    // --------------------------------------------------
+    //   DB find / User Communities / 最新の更新日時情報を取得する
+    // --------------------------------------------------
+    
+    // const gameCommunityArr = await ModelGameCommunities.find({
+      
+    //   conditionObj: {
+    //     _id: gameCommunities_id
+    //   }
+      
+    // });
+    
+    // returnObj.updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
     
     
     

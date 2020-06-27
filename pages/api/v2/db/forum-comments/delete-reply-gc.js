@@ -31,7 +31,6 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import ModelGameCommunities from 'app/@database/game-communities/model.js';
-import ModelForumThreads from 'app/@database/forum-threads/model.js';
 import ModelForumComments from 'app/@database/forum-comments/model.js';
 
 
@@ -52,8 +51,6 @@ import { validationIP } from 'app/@validations/ip.js';
 
 import { validationGameCommunities_idServer } from 'app/@database/game-communities/validations/_id-server.js';
 import { validationForumThreads_idServerGC } from 'app/@database/forum-threads/validations/_id-server.js';
-import { validationForumThreadsListLimit, validationForumThreadsLimit } from 'app/@database/forum-threads/validations/limit.js';
-import { validationForumCommentsLimit, validationForumRepliesLimit } from 'app/@database/forum-comments/validations/limit.js';
 
 
 // ---------------------------------------------
@@ -125,10 +122,6 @@ export default async (req, res) => {
       forumThreads_id,
       forumComments_id,
       forumReplies_id,
-      threadListLimit,
-      threadLimit,
-      commentLimit,
-      replyLimit,
       
     } = bodyObj;
     
@@ -137,10 +130,6 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
     lodashSet(requestParametersObj, ['forumComments_id'], forumComments_id);
     lodashSet(requestParametersObj, ['forumReplies_id'], forumReplies_id);
-    lodashSet(requestParametersObj, ['threadListLimit'], threadListLimit);
-    lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
-    lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
-    lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
     
     
     
@@ -162,11 +151,6 @@ export default async (req, res) => {
     
     await validationGameCommunities_idServer({ value: gameCommunities_id });
     await validationForumThreads_idServerGC({ forumThreads_id, gameCommunities_id });
-    
-    await validationForumThreadsListLimit({ throwError: true, required: true, value: threadListLimit });
-    await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
-    await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
-    await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
     
     
     
@@ -196,42 +180,6 @@ export default async (req, res) => {
     const imagesAndVideos_id = lodashGet(docForumCommentsObj, ['imagesAndVideos_id'], '');
     const images = lodashGet(docForumCommentsObj, ['images'], 0);
     const videos = lodashGet(docForumCommentsObj, ['images'], 0);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/db/forum-comments/delete-reply-gc.js
-    // `);
-    
-    // console.log(chalk`
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   forumThreads_id: {green ${forumThreads_id}}
-    //   forumComments_id: {green ${forumComments_id}}
-    //   forumReplies_id: {green ${forumReplies_id}}
-      
-    //   threadListLimit: {green ${threadListLimit}}
-    //   threadLimit: {green ${threadLimit}}
-    //   commentLimit: {green ${commentLimit}}
-    //   replyLimit: {green ${replyLimit}}
-      
-    //   imagesAndVideos_id: {green ${imagesAndVideos_id}}
-    //   images: {green ${images}}
-    //   videos: {green ${videos}}
-    // `);
-    
-    // console.log(`
-    //   ----- docForumCommentsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(docForumCommentsObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
     
     
     
@@ -358,45 +306,6 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Forum Threads List
-    // --------------------------------------------------
-    
-    returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
-      
-      localeObj,
-      loginUsers_id,
-      gameCommunities_id,
-      page: 1,
-      limit: threadListLimit,
-      
-    });
-    
-    
-    // --------------------------------------------------
-    //   DB find / Forum Threads
-    // --------------------------------------------------
-    
-    const forumObj = await ModelForumThreads.findForForum({
-      
-      req,
-      localeObj,
-      loginUsers_id,
-      gameCommunities_id,
-      threadPage: 1,
-      threadLimit,
-      commentPage: 1,
-      commentLimit,
-      replyPage: 1,
-      replyLimit,
-      
-    });
-    
-    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    returnObj.forumRepliesObj = forumObj.forumRepliesObj;
-    
-    
-    // --------------------------------------------------
     //   DB find / Game Community
     // --------------------------------------------------
     
@@ -407,34 +316,32 @@ export default async (req, res) => {
     });
     
     
-    // --------------------------------------------------
-    //   DB find / Game Communities / 最新の更新日時情報を取得する
-    // --------------------------------------------------
-    
-    // const gameCommunityArr = await ModelGameCommunities.find({
-      
-    //   conditionObj: {
-    //     _id: gameCommunities_id
-    //   }
-      
-    // });
-    
-    // returnObj.updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
-    
-    
     
     
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/forum-comments/delete-reply-gc.js
+    // `);
+    
     // console.log(chalk`
-    //   userCommunities_id: {green ${userCommunities_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
     //   forumThreads_id: {green ${forumThreads_id}}
     //   forumComments_id: {green ${forumComments_id}}
-    //   anonymity: {green ${anonymity} / ${typeof anonymity}}
-    //   IP: {green ${ip}}
-    //   User Agent: {green ${req.headers['user-agent']}}
+    //   forumReplies_id: {green ${forumReplies_id}}
+      
+    //   imagesAndVideos_id: {green ${imagesAndVideos_id}}
+    //   images: {green ${images}}
+    //   videos: {green ${videos}}
+    // `);
+    
+    // console.log(`
+    //   ----- docForumCommentsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docForumCommentsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     

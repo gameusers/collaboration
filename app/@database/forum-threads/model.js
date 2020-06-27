@@ -971,8 +971,8 @@ const findForumByforumID = async ({
   localeObj,
   loginUsers_id,
   forumID,
-  gameCommunities_id,
-  userCommunities_id,
+  gameCommunities_id = '',
+  userCommunities_id = '',
   threadPage = 1,
   threadLimit = process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT,
   commentPage = 1,
@@ -1384,17 +1384,9 @@ const findForumByforumID = async ({
     //   --------------------\n
     // `);
     
-    
-    
     // console.log(`
     //   ----- formattedThreadsObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(formattedThreadsObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- forumCommentsAndRepliesObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

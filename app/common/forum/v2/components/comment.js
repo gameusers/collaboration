@@ -91,7 +91,6 @@ import FormReply from 'app/common/forum/v2/components/form-reply.js';
 import Reply from 'app/common/forum/v2/components/reply.js';
 
 
-
 // ---------------------------------------------
 //   Moment Locale
 // ---------------------------------------------
@@ -147,11 +146,6 @@ const Comment = (props) => {
     forumComments_id,
     enableAnonymity,
     
-    // setReloadForceComment,
-    // page,
-    // count,
-    // limit,
-    
   } = props;
   
   
@@ -183,6 +177,7 @@ const Comment = (props) => {
     // setForumThreadsObj,
     forumCommentsObj,
     setForumCommentsObj,
+    setReloadForceComment,
     
   } = stateGc;
   
@@ -194,6 +189,7 @@ const Comment = (props) => {
   // --------------------------------------------------
   
   // const classes = useStyles();
+  const intl = useIntl();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [showFormComment, setShowFormComment] = useState(false);
@@ -351,10 +347,10 @@ const Comment = (props) => {
       
       const clonedForumCommentsObj = lodashCloneDeep(forumCommentsObj);
       
-      const page = lodashGet(forumCommentsObj, [forumThreads_id, 'page'], 1);
-      const arr = lodashGet(forumCommentsObj, [forumThreads_id, `page${page}Obj`, 'arr'], []);
-      const newArr = arr.filter(value => value !== forumComments_id);
-      lodashSet(clonedForumCommentsObj, [forumThreads_id, `page${page}Obj`, 'arr'], newArr);
+      // const page = lodashGet(forumCommentsObj, [forumThreads_id, 'page'], 1);
+      // const arr = lodashGet(forumCommentsObj, [forumThreads_id, `page${page}Obj`, 'arr'], []);
+      // const newArr = arr.filter(value => value !== forumComments_id);
+      // lodashSet(clonedForumCommentsObj, [forumThreads_id, `page${page}Obj`, 'arr'], newArr);
       
       const dataObj = lodashGet(clonedForumCommentsObj, ['dataObj'], {});
       delete dataObj[forumComments_id];
@@ -376,6 +372,13 @@ const Comment = (props) => {
       
       const gameCommunityObj = lodashGet(resultObj, ['data', 'gameCommunityObj'], {});
       setGameCommunityObj(gameCommunityObj);
+      
+      
+      // ---------------------------------------------
+      //   次回の読み込み時に強制リロード
+      // ---------------------------------------------
+      
+      setReloadForceComment(true);
       
       
       
@@ -467,6 +470,12 @@ const Comment = (props) => {
   //   --------------------\n
   // `);
   
+  if (Object.keys(dataObj).length === 0) {
+    return null;
+  }
+  
+  
+  
   
   // --------------------------------------------------
   //   User Data
@@ -519,20 +528,6 @@ const Comment = (props) => {
   
   
   // --------------------------------------------------
-  //   Good
-  // --------------------------------------------------
-  
-  // const goods = lodashGet(dataObj, ['goods'], 0);
-  
-  
-  // --------------------------------------------------
-  //   Replies
-  // --------------------------------------------------
-  
-  // const replies = lodashGet(dataObj, ['replies'], 0);
-  
-  
-  // --------------------------------------------------
   //   Link
   // --------------------------------------------------
   
@@ -541,12 +536,12 @@ const Comment = (props) => {
   
   if (urlID) {
     
-    linkHref = `/gc/[urlID]/forum/[forumID]?urlID=${urlID}&forumID=${forumComments_id}`;
+    linkHref = `/gc/[urlID]/forum/[...slug]?urlID=${urlID}&forumID=${forumComments_id}`;
     linkAs = `/gc/${urlID}/forum/${forumComments_id}`;
     
   } else if (userCommunityID) {
     
-    linkHref = `/uc/[userCommunityID]/forum/[forumID]?userCommunityID=${userCommunityID}&forumID=${forumComments_id}`;
+    linkHref = `/uc/[userCommunityID]/forum/[...slug]?userCommunityID=${userCommunityID}&forumID=${forumComments_id}`;
     linkAs = `/uc/${userCommunityID}/forum/${forumComments_id}`;
     
   }
@@ -954,9 +949,7 @@ const Comment = (props) => {
               userCommunities_id={userCommunities_id}
               forumThreads_id={forumThreads_id}
               forumComments_id={forumComments_id}
-              // replies={replies}
               enableAnonymity={enableAnonymity}
-              // setReloadForceComment={setReloadForceComment}
             />
             
             
@@ -1007,8 +1000,6 @@ const Component = (props) => {
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
-  // const [reloadForceComment, setReloadForceComment] = useState(false);
-  
   
   useEffect(() => {
     
@@ -1030,9 +1021,6 @@ const Component = (props) => {
     
     ISO8601,
     handleSnackbarOpen,
-    // handleDialogOpen,
-    // handleLoadingOpen,
-    // handleLoadingClose,
     handleScrollTo,
     
   } = stateLayout;
@@ -1175,14 +1163,6 @@ const Component = (props) => {
       }
       
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/comment.js - handleRead
-      // `);
-      
-      // console.log(chalk`
-      //   reloadForceComment: {green ${reloadForceComment}}
-      // `);
       
       
       // ---------------------------------------------
@@ -1504,10 +1484,6 @@ const Component = (props) => {
         forumThreads_id={forumThreads_id}
         forumComments_id={forumComments_id}
         enableAnonymity={enableAnonymity}
-        // setReloadForceComment={setReloadForceComment}
-        // page={page}
-        // count={count}
-        // limit={limit}
       />
     );
     

@@ -52,8 +52,8 @@ import { validationIP } from 'app/@validations/ip.js';
 
 import { validationUserCommunities_idAndAuthorityServer } from 'app/@database/user-communities/validations/_id-server.js';
 import { validationForumThreads_idServerUC } from 'app/@database/forum-threads/validations/_id-server.js';
-import { validationForumThreadsListLimit, validationForumThreadsLimit } from 'app/@database/forum-threads/validations/limit.js';
-import { validationForumCommentsLimit, validationForumRepliesLimit } from 'app/@database/forum-comments/validations/limit.js';
+// import { validationForumThreadsListLimit, validationForumThreadsLimit } from 'app/@database/forum-threads/validations/limit.js';
+// import { validationForumCommentsLimit, validationForumRepliesLimit } from 'app/@database/forum-comments/validations/limit.js';
 
 
 // ---------------------------------------------
@@ -125,10 +125,10 @@ export default async (req, res) => {
       forumThreads_id,
       forumComments_id,
       forumReplies_id,
-      threadListLimit,
-      threadLimit,
-      commentLimit,
-      replyLimit,
+      // threadListLimit,
+      // threadLimit,
+      // commentLimit,
+      // replyLimit,
       
     } = bodyObj;
     
@@ -137,10 +137,10 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
     lodashSet(requestParametersObj, ['forumComments_id'], forumComments_id);
     lodashSet(requestParametersObj, ['forumReplies_id'], forumReplies_id);
-    lodashSet(requestParametersObj, ['threadListLimit'], threadListLimit);
-    lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
-    lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
-    lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
+    // lodashSet(requestParametersObj, ['threadListLimit'], threadListLimit);
+    // lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
+    // lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
+    // lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
     
     
     
@@ -163,10 +163,10 @@ export default async (req, res) => {
     await validationUserCommunities_idAndAuthorityServer({ value: userCommunities_id, loginUsers_id });
     await validationForumThreads_idServerUC({ forumThreads_id, userCommunities_id });
     
-    await validationForumThreadsListLimit({ throwError: true, required: true, value: threadListLimit });
-    await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
-    await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
-    await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
+    // await validationForumThreadsListLimit({ throwError: true, required: true, value: threadListLimit });
+    // await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
+    // await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
+    // await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
     
     
     
@@ -353,39 +353,39 @@ export default async (req, res) => {
     //   DB find / Forum Threads List
     // --------------------------------------------------
     
-    returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
+    // returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
       
-      localeObj,
-      loginUsers_id,
-      userCommunities_id,
-      page: 1,
-      limit: threadListLimit,
+    //   localeObj,
+    //   loginUsers_id,
+    //   userCommunities_id,
+    //   page: 1,
+    //   limit: threadListLimit,
       
-    });
+    // });
     
     
-    // --------------------------------------------------
-    //   DB find / Forum Threads
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   DB find / Forum Threads
+    // // --------------------------------------------------
     
-    const forumObj = await ModelForumThreads.findForForum({
+    // const forumObj = await ModelForumThreads.findForForum({
       
-      req,
-      localeObj,
-      loginUsers_id,
-      userCommunities_id,
-      threadPage: 1,
-      threadLimit,
-      commentPage: 1,
-      commentLimit,
-      replyPage: 1,
-      replyLimit,
+    //   req,
+    //   localeObj,
+    //   loginUsers_id,
+    //   userCommunities_id,
+    //   threadPage: 1,
+    //   threadLimit,
+    //   commentPage: 1,
+    //   commentLimit,
+    //   replyPage: 1,
+    //   replyLimit,
       
-    });
+    // });
     
-    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    returnObj.forumRepliesObj = forumObj.forumRepliesObj;
+    // returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+    // returnObj.forumCommentsObj = forumObj.forumCommentsObj;
+    // returnObj.forumRepliesObj = forumObj.forumRepliesObj;
     
     
     // --------------------------------------------------

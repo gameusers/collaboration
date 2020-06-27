@@ -198,9 +198,9 @@ const Component = (props) => {
   const {
     
     setGameCommunityObj,
-    setForumThreadsForListObj,
-    setForumThreadsObj,
-    setForumCommentsObj,
+    // setForumThreadsForListObj,
+    // setForumThreadsObj,
+    // setForumCommentsObj,
     forumRepliesObj,
     setForumRepliesObj,
     
@@ -358,7 +358,7 @@ const Component = (props) => {
       
       handleScrollTo({
         
-        to: forumComments_id,
+        to: forumReplies_id,
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -476,22 +476,22 @@ const Component = (props) => {
       //   console.log
       // ---------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/common/forum/v2/components/form-reply.js - handleSubmit
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/forum/v2/components/form-reply.js - handleSubmit
+      // `);
       
-      console.log(chalk`
-        gameCommunities_id: {green ${gameCommunities_id}}
-        userCommunities_id: {green ${userCommunities_id}}
-        forumThreads_id: {green ${forumThreads_id}}
-        forumComments_id: {green ${forumComments_id}}
-        forumReplies_id: {green ${forumReplies_id}}
-        replyToForumComments_id: {green ${replyToForumComments_id}}
-        name: {green ${name}}
-        anonymity: {green ${anonymity}}
-        comment: {green ${comment}}
-      `);
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   forumThreads_id: {green ${forumThreads_id}}
+      //   forumComments_id: {green ${forumComments_id}}
+      //   forumReplies_id: {green ${forumReplies_id}}
+      //   replyToForumComments_id: {green ${replyToForumComments_id}}
+      //   name: {green ${name}}
+      //   anonymity: {green ${anonymity}}
+      //   comment: {green ${comment}}
+      // `);
       
       // console.log(`
       //   ----- imagesAndVideosObj -----\n
@@ -537,6 +537,11 @@ const Component = (props) => {
       }
       
       
+      // console.log(`
+      //   ----- formDataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
@@ -568,11 +573,11 @@ const Component = (props) => {
       }
       
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
@@ -590,28 +595,7 @@ const Component = (props) => {
       //   gameCommunityObj
       // --------------------------------------------------
       
-      // setGameCommunityObj(lodashGet(resultObj, ['data', 'updatedDateObj'], {}));
-      
-      
-      // // ---------------------------------------------
-      // //   forumThreadsForListObj
-      // // ---------------------------------------------
-      
-      // setForumThreadsForListObj(lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {}));
-      
-      
-      // // ---------------------------------------------
-      // //   forumThreadsObj
-      // // ---------------------------------------------
-      
-      // setForumThreadsObj(lodashGet(resultObj, ['data', 'forumThreadsObj'], {}));
-      
-      
-      // // ---------------------------------------------
-      // //   forumCommentsObj
-      // // ---------------------------------------------
-      
-      // setForumCommentsObj(lodashGet(resultObj, ['data', 'forumCommentsObj'], {}));
+      setGameCommunityObj(lodashGet(resultObj, ['data', 'updatedDateObj'], {}));
       
       
       // ---------------------------------------------
@@ -621,46 +605,11 @@ const Component = (props) => {
       setForumRepliesObj(lodashGet(resultObj, ['data', 'forumRepliesObj'], {}));
       
       
-      
-      
-      // // ---------------------------------------------
-      // //   Close Form & Reset Form
-      // // ---------------------------------------------
-      
-      // if (forumComments_id) {
-        
-      //   // setShowFormComment(false);
-        
-      // } else {
-        
-      //   setName('');
-      //   setAnonymity(false);
-      //   setComment('');
-      //   setImagesAndVideosObj({
-          
-      //     _id: '',
-      //     createdDate: '',
-      //     updatedDate: '',
-      //     users_id: '',
-      //     type: 'forum',
-      //     arr: [],
-          
-      //   });
-        
-      // }
-      
-      
-      
-      
       // ---------------------------------------------
       //   新規投稿時の forumComments_id
       // ---------------------------------------------
       
       newForumReplies_id = lodashGet(resultObj, ['data', 'forumRepliesObj', forumComments_id, 'page1Obj', 'arr', 0], '');
-      
-      // console.log(chalk`
-      //   newForumComments_id: {green ${newForumComments_id}}
-      // `);
       
       
       
@@ -705,8 +654,6 @@ const Component = (props) => {
       handleLoadingClose();
       
       
-      
-      
       // ---------------------------------------------
       //   Close Form & Reset Form
       // ---------------------------------------------
@@ -734,15 +681,13 @@ const Component = (props) => {
       }
       
       
-      
-      
       // ---------------------------------------------
       //   Scroll To
       // ---------------------------------------------
       
       handleScrollTo({
         
-        to: forumComments_id || newForumReplies_id || forumComments_id || forumThreads_id || 'forumThreads',
+        to: forumReplies_id || newForumReplies_id || forumComments_id || forumThreads_id || 'forumThreads',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -757,25 +702,6 @@ const Component = (props) => {
   };
   
   
-  
-  
-  
-  // --------------------------------------------------
-  //   Forum
-  // --------------------------------------------------
-  
-  // const {
-    
-  //   dataObj,
-  //   handleEdit,
-  //   handleSubmitFormReply,
-  //   handleDeleteReply,
-    
-  // } = storeForum;
-  
-  // const name = lodashGet(dataObj, [...this.pathArr, 'name'], '');
-  // const anonymity = lodashGet(dataObj, [...this.pathArr, 'anonymity'], false);
-  // const comment = lodashGet(dataObj, [...this.pathArr, 'comment'], '');
   
   
   // --------------------------------------------------

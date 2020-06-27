@@ -349,6 +349,22 @@ export default async (req, res) => {
     
     
     
+    // ---------------------------------------------
+    //   スレッドのデータがない場合はエラー
+    // ---------------------------------------------
+    
+    const forumThreadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
+    
+    if (Object.keys(forumThreadsDataObj).length === 0) {
+      
+      statusCode = 404;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CwFmCVEZJ', messageID: 'Error' }] });
+      
+    }
+    
+    
+    
+    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------

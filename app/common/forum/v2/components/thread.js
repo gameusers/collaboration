@@ -334,10 +334,10 @@ const Component = (props) => {
       
       const clonedForumThreadsObj = lodashCloneDeep(forumThreadsObj);
       
-      const page = lodashGet(forumThreadsObj, ['page'], 1);
-      const arr = lodashGet(forumThreadsObj, [`page${page}Obj`, 'arr'], []);
-      const newArr = arr.filter(value => value !== forumThreads_id);
-      lodashSet(clonedForumThreadsObj, [`page${page}Obj`, 'arr'], newArr);
+      // const page = lodashGet(forumThreadsObj, ['page'], 1);
+      // const arr = lodashGet(forumThreadsObj, [`page${page}Obj`, 'arr'], []);
+      // const newArr = arr.filter(value => value !== forumThreads_id);
+      // lodashSet(clonedForumThreadsObj, [`page${page}Obj`, 'arr'], newArr);
       
       const dataObj = lodashGet(clonedForumThreadsObj, ['dataObj'], {});
       delete dataObj[forumThreads_id];
@@ -411,10 +411,21 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Property
+  //   dataObj
   // --------------------------------------------------
   
   const dataObj = lodashGet(forumThreadsObj, ['dataObj', forumThreads_id], {});
+  
+  if (Object.keys(dataObj).length === 0) {
+    return null;
+  }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
   
   const name = lodashGet(dataObj, ['name'], '');
   const comment = lodashGet(dataObj, ['comment'], '');
@@ -423,9 +434,6 @@ const Component = (props) => {
   
   // 管理者権限がある、またはスレッドを建てた本人の場合、編集ボタンを表示する
   const editable = lodashGet(dataObj, ['editable'], false);
-  // const editable = true;
-  
-  const comments = lodashGet(dataObj, ['comments'], 0);
   
   
   
@@ -444,7 +452,7 @@ const Component = (props) => {
   
   if (urlID) {
     
-    linkHref = `/gc/[urlID]/forum/[forumID]?urlID=${urlID}&forumID=${forumThreads_id}`;
+    linkHref = `/gc/[urlID]/forum/[...slug]?urlID=${urlID}&forumID=${forumThreads_id}`;
     linkAs = `/gc/${urlID}/forum/${forumThreads_id}`;
     
     
@@ -454,7 +462,7 @@ const Component = (props) => {
   
   } else if (userCommunityID) {
     
-    linkHref = `/uc/[userCommunityID]/forum/[forumID]?userCommunityID=${userCommunityID}&forumID=${forumThreads_id}`;
+    linkHref = `/uc/[userCommunityID]/forum/[...slug]?userCommunityID=${userCommunityID}&forumID=${forumThreads_id}`;
     linkAs = `/uc/${userCommunityID}/forum/${forumThreads_id}`;
     
   }
@@ -764,23 +772,6 @@ const Component = (props) => {
                 {showComment &&
                   <Paragraph text={comment} />
                 }
-                {/*{showComment &&
-                  <div
-                    css={css`
-                      font-size: 14px;
-                      line-height: 1.6em;
-                      border-left: 4px solid #A4A4A4;
-                      margin: 12px 0 10px 3px;
-                      padding: 0 0 0 16px;
-                      
-                      @media screen and (max-width: 480px) {
-                        padding: 0 0 0 12px;
-                      }
-                    `}
-                  >
-                    <Paragraph text={comment} />
-                  </div>
-                }*/}
                 
                 
                 
@@ -949,7 +940,6 @@ const Component = (props) => {
               
               
             </div>
-          　
           }
           
           
@@ -1000,7 +990,6 @@ const Component = (props) => {
               userCommunityID={userCommunityID}
               userCommunities_id={userCommunities_id}
               forumThreads_id={forumThreads_id}
-              // comments={comments}
               enableAnonymity={enableAnonymity}
             />
             

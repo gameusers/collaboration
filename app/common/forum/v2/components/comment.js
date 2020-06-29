@@ -177,7 +177,7 @@ const Comment = (props) => {
     // setForumThreadsObj,
     forumCommentsObj,
     setForumCommentsObj,
-    setReloadForceComment,
+    setReloadForceForumComment,
     
   } = stateGc;
   
@@ -378,7 +378,7 @@ const Comment = (props) => {
       //   次回の読み込み時に強制リロード
       // ---------------------------------------------
       
-      setReloadForceComment(true);
+      setReloadForceForumComment(true);
       
       
       
@@ -1035,8 +1035,8 @@ const Component = (props) => {
     setForumCommentsObj,
     forumRepliesObj,
     setForumRepliesObj,
-    reloadForceComment,
-    setReloadForceComment,
+    reloadForceForumComment,
+    setReloadForceForumComment,
     
   } = stateGc;
   
@@ -1127,14 +1127,14 @@ const Component = (props) => {
       //   1ページに表示する件数を変更した場合、再読込
       // ---------------------------------------------
       
-      if (changeLimit || reloadForceComment) {
+      if (changeLimit || reloadForceForumComment) {
         
         
         // ---------------------------------------------
         //   次回の読み込み時に強制リロード
         // ---------------------------------------------
         
-        // setReloadForceComment(true);
+        // setReloadForceForumComment(true);
         
         
         // ---------------------------------------------
@@ -1361,7 +1361,7 @@ const Component = (props) => {
       //   コメントの強制リロード解除
       // ---------------------------------------------
       
-      setReloadForceComment(false);
+      setReloadForceForumComment(false);
       
       
     } catch (errorObj) {

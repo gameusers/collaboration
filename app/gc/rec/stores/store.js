@@ -120,65 +120,65 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {string} value - 値
    */
-  @action.bound
-  handleNavigationFormSearchCategory({
+  // @action.bound
+  // handleNavigationFormSearchCategory({
     
-    pathArr,
-    value,
+  //   pathArr,
+  //   value,
     
-  }) {
-    
-    
-    // --------------------------------------------------
-    //   配列を取得
-    // --------------------------------------------------
-    
-    let categoriesArr = lodashGet(this.dataObj, [...pathArr, 'categoriesArr'], []);
+  // }) {
     
     
-    // --------------------------------------------------
-    //   配列に存在しない場合は追加、存在する場合は削除
-    // --------------------------------------------------
+  //   // --------------------------------------------------
+  //   //   配列を取得
+  //   // --------------------------------------------------
     
-    if (categoriesArr.indexOf(value) === -1) {
+  //   let categoriesArr = lodashGet(this.dataObj, [...pathArr, 'categoriesArr'], []);
+    
+    
+  //   // --------------------------------------------------
+  //   //   配列に存在しない場合は追加、存在する場合は削除
+  //   // --------------------------------------------------
+    
+  //   if (categoriesArr.indexOf(value) === -1) {
       
-      categoriesArr.push(value);
+  //     categoriesArr.push(value);
       
-    } else {
+  //   } else {
       
-      const newArr = categoriesArr.filter(number => number !== value);
-      categoriesArr = newArr;
+  //     const newArr = categoriesArr.filter(number => number !== value);
+  //     categoriesArr = newArr;
       
-    }
+  //   }
     
     
-    // --------------------------------------------------
-    //   数字の昇順に並び替え
-    // --------------------------------------------------
+  //   // --------------------------------------------------
+  //   //   数字の昇順に並び替え
+  //   // --------------------------------------------------
     
-    categoriesArr = categoriesArr.slice().sort((a, b) => {
-      return a - b;
-    });
-    
-    
-    // --------------------------------------------------
-    //   更新
-    // --------------------------------------------------
-    
-    lodashSet(this.dataObj, [...pathArr, 'categoriesArr'], categoriesArr);
+  //   categoriesArr = categoriesArr.slice().sort((a, b) => {
+  //     return a - b;
+  //   });
     
     
-    // console.log(`
-    //   ----- categoriesArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(categoriesArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+  //   // --------------------------------------------------
+  //   //   更新
+  //   // --------------------------------------------------
     
-    // console.log(chalk`
-    //   value: {green ${value}}
-    // `);
+  //   lodashSet(this.dataObj, [...pathArr, 'categoriesArr'], categoriesArr);
     
-  };
+    
+  //   // console.log(`
+  //   //   ----- categoriesArr -----\n
+  //   //   ${util.inspect(JSON.parse(JSON.stringify(categoriesArr)), { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
+    
+  //   // console.log(chalk`
+  //   //   value: {green ${value}}
+  //   // `);
+    
+  // };
   
   
   

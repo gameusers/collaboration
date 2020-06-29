@@ -41,13 +41,24 @@ const useGc = (initialStateObj) => {
   // --------------------------------------------------
   
   const [gameCommunityObj, setGameCommunityObj] = useState(lodashGet(initialStateObj, ['gameCommunityObj'], {}));
+  
+  
   const [forumThreadsForListObj, setForumThreadsForListObj] = useState(lodashGet(initialStateObj, ['forumThreadsForListObj'], {}));
   const [forumThreadsObj, setForumThreadsObj] = useState(lodashGet(initialStateObj, ['forumThreadsObj'], {}));
   const [forumCommentsObj, setForumCommentsObj] = useState(lodashGet(initialStateObj, ['forumCommentsObj'], {}));
   const [forumRepliesObj, setForumRepliesObj] = useState(lodashGet(initialStateObj, ['forumRepliesObj'], {}));
   
-  const [reloadForceComment, setReloadForceComment] = useState(false);
-  const [reloadForceReply, setReloadForceReply] = useState(false);
+  const [reloadForceForumComment, setReloadForceForumComment] = useState(false);
+  const [reloadForceForumReply, setReloadForceForumReply] = useState(false);
+  
+  
+  const [recruitmentThreadsObj, setRecruitmentThreadsObj] = useState(lodashGet(initialStateObj, ['recruitmentThreadsObj'], {}));
+  const [recruitmentCommentsObj, setRecruitmentCommentsObj] = useState(lodashGet(initialStateObj, ['recruitmentCommentsObj'], {}));
+  const [recruitmentRepliesObj, setRecruitmentRepliesObj] = useState(lodashGet(initialStateObj, ['recruitmentRepliesObj'], {}));
+  
+  const [reloadForceRecruitmentComment, setReloadForceRecruitmentComment] = useState(false);
+  const [reloadForceRecruitmentReply, setReloadForceRecruitmentReply] = useState(false);
+  
   
   
   // const [forumThreadsReload, setForumThreadsReload] = useState(false);
@@ -84,6 +95,7 @@ const useGc = (initialStateObj) => {
     gameCommunityObj,
     setGameCommunityObj,
     
+    
     forumThreadsForListObj,
     setForumThreadsForListObj,
     
@@ -96,11 +108,27 @@ const useGc = (initialStateObj) => {
     forumRepliesObj,
     setForumRepliesObj,
     
-    reloadForceComment,
-    setReloadForceComment,
+    reloadForceForumComment,
+    setReloadForceForumComment,
     
-    reloadForceReply,
-    setReloadForceReply,
+    reloadForceForumReply,
+    setReloadForceForumReply,
+    
+    
+    recruitmentThreadsObj,
+    setRecruitmentThreadsObj,
+    
+    recruitmentCommentsObj,
+    setRecruitmentCommentsObj,
+    
+    recruitmentRepliesObj,
+    setRecruitmentRepliesObj,
+    
+    reloadForceRecruitmentComment,
+    setReloadForceRecruitmentComment,
+    
+    reloadForceRecruitmentReply,
+    setReloadForceRecruitmentReply,
     
   };
   

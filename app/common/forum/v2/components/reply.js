@@ -174,7 +174,7 @@ const Reply = (props) => {
     forumCommentsObj,
     forumRepliesObj,
     setForumRepliesObj,
-    setReloadForceReply,
+    setReloadForceForumReply,
     
   } = stateGc;
   
@@ -372,7 +372,7 @@ const Reply = (props) => {
       //   次回の読み込み時に強制リロード
       // ---------------------------------------------
       
-      setReloadForceReply(true);
+      setReloadForceForumReply(true);
       
       
       
@@ -1071,9 +1071,9 @@ const Component = (props) => {
     forumCommentsObj,
     forumRepliesObj,
     setForumRepliesObj,
-    setReloadForceComment,
-    reloadForceReply,
-    setReloadForceReply,
+    setReloadForceForumComment,
+    reloadForceForumReply,
+    setReloadForceForumReply,
     
   } = stateGc;
   
@@ -1163,7 +1163,7 @@ const Component = (props) => {
       //   1ページに表示する件数を変更した場合、再読込
       // ---------------------------------------------
       
-      if (changeLimit || reloadForceReply) {
+      if (changeLimit || reloadForceForumReply) {
       // if (changeLimit) {
         
         
@@ -1171,7 +1171,7 @@ const Component = (props) => {
         //   次回の読み込み時にコメントを強制リロード
         // ---------------------------------------------
         
-        setReloadForceComment(true);
+        setReloadForceForumComment(true);
         
         
         // ---------------------------------------------
@@ -1207,7 +1207,7 @@ const Component = (props) => {
       // `);
       
       // console.log(chalk`
-      //   reloadForceReply: {green ${reloadForceReply}}
+      //   reloadForceForumReply: {green ${reloadForceForumReply}}
       //   reload: {green ${reload}}
       // `);
       
@@ -1384,7 +1384,7 @@ const Component = (props) => {
       //   返信の強制リロード解除
       // ---------------------------------------------
       
-      setReloadForceReply(false);
+      setReloadForceForumReply(false);
       
       
     } catch (errorObj) {

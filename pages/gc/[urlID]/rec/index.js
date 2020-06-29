@@ -14,9 +14,9 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
-import { observer } from 'mobx-react';
+import { animateScroll as scroll } from 'react-scroll';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -31,37 +31,30 @@ import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
+import { ContainerStateGc } from 'app/@states/gc.js';
+
+
+// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
-
-
-// ---------------------------------------------
-//   Stores
-// ---------------------------------------------
-
-import initStoreRoot from 'app/@stores/root.js';
-import initStoreGcRecruitment from 'app/gc/rec/stores/store.js';
-import initStoreCardPlayer from 'app/common/card/player/stores/player.js';
-import initStoreForum from 'app/common/forum/stores/store.js';
-import initStoreIDForm from 'app/common/id/stores/form.js';
-import initStoreGameForm from 'app/common/game/stores/form.js';
-import initStoreImageAndVideo from 'app/common/image-and-video/stores/image-and-video.js';
-import initStoreImageAndVideoForm from 'app/common/image-and-video/stores/form.js';
-import initStoreGood from 'app/common/good/stores/store.js';
-import initStoreHardware from 'app/common/hardware/stores/store.js';
+import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import Layout from 'app/common/layout/components/layout-ver2.js';
-import RecruitmentNavigation from 'app/gc/rec/components/recruitment-navigation.js';
-import RecruitmentThread from 'app/gc/rec/components/recruitment-thread.js';
-import Breadcrumbs from 'app/common/layout/components/breadcrumbs.js';
+import Layout from 'app/common/layout/v2/components/layout.js';
+import RecruitmentNavigation from 'app/gc/rec/v2/components/navigation.js';
+// import RecruitmentThread from 'app/gc/rec/components/recruitment-thread.js';
+import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
 
 
 
@@ -69,50 +62,147 @@ import Breadcrumbs from 'app/common/layout/components/breadcrumbs.js';
 
 
 // --------------------------------------------------
-//   Store
+//   Function Components
+//   URL: https://dev-1.gameusers.org/gc/rec
 // --------------------------------------------------
 
-/**
- * ストアを初期化する / 更新する
- * @param {Object} propsObj - ストアに入れる値
- */
-const initializeStore = ({ propsObj }) => {
+const ContainerLayout = (props) => {
   
   
   // --------------------------------------------------
-  //   Stores
+  //   States
   // --------------------------------------------------
   
-  initStoreRoot({ propsObj });
+  const stateLayout = ContainerStateLayout.useContainer();
+  const stateGc = ContainerStateGc.useContainer();
   
-  const storeGcRecruitment = initStoreGcRecruitment({ propsObj });
-  const storeCardPlayer = initStoreCardPlayer({});
-  const storeForum = initStoreForum({ propsObj });
-  const storeIDForm = initStoreIDForm({});
-  const storeGameForm = initStoreGameForm({});
-  const storeImageAndVideo = initStoreImageAndVideo({});
-  const storeImageAndVideoForm = initStoreImageAndVideoForm({});
-  const storeGood = initStoreGood({});
-  const storeHardware = initStoreHardware({});
+  const {
+    
+    handleScrollTo,
+    
+  } = stateLayout;
+  
+  const {
+    
+    setGameCommunityObj,
+    setRecruitmentThreadsObj,
+    setRecruitmentCommentsObj,
+    setRecruitmentRepliesObj,
+    
+  } = stateGc;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Hooks
+  // --------------------------------------------------
+  
+  useEffect(() => {
+    
+    
+    // --------------------------------------------------
+    //   Router.push でページを移動した際の処理
+    //   getServerSideProps でデータを取得してからデータを更新する
+    // --------------------------------------------------
+    
+    setGameCommunityObj(props.gameCommunityObj);
+    setRecruitmentThreadsObj(props.recruitmentThreadsObj);
+    setRecruitmentCommentsObj(props.recruitmentCommentsObj);
+    setRecruitmentRepliesObj(props.recruitmentRepliesObj);
+    
+    
+    // ---------------------------------------------
+    //   Scroll To
+    // ---------------------------------------------
+    
+    scroll.scrollToTop({ duration: 0 });
+    
+    
+  }, [props.ISO8601]);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /pages/gc/[urlID]/rec/index.js - ContainerLayout
+  // `);
+  
+  // console.log(`
+  //   ----- props -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(props)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(`
+  //   ----- forumThreadsObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(chalk`
+  //   gameCommunities_id: {green ${gameCommunities_id}}
+  // `);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Component - Sidebar
+  // --------------------------------------------------
+  
+  const componentSidebar =
+    <RecruitmentNavigation
+      urlID={props.urlID}
+      gameCommunities_id={props.gameCommunities_id}
+    />
+  ;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Component - Contents
+  // --------------------------------------------------
+  
+  const componentContent = '';
+  // const componentContent =
+  //   <React.Fragment>
+      
+  //     <Breadcrumbs
+  //       arr={props.breadcrumbsArr}
+  //     />
+      
+  //     <RecruitmentThread
+  //       urlID={props.urlID}
+  //       gameCommunities_id={props.gameCommunities_id}
+  //     />
+      
+  //   </React.Fragment>
+  // ;
+  
+  
   
   
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
   
-  return {
-    
-    storeGcRecruitment,
-    storeCardPlayer,
-    storeForum,
-    storeIDForm,
-    storeGameForm,
-    storeImageAndVideo,
-    storeImageAndVideoForm,
-    storeGood,
-    storeHardware,
-    
-  };
+  return (
+    <Layout
+      title={props.title}
+      componentSidebar={componentSidebar}
+      componentContent={componentContent}
+      
+      headerObj={props.headerObj}
+      headerNavMainArr={props.headerNavMainArr}
+    />
+  );
   
   
 };
@@ -120,218 +210,51 @@ const initializeStore = ({ propsObj }) => {
 
 
 
-// --------------------------------------------------
-//   Class
-//   URL: https://dev-1.gameusers.org/gc/rec
-// --------------------------------------------------
-
-@observer
-export default class GcRec extends React.Component {
+const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   constructor
+  //   unstated-next - Initial State
   // --------------------------------------------------
   
-  constructor(props) {
+  const initialStateObj = {
     
+    gameCommunityObj: props.gameCommunityObj,
+    recruitmentThreadsObj: props.recruitmentThreadsObj,
+    recruitmentCommentsObj: props.recruitmentCommentsObj,
+    recruitmentRepliesObj: props.recruitmentRepliesObj,
     
-    // --------------------------------------------------
-    //   super
-    // --------------------------------------------------
-    
-    super(props);
-    
-    
-    // --------------------------------------------------
-    //   Initialize Store
-    // --------------------------------------------------
-    
-    this.storesObj = initializeStore({ propsObj: this.props.propsObj });
-    
-    
+  };
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Error
+  //   参考：https://github.com/zeit/next.js#custom-error-handling
+  // --------------------------------------------------
+  
+  if (props.statusCode !== 200) {
+    return <Error statusCode={props.statusCode} />;
   }
   
   
   
   
   // --------------------------------------------------
-  //   componentDidMount
+  //   Return
   // --------------------------------------------------
   
-  componentDidMount() {
-    
-    // console.log('componentDidMount');
-    
-    
-    // ---------------------------------------------
-    //   Scroll
-    // ---------------------------------------------
-    
-    const stores = initStoreRoot({});
-    
-    stores.layout.handleScrollTo({
+  return (
+    <ContainerStateGc.Provider initialState={initialStateObj}>
       
-      to: 'recruitmentThreads',
-      duration: 0,
-      delay: 0,
-      smooth: 'easeInOutQuart',
-      offset: -50,
+      <ContainerLayout {...props} />
       
-    });
-    
-    
-  }
+    </ContainerStateGc.Provider>
+  );
   
   
-  
-  
-  // --------------------------------------------------
-  //   componentDidUpdate / Router.push でページを移動したときの処理
-  //   まず getServerSideProps でデータを取得し、次に componentDidUpdate でデータを更新する
-  // --------------------------------------------------
-  
-  componentDidUpdate(prevProps) {
-    
-    // console.log('componentDidUpdate');
-    
-    
-    // console.log(`
-    //   ----- prevProps -----\n
-    //   ${util.inspect(prevProps, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- this.props -----\n
-    //   ${util.inspect(this.props, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   this.props.ISO8601: {green ${this.props.ISO8601}}
-    //   prevProps.ISO8601: {green ${prevProps.ISO8601}}
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   Update Store
-    // --------------------------------------------------
-    
-    if (this.props.ISO8601 !== prevProps.ISO8601) {
-      
-      // console.log('componentDidUpdate / Update Store');
-      
-      initializeStore({ propsObj: this.props.propsObj });
-      
-      
-      // ---------------------------------------------
-      //   Scroll
-      // ---------------------------------------------
-      
-      const stores = initStoreRoot({});
-      
-      stores.layout.handleScrollTo({
-        
-        to: 'recruitmentThreads',
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
-        
-      });
-      
-      
-    }
-    
-    
-  }
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   render
-  // --------------------------------------------------
-  
-  render() {
-    
-    
-    // --------------------------------------------------
-    //   Error
-    //   参考：https://github.com/zeit/next.js#custom-error-handling
-    // --------------------------------------------------
-    
-    if (this.props.statusCode !== 200) {
-      return <Error statusCode={this.props.statusCode} />;
-    }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Props
-    // --------------------------------------------------
-    
-    const gameCommunities_id = lodashGet(this.props, ['propsObj', 'gameCommunityObj', '_id'], '');
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Component - Sidebar
-    // --------------------------------------------------
-    
-    const componentSidebar =
-      <RecruitmentNavigation
-        urlID={this.props.urlID}
-        gameCommunities_id={gameCommunities_id}
-      />
-    ;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Component - Contents
-    // --------------------------------------------------
-    
-    const componentContent = 
-      <React.Fragment>
-        
-        <Breadcrumbs
-          arr={this.props.breadcrumbsArr}
-        />
-        
-        <RecruitmentThread
-          urlID={this.props.urlID}
-          gameCommunities_id={gameCommunities_id}
-        />
-        
-      </React.Fragment>
-    ;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return (
-      <Layout
-        storesObj={this.storesObj}
-        title={this.props.title}
-        componentSidebar={componentSidebar}
-        componentContent={componentContent}
-      />
-    );
-    
-    
-  }
-  
-  
-}
+};
 
 
 
@@ -361,35 +284,41 @@ export async function getServerSideProps({ req, res, query }) {
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   
-  const stores = initStoreRoot({
-    
-    propsObj: {
-      cookie: reqHeadersCookie
-    }
-    
-  });
   
   
+  
+  // --------------------------------------------------
+  //   Query
+  // --------------------------------------------------
+  
+  const urlID = query.urlID;
+  
+  // console.log(`
+  //   ----- query -----\n
+  //   ${util.inspect(query, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
-  const urlID = query.urlID;
-  const pathname = `/gc/${urlID}/rec`;
-  const pathArr = ['gc', urlID, 'rec'];
   const ISO8601 = moment().utc().toISOString();
   
   
+  
+  
   // --------------------------------------------------
-  //   Get Cookie Data for Fetch
+  //   Get Cookie Data
   // --------------------------------------------------
   
   const threadPage = 1;
-  const threadLimit = stores.data.getCookie({ key: 'recruitmentThreadLimit' });
-  const commentLimit = stores.data.getCookie({ key: 'recruitmentCommentLimit' });
-  const replyLimit = stores.data.getCookie({ key: 'recruitmentReplyLimit' });
+  const threadLimit = getCookie({ key: 'recruitmentThreadLimit', reqHeadersCookie });
+  const commentLimit = getCookie({ key: 'recruitmentCommentLimit', reqHeadersCookie });
+  const replyLimit = getCookie({ key: 'recruitmentReplyLimit', reqHeadersCookie });
+  
+  
   
   
   // --------------------------------------------------
@@ -415,9 +344,28 @@ export async function getServerSideProps({ req, res, query }) {
   //   dataObj
   // --------------------------------------------------
   
+  const login = lodashGet(dataObj, ['login'], false);
+  const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
+  const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
+  const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
   const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
-  const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
+  
+  const gameCommunityObj = lodashGet(dataObj, ['gameCommunityObj'], {});
+  const recruitmentThreadsObj = lodashGet(dataObj, ['recruitmentThreadsObj'], {});
+  const recruitmentCommentsObj = lodashGet(dataObj, ['recruitmentCommentsObj'], {});
+  const recruitmentRepliesObj = lodashGet(dataObj, ['recruitmentRepliesObj'], {});
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Title
+  // --------------------------------------------------
+  
+  const title = `募集 - ${gameName}`;
+  
+  
   
   
   // --------------------------------------------------
@@ -430,16 +378,19 @@ export async function getServerSideProps({ req, res, query }) {
       name: 'トップ',
       href: `/gc/[urlID]/index?urlID=${urlID}`,
       as: `/gc/${urlID}`,
+      active: false,
     },
     {
       name: '募集',
       href: `/gc/[urlID]/rec?urlID=${urlID}`,
       as: `/gc/${urlID}/rec`,
+      active: true,
     },
     {
       name: 'フォロワー',
       href: '/',
       as: '/',
+      active: false,
       // href: `/gc/[urlID]/followers?urlID=${urlID}`,
       // as: `/gc/${urlID}/followers`,
     }
@@ -453,26 +404,13 @@ export async function getServerSideProps({ req, res, query }) {
         name: '設定',
         href: `/gc/[urlID]/settings?urlID=${urlID}`,
         as: `/gc/${urlID}/settings`,
+        active: false,
       }
     );
     
   }
   
   
-  // --------------------------------------------------
-  //   propsObj
-  // --------------------------------------------------
-  
-  const propsObj = { ...dataObj, ISO8601, accessLevel, pathname, pathArr, headerNavMainArr, gameCommunities_id };
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Title
-  // --------------------------------------------------
-  
-  const title = `募集 - ${gameName}`;
   
   
   // --------------------------------------------------
@@ -504,28 +442,25 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
   
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/rec/index.js
-  // `);
+  console.log(`
+    ----------------------------------------\n
+    /pages/gc/[urlID]/index.js
+  `);
   
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  console.log(`
+    ----- resultObj -----\n
+    ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+    --------------------\n
+  `);
   
   // console.log(chalk`
+  //   threadListPage: {green ${threadListPage}}
   //   threadPage: {green ${threadPage}}
+    
+  //   threadListLimit: {green ${threadListLimit}}
   //   threadLimit: {green ${threadLimit}}
   //   commentLimit: {green ${commentLimit}}
   //   replyLimit: {green ${replyLimit}}
-  // `);
-  
-  // console.log(`
-  //   ----- query -----\n
-  //   ${util.inspect(query, { colors: true, depth: null })}\n
-  //   --------------------\n
   // `);
   
   // console.log(`
@@ -549,12 +484,22 @@ export async function getServerSideProps({ req, res, query }) {
     
     props: {
       
-      urlID,
+      reqAcceptLanguage,
       ISO8601,
       statusCode,
-      propsObj,
-      breadcrumbsArr,
+      login,
+      loginUsersObj,
       title,
+      headerObj,
+      headerNavMainArr,
+      breadcrumbsArr,
+      
+      urlID,
+      gameCommunities_id,
+      gameCommunityObj,
+      recruitmentThreadsObj,
+      recruitmentCommentsObj,
+      recruitmentRepliesObj,
       
     }
     
@@ -562,3 +507,12 @@ export async function getServerSideProps({ req, res, query }) {
   
   
 }
+
+
+
+
+// --------------------------------------------------
+//   Export
+// --------------------------------------------------
+
+export default Component;

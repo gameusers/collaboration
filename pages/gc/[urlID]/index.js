@@ -242,6 +242,7 @@ const Component = (props) => {
   
   
   
+  
   // --------------------------------------------------
   //   Error
   //   参考：https://github.com/zeit/next.js#custom-error-handling
@@ -351,7 +352,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   
   // --------------------------------------------------
-  //   Get Cookie Data & Temporary Data for Fetch
+  //   Get Cookie Data
   // --------------------------------------------------
   
   const threadListPage = 1;

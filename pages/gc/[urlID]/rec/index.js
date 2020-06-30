@@ -53,7 +53,7 @@ import { getCookie } from 'app/@modules/cookie.js';
 
 import Layout from 'app/common/layout/v2/components/layout.js';
 import RecruitmentNavigation from 'app/gc/rec/v2/components/navigation.js';
-// import RecruitmentThread from 'app/gc/rec/components/recruitment-thread.js';
+import Recruitment from 'app/gc/rec/v2/components/recruitment.js';
 import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
 
 
@@ -170,21 +170,21 @@ const ContainerLayout = (props) => {
   //   Component - Contents
   // --------------------------------------------------
   
-  const componentContent = '';
-  // const componentContent =
-  //   <React.Fragment>
+  // const componentContent = '';
+  const componentContent =
+    <React.Fragment>
       
-  //     <Breadcrumbs
-  //       arr={props.breadcrumbsArr}
-  //     />
+      <Breadcrumbs
+        arr={props.breadcrumbsArr}
+      />
       
-  //     <RecruitmentThread
-  //       urlID={props.urlID}
-  //       gameCommunities_id={props.gameCommunities_id}
-  //     />
+      <Recruitment
+        urlID={props.urlID}
+        gameCommunities_id={props.gameCommunities_id}
+      />
       
-  //   </React.Fragment>
-  // ;
+    </React.Fragment>
+  ;
   
   
   

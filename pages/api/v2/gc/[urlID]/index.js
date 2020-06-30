@@ -161,8 +161,10 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     if (Object.keys(gameCommunityObj).length === 0) {
+      
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'mb7-816Fu', messageID: 'Error' }] });
+      
     }
     
     

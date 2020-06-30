@@ -56,6 +56,7 @@ const { formatImagesAndVideosObj } = require('../images-and-videos/format.js');
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {Array} arr - 配列
  * @param {number} threadPage - スレッドのページ数
+ * @param {number} threadLimit - スレッドのリミット
  * @return {Array} フォーマット後のデータ
  */
 const formatRecruitmentThreadsArr = ({
@@ -65,7 +66,7 @@ const formatRecruitmentThreadsArr = ({
   loginUsers_id,
   arr,
   threadPage,
-  // threadCount,
+  threadLimit,
   
 }) => {
   
@@ -77,6 +78,7 @@ const formatRecruitmentThreadsArr = ({
   const recruitmentThreadsObj = {
     
     page: threadPage,
+    limit: threadLimit,
     count: lodashGet(arr, [0, 'gameCommunitiesObj', 'recruitmentObj', 'threadCount'], 0),
     dataObj: {},
     

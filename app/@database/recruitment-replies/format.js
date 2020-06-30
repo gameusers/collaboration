@@ -48,6 +48,7 @@ const { formatImagesAndVideosObj } = require('../images-and-videos/format');
  * @param {Array} arr - 配列
  * @param {Object} recruitmentCommentsObj - コメントのデータ / 返信の総数を取得するために利用
  * @param {number} replyPage - 返信のページ数
+ * @param {number} replyLimit - 返信のリミット
  * @param {string} ISO8601 - 日時
  * @return {Array} フォーマット後のデータ
  */
@@ -59,6 +60,7 @@ const formatRecruitmentRepliesArr = ({
   arr,
   recruitmentCommentsObj,
   replyPage,
+  replyLimit,
   ISO8601,
   
 }) => {
@@ -70,6 +72,7 @@ const formatRecruitmentRepliesArr = ({
   
   const recruitmentRepliesObj = {
     
+    limit: replyLimit,
     dataObj: {},
     
   };

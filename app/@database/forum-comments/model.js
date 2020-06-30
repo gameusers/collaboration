@@ -1550,11 +1550,17 @@ const formatVer2 = ({
   // --------------------------------------------------
   
   const forumCommentsObj = {
+    
+    limit: commentLimit,
     dataObj: {},
+    
   };
   
   const forumRepliesObj = {
+    
+    limit: replyLimit,
     dataObj: {},
+    
   };
   
   
@@ -1896,9 +1902,6 @@ const formatVer2 = ({
   
   forumCommentsObj.dataObj = formattedCommentsObj;
   forumRepliesObj.dataObj = formattedRepliesObj;
-  
-  forumCommentsObj.limit = commentLimit;
-  forumRepliesObj.limit = replyLimit;
   
   
   

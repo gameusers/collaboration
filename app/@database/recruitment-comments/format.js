@@ -69,7 +69,9 @@ const formatRecruitmentCommentsAndRepliesArr = ({
   arr,
   recruitmentThreadsObj,
   commentPage,
+  commentLimit,
   replyPage,
+  replyLimit,
   
 }) => {
   
@@ -79,7 +81,10 @@ const formatRecruitmentCommentsAndRepliesArr = ({
   // --------------------------------------------------
   
   const recruitmentCommentsObj = {
+    
+    limit: commentLimit,
     dataObj: {},
+    
   };
   
   
@@ -143,9 +148,6 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
     
     const users_id = lodashGet(valueObj, ['users_id'], '');
-    // const webPush = lodashGet(valueObj, ['webPush'], false);
-    // const webPushEndpoint = lodashGet(valueObj, ['webPushSubscriptionObj', 'endpoint'], '');
-    // const webPushUsersEndpoint = lodashGet(valueObj, ['usersObj', 'webPushSubscriptionObj', 'endpoint'], '');
     
     
     // --------------------------------------------------
@@ -155,7 +157,6 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     const threadUsers_id = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'users_id'], '');
     const threadDeadlineDate = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'deadlineDate'], 0);
     const threadPublicSetting = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'publicSetting'], 1);
-    // const threadPublicCommentsUsers_idsArr = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'publicCommentsUsers_idsArr'], []);
     const threadPublicApprovalUsers_idsArrr = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id, 'publicApprovalUsers_idsArrr'], []);
     
     
@@ -581,6 +582,7 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     recruitmentCommentsObj,
     arr: repliesArr,
     replyPage,
+    replyLimit,
     ISO8601,
     
   });

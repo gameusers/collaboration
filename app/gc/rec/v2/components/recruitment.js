@@ -57,19 +57,19 @@ import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 
 
 // ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
-import Panel from 'app/common/layout/v2/components/panel.js';
-import Thread from 'app/common/forum/v2/components/thread.js';
-import FormThread from 'app/common/forum/v2/components/form-thread.js';
-
-
-// ---------------------------------------------
 //   States
 // ---------------------------------------------
 
 import { ContainerStateGc } from 'app/@states/gc.js';
+
+
+// ---------------------------------------------
+//   Components
+// ---------------------------------------------
+
+import Panel from 'app/common/layout/v2/components/panel.js';
+import Thread from 'app/gc/rec/v2/components/thread.js';
+import FormThread from 'app/gc/rec/v2/components/form/thread.js';
 
 
 
@@ -118,10 +118,6 @@ const Component = (props) => {
     
     urlID,
     gameCommunities_id,
-    userCommunityID,
-    userCommunities_id,
-    
-    enableAnonymity,
     individual,
     
   } = props;
@@ -155,7 +151,7 @@ const Component = (props) => {
   
   const {
     
-    forumThreadsObj,
+    recruitmentThreadsObj,
     
   } = stateGc;
   
@@ -272,40 +268,18 @@ const Component = (props) => {
   //   Thread
   // --------------------------------------------------
   
-  const page = lodashGet(forumThreadsObj, ['page'], 1);
-  const limit = lodashGet(forumThreadsObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT, 10));
-  const count = lodashGet(forumThreadsObj, ['count'], 0);
-  const arr = lodashGet(forumThreadsObj, [`page${page}Obj`, 'arr'], []);
+  const page = lodashGet(recruitmentThreadsObj, ['page'], 1);
+  const limit = lodashGet(recruitmentThreadsObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT, 10));
+  const count = lodashGet(recruitmentThreadsObj, ['count'], 0);
+  const arr = lodashGet(recruitmentThreadsObj, [`page${page}Obj`, 'arr'], []);
   
   
   // --------------------------------------------------
   //   Link Return Top
   // --------------------------------------------------
   
-  let linkReturnTopHref = '';
-  let linkReturnTopAs = '';
-  
-  
-  // ---------------------------------------------
-  //   - Game Community
-  // ---------------------------------------------
-  
-  if (urlID) {
-    
-    linkReturnTopHref = `/gc/[urlID]/index?urlID=${urlID}`;
-    linkReturnTopAs = `/gc/${urlID}`;
-    
-    
-  // ---------------------------------------------
-  //   - User Community
-  // ---------------------------------------------
-  
-  } else if (userCommunityID) {
-    
-    linkReturnTopHref = `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`;
-    linkReturnTopAs = `/uc/${userCommunityID}`;
-    
-  }
+  const linkReturnTopHref = `/gc/[urlID]/rec/index?urlID=${urlID}`;
+  const linkReturnTopAs = `/gc/${urlID}/rec`;
   
   
   
@@ -316,14 +290,12 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/forum/v2/components/forum.js
+  //   /app/gc/rec/v2/components/recruitment.js
   // `);
   
   // console.log(chalk`
   //   urlID: {green ${urlID}}
   //   gameCommunities_id: {green ${gameCommunities_id}}
-  //   userCommunityID: {green ${userCommunityID}}
-  //   userCommunities_id: {green ${userCommunities_id}}
     
   //   page: {green ${page}}
   //   count: {green ${count}}
@@ -346,17 +318,14 @@ const Component = (props) => {
   const componentsArr = [];
   
   
-  for (let forumThreads_id of arr.values()) {
+  for (let recruitmentThreads_id of arr.values()) {
     
     componentsArr.push(
       <Thread
-        key={forumThreads_id}
+        key={recruitmentThreads_id}
         urlID={urlID}
         gameCommunities_id={gameCommunities_id}
-        userCommunityID={userCommunityID}
-        userCommunities_id={userCommunities_id}
-        forumThreads_id={forumThreads_id}
-        enableAnonymity={enableAnonymity}
+        recruitmentThreads_id={recruitmentThreads_id}
       />
     );
     
@@ -371,7 +340,7 @@ const Component = (props) => {
   
   return (
     <Element
-      name="forumThreads"
+      name="recruitmentThreads"
     >
       
       
@@ -383,13 +352,12 @@ const Component = (props) => {
       >
         
         <Panel
-          heading="スレッド投稿フォーム"
+          heading="募集投稿フォーム"
           defaultExpanded={false}
         >
           
           <FormThread
             gameCommunities_id={gameCommunities_id}
-            userCommunities_id={userCommunities_id}
             forumThreads_id=""
           />
           
@@ -400,7 +368,7 @@ const Component = (props) => {
       
       
       
-      {/* Forum */}
+      {/* Recruitment */}
       {componentsArr}
       
       
@@ -431,7 +399,7 @@ const Component = (props) => {
                 disabled={buttonDisabled}
               >
                 <IconDoubleArrow />
-                フォーラムトップに戻る
+                募集トップに戻る
               </Button>
             </Link>
             
@@ -461,7 +429,6 @@ const Component = (props) => {
               disabled={buttonDisabled}
               onChange={(page) => handleRead({
                 gameCommunities_id,
-                userCommunities_id,
                 page,
               })}
               pageSize={limit}
@@ -485,7 +452,6 @@ const Component = (props) => {
               value={limit}
               onChange={(eventObj) => handleRead({
                 gameCommunities_id,
-                userCommunities_id,
                 page: 1,
                 changeLimit: eventObj.target.value,
               })}
@@ -494,7 +460,7 @@ const Component = (props) => {
                   classes={{
                     input: classes.input
                   }}
-                  name="forum-threads-pagination"
+                  name="recruitment-threads-pagination"
                   id="outlined-rows-per-page"
                 />
               }

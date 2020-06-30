@@ -15,8 +15,13 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
+// import Link from 'next/link';
+// import Router from 'next/router';
 import { useIntl } from 'react-intl';
-import TextareaAutosize from 'react-autosize-textarea';
+// import { Element } from 'react-scroll';
+// import Pagination from 'rc-pagination';
+// import localeInfo from 'rc-pagination/lib/locale/ja_JP';
+// import Cookies from 'js-cookie';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -27,46 +32,45 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+// import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+
+
+// ---------------------------------------------
+//   Material UI / Icons
+// ---------------------------------------------
+
+import IconClose from '@material-ui/icons/Close';
+import IconSettings from '@material-ui/icons/Settings';
 
 
 // ---------------------------------------------
 //   States
 // ---------------------------------------------
 
-import { ContainerStateLayout } from 'app/@states/layout.js';
+import { ContainerStateUser } from 'app/@states/user.js';
 import { ContainerStateGc } from 'app/@states/gc.js';
-
-
-// ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-import { fetchWrapper } from 'app/@modules/fetch.js';
-import { CustomError } from 'app/@modules/error/custom.js';
-import { getCookie } from 'app/@modules/cookie.js';
-
-
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-import { validationForumThreadsName } from 'app/@database/forum-threads/validations/name.js';
-import { validationForumThreadsComment } from 'app/@database/forum-threads/validations/comment.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js';
+import FormSelect from 'app/common/id/components/form-select.js';
+import FormEdit from 'app/common/id/components/form-edit.js';
+import FormRegister from 'app/common/id/components/form-register.js';
 
 
 
@@ -89,11 +93,8 @@ const Component = (props) => {
   
   const {
     
-    gameCommunities_id,
-    userCommunities_id,
-    forumThreads_id,
-    
-    setShowForm,
+    idsArr,
+    setIDsArr,
     
   } = props;
   
@@ -107,38 +108,13 @@ const Component = (props) => {
   const intl = useIntl();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
-  const [name, setName] = useState('');
-  const [comment, setComment] = useState('');
-  const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
-    
-    _id: '',
-    createdDate: '',
-    updatedDate: '',
-    users_id: '',
-    type: 'forum',
-    arr: [],
-    
-  });
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [formType, setFormType] = useState('select');
   
   
   useEffect(() => {
     
-    
-    // --------------------------------------------------
-    //   Button Enable
-    // --------------------------------------------------
-    
     setButtonDisabled(false);
-    
-    
-    // --------------------------------------------------
-    //   編集用データを読み込む
-    // --------------------------------------------------
-    
-    if (forumThreads_id) {
-      handleGetEditData({ forumThreads_id });
-    }
-    
     
   }, []);
   
@@ -149,28 +125,16 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
   
-  const stateLayout = ContainerStateLayout.useContainer();
-  const stateGc = ContainerStateGc.useContainer();
+  // const stateUser = ContainerStateUser.useContainer();
+  // const stateGc = ContainerStateGc.useContainer();
   
-  const {
-    
-    handleSnackbarOpen,
-    // handleDialogOpen,
-    handleLoadingOpen,
-    handleLoadingClose,
-    handleScrollTo,
-    
-  } = stateLayout;
+  // const { login } = stateUser;
   
-  const {
+  // const {
     
-    setGameCommunityObj,
-    setForumThreadsForListObj,
-    setForumThreadsObj,
-    setForumCommentsObj,
-    setForumRepliesObj,
+  //   recruitmentThreadsObj,
     
-  } = stateGc;
+  // } = stateGc;
   
   
   
@@ -181,9 +145,9 @@ const Component = (props) => {
   
   /**
    * 編集用データを読み込む
-   * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
+   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドのID
    */
-  const handleGetEditData = async ({ forumThreads_id }) => {
+  const handleGetEditData = async ({ recruitmentThreads_id }) => {
     
     
     try {
@@ -341,15 +305,13 @@ const Component = (props) => {
    * スレッド作成・編集フォームを送信する
    * @param {Object} eventObj - イベント
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
-   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
-   * @param {string} forumThreads_id - DB forum-threads _id / 編集するスレッドのID
+   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / 編集するスレッドのID
    */
   const handleSubmit = async ({
     
     eventObj,
     gameCommunities_id,
-    userCommunities_id,
-    forumThreads_id,
+    recruitmentThreads_id,
     
   }) => {
     
@@ -678,20 +640,51 @@ const Component = (props) => {
   
   
   
+  // const {
+    
+  //   dataObj,
+  //   handleEdit,
+  //   handleDialogOpen,
+    
+  // } = storeIDForm;
+  
+  
+  
+  
   // --------------------------------------------------
-  //   Validations
+  //   フォームを切り替える
   // --------------------------------------------------
   
-  const validationForumThreadsNameObj = validationForumThreadsName({ value: name });
+  let component = '';
   
-  
-  
-  
-  // --------------------------------------------------
-  //   Limit
-  // --------------------------------------------------
-  
-  const limit = parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_IMAGES_AND_VIDEOS_LIMIT, 10);
+  if (formType === 'select') {
+    
+    // component =
+    //   <FormSelect
+    //     idsArr={idsArr}
+    //     setIDsArr={setIDsArr}
+    //   />
+    // ;
+    
+  } else if (formType === 'edit') {
+    
+    // component =
+    //   <FormEdit
+    //     idsArr={idsArr}
+    //     setIDsArr={setIDsArr}
+    //     additionalGameLimit={1}
+    //   />
+    // ;
+    
+  } else {
+    
+    // component =
+    //   <FormRegister
+    //     additionalGameLimit={1}
+    //   />
+    // ;
+    
+  }
   
   
   
@@ -702,23 +695,17 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/forum/v2/components/form-thread.js
-  // `);
-  
-  // console.log(`
-  //   ----- imagesAndVideosObj -----\n
-  //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- validationForumThreadsNameObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(validationForumThreadsNameObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
+  //   /app/common/id/v2/components/form.js
   // `);
   
   // console.log(chalk`
-  //   forumThreads_id: {green ${forumThreads_id}}
+  //   _id: {green ${_id}}
+  // `);
+  
+  // console.log(`
+  //   ----- idsArr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
+  //   --------------------\n
   // `);
   
   
@@ -729,160 +716,124 @@ const Component = (props) => {
   // --------------------------------------------------
   
   return (
-    <form
-      css={css`
-        padding: 0 0 8px;
-      `}
-      name={`form-${forumThreads_id}`}
-      onSubmit={(eventObj) => handleSubmit({
-        eventObj,
-        gameCommunities_id,
-        userCommunities_id,
-        forumThreads_id,
-      })}
-    >
+    <React.Fragment>
       
       
-      {!forumThreads_id &&
-        <p
-          css={css`
-            margin: 0 0 14px 0;
-          `}
-        >
-          スレッドを新しく投稿する場合、こちらのフォームを利用して投稿してください。ログインして投稿するとスレッドをいつでも編集できるようになります。
-        </p>
-      }
+      {/* ダイアログ表示ボタン */}
+      <Button
+        variant="outlined"
+        color="primary"
+        disabled={buttonDisabled}
+        startIcon={<IconSettings />}
+        onClick={() => setDialogOpen(true)}
+      >
+        IDを登録・編集する
+      </Button>
       
       
       
       
-      {/* Name */}
-      <TextField
-        css={css`
-          && {
-            width: 100%;
-            max-width: 500px;
-            ${forumThreads_id && `margin-top: 4px;`}
-          }
-        `}
-        id="createTreadName"
-        label="スレッド名"
-        value={validationForumThreadsNameObj.value}
-        onChange={(eventObj) => setName(eventObj.target.value)}
-        error={validationForumThreadsNameObj.error}
-        helperText={intl.formatMessage({ id: validationForumThreadsNameObj.messageID }, { numberOfCharacters: validationForumThreadsNameObj.numberOfCharacters })}
-        margin="normal"
-        inputProps={{
-          maxLength: 100,
-        }}
-      />
-      
-      
-      
-      
-      {/* Comment */}
-      <div
-        css={css`
-          margin: 12px 0 0 0;
-        `}
+      {/* ダイアログ - ID選択＆登録フォーム */}
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        fullScreen
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
       >
         
-        <TextareaAutosize
+        
+        {/* 上部メニュー */}
+        <AppBar>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              onClick={() => setDialogOpen(false)}
+              aria-label="Close"
+            >
+              <IconClose />
+            </IconButton>
+            <Typography variant="h6" color="inherit" >
+              ID 入力フォーム
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        
+        
+        
+        
+        {/* ボタン */}
+        <div
           css={css`
-            && {
-              width: 100%;
-              border-radius: 4px;
-              box-sizing: border-box;
-              padding: 8px 12px;
-              line-height: 1.8;
-              
-              &:focus {
-                outline: 1px #A9F5F2 solid;
-              }
-              
-              resize: none;
+            margin: 88px 0 0 12px;
+            
+            @media screen and (max-width: 480px) {
+              margin: 76px 0 0 12px;
             }
           `}
-          rows={5}
-          placeholder="スレッドについての説明、書き込みルールなどがあれば、こちらに記述してください。"
-          value={comment}
-          onChange={(eventObj) => setComment(eventObj.target.value)}
-          maxLength={3000}
-          disabled={buttonDisabled}
-        />
-        
-      </div>
-      
-      
-      
-      
-      {/* Form Images & Videos */}
-      <div
-        css={css`
-          margin: 12px 0 0 0;
-        `}
-      >
-        
-        <FormImageAndVideo
-          type="forum"
-          descriptionImage="スレッドに表示する画像をアップロードできます。"
-          descriptionVideo="スレッドに表示する動画を登録できます。"
-          showImageCaption={true}
-          limit={limit}
-          imagesAndVideosObj={imagesAndVideosObj}
-          setImagesAndVideosObj={setImagesAndVideosObj}
-        />
-        
-      </div>
-      
-      
-      
-      
-      {/* Buttons */}
-      <div
-        css={css`
-          display: flex;
-          flex-flow: row nowrap;
-          margin: 36px 0 0 0;
-        `}
-      >
-        
-        
-        {/* Submit */}
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={buttonDisabled}
         >
-          {forumThreads_id ? 'スレッドを編集する' : 'スレッドを作成する'}
-        </Button>
-        
-        
-        
-        
-        {/* Close */}
-        {forumThreads_id &&
-          <div
-            css={css`
-              margin: 0 0 0 auto;
-            `}
+          
+          <ButtonGroup
+            color="primary"
+            aria-label="outlined primary button group"
           >
+            
             <Button
-              variant="outlined"
-              color="secondary"
               disabled={buttonDisabled}
-              onClick={() => setShowForm(false)}
+              onClick={() => setFormType('select')}
             >
-              閉じる
+              <span
+                css={css`
+                  font-weight: ${formType === 'select' ? 'bold' : 'normal' };
+                `}
+              >
+                選択
+              </span>
             </Button>
-          </div>
-        }
+            
+            
+            <Button
+              disabled={buttonDisabled}
+              onClick={() => setFormType('edit')}
+            >
+              <span
+                css={css`
+                  font-weight: ${formType === 'edit' ? 'bold' : 'normal' };
+                `}
+              >
+                編集
+              </span>
+            </Button>
+            
+            
+            <Button
+              disabled={buttonDisabled}
+              onClick={() => setFormType('register')}
+            >
+              <span
+                css={css`
+                  font-weight: ${formType === 'register' ? 'bold' : 'normal' };
+                `}
+              >
+                登録
+              </span>
+            </Button>
+            
+          </ButtonGroup>
+          
+        </div>
         
-      </div>
+        
+        
+        
+        {/* コンテンツ */}
+        {component}
+        
+        
+      </Dialog>
       
       
-    </form>
+    </React.Fragment>
   );
   
   

@@ -517,7 +517,6 @@ const findCommentsAndReplies = async ({
                     { $and:
                       [
                         { $eq: ['$_id', '$$letWebPushes_id'] },
-                        // { $eq: ['$available', true] },
                         { $lt: ['$errorCount', errorLimit] },
                       ]
                     },
@@ -527,7 +526,6 @@ const findCommentsAndReplies = async ({
                 { $project:
                   {
                     _id: 1,
-                    // available: 1,
                     users_id: 1,
                     subscriptionObj: 1,
                     sendTodayCount: 1,
@@ -1085,7 +1083,9 @@ const findCommentsAndReplies = async ({
       arr: resultArr,
       recruitmentThreadsObj,
       commentPage,
+      commentLimit: intCommentLimit,
       replyPage,
+      replyLimit: intReplyLimit,
       
     });
     

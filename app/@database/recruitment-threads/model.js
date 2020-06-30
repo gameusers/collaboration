@@ -345,7 +345,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
- * @param {Array} threads_idsArr - DB recruitment-threads _id / スレッドID（threads_idsArr という名前に変更しているのは、下の方に recruitmentThreads_idsArr が存在しているから）
+ * @param {Array} recruitmentThreads_idsArr - DB recruitment-threads _id / スレッドID
  * @param {number} threadPage - スレッドのページ
  * @param {number} threadLimit - スレッドのリミット
  * @param {number} commentPage - コメントのページ
@@ -375,18 +375,10 @@ const findRecruitments = async ({
     
     
     // --------------------------------------------------
-    //   Language & Country
-    // --------------------------------------------------
-    
-    // const language = lodashGet(localeObj, ['language'], '');
-    // const country = lodashGet(localeObj, ['country'], '');
-    
-    
-    // --------------------------------------------------
     //   Parse
     // --------------------------------------------------
     
-    // const intThreadLimit = parseInt(threadLimit, 10);
+    const intThreadLimit = parseInt(threadLimit, 10);
     const intCommentLimit = parseInt(commentLimit, 10);
     const intReplyLimit = parseInt(replyLimit, 10);
     
@@ -440,7 +432,7 @@ const findRecruitments = async ({
       loginUsers_id,
       matchConditionArr,
       threadPage,
-      threadLimit,
+      // threadLimit,
       
     });
     
@@ -458,7 +450,7 @@ const findRecruitments = async ({
       loginUsers_id,
       arr: docArr,
       threadPage,
-      // threadCount,
+      threadLimit: intThreadLimit,
       
     });
     
@@ -734,6 +726,7 @@ const findRecruitmentByRecruitmentID = async ({
       loginUsers_id,
       arr: docArr,
       threadPage: 1,
+      threadLimit: 1,
       
     });
     
@@ -990,6 +983,7 @@ const findRecruitmentsForSearch = async ({
     //   Parse
     // --------------------------------------------------
     
+    const intThreadLimit = parseInt(threadLimit, 10);
     const intCommentLimit = parseInt(commentLimit, 10);
     const intReplyLimit = parseInt(replyLimit, 10);
     
@@ -1158,6 +1152,7 @@ const findRecruitmentsForSearch = async ({
         loginUsers_id,
         arr: docArr,
         threadPage,
+        threadLimit: intThreadLimit,
         
       });
       

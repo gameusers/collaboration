@@ -33,9 +33,9 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import IconButton from '@material-ui/core/IconButton';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
 
 
 // ---------------------------------------------
@@ -160,7 +160,7 @@ const Component = (props) => {
   // --------------------------------------------------
   
   return (
-    <ExpansionPanel
+    <Accordion
       css={css`
         margin: 0 !important;
       `}
@@ -170,7 +170,7 @@ const Component = (props) => {
       
       
       {/* Heading */}
-      <ExpansionPanelSummary
+      <AccordionSummary
         css={css`
           cursor: default !important;
         `}
@@ -215,13 +215,13 @@ const Component = (props) => {
         </div>
         
         
-      </ExpansionPanelSummary>
+      </AccordionSummary>
       
       
       
       
       {/* Contents */}
-      <ExpansionPanelDetails
+      <AccordionDetails
         css={css`
           display: flex;
           flex-flow: column wrap;
@@ -233,10 +233,10 @@ const Component = (props) => {
         {props.children}
         
         
-      </ExpansionPanelDetails>
+      </AccordionDetails>
       
       
-    </ExpansionPanel>
+    </Accordion>
   );
   
   

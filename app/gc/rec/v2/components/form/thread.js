@@ -163,7 +163,7 @@ const Component = (props) => {
     
   });
   
-  const [idsArr, setIDsArr] = useState([]);
+  const [ids_idsArr, setIDs_idsArr] = useState([]);
   const [platform1, setPlatform1] = useState('');
   const [platform2, setPlatform2] = useState('');
   const [platform3, setPlatform3] = useState('');
@@ -904,7 +904,6 @@ const Component = (props) => {
                 }
               `}
               labelId="categoryLabel"
-              // id={`${elementName}-category`}
               value={category}
               onChange={(eventObj) => setCategory(eventObj.target.value)}
               displayEmpty
@@ -935,7 +934,6 @@ const Component = (props) => {
                 ${recruitmentThreads_id && `margin-top: 4px;`}
               }
             `}
-            // id={`${elementName}-threadTitle`}
             label="募集タイトル"
             value={validationRecruitmentThreadsTitleObj.value}
             onChange={(eventObj) => setTitle(eventObj.target.value)}
@@ -960,7 +958,6 @@ const Component = (props) => {
                   ${recruitmentThreads_id && `margin-top: 4px;`}
                 }
               `}
-              // id={`${elementName}-name`}
               label="ハンドルネーム"
               value={validationRecruitmentThreadsNameObj.value}
               onChange={(eventObj) => setName(eventObj.target.value)}
@@ -1045,8 +1042,8 @@ const Component = (props) => {
             gameCommunities_id={gameCommunities_id}
             recruitmentThreads_id={recruitmentThreads_id}
             
-            idsArr={idsArr}
-            setIDsArr={setIDsArr}
+            ids_idsArr={ids_idsArr}
+            setIDs_idsArr={setIDs_idsArr}
             
             platform1={platform1}
             setPlatform1={setPlatform1}
@@ -1087,23 +1084,6 @@ const Component = (props) => {
             publicSetting={publicSetting}
             setPublicSetting={setPublicSetting}
           />
-          
-          {/*const [platform1, setPlatform1] = useState('');
-          const [platform2, setPlatform2] = useState('');
-          const [platform3, setPlatform3] = useState('');
-          const [id1, setID1] = useState('');
-          const [id2, setID2] = useState('');
-          const [id3, setID3] = useState('');
-          const [informationTitle1, setInformationTitle1] = useState('');
-          const [informationTitle2, setInformationTitle2] = useState('');
-          const [informationTitle3, setInformationTitle3] = useState('');
-          const [informationTitle4, setInformationTitle4] = useState('');
-          const [informationTitle5, setInformationTitle5] = useState('');
-          const [information1, setInformation1] = useState('');
-          const [information2, setInformation2] = useState('');
-          const [information3, setInformation3] = useState('');
-          const [information4, setInformation4] = useState('');
-          const [information5, setInformation5] = useState('');*/}
           
         </div>
         

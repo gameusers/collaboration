@@ -32,7 +32,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-// import lodashCloneDeep from 'lodash/cloneDeep';
+import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
@@ -65,11 +65,20 @@ import { ContainerStateGc } from 'app/@states/gc.js';
 
 
 // ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { CustomError } from 'app/@modules/error/custom.js';
+import { getCookie } from 'app/@modules/cookie.js';
+
+
+// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import FormSelect from 'app/common/id/components/form-select.js';
-import FormEdit from 'app/common/id/components/form-edit.js';
+import FormSelect from 'app/common/id/v2/components/form-select.js';
+import FormEdit from 'app/common/id/v2/components/form-edit.js';
 import FormRegister from 'app/common/id/components/form-register.js';
 
 
@@ -93,8 +102,8 @@ const Component = (props) => {
   
   const {
     
-    idsArr,
-    setIDsArr,
+    ids_idsArr,
+    setIDs_idsArr,
     
   } = props;
   
@@ -108,6 +117,9 @@ const Component = (props) => {
   const intl = useIntl();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
+  const [dataArr, setDataArr] = useState([]);
+  const [selectedArr, setSelectedArr] = useState([]);
+  const [unselectedArr, setUnselectedArr] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [formType, setFormType] = useState('select');
   
@@ -144,124 +156,184 @@ const Component = (props) => {
   // --------------------------------------------------
   
   /**
-   * 編集用データを読み込む
-   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドのID
+   * フォーム（ダイアログ）を開く
+   * Fetchでユーザーが登録しているIDをすべて取得する
+   * @param {Array} ids_idsArr - 選択されているIDが入っている配列
    */
-  const handleGetEditData = async ({ recruitmentThreads_id }) => {
+  const handleDialogOpen = async () => {
     
     
     try {
       
       
-      // ---------------------------------------------
-      //   forumThreads_id が存在しない場合エラー
-      // ---------------------------------------------
+      // --------------------------------------------------
+      //   フォームに表示するデータがすでに読み込まれている場合
+      //   ダイアログをすぐに表示する
+      // --------------------------------------------------
       
-      if (!forumThreads_id) {
-        throw new CustomError({ errorsArr: [{ code: '5bsoal_-V', messageID: 'Error' }] });
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Loading Open
-      // ---------------------------------------------
-      
-      handleLoadingOpen({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      setButtonDisabled(true);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
-      
-      const formDataObj = {
+      if (dataArr.length > 0) {
         
-        forumThreads_id,
+        setDialogOpen(true);
         
-      };
-      
-      
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
-      
-      const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/get-edit-data`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
+      // --------------------------------------------------
+      //   フォームに表示するデータがまだ読み込まれていない場合
+      //   Fetch でデータを取得してからフォームを表示する
+      // --------------------------------------------------
+      
+      } else {
         
-      });
-      
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Set Form Data
-      // ---------------------------------------------
-      
-      const name = lodashGet(resultObj, ['data', 'name'], '');
-      const comment = lodashGet(resultObj, ['data', 'comment'], '');
-      let imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
-      
-      if (Object.keys(imagesAndVideosObj).length === 0) {
         
-        imagesAndVideosObj = {
+        // --------------------------------------------------
+        //   Button Disable
+        // --------------------------------------------------
+        
+        setButtonDisabled(true);
+        
+        
+        
+        
+        // --------------------------------------------------
+        //   FormData
+        // --------------------------------------------------
+        
+        const formDataObj = {};
+        
+        
+        // --------------------------------------------------
+        //   Fetch
+        // --------------------------------------------------
+        
+        const resultObj = await fetchWrapper({
           
-          _id: '',
-          createdDate: '',
-          updatedDate: '',
-          users_id: '',
-          type: 'forum',
-          arr: [],
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/ids/read-edit-form`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj),
           
-        };
+        });
         
+        
+        // --------------------------------------------------
+        //   Error
+        // --------------------------------------------------
+        
+        if ('errorsArr' in resultObj) {
+          throw new CustomError({ errorsArr: resultObj.errorsArr });
+        }
+        
+        
+        
+        
+        // --------------------------------------------------
+        //   Data
+        // --------------------------------------------------
+        
+        const fetchDataArr = lodashGet(resultObj, ['data'], []);
+        
+        
+        
+        
+        // --------------------------------------------------
+        //   選択IDの配列を作成する
+        // --------------------------------------------------
+        
+        for (let valueObj of ids_idsArr.values()) {
+          
+          // 存在するIDかチェックする（すでに削除されている可能性があるため）
+          const index = fetchDataArr.findIndex((value2Obj) => {
+            return value2Obj._id === valueObj._id;
+          });
+          
+          if (index !== -1) {
+            selectedArr.push(valueObj._id);
+          }
+          
+        }
+        
+        
+        // --------------------------------------------------
+        //   未選択IDの配列を作成する
+        // --------------------------------------------------
+        
+        for (let valueObj of fetchDataArr.values()) {
+          
+          // 選択IDに含まれていない場合、配列に追加
+          const index = ids_idsArr.findIndex((value2Obj) => {
+            return value2Obj._id === valueObj._id;
+          });
+          
+          if (index === -1) {
+            unselectedArr.push(valueObj._id);
+          }
+          
+        }
+        
+        
+        
+        
+        // --------------------------------------------------
+        //   更新
+        // --------------------------------------------------
+        
+        setDataArr(fetchDataArr);
+        setSelectedArr(lodashCloneDeep(selectedArr));
+        setUnselectedArr(lodashCloneDeep(unselectedArr));
+        
+        
+        
+        
+        // --------------------------------------------------
+        //   ダイアログ表示
+        // --------------------------------------------------
+        
+        setDialogOpen(true);
+        
+        
+        
+        // --------------------------------------------------
+        //   console.log
+        // --------------------------------------------------
+        
+        // console.log(`
+        //   ----------------------------------------\n
+        //   /app/common/id/v2/components/form.js - handleDialogOpen
+        // `);
+        
+        // console.log(`
+        //   ----- fetchDataArr -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(fetchDataArr)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        // console.log(`
+        //   ----- ids_idsArr -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        // console.log(`
+        //   ----- dataArr -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(dataArr)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        // console.log(`
+        //   ----- selectedArr -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(selectedArr)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        // console.log(`
+        //   ----- unselectedArr -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(unselectedArr)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+         
       }
-      
-      setName(name);
-      setComment(comment);
-      setImagesAndVideosObj(imagesAndVideosObj);
       
       
     } catch (errorObj) {
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
-      
       
     } finally {
       
@@ -273,380 +345,10 @@ const Component = (props) => {
       setButtonDisabled(false);
       
       
-      // ---------------------------------------------
-      //   Loading Close
-      // ---------------------------------------------
-      
-      handleLoadingClose();
-      
-      
-      // ---------------------------------------------
-      //   Scroll To
-      // ---------------------------------------------
-      
-      handleScrollTo({
-        
-        to: forumThreads_id,
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
-        
-      });
-      
-      
     }
     
     
   };
-  
-  
-  /**
-   * スレッド作成・編集フォームを送信する
-   * @param {Object} eventObj - イベント
-   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
-   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / 編集するスレッドのID
-   */
-  const handleSubmit = async ({
-    
-    eventObj,
-    gameCommunities_id,
-    recruitmentThreads_id,
-    
-  }) => {
-    
-    
-    // ---------------------------------------------
-    //   フォームの送信処理停止
-    // ---------------------------------------------
-    
-    eventObj.preventDefault();
-    
-    
-    
-    // ---------------------------------------------
-    //   新規投稿時の forumThreads_id
-    // ---------------------------------------------
-    
-    let newForumThreads_id = '';
-    
-    
-    
-    
-    try {
-      
-      
-      // ---------------------------------------------
-      //   Property
-      // ---------------------------------------------
-      
-      const threadListLimit = parseInt((getCookie({ key: 'forumThreadListLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIST_LIMIT), 10);
-      const threadLimit = parseInt((getCookie({ key: 'forumThreadLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT), 10);
-      const commentLimit = parseInt((getCookie({ key: 'forumCommentLimit' }) || process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT), 10);
-      const replyLimit = parseInt((getCookie({ key: 'forumReplyLimit' }) || process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT), 10);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   _id が存在しない場合エラー
-      // ---------------------------------------------
-      
-      if (!gameCommunities_id && !userCommunities_id) {
-        throw new CustomError({ errorsArr: [{ code: '8319EqfHo', messageID: '1YJnibkmh' }] });
-      }
-      
-      
-      // ---------------------------------------------
-      //   Validation
-      // ---------------------------------------------
-      
-      // const validationHandleNameObj = validationForumThreadsName({ value: name });
-      // const validationForumThreadsCommentObj = validationForumThreadsComment({ value: comment });
-      
-      
-      // ---------------------------------------------
-      //   Validation Error
-      // ---------------------------------------------
-      
-      if (
-        
-        validationForumThreadsName({ value: name }).error ||
-        validationForumThreadsComment({ value: comment }).error
-        
-      ) {
-        
-        throw new CustomError({ errorsArr: [{ code: '3NtQODEsb', messageID: 'uwHIKBy7c' }] });
-        
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Loading Open
-      // ---------------------------------------------
-      
-      handleLoadingOpen({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      setButtonDisabled(true);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   console.log
-      // ---------------------------------------------
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/form-thread.js - handleSubmit
-      // `);
-      
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id}}
-      //   forumThreads_id: {green ${forumThreads_id}}
-      //   name: {green ${name}}
-      //   comment: {green ${comment}}
-      // `);
-      
-      // console.log(`
-      //   ----- imagesAndVideosObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // return;
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
-      
-      const formDataObj = {
-        
-        gameCommunities_id,
-        userCommunities_id,
-        forumThreads_id,
-        name,
-        comment,
-        threadListLimit,
-        threadLimit,
-        commentLimit,
-        replyLimit,
-        
-      };
-      
-      if (imagesAndVideosObj.arr.length !== 0) {
-        formDataObj.imagesAndVideosObj = imagesAndVideosObj;
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
-      
-      let resultObj = {};
-      
-      if (gameCommunities_id) {
-        
-        resultObj = await fetchWrapper({
-          
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/upsert-gc`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-          
-        });
-        
-      } else {
-        
-        resultObj = await fetchWrapper({
-          
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/upsert-uc`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-          
-        });
-        
-      }
-      
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   gameCommunityObj
-      // --------------------------------------------------
-      
-      setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
-      
-      
-      // ---------------------------------------------
-      //   forumThreadsForListObj
-      // ---------------------------------------------
-      
-      setForumThreadsForListObj(lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {}));
-      
-      
-      // ---------------------------------------------
-      //   forumThreadsObj
-      // ---------------------------------------------
-      
-      setForumThreadsObj(lodashGet(resultObj, ['data', 'forumThreadsObj'], {}));
-      
-      
-      // ---------------------------------------------
-      //   forumCommentsObj
-      // ---------------------------------------------
-      
-      setForumCommentsObj(lodashGet(resultObj, ['data', 'forumCommentsObj'], {}));
-      
-      
-      // ---------------------------------------------
-      //   forumRepliesObj
-      // ---------------------------------------------
-      
-      setForumRepliesObj(lodashGet(resultObj, ['data', 'forumRepliesObj'], {}));
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Close Form & Reset Form
-      // ---------------------------------------------
-      
-      if (forumThreads_id) {
-        
-        setShowForm(false);
-        
-      } else {
-        
-        setName('');
-        setComment('');
-        setImagesAndVideosObj({
-          
-          _id: '',
-          createdDate: '',
-          updatedDate: '',
-          users_id: '',
-          type: 'forum',
-          arr: [],
-          
-        });
-        
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   新規投稿時の forumThreads_id
-      // ---------------------------------------------
-      
-      newForumThreads_id = lodashGet(resultObj, ['data', 'forumThreadsObj', 'page1Obj', 'arr', 0], '');
-      
-      // console.log(chalk`
-      //   forumThreads_id: {green ${forumThreads_id}}
-      // `);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Success
-      // ---------------------------------------------
-      
-      handleSnackbarOpen({
-        variant: 'success',
-        messageID: forumThreads_id ? 'HINAkcSmJ' : 'pInPmleQh',
-      });
-      
-      
-    } catch (errorObj) {
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
-      
-      
-    } finally {
-      
-      
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      setButtonDisabled(false);
-      
-      
-      // ---------------------------------------------
-      //   Loading Close
-      // ---------------------------------------------
-      
-      handleLoadingClose();
-      
-      
-      // ---------------------------------------------
-      //   Scroll To
-      // ---------------------------------------------
-      
-      handleScrollTo({
-        
-        to: forumThreads_id || newForumThreads_id || 'forumThreads',
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
-        
-      });
-      
-      
-    }
-    
-    
-  };
-  
-  
-  
-  
-  // const {
-    
-  //   dataObj,
-  //   handleEdit,
-  //   handleDialogOpen,
-    
-  // } = storeIDForm;
   
   
   
@@ -659,22 +361,33 @@ const Component = (props) => {
   
   if (formType === 'select') {
     
-    // component =
-    //   <FormSelect
-    //     idsArr={idsArr}
-    //     setIDsArr={setIDsArr}
-    //   />
-    // ;
+    component =
+      <FormSelect
+        dataArr={dataArr}
+        selectedArr={selectedArr}
+        setSelectedArr={setSelectedArr}
+        unselectedArr={unselectedArr}
+        setUnselectedArr={setUnselectedArr}
+        ids_idsArr={ids_idsArr}
+        setIDs_idsArr={setIDs_idsArr}
+        setDialogOpen={setDialogOpen}
+      />
+    ;
     
   } else if (formType === 'edit') {
     
-    // component =
-    //   <FormEdit
-    //     idsArr={idsArr}
-    //     setIDsArr={setIDsArr}
-    //     additionalGameLimit={1}
-    //   />
-    // ;
+    component =
+      <FormEdit
+        dataArr={dataArr}
+        selectedArr={selectedArr}
+        setSelectedArr={setSelectedArr}
+        unselectedArr={unselectedArr}
+        setUnselectedArr={setUnselectedArr}
+        ids_idsArr={ids_idsArr}
+        setIDs_idsArr={setIDs_idsArr}
+        gamesLimit={1}
+      />
+    ;
     
   } else {
     
@@ -703,8 +416,8 @@ const Component = (props) => {
   // `);
   
   // console.log(`
-  //   ----- idsArr -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
+  //   ----- ids_idsArr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
   
@@ -725,7 +438,7 @@ const Component = (props) => {
         color="primary"
         disabled={buttonDisabled}
         startIcon={<IconSettings />}
-        onClick={() => setDialogOpen(true)}
+        onClick={() => handleDialogOpen()}
       >
         IDを登録・編集する
       </Button>

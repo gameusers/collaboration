@@ -94,217 +94,217 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {Array} idsArr - 選択されているIDが入っている配列
    */
-  @action.bound
-  async handleDialogOpen({ pathArr, idsArr }) {
+  // @action.bound
+  // async handleDialogOpen({ pathArr, idsArr }) {
     
     
-    try {
+  //   try {
       
       
-      // --------------------------------------------------
-      //   編集フォームに表示するデータがすでに読み込まれている場合
-      //   編集フォームをすぐに表示する
-      // --------------------------------------------------
+  //     // --------------------------------------------------
+  //     //   編集フォームに表示するデータがすでに読み込まれている場合
+  //     //   編集フォームをすぐに表示する
+  //     // --------------------------------------------------
       
-      if (lodashHas(this.dataObj, [...pathArr, 'dataArr'])) {
+  //     if (lodashHas(this.dataObj, [...pathArr, 'dataArr'])) {
         
-        lodashSet(this.dataObj, [...pathArr, 'dialog'], true);
+  //       lodashSet(this.dataObj, [...pathArr, 'dialog'], true);
         
         
-      // --------------------------------------------------
-      //   編集フォームに表示するデータがまだ読み込まれていない場合
-      //   Fetch でデータを取得してから編集フォームを表示する
-      // --------------------------------------------------
+  //     // --------------------------------------------------
+  //     //   編集フォームに表示するデータがまだ読み込まれていない場合
+  //     //   Fetch でデータを取得してから編集フォームを表示する
+  //     // --------------------------------------------------
       
-      } else {
+  //     } else {
         
         
-        // --------------------------------------------------
-        //   Button Disable
-        // --------------------------------------------------
+  //       // --------------------------------------------------
+  //       //   Button Disable
+  //       // --------------------------------------------------
         
-        storeLayout.handleButtonDisable({ pathArr });
-        
-        
-        
-        
-        // --------------------------------------------------
-        //   FormData
-        // --------------------------------------------------
-        
-        const formDataObj = {};
-        
-        
-        // --------------------------------------------------
-        //   Fetch
-        // --------------------------------------------------
-        
-        const resultObj = await fetchWrapper({
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/ids/read-edit-form`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-        });
+  //       storeLayout.handleButtonDisable({ pathArr });
         
         
         
         
+  //       // --------------------------------------------------
+  //       //   FormData
+  //       // --------------------------------------------------
         
-        // --------------------------------------------------
-        //   Error
-        // --------------------------------------------------
-        
-        if ('errorsArr' in resultObj) {
-          throw new CustomError({ errorsArr: resultObj.errorsArr });
-        }
+  //       const formDataObj = {};
         
         
+  //       // --------------------------------------------------
+  //       //   Fetch
+  //       // --------------------------------------------------
+        
+  //       const resultObj = await fetchWrapper({
+  //         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/ids/read-edit-form`,
+  //         methodType: 'POST',
+  //         formData: JSON.stringify(formDataObj),
+  //       });
         
         
-        // --------------------------------------------------
-        //   Data 更新
-        // --------------------------------------------------
-        
-        const dataArr = lodashGet(resultObj, ['data'], []);
-        
-        const selectedArr = [];
-        const unselectedArr = [];
         
         
-        // ----------------------------------------
-        //   - 選択IDの配列を作成する
-        // ----------------------------------------
         
-        for (let valueObj of idsArr.values()) {
+  //       // --------------------------------------------------
+  //       //   Error
+  //       // --------------------------------------------------
+        
+  //       if ('errorsArr' in resultObj) {
+  //         throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //       }
+        
+        
+        
+        
+  //       // --------------------------------------------------
+  //       //   Data 更新
+  //       // --------------------------------------------------
+        
+  //       const dataArr = lodashGet(resultObj, ['data'], []);
+        
+  //       const selectedArr = [];
+  //       const unselectedArr = [];
+        
+        
+  //       // ----------------------------------------
+  //       //   - 選択IDの配列を作成する
+  //       // ----------------------------------------
+        
+  //       for (let valueObj of idsArr.values()) {
           
-          // 存在するIDかチェックする（すでに削除されている可能性があるため）
-          const index = dataArr.findIndex((value2Obj) => {
-            return value2Obj._id === valueObj._id;
-          });
+  //         // 存在するIDかチェックする（すでに削除されている可能性があるため）
+  //         const index = dataArr.findIndex((value2Obj) => {
+  //           return value2Obj._id === valueObj._id;
+  //         });
           
-          if (index !== -1) {
-            selectedArr.push(valueObj._id);
-          }
+  //         if (index !== -1) {
+  //           selectedArr.push(valueObj._id);
+  //         }
           
-        }
+  //       }
         
         
-        // ----------------------------------------
-        //   - 未選択IDの配列を作成する
-        // ----------------------------------------
+  //       // ----------------------------------------
+  //       //   - 未選択IDの配列を作成する
+  //       // ----------------------------------------
         
-        for (let valueObj of dataArr.values()) {
+  //       for (let valueObj of dataArr.values()) {
           
-          // 選択IDに含まれていない場合、配列に追加
-          const index = idsArr.findIndex((value2Obj) => {
-            return value2Obj._id === valueObj._id;
-          });
+  //         // 選択IDに含まれていない場合、配列に追加
+  //         const index = idsArr.findIndex((value2Obj) => {
+  //           return value2Obj._id === valueObj._id;
+  //         });
           
-          if (index === -1) {
-            unselectedArr.push(valueObj._id);
-          }
+  //         if (index === -1) {
+  //           unselectedArr.push(valueObj._id);
+  //         }
           
-        }
+  //       }
         
-        lodashSet(this.dataObj, [...pathArr, 'selectedArr'], selectedArr);
-        lodashSet(this.dataObj, [...pathArr, 'unselectedArr'], unselectedArr);
-        lodashSet(this.dataObj, [...pathArr, 'dataArr'], dataArr);
-        
-        
-        
-        
-        // --------------------------------------------------
-        //   編集フォーム表示
-        // --------------------------------------------------
-        
-        lodashSet(this.dataObj, [...pathArr, 'dialog'], true);
+  //       lodashSet(this.dataObj, [...pathArr, 'selectedArr'], selectedArr);
+  //       lodashSet(this.dataObj, [...pathArr, 'unselectedArr'], unselectedArr);
+  //       lodashSet(this.dataObj, [...pathArr, 'dataArr'], dataArr);
         
         
         
-        // --------------------------------------------------
-        //   console.log
-        // --------------------------------------------------
         
-        // console.log(`
-        //   ----------------------------------------\n
-        //   /app/common/id/stores/form.js - handleDialogOpen
-        // `);
+  //       // --------------------------------------------------
+  //       //   編集フォーム表示
+  //       // --------------------------------------------------
         
-        // console.log(`
-        //   ----- pathArr -----\n
-        //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-        
-        // console.log(chalk`
-        //   _id: {green ${_id}}
-        // `);
-        
-        // console.log(`
-        //   ----- idsArr -----\n
-        //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-        
-        // console.log(`
-        //   ----- selectedArr -----\n
-        //   ${util.inspect(JSON.parse(JSON.stringify(selectedArr)), { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-        
-        // console.log(`
-        //   ----- unselectedArr -----\n
-        //   ${util.inspect(JSON.parse(JSON.stringify(unselectedArr)), { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
+  //       lodashSet(this.dataObj, [...pathArr, 'dialog'], true);
         
         
-        // --------------------------------------------------
-        //   console.log
-        // --------------------------------------------------
         
-        // console.log(`
-        //   ----------------------------------------\n
-        //   /app/common/id/stores/form.js - handleDialogOpen
-        // `);
+  //       // --------------------------------------------------
+  //       //   console.log
+  //       // --------------------------------------------------
         
-        // console.log(`
-        //   ----- pathArr -----\n
-        //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
+  //       // console.log(`
+  //       //   ----------------------------------------\n
+  //       //   /app/common/id/stores/form.js - handleDialogOpen
+  //       // `);
         
-        // console.log(`
-        //   ----- dataArr -----\n
-        //   ${util.inspect(JSON.parse(JSON.stringify(dataArr)), { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
+  //       // console.log(`
+  //       //   ----- pathArr -----\n
+  //       //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //       //   --------------------\n
+  //       // `);
         
-        // console.log(`
-        //   ----- gamesArr -----\n
-        //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
+  //       // console.log(chalk`
+  //       //   _id: {green ${_id}}
+  //       // `);
+        
+  //       // console.log(`
+  //       //   ----- idsArr -----\n
+  //       //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
+  //       //   --------------------\n
+  //       // `);
+        
+  //       // console.log(`
+  //       //   ----- selectedArr -----\n
+  //       //   ${util.inspect(JSON.parse(JSON.stringify(selectedArr)), { colors: true, depth: null })}\n
+  //       //   --------------------\n
+  //       // `);
+        
+  //       // console.log(`
+  //       //   ----- unselectedArr -----\n
+  //       //   ${util.inspect(JSON.parse(JSON.stringify(unselectedArr)), { colors: true, depth: null })}\n
+  //       //   --------------------\n
+  //       // `);
+        
+        
+  //       // --------------------------------------------------
+  //       //   console.log
+  //       // --------------------------------------------------
+        
+  //       // console.log(`
+  //       //   ----------------------------------------\n
+  //       //   /app/common/id/stores/form.js - handleDialogOpen
+  //       // `);
+        
+  //       // console.log(`
+  //       //   ----- pathArr -----\n
+  //       //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //       //   --------------------\n
+  //       // `);
+        
+  //       // console.log(`
+  //       //   ----- dataArr -----\n
+  //       //   ${util.inspect(JSON.parse(JSON.stringify(dataArr)), { colors: true, depth: null })}\n
+  //       //   --------------------\n
+  //       // `);
+        
+  //       // console.log(`
+  //       //   ----- gamesArr -----\n
+  //       //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
+  //       //   --------------------\n
+  //       // `);
         
          
-      }
+  //     }
       
       
-    } catch (error) {
+  //   } catch (error) {
       
-    } finally {
-      
-      
-      // --------------------------------------------------
-      //   Button Enable
-      // --------------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
+  //   } finally {
       
       
-    }
+  //     // --------------------------------------------------
+  //     //   Button Enable
+  //     // --------------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //   }
     
     
-  };
+  // };
   
   
   
@@ -320,19 +320,19 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {number} index - 移動するIDの配列index
    */
-  @action.bound
-  handleMoveSelected({ pathArr, index }) {
+  // @action.bound
+  // handleMoveSelected({ pathArr, index }) {
     
-    const selectedArr = lodashGet(this.dataObj, [...pathArr, 'selectedArr'], []);
-    const unselectedArr = lodashGet(this.dataObj, [...pathArr, 'unselectedArr'], []);
+  //   const selectedArr = lodashGet(this.dataObj, [...pathArr, 'selectedArr'], []);
+  //   const unselectedArr = lodashGet(this.dataObj, [...pathArr, 'unselectedArr'], []);
     
-    unselectedArr.push(selectedArr[index]);
-    selectedArr.splice(index, 1);
+  //   unselectedArr.push(selectedArr[index]);
+  //   selectedArr.splice(index, 1);
     
-    lodashSet(this.dataObj, [...pathArr, 'unselectedArr'], unselectedArr);
-    lodashSet(this.dataObj, [...pathArr, 'selectedArr'], selectedArr);
+  //   lodashSet(this.dataObj, [...pathArr, 'unselectedArr'], unselectedArr);
+  //   lodashSet(this.dataObj, [...pathArr, 'selectedArr'], selectedArr);
     
-  };
+  // };
   
   
   /**
@@ -340,19 +340,19 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {number} index - 移動するIDの配列index
    */
-  @action.bound
-  handleMoveUnselected({ pathArr, index }) {
+  // @action.bound
+  // handleMoveUnselected({ pathArr, index }) {
     
-    const selectedArr = lodashGet(this.dataObj, [...pathArr, 'selectedArr'], []);
-    const unselectedArr = lodashGet(this.dataObj, [...pathArr, 'unselectedArr'], []);
+  //   const selectedArr = lodashGet(this.dataObj, [...pathArr, 'selectedArr'], []);
+  //   const unselectedArr = lodashGet(this.dataObj, [...pathArr, 'unselectedArr'], []);
     
-    selectedArr.push(unselectedArr[index]);
-    unselectedArr.splice(index, 1);
+  //   selectedArr.push(unselectedArr[index]);
+  //   unselectedArr.splice(index, 1);
     
-    lodashSet(this.dataObj, [...pathArr, 'selectedArr'], selectedArr);
-    lodashSet(this.dataObj, [...pathArr, 'unselectedArr'], unselectedArr);
+  //   lodashSet(this.dataObj, [...pathArr, 'selectedArr'], selectedArr);
+  //   lodashSet(this.dataObj, [...pathArr, 'unselectedArr'], unselectedArr);
     
-  };
+  // };
   
   
   
@@ -363,65 +363,65 @@ class Store {
    * @param {string} handleSetIDsArr - idsArr を設定する関数 / 親のコンポーネントから受け取る
    * @param {Array} idsArr - 選択されたIDの配列
    */
-  @action.bound
-  handleSelectButton({
+  // @action.bound
+  // handleSelectButton({
     
-    pathArr,
-    handleSetIDsArr,
-    idsArr,
+  //   pathArr,
+  //   handleSetIDsArr,
+  //   idsArr,
     
-  }) {
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/common/id/stores/form.js - handleSelectButton
-    // `);
-    
-    // console.log(`
-    //   ----- pathArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+  // }) {
     
     
-    // --------------------------------------------------
-    //   プレイヤーカードのフォーム
-    // --------------------------------------------------
+  //   // --------------------------------------------------
+  //   //   console.log
+  //   // --------------------------------------------------
     
-    // if (type === 'cardPlayerForm') {
+  //   // console.log(`
+  //   //   ----------------------------------------\n
+  //   //   /app/common/id/stores/form.js - handleSelectButton
+  //   // `);
+    
+  //   // console.log(`
+  //   //   ----- pathArr -----\n
+  //   //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
+    
+  //   // console.log(`
+  //   //   ----- idsArr -----\n
+  //   //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
+    
+    
+  //   // --------------------------------------------------
+  //   //   プレイヤーカードのフォーム
+  //   // --------------------------------------------------
+    
+  //   // if (type === 'cardPlayerForm') {
       
-    //   const clonedArr = lodashCloneDeep(idsArr);
-    //   lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'idsArr'], clonedArr);
+  //   //   const clonedArr = lodashCloneDeep(idsArr);
+  //   //   lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'idsArr'], clonedArr);
       
-    // }
+  //   // }
     
     
-    // --------------------------------------------------
-    //   受け取った関数を実行する / Set idsArr
-    // --------------------------------------------------
+  //   // --------------------------------------------------
+  //   //   受け取った関数を実行する / Set idsArr
+  //   // --------------------------------------------------
     
-    handleSetIDsArr({ pathArr, idsArr });
-    
-    
-    // --------------------------------------------------
-    //   ダイアログを閉じる
-    // --------------------------------------------------
-    
-    lodashSet(this.dataObj, [...pathArr, 'dialog'], false);
+  //   handleSetIDsArr({ pathArr, idsArr });
     
     
-  };
+  //   // --------------------------------------------------
+  //   //   ダイアログを閉じる
+  //   // --------------------------------------------------
+    
+  //   lodashSet(this.dataObj, [...pathArr, 'dialog'], false);
+    
+    
+  // };
   
   
   
@@ -438,96 +438,96 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {string} ids_id - DB IDs _id
    */
-  @action.bound
-  handleChangeEditID({ pathArr, ids_id }) {
+  // @action.bound
+  // handleChangeEditID({ pathArr, ids_id }) {
     
     
-    // --------------------------------------------------
-    //   データを取得する
-    // --------------------------------------------------
+  //   // --------------------------------------------------
+  //   //   データを取得する
+  //   // --------------------------------------------------
     
-    const dataArr = lodashGet(this.dataObj, [...pathArr, 'dataArr'], []);
+  //   const dataArr = lodashGet(this.dataObj, [...pathArr, 'dataArr'], []);
     
-    const resultObj = dataArr.find((valueObj) => {
-      return valueObj._id === ids_id;
-    });
-    
-    
-    // --------------------------------------------------
-    //   フォームのデータを変更する
-    // --------------------------------------------------
-    
-    lodashSet(this.dataObj, [...pathArr, '_id'], resultObj._id);
-    lodashSet(this.dataObj, [...pathArr, 'platform'], resultObj.platform);
-    lodashSet(this.dataObj, [...pathArr, 'label'], resultObj.label);
-    lodashSet(this.dataObj, [...pathArr, 'id'], resultObj.id);
-    lodashSet(this.dataObj, [...pathArr, 'publicSetting'], resultObj.publicSetting);
-    lodashSet(this.dataObj, [...pathArr, 'search'], resultObj.search);
+  //   const resultObj = dataArr.find((valueObj) => {
+  //     return valueObj._id === ids_id;
+  //   });
     
     
-    // --------------------------------------------------
-    //   ゲームフォームのゲームを変更する
-    // --------------------------------------------------
+  //   // --------------------------------------------------
+  //   //   フォームのデータを変更する
+  //   // --------------------------------------------------
     
-    const games_id = lodashGet(resultObj, ['gamesObj', '_id'], '');
-    const gameCommunities_id = lodashGet(resultObj, ['gamesObj', 'gameCommunities_id'], '');
-    const name = lodashGet(resultObj, ['gamesObj', 'name'], '');
-    const imagesAndVideosThumbnailObj = lodashGet(resultObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
-    
-    let gamesArr = [];
-    
-    if (games_id && gameCommunities_id && name) {
-      gamesArr = [{ _id: games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }];
-    }
-    
-    storeGameForm.handleSetGamesArr({ pathArr, gamesArr });
+  //   lodashSet(this.dataObj, [...pathArr, '_id'], resultObj._id);
+  //   lodashSet(this.dataObj, [...pathArr, 'platform'], resultObj.platform);
+  //   lodashSet(this.dataObj, [...pathArr, 'label'], resultObj.label);
+  //   lodashSet(this.dataObj, [...pathArr, 'id'], resultObj.id);
+  //   lodashSet(this.dataObj, [...pathArr, 'publicSetting'], resultObj.publicSetting);
+  //   lodashSet(this.dataObj, [...pathArr, 'search'], resultObj.search);
     
     
+  //   // --------------------------------------------------
+  //   //   ゲームフォームのゲームを変更する
+  //   // --------------------------------------------------
+    
+  //   const games_id = lodashGet(resultObj, ['gamesObj', '_id'], '');
+  //   const gameCommunities_id = lodashGet(resultObj, ['gamesObj', 'gameCommunities_id'], '');
+  //   const name = lodashGet(resultObj, ['gamesObj', 'name'], '');
+  //   const imagesAndVideosThumbnailObj = lodashGet(resultObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
+    
+  //   let gamesArr = [];
+    
+  //   if (games_id && gameCommunities_id && name) {
+  //     gamesArr = [{ _id: games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }];
+  //   }
+    
+  //   storeGameForm.handleSetGamesArr({ pathArr, gamesArr });
     
     
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/common/id/stores/form.js - handleChangeEditID
-    // `);
-    
-    // console.log(`
-    //   ----- pathArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- gamesArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   ids_id: {green ${ids_id}}
-    // `);
-    
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- this.dataObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----------------------------------------
-    // `);
     
     
-  };
+  //   // --------------------------------------------------
+  //   //   console.log
+  //   // --------------------------------------------------
+    
+  //   // console.log(`
+  //   //   ----------------------------------------\n
+  //   //   /app/common/id/stores/form.js - handleChangeEditID
+  //   // `);
+    
+  //   // console.log(`
+  //   //   ----- pathArr -----\n
+  //   //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
+    
+  //   // console.log(`
+  //   //   ----- gamesArr -----\n
+  //   //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
+    
+  //   // console.log(chalk`
+  //   //   ids_id: {green ${ids_id}}
+  //   // `);
+    
+  //   // console.log(`
+  //   //   ----- resultObj -----\n
+  //   //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
+    
+  //   // console.log(`
+  //   //   ----- this.dataObj -----\n
+  //   //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
+    
+  //   // console.log(`
+  //   //   ----------------------------------------
+  //   // `);
+    
+    
+  // };
   
   
   

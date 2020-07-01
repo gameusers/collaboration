@@ -73,14 +73,14 @@ const ContainerLayout = (props) => {
   //   States
   // --------------------------------------------------
   
-  const stateLayout = ContainerStateLayout.useContainer();
+  // const stateLayout = ContainerStateLayout.useContainer();
   const stateGc = ContainerStateGc.useContainer();
   
-  const {
+  // const {
     
-    handleScrollTo,
+  //   handleScrollTo,
     
-  } = stateLayout;
+  // } = stateLayout;
   
   const {
     
@@ -170,7 +170,6 @@ const ContainerLayout = (props) => {
   //   Component - Contents
   // --------------------------------------------------
   
-  // const componentContent = '';
   const componentContent =
     <React.Fragment>
       

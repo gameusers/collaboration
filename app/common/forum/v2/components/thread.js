@@ -43,9 +43,9 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Paper from '@material-ui/core/Paper';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -523,7 +523,7 @@ const Component = (props) => {
       
       
       {/* Panel */}
-      <ExpansionPanel
+      <Accordion
         css={css`
           margin: 0 0 16px 0 !important;
         `}
@@ -532,7 +532,7 @@ const Component = (props) => {
         
         
         {/* Summary */}
-        <ExpansionPanelSummary
+        <AccordionSummary
           css={css`
             && {
               cursor: default !important;
@@ -943,13 +943,13 @@ const Component = (props) => {
           }
           
           
-        </ExpansionPanelSummary>
+        </AccordionSummary>
         
         
         
         
         {/* Contents */}
-        <ExpansionPanelDetails
+        <AccordionDetails
           css={css`
             @media screen and (max-width: 480px) {
               padding: 0 16px 24px !important;
@@ -997,10 +997,10 @@ const Component = (props) => {
           </div>
           
           
-        </ExpansionPanelDetails>
+        </AccordionDetails>
         
         
-      </ExpansionPanel>
+      </Accordion>
       
       
     </Element>

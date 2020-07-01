@@ -14,7 +14,7 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import keycode from 'keycode';
 
@@ -27,21 +27,27 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-import lodashSet from 'lodash/set';
-import lodashHas from 'lodash/has';
 import lodashCloneDeep from 'lodash/cloneDeep';
-import lodashMerge from 'lodash/merge';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
+import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
-import Chip from '@material-ui/core/Chip';
+import Avatar from '@material-ui/core/Avatar';
+
+
+// ---------------------------------------------
+//   Material UI / Icons
+// ---------------------------------------------
+
+import IconGrade from '@material-ui/icons/Grade';
+import IconClose from '@material-ui/icons/Close';
 
 
 // ---------------------------------------------
@@ -75,6 +81,264 @@ import { validationKeyword } from 'app/@validations/keyword.js';
 // --------------------------------------------------
 
 /**
+ * Chip
+ */
+const Chip = (props) => {
+  
+  
+  // --------------------------------------------------
+  //   props
+  // --------------------------------------------------
+  
+  const {
+    
+    _id,
+    gameCommunities_id,
+    name,
+    imagesAndVideosThumbnailObj = {},
+    gamesArr,
+    setGamesArr,
+    
+  } = props;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Handler
+  // --------------------------------------------------
+  
+  /**
+   * ゲームを削除する
+   * @param {string} _id - ID
+   */
+  const handleRemove = ({ _id }) => {
+    
+    
+    // ---------------------------------------------
+    //   配列内に存在しているかチェック
+    // ---------------------------------------------
+    
+    const index = gamesArr.findIndex((valueObj) => {
+      return valueObj._id === _id;
+    });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/game/v2/components/form.js - handleRemove
+    // `);
+    
+    // console.log(chalk`
+    //   _id: {green ${_id} / ${typeof _id} }
+    //   index: {green ${index} / ${typeof index} }
+    // `);
+    
+    // console.log(`
+    //   ----- gamesArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   配列内に存在している場合は削除する
+    // ---------------------------------------------
+    
+    if (_id && index !== -1) {
+      
+      gamesArr.splice(index, 1);
+      setGamesArr(lodashCloneDeep(gamesArr));
+      
+    }
+    
+    
+  };
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   必要な情報がない場合、空のコンポーネントを返す
+  // --------------------------------------------------
+  
+  if (!_id || !gameCommunities_id || !name) {
+    return null;
+  }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Component - Avatar
+  // --------------------------------------------------
+  
+  let componentAvatar = '';
+  
+  const thumbnailSrc = lodashGet(imagesAndVideosThumbnailObj, ['arr', 0, 'src'], '/img/common/thumbnail/none.svg');
+  const thumbnailSrcSet = lodashGet(imagesAndVideosThumbnailObj, ['arr', 0, 'srcSet'], '');
+  
+  
+  if (Object.keys(imagesAndVideosThumbnailObj).length !== 0) {
+    
+    componentAvatar =
+      <Avatar
+        css={css`
+          && {
+            width: 32px;
+            height: 32px;
+            background-color: white;
+          }
+        `}
+        alt={name}
+        src={thumbnailSrc}
+        srcSet={thumbnailSrcSet}
+      />
+    ;
+    
+  } else {
+    
+    componentAvatar =
+      <Avatar
+        css={css`
+          && {
+            width: 32px;
+            height: 32px;
+            background-color: #3f51b5;
+          }
+        `}
+      >
+        <IconGrade />
+      </Avatar>
+    ;
+    
+  }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /app/common/game/v2/components/form.js - Chip
+  // `);
+  
+  // console.log(chalk`
+  //   _id: {green ${_id}}
+  //   gameCommunities_id: {green ${gameCommunities_id}}
+  //   name: {green ${name}}
+  // `);
+  
+  // console.log(`
+  //   ----- imagesAndVideosThumbnailObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return (
+    <div
+      css={css`
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        color: #3f51b5;
+        border: 1px solid #3f51b5;
+        border-radius: 18px;
+        margin: 8px 8px 0 0;
+      `}
+    >
+      
+      
+      {/* アバター */}
+      <div>
+        {componentAvatar}
+      </div>
+      
+      
+      
+      
+      {/* 名前 */}
+      <div
+        css={css`
+          display: flex;
+          flex-flow: row wrap;
+          font-size: 14px;
+          line-height: 1.4;
+          padding: 4px 6px 4px 6px;
+        `}
+      >
+        <span
+          css={css`
+            font-weight: bold;
+          `}
+        >
+          {name}
+        </span>
+      </div>
+      
+      
+      
+      
+      {/* アイコン */}
+      <div
+        css={css`
+          margin-left: auto;
+        `}
+      >
+        <IconButton
+          css={css`
+            && {
+              width: 22px;
+              height: 22px;
+              
+              margin: 0 6px 2px 0;
+              padding: 0;
+              background-color: #3f51b5;
+            }
+          `}
+          onClick={() => handleRemove({ _id })}
+        >
+          <IconClose
+            css={css`
+              && {
+                width: 20px;
+                height: 20px;
+                color: white;
+              }
+            `}
+          />
+        </IconButton>
+      </div>
+      
+      
+    </div>
+  );
+  
+  
+};
+
+
+
+
+/**
  * Export Component
  */
 const Component = (props) => {
@@ -86,9 +350,9 @@ const Component = (props) => {
   
   const {
     
-    hardwaresArr,
-    setHardwaresArr,
-    limit,
+    gamesArr,
+    setGamesArr,
+    gamesLimit,
     
   } = props;
   
@@ -125,43 +389,70 @@ const Component = (props) => {
   // --------------------------------------------------
   
   /**
-   * ハードウェアを追加する
-   * @param {string} hardwareID - DB hardwares hardwareID
-   * @param {string} name - ハードウェア名
+   * ゲームを追加する
+   * @param {Object} obj - 追加するゲームのデータ
+   * @param {number} gamesLimit - 追加できるゲームの最大数
    */
   const handleAdd = ({
     
-    hardwareID,
-    name,
+    obj,
     
   }) => {
     
     
     // --------------------------------------------------
-    //   Clone
+    //   _id
     // --------------------------------------------------
     
-    let clonedArr = lodashCloneDeep(hardwaresArr);
+    const _id = lodashGet(obj, ['_id'], '');
     
     
     // ---------------------------------------------
     //   配列内に存在しているかチェック
     // ---------------------------------------------
     
-    const index = clonedArr.findIndex((valueObj) => {
-      return valueObj.hardwareID === hardwareID;
+    const index = gamesArr.findIndex((valueObj) => {
+      return valueObj._id === _id;
     });
     
     
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/game/v2/components/form.js - handleAdd
+    // `);
+    
+    // console.log(`
+    //   ----- obj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(obj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   gamesLimit: {green ${gamesLimit} / ${typeof gamesLimit} }
+    // `);
+    
+    // console.log(`
+    //   ----- gamesArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
     // ---------------------------------------------
-    //   登録できるハードウェアの上限を超えている場合はエラー
+    //   登録できるゲームの上限を超えている場合はエラー
     // ---------------------------------------------
     
-    if (clonedArr.length + 1 > limit) {
+    if (gamesArr.length >= gamesLimit) {
       
       handleSnackbarOpen({
         variant: 'warning',
-        messageID: 'Owq_rMCaL',
+        messageID: '_M772JzNl',
       });
       
       return;
@@ -175,106 +466,21 @@ const Component = (props) => {
     
     if (index === -1) {
       
-      clonedArr.push({
-        hardwareID,
-        name,
-      });
-      
-      setHardwaresArr(clonedArr);
+      gamesArr.push(obj);
+      setGamesArr(lodashCloneDeep(gamesArr));
       
     }
     
     
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/common/hardware/v2/components/form.js - handleAdd
-    // `);
-    
-    // console.log(`
-    //   ----- hardwaresArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(hardwaresArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   hardwareID: {green ${hardwareID}}
-    //   name: {green ${name}}
-    //   limit: {green ${limit}}
-    //   hardwaresArr.length: {green ${hardwaresArr.length}}
-    // `);
-    
-    
   };
   
   
   
   
   /**
-   * ハードウェアを削除する
-   * @param {string} hardwareID - DB hardwares hardwareID
-   */
-  const handleRemove = ({ hardwareID }) => {
-    
-    
-    // --------------------------------------------------
-    //   Clone
-    // --------------------------------------------------
-    
-    let clonedArr = lodashCloneDeep(hardwaresArr);
-    
-    
-    // ---------------------------------------------
-    //   削除する index を取得する
-    // ---------------------------------------------
-    
-    const index = clonedArr.findIndex((valueObj) => {
-      return valueObj.hardwareID === hardwareID;
-    });
-    
-    
-    // ---------------------------------------------
-    //   配列から index を指定して削除
-    // ---------------------------------------------
-    
-    clonedArr.splice(index, 1);
-    
-    
-    // --------------------------------------------------
-    //   更新
-    // --------------------------------------------------
-    
-    setHardwaresArr(clonedArr);
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/common/hardware/v2/components/form.js - handleRemove
-    // `);
-    
-    // console.log(`
-    //   ----- hardwaresArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(hardwaresArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-  };
-  
-  
-  
-  
-  /**
-   * 所有ハードウェアのサジェストのキーボード操作
+   * サジェストのキーボード操作
    * ↓ ↑ で現在の選択状態を変更する
-   * Enter で現在選択されているハードウェアを登録する
+   * Enter で現在選択されているゲームを登録する
    * @param {Object} eventObj - イベント
    */
   const handleOnKeyDown = ({
@@ -354,12 +560,7 @@ const Component = (props) => {
       //   追加
       // ---------------------------------------------
       
-      handleAdd({
-        
-        hardwareID: suggestionsArr[suggestionSelectedIndex].hardwareID,
-        name: suggestionsArr[suggestionSelectedIndex].name,
-        
-      });
+      handleAdd({ obj: suggestionsArr[suggestionSelectedIndex] });
       
       
     }
@@ -370,7 +571,7 @@ const Component = (props) => {
   
   
   /**
-   * ハードウェアの TextField を変更する
+   * TextField を変更する
    * 文字が入力されるたびに Fetch でサジェストデータを取得しにいく
    * @param {string} value - 値
    */
@@ -415,7 +616,7 @@ const Component = (props) => {
       
       const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/hardwares/read-suggestion`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/games/read-suggestion`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
         
@@ -439,7 +640,7 @@ const Component = (props) => {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/common/hardware/v2/components/form.js - handleKeyword
+      //   /app/common/game/v2/components/form.js - handleKeyword
       // `);
       
       // console.log(`
@@ -478,51 +679,45 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Component - Hardware
+  //   Component - Selected Game
   // --------------------------------------------------
   
-  let componentHardwares = '';
-  let componentHardwaresArr = [];
+  let componentSelected = '';
+  let componentSelectedArr = [];
   
-  if (hardwaresArr.length > 0) {
+  if (gamesArr.length > 0) {
     
-    for (const [index, valueObj] of hardwaresArr.entries()) {
+    for (const [index, valueObj] of gamesArr.entries()) {
       
-      componentHardwaresArr.push(
+      componentSelectedArr.push(
         <Chip
-          css={css`
-            && {
-              margin: 0 6px 6px 0;
-            }
-          `}
           key={index}
-          label={valueObj.name}
-          color="primary"
-          onDelete={() => handleRemove({
-            hardwareID: valueObj.hardwareID,
-          })}
-          variant="outlined"
+          _id={valueObj._id}
+          gameCommunities_id={valueObj.gameCommunities_id}
+          name={valueObj.name}
+          imagesAndVideosThumbnailObj={valueObj.imagesAndVideosThumbnailObj}
+          gamesArr={gamesArr}
+          setGamesArr={setGamesArr}
         />
       );
       
     }
     
-    
-    if (componentHardwaresArr.length > 0) {
-      
-      componentHardwares =
-        <div
-          css={css`
-            display: flex;
-            flex-flow: row wrap;
-            margin: 24px 0 0 0;
-          `}
-        >
-          {componentHardwaresArr}
-        </div>
-      ;
-      
-    }
+    componentSelected =
+      <div
+        css={css`
+          display: flex;
+          flex-flow: row wrap;
+          margin: 12px 0;
+          
+          @media screen and (max-width: 480px) {
+            flex-flow: column wrap;
+          }
+        `}
+      >
+        {componentSelectedArr}
+      </div>
+    ;
     
   }
   
@@ -535,12 +730,8 @@ const Component = (props) => {
   
   let componentSuggestionMenuItemsArr = [];
   
+  
   if (onFocus && keyword && suggestionsArr.length > 0) {
-    
-    
-    // --------------------------------------------------
-    //   Loop
-    // --------------------------------------------------
     
     for (const [index, valueObj] of suggestionsArr.entries()) {
       
@@ -549,35 +740,76 @@ const Component = (props) => {
       //   すでに選択されているハードウェアを太字で表示するためのindex
       // --------------------------------------------------
       
-      const index2 = hardwaresArr.findIndex((value2Obj) => {
-        return value2Obj.hardwareID === valueObj.hardwareID;
+      const index2 = gamesArr.findIndex((value2Obj) => {
+        return value2Obj._id === valueObj._id;
       });
       
       
       // --------------------------------------------------
-      //   array.push
+      //   Thumbnail
       // --------------------------------------------------
+      
+      const thumbnailSrc = lodashGet(valueObj, ['imagesAndVideosThumbnailObj', 'arr', 0, 'src'], '/img/common/thumbnail/none.svg');
+      const thumbnailSrcSet = lodashGet(valueObj, ['imagesAndVideosThumbnailObj', 'arr', 0, 'srcSet'], '');
+      
+      
+      // console.log(chalk`
+      //   thumbnailSrc: {green ${thumbnailSrc}}
+      //   thumbnailSrcSet: {green ${thumbnailSrcSet}}
+      // `);
+      
+      // console.log(chalk`
+      //   selectedIndex: {green ${selectedIndex}}
+      //   index: {green ${index}}
+      //   index2: {green ${index2}}
+      // `);
+      
+      // console.log(`
+      //   ----- valueObj -----\n
+      //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
       
       componentSuggestionMenuItemsArr.push(
         <MenuItem
+          css={css`
+            && {
+              font-size: 12px;
+              white-space: normal;
+            }
+          `}
           key={index}
           component="div"
+          disabled={index2 !== -1}
           selected={index === suggestionSelectedIndex}
           onMouseDown={() => handleAdd({
-            hardwareID: valueObj.hardwareID,
-            name: valueObj.name,
+            obj: valueObj,
           })}
-          style={{
-            fontWeight: index2 !== -1 ? 'bold' : 'normal',
-          }}
         >
-          {valueObj.name}
+          <Avatar
+            css={css`
+              && {
+                width: 24px;
+                height: 24px;
+              }
+            `}
+            alt="valueObj.name"
+            src={thumbnailSrc}
+            srcSet={thumbnailSrcSet}
+          />
+          <span
+            css={css`
+              margin: 0 0 0 8px;
+            `}
+          >
+            {valueObj.name}
+          </span>
         </MenuItem>
       );
       
       
     }
-    
     
   }
   
@@ -587,7 +819,14 @@ const Component = (props) => {
   if (componentSuggestionMenuItemsArr.length > 0) {
     
     componentSuggestion = 
-      <Paper square>
+      <Paper
+        css={css`
+          && {
+            margin: 12px 0 0 0;
+          }
+        `}
+        square
+      >
         <MenuList>
           {componentSuggestionMenuItemsArr}
         </MenuList>
@@ -605,20 +844,13 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/hardware/v2/components/form.js
+  //   /app/common/game/v2/components/form.js
   // `);
   
   // console.log(`
-  //   ----- hardwaresArr -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(hardwaresArr)), { colors: true, depth: null })}\n
+  //   ----- gamesArr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
   //   --------------------\n
-  // `);
-  
-  // console.log(chalk`
-  //   value: {green ${value}}
-  //   alternativeText: {green ${alternativeText}}
-  //   search: {green ${search}}
-  //   age: {green ${age}}
   // `);
   
   
@@ -632,39 +864,38 @@ const Component = (props) => {
     <React.Fragment>
       
       
-      {/* Hardwares */}
-      {componentHardwares}
+      {/* 選択されたゲーム */}
+      {componentSelected}
       
       
       
       
-      {/* Keyword */}
+      {/* TextField */}
       <div
         onFocus={()=> setOnFocus(true)}
         onBlur={()=> setOnFocus(false)}
       >
         
-        
-        {/* TextField */}
         <TextField
           css={css`
             && {
-              width: 100%;
+              width: 400px;
               
               @media screen and (max-width: 480px) {
                 width: 100%;
               }
             }
           `}
-          label="ハードウェア名"
+          label="ゲーム名"
           value={validationKeywordObj.value}
           onChange={(eventObj) => handleKeyword({ value: eventObj.target.value })}
           onKeyDown={(eventObj) => handleOnKeyDown({
             eventObj,
-            limit,
+            gamesLimit,
           })}
           error={validationKeywordObj.error}
-          helperText={intl.formatMessage({ id: validationKeywordObj.messageID }, { numberOfCharacters: validationKeywordObj.numberOfCharacters })}
+          helperText="ゲーム名の一部を入力して、検索結果から選んでください。"
+          // helperText={intl.formatMessage({ id: validationKeywordObj.messageID }, { numberOfCharacters: validationKeywordObj.numberOfCharacters })}
           margin="normal"
           autoComplete="off"
           inputProps={{
@@ -672,10 +903,7 @@ const Component = (props) => {
           }}
         />
         
-        
-        {/* Suggestion */}
         {componentSuggestion}
-        
         
       </div>
       

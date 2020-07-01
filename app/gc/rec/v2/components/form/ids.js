@@ -53,8 +53,8 @@ const Component = (props) => {
   
   const {
     
-    idsArr,
-    setIDsArr,
+    ids_idsArr,
+    setIDs_idsArr,
     
   } = props;
   
@@ -67,7 +67,7 @@ const Component = (props) => {
   
   const componentsSelectedArr = [];
   
-  for (const [index, valueObj] of idsArr.entries()) {
+  for (const [index, valueObj] of ids_idsArr.entries()) {
     
     const games_id = lodashGet(valueObj, ['gamesObj', '_id'], '');
     const gamesName = lodashGet(valueObj, ['gamesObj', 'name'], '');
@@ -100,8 +100,8 @@ const Component = (props) => {
   // `);
   
   // console.log(`
-  //   ----- idsArr -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
+  //   ----- ids_idsArr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
   
@@ -153,8 +153,8 @@ const Component = (props) => {
       >
         
         <IDForm
-          idsArr={idsArr}
-          setIDsArr={setIDsArr}
+          ids_idsArr={ids_idsArr}
+          setIDs_idsArr={setIDs_idsArr}
         />
         
       </div>

@@ -28,9 +28,9 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import IconButton from '@material-ui/core/IconButton';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
 
 
 // ---------------------------------------------
@@ -144,7 +144,7 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <ExpansionPanel
+      <Accordion
         css={css`
           margin: 0 !important;
         `}
@@ -153,7 +153,7 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Heading */}
-        <ExpansionPanelSummary
+        <AccordionSummary
           css={css`
             cursor: default !important;
           `}
@@ -198,13 +198,13 @@ export default injectIntl(class extends React.Component {
           </div>
           
           
-        </ExpansionPanelSummary>
+        </AccordionSummary>
         
         
         
         
         {/* Contents */}
-        <ExpansionPanelDetails
+        <AccordionDetails
           css={css`
             display: flex;
             flex-flow: column wrap;
@@ -216,10 +216,10 @@ export default injectIntl(class extends React.Component {
           {this.props.children}
           
           
-        </ExpansionPanelDetails>
+        </AccordionDetails>
         
         
-      </ExpansionPanel>
+      </Accordion>
     );
     
   }

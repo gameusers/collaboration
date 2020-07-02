@@ -97,9 +97,7 @@ const Component = (props) => {
     setSelectedArr,
     unselectedArr,
     setUnselectedArr,
-    // ids_idsArr,
     setIDs_idsArr,
-    
     setDialogOpen,
     
   } = props;

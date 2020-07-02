@@ -15,13 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-// import Link from 'next/link';
-// import Router from 'next/router';
 import { useIntl } from 'react-intl';
-// import { Element } from 'react-scroll';
-// import Pagination from 'rc-pagination';
-// import localeInfo from 'rc-pagination/lib/locale/ja_JP';
-// import Cookies from 'js-cookie';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -57,20 +51,11 @@ import IconSettings from '@material-ui/icons/Settings';
 
 
 // ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateUser } from 'app/@states/user.js';
-import { ContainerStateGc } from 'app/@states/gc.js';
-
-
-// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
@@ -79,7 +64,7 @@ import { getCookie } from 'app/@modules/cookie.js';
 
 import FormSelect from 'app/common/id/v2/components/form-select.js';
 import FormEdit from 'app/common/id/v2/components/form-edit.js';
-import FormRegister from 'app/common/id/components/form-register.js';
+import FormRegister from 'app/common/id/v2/components/form-register.js';
 
 
 
@@ -129,24 +114,6 @@ const Component = (props) => {
     setButtonDisabled(false);
     
   }, []);
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-  
-  // const stateUser = ContainerStateUser.useContainer();
-  // const stateGc = ContainerStateGc.useContainer();
-  
-  // const { login } = stateUser;
-  
-  // const {
-    
-  //   recruitmentThreadsObj,
-    
-  // } = stateGc;
   
   
   
@@ -368,7 +335,6 @@ const Component = (props) => {
         setSelectedArr={setSelectedArr}
         unselectedArr={unselectedArr}
         setUnselectedArr={setUnselectedArr}
-        ids_idsArr={ids_idsArr}
         setIDs_idsArr={setIDs_idsArr}
         setDialogOpen={setDialogOpen}
       />
@@ -379,10 +345,7 @@ const Component = (props) => {
     component =
       <FormEdit
         dataArr={dataArr}
-        selectedArr={selectedArr}
-        setSelectedArr={setSelectedArr}
-        unselectedArr={unselectedArr}
-        setUnselectedArr={setUnselectedArr}
+        setDataArr={setDataArr}
         ids_idsArr={ids_idsArr}
         setIDs_idsArr={setIDs_idsArr}
         gamesLimit={1}
@@ -391,11 +354,15 @@ const Component = (props) => {
     
   } else {
     
-    // component =
-    //   <FormRegister
-    //     additionalGameLimit={1}
-    //   />
-    // ;
+    component =
+      <FormRegister
+        dataArr={dataArr}
+        setDataArr={setDataArr}
+        unselectedArr={unselectedArr}
+        setUnselectedArr={setUnselectedArr}
+        gamesLimit={1}
+      />
+    ;
     
   }
   

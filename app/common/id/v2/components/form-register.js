@@ -26,6 +26,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
@@ -74,7 +75,6 @@ import { validationIDsPublicSetting } from 'app/@database/ids/validations/public
 //   Components
 // ---------------------------------------------
 
-import IDChip from 'app/common/id/v2/components/chip.js';
 import FormGame from 'app/common/game/v2/components/form.js';
 
 
@@ -116,10 +116,9 @@ const Component = (props) => {
   
   const {
     
-    dataArr,
     setDataArr,
-    ids_idsArr,
-    setIDs_idsArr,
+    unselectedArr,
+    setUnselectedArr,
     gamesLimit,
     
   } = props;
@@ -135,7 +134,6 @@ const Component = (props) => {
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
-  const [_id, set_id] = useState('');
   const [platform, setPlatform] = useState('');
   const [label, setLabel] = useState('');
   const [id, setID] = useState('');
@@ -162,7 +160,6 @@ const Component = (props) => {
   const {
     
     handleSnackbarOpen,
-    handleDialogOpen,
     
   } = stateLayout;
   
@@ -174,87 +171,7 @@ const Component = (props) => {
   // --------------------------------------------------
   
   /**
-   * 編集時に編集するIDを選択する（各フォームの値を設定する）
-   * 編集フォームの ID (Chip) をクリックしたときに発動
-   * @param {string} ids_id - DB IDs _id
-   */
-  const handleSelect = ({ ids_id }) => {
-    
-    
-    // --------------------------------------------------
-    //   データを取得する
-    // --------------------------------------------------
-    
-    const resultObj = dataArr.find((valueObj) => {
-      return valueObj._id === ids_id;
-    });
-    
-    
-    // --------------------------------------------------
-    //   フォームのデータを変更する
-    // --------------------------------------------------
-    
-    set_id(resultObj._id);
-    setPlatform(resultObj.platform);
-    setLabel(resultObj.label);
-    setID(resultObj.id);
-    setPublicSetting(resultObj.publicSetting);
-    setSearch(resultObj.search);
-    
-    
-    // --------------------------------------------------
-    //   ゲームフォームのゲームを変更する
-    // --------------------------------------------------
-    
-    const games_id = lodashGet(resultObj, ['gamesObj', '_id'], '');
-    const gameCommunities_id = lodashGet(resultObj, ['gamesObj', 'gameCommunities_id'], '');
-    const name = lodashGet(resultObj, ['gamesObj', 'name'], '');
-    const imagesAndVideosThumbnailObj = lodashGet(resultObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
-    
-    let tempArr = [];
-    
-    if (games_id && gameCommunities_id && name) {
-      tempArr = [{ _id: games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }];
-    }
-    
-    setGamesArr(tempArr);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/common/id/v2/components/form-edit.js - handleSelect
-    // `);
-    
-    // console.log(`
-    //   ----- gamesArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   ids_id: {green ${ids_id}}
-    // `);
-    
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-  };
-  
-  
-  
-  
-  /**
-   * 編集フォームを送信する
+   * 登録フォームを送信する
    */
   const handleSubmit = async () => {
     
@@ -272,20 +189,11 @@ const Component = (props) => {
       
       
       // --------------------------------------------------
-      //   編集するIDが選ばれていない場合、エラー
-      // --------------------------------------------------
-      
-      if (!_id) {
-        throw new CustomError({ errorsArr: [{ code: 'cOQptDp5', messageID: 'sHOvvQXWL' }] });
-      }
-      
-      
-      // --------------------------------------------------
       //   フォームに必要な情報が入力されていない場合、エラー
       // --------------------------------------------------
       
       if (!platform || !id || !publicSetting) {
-        throw new CustomError({ errorsArr: [{ code: '5Geof8YQ', messageID: 'uwHIKBy7c' }] });
+        throw new CustomError({ errorsArr: [{ code: 'gk89EvTvH', messageID: 'uwHIKBy7c' }] });
       }
       
       
@@ -297,7 +205,6 @@ const Component = (props) => {
       
       const formDataObj = {
         
-        _id,
         platform,
         label,
         id,
@@ -339,243 +246,17 @@ const Component = (props) => {
       //   データ更新
       // --------------------------------------------------
       
-      setDataArr(resultObj.data);
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   ID登録フォームをロードした元のフォームのIDを更新する
-      // --------------------------------------------------
-      
-      const updatedIDsArr = [];
-      
-      for (let valueObj of ids_idsArr.values()) {
-        
-        // 現在選択されているIDを抽出する
-        const newObj = resultObj.data.find((valueObj2) => {
-          return valueObj2._id === valueObj._id;
-        });
-        
-        // 新しくなった選択IDの配列を作成
-        if (newObj) {
-          updatedIDsArr.push(newObj);
-        }
-        
-        // console.log(`
-        //   ----- valueObj -----\n
-        //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-        
-        // console.log(`
-        //   ----- newObj -----\n
-        //   ${util.inspect(newObj, { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-        
-      }
-      
+      const tempDataArr = resultObj.data;
+      setDataArr(tempDataArr);
       
       
       
       // --------------------------------------------------
-      //   Update ids_idsArr
+      //   未選択IDに追加 / _id のみでいい
       // --------------------------------------------------
       
-      setIDs_idsArr(updatedIDsArr);
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   Snackbar: Success
-      // --------------------------------------------------
-      
-      handleSnackbarOpen({
-        
-        variant: 'success',
-        messageID: 'EnStWOly-',
-        horizontal: 'right',
-        
-      });
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/id/v2/components/form-edit.js - handleSubmit
-      // `);
-      
-      // console.log(`
-      //   ----- formDataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   platform: {green ${platform}}
-      //   label: {green ${label}}
-      //   id: {green ${id}}
-      //   publicSetting: {green ${publicSetting}}
-      //   search: {green ${search}}
-      // `);
-      
-      // console.log(`
-      //   ----- ids_idsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- updatedIDsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(updatedIDsArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-    } catch (errorObj) {
-      
-      
-      // --------------------------------------------------
-      //   Snackbar: Error
-      // --------------------------------------------------
-      
-      handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
-      
-      
-    } finally {
-      
-      
-      // --------------------------------------------------
-      //   Button Enable
-      // --------------------------------------------------
-      
-      setButtonDisabled(false);
-      
-      
-    }
-    
-    
-  };
-  
-  
-  
-  
-  /**
-   * 削除フォームを送信する
-   */
-  const handleDelete = async () => {
-    
-    
-    try {
-      
-      
-      // --------------------------------------------------
-      //   Button Disable
-      // --------------------------------------------------
-      
-      setButtonDisabled(true);
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   編集するIDが選ばれていない場合、エラー
-      // --------------------------------------------------
-      
-      if (!_id) {
-        throw new CustomError({ errorsArr: [{ code: '-PQYNFlb', messageID: 'Z9LG9XL5W' }] });
-      }
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   FormData
-      // --------------------------------------------------
-      
-      const formDataObj = {
-        
-        _id,
-        
-      };
-      
-      
-      // --------------------------------------------------
-      //   Fetch
-      // --------------------------------------------------
-      
-      const resultObj = await fetchWrapper({
-        
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/ids/delete`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
-        
-      });
-      
-      
-      // --------------------------------------------------
-      //   Error
-      // --------------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   データ更新
-      // --------------------------------------------------
-      
-      setDataArr(resultObj.data);
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   渡された関数を実行する
-      //   ID登録フォームをロードした元のフォームのIDを更新する
-      // --------------------------------------------------
-      
-      const updatedIDsArr = [];
-      
-      for (let valueObj of ids_idsArr.values()) {
-        
-        const newObj = resultObj.data.find((valueObj2) => {
-          return valueObj2._id === valueObj._id;
-        });
-        
-        if (newObj) {
-          updatedIDsArr.push(newObj);
-        }
-        
-      }
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   Update ids_idsArr
-      // --------------------------------------------------
-      
-      setIDs_idsArr(updatedIDsArr);
+      unselectedArr.push(tempDataArr[tempDataArr.length - 1]._id);
+      setUnselectedArr(lodashCloneDeep(unselectedArr));
       
       
       
@@ -584,7 +265,6 @@ const Component = (props) => {
       //   フォームを空にする
       // --------------------------------------------------
       
-      set_id('');
       setPlatform('');
       setLabel('');
       setID('');
@@ -602,7 +282,7 @@ const Component = (props) => {
       handleSnackbarOpen({
         
         variant: 'success',
-        messageID: 'j6lSS-Zf5',
+        messageID: 'As9-T8q9N',
         horizontal: 'right',
         
       });
@@ -616,22 +296,48 @@ const Component = (props) => {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/common/id/v2/components/form-edit.js - handleDelete
-      // `);
-      
-      // console.log(chalk`
-      //   _id: {green ${_id}}
+      //   /app/common/id/v2/components/form-register.js - handleSubmit
       // `);
       
       // console.log(`
-      //   ----- ids_idsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
+      //   ----- formDataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(chalk`
+      //   platform: {green ${platform}}
+      //   label: {green ${label}}
+      //   id: {green ${id}}
+      //   publicSetting: {green ${publicSetting}}
+      //   search: {green ${search}}
+      // `);
+      
+      // console.log(chalk`
+      //   tempDataArr.length: {green ${tempDataArr.length}}
+      // `);
+      
+      // console.log(`
+      //   ----- tempDataArr[tempDataArr.length - 1] -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(tempDataArr[tempDataArr.length - 1])), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
       // console.log(`
-      //   ----- updatedIDsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(updatedIDsArr)), { colors: true, depth: null })}\n
+      //   ----- dataArr[dataArr.length] -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(dataArr[dataArr.length])), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- unselectedArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(unselectedArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -692,58 +398,23 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Component - 編集可能なID
-  // --------------------------------------------------
-  
-  const componentsIDArr = [];
-  
-  for (const [index, valueObj] of dataArr.entries()) {
-    
-    const games_id = lodashGet(valueObj, ['gamesObj', '_id'], '');
-    const gamesName = lodashGet(valueObj, ['gamesObj', 'name'], '');
-    const gamesImagesAndVideosThumbnailObj = lodashGet(valueObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
-    
-    componentsIDArr.push(
-      <div
-        key={index}
-        css={css`
-          cursor: pointer;
-        `}
-        onClick={() => handleSelect({ ids_id: valueObj._id })}
-      >
-        <IDChip
-          platform={valueObj.platform}
-          label={valueObj.label}
-          id={valueObj.id}
-          games_id={games_id}
-          gamesName={gamesName}
-          gamesImagesAndVideosThumbnailObj={gamesImagesAndVideosThumbnailObj}
-        />
-      </div>
-    );
-    
-  }
-  
-  
-  
-  
-  // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/id/v2/components/form-edit.js
-  // `);
-  
-  // console.log(chalk`
-  //   gameSelectForm: {green ${gameSelectForm}}
+  //   /app/common/id/v2/components/form-register.js
   // `);
   
   // console.log(`
   //   ----- gamesArr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
   //   --------------------\n
+  // `);
+  
+  // console.log(chalk`
+  //   _id: {green ${_id}}
+  //   platform: {green ${platform}}
   // `);
   
   
@@ -766,55 +437,25 @@ const Component = (props) => {
           margin: 12px 0 0 0;
         `}
       >
-        編集したいIDを押してから、フォームの内容を編集してください。「編集する」ボタンを押すとIDの編集が完了します。
+        IDを登録する場合は、こちらのフォームに必要なデータを入力してから「登録する」ボタンを押してください。<span css={css`color: red;`}>IDは公開可能な情報であるため、パスワードなど、他の人に見せてはいけない情報は絶対に入力しないようにしてください。</span>
       </p>
       
       <p>
-        IDは「<strong>ラベル:</strong> ID」という並びで表示されます。ラベルが未入力の場合はプラットフォーム、選択したゲームの名前が代わりに表示されます。
+        IDは「<strong>ラベル:</strong> ID」という並びで表示されます。ラベルが未入力の場合は、プラットフォームや選択したゲームの名前が代わりに表示されます。
       </p>
       
       
       
       
-      {/* 編集可能なID */}
+      {/* 登録フォーム */}
       <h4
         css={css`
           font-weight: bold;
-          margin: 36px 0 0 0;
+          margin: 24px 0 0 0;
         `}
       >
-        [ 編集可能なID ]
+        [ 登録フォーム ]
       </h4>
-      
-      
-      <div
-        css={css`
-          display: flex;
-          flex-flow: row wrap;
-          margin: 4px 0 8px 0;
-          
-          @media screen and (max-width: 480px) {
-            flex-flow: column wrap;
-          }
-        `}
-      >
-        {componentsIDArr}
-      </div>
-      
-      
-      
-      
-      {/* 編集フォーム */}
-      <h4
-        css={css`
-          font-weight: bold;
-          margin: 36px 0 0 0;
-        `}
-      >
-        [ 編集フォーム ]
-      </h4>
-      
-      
       
       
       {/* プラットフォーム */}
@@ -986,50 +627,20 @@ const Component = (props) => {
       
       
       
-      {/* 「編集する」ボタン */}
+      {/* 「登録する」ボタン */}
       <div
         css={css`
-          margin: 24px 0 12px 0;
+          margin: 24px 0 0 0;
         `}
       >
-        
         <Button
-          css={css`
-            && {
-              margin: 0 12px 0 0;
-            }
-          `}
           variant="outlined"
           color="primary"
           disabled={buttonDisabled}
           onClick={() => handleSubmit()}
         >
-          編集する
+          登録する
         </Button>
-        
-        
-        <Button
-          variant="outlined"
-          color="secondary"
-          disabled={buttonDisabled}
-          onClick={
-            buttonDisabled
-              ?
-                () => {}
-              :
-                () => handleDialogOpen({
-                
-                  title: 'ID削除',
-                  description: 'このIDを削除しますか？',
-                  handle: handleDelete,
-                  argumentsObj: {},
-                  
-                })
-          }
-        >
-          削除する
-        </Button>
-        
       </div>
       
       

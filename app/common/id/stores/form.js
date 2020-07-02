@@ -536,40 +536,40 @@ class Store {
    * 削除ダイアログを開く
    * @param {Array} pathArr - パス
    */
-  @action.bound
-  handleDeleteDialogOpen({ pathArr }) {
+  // @action.bound
+  // handleDeleteDialogOpen({ pathArr }) {
     
     
-    // --------------------------------------------------
-    //   削除するIDが選ばれていない場合、エラーを通知
-    // --------------------------------------------------
+  //   // --------------------------------------------------
+  //   //   削除するIDが選ばれていない場合、エラーを通知
+  //   // --------------------------------------------------
     
-    const form_id = lodashGet(this.dataObj, [...pathArr, '_id'], '');
+  //   const form_id = lodashGet(this.dataObj, [...pathArr, '_id'], '');
     
-    // console.log(chalk`
-    //   form_id: {green ${form_id}}
-    // `);
+  //   // console.log(chalk`
+  //   //   form_id: {green ${form_id}}
+  //   // `);
     
-    if (!form_id) {
+  //   if (!form_id) {
       
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        messageID: 'Z9LG9XL5W',
-      });
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       messageID: 'Z9LG9XL5W',
+  //     });
       
-      return;
+  //     return;
       
-    }
+  //   }
     
     
-    // --------------------------------------------------
-    //   Dialog Open
-    // --------------------------------------------------
+  //   // --------------------------------------------------
+  //   //   Dialog Open
+  //   // --------------------------------------------------
     
-    lodashSet(this.dataObj, [...pathArr, 'deleteDialogOpen'], true);
+  //   lodashSet(this.dataObj, [...pathArr, 'deleteDialogOpen'], true);
     
     
-  };
+  // };
   
   
   
@@ -578,10 +578,10 @@ class Store {
    * 削除ダイアログを閉じる
    * @param {Array} pathArr - パス
    */
-  @action.bound
-  handleDeleteDialogClose({ pathArr }) {
-    lodashSet(this.dataObj, [...pathArr, 'deleteDialogOpen'], false);
-  };
+  // @action.bound
+  // handleDeleteDialogClose({ pathArr }) {
+  //   lodashSet(this.dataObj, [...pathArr, 'deleteDialogOpen'], false);
+  // };
   
   
   
@@ -592,292 +592,292 @@ class Store {
    * @param {string} handleSetIDsArr - idsArr を設定する関数 / 親のコンポーネントから受け取る
    * @param {Array} idsArr - 選択されたIDの配列
    */
-  @action.bound
-  async handleEditSubmit({
+  // @action.bound
+  // async handleEditSubmit({
     
-    pathArr,
-    handleSetIDsArr,
-    idsArr,
+  //   pathArr,
+  //   handleSetIDsArr,
+  //   idsArr,
     
-  }) {
-    
-    
-    try {
-      
-      
-      // --------------------------------------------------
-      //   Button Disable
-      // --------------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   編集するIDが選ばれていない場合、エラー
-      // --------------------------------------------------
-      
-      const form_id = lodashGet(this.dataObj, [...pathArr, '_id'], '');
-      
-      if (!form_id) {
-        throw new CustomError({ errorsArr: [{ code: 'cOQptDp5', messageID: 'sHOvvQXWL' }] });
-      }
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   フォームのデータを取得
-      // --------------------------------------------------
-      
-      const platform = lodashGet(this.dataObj, [...pathArr, 'platform'], '');
-      const label = lodashGet(this.dataObj, [...pathArr, 'label'], '');
-      const id = lodashGet(this.dataObj, [...pathArr, 'id'], '');
-      const publicSetting = lodashGet(this.dataObj, [...pathArr, 'publicSetting'], '');
-      const search = lodashGet(this.dataObj, [...pathArr, 'search'], true);
-      
-      const gamesArr = storeGameForm.handleGetGamesArr({ pathArr });
-      
-      let gameCommunities_id = '';
-      
-      if (gamesArr.length > 0) {
-        gameCommunities_id = lodashGet(gamesArr, [0, 'gameCommunities_id'], '');
-      }
-      
-      // console.log(`
-      //   ----- gamesArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      // --------------------------------------------------
-      //   フォームに必要な情報が入力されていない場合、エラー
-      // --------------------------------------------------
-      
-      if (!platform || !id || !publicSetting) {
-        throw new CustomError({ errorsArr: [{ code: '5Geof8YQ', messageID: 'uwHIKBy7c' }] });
-      }
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   FormData
-      // --------------------------------------------------
-      
-      const formDataObj = {
-        
-        _id: form_id,
-        platform,
-        label,
-        gameCommunities_id,
-        id,
-        publicSetting,
-        search,
-        
-      };
-      
-      
-      // --------------------------------------------------
-      //   Fetch
-      // --------------------------------------------------
-      
-      const resultObj = await fetchWrapper({
-        
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/ids/upsert`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
-        
-      });
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   Error
-      // --------------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   データ更新
-      // --------------------------------------------------
-      
-      lodashSet(this.dataObj, [...pathArr, 'dataArr'], resultObj.data);
-      
-      
-      // --------------------------------------------------
-      //   ID登録フォームをロードした元のフォームのIDを更新する
-      // --------------------------------------------------
-      
-      const updatedIDsArr = [];
-      
-      for (let valueObj of idsArr.values()) {
-        
-        // 現在選択されているIDを抽出する
-        const newObj = resultObj.data.find((valueObj2) => {
-          return valueObj2._id === valueObj._id;
-        });
-        
-        // 新しくなった選択IDの配列を作成
-        if (newObj) {
-          updatedIDsArr.push(newObj);
-        }
-        
-        // console.log(`
-        //   ----- valueObj -----\n
-        //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-        
-        // console.log(`
-        //   ----- newObj -----\n
-        //   ${util.inspect(newObj, { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-        
-      }
-      
-      
-      // --------------------------------------------------
-      //   プレイヤーカードのフォーム更新
-      // --------------------------------------------------
-      
-      // if (type === 'cardPlayerForm') {
-        
-      //   const clonedArr = lodashCloneDeep(updatedIDsArr);
-      //   lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'idsArr'], clonedArr);
-        
-      // }
-      
-      
-      
-    
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/id/stores/form.js - handleEditSubmit
-      // `);
-      
-      // console.log(`
-      //   ----- forUpdateOtherStorePathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forUpdateOtherStorePathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   type: {green ${type}}
-      // `);
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   受け取った関数を実行する / Set idsArr
-      // --------------------------------------------------
-      
-      handleSetIDsArr({ pathArr, idsArr: updatedIDsArr });
-      
-      
-      // --------------------------------------------------
-      //   Snackbar: Success
-      // --------------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'success',
-        messageID: 'EnStWOly-',
-        horizontal: 'right',
-      });
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
-      
-      // console.log(chalk`
-      //   platform: {green ${platform}}
-      //   label: {green ${label}}
-      //   id: {green ${id}}
-      //   publicSetting: {green ${publicSetting}}
-      //   search: {green ${search}}
-      // `);
-      
-      // console.log(`
-      //   ----- pathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- idsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- updatedIDsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(updatedIDsArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- this.dataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- formDataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-    } catch (errorObj) {
-      
-      
-      // --------------------------------------------------
-      //   Snackbar: Error
-      // --------------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
-      
-      
-    } finally {
-      
-      
-      // --------------------------------------------------
-      //   Button Enable
-      // --------------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
-      
-      
-    }
+  // }) {
     
     
-  };
+  //   try {
+      
+      
+  //     // --------------------------------------------------
+  //     //   Button Disable
+  //     // --------------------------------------------------
+      
+  //     storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   編集するIDが選ばれていない場合、エラー
+  //     // --------------------------------------------------
+      
+  //     const form_id = lodashGet(this.dataObj, [...pathArr, '_id'], '');
+      
+  //     if (!form_id) {
+  //       throw new CustomError({ errorsArr: [{ code: 'cOQptDp5', messageID: 'sHOvvQXWL' }] });
+  //     }
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   フォームのデータを取得
+  //     // --------------------------------------------------
+      
+  //     const platform = lodashGet(this.dataObj, [...pathArr, 'platform'], '');
+  //     const label = lodashGet(this.dataObj, [...pathArr, 'label'], '');
+  //     const id = lodashGet(this.dataObj, [...pathArr, 'id'], '');
+  //     const publicSetting = lodashGet(this.dataObj, [...pathArr, 'publicSetting'], '');
+  //     const search = lodashGet(this.dataObj, [...pathArr, 'search'], true);
+      
+  //     const gamesArr = storeGameForm.handleGetGamesArr({ pathArr });
+      
+  //     let gameCommunities_id = '';
+      
+  //     if (gamesArr.length > 0) {
+  //       gameCommunities_id = lodashGet(gamesArr, [0, 'gameCommunities_id'], '');
+  //     }
+      
+  //     // console.log(`
+  //     //   ----- gamesArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+      
+  //     // --------------------------------------------------
+  //     //   フォームに必要な情報が入力されていない場合、エラー
+  //     // --------------------------------------------------
+      
+  //     if (!platform || !id || !publicSetting) {
+  //       throw new CustomError({ errorsArr: [{ code: '5Geof8YQ', messageID: 'uwHIKBy7c' }] });
+  //     }
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   FormData
+  //     // --------------------------------------------------
+      
+  //     const formDataObj = {
+        
+  //       _id: form_id,
+  //       platform,
+  //       label,
+  //       gameCommunities_id,
+  //       id,
+  //       publicSetting,
+  //       search,
+        
+  //     };
+      
+      
+  //     // --------------------------------------------------
+  //     //   Fetch
+  //     // --------------------------------------------------
+      
+  //     const resultObj = await fetchWrapper({
+        
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/ids/upsert`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj),
+        
+  //     });
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   Error
+  //     // --------------------------------------------------
+      
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   データ更新
+  //     // --------------------------------------------------
+      
+  //     lodashSet(this.dataObj, [...pathArr, 'dataArr'], resultObj.data);
+      
+      
+  //     // --------------------------------------------------
+  //     //   ID登録フォームをロードした元のフォームのIDを更新する
+  //     // --------------------------------------------------
+      
+  //     const updatedIDsArr = [];
+      
+  //     for (let valueObj of idsArr.values()) {
+        
+  //       // 現在選択されているIDを抽出する
+  //       const newObj = resultObj.data.find((valueObj2) => {
+  //         return valueObj2._id === valueObj._id;
+  //       });
+        
+  //       // 新しくなった選択IDの配列を作成
+  //       if (newObj) {
+  //         updatedIDsArr.push(newObj);
+  //       }
+        
+  //       // console.log(`
+  //       //   ----- valueObj -----\n
+  //       //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+  //       //   --------------------\n
+  //       // `);
+        
+  //       // console.log(`
+  //       //   ----- newObj -----\n
+  //       //   ${util.inspect(newObj, { colors: true, depth: null })}\n
+  //       //   --------------------\n
+  //       // `);
+        
+  //     }
+      
+      
+  //     // --------------------------------------------------
+  //     //   プレイヤーカードのフォーム更新
+  //     // --------------------------------------------------
+      
+  //     // if (type === 'cardPlayerForm') {
+        
+  //     //   const clonedArr = lodashCloneDeep(updatedIDsArr);
+  //     //   lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'idsArr'], clonedArr);
+        
+  //     // }
+      
+      
+      
+    
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
+      
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/common/id/stores/form.js - handleEditSubmit
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- forUpdateOtherStorePathArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(forUpdateOtherStorePathArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(chalk`
+  //     //   type: {green ${type}}
+  //     // `);
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   受け取った関数を実行する / Set idsArr
+  //     // --------------------------------------------------
+      
+  //     handleSetIDsArr({ pathArr, idsArr: updatedIDsArr });
+      
+      
+  //     // --------------------------------------------------
+  //     //   Snackbar: Success
+  //     // --------------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'success',
+  //       messageID: 'EnStWOly-',
+  //       horizontal: 'right',
+  //     });
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
+      
+  //     // console.log(chalk`
+  //     //   platform: {green ${platform}}
+  //     //   label: {green ${label}}
+  //     //   id: {green ${id}}
+  //     //   publicSetting: {green ${publicSetting}}
+  //     //   search: {green ${search}}
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- pathArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- idsArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- updatedIDsArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(updatedIDsArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- this.dataObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- formDataObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+      
+  //   } catch (errorObj) {
+      
+      
+  //     // --------------------------------------------------
+  //     //   Snackbar: Error
+  //     // --------------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
+      
+      
+  //   } finally {
+      
+      
+  //     // --------------------------------------------------
+  //     //   Button Enable
+  //     // --------------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //   }
+    
+    
+  // };
   
   
   
@@ -888,221 +888,221 @@ class Store {
    * @param {string} handleSetIDsArr - idsArr を設定する関数 / 親のコンポーネントから受け取る
    * @param {Array} idsArr - 選択されたIDの配列
    */
-  @action.bound
-  async handleDeleteSubmit({ 
+  // @action.bound
+  // async handleDeleteSubmit({ 
     
-    pathArr,
-    handleSetIDsArr,
-    idsArr,
+  //   pathArr,
+  //   handleSetIDsArr,
+  //   idsArr,
     
-  }) {
-    
-    
-    try {
-      
-      
-      // --------------------------------------------------
-      //   Button Disable
-      // --------------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   編集するIDが選ばれていない場合、エラー
-      // --------------------------------------------------
-      
-      const form_id = lodashGet(this.dataObj, [...pathArr, '_id'], '');
-      
-      if (!form_id) {
-        throw new CustomError({ errorsArr: [{ code: '-PQYNFlb', messageID: 'Z9LG9XL5W' }] });
-      }
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   FormData
-      // --------------------------------------------------
-      
-      const formDataObj = {
-        
-        _id: form_id,
-        
-      };
-      
-      
-      // --------------------------------------------------
-      //   Fetch
-      // --------------------------------------------------
-      
-      const resultObj = await fetchWrapper({
-        
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/ids/delete`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
-        
-      });
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   Error
-      // --------------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   データ更新
-      // --------------------------------------------------
-      
-      lodashSet(this.dataObj, [...pathArr, 'dataArr'], resultObj.data);
-      
-      
-      // --------------------------------------------------
-      //   渡された関数を実行する
-      //   ID登録フォームをロードした元のフォームのIDを更新する
-      // --------------------------------------------------
-      
-      const updatedIDsArr = [];
-      
-      for (let valueObj of idsArr.values()) {
-        
-        const newObj = resultObj.data.find((valueObj2) => {
-          return valueObj2._id === valueObj._id;
-        });
-        
-        if (newObj) {
-          updatedIDsArr.push(newObj);
-        }
-        
-      }
-      
-      
-      // --------------------------------------------------
-      //   プレイヤーカードのフォーム更新
-      // --------------------------------------------------
-      
-      // if (type === 'cardPlayerForm') {
-        
-      //   const clonedArr = lodashCloneDeep(updatedIDsArr);
-      //   lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'idsArr'], clonedArr);
-        
-      // }
-      
-      
-      // --------------------------------------------------
-      //   受け取った関数を実行する / Set idsArr
-      // --------------------------------------------------
-      
-      handleSetIDsArr({ pathArr, idsArr: updatedIDsArr });
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   フォームを空にする
-      // --------------------------------------------------
-      
-      this.handleResetForm({ pathArr });
-      
-      
-      // --------------------------------------------------
-      //   ゲームフォームを空にする
-      // --------------------------------------------------
-      
-      storeGameForm.handleResetForm({ pathArr });
-      
-      
-      // --------------------------------------------------
-      //   削除ダイアログを閉じる
-      // --------------------------------------------------
-      
-      this.handleDeleteDialogClose({ pathArr });
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   Snackbar: Success
-      // --------------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'success',
-        messageID: 'j6lSS-Zf5',
-        horizontal: 'right',
-      });
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/id/stores/form.js - handleDeleteSubmit
-      // `);
-      
-      // console.log(chalk`
-      //   _id: {green ${_id}}
-      // `);
-      
-      // console.log(`
-      //   ----- pathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- idsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- updatedIDsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(updatedIDsArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-    } catch (errorObj) {
-      
-      
-      // --------------------------------------------------
-      //   Snackbar: Error
-      // --------------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
-      
-      
-    } finally {
-      
-      
-      // --------------------------------------------------
-      //   Button Enable
-      // --------------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
-      
-      
-    }
+  // }) {
     
     
-  };
+  //   try {
+      
+      
+  //     // --------------------------------------------------
+  //     //   Button Disable
+  //     // --------------------------------------------------
+      
+  //     storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   編集するIDが選ばれていない場合、エラー
+  //     // --------------------------------------------------
+      
+  //     const form_id = lodashGet(this.dataObj, [...pathArr, '_id'], '');
+      
+  //     if (!form_id) {
+  //       throw new CustomError({ errorsArr: [{ code: '-PQYNFlb', messageID: 'Z9LG9XL5W' }] });
+  //     }
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   FormData
+  //     // --------------------------------------------------
+      
+  //     const formDataObj = {
+        
+  //       _id: form_id,
+        
+  //     };
+      
+      
+  //     // --------------------------------------------------
+  //     //   Fetch
+  //     // --------------------------------------------------
+      
+  //     const resultObj = await fetchWrapper({
+        
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/ids/delete`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj),
+        
+  //     });
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   Error
+  //     // --------------------------------------------------
+      
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   データ更新
+  //     // --------------------------------------------------
+      
+  //     lodashSet(this.dataObj, [...pathArr, 'dataArr'], resultObj.data);
+      
+      
+  //     // --------------------------------------------------
+  //     //   渡された関数を実行する
+  //     //   ID登録フォームをロードした元のフォームのIDを更新する
+  //     // --------------------------------------------------
+      
+  //     const updatedIDsArr = [];
+      
+  //     for (let valueObj of idsArr.values()) {
+        
+  //       const newObj = resultObj.data.find((valueObj2) => {
+  //         return valueObj2._id === valueObj._id;
+  //       });
+        
+  //       if (newObj) {
+  //         updatedIDsArr.push(newObj);
+  //       }
+        
+  //     }
+      
+      
+  //     // --------------------------------------------------
+  //     //   プレイヤーカードのフォーム更新
+  //     // --------------------------------------------------
+      
+  //     // if (type === 'cardPlayerForm') {
+        
+  //     //   const clonedArr = lodashCloneDeep(updatedIDsArr);
+  //     //   lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'idsArr'], clonedArr);
+        
+  //     // }
+      
+      
+  //     // --------------------------------------------------
+  //     //   受け取った関数を実行する / Set idsArr
+  //     // --------------------------------------------------
+      
+  //     handleSetIDsArr({ pathArr, idsArr: updatedIDsArr });
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   フォームを空にする
+  //     // --------------------------------------------------
+      
+  //     this.handleResetForm({ pathArr });
+      
+      
+  //     // --------------------------------------------------
+  //     //   ゲームフォームを空にする
+  //     // --------------------------------------------------
+      
+  //     storeGameForm.handleResetForm({ pathArr });
+      
+      
+  //     // --------------------------------------------------
+  //     //   削除ダイアログを閉じる
+  //     // --------------------------------------------------
+      
+  //     this.handleDeleteDialogClose({ pathArr });
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   Snackbar: Success
+  //     // --------------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'success',
+  //       messageID: 'j6lSS-Zf5',
+  //       horizontal: 'right',
+  //     });
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
+      
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/common/id/stores/form.js - handleDeleteSubmit
+  //     // `);
+      
+  //     // console.log(chalk`
+  //     //   _id: {green ${_id}}
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- pathArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- idsArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- updatedIDsArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(updatedIDsArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+      
+  //   } catch (errorObj) {
+      
+      
+  //     // --------------------------------------------------
+  //     //   Snackbar: Error
+  //     // --------------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
+      
+      
+  //   } finally {
+      
+      
+  //     // --------------------------------------------------
+  //     //   Button Enable
+  //     // --------------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //   }
+    
+    
+  // };
   
   
   
@@ -1112,228 +1112,228 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {Array} selectAndEditPathArr - 選択と編集で使っているパス
    */
-  @action.bound
-  async handleRegisterSubmit({ pathArr, selectAndEditPathArr }) {
+  // @action.bound
+  // async handleRegisterSubmit({ pathArr, selectAndEditPathArr }) {
     
     
-    try {
+  //   try {
       
       
-      // --------------------------------------------------
-      //   Button Disable
-      // --------------------------------------------------
+  //     // --------------------------------------------------
+  //     //   Button Disable
+  //     // --------------------------------------------------
       
-      storeLayout.handleButtonDisable({ pathArr });
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   フォームのデータを取得
-      // --------------------------------------------------
-      
-      const platform = lodashGet(this.dataObj, [...pathArr, 'platform'], '');
-      const label = lodashGet(this.dataObj, [...pathArr, 'label'], '');
-      const id = lodashGet(this.dataObj, [...pathArr, 'id'], '');
-      const publicSetting = lodashGet(this.dataObj, [...pathArr, 'publicSetting'], '');
-      const search = lodashGet(this.dataObj, [...pathArr, 'search'], true);
-      
-      const gamesArr = storeGameForm.handleGetGamesArr({ pathArr });
-      
-      let gameCommunities_id = '';
-      
-      if (gamesArr.length > 0) {
-        gameCommunities_id = lodashGet(gamesArr, [0, 'gameCommunities_id'], '');
-      }
+  //     storeLayout.handleButtonDisable({ pathArr });
       
       
       
       
-      // --------------------------------------------------
-      //   フォームに必要な情報が入力されていない場合、エラー
-      // --------------------------------------------------
+  //     // --------------------------------------------------
+  //     //   フォームのデータを取得
+  //     // --------------------------------------------------
       
-      if (!platform || !id || !publicSetting) {
-        throw new CustomError({ errorsArr: [{ code: 'gk89EvTvH', messageID: 'uwHIKBy7c' }] });
-      }
+  //     const platform = lodashGet(this.dataObj, [...pathArr, 'platform'], '');
+  //     const label = lodashGet(this.dataObj, [...pathArr, 'label'], '');
+  //     const id = lodashGet(this.dataObj, [...pathArr, 'id'], '');
+  //     const publicSetting = lodashGet(this.dataObj, [...pathArr, 'publicSetting'], '');
+  //     const search = lodashGet(this.dataObj, [...pathArr, 'search'], true);
+      
+  //     const gamesArr = storeGameForm.handleGetGamesArr({ pathArr });
+      
+  //     let gameCommunities_id = '';
+      
+  //     if (gamesArr.length > 0) {
+  //       gameCommunities_id = lodashGet(gamesArr, [0, 'gameCommunities_id'], '');
+  //     }
       
       
       
       
-      // --------------------------------------------------
-      //   FormData
-      // --------------------------------------------------
+  //     // --------------------------------------------------
+  //     //   フォームに必要な情報が入力されていない場合、エラー
+  //     // --------------------------------------------------
       
-      const formDataObj = {
+  //     if (!platform || !id || !publicSetting) {
+  //       throw new CustomError({ errorsArr: [{ code: 'gk89EvTvH', messageID: 'uwHIKBy7c' }] });
+  //     }
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   FormData
+  //     // --------------------------------------------------
+      
+  //     const formDataObj = {
         
-        platform,
-        label,
-        gameCommunities_id,
-        id,
-        publicSetting,
-        search,
+  //       platform,
+  //       label,
+  //       gameCommunities_id,
+  //       id,
+  //       publicSetting,
+  //       search,
         
-      };
+  //     };
       
       
-      // --------------------------------------------------
-      //   Fetch
-      // --------------------------------------------------
+  //     // --------------------------------------------------
+  //     //   Fetch
+  //     // --------------------------------------------------
       
-      const resultObj = await fetchWrapper({
+  //     const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/ids/upsert`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/ids/upsert`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj),
         
-      });
+  //     });
       
       
       
       
-      // --------------------------------------------------
-      //   Error
-      // --------------------------------------------------
+  //     // --------------------------------------------------
+  //     //   Error
+  //     // --------------------------------------------------
       
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   Data 更新
-      // --------------------------------------------------
-      
-      lodashSet(this.dataObj, [...selectAndEditPathArr, 'dataArr'], resultObj.data);
-      
-      
-      // --------------------------------------------------
-      //   未選択IDに追加 / _id のみでいい
-      // --------------------------------------------------
-      
-      const dataArr = lodashGet(this.dataObj, [...selectAndEditPathArr, 'dataArr'], []);
-      const unselectedArr = lodashGet(this.dataObj, [...selectAndEditPathArr, 'unselectedArr'], []);
-      unselectedArr.push(dataArr[dataArr.length - 1]._id);
-      
-      lodashSet(this.dataObj, [...selectAndEditPathArr, 'unselectedArr'], unselectedArr);
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
       
       
       
       
-      // --------------------------------------------------
-      //   フォームを空にする
-      // --------------------------------------------------
+  //     // --------------------------------------------------
+  //     //   Data 更新
+  //     // --------------------------------------------------
       
-      this.handleResetForm({ pathArr });
-      
-      
-      // --------------------------------------------------
-      //   ゲームフォームを空にする
-      // --------------------------------------------------
-      
-      storeGameForm.handleResetForm({ pathArr });
+  //     lodashSet(this.dataObj, [...selectAndEditPathArr, 'dataArr'], resultObj.data);
       
       
+  //     // --------------------------------------------------
+  //     //   未選択IDに追加 / _id のみでいい
+  //     // --------------------------------------------------
       
+  //     const dataArr = lodashGet(this.dataObj, [...selectAndEditPathArr, 'dataArr'], []);
+  //     const unselectedArr = lodashGet(this.dataObj, [...selectAndEditPathArr, 'unselectedArr'], []);
+  //     unselectedArr.push(dataArr[dataArr.length - 1]._id);
       
-      // --------------------------------------------------
-      //   Snackbar: Success
-      // --------------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'success',
-        messageID: 'As9-T8q9N',
-        horizontal: 'right',
-      });
+  //     lodashSet(this.dataObj, [...selectAndEditPathArr, 'unselectedArr'], unselectedArr);
       
       
       
       
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
+  //     // --------------------------------------------------
+  //     //   フォームを空にする
+  //     // --------------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/id/stores/form.js - handleRegisterSubmit
-      // `);
-      
-      // console.log(chalk`
-      //   _id: {green ${_id}}
-      //   platform: {green ${platform}}
-      //   label: {green ${label}}
-      //   id: {green ${id}}
-      //   publicSetting: {green ${publicSetting}}
-      //   search: {green ${search}}
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      // `);
-      
-      // console.log(`
-      //   ----- pathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- newPathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(newPathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- dataArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(dataArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- unselectedArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(unselectedArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- this.dataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     this.handleResetForm({ pathArr });
       
       
-    } catch (errorObj) {
+  //     // --------------------------------------------------
+  //     //   ゲームフォームを空にする
+  //     // --------------------------------------------------
+      
+  //     storeGameForm.handleResetForm({ pathArr });
       
       
-      // --------------------------------------------------
-      //   Snackbar: Error
-      // --------------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
       
       
-    } finally {
+  //     // --------------------------------------------------
+  //     //   Snackbar: Success
+  //     // --------------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'success',
+  //       messageID: 'As9-T8q9N',
+  //       horizontal: 'right',
+  //     });
       
       
-      // --------------------------------------------------
-      //   Button Enable
-      // --------------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
       
       
-    }
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
+      
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/common/id/stores/form.js - handleRegisterSubmit
+  //     // `);
+      
+  //     // console.log(chalk`
+  //     //   _id: {green ${_id}}
+  //     //   platform: {green ${platform}}
+  //     //   label: {green ${label}}
+  //     //   id: {green ${id}}
+  //     //   publicSetting: {green ${publicSetting}}
+  //     //   search: {green ${search}}
+  //     //   gameCommunities_id: {green ${gameCommunities_id}}
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- pathArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- newPathArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(newPathArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- dataArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(dataArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- unselectedArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(unselectedArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- this.dataObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+      
+  //   } catch (errorObj) {
+      
+      
+  //     // --------------------------------------------------
+  //     //   Snackbar: Error
+  //     // --------------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
+      
+      
+  //   } finally {
+      
+      
+  //     // --------------------------------------------------
+  //     //   Button Enable
+  //     // --------------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //   }
     
     
-  };
+  // };
   
   
   
@@ -1342,17 +1342,17 @@ class Store {
    * フォームを空にする
    * @param {Array} pathArr - パス
    */
-  @action.bound
-  handleResetForm({ pathArr }) {
+  // @action.bound
+  // handleResetForm({ pathArr }) {
     
-    lodashSet(this.dataObj, [...pathArr, '_id'], '');
-    lodashSet(this.dataObj, [...pathArr, 'platform'], '');
-    lodashSet(this.dataObj, [...pathArr, 'label'], '');
-    lodashSet(this.dataObj, [...pathArr, 'id'], '');
-    lodashSet(this.dataObj, [...pathArr, 'publicSetting'], '');
-    lodashSet(this.dataObj, [...pathArr, 'search'], true);
+  //   lodashSet(this.dataObj, [...pathArr, '_id'], '');
+  //   lodashSet(this.dataObj, [...pathArr, 'platform'], '');
+  //   lodashSet(this.dataObj, [...pathArr, 'label'], '');
+  //   lodashSet(this.dataObj, [...pathArr, 'id'], '');
+  //   lodashSet(this.dataObj, [...pathArr, 'publicSetting'], '');
+  //   lodashSet(this.dataObj, [...pathArr, 'search'], true);
     
-  };
+  // };
   
   
 }

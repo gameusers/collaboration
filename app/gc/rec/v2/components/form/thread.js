@@ -75,7 +75,7 @@ import { validationRecruitmentThreadsName } from 'app/@database/recruitment-thre
 import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js';
 import FormHardwares from 'app/common/hardware/v2/components/form.js';
 import FormIDsInformations from 'app/gc/rec/v2/components/form/ids-informations.js';
-import FormDeadline from 'app/gc/rec/components/form/deadline.js';
+import FormDeadline from 'app/gc/rec/v2/components/form/deadline.js';
 
 
 
@@ -181,6 +181,8 @@ const Component = (props) => {
   const [information4, setInformation4] = useState('');
   const [information5, setInformation5] = useState('');
   const [publicSetting, setPublicSetting] = useState(1);
+  
+  const [deadlineDate, setDeadlineDate] = useState('');
   
   
   useEffect(() => {
@@ -862,11 +864,46 @@ const Component = (props) => {
         
         {/* Form Hardware */}
         <div css={cssBox}>
+          
+          <h3
+            css={css`
+              font-weight: bold;
+              margin: 0 0 2px 0;
+            `}
+          >
+            ハードウェア
+          </h3>
+          
+          
+          <p
+            css={css`
+              margin: 0 0 14px 0;
+            `}
+          >
+            募集に関係するハードウェアを選んでください（PC版、○○版などの情報です）
+          </p>
+          
+          <p
+            css={css`
+              margin: 0 0 14px 0;
+            `}
+          >
+            ハードウェア名（またはSFC、N64などの略称）の一部を入力すると、入力フォームの下に一覧でハードウェアの正式名称が表示されます。一覧上でハードウェアをクリック（タップ）すると入力は完了です。この欄では複数のハードウェアを入力することが可能です。
+          </p>
+          
+          <p>
+            ゲームのハードウェア名だけでなく、「Android」「iOS」「PC」などもハードウェアとして入力できます。
+          </p>
+          
+          
+          
+          
           <FormHardwares
             hardwaresArr={hardwaresArr}
             setHardwaresArr={setHardwaresArr}
             limit={limitHardwares}
           />
+          
         </div>
         
         
@@ -1093,9 +1130,11 @@ const Component = (props) => {
         {/* Deadline */}
         <div css={cssBox}>
           
-          {/*<FormDeadline
-            pathArr={pathArr}
-          />*/}
+          <FormDeadline
+            deadlineDate={deadlineDate}
+            setDeadlineDate={setDeadlineDate}
+            recruitmentThreads_id={recruitmentThreads_id}
+          />
           
         </div>
         

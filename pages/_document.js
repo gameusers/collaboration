@@ -1,5 +1,5 @@
 // --------------------------------------------------
-//   _document.jsについて：https://github.com/zeit/next.js#custom-document
+//   _document.jsについて：https://nextjs.org/docs/advanced-features/custom-document
 //   日本語の記事：https://qiita.com/tetsutaroendo/items/c7171286137d963cdecf
 //   
 //   Next.jsでMaterial UIを利用する場合の_document.js
@@ -11,9 +11,9 @@
 // --------------------------------------------------
 
 import React from 'react';
-import Document, { Head, Main, NextScript } from 'next/document';
-import { ServerStyleSheets } from '@material-ui/styles';
-import flush from 'styled-jsx/server';
+import Document, { Html, Head, Main, NextScript } from 'next/document';
+import { ServerStyleSheets } from '@material-ui/core/styles';
+// import flush from 'styled-jsx/server';
 // import theme from '../app/@css/material-ui/theme';
 
 
@@ -26,9 +26,13 @@ import flush from 'styled-jsx/server';
 
 
 class MyDocument extends Document {
+  
   render() {
+    
     return (
-      <html lang='ja'>
+      
+      <Html lang='ja'>
+        
         <Head>
           <meta charSet='utf-8' />
           <meta name='viewport' content='width=device-width, initial-scale=1.0' />
@@ -67,13 +71,18 @@ class MyDocument extends Document {
           <link rel="icon" href="/favicon.ico" />
           <link rel='apple-touch-icon' sizes='180x180' href='/img/common/icons/apple-touch-icon-180×180.png' />
         </Head>
+        
+        
         <body>
           <Main />
           <NextScript />
         </body>
-      </html>
+        
+      </Html>
     );
+    
   }
+  
 }
 
 
@@ -114,13 +123,18 @@ MyDocument.getInitialProps = async ctx => {
   return {
     ...initialProps,
     // Styles fragment is rendered after the app and page rendering finish.
-    styles: (
-      <React.Fragment>
-        {sheets.getStyleElement()}
-        {flush() || null}
-      </React.Fragment>
-    ),
+    styles: [...React.Children.toArray(initialProps.styles), sheets.getStyleElement()],
   };
+  // return {
+  //   ...initialProps,
+  //   // Styles fragment is rendered after the app and page rendering finish.
+  //   styles: (
+  //     <React.Fragment>
+  //       {sheets.getStyleElement()}
+  //       {flush() || null}
+  //     </React.Fragment>
+  //   ),
+  // };
 };
 
 

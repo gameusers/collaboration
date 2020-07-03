@@ -57,7 +57,15 @@ import Select from '@material-ui/core/Select';
 // ---------------------------------------------
 
 import { ContainerStateUser } from 'app/@states/user.js';
+import { ContainerStateLayout } from 'app/@states/layout.js';
 import { ContainerStateGc } from 'app/@states/gc.js';
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+// import { handleWebPushSubscribe } from 'app/@modules/web-push.js';
 
 
 // ---------------------------------------------
@@ -74,6 +82,7 @@ import { validationRecruitmentThreadsName } from 'app/@database/recruitment-thre
 
 import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js';
 import FormHardwares from 'app/common/hardware/v2/components/form.js';
+import WebPuchCheckbox from 'app/common/web-push/v2/components/checkbox.js';
 import FormIDsInformations from 'app/gc/rec/v2/components/form/ids-informations.js';
 import FormDeadline from 'app/gc/rec/v2/components/form/deadline.js';
 
@@ -152,6 +161,7 @@ const Component = (props) => {
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
   const [webPushAvailable, setWebPushAvailable] = useState(false);
+  const [webPushSubscriptionObj, setWebPushSubscriptionObj] = useState({});
   const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
     
     _id: '',
@@ -214,9 +224,20 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const stateUser = ContainerStateUser.useContainer();
+  const stateLayout = ContainerStateLayout.useContainer();
   const stateGc = ContainerStateGc.useContainer();
   
   const { login } = stateUser;
+  
+  const {
+    
+    handleSnackbarOpen,
+    handleDialogOpen,
+    handleLoadingOpen,
+    handleLoadingClose,
+    handleScrollTo,
+    
+  } = stateLayout;
   
   const {
     
@@ -230,6 +251,120 @@ const Component = (props) => {
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
+  
+  /**
+   * 通知設定 - 購読データを取得する
+   * @param {boolean} checked - チェックの状態
+   */
+  // const handleWebPush = async (checked) => {
+    
+    
+  //   try {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading Open
+  //     // ---------------------------------------------
+      
+  //     handleLoadingOpen({});
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
+      
+  //     setButtonDisabled(true);
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   Subscribe
+  //     // ---------------------------------------------
+      
+  //     let webPushSubscriptionObj = {};
+      
+  //     if (checked) {
+        
+  //       // webPushSubscriptionObj = await handleWebPushSubscribe();
+  //       // // lodashSet(this.dataObj, [...pathArr, 'webPushSubscriptionObj'], webPushSubscriptionObj);
+        
+        
+  //       // console.log(`
+  //       //   ----- webPushSubscriptionObj -----\n
+  //       //   ${util.inspect(JSON.parse(JSON.stringify(webPushSubscriptionObj)), { colors: true, depth: null })}\n
+  //       //   --------------------\n
+  //       // `);
+        
+  //     }
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   Check
+  //     // ---------------------------------------------
+      
+  //     setWebPushAvailable(!webPushAvailable);
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
+      
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/gc/rec/v2/components/form/thread.js - handleWebPush
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- webPushSubscriptionObj -----\n
+  //     //   ${util.inspect(webPushSubscriptionObj, { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+      
+  //   } catch (errorObj) {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
+      
+  //     handleSnackbarOpen({
+        
+  //       variant: 'error',
+  //       messageID: 'KkWs0oIKw',
+        
+  //     });
+      
+      
+  //   } finally {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
+      
+  //     setButtonDisabled(false);
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading Close
+  //     // ---------------------------------------------
+      
+  //     handleLoadingClose();
+      
+      
+  //   }
+    
+    
+  // };
+  
+  
+  
   
   /**
    * 編集用データを読み込む
@@ -389,13 +524,549 @@ const Component = (props) => {
   };
   
   
+  
+  
+  /**
+   * 募集を投稿する
+   * @param {Object} eventObj - イベント
+   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
+   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / 募集スレッドのID
+   */
+  const handleSubmit = async ({
+    
+    eventObj,
+    gameCommunities_id,
+    recruitmentThreads_id,
+    
+  }) => {
+    
+    
+    // ---------------------------------------------
+    //   フォームの送信処理停止
+    // ---------------------------------------------
+    
+    eventObj.preventDefault();
+    
+    
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Temp Data
+      // ---------------------------------------------
+      
+      // lodashSet(storeHardware, ['dataObj', ...pathArr, 'hardwaresArr'], [ { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },  { hardwareID: '2yKF4qXAw', name: 'メガドライブ' } ]);
+      
+      
+      // const newObj = {
+        
+      //   gameCommunities_id,
+      //   recruitmentThreads_id: '',
+      //   category: 1,
+      //   title: 'テストタイトル',
+      //   name: 'テストネーム',
+      //   comment: 'テストコメント',
+      //   // anonymity: false,
+      //   platform1: 'Other',
+      //   platform2: 'Other',
+      //   platform3: 'Other',
+      //   id1: 'test-id-1',
+      //   id2: '',
+      //   id3: '',
+      //   informationTitle1: '情報タイトル1',
+      //   informationTitle2: '',
+      //   informationTitle3: '',
+      //   informationTitle4: '',
+      //   informationTitle5: '',
+      //   information1: '情報1',
+      //   information2: '',
+      //   information3: '',
+      //   information4: '',
+      //   information5: '',
+      //   publicSetting: 1,
+      //   // deadlineDate: '2020-12-31',
+      //   // twitter: false,
+      //   // webPush: false,
+      //   webPushSubscriptionObj: {
+      //     endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
+      //     keys: {
+      //       p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
+      //       auth: 'siDbUa9DCbg-n9AMsvWA1w'
+      //     }
+      //   },
+        
+      // };
+      
+      // const oldObj = lodashGet(this.dataObj, [...pathArr], {});
+      // const mergedObj = lodashMerge(oldObj, newObj);
+      
+      // lodashSet(this.dataObj, [...pathArr], mergedObj);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Property
+      // ---------------------------------------------
+      
+      const hardwaresArr = lodashGet(storeHardware, ['dataObj', ...pathArr, 'hardwaresArr'], []);
+      
+      const hardwareIDsArr = [];
+      
+      for (let valueObj of hardwaresArr.values()) {
+        hardwareIDsArr.push(valueObj.hardwareID);
+      }
+      
+      const category = lodashGet(this.dataObj, [...pathArr, 'category'], '');
+      const title = lodashGet(this.dataObj, [...pathArr, 'title'], '');
+      const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
+      const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
+      const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj', ...pathArr, 'imagesAndVideosObj'], {});
+      
+      const idsArr = lodashGet(this.dataObj, [...pathArr, 'idsArr'], []);
+      
+      const platform1 = lodashGet(this.dataObj, [...pathArr, 'platform1'], 'Other');
+      const platform2 = lodashGet(this.dataObj, [...pathArr, 'platform2'], 'Other');
+      const platform3 = lodashGet(this.dataObj, [...pathArr, 'platform3'], 'Other');
+      
+      const id1 = lodashGet(this.dataObj, [...pathArr, 'id1'], '');
+      const id2 = lodashGet(this.dataObj, [...pathArr, 'id2'], '');
+      const id3 = lodashGet(this.dataObj, [...pathArr, 'id3'], '');
+      
+      const informationTitle1 = lodashGet(this.dataObj, [...pathArr, 'informationTitle1'], '');
+      const informationTitle2 = lodashGet(this.dataObj, [...pathArr, 'informationTitle2'], '');
+      const informationTitle3 = lodashGet(this.dataObj, [...pathArr, 'informationTitle3'], '');
+      const informationTitle4 = lodashGet(this.dataObj, [...pathArr, 'informationTitle4'], '');
+      const informationTitle5 = lodashGet(this.dataObj, [...pathArr, 'informationTitle5'], '');
+      
+      const information1 = lodashGet(this.dataObj, [...pathArr, 'information1'], '');
+      const information2 = lodashGet(this.dataObj, [...pathArr, 'information2'], '');
+      const information3 = lodashGet(this.dataObj, [...pathArr, 'information3'], '');
+      const information4 = lodashGet(this.dataObj, [...pathArr, 'information4'], '');
+      const information5 = lodashGet(this.dataObj, [...pathArr, 'information5'], '');
+      
+      const publicSetting = lodashGet(this.dataObj, [...pathArr, 'publicSetting'], 1);
+      
+      const deadlineDate = lodashGet(this.dataObj, [...pathArr, 'deadlineDate'], '');
+      
+      const webPushAvailable = lodashGet(this.dataObj, [...pathArr, 'webPushAvailable'], false);
+      const webPushSubscriptionObj = lodashGet(this.dataObj, [...pathArr, 'webPushSubscriptionObj'], {});
+      
+      
+      const threadLimit = parseInt((storeData.getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
+      const commentLimit = parseInt((storeData.getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
+      const replyLimit = parseInt((storeData.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Validations
+      // ---------------------------------------------
+      
+      if (
+        
+        validationRecruitmentThreadsCategory({ value: category }).error ||
+        
+        validationRecruitmentThreadsTitle({ value: title }).error ||
+        validationHandleName({ value: name }).error ||
+        validationRecruitmentThreadsComment({ value: comment }).error ||
+        
+        validationRecruitmentThreadsPlatform({ value: platform1 }).error ||
+        validationRecruitmentThreadsPlatform({ value: platform2 }).error ||
+        validationRecruitmentThreadsPlatform({ value: platform3 }).error ||
+        
+        validationRecruitmentThreadsID({ value: id1 }).error ||
+        validationRecruitmentThreadsID({ value: id2 }).error ||
+        validationRecruitmentThreadsID({ value: id3 }).error ||
+        
+        validationRecruitmentThreadsInformationTitle({ value: informationTitle1 }).error ||
+        validationRecruitmentThreadsInformationTitle({ value: informationTitle2 }).error ||
+        validationRecruitmentThreadsInformationTitle({ value: informationTitle3 }).error ||
+        validationRecruitmentThreadsInformationTitle({ value: informationTitle4 }).error ||
+        validationRecruitmentThreadsInformationTitle({ value: informationTitle5 }).error ||
+        
+        validationRecruitmentThreadsInformation({ value: information1 }).error ||
+        validationRecruitmentThreadsInformation({ value: information2 }).error ||
+        validationRecruitmentThreadsInformation({ value: information3 }).error ||
+        validationRecruitmentThreadsInformation({ value: information4 }).error ||
+        validationRecruitmentThreadsInformation({ value: information5 }).error ||
+        
+        validationRecruitmentThreadsPublicSetting({ value: publicSetting }).error ||
+        
+        validationRecruitmentThreadsDeadlineDate({ value: deadlineDate }).error ||
+        
+        validationBoolean({ value: webPushAvailable }).error
+        
+      ) {
+        
+        throw new CustomError({ errorsArr: [{ code: 'S0JRF6V5l', messageID: 'uwHIKBy7c' }] });
+        
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Loading 表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingShow({});
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formDataObj = {
+        
+        gameCommunities_id,
+        recruitmentThreads_id,
+        hardwareIDsArr,
+        category,
+        title,
+        name,
+        comment,
+        idsArr,
+        platform1,
+        platform2,
+        platform3,
+        id1,
+        id2,
+        id3,
+        informationTitle1,
+        informationTitle2,
+        informationTitle3,
+        informationTitle4,
+        informationTitle5,
+        information1,
+        information2,
+        information3,
+        information4,
+        information5,
+        publicSetting,
+        deadlineDate,
+        webPushAvailable,
+        threadLimit,
+        commentLimit,
+        replyLimit,
+        
+      };
+      
+      if (Object.keys(imagesAndVideosObj).length !== 0) {
+        formDataObj.imagesAndVideosObj = imagesAndVideosObj;
+      }
+      
+      if (webPushAvailable && Object.keys(webPushSubscriptionObj).length !== 0) {
+        formDataObj.webPushSubscriptionObj = webPushSubscriptionObj;
+      }
+      
+      
+      // nOVilxpSk
+      // formDataObj.webPushSubscriptionObj = {
+      //   endpoint: 'https://fcm.googleapis.com/fcm/send/cOsJ3EXpj2E:APA91bHnycUwE37fsnmlRNYEuJYx_kf67jaq7CFmr7oFIGzIqRk8tXi8BhHmtCfL7MlMjhyYoFwhhvLMx7sfUCqh00wDXVIovAp5hamTe2UWGDF4QUd4Z8VRNkNcrQadHGUuy7k-Jqbd',
+      //   keys: {
+      //     p256dh: 'BCCZ55xYxmC_6JNemzKc1FzAiz-fUEz4xCA3WXqVq2MRBaSJA3SUKtlY_G_747sT2C0Xm6QJD4L7KKzunNtj-Zo',
+      //     auth: 'EYpxeXGdImUIaTpBqVca0A'
+      //   }
+      // };
+      
+      // L4D5QB9p4
+      // formDataObj.webPushSubscriptionObj = {
+      //   endpoint: 'https://fcm.googleapis.com/fcm/send/fCVMofN4BLo:APA91bFShjo-hy02fDaVOpLDHQE_TaRRCPSG1IJIc_2qhndZuqkC67x4_RFbWp5uH4I11SKRdxpVquPQP59QNcomJw4irs0F-EWqOUu6ydVDMZ0Gau92YGmEV36SSO5a63vxUet7wEIo',
+      //   keys: {
+      //     p256dh: 'BLPT_K71Dk35Le_w0eyviBXXNRBsaZc-5o1-D0VKp18XW_N4wCPyzilZE-j0V-eJ4Cz5irqOZt0nePNG8zLDdaQ',
+      //     auth: '0MuLywCY4rbTg5I2_nFEOQ'
+      //   }
+      // };
+      
+      // Error
+      // formDataObj.webPushSubscriptionObj = {
+      //   endpoint: 'https://fcm.googleapis.com/fcm/send/aaa',
+      //   keys: {
+      //     p256dh: 'bbb',
+      //     auth: 'ccc'
+      //   }
+      // };
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      const resultObj = await fetchWrapper({
+        
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/upsert`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
+        
+      });
+      
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   スレッド更新
+      // ---------------------------------------------
+      
+      const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
+      const clonedObj = lodashCloneDeep(recruitmentObj);
+      
+      clonedObj.recruitmentThreadsObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {});
+      clonedObj.recruitmentCommentsObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
+      clonedObj.recruitmentRepliesObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
+      clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+      
+      this.handleEdit({
+        pathArr: [gameCommunities_id],
+        value: clonedObj
+      });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   編集の場合
+      // ---------------------------------------------
+      
+      if (recruitmentThreads_id) {
+        
+        
+        // ---------------------------------------------
+        //   Hide Form
+        // ---------------------------------------------
+        
+        lodashSet(this.dataObj, [...pathArr, 'showFormThread'], false);
+        
+        
+      // ---------------------------------------------
+      //   新規投稿の場合
+      // ---------------------------------------------
+        
+      } else {
+        
+        
+        // ---------------------------------------------
+        //   Reset Form
+        // ---------------------------------------------
+        
+        // ----------------------------------------
+        //   - Hardware
+        // ----------------------------------------
+        
+        storeHardware.handleResetForm({ pathArr });
+        
+        
+        // ----------------------------------------
+        //   - Image and Video
+        // ----------------------------------------
+        
+        storeImageAndVideoForm.handleResetForm({ pathArr });
+        
+        
+        // ----------------------------------------
+        //   - ID
+        // ----------------------------------------
+        
+        storeIDForm.handleResetForm({ pathArr });
+        
+        
+        // ----------------------------------------
+        //   - Form
+        // ----------------------------------------
+        
+        lodashSet(this.dataObj, pathArr, {});
+        
+        
+        // ---------------------------------------------
+        //   パネルを閉じる
+        // ---------------------------------------------
+        
+        storeLayout.handlePanelExpand({ pathArr });
+        
+        
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      storeLayout.handleScrollTo({
+        
+        to: recruitmentThreads_id || 'recruitmentThreads',
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+        
+      });
+      
+      
+      
+      
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/gc/rec/stores/store.js / handleRecruitment
+      // `);
+      
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- this.dataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- ids_idsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- hardwaresArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(hardwaresArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- hardwareIDsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(hardwareIDsArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+      //   category: {green ${category}}
+      //   title: {green ${title}}
+      //   name: {green ${name}}
+      //   comment: {green ${comment}}
+      // `);
+      
+      // console.log(`
+      //   ----- imagesAndVideosObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(chalk`
+      //   platform1: {green ${platform1}}
+      //   id1: {green ${id1}}
+      //   platform2: {green ${platform2}}
+      //   id2: {green ${id2}}
+      //   platform3: {green ${platform3}}
+      //   id3: {green ${id3}}
+        
+      //   informationTitle1: {green ${informationTitle1}}
+      //   information1: {green ${information1}}
+      //   informationTitle2: {green ${informationTitle2}}
+      //   information2: {green ${information2}}
+      //   informationTitle3: {green ${informationTitle3}}
+      //   information3: {green ${information3}}
+      //   informationTitle4: {green ${informationTitle4}}
+      //   information4: {green ${information4}}
+      //   informationTitle5: {green ${informationTitle5}}
+      //   information5: {green ${information5}}
+        
+      //   publicSetting: {green ${publicSetting}}
+        
+      //   deadlineDate: {green ${deadlineDate}}
+      // `);
+      
+      // console.log(chalk`
+      //   twitter: {green ${twitter}}
+      //   webPush: {green ${webPush}}
+      // `);
+      
+      // return;
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ pathArr });
+      
+      
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide({});
+      
+      
+    }
+    
+    
+  };
+  
+  
+  
+  
   /**
    * スレッド作成・編集フォームを送信する
    * @param {Object} eventObj - イベント
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
    * @param {string} recruitmentThreads_id - DB recruitment-threads _id / 編集するスレッドのID
    */
-  const handleSubmit = async ({
+  const handleSubmit2 = async ({
     
     eventObj,
     gameCommunities_id,
@@ -779,7 +1450,7 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/gc/rec/components/form/thread.js
+  //   /app/gc/rec/v2/components/form/thread.js
   // `);
   
   // console.log(chalk`
@@ -1174,11 +1845,20 @@ const Component = (props) => {
               margin: 0 0 12px 0;
             `}
           >
-            過去にGame Usersからのプッシュ通知をブロックしたことがある方は、ブロックを解除しなければ通知を受けることができません。通知を受け取りたい方はブロックの解除方法を調べてから実行してください。
+            過去にGame Usersからのプッシュ通知をブロックしたことがある方は、ブロックを解除しなければ通知を受けることができません。通知を受け取りたい場合は、ご使用のブラウザのブロック解除方法を調べて実行してください。
           </p>
           
           
-          <div>
+          
+          
+          <WebPuchCheckbox
+            webPushAvailable={webPushAvailable}
+            setWebPushAvailable={setWebPushAvailable}
+            webPushSubscriptionObj={webPushSubscriptionObj}
+            setWebPushSubscriptionObj={setWebPushSubscriptionObj}
+          />
+          
+          {/*<div>
             <FormControlLabel
               classes={{
                 label: classes.label
@@ -1186,15 +1866,12 @@ const Component = (props) => {
               control={
                 <Checkbox
                   checked={webPushAvailable}
-                  // onChange={(eventObj) => handleGetWebPushSubscribeObj({
-                  //   pathArr,
-                  //   checked: eventObj.target.checked
-                  // })}
+                  onChange={(eventObj) => handleWebPush(eventObj.target.checked)}
                 />
               }
               label="プッシュ通知を許可する"
             />
-          </div>
+          </div>*/}
           
         </div>
         

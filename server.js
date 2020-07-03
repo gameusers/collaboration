@@ -56,6 +56,67 @@ const routerApi = require('./app/@api/v1/');
 
 
 
+// --------------------------------------------------
+//   Import
+// --------------------------------------------------
+
+// ---------------------------------------------
+//   Console
+// ---------------------------------------------
+
+// import chalk from 'chalk';
+// import util from 'util';
+
+
+// // ---------------------------------------------
+// //   Node Packages
+// // ---------------------------------------------
+
+// import express from 'express';
+// import helmet from 'helmet';
+// import bodyParser from 'body-parser';
+// import cookieParser from 'cookie-parser';
+
+// import flash from 'connect-flash';
+// import passport from 'passport';
+// import session from 'express-session';
+// import * as connectMongo from 'connect-mongo';
+// const MongoStore = connectMongo(session);
+// // import MongoStore from 'connect-mongo')(session);
+
+// import next from 'next';
+
+// const port = parseInt(process.env.PORT, 10) || 8080;
+// const dev = process.env.NODE_ENV !== 'production';
+// const app = next({ dev });
+// const handle = app.getRequestHandler();
+
+// import mobxReact from 'mobx-react';
+// import mongoose from 'mongoose';
+
+// import cron from 'node-cron';
+
+
+
+// // import bcrypt from 'bcryptjs';
+
+// // ---------------------------------------------
+// //   Model
+// // ---------------------------------------------
+
+// import ModelNotifications from './app/@database/notifications/model.js';
+// import ModelWebPushes from './app/@database/web-pushes/model.js';
+
+
+// // ---------------------------------------------
+// //   API
+// // ---------------------------------------------
+
+// import routerApi from './app/@api/v1/';
+
+
+
+
 
 
 // --------------------------------------------------

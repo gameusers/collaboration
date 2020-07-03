@@ -1,10 +1,11 @@
 // --------------------------------------------------
-//   _app.jsについて：https://github.com/zeit/next.js#custom-app
+//   _app.jsについて：https://nextjs.org/docs/advanced-features/custom-app
 //   日本語の記事：https://qiita.com/tetsutaroendo/items/c7171286137d963cdecf
 //   
 //   Next.jsでMaterial UIを利用する場合の_app.js
 //   参考：https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_app.js
 // --------------------------------------------------
+
 
 // --------------------------------------------------
 //   Import
@@ -22,12 +23,13 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React from 'react';
-import App from 'next/app';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
-import { observer, Provider } from 'mobx-react';
 import { IntlProvider } from 'react-intl';
 import moment from 'moment';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -35,6 +37,7 @@ import moment from 'moment';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+// import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
@@ -46,25 +49,22 @@ import theme from 'app/@css/material-ui/theme';
 
 
 // ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateUser } from 'app/@states/user.js';
+import { ContainerStateLayout } from 'app/@states/layout.js';
+
+
+// ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
 import { locale } from 'app/@locales/locale.js';
 
 
-// ---------------------------------------------
-//   Stores
-// ---------------------------------------------
-
-import initStoreRoot from 'app/@stores/root.js';
 
 
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateUser } from 'app/@states/user.js';
-import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 // ---------------------------------------------
@@ -84,126 +84,45 @@ import 'app/@css/style.css';
 
 
 // --------------------------------------------------
-//   Class
+//   Function Components
 // --------------------------------------------------
 
-@observer
-class MyApp extends App {
+/**
+ * Export Component
+ */
+const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   constructor
+  //   props
   // --------------------------------------------------
   
-  constructor(props) {
+  const {
     
+    Component,
+    pageProps,
     
-    // --------------------------------------------------
-    //   super
-    // --------------------------------------------------
-    
-    super(props);
-    
-    
-    
-    
-    // const isServer = !process.browser;
-    
-    // if (isServer) {
-      
-    //   console.log('_app.js / Server: constructor');
-      
-    // } else {
-      
-    //   console.log('_app.js / Client: constructor');
-      
-    // }
-    
-    // console.log(`
-    //   ----- props -----\n
-    //   ${util.inspect(props, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Property / Error Flag
-    // --------------------------------------------------
-    
-    this.error = false;
-    
-    
-    // --------------------------------------------------
-    //   Store
-    // --------------------------------------------------
-    
-    try {
-      
-      
-      // --------------------------------------------------
-      //   Store
-      // --------------------------------------------------
-      
-      this.stores = initStoreRoot({});
-      
-      
-      // --------------------------------------------------
-      //   Data - Locale
-      // --------------------------------------------------
-      
-      if (Object.keys(this.stores.data.localeObj).length === 0) {
-        
-        const reqAcceptLanguage = lodashGet(props, ['pageProps', 'reqAcceptLanguage'], '');
-        
-        const localeObj = locale({
-          acceptLanguage: reqAcceptLanguage
-        });
-        
-        this.stores.data.replaceLocaleObj(localeObj);
-        
-      }
-      
-      
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
-      
-      // console.log(`
-      //   ----- props.stores -----\n
-      //   ${util.inspect(props.stores, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- this.stores -----\n
-      //   ${util.inspect(this.stores, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   _app.js / constructor: {green ${lodashGet(props, ['stores', 'layout', 'handleHeaderHeroImageSize'], '')}}
-      // `);
-      
-      
-    } catch (e) {
-      
-      this.error = true;
-      
-    }
-    
-    
-  }
+  } = props;
   
   
   
   
   // --------------------------------------------------
-  //   componentDidMount
+  //   Hooks
   // --------------------------------------------------
   
-  async componentDidMount () {
+  // const classes = useStyles();
+  // const [buttonDisabled, setButtonDisabled] = useState(true);
+  
+  // const [hardwaresArr, setHardwaresArr] = useState([]);
+  // const [category, setCategory] = useState('');
+  // const [title, setTitle] = useState('');
+  // const [name, setName] = useState('');
+  // const [comment, setComment] = useState('');
+  // const [webPushAvailable, setWebPushAvailable] = useState(false);
+  
+  
+  useEffect(() => {
     
     
     // --------------------------------------------------
@@ -213,198 +132,190 @@ class MyApp extends App {
     const jssStyles = document.querySelector('#jss-server-side');
     
     if (jssStyles) {
-      jssStyles.parentNode.removeChild(jssStyles);
+      jssStyles.parentElement.removeChild(jssStyles);
+    }
+    // console.log('useEffect');
+    
+    // --------------------------------------------------
+    //   Service Worker
+    // --------------------------------------------------
+    
+    if ('serviceWorker' in navigator) {
+      // console.log('serviceWorker');
+      
+      // ---------------------------------------------
+      //   Service Worker を登録する - production
+      // ---------------------------------------------
+      
+      if (process.env.NODE_ENV === 'production') {
+        
+        // navigator.serviceWorker.register('/service-worker.js', { scope: '/' });
+        
+        navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then(function (registration) {
+          
+          console.log('SW registered: ', registration);
+          
+          // navigator.serviceWorker.ready.then((registrationObj) => {
+          //   console.log('SW ready: ', registrationObj);
+          // });
+          
+          
+        }).catch(function (registrationError) {
+          
+          console.log('SW registration failed: ', registrationError);
+          
+        });
+        
+        // console.log(`
+        //   ----- arr -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        
+      // ---------------------------------------------
+      //   登録されている Service Worker を全て削除する
+      //   unregister で削除するとデータベースに登録済みの endpoint & p256dh & auth も無効になるため、削除していはいけない。2020/5/21
+      //   dev 環境で unregister を行わないと、Chrome で「使用できるソケットを待機しています」と出て固まってしまう。2020/5/30
+      // ---------------------------------------------
+        
+      } else {
+        
+        navigator.serviceWorker.getRegistrations().then((registrationsObj) => {
+          
+          for (let registration of registrationsObj) {
+            registration.unregister();
+          }
+          
+        });
+        
+      }
+      
+      
     }
     
     
-    // --------------------------------------------------
-    //   現在の日時を定期的に更新する / イベント追加
-    // --------------------------------------------------
-    
-    window.addEventListener('load', this.stores.data.setIntervalDatetimeCurrent);
-    
-    
-    // --------------------------------------------------
-    //   Service Worker Register
-    // --------------------------------------------------
-    
-    await this.stores.webPush.handleServiceWorkerRegister();
-    
-    
-  }
+  }, []);
   
   
   
   
   // --------------------------------------------------
-  //   componentWillUnmount
+  //   Handler
   // --------------------------------------------------
   
-  componentWillUnmount() {
-    
-    
-    // --------------------------------------------------
-    //   現在の日時を定期的に更新する / イベント削除
-    // --------------------------------------------------
-    
-    window.removeEventListener('load', this.stores.data.setIntervalDatetimeCurrent);
-    
-    
-  }
   
   
   
   
   // --------------------------------------------------
-  //   render
+  //   Initial State - User
   // --------------------------------------------------
+  
+  const login = lodashGet(pageProps, ['login'], false);
+  const loginUsersObj = lodashGet(pageProps, ['loginUsersObj'], {});
+  const reqAcceptLanguage = lodashGet(pageProps, ['reqAcceptLanguage'], '');
+  
+  const localeObj = locale({
+    acceptLanguage: reqAcceptLanguage
+  });
+  
+  const initialStateUserObj = {
+    
+    login,
+    loginUsersObj,
+    localeObj,
+    
+  };
+  
+  
+  // --------------------------------------------------
+  //   Initial State - Layout
+  // --------------------------------------------------
+  
+  const ISO8601 = lodashGet(pageProps, ['ISO8601'], moment().utc().toISOString());
+  
+  const initialStateLayoutObj = {
+    
+    ISO8601,
+    
+  };
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /pages/_app.js
+  // `);
+  
+  // console.log(chalk`
+  //   ISO8601: {green ${ISO8601}}
+  //   login: {green ${login}}
+  // `);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return (
+    <React.Fragment>
+      
+      
+      <Head>
+        <title>Game Users</title>
+      </Head>
+      
+      
+      {/* Unstated Next States */}
+      <ContainerStateUser.Provider initialState={initialStateUserObj}>
+        
+        <ContainerStateLayout.Provider initialState={initialStateLayoutObj}>
+          
+          
+          {/* react-intl(i18n) Provider */}
+          <IntlProvider 
+            locale={localeObj.languageArr[0]}
+            // locale="en"
+            // locale="ja"
+            messages={localeObj.dataObj}
+          >
+            
+            
+            {/* Material UI Theme Provider */}
+            <ThemeProvider theme={theme}>
+              
+              <Component {...pageProps} />
+              
+            </ThemeProvider>
+            
+            
+          </IntlProvider>
+          
+          
+        </ContainerStateLayout.Provider>
+        
+      </ContainerStateUser.Provider>
+      
+      
+    </React.Fragment>
+  );
+  
+  
+};
 
-  render() {
-    
-    
-    // --------------------------------------------------
-    //   Error
-    //   参考：https://github.com/zeit/next.js#custom-error-handling
-    // --------------------------------------------------
-    
-    if (this.error) {
-      return <Error statusCode={this.props.statusCode} />;
-    }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Props
-    // --------------------------------------------------
-    
-    const { Component, pageProps } = this.props;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Initial State - User
-    // --------------------------------------------------
-    
-    const login = lodashGet(pageProps, ['login'], false);
-    const loginUsersObj = lodashGet(pageProps, ['loginUsersObj'], {});
-    const reqAcceptLanguage = lodashGet(pageProps, ['reqAcceptLanguage'], '');
-    
-    const localeObj = locale({
-      acceptLanguage: reqAcceptLanguage
-    });
-    
-    const initialStateUserObj = {
-      
-      login,
-      loginUsersObj,
-      localeObj,
-      
-    };
-    
-    
-    // --------------------------------------------------
-    //   Initial State - Layout
-    // --------------------------------------------------
-    
-    const ISO8601 = lodashGet(pageProps, ['ISO8601'], moment().utc().toISOString());
-    
-    const initialStateLayoutObj = {
-      
-      ISO8601,
-      
-    };
-    
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/_app.js
-    // `);
-    
-    // console.log(`
-    //   ----- pageProps -----\n
-    //   ${util.inspect(pageProps, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- initialStateObj -----\n
-    //   ${util.inspect(initialStateObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- loginUsersObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(loginUsersObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return (
-      <React.Fragment>
-        
-        
-        <Head>
-          <title>Game Users</title>
-        </Head>
-        
-        
-        {/* States */}
-        <ContainerStateUser.Provider initialState={initialStateUserObj}>
-          <ContainerStateLayout.Provider initialState={initialStateLayoutObj}>
-            
-            
-            {/* Mobx Provider */}
-            <Provider stores={this.stores}>
-              
-              
-              {/* react-intl(i18n) Provider */}
-              <IntlProvider 
-                locale={this.stores.data.localeObj.languageArr[0]}
-                // locale="en"
-                // locale="ja"
-                messages={this.stores.data.localeObj.dataObj}
-              >
-                
-                
-                {/* Material UI Theme Provider */}
-                <ThemeProvider theme={theme}>
-                  
-                  <Component {...pageProps} />
-                  
-                </ThemeProvider>
-                
-                
-              </IntlProvider>
-              
-              
-            </Provider>
-            
-            
-          </ContainerStateLayout.Provider>
-        </ContainerStateUser.Provider>
-        
-        
-      </React.Fragment>
-    );
-    
-    
-  }
-  
-  
-}
 
-export default MyApp;
+
+
+// --------------------------------------------------
+//   Export
+// --------------------------------------------------
+
+export default Component;

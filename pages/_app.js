@@ -37,7 +37,6 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-// import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
@@ -88,9 +87,9 @@ import 'app/@css/style.css';
 // --------------------------------------------------
 
 /**
- * Export Component
+ * Service Worker - registration データを保存する
  */
-const Component = (props) => {
+const ServiceWorker = (props) => {
   
   
   // --------------------------------------------------
@@ -108,40 +107,35 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateUser = ContainerStateUser.useContainer();
+  
+  const {
+    
+    setServiceWorkerRegistrationObj,
+    
+  } = stateUser;
+  
+  
+  
+  
+  // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
-  // const classes = useStyles();
-  // const [buttonDisabled, setButtonDisabled] = useState(true);
-  
-  // const [hardwaresArr, setHardwaresArr] = useState([]);
-  // const [category, setCategory] = useState('');
-  // const [title, setTitle] = useState('');
-  // const [name, setName] = useState('');
-  // const [comment, setComment] = useState('');
-  // const [webPushAvailable, setWebPushAvailable] = useState(false);
-  
-  
   useEffect(() => {
     
-    
-    // --------------------------------------------------
-    //   Remove the server-side injected CSS.
-    // --------------------------------------------------
-    
-    const jssStyles = document.querySelector('#jss-server-side');
-    
-    if (jssStyles) {
-      jssStyles.parentElement.removeChild(jssStyles);
-    }
-    // console.log('useEffect');
     
     // --------------------------------------------------
     //   Service Worker
     // --------------------------------------------------
     
     if ('serviceWorker' in navigator) {
-      // console.log('serviceWorker');
+      
+      // console.log('Service Worker');
+      
       
       // ---------------------------------------------
       //   Service Worker を登録する - production
@@ -149,28 +143,13 @@ const Component = (props) => {
       
       if (process.env.NODE_ENV === 'production') {
         
-        // navigator.serviceWorker.register('/service-worker.js', { scope: '/' });
-        
-        navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then(function (registration) {
+        navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then((registrationObj) => {
           
-          console.log('SW registered: ', registration);
+          // console.log('SW registered: ', registrationObj);
           
-          // navigator.serviceWorker.ready.then((registrationObj) => {
-          //   console.log('SW ready: ', registrationObj);
-          // });
-          
-          
-        }).catch(function (registrationError) {
-          
-          console.log('SW registration failed: ', registrationError);
+          setServiceWorkerRegistrationObj(registrationObj);
           
         });
-        
-        // console.log(`
-        //   ----- arr -----\n
-        //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
         
         
       // ---------------------------------------------
@@ -201,10 +180,58 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Handler
+  //   Return
   // --------------------------------------------------
   
+  return (
+    <Component {...pageProps} />
+  );
   
+  
+};
+
+
+
+
+/**
+ * Export Component
+ */
+const Component = (props) => {
+  
+  
+  // --------------------------------------------------
+  //   props
+  // --------------------------------------------------
+  
+  const {
+    
+    // Component,
+    pageProps,
+    
+  } = props;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Hooks
+  // --------------------------------------------------
+  
+  useEffect(() => {
+    
+    
+    // --------------------------------------------------
+    //   Remove the server-side injected CSS.
+    // --------------------------------------------------
+    
+    const jssStyles = document.querySelector('#jss-server-side');
+    
+    if (jssStyles) {
+      jssStyles.parentElement.removeChild(jssStyles);
+    }
+    
+    
+  }, []);
   
   
   
@@ -292,7 +319,8 @@ const Component = (props) => {
             {/* Material UI Theme Provider */}
             <ThemeProvider theme={theme}>
               
-              <Component {...pageProps} />
+              <ServiceWorker {...props} />
+              {/*<Component {...pageProps} />*/}
               
             </ThemeProvider>
             

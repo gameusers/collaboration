@@ -16,7 +16,6 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
-import keycode from 'keycode';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -27,10 +26,10 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-import lodashSet from 'lodash/set';
-import lodashHas from 'lodash/has';
-import lodashCloneDeep from 'lodash/cloneDeep';
-import lodashMerge from 'lodash/merge';
+// import lodashSet from 'lodash/set';
+// import lodashHas from 'lodash/has';
+// import lodashCloneDeep from 'lodash/cloneDeep';
+// import lodashMerge from 'lodash/merge';
 
 
 // ---------------------------------------------
@@ -55,15 +54,8 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from 'app/@modules/fetch.js';
-import { CustomError } from 'app/@modules/error/custom.js';
-
-
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-// import { validationKeyword } from 'app/@validations/keyword.js';
+// import { fetchWrapper } from 'app/@modules/fetch.js';
+// import { CustomError } from 'app/@modules/error/custom.js';
 
 
 
@@ -137,18 +129,18 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
   
-  // const stateUser = ContainerStateUser.useContainer();
+  const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
   
-  // const { login } = stateUser;
+  const { serviceWorkerRegistrationObj } = stateUser;
   
   const {
     
     handleSnackbarOpen,
-    handleDialogOpen,
+    // handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
-    handleScrollTo,
+    // handleScrollTo,
     
   } = stateLayout;
   
@@ -197,182 +189,125 @@ const Component = (props) => {
       if (checked && process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY) {
         
         
-        navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
-          // 既にプッシュメッセージサブスクリプションがあるか？
-          serviceWorkerRegistration.pushManager.getSubscription()
-            .then(function(subscription) {
-              
-              console.log('subscription', subscription);
-              
-            })
-            .catch(function(err) {
-              console.log('Error during getSubscription()', err);
-            });
-        });
+        // ---------------------------------------------
+        //   購読済みかどうかをチェックする / 購読していない場合は null が返る
+        //   すでに購読済みの場合
+        // ---------------------------------------------
+        
+        oldSubscriptionObj = await serviceWorkerRegistrationObj.pushManager.getSubscription();
         
         
-        // navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then(function (registration) {
-          
-        //   console.log('SW registered2: ', registration);
-          
-        //   // navigator.serviceWorker.ready.then((registrationObj) => {
-        //   //   console.log('SW ready: ', registrationObj);
-        //   // });
+        if (oldSubscriptionObj) {
           
           
-        // }).catch(function (registrationError) {
+          // ---------------------------------------------
+          //   webPushSubscriptionObj
+          // ---------------------------------------------
           
-        //   console.log('SW registration failed2: ', registrationError);
+          const parsedObj = JSON.parse(JSON.stringify(oldSubscriptionObj));
           
-        // });
-        
-        // // ---------------------------------------------
-        // //   サービスワーカーがアクティブになってから処理
-        // // ---------------------------------------------
-        
-        // // webPushSubscriptionObj = await navigator.serviceWorker.getRegistrations();
-        
-        // // console.log(`
-        // //   ----- webPushSubscriptionObj -----\n
-        // //   ${util.inspect(webPushSubscriptionObj, { colors: true, depth: null })}\n
-        // //   --------------------\n
-        // // `);
-        
-        // navigator.serviceWorker.getRegistrations().then(function(registrations) {
-        //   console.log('navigator.serviceWorker.getRegistrations: ', registrations);
-        // });
-        
-        
-        // // const registrationObj = await navigator.serviceWorker.ready();
-        // navigator.serviceWorker.ready.then((registrationObj) => {
-          
-        //   console.log(`
-        //     ----- registrationObj -----\n
-        //     ${util.inspect(JSON.parse(JSON.stringify(registrationObj)), { colors: true, depth: null })}\n
-        //     --------------------\n
-        //   `);
-        // //   // ---------------------------------------------
-        // //   //   購読済みかどうかをチェックする / 購読していない場合は null が返る
-        // //   //   すでに購読済みの場合
-        // //   // ---------------------------------------------
-          
-        // //   // oldSubscriptionObj = await registrationObj.pushManager.getSubscription();
+          webPushSubscriptionObj = {
+            
+            endpoint: lodashGet(parsedObj, ['endpoint'], ''),
+            keys: {
+              p256dh: lodashGet(parsedObj, ['keys', 'p256dh'], ''),
+              auth: lodashGet(parsedObj, ['keys', 'auth'], ''),
+            }
+            
+          };
           
           
-        // //   if (oldSubscriptionObj) {
-            
-            
-        // //     // ---------------------------------------------
-        // //     //   webPushSubscriptionObj
-        // //     // ---------------------------------------------
-            
-        // //     // const parsedObj = JSON.parse(JSON.stringify(oldSubscriptionObj));
-            
-        // //     // webPushSubscriptionObj = {
-              
-        // //     //   endpoint: lodashGet(parsedObj, ['endpoint'], ''),
-        // //     //   keys: {
-        // //     //     p256dh: lodashGet(parsedObj, ['keys', 'p256dh'], ''),
-        // //     //     auth: lodashGet(parsedObj, ['keys', 'auth'], ''),
-        // //     //   }
-              
-        // //     // };
-            
-            
-        // //     // ---------------------------------------------
-        // //     //   解除してから登録しなおす場合
-        // //     // ---------------------------------------------
-            
-        // //     // true 解除成功 / false 解除失敗
-        // //     // const unsubscribe = await oldSubscriptionObj.unsubscribe();
-            
-        // //     // console.log(chalk`
-        // //     //   unsubscribe: {green ${unsubscribe}}
-        // //     // `);
-            
-            
-        // //   // ---------------------------------------------
-        // //   //   新しく購読する場合
-        // //   // ---------------------------------------------
-            
-        // //   } else {
-            
-            
-        // //     // ---------------------------------------------
-        // //     //   applicationServerKey を作成する
-        // //     // ---------------------------------------------
-            
-        // //     // const urlBase64ToUint8Array = (base64String) => {
-              
-        // //     //   const padding = '='.repeat((4 - base64String.length % 4) % 4);
-        // //     //   const base64 = (base64String + padding)
-        // //     //     .replace(/-/g, '+')
-        // //     //     .replace(/_/g, '/');
-            
-        // //     //   const rawData = window.atob(base64);
-        // //     //   const outputArray = new Uint8Array(rawData.length);
-            
-        // //     //   for (let i = 0; i < rawData.length; ++i) {
-        // //     //     outputArray[i] = rawData.charCodeAt(i);
-        // //     //   }
-              
-        // //     //   return outputArray;
-              
-        // //     // };
-            
-        // //     // const convertedVapidKey = urlBase64ToUint8Array(process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY);
-            
-            
-            
-            
-        // //     // // ---------------------------------------------
-        // //     // //   購読する
-        // //     // // ---------------------------------------------
-            
-        // //     // newSubscriptionObj = await registrationObj.pushManager.subscribe({
-              
-        // //     //   userVisibleOnly: true,
-        // //     //   applicationServerKey: convertedVapidKey,
-              
-        // //     // });
-            
-            
-            
-        // //     // // ---------------------------------------------
-        // //     // //   通知を許可するかどうか尋ねるダイアログを表示する
-        // //     // // ---------------------------------------------
-            
-        // //     // // 'default', 'granted', 'denied' が返り値
-        // //     // const permission = await Notification.requestPermission();
-            
-        // //     // // 許可した場合
-        // //     // if (permission === 'granted') {
-              
-              
-        // //     //   // ---------------------------------------------
-        // //     //   //   subscriptionObj を返す
-        // //     //   // ---------------------------------------------
-              
-        // //     //   const parsedObj = JSON.parse(JSON.stringify(newSubscriptionObj));
-              
-        // //     //   webPushSubscriptionObj = {
-                
-        // //     //     endpoint: lodashGet(parsedObj, ['endpoint'], ''),
-        // //     //     keys: {
-        // //     //       p256dh: lodashGet(parsedObj, ['keys', 'p256dh'], ''),
-        // //     //       auth: lodashGet(parsedObj, ['keys', 'auth'], ''),
-        // //     //     }
-                
-        // //     //   };
-              
-              
-        // //     // }
-            
-            
-        // //   }
+          // ---------------------------------------------
+          //   解除してから登録しなおす場合
+          // ---------------------------------------------
+          
+          // true 解除成功 / false 解除失敗
+          // const unsubscribe = await oldSubscriptionObj.unsubscribe();
+          
+          // console.log(chalk`
+          //   unsubscribe: {green ${unsubscribe}}
+          // `);
           
           
-        // });
+        // ---------------------------------------------
+        //   新しく購読する場合
+        // ---------------------------------------------
+          
+        } else {
+          
+          
+          // ---------------------------------------------
+          //   applicationServerKey を作成する
+          // ---------------------------------------------
+          
+          const urlBase64ToUint8Array = (base64String) => {
+            
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding)
+              .replace(/-/g, '+')
+              .replace(/_/g, '/');
+          
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+          
+            for (let i = 0; i < rawData.length; ++i) {
+              outputArray[i] = rawData.charCodeAt(i);
+            }
+            
+            return outputArray;
+            
+          };
+          
+          const convertedVapidKey = urlBase64ToUint8Array(process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY);
+          
+          
+          
+          
+          // ---------------------------------------------
+          //   購読する
+          // ---------------------------------------------
+          
+          newSubscriptionObj = await serviceWorkerRegistrationObj.pushManager.subscribe({
+            
+            userVisibleOnly: true,
+            applicationServerKey: convertedVapidKey,
+            
+          });
+          
+          
+          
+          // ---------------------------------------------
+          //   通知を許可するかどうか尋ねるダイアログを表示する
+          // ---------------------------------------------
+          
+          // 'default', 'granted', 'denied' が返り値
+          const permission = await Notification.requestPermission();
+          
+          // 許可した場合
+          if (permission === 'granted') {
+            
+            
+            // ---------------------------------------------
+            //   subscriptionObj を返す
+            // ---------------------------------------------
+            
+            const parsedObj = JSON.parse(JSON.stringify(newSubscriptionObj));
+            
+            webPushSubscriptionObj = {
+              
+              endpoint: lodashGet(parsedObj, ['endpoint'], ''),
+              keys: {
+                p256dh: lodashGet(parsedObj, ['keys', 'p256dh'], ''),
+                auth: lodashGet(parsedObj, ['keys', 'auth'], ''),
+              }
+              
+            };
+            
+            
+          }
+            
+            
+        }
           
         
       }
@@ -459,12 +394,6 @@ const Component = (props) => {
     
     
   };
-  
-  
-  
-  
-  
-  
   
   
   

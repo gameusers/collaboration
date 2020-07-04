@@ -43,6 +43,7 @@ const useUser = (initialStateObj) => {
   const [login, setLogin] = useState(lodashGet(initialStateObj, ['login'], false));
   const [loginUsersObj, setLoginUsersObj] = useState(lodashGet(initialStateObj, ['loginUsersObj'], {}));
   const [localeObj, setLocaleObj] = useState(lodashGet(initialStateObj, ['localeObj'], {}));
+  const [serviceWorkerRegistrationObj, setServiceWorkerRegistrationObj] = useState({});
   
   
   
@@ -77,6 +78,8 @@ const useUser = (initialStateObj) => {
     setLoginUsersObj,
     localeObj,
     setLocaleObj,
+    serviceWorkerRegistrationObj,
+    setServiceWorkerRegistrationObj,
     
   };
   

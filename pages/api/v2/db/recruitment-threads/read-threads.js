@@ -231,23 +231,32 @@ export default async (req, res) => {
     returnObj.recruitmentRepliesObj = recruitmentObj.recruitmentRepliesObj;
     
     
+    // --------------------------------------------------
+    //   DB find / Game Community
+    // --------------------------------------------------
+    
+    returnObj.gameCommunityObj = await ModelGameCommunities.findForGameCommunityByGameCommunities_id({
+      
+      gameCommunities_id,
+      
+    });
     
     
     // --------------------------------------------------
     //   updatedDateObj
     // --------------------------------------------------
     
-    const gameCommunityArr = await ModelGameCommunities.find({
+    // const gameCommunityArr = await ModelGameCommunities.find({
       
-      conditionObj: {
-        _id: gameCommunities_id
-      }
+    //   conditionObj: {
+    //     _id: gameCommunities_id
+    //   }
       
-    });
+    // });
     
-    const updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
+    // const updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
     
-    returnObj.updatedDateObj = updatedDateObj;
+    // returnObj.updatedDateObj = updatedDateObj;
     
     
     

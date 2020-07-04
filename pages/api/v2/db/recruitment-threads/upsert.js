@@ -1006,20 +1006,31 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   updatedDateObj
+    //   DB find / Game Community
     // --------------------------------------------------
     
-    const gameCommunityArr = await ModelGameCommunities.find({
+    returnObj.gameCommunityObj = await ModelGameCommunities.findForGameCommunityByGameCommunities_id({
       
-      conditionObj: {
-        _id: gameCommunities_id
-      }
+      gameCommunities_id,
       
     });
     
-    const updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
     
-    returnObj.updatedDateObj = updatedDateObj;
+    // --------------------------------------------------
+    //   updatedDateObj
+    // --------------------------------------------------
+    
+    // const gameCommunityArr = await ModelGameCommunities.find({
+      
+    //   conditionObj: {
+    //     _id: gameCommunities_id
+    //   }
+      
+    // });
+    
+    // const updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
+    
+    // returnObj.updatedDateObj = updatedDateObj;
     
     
     

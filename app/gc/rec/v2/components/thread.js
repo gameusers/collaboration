@@ -538,21 +538,6 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Show Form
-  // --------------------------------------------------
-  
-  // const showFormThread = lodashGet(dataObj, [...pathRecruitmentThreadEditFormArr, 'showFormThread'], false);
-  // const showFormComment = lodashGet(dataObj, [...pathRecruitmentCommentNewFormArr, 'showFormComment'], false);
-  
-  
-  // --------------------------------------------------
-  //   Panel
-  // --------------------------------------------------
-  
-  // const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: pathRecruitmentThreadArr });
-  
-  
-  // --------------------------------------------------
   //   Share: Twitter
   //   参考：https://blog.ikunaga.net/entry/twitter-com-intent-tweet/
   // --------------------------------------------------

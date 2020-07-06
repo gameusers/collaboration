@@ -33,6 +33,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashHas from 'lodash/has';
 import lodashCloneDeep from 'lodash/cloneDeep';
 
 
@@ -237,7 +238,12 @@ const Component = (props) => {
   const stateLayout = ContainerStateLayout.useContainer();
   const stateGc = ContainerStateGc.useContainer();
   
-  const { login } = stateUser;
+  const {
+    
+    login,
+    localeObj,
+    
+  } = stateUser;
   
   const {
     
@@ -276,11 +282,11 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   forumThreads_id が存在しない場合エラー
+      //   recruitmentThreads_id が存在しない場合エラー
       // ---------------------------------------------
       
-      if (!forumThreads_id) {
-        throw new CustomError({ errorsArr: [{ code: '5bsoal_-V', messageID: 'Error' }] });
+      if (!recruitmentThreads_id) {
+        throw new CustomError({ errorsArr: [{ code: '1sfB7JPUO', messageID: 'Error' }] });
       }
       
       
@@ -308,7 +314,7 @@ const Component = (props) => {
       
       const formDataObj = {
         
-        forumThreads_id,
+        recruitmentThreads_id,
         
       };
       
@@ -319,18 +325,18 @@ const Component = (props) => {
       
       const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/get-edit-data`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/get-edit-data`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
         
       });
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
       // ---------------------------------------------
@@ -348,9 +354,32 @@ const Component = (props) => {
       //   Set Form Data
       // ---------------------------------------------
       
-      const name = lodashGet(resultObj, ['data', 'name'], '');
-      const comment = lodashGet(resultObj, ['data', 'comment'], '');
-      let imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
+      setHardwaresArr(lodashGet(resultObj, ['data', 'hardwaresArr'], []));
+      setCategory(lodashGet(resultObj, ['data', 'category'], ''));
+      
+      
+      const localesArr = lodashGet(resultObj, ['data', 'localesArr'], []);
+      
+      const filteredArr = localesArr.filter((filterObj) => {
+        return filterObj.language === localeObj.language;
+      });
+      
+      if (lodashHas(filteredArr, [0])) {
+        
+        setTitle(lodashGet(filteredArr, [0, 'title'], ''));
+        setName(lodashGet(filteredArr, [0, 'name'], ''));
+        setComment(lodashGet(filteredArr, [0, 'comment'], ''));
+        
+      } else {
+        
+        setTitle(lodashGet(localesArr, [0, 'title'], ''));
+        setName(lodashGet(localesArr, [0, 'name'], ''));
+        setComment(lodashGet(localesArr, [0, 'comment'], ''));
+        
+      }
+      
+      
+      const imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
       
       if (Object.keys(imagesAndVideosObj).length === 0) {
         
@@ -367,9 +396,34 @@ const Component = (props) => {
         
       }
       
-      setName(name);
-      setComment(comment);
       setImagesAndVideosObj(imagesAndVideosObj);
+      
+      
+      setIDs_idsArr(lodashGet(resultObj, ['data', 'idsArr'], []));
+      setPlatform1('');
+      setPlatform2('');
+      setPlatform3('');
+      setID1('');
+      setID2('');
+      setID3('');
+      setInformationTitle1('');
+      setInformationTitle2('');
+      setInformationTitle3('');
+      setInformationTitle4('');
+      setInformationTitle5('');
+      setInformation1('');
+      setInformation2('');
+      setInformation3('');
+      setInformation4('');
+      setInformation5('');
+      setPublicSetting(1);
+      
+      setDeadlineDate('');
+      
+      setWebPushAvailable(false);
+      setWebPushSubscriptionObj({});
+      
+      
       
       
     } catch (errorObj) {
@@ -408,7 +462,7 @@ const Component = (props) => {
       
       handleScrollTo({
         
-        to: forumThreads_id,
+        to: recruitmentThreads_id,
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',

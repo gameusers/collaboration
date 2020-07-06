@@ -89,6 +89,16 @@ let statusCode = 400;
 
 router.post('/login', upload.none(), (req, res, next) => {
   
+  
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
   passport.authenticate('local', async (err, user, info) => {
     
     
@@ -125,7 +135,7 @@ router.post('/login', upload.none(), (req, res, next) => {
       //   Verify reCAPTCHA
       // ---------------------------------------------
       
-      await verifyRecaptcha({ response, remoteip: req.connection.remoteAddress });
+      await verifyRecaptcha({ response, remoteip: ip });
       
       
       
@@ -218,11 +228,14 @@ router.post('/login', upload.none(), (req, res, next) => {
       // ---------------------------------------------
       
       const resultErrorObj = returnErrorsArr({
+        
         errorObj,
         endpointID: 'ZVCmdUTHQ',
         users_id: '',
-        ip: req.ip,
+        ip,
+        userAgent,
         requestParametersObj,
+        
       });
       
       
@@ -367,6 +380,15 @@ router.post('/logout', upload.none(), function(req, res, next) {
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
   try {
     
     
@@ -399,11 +421,14 @@ router.post('/logout', upload.none(), function(req, res, next) {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'lpePrqvT4',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

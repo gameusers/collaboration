@@ -93,22 +93,22 @@ class Store {
    * ログインパスワード入力フォームの目のマークを押したときに呼び出される
    * 押すと隠されているログインパスワードを表示する
    */
-  @action.bound
-  handlePasswordShow() {
-    this.dataObj['loginPasswordShow'] = !this.dataObj['loginPasswordShow'];
-  };
+  // @action.bound
+  // handlePasswordShow() {
+  //   this.dataObj['loginPasswordShow'] = !this.dataObj['loginPasswordShow'];
+  // };
   
   
-  /**
-   * ログインパスワード入力フォーム onMouseDown で呼び出される
-   * Material UI のページに解説されているとおりに入れている
-   * 参考：https://material-ui.com/demos/text-fields/#input-adornments
-   * @param {Object} eventObj - イベント
-   */
-  @action.bound
-  handlePasswordMouseDown(eventObj) {
-    eventObj.preventDefault();
-  };
+  // /**
+  // * ログインパスワード入力フォーム onMouseDown で呼び出される
+  // * Material UI のページに解説されているとおりに入れている
+  // * 参考：https://material-ui.com/demos/text-fields/#input-adornments
+  // * @param {Object} eventObj - イベント
+  // */
+  // @action.bound
+  // handlePasswordMouseDown(eventObj) {
+  //   eventObj.preventDefault();
+  // };
   
   
   
@@ -118,54 +118,54 @@ class Store {
    * @param {Object} eventObj - イベントオブジェクト
    * @param {string} formType - フォームのタイプ
    */
-  @action.bound
-  handleRecaptchaReset({ eventObj, formType }) {
+  // @action.bound
+  // handleRecaptchaReset({ eventObj, formType }) {
     
     
-    // ---------------------------------------------
-    //   フォームの送信処理停止
-    // ---------------------------------------------
+  //   // ---------------------------------------------
+  //   //   フォームの送信処理停止
+  //   // ---------------------------------------------
     
-    eventObj.preventDefault();
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   Loading 表示
-    // ---------------------------------------------
-    
-    storeLayout.handleLoadingShow({ left: true });
-    
-    
-    // ---------------------------------------------
-    //   Button Disable
-    // ---------------------------------------------
-    
-    storeLayout.handleButtonDisable({ pathArr: ['formLogin'] });
+  //   eventObj.preventDefault();
     
     
     
     
-    // ---------------------------------------------
-    //   Button Submitted
-    // ---------------------------------------------
+  //   // ---------------------------------------------
+  //   //   Loading 表示
+  //   // ---------------------------------------------
     
-    lodashSet(this.dataObj, ['formType'], formType);
-    
-    
-    // ---------------------------------------------
-    //   reCAPTCHA Reset
-    // ---------------------------------------------
-    
-    const recaptchaRef = lodashGet(this.dataObj, ['recaptchaRef'], '');
-    
-    if (recaptchaRef) {
-      recaptchaRef.execute();
-    }
+  //   storeLayout.handleLoadingShow({ left: true });
     
     
-  }
+  //   // ---------------------------------------------
+  //   //   Button Disable
+  //   // ---------------------------------------------
+    
+  //   storeLayout.handleButtonDisable({ pathArr: ['formLogin'] });
+    
+    
+    
+    
+  //   // ---------------------------------------------
+  //   //   Button Submitted
+  //   // ---------------------------------------------
+    
+  //   lodashSet(this.dataObj, ['formType'], formType);
+    
+    
+  //   // ---------------------------------------------
+  //   //   reCAPTCHA Reset
+  //   // ---------------------------------------------
+    
+  //   const recaptchaRef = lodashGet(this.dataObj, ['recaptchaRef'], '');
+    
+  //   if (recaptchaRef) {
+  //     recaptchaRef.execute();
+  //   }
+    
+    
+  // }
   
   
   
@@ -175,30 +175,30 @@ class Store {
    * @param {string} response - トークン
    * @param {Object} ref - <ReCaptcha /> このタグの ref
    */
-  @action.bound
-  handleRecaptchaResponse({ response, ref }) {
+  // @action.bound
+  // handleRecaptchaResponse({ response, ref }) {
     
     
-    // ---------------------------------------------
-    //   Set ReCAPTCHA
-    // ---------------------------------------------
+  //   // ---------------------------------------------
+  //   //   Set ReCAPTCHA
+  //   // ---------------------------------------------
     
-    lodashSet(this.dataObj, ['recaptchaResponse'], response);
-    lodashSet(this.dataObj, ['recaptchaRef'], ref);
-    
-    
-    // ---------------------------------------------
-    //   Send Form
-    // ---------------------------------------------
-    
-    const formType = lodashGet(this.dataObj, ['formType'], '');
-    
-    if (formType === 'login' && response) {
-      this.handleLogin();
-    }
+  //   lodashSet(this.dataObj, ['recaptchaResponse'], response);
+  //   lodashSet(this.dataObj, ['recaptchaRef'], ref);
     
     
-  };
+  //   // ---------------------------------------------
+  //   //   Send Form
+  //   // ---------------------------------------------
+    
+  //   const formType = lodashGet(this.dataObj, ['formType'], '');
+    
+  //   if (formType === 'login' && response) {
+  //     this.handleLogin();
+  //   }
+    
+    
+  // };
   
   
   
@@ -206,164 +206,164 @@ class Store {
   /**
    * ログインフォームを送信する
    */
-  @action.bound
-  async handleLogin({ eventObj }) {
+  // @action.bound
+  // async handleLogin({ eventObj }) {
     
     
-    try {
+  //   try {
       
       
-      // ---------------------------------------------
-      //   フォームの送信処理停止
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   フォームの送信処理停止
+  //     // ---------------------------------------------
       
-      if (eventObj) {
-        eventObj.preventDefault();
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Form Type Reset
-      // ---------------------------------------------
-      
-      lodashSet(this.dataObj, ['formType'], '');
-      
-      
-      // ---------------------------------------------
-      //   Property
-      // ---------------------------------------------
-      
-      const loginID = lodashGet(this.dataObj, ['loginID'], '');
-      const loginPassword = lodashGet(this.dataObj, ['loginPassword'], '');
-      const recaptchaResponse = lodashGet(this.dataObj, ['recaptchaResponse'], '');
+  //     if (eventObj) {
+  //       eventObj.preventDefault();
+  //     }
       
       
       
       
-      // ---------------------------------------------
-      //   Validation
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Form Type Reset
+  //     // ---------------------------------------------
       
-      const validationUsersLoginIDObj = validationUsersLoginID({ required: true, value: loginID });
-      const validationUsersLoginPasswordObj = validationUsersLoginPassword({ required: true, value: loginPassword, loginID });
+  //     lodashSet(this.dataObj, ['formType'], '');
       
       
-      // ---------------------------------------------
-      //   Validation Error
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Property
+  //     // ---------------------------------------------
       
-      if (
-        validationUsersLoginIDObj.error ||
-        validationUsersLoginPasswordObj.error
-      ) {
-        throw new CustomError({ errorsArr: [{ code: '0oSjjQhm3', messageID: 'uwHIKBy7c' }] });
-      }
+  //     const loginID = lodashGet(this.dataObj, ['loginID'], '');
+  //     const loginPassword = lodashGet(this.dataObj, ['loginPassword'], '');
+  //     const recaptchaResponse = lodashGet(this.dataObj, ['recaptchaResponse'], '');
       
       
       
       
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Validation
+  //     // ---------------------------------------------
       
-      const formData = new FormData();
-      
-      formData.append('loginID', loginID);
-      formData.append('loginPassword', loginPassword);
-      formData.append('response', recaptchaResponse);
+  //     const validationUsersLoginIDObj = validationUsersLoginID({ required: true, value: loginID });
+  //     const validationUsersLoginPasswordObj = validationUsersLoginPassword({ required: true, value: loginPassword, loginID });
       
       
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Validation Error
+  //     // ---------------------------------------------
       
-      const resultObj = await fetchWrapper({
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v1/login/login`,
-        methodType: 'POST',
-        formData
-      });
-      
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
+  //     if (
+  //       validationUsersLoginIDObj.error ||
+  //       validationUsersLoginPasswordObj.error
+  //     ) {
+  //       throw new CustomError({ errorsArr: [{ code: '0oSjjQhm3', messageID: 'uwHIKBy7c' }] });
+  //     }
       
       
       
       
-      // ---------------------------------------------
-      //   Form Reset
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
       
-      lodashSet(this.dataObj, 'loginID', '');
-      lodashSet(this.dataObj, 'loginPassword', '');
+  //     const formData = new FormData();
       
-      
-      // ---------------------------------------------
-      //   Snackbar: Success
-      // ---------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'success',
-        messageID: '5Gf730Gmz',
-      });
+  //     formData.append('loginID', loginID);
+  //     formData.append('loginPassword', loginPassword);
+  //     formData.append('response', recaptchaResponse);
       
       
-      // ---------------------------------------------
-      //   Page Transition
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Fetch
+  //     // ---------------------------------------------
       
-      const userID = lodashGet(resultObj, ['data', 'userID'], '');
-      window.location.href = `${process.env.NEXT_PUBLIC_URL_BASE}ur/${userID}`;
-      
-      
-    } catch (errorObj) {
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
+  //     const resultObj = await fetchWrapper({
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v1/login/login`,
+  //       methodType: 'POST',
+  //       formData
+  //     });
       
       
-    } finally {
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
       
-      storeLayout.handleButtonEnable({ pathArr: ['formLogin'] });
-      
-      
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingHide({});
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
       
       
-    }
+      
+      
+  //     // ---------------------------------------------
+  //     //   Form Reset
+  //     // ---------------------------------------------
+      
+  //     lodashSet(this.dataObj, 'loginID', '');
+  //     lodashSet(this.dataObj, 'loginPassword', '');
+      
+      
+  //     // ---------------------------------------------
+  //     //   Snackbar: Success
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'success',
+  //       messageID: '5Gf730Gmz',
+  //     });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Page Transition
+  //     // ---------------------------------------------
+      
+  //     const userID = lodashGet(resultObj, ['data', 'userID'], '');
+  //     window.location.href = `${process.env.NEXT_PUBLIC_URL_BASE}ur/${userID}`;
+      
+      
+  //   } catch (errorObj) {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
+      
+      
+  //   } finally {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr: ['formLogin'] });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading 非表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingHide({});
+      
+      
+  //   }
     
     
-  };
+  // };
   
   
 }

@@ -165,14 +165,12 @@ const Component = (props) => {
   /**
    * スレッドを読み込む
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
-   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
    * @param {number} page - スレッドのページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
   const handleRead = async ({
     
     gameCommunities_id,
-    userCommunities_id,
     page,
     changeLimit,
     
@@ -191,13 +189,13 @@ const Component = (props) => {
       
       if (page === 1) {
         
-        url = `/gc/[urlID]/index?urlID=${urlID}`;
-        as = `/gc/${urlID}`;
+        url = `/gc/[urlID]/rec/index?urlID=${urlID}`;
+        as = `/gc/${urlID}/rec`;
         
       } else {
         
-        url = `/gc/[urlID]/forum/[...slug]?urlID=${urlID}&page=${page}`;
-        as = `/gc/${urlID}/forum/${page}`;
+        url = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}&page=${page}`;
+        as = `/gc/${urlID}/rec/${page}`;
         
       }
       
@@ -210,7 +208,7 @@ const Component = (props) => {
       
       if (changeLimit) {
         
-        Cookies.set('forumThreadLimit', changeLimit);
+        Cookies.set('recruitmentThreadLimit', changeLimit);
         
       }
       
@@ -223,12 +221,11 @@ const Component = (props) => {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/forum.js - handleRead
+      //   /app/gc/rec/v2/components/recruitment.js - handleRead
       // `);
       
       // console.log(chalk`
       //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id}}
       //   page: {green ${page}}
       //   changeLimit: {green ${changeLimit}}
         
@@ -248,15 +245,7 @@ const Component = (props) => {
       await Router.push(url, as);
       
       
-    } catch (errorObj) {
-      
-      
-      
-    } finally {
-      
-      
-      
-    }
+    } catch (errorObj) {}
     
     
   };

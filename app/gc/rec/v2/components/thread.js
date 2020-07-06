@@ -810,7 +810,6 @@ const Component = (props) => {
                     padding: 8px 0 8px 16px;
                     
                     @media screen and (max-width: 480px) {
-                      // background-color: #F8F8FF;
                       border-left: none;
                       margin: 0;
                       padding: 32px 0 0 0;
@@ -819,9 +818,9 @@ const Component = (props) => {
                 >
                   
                   <FormThread
-                    // pathArr={pathRecruitmentThreadEditFormArr}
                     gameCommunities_id={gameCommunities_id}
                     recruitmentThreads_id={recruitmentThreads_id}
+                    setShowForm={setShowFormThread}
                   />
                   
                 </div>

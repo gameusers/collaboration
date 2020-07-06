@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -15,6 +15,12 @@ const util = require('util');
 // ---------------------------------------------
 
 const FormData = require('form-data');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 
 
@@ -23,6 +29,8 @@ const lodashGet = require('lodash/get');
 // ---------------------------------------------
 
 const { fetchWrapper } = require('./fetch');
+
+
 
 
 
@@ -92,9 +100,11 @@ const verifyRecaptcha = async ({ response, remoteip }) => {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
+      
       urlApi: 'https://www.google.com/recaptcha/api/siteverify',
       methodType: 'POST',
       formData: formData,
+      
     });
     
     const score = lodashGet(resultObj, ['data', 'score'], false);
@@ -145,5 +155,7 @@ const verifyRecaptcha = async ({ response, remoteip }) => {
 // --------------------------------------------------
 
 module.exports = {
-  verifyRecaptcha
+  
+  verifyRecaptcha,
+  
 };

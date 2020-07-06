@@ -443,7 +443,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/index.js
+  //   /pages/gc/[urlID]/rec/index.js
   // `);
   
   // console.log(`
@@ -453,10 +453,7 @@ export async function getServerSideProps({ req, res, query }) {
   // `);
   
   // console.log(chalk`
-  //   threadListPage: {green ${threadListPage}}
   //   threadPage: {green ${threadPage}}
-    
-  //   threadListLimit: {green ${threadListLimit}}
   //   threadLimit: {green ${threadLimit}}
   //   commentLimit: {green ${commentLimit}}
   //   replyLimit: {green ${replyLimit}}

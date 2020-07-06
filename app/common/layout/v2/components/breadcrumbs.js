@@ -42,6 +42,8 @@ import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 // ---------------------------------------------
 
 import IconHome from '@material-ui/icons/Home';
+import IconLogin from '@material-ui/icons/ExitToApp';
+import IconLogout from '@material-ui/icons/Eject';
 import IconGames from '@material-ui/icons/Games';
 
 import IconForum from '@material-ui/icons/Forum';
@@ -92,6 +94,35 @@ const Component = (props) => {
     
     let icon = '';
     let anchorText = '';
+    
+    
+    // --------------------------------------------------
+    //   - Login
+    // --------------------------------------------------
+    
+    if (valueObj.type === 'login') {
+      
+      icon = <IconLogin fontSize="small" />;
+      anchorText = 'ログイン';
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   - Logout
+    // --------------------------------------------------
+    
+    if (valueObj.type === 'logout') {
+      
+      icon = <IconLogout fontSize="small" />;
+      anchorText = 'ログアウト';
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   - Game Community
+    // --------------------------------------------------
     
     if (valueObj.type === 'gc') {
       

@@ -308,26 +308,28 @@ const Component = (props) => {
         
         
         {/* Sidebar */}
-        <div
-          css={css`
-            width: 300px;
-            margin: 0 16px 0 0;
-            
-            @media screen and (max-width: 947px) {
-              width: auto;
-              margin: 0 0 16px 0;
-            }
-          `}
-        >
-          
-          <Sidebar
-            showNavTop={showNavTop}
-            lowerSidebar={lowerSidebar}
+        {componentSidebar &&
+          <div
+            css={css`
+              width: 300px;
+              margin: 0 16px 0 0;
+              
+              @media screen and (max-width: 947px) {
+                width: auto;
+                margin: 0 0 16px 0;
+              }
+            `}
           >
-            {componentSidebar}
-          </Sidebar>
-          
-        </div>
+            
+            <Sidebar
+              showNavTop={showNavTop}
+              lowerSidebar={lowerSidebar}
+            >
+              {componentSidebar}
+            </Sidebar>
+            
+          </div>
+        }
         
         
         
@@ -336,7 +338,7 @@ const Component = (props) => {
         <div
           css={css`
             width: 100%;
-            max-width: 800px;
+            ${componentSidebar && 'max-width: 800px;'}
             
             @media screen and (max-width: 947px) {
               max-width: none;

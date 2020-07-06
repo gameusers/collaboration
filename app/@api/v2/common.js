@@ -11,7 +11,7 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Node Packages
+//   Lodash
 // ---------------------------------------------
 
 const lodashGet = require('lodash/get');
@@ -23,6 +23,8 @@ const lodashSet = require('lodash/set');
 // ---------------------------------------------
 
 const ModelGames = require('../../@database/games/model');
+
+
 
 
 
@@ -44,7 +46,9 @@ const initialProps = async ({ req, res, localeObj }) => {
   // --------------------------------------------------
   
   const returnObj = {
-    login: false
+    
+    login: false,
+    
   };
   
   
@@ -53,8 +57,10 @@ const initialProps = async ({ req, res, localeObj }) => {
   // --------------------------------------------------
   
   if (req.isAuthenticated() && req.user) {
+    
     returnObj.loginUsersObj = req.user;
     returnObj.login = true;
+    
   }
   
   
@@ -64,7 +70,9 @@ const initialProps = async ({ req, res, localeObj }) => {
   // --------------------------------------------------
   
   returnObj.headerObj = await ModelGames.findForHeroImage({
+    
     localeObj,
+    
   });
   
   
@@ -81,5 +89,7 @@ const initialProps = async ({ req, res, localeObj }) => {
 // --------------------------------------------------
 
 module.exports = {
-  initialProps
+  
+  initialProps,
+  
 };

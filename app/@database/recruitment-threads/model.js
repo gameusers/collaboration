@@ -432,7 +432,7 @@ const findRecruitments = async ({
       loginUsers_id,
       matchConditionArr,
       threadPage,
-      // threadLimit,
+      threadLimit: intThreadLimit,
       
     });
     
@@ -2090,8 +2090,6 @@ const findOneForEdit = async ({
           ids_idsArr: 0,
           publicCommentsUsers_idsArr: 0,
           publicApprovalUsers_idsArrr: 0,
-          // close: 0,
-          // webPushes_id: 0,
           comments: 0,
           replies: 0,
           images: 0,

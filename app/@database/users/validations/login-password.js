@@ -16,6 +16,12 @@ const util = require('util');
 
 const validator = require('validator');
 const zxcvbn = require('zxcvbn');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 
 
@@ -23,7 +29,9 @@ const lodashGet = require('lodash/get');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom.js');
+
+
 
 
 
@@ -54,12 +62,14 @@ const validationUsersLoginPassword = ({ throwError = false, required = false, va
   const numberOfCharacters = data ? data.length : 0;
   const strengthScore = zxcvbn(data).score;
   
-  let resultObj = {
+  const resultObj = {
+    
     value: data,
     numberOfCharacters,
     messageID: 'gJz51M8Pf',
     error: false,
-    strengthScore
+    strengthScore,
+    
   };
   
   
@@ -175,11 +185,13 @@ const validationUsersLoginPasswordConfirmation = ({ throwError = false, required
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
+    
     value: data,
     numberOfCharacters,
     messageID: 'KBFOZp6kv',
     error: false,
+    
   };
   
   
@@ -255,6 +267,8 @@ const validationUsersLoginPasswordConfirmation = ({ throwError = false, required
 // --------------------------------------------------
 
 module.exports = {
+  
   validationUsersLoginPassword,
   validationUsersLoginPasswordConfirmation,
+  
 };

@@ -54,116 +54,116 @@ class Store {
   /**
    * ログアウトフォームで送信ボタンを押すと呼び出される
    */
-  @action.bound
-  async handleLogout({ pathArr }) {
+  // @action.bound
+  // async handleLogout({ pathArr }) {
     
     
-    try {
+  //   try {
       
       
-      // ---------------------------------------------
-      //   Loading 表示
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Loading 表示
+  //     // ---------------------------------------------
       
-      storeLayout.handleLoadingShow({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
+  //     storeLayout.handleLoadingShow({});
       
       
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonDisable({ pathArr });
       
       
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
-      
-      const formDataObj = {};
       
       
-      // ---------------------------------------------
-      //   Fetch - Create Account
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
       
-      const resultObj = await fetchWrapper({
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v1/login/logout`,
-        // urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/logout/logout`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj)
-      });
+  //     const formDataObj = {};
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     // ---------------------------------------------
+  //     //   Fetch - Create Account
+  //     // ---------------------------------------------
+      
+  //     const resultObj = await fetchWrapper({
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v1/login/logout`,
+  //       // urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/logout/logout`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj)
+  //     });
       
       
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
-      // ---------------------------------------------
-      //   Snackbar: Success
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen({
-        variant: 'success',
-        messageID: 'CKQQ_bjmW',
-      });
-      
-      
-      // ---------------------------------------------
-      //   Page Transition / トップページに移動
-      // ---------------------------------------------
-      
-      window.location.href = process.env.NEXT_PUBLIC_URL_BASE;
-      // window.location.href = `${process.env.NEXT_PUBLIC_URL_BASE}login`;
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
       
       
-    } catch (errorObj) {
+  //     // ---------------------------------------------
+  //     //   Snackbar: Success
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'success',
+  //       messageID: 'CKQQ_bjmW',
+  //     });
       
       
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Page Transition / トップページに移動
+  //     // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
+  //     window.location.href = process.env.NEXT_PUBLIC_URL_BASE;
+  //     // window.location.href = `${process.env.NEXT_PUBLIC_URL_BASE}login`;
       
       
-    } finally {
+  //   } catch (errorObj) {
       
       
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
       
-      storeLayout.handleButtonEnable({ pathArr });
-      
-      
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingHide({});
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
       
       
-    }
+  //   } finally {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading 非表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingHide({});
+      
+      
+  //   }
     
     
-  };
+  // };
   
   
 }

@@ -111,12 +111,19 @@ const ServiceWorker = (props) => {
   // --------------------------------------------------
   
   const stateUser = ContainerStateUser.useContainer();
+  const stateLayout = ContainerStateLayout.useContainer();
   
   const {
     
     setServiceWorkerRegistrationObj,
     
   } = stateUser;
+  
+  const {
+    
+    setISO8601,
+    
+  } = stateLayout;
   
   
   
@@ -133,8 +140,6 @@ const ServiceWorker = (props) => {
     // --------------------------------------------------
     
     if ('serviceWorker' in navigator) {
-      
-      // console.log('Service Worker');
       
       
       // ---------------------------------------------
@@ -172,6 +177,23 @@ const ServiceWorker = (props) => {
       
       
     }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   setInterval / Set Datetime Current
+    // --------------------------------------------------
+    
+    const setDatetimeCurrent = setInterval(() => {
+      
+      const datetimeCurrent = moment().utc().toISOString();
+      setISO8601(datetimeCurrent);
+      // console.log(`setIntervalDatetimeCurrent - ${datetimeCurrent}`);
+      
+    }, 1000 * 60);
+
+    return () => clearInterval(setDatetimeCurrent);
     
     
   }, []);

@@ -131,6 +131,7 @@ const Component = (props) => {
   
   const intl = useIntl();
   const classes = useStyles();
+  // const [panelExpanded, setPanelExpanded] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   
@@ -343,11 +344,14 @@ const Component = (props) => {
         <Panel
           heading="募集投稿フォーム"
           defaultExpanded={false}
+          // panelExpanded={panelExpanded}
+          // setPanelExpanded={setPanelExpanded}
         >
           
           <FormThread
             gameCommunities_id={gameCommunities_id}
-            forumThreads_id=""
+            recruitmentThreads_id=""
+            // setPanelExpanded={setPanelExpanded}
           />
           
         </Panel>

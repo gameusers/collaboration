@@ -1869,6 +1869,13 @@ const findOneForEdit = async ({
     const country = lodashGet(localeObj, ['country'], '');
     
     
+    // --------------------------------------------------
+    //   Web Push Error Limit
+    // --------------------------------------------------
+    
+    const webPushErrorLimit = parseInt(process.env.WEB_PUSH_ERROR_LIMIT, 10);
+    
+    
     
     
     // --------------------------------------------------
@@ -1902,8 +1909,8 @@ const findOneForEdit = async ({
                   { $eq: ['$_id', '$$recruitmentThreadsImagesAndVideos_id'] },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -1944,8 +1951,8 @@ const findOneForEdit = async ({
                   },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   _id: 0,
                   hardwareID: 1,
                   name: 1,
@@ -2020,8 +2027,8 @@ const findOneForEdit = async ({
                                   { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
                                 }
                               },
-                              { $project:
-                                {
+                              {
+                                $project: {
                                   createdDate: 0,
                                   updatedDate: 0,
                                   users_id: 0,
@@ -2041,8 +2048,8 @@ const findOneForEdit = async ({
                       },
                       
                       
-                      { $project:
-                        {
+                      {
+                        $project: {
                           _id: 1,
                           gameCommunities_id: 1,
                           name: 1,
@@ -2055,16 +2062,15 @@ const findOneForEdit = async ({
               },
               
               {
-                $unwind:
-                  {
-                    path: '$gamesObj',
-                    preserveNullAndEmptyArrays: true
-                  }
+                $unwind: {
+                  path: '$gamesObj',
+                  preserveNullAndEmptyArrays: true
+                }
               },
               
               
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -2079,11 +2085,53 @@ const findOneForEdit = async ({
       
       
       // --------------------------------------------------
+      //   web-pushes
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'web-pushes',
+            let: { letWebPushes_id: '$webPushes_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $and:
+                    [
+                      { $eq: ['$_id', '$$letWebPushes_id'] },
+                      { $lt: ['$errorCount', webPushErrorLimit] },
+                    ]
+                  },
+                  
+                }
+              },
+              {
+                $project: {
+                  // _id: 1,
+                  // users_id: 1,
+                  subscriptionObj: 1,
+                  // sendTodayCount: 1,
+                }
+              }
+            ],
+            as: 'webPushesObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$webPushesObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // --------------------------------------------------
       //   $project
       // --------------------------------------------------
       
-      { $project:
-        {
+      {
+        $project: {
           createdDate: 0,
           imagesAndVideos_id: 0,
           hardwareIDsArr: 0,

@@ -15,6 +15,12 @@ const util = require('util');
 // ---------------------------------------------
 
 const validator = require('validator');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 
 
@@ -22,7 +28,9 @@ const lodashGet = require('lodash/get');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom.js');
+
+
 
 
 
@@ -44,10 +52,12 @@ const validationRecruitmentThreadsPlatform = ({ throwError = false, value }) => 
   const numberOfCharacters = data ? data.length : 0;
   
   const resultObj = {
+    
     value: data,
     numberOfCharacters,
     messageID: 'Error',
     error: false,
+    
   };
   
   
@@ -72,7 +82,7 @@ const validationRecruitmentThreadsPlatform = ({ throwError = false, value }) => 
     //   適切な値が選択されているかチェック
     // ---------------------------------------------
     
-    if (!validator.isIn(data, ['PlayStation', 'Xbox', 'Nintendo', 'PC', 'Android', 'iOS', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line', 'Other'])) {
+    if (!validator.isIn(data, ['Other', 'PlayStation', 'Xbox', 'Nintendo', 'PC', 'Android', 'iOS', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line'])) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'M3grLD5Ch', messageID: 'dJzAwAva3' }] });
     }
     
@@ -143,10 +153,12 @@ const validationRecruitmentThreadsID = ({ throwError = false, required = false, 
   const numberOfCharacters = data ? data.length : 0;
   
   const resultObj = {
+    
     value: data,
     numberOfCharacters,
     messageID: 'Uh3rnK7Dk',
     error: false,
+    
   };
   
   
@@ -243,10 +255,12 @@ const validationRecruitmentThreadsInformationTitle = ({ throwError = false, requ
   const numberOfCharacters = data ? data.length : 0;
   
   const resultObj = {
+    
     value: data,
     numberOfCharacters,
     messageID: '9c6Lprg6n',
     error: false,
+    
   };
   
   
@@ -343,10 +357,12 @@ const validationRecruitmentThreadsInformation = ({ throwError = false, required 
   const numberOfCharacters = data ? data.length : 0;
   
   const resultObj = {
+    
     value: data,
     numberOfCharacters,
     messageID: 'yhgyXHqZu',
     error: false,
+    
   };
   
   
@@ -442,10 +458,12 @@ const validationRecruitmentThreadsPublicSetting = ({ throwError = false, value }
   const numberOfCharacters = data ? data.length : 0;
   
   const resultObj = {
+    
     value: data,
     numberOfCharacters,
     messageID: 'Nbu_IqorV',
     error: false,
+    
   };
   
   

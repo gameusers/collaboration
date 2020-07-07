@@ -15,14 +15,9 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-// import Link from 'next/link';
-// import Router from 'next/router';
 import { useIntl } from 'react-intl';
 import { Element } from 'react-scroll';
 import TextareaAutosize from 'react-autosize-textarea';
-// import Pagination from 'rc-pagination';
-// import localeInfo from 'rc-pagination/lib/locale/ja_JP';
-// import Cookies from 'js-cookie';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -46,9 +41,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-// import Checkbox from '@material-ui/core/Checkbox';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 
@@ -151,6 +144,7 @@ const Component = (props) => {
     recruitmentThreads_id,
     
     setShowForm,
+    // setPanelExpanded,
     
   } = props;
   
@@ -181,10 +175,10 @@ const Component = (props) => {
     
   });
   
-  const [ids_idsArr, setIDs_idsArr] = useState([]);
-  const [platform1, setPlatform1] = useState('');
-  const [platform2, setPlatform2] = useState('');
-  const [platform3, setPlatform3] = useState('');
+  const [idsArr, setIDsArr] = useState([]);
+  const [platform1, setPlatform1] = useState('Other');
+  const [platform2, setPlatform2] = useState('Other');
+  const [platform3, setPlatform3] = useState('Other');
   const [id1, setID1] = useState('');
   const [id2, setID2] = useState('');
   const [id3, setID3] = useState('');
@@ -248,7 +242,7 @@ const Component = (props) => {
   const {
     
     handleSnackbarOpen,
-    handleDialogOpen,
+    // handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
@@ -332,11 +326,11 @@ const Component = (props) => {
       });
       
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
@@ -379,51 +373,47 @@ const Component = (props) => {
       }
       
       
-      const imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
+      let tempImagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
       
-      if (Object.keys(imagesAndVideosObj).length === 0) {
+      if (Object.keys(tempImagesAndVideosObj).length === 0) {
         
-        imagesAndVideosObj = {
+        tempImagesAndVideosObj = {
           
           _id: '',
           createdDate: '',
           updatedDate: '',
           users_id: '',
-          type: 'forum',
+          type: 'recruitment',
           arr: [],
           
         };
         
       }
       
-      setImagesAndVideosObj(imagesAndVideosObj);
+      setImagesAndVideosObj(tempImagesAndVideosObj);
       
       
-      setIDs_idsArr(lodashGet(resultObj, ['data', 'idsArr'], []));
-      setPlatform1('');
-      setPlatform2('');
-      setPlatform3('');
-      setID1('');
-      setID2('');
-      setID3('');
-      setInformationTitle1('');
-      setInformationTitle2('');
-      setInformationTitle3('');
-      setInformationTitle4('');
-      setInformationTitle5('');
-      setInformation1('');
-      setInformation2('');
-      setInformation3('');
-      setInformation4('');
-      setInformation5('');
-      setPublicSetting(1);
-      
-      setDeadlineDate('');
-      
-      setWebPushAvailable(false);
-      setWebPushSubscriptionObj({});
-      
-      
+      setIDsArr(lodashGet(resultObj, ['data', 'idsArr'], []));
+      setPlatform1(lodashGet(resultObj, ['data', 'platform1'], 'Other'));
+      setPlatform2(lodashGet(resultObj, ['data', 'platform2'], 'Other'));
+      setPlatform3(lodashGet(resultObj, ['data', 'platform3'], 'Other'));
+      setID1(lodashGet(resultObj, ['data', 'id1'], ''));
+      setID2(lodashGet(resultObj, ['data', 'id2'], ''));
+      setID3(lodashGet(resultObj, ['data', 'id3'], ''));
+      setInformationTitle1(lodashGet(resultObj, ['data', 'informationTitle1'], ''));
+      setInformationTitle2(lodashGet(resultObj, ['data', 'informationTitle2'], ''));
+      setInformationTitle3(lodashGet(resultObj, ['data', 'informationTitle3'], ''));
+      setInformationTitle4(lodashGet(resultObj, ['data', 'informationTitle4'], ''));
+      setInformationTitle5(lodashGet(resultObj, ['data', 'informationTitle5'], ''));
+      setInformation1(lodashGet(resultObj, ['data', 'information1'], ''));
+      setInformation2(lodashGet(resultObj, ['data', 'information2'], ''));
+      setInformation3(lodashGet(resultObj, ['data', 'information3'], ''));
+      setInformation4(lodashGet(resultObj, ['data', 'information4'], ''));
+      setInformation5(lodashGet(resultObj, ['data', 'information5'], ''));
+      setPublicSetting(lodashGet(resultObj, ['data', 'publicSetting'], 1));
+      setDeadlineDate(lodashGet(resultObj, ['data', 'deadlineDate'], ''));
+      setWebPushAvailable(lodashGet(resultObj, ['data', 'webPushAvailable'], false));
+      setWebPushSubscriptionObj(lodashGet(resultObj, ['data', 'webPushesObj', 'subscriptionObj'], {}));
       
       
     } catch (errorObj) {
@@ -505,7 +495,7 @@ const Component = (props) => {
     //   新規投稿時の recruitmentThreads_id
     // ---------------------------------------------
     
-    let newRecruitmentThreads_id = '';
+    let newRecruitmentThreads_id = 'nEQMNMWDy';
     
     
     
@@ -513,33 +503,40 @@ const Component = (props) => {
     try {
       
       
+      // console.log(chalk`
+      //   platform1: {green ${platform1}}
+      //   platform2: {green ${platform2}}
+      //   platform3: {green ${platform3}}
+      // `);
+      
+      
       // ---------------------------------------------
       //   Temp Data
       // ---------------------------------------------
       
-      setHardwaresArr([ { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },  { hardwareID: '2yKF4qXAw', name: 'メガドライブ' } ]);
-      setCategory(1);
-      setTitle('テストタイトル');
-      setName('テストネーム');
-      setComment('テストコメント');
-      setWebPushAvailable(true);
-      setPlatform1('Other');
-      setPlatform2('Other');
-      setPlatform3('Other');
-      setID1('test-id-1');
-      setInformationTitle1('情報タイトル1');
-      setInformation1('情報1');
-      setPublicSetting(1);
-      // const [deadlineDate, setDeadlineDate] = useState('');
-      setWebPushSubscriptionObj({
+      // setHardwaresArr([ { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },  { hardwareID: '2yKF4qXAw', name: 'メガドライブ' } ]);
+      // setCategory(1);
+      // setTitle('テストタイトル');
+      // setName('テストネーム');
+      // setComment('テストコメント');
+      // setWebPushAvailable(true);
+      // setPlatform1('Other');
+      // setPlatform2('Other');
+      // setPlatform3('Other');
+      // setID1('test-id-1');
+      // setInformationTitle1('情報タイトル1');
+      // setInformation1('情報1');
+      // setPublicSetting(1);
+      // setDeadlineDate('');
+      // setWebPushSubscriptionObj({
         
-        endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
-        keys: {
-          p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
-          auth: 'siDbUa9DCbg-n9AMsvWA1w'
-        }
+      //   endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
+      //   keys: {
+      //     p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
+      //     auth: 'siDbUa9DCbg-n9AMsvWA1w'
+      //   }
         
-      });
+      // });
       
       
       
@@ -637,7 +634,7 @@ const Component = (props) => {
         title,
         name,
         comment,
-        ids_idsArr,
+        idsArr,
         platform1,
         platform2,
         platform3,
@@ -672,32 +669,11 @@ const Component = (props) => {
       }
       
       
-      // nOVilxpSk
-      // formDataObj.webPushSubscriptionObj = {
-      //   endpoint: 'https://fcm.googleapis.com/fcm/send/cOsJ3EXpj2E:APA91bHnycUwE37fsnmlRNYEuJYx_kf67jaq7CFmr7oFIGzIqRk8tXi8BhHmtCfL7MlMjhyYoFwhhvLMx7sfUCqh00wDXVIovAp5hamTe2UWGDF4QUd4Z8VRNkNcrQadHGUuy7k-Jqbd',
-      //   keys: {
-      //     p256dh: 'BCCZ55xYxmC_6JNemzKc1FzAiz-fUEz4xCA3WXqVq2MRBaSJA3SUKtlY_G_747sT2C0Xm6QJD4L7KKzunNtj-Zo',
-      //     auth: 'EYpxeXGdImUIaTpBqVca0A'
-      //   }
-      // };
-      
-      // L4D5QB9p4
-      // formDataObj.webPushSubscriptionObj = {
-      //   endpoint: 'https://fcm.googleapis.com/fcm/send/fCVMofN4BLo:APA91bFShjo-hy02fDaVOpLDHQE_TaRRCPSG1IJIc_2qhndZuqkC67x4_RFbWp5uH4I11SKRdxpVquPQP59QNcomJw4irs0F-EWqOUu6ydVDMZ0Gau92YGmEV36SSO5a63vxUet7wEIo',
-      //   keys: {
-      //     p256dh: 'BLPT_K71Dk35Le_w0eyviBXXNRBsaZc-5o1-D0VKp18XW_N4wCPyzilZE-j0V-eJ4Cz5irqOZt0nePNG8zLDdaQ',
-      //     auth: '0MuLywCY4rbTg5I2_nFEOQ'
-      //   }
-      // };
-      
-      // Error
-      // formDataObj.webPushSubscriptionObj = {
-      //   endpoint: 'https://fcm.googleapis.com/fcm/send/aaa',
-      //   keys: {
-      //     p256dh: 'bbb',
-      //     auth: 'ccc'
-      //   }
-      // };
+      // console.log(`
+      //   ----- idsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
@@ -755,83 +731,7 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   編集の場合
-      // ---------------------------------------------
-      
-      if (recruitmentThreads_id) {
-        
-        
-        // ---------------------------------------------
-        //   Hide Form
-        // ---------------------------------------------
-        
-        // lodashSet(this.dataObj, [...pathArr, 'showFormThread'], false);
-        
-        
-      // ---------------------------------------------
-      //   新規投稿の場合
-      // ---------------------------------------------
-        
-      } else {
-        
-        
-        // ---------------------------------------------
-        //   Reset Form
-        // ---------------------------------------------
-        
-        setHardwaresArr([]);
-        setCategory('');
-        setTitle('');
-        setName('');
-        setComment('');
-        setImagesAndVideosObj({
-          
-          _id: '',
-          createdDate: '',
-          updatedDate: '',
-          users_id: '',
-          type: 'recruitment',
-          arr: [],
-          
-        });
-        
-        setIDs_idsArr([]);
-        setPlatform1('');
-        setPlatform2('');
-        setPlatform3('');
-        setID1('');
-        setID2('');
-        setID3('');
-        setInformationTitle1('');
-        setInformationTitle2('');
-        setInformationTitle3('');
-        setInformationTitle4('');
-        setInformationTitle5('');
-        setInformation1('');
-        setInformation2('');
-        setInformation3('');
-        setInformation4('');
-        setInformation5('');
-        setPublicSetting(1);
-        setDeadlineDate('');
-        setWebPushAvailable(false);
-        setWebPushSubscriptionObj({});
-        
-        
-        // ---------------------------------------------
-        //   パネルを閉じる
-        // ---------------------------------------------
-        
-        // storeLayout.handlePanelExpand({ pathArr });
-        
-        
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   新規投稿時の forumThreads_id
+      //   新規投稿時の recruitmentThreads_id
       // ---------------------------------------------
       
       newRecruitmentThreads_id = lodashGet(resultObj, ['data', 'recruitmentThreadsObj', 'page1Obj', 'arr', 0], '');
@@ -874,6 +774,11 @@ const Component = (props) => {
       //   --------------------\n
       // `);
       
+      // console.log(chalk`
+      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+      //   newRecruitmentThreads_id: {green ${newRecruitmentThreads_id}}
+      // `);
+      
       
     } catch (errorObj) {
       
@@ -907,6 +812,86 @@ const Component = (props) => {
       handleLoadingClose();
       
       
+      
+      
+      // ---------------------------------------------
+      //   編集の場合
+      // ---------------------------------------------
+      
+      if (recruitmentThreads_id) {
+        
+        
+        // ---------------------------------------------
+        //   Hide Form
+        // ---------------------------------------------
+        
+        setShowForm(false);
+        
+        
+      // ---------------------------------------------
+      //   新規投稿の場合
+      // ---------------------------------------------
+        
+      } else {
+        
+        
+        // ---------------------------------------------
+        //   Reset Form
+        // ---------------------------------------------
+        
+        setHardwaresArr([]);
+        setCategory('');
+        setTitle('');
+        setName('');
+        setComment('');
+        setImagesAndVideosObj({
+          
+          _id: '',
+          createdDate: '',
+          updatedDate: '',
+          users_id: '',
+          type: 'recruitment',
+          arr: [],
+          
+        });
+        
+        setIDsArr([]);
+        setPlatform1('Other');
+        setPlatform2('Other');
+        setPlatform3('Other');
+        setID1('');
+        setID2('');
+        setID3('');
+        setInformationTitle1('');
+        setInformationTitle2('');
+        setInformationTitle3('');
+        setInformationTitle4('');
+        setInformationTitle5('');
+        setInformation1('');
+        setInformation2('');
+        setInformation3('');
+        setInformation4('');
+        setInformation5('');
+        setPublicSetting(1);
+        setDeadlineDate('');
+        setWebPushAvailable(false);
+        setWebPushSubscriptionObj({});
+        
+        
+        // ---------------------------------------------
+        //   パネルを閉じる
+        // ---------------------------------------------
+        
+        // setPanelExpanded(false);
+        
+        // window.setTimeout(() => setPanelExpanded(false), 1000);
+        
+        
+      }
+      
+      
+      
+      
       // ---------------------------------------------
       //   Scroll
       // ---------------------------------------------
@@ -928,22 +913,6 @@ const Component = (props) => {
   };
   
   
-  
-  
-  // --------------------------------------------------
-  //   Forum
-  // --------------------------------------------------
-  
-  // const {
-    
-  //   dataObj,
-  //   handleEdit,
-  //   handleSubmitRecruitmentThread,
-  //   handleGetWebPushSubscribeObj,
-  //   // handleDeleteRecruitmentThread,
-  //   handleHideFormRecruitmentThread,
-    
-  // } = storeGcRecruitment;
   
   
   // --------------------------------------------------
@@ -1281,8 +1250,8 @@ const Component = (props) => {
             gameCommunities_id={gameCommunities_id}
             recruitmentThreads_id={recruitmentThreads_id}
             
-            ids_idsArr={ids_idsArr}
-            setIDs_idsArr={setIDs_idsArr}
+            idsArr={idsArr}
+            setIDsArr={setIDsArr}
             
             platform1={platform1}
             setPlatform1={setPlatform1}
@@ -1368,7 +1337,7 @@ const Component = (props) => {
               margin: 0 0 12px 0;
             `}
           >
-            プッシュ通知に対応しているブラウザは Chrome、Edge、Firefox、Opera です。
+            プッシュ通知に対応しているブラウザは最新の Chrome、Edge、Firefox、Opera です。
           </p>
           
           <p
@@ -1427,10 +1396,6 @@ const Component = (props) => {
               <Button
                 variant="outlined"
                 color="secondary"
-                // onClick={() => handleHideFormRecruitmentThread({
-                //   pathArr,
-                //   recruitmentThreads_id,
-                // })}
                 disabled={buttonDisabled}
                 onClick={() => setShowForm(false)}
               >

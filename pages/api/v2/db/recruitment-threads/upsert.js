@@ -150,7 +150,6 @@ export default async (req, res) => {
       information3,
       information4,
       information5,
-      webPushAvailable,
       threadLimit,
       commentLimit,
       replyLimit,
@@ -170,6 +169,7 @@ export default async (req, res) => {
       id3,
       publicSetting,
       deadlineDate,
+      webPushAvailable,
       webPushSubscriptionObj,
       
     } = bodyObj;
@@ -231,6 +231,12 @@ export default async (req, res) => {
     const auth = lodashGet(webPushSubscriptionObj, ['keys', 'auth'], '');
     
     
+    // console.log(chalk`
+    //   webPushAvailable: {green ${webPushAvailable}}
+    //   endpoint: {green ${endpoint}}
+    //   p256dh: {green ${p256dh}}
+    //   auth: {green ${auth}}
+    // `);
     
     
     // --------------------------------------------------
@@ -836,6 +842,7 @@ export default async (req, res) => {
       
     } else {
       
+      webPushAvailable = false;
       webPushesConditionObj = {};
       webPushesSaveObj = {};
       

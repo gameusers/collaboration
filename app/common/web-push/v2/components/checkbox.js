@@ -319,8 +319,37 @@ const Component = (props) => {
       //   更新
       // ---------------------------------------------
       
-      setWebPushAvailable(!webPushAvailable);
-      setWebPushSubscriptionObj(webPushSubscriptionObj);
+      if (webPushSubscriptionObj.endpoint) {
+        
+        // console.log('AAA');
+        
+        setWebPushAvailable(!webPushAvailable);
+        setWebPushSubscriptionObj(webPushSubscriptionObj);
+        
+        
+      // ---------------------------------------------
+      //   環境が Web Push に対応していない場合、Subscription データが取得できない場合はエラー
+      // ---------------------------------------------
+        
+      } else {
+        
+        // console.log('BBB');
+        
+        setWebPushAvailable(false);
+        setWebPushSubscriptionObj({});
+        
+        
+        // ---------------------------------------------
+        //   Snackbar: Error
+        // ---------------------------------------------
+        
+        handleSnackbarOpen({
+          variant: 'error',
+          messageID: 'KkWs0oIKw',
+        });
+        
+        
+      }
       
       
       
@@ -329,33 +358,33 @@ const Component = (props) => {
       //   console.log
       // --------------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/common/web-push/v2/components/checkbox.js - handleCheck
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/web-push/v2/components/checkbox.js - handleCheck
+      // `);
       
-      console.log(chalk`
-        process.env.NODE_ENV: {green ${process.env.NODE_ENV}}
-        process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY: {green ${process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY}}
-      `);
+      // console.log(chalk`
+      //   process.env.NODE_ENV: {green ${process.env.NODE_ENV}}
+      //   process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY: {green ${process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY}}
+      // `);
       
-      console.log(`
-        ----- oldSubscriptionObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(oldSubscriptionObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- oldSubscriptionObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(oldSubscriptionObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(`
-        ----- newSubscriptionObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(newSubscriptionObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- newSubscriptionObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(newSubscriptionObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(`
-        ----- webPushSubscriptionObj -----\n
-        ${util.inspect(webPushSubscriptionObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- webPushSubscriptionObj -----\n
+      //   ${util.inspect(webPushSubscriptionObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
     } catch (errorObj) {

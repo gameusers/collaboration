@@ -19,18 +19,10 @@ import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
-//   Lodash
+//   Material UI / Icons
 // ---------------------------------------------
 
-import lodashGet from 'lodash/get';
-
-
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
-import IDChip from 'app/common/id/v2/components/chip.js';
-import IDForm from 'app/common/id/v2/components/form.js';
+import IconWarning from '@material-ui/icons/Warning';
 
 
 
@@ -53,8 +45,7 @@ const Component = (props) => {
   
   const {
     
-    idsArr,
-    setIDsArr,
+    publicSetting,
     
   } = props;
   
@@ -62,28 +53,29 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Component - 選択済みID
+  //   必要な情報がない場合、空のコンポーネントを返す
   // --------------------------------------------------
   
-  const componentsSelectedArr = [];
+  if (publicSetting === 1) {
+    return null;
+  }
   
-  for (const [index, valueObj] of idsArr.entries()) {
+  
+  
+  
+  // --------------------------------------------------
+  //   Text
+  // --------------------------------------------------
+  
+  let text = '';
+  
+  if (publicSetting === 2) {
     
-    const games_id = lodashGet(valueObj, ['gamesObj', '_id'], '');
-    const gamesName = lodashGet(valueObj, ['gamesObj', 'name'], '');
-    const gamesImagesAndVideosThumbnailObj = lodashGet(valueObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
+    text = 'ログインしてコメントした方のみ、ID・情報を閲覧することができます。';
     
-    componentsSelectedArr.push(
-      <IDChip
-        key={index}
-        platform={valueObj.platform}
-        label={valueObj.label}
-        id={valueObj.id}
-        games_id={games_id}
-        gamesName={gamesName}
-        gamesImagesAndVideosThumbnailObj={gamesImagesAndVideosThumbnailObj}
-      />
-    );
+  } else if (publicSetting === 3) {
+    
+    text = 'ログインしてコメントした方の中から、募集者がID・情報を公開する相手を選びます。';
     
   }
   
@@ -96,13 +88,11 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/gc/rec/v2/components/form/ids.js
+  //   /app/gc/rec/v2/components/public-setting.js
   // `);
   
-  // console.log(`
-  //   ----- idsArr -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
-  //   --------------------\n
+  // console.log(chalk`
+  //   publicSetting: {green ${publicSetting}}
   // `);
   
   
@@ -115,48 +105,35 @@ const Component = (props) => {
   return (
     <div
       css={css`
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        
+        background-color: #FFF4E5;
+        border-radius: 8px;
+        
         margin: 24px 0 0 0;
+        padding: 8px 16px;
       `}
     >
       
       
-      <p>ゲームや連絡先のIDを表示します。「IDを登録・編集する」ボタンを押して、表示したいIDを選択してください。</p>
-      
-      
-      
-      
-      {/* 選択済みID */}
       <div
         css={css`
-          display: flex;
-          flex-flow: row wrap;
-          margin: 12px 0 8px 0;
-          
-          @media screen and (max-width: 480px) {
-            flex-flow: column wrap;
-          }
+          color: #FFCA7E;
+          margin: 5px 8px 0 0;
         `}
       >
-        
-        {componentsSelectedArr}
-        
+        <IconWarning />
       </div>
       
       
-      
-      
-      {/* ID 選択・編集フォーム */}
       <div
         css={css`
-          margin: 24px 0 0 0;
+          font-size: 12px;
         `}
       >
-        
-        <IDForm
-          idsArr={idsArr}
-          setIDsArr={setIDsArr}
-        />
-        
+        {text}
       </div>
       
       

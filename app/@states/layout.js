@@ -50,10 +50,7 @@ const useLayout = (initialStateObj) => {
   const [videoObj, setVideoObj] = useState({});
   const [navigationForLightbox, setNavigationForLightbox] = useState(true);
   
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /app/@states/layout.js - useLayout
-  // `);
+  
   
   
   // --------------------------------------------------

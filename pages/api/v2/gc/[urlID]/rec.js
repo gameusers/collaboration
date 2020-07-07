@@ -403,38 +403,38 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/gc/[urlID]/rec.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/gc/[urlID]/rec.js
+    // `);
     
-    console.log(chalk`
-      urlID: {green ${urlID}}
-      recruitmentID: {green ${recruitmentID}}
+    // console.log(chalk`
+    //   urlID: {green ${urlID}}
+    //   recruitmentID: {green ${recruitmentID}}
       
-      threadPage: {green ${threadPage}}
-      threadLimit: {green ${threadLimit}}
-      commentLimit: {green ${commentLimit}}
-      replyLimit: {green ${replyLimit}}
+    //   threadPage: {green ${threadPage}}
+    //   threadLimit: {green ${threadLimit}}
+    //   commentLimit: {green ${commentLimit}}
+    //   replyLimit: {green ${replyLimit}}
       
-      hardwares: {green ${hardwares}}
-      categories: {green ${categories}}
-      keyword: {green ${keyword}}
-    `);
+    //   hardwares: {green ${hardwares}}
+    //   categories: {green ${categories}}
+    //   keyword: {green ${keyword}}
+    // `);
     
-    delete argumentsObj.req;
+    // delete argumentsObj.req;
     
-    console.log(`
-      ----- argumentsObj -----\n
-      ${util.inspect(argumentsObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- argumentsObj -----\n
+    //   ${util.inspect(argumentsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

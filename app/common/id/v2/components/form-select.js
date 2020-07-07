@@ -97,7 +97,7 @@ const Component = (props) => {
     setSelectedArr,
     unselectedArr,
     setUnselectedArr,
-    setIDs_idsArr,
+    setIDsArr,
     setDialogOpen,
     
   } = props;
@@ -186,7 +186,7 @@ const Component = (props) => {
     //   更新
     // --------------------------------------------------
     
-    setIDs_idsArr(selectedIDsArr);
+    setIDsArr(selectedIDsArr);
     
     
     // --------------------------------------------------

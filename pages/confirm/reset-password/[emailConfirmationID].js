@@ -18,7 +18,7 @@ import React from 'react';
 import Error from 'next/error';
 import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
-import { loadReCaptcha, ReCaptcha } from 'react-recaptcha-v3';
+// import { loadReCaptcha, ReCaptcha } from 'react-recaptcha-v3';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -290,9 +290,9 @@ export default class extends React.Component {
     //   https://github.com/codeep/react-recaptcha-v3
     // --------------------------------------------------
     
-    if (process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1' && process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
-      loadReCaptcha(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
-    }
+    // if (process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1' && process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
+    //   loadReCaptcha(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
+    // }
     
     
   }
@@ -399,7 +399,7 @@ export default class extends React.Component {
               
               
               {/* reCAPTCHA */}
-              {(process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1' && process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) &&
+              {/*{(process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1' && process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) &&
                 <ReCaptcha
                   ref={ref => this.recaptcha = ref}
                   sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
@@ -409,7 +409,7 @@ export default class extends React.Component {
                     ref: this.recaptcha,
                   })}
                 />
-              }
+              }*/}
               
               
               {/* Form */}

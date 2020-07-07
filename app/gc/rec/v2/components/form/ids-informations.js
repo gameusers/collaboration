@@ -78,8 +78,8 @@ const Component = (props) => {
     type,
     publicSettingThread,
     
-    ids_idsArr,
-    setIDs_idsArr,
+    idsArr,
+    setIDsArr,
     
     platform1,
     setPlatform1,
@@ -545,8 +545,8 @@ const Component = (props) => {
   // `);
   
   // console.log(`
-  //   ----- ids_idsArr -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
+  //   ----- idsArr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
   
@@ -606,8 +606,8 @@ const Component = (props) => {
       
       {(showFormID && login) &&
         <FormIDs
-          ids_idsArr={ids_idsArr}
-          setIDs_idsArr={setIDs_idsArr}
+          idsArr={idsArr}
+          setIDsArr={setIDsArr}
         />
       }
       

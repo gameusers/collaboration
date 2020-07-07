@@ -118,8 +118,8 @@ const Component = (props) => {
     
     dataArr,
     setDataArr,
-    ids_idsArr,
-    setIDs_idsArr,
+    idsArr,
+    setIDsArr,
     gamesLimit,
     
   } = props;
@@ -350,7 +350,7 @@ const Component = (props) => {
       
       const updatedIDsArr = [];
       
-      for (let valueObj of ids_idsArr.values()) {
+      for (let valueObj of idsArr.values()) {
         
         // 現在選択されているIDを抽出する
         const newObj = resultObj.data.find((valueObj2) => {
@@ -380,10 +380,10 @@ const Component = (props) => {
       
       
       // --------------------------------------------------
-      //   Update ids_idsArr
+      //   Update idsArr
       // --------------------------------------------------
       
-      setIDs_idsArr(updatedIDsArr);
+      setIDsArr(updatedIDsArr);
       
       
       
@@ -427,8 +427,8 @@ const Component = (props) => {
       // `);
       
       // console.log(`
-      //   ----- ids_idsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
+      //   ----- idsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -556,7 +556,7 @@ const Component = (props) => {
       
       const updatedIDsArr = [];
       
-      for (let valueObj of ids_idsArr.values()) {
+      for (let valueObj of idsArr.values()) {
         
         const newObj = resultObj.data.find((valueObj2) => {
           return valueObj2._id === valueObj._id;
@@ -572,10 +572,10 @@ const Component = (props) => {
       
       
       // --------------------------------------------------
-      //   Update ids_idsArr
+      //   Update idsArr
       // --------------------------------------------------
       
-      setIDs_idsArr(updatedIDsArr);
+      setIDsArr(updatedIDsArr);
       
       
       
@@ -624,8 +624,8 @@ const Component = (props) => {
       // `);
       
       // console.log(`
-      //   ----- ids_idsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
+      //   ----- idsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       

@@ -19,7 +19,7 @@ import Error from 'next/error';
 import Head from 'next/head';
 import Router from 'next/router';
 import { observer, Provider } from 'mobx-react';
-import { loadReCaptcha, ReCaptcha } from 'react-recaptcha-v3';
+// import { loadReCaptcha, ReCaptcha } from 'react-recaptcha-v3';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */

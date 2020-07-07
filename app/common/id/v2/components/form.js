@@ -87,8 +87,8 @@ const Component = (props) => {
   
   const {
     
-    ids_idsArr,
-    setIDs_idsArr,
+    idsArr,
+    setIDsArr,
     
   } = props;
   
@@ -125,7 +125,7 @@ const Component = (props) => {
   /**
    * フォーム（ダイアログ）を開く
    * Fetchでユーザーが登録しているIDをすべて取得する
-   * @param {Array} ids_idsArr - 選択されているIDが入っている配列
+   * @param {Array} idsArr - 選択されているIDが入っている配列
    */
   const handleDialogOpen = async () => {
     
@@ -204,7 +204,7 @@ const Component = (props) => {
         //   選択IDの配列を作成する
         // --------------------------------------------------
         
-        for (let valueObj of ids_idsArr.values()) {
+        for (let valueObj of idsArr.values()) {
           
           // 存在するIDかチェックする（すでに削除されている可能性があるため）
           const index = fetchDataArr.findIndex((value2Obj) => {
@@ -225,7 +225,7 @@ const Component = (props) => {
         for (let valueObj of fetchDataArr.values()) {
           
           // 選択IDに含まれていない場合、配列に追加
-          const index = ids_idsArr.findIndex((value2Obj) => {
+          const index = idsArr.findIndex((value2Obj) => {
             return value2Obj._id === valueObj._id;
           });
           
@@ -273,8 +273,8 @@ const Component = (props) => {
         // `);
         
         // console.log(`
-        //   ----- ids_idsArr -----\n
-        //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
+        //   ----- idsArr -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
         //   --------------------\n
         // `);
         
@@ -335,7 +335,7 @@ const Component = (props) => {
         setSelectedArr={setSelectedArr}
         unselectedArr={unselectedArr}
         setUnselectedArr={setUnselectedArr}
-        setIDs_idsArr={setIDs_idsArr}
+        setIDsArr={setIDsArr}
         setDialogOpen={setDialogOpen}
       />
     ;
@@ -346,8 +346,8 @@ const Component = (props) => {
       <FormEdit
         dataArr={dataArr}
         setDataArr={setDataArr}
-        ids_idsArr={ids_idsArr}
-        setIDs_idsArr={setIDs_idsArr}
+        idsArr={idsArr}
+        setIDsArr={setIDsArr}
         gamesLimit={1}
       />
     ;
@@ -383,8 +383,8 @@ const Component = (props) => {
   // `);
   
   // console.log(`
-  //   ----- ids_idsArr -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
+  //   ----- idsArr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
   

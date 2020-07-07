@@ -98,16 +98,16 @@ import { getCookie } from 'app/@modules/cookie.js';
 import Paragraph from 'app/common/layout/v2/components/paragraph.js';
 import User from 'app/common/user/v2/components/user.js';
 import ImageAndVideo from 'app/common/image-and-video/v2/components/image-and-video.js';
-import ChipHardwares from 'app/common/hardware/v2/components/chip.js';
+import HardwaresChip from 'app/common/hardware/v2/components/chip.js';
 // import Panel from 'app/common/layout/components/panel.js';
 
-import ChipCategory from 'app/gc/rec/components/chip-category.js';
+import CategoryChip from 'app/gc/rec/v2/components/category-chip.js';
 import RecruitmentComment from 'app/gc/rec/components/recruitment-comment.js';
 import FormThread from 'app/gc/rec/v2/components/form/thread.js';
 import FormComment from 'app/gc/rec/components/form/comment.js';
-import Public from 'app/gc/rec/components/public.js';
-import DeadlineDate from 'app/gc/rec/components/deadline-date.js';
-import Notification from 'app/gc/rec/components/notification.js';
+import Public from 'app/gc/rec/v2/components/public.js';
+import DeadlineDate from 'app/gc/rec/v2/components/deadline-date.js';
+import Notification from 'app/gc/rec/v2/components/notification.js';
 
 
 
@@ -715,15 +715,15 @@ const Component = (props) => {
                 
                 
                 {/* ハードウェア  */}
-                {/*<ChipHardwares
+                <HardwaresChip
                   hardwaresArr={hardwaresArr}
-                />*/}
+                />
                 
                 
                 {/* カテゴリー */}
-                {/*<ChipCategory
+                <CategoryChip
                   category={category}
-                />*/}
+                />
                 
                 
                 {/* スレッドの固有ID: recruitmentThreads_id */}
@@ -870,7 +870,6 @@ const Component = (props) => {
                   >
                     
                     <ImageAndVideo
-                      // pathArr={[recruitmentThreads_id, 'imagesAndVideosObj']}
                       imagesAndVideosObj={imagesAndVideosObj}
                     />
                     
@@ -904,12 +903,12 @@ const Component = (props) => {
                   
                   
                   {/* ID & 情報 & 公開設定 */}
-                  {/*<Public
+                  <Public
                     idsArr={idsArr}
                     publicIDsArr={publicIDsArr}
                     publicInformationsArr={publicInformationsArr}
                     publicSetting={publicSetting}
-                  />*/}
+                  />
                   
                   
                   
@@ -922,14 +921,13 @@ const Component = (props) => {
                       `}
                     >
                       
-                      {/*<DeadlineDate
+                      <DeadlineDate
                         deadlineDate={deadlineDate}
                       />
                       
                       <Notification
-                        // pathArr={pathRecruitmentThreadArr}
                         notification={notification}
-                      />*/}
+                      />
                       
                     </div>
                   }
@@ -1075,10 +1073,6 @@ const Component = (props) => {
                           `}
                           variant="outlined"
                           color="primary"
-                          // onClick={() => handleShowFormRecruitmentThread({
-                          //   pathArr: pathRecruitmentThreadEditFormArr,
-                          //   recruitmentThreads_id,
-                          // })}
                           disabled={buttonDisabled}
                           onClick={() => setShowFormThread(true)}
                         >

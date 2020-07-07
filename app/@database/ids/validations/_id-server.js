@@ -28,7 +28,9 @@ const Model = require('../model');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom.js');
+
+
 
 
 
@@ -57,9 +59,11 @@ const validationIDs_idServer = async ({ value, loginUsers_id }) => {
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
+    
     value: data,
     numberOfCharacters,
+    
   };
   
   
@@ -86,10 +90,12 @@ const validationIDs_idServer = async ({ value, loginUsers_id }) => {
   // ---------------------------------------------
   
   const count = await Model.count({
+    
     conditionObj: {
       _id: value,
       users_id: loginUsers_id,
     }
+    
   });
   
   if (count !== 1) {
@@ -132,9 +138,11 @@ const validationIDsArrServer = async ({ required = false, valueArr, loginUsers_i
   
   const _idsArr = [];
   
-  let resultObj = {
+  const resultObj = {
+    
     valueArr: [],
     messageID: 'Error',
+    
   };
   
   
@@ -215,10 +223,12 @@ const validationIDsArrServer = async ({ required = false, valueArr, loginUsers_i
       // ---------------------------------------------
       
       const docArr = await Model.find({
+        
         conditionObj: {
           _id: { $in: _idsArr },
           users_id: loginUsers_id,
         }
+        
       });
       
       
@@ -278,6 +288,8 @@ const validationIDsArrServer = async ({ required = false, valueArr, loginUsers_i
 // --------------------------------------------------
 
 module.exports = {
+  
   validationIDs_idServer,
   validationIDsArrServer,
+  
 };

@@ -394,7 +394,7 @@ const findCommentsAndReplies = async ({
     
     const intCommentLimit = parseInt(commentLimit, 10);
     const intReplyLimit = parseInt(replyLimit, 10);
-    const errorLimit = parseInt(process.env.WEB_PUSH_ERROR_LIMIT, 10);
+    const webPushErrorLimit = parseInt(process.env.WEB_PUSH_ERROR_LIMIT, 10);
     
     
     
@@ -517,14 +517,14 @@ const findCommentsAndReplies = async ({
                     { $and:
                       [
                         { $eq: ['$_id', '$$letWebPushes_id'] },
-                        { $lt: ['$errorCount', errorLimit] },
+                        { $lt: ['$errorCount', webPushErrorLimit] },
                       ]
                     },
                     
                   }
                 },
-                { $project:
-                  {
+                {
+                  $project: {
                     _id: 1,
                     users_id: 1,
                     subscriptionObj: 1,
@@ -2027,10 +2027,10 @@ const findForNotification = async ({
     
     
     // --------------------------------------------------
-    //   Error Count Limit
+    //   Web Push Error Limit
     // --------------------------------------------------
     
-    const errorLimit = parseInt(process.env.WEB_PUSH_ERROR_LIMIT, 10);
+    const webPushErrorLimit = parseInt(process.env.WEB_PUSH_ERROR_LIMIT, 10);
     
     
     
@@ -2066,7 +2066,7 @@ const findForNotification = async ({
                   { $and:
                     [
                       { $eq: ['$_id', '$$letWebPushes_id'] },
-                      { $lt: ['$errorCount', errorLimit] },
+                      { $lt: ['$errorCount', webPushErrorLimit] },
                     ]
                   }
                 }

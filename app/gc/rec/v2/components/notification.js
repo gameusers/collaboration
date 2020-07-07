@@ -15,7 +15,6 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-import { useIntl } from 'react-intl';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -26,6 +25,10 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+// import lodashSet from 'lodash/set';
+// import lodashHas from 'lodash/has';
+// import lodashCloneDeep from 'lodash/cloneDeep';
+// import lodashMerge from 'lodash/merge';
 
 
 // ---------------------------------------------
@@ -33,24 +36,14 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import IconButton from '@material-ui/core/IconButton';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
 
 
 // ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
 
-import IconExpandLess from '@material-ui/icons/ExpandLess';
-import IconExpandMore from '@material-ui/icons/ExpandMore';
-
-
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-// import { ContainerStateLayout } from 'app/@states/layout.js';
+import IconAlarm from '@material-ui/icons/Alarm';
+import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
 
@@ -58,9 +51,12 @@ import IconExpandMore from '@material-ui/icons/ExpandMore';
 
 
 // --------------------------------------------------
-//   Components
+//   Function Components
 // --------------------------------------------------
 
+/**
+ * Export Component
+ */
 const Component = (props) => {
   
   
@@ -70,10 +66,7 @@ const Component = (props) => {
   
   const {
     
-    heading,
-    defaultExpanded = true,
-    panelExpanded,
-    setPanelExpanded,
+    notification,
     
   } = props;
   
@@ -84,34 +77,27 @@ const Component = (props) => {
   //   Hooks
   // --------------------------------------------------
   
-  const intl = useIntl();
-  const [panelExpandedChild, setPanelExpandedChild] = useState(defaultExpanded);
-  // const [panelExpanded, setPanelExpanded] = useState(defaultExpanded);
-  const [buttonDisabled, setButtonDisabled] = useState(true);
-  
-  
-  useEffect(() => {
-    
-    setButtonDisabled(false);
-    
-  }, []);
+  const [showExplanation, setShowExplanation] = useState(false);
   
   
   
   
   // --------------------------------------------------
-  //   expanded & setExpanded
+  //   必要な情報がない場合、空のコンポーネントを返す
   // --------------------------------------------------
   
-  let expanded = panelExpandedChild;
-  let setExpanded = setPanelExpandedChild;
-  
-  if (setPanelExpanded) {
-    
-    expanded = panelExpanded;
-    setExpanded = setPanelExpanded;
-    
+  if (notification === '') {
+    return null;
   }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Component
+  // --------------------------------------------------
+  
+  const component = `プッシュ通知`;
   
   
   
@@ -122,11 +108,11 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/layout/v2/components/panel.js
+  //   /app/gc/rec/v2/components/notification.js
   // `);
   
   // console.log(chalk`
-  //   open: {green ${open}}
+  //   notification: {green ${notification}}
   // `);
   
   
@@ -137,82 +123,88 @@ const Component = (props) => {
   // --------------------------------------------------
   
   return (
-    <Accordion
+    <div
       css={css`
-        margin: 0 !important;
+        margin: 4px 0 0 0;
       `}
-      expanded={expanded}
     >
       
       
-      {/* Heading */}
-      <AccordionSummary
+      <div
         css={css`
-          cursor: default !important;
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
         `}
       >
         
         
-        <h2
+        {/* Icon */}
+        <IconAlarm
           css={css`
-            font-weight: bold;
-            font-size: 18px;
+            && {
+              font-size: 24px;
+            }
+          `}
+        />
+        
+        
+        {/* Heading */}
+        <h3
+          css={css`
+            margin: 2px 0 0 4px;
           `}
         >
-          {heading}
-        </h2>
+          通知方法:
+        </h3>
         
         
-        {/* Expansion Button */}
+        {/* 通知方法 */}
         <div
           css={css`
-            margin: 0 0 0 auto;
-            padding: 0;
+            font-size: 14px;
+            margin: 2px 0 0 8px;
           `}
         >
-          <IconButton
-            css={css`
-              && {
-                margin: 0;
-                padding: 4px;
-              }
-            `}
-            onClick={() => setExpanded(!expanded)}
-            aria-expanded={expanded}
-            aria-label="Show more"
-            disabled={buttonDisabled}
-          >
-            {panelExpanded ? (
-              <IconExpandLess />
-            ) : (
-              <IconExpandMore />
-            )}
-          </IconButton>
+          {component}
         </div>
         
         
-      </AccordionSummary>
-      
-      
-      
-      
-      {/* Contents */}
-      <AccordionDetails
-        css={css`
-          display: flex;
-          flex-flow: column wrap;
-        `}
-      >
+        {/* ？アイコン */}
+        <IconButton
+          css={css`
+            && {
+              margin: 0 0 0 8px;
+              padding: 0;
+            }
+          `}
+          color="primary"
+          aria-label="Show Notification Explanation"
+          onClick={() => setShowExplanation(!showExplanation)}
+        >
+          <IconHelpOutline />
+        </IconButton>
         
         
-        {/* Contents */}
-        {props.children}
-        
-        
-      </AccordionDetails>
+      </div>
       
       
-    </Accordion>
+      
+      
+      {/* 解説 */}
+      {showExplanation &&
+        <p
+          css={css`
+            font-size: 12px;
+            margin: 6px 0 0 0;
+          `}
+        >
+          この投稿者はプッシュ通知を許可しています。コメントや返信が書き込まれると投稿者に通知が届くため、書き込みに気づきやすくなります。
+        </p>
+      }
+      
+      
+    </div>
   );
   
   

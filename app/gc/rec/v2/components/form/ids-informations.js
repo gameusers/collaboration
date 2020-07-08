@@ -540,7 +540,6 @@ const Component = (props) => {
   // `);
   
   // console.log(chalk`
-  //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
   //   publicSettingThread: {green ${publicSettingThread}}
   // `);
   

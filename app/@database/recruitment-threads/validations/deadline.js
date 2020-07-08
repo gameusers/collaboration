@@ -53,11 +53,13 @@ const validationRecruitmentThreadsDeadlineDate = ({ throwError = false, required
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
+    
     value: data,
     numberOfCharacters,
     messageID: 'SFC7guhlr',
     error: false,
+    
   };
   
   

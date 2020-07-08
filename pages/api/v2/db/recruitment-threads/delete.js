@@ -49,10 +49,6 @@ import { CustomError } from 'app/@modules/error/custom.js';
 
 import { validationIP } from 'app/@validations/ip.js';
 
-import { validationRecruitmentThreadsLimit } from 'app/@database/recruitment-threads/validations/limit.js';
-import { validationRecruitmentCommentsLimit } from 'app/@database/recruitment-comments/validations/limit.js';
-import { validationRecruitmentRepliesLimit } from 'app/@database/recruitment-replies/validations/limit.js';
-
 
 // ---------------------------------------------
 //   Locales
@@ -120,17 +116,11 @@ export default async (req, res) => {
     const {
       
       recruitmentThreads_id,
-      threadLimit,
-      commentLimit,
-      replyLimit,
       
     } = bodyObj;
     
     
     lodashSet(requestParametersObj, ['recruitmentThreads_id'], recruitmentThreads_id);
-    lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
-    lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
-    lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
     
     
     
@@ -150,10 +140,6 @@ export default async (req, res) => {
     
     await validationIP({ throwError: true, value: ip });
     
-    await validationRecruitmentThreadsLimit({ throwError: true, required: true, value: threadLimit });
-    await validationRecruitmentCommentsLimit({ throwError: true, required: true, value: commentLimit });
-    await validationRecruitmentRepliesLimit({ throwError: true, required: true, value: replyLimit });
-    
     
     
     
@@ -172,50 +158,7 @@ export default async (req, res) => {
     });
     
     const gameCommunities_id = lodashGet(docObj, ['gameCommunities_id'], '');
-    // const comments = lodashGet(docObj, ['comments'], 0);
-    // const replies = lodashGet(docObj, ['replies'], 0);
     const imagesAndVideos_idsArr = lodashGet(docObj, ['imagesAndVideos_idsArr'], []);
-    // const images = lodashGet(docObj, ['images'], 0);
-    // const videos = lodashGet(docObj, ['videos'], 0);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/db/recruitment-threads/delete.js
-    // `);
-    
-    // console.log(chalk`
-    //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-    //   threadLimit: {green ${threadLimit}}
-    //   commentLimit: {green ${commentLimit}}
-    //   replyLimit: {green ${replyLimit}}
-    // `);
-    
-    // console.log(`
-    //   ----- docObj -----\n
-    //   ${util.inspect(docObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   comments: {green ${comments}}
-    //   replies: {green ${replies}}
-    //   images: {green ${images}}
-    //   videos: {green ${videos}}
-    // `);
-    
-    // console.log(`
-    //   ----- imagesAndVideos_idsArr -----\n
-    //   ${util.inspect(imagesAndVideos_idsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     
@@ -330,46 +273,14 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Recruitments
+    //   DB find / Game Community
     // --------------------------------------------------
     
-    const recruitmentObj = await ModelRecruitmentThreads.findRecruitments({
+    returnObj.gameCommunityObj = await ModelGameCommunities.findForGameCommunityByGameCommunities_id({
       
-      req,
-      localeObj,
-      loginUsers_id,
       gameCommunities_id,
-      threadPage: 1,
-      threadLimit,
-      commentPage: 1,
-      commentLimit,
-      replyPage: 1,
-      replyLimit,
       
     });
-    
-    returnObj.recruitmentThreadsObj = recruitmentObj.recruitmentThreadsObj;
-    returnObj.recruitmentCommentsObj = recruitmentObj.recruitmentCommentsObj;
-    returnObj.recruitmentRepliesObj = recruitmentObj.recruitmentRepliesObj;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   updatedDateObj
-    // --------------------------------------------------
-    
-    const gameCommunityArr = await ModelGameCommunities.find({
-      
-      conditionObj: {
-        _id: gameCommunities_id
-      }
-      
-    });
-    
-    const updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
-    
-    returnObj.updatedDateObj = updatedDateObj;
     
     
     
@@ -378,13 +289,26 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/recruitment-threads/delete.js
+    // `);
+    
     // console.log(chalk`
-    //   userCommunities_id: {green ${userCommunities_id}}
-    //   forumThreads_id: {green ${forumThreads_id}}
-    //   forumComments_id: {green ${forumComments_id}}
-    //   anonymity: {green ${anonymity} / ${typeof anonymity}}
-    //   IP: {green ${ip}}
-    //   User Agent: {green ${req.headers['user-agent']}}
+    //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- docObj -----\n
+    //   ${util.inspect(docObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideos_idsArr -----\n
+    //   ${util.inspect(imagesAndVideos_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     

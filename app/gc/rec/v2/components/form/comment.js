@@ -40,10 +40,8 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+// import FormControlLabel from '@material-ui/core/FormControlLabel';
+// import Checkbox from '@material-ui/core/Checkbox';
 
 
 // ---------------------------------------------
@@ -71,12 +69,10 @@ import { getCookie } from 'app/@modules/cookie.js';
 import { validationBoolean } from 'app/@validations/boolean.js';
 import { validationHandleName } from 'app/@validations/name.js';
 
-import { validationRecruitmentThreadsCategory } from 'app/@database/recruitment-threads/validations/category.js';
-import { validationRecruitmentThreadsTitle } from 'app/@database/recruitment-threads/validations/title.js';
 // import { validationRecruitmentThreadsName } from 'app/@database/recruitment-threads/validations/name.js';
 import { validationRecruitmentThreadsComment } from 'app/@database/recruitment-threads/validations/comment.js';
 import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } from 'app/@database/recruitment-threads/validations/ids-informations.js';
-import { validationRecruitmentThreadsDeadlineDate } from 'app/@database/recruitment-threads/validations/deadline.js';
+// import { validationRecruitmentThreadsDeadlineDate } from 'app/@database/recruitment-threads/validations/deadline.js';
 
 
 // ---------------------------------------------
@@ -84,10 +80,10 @@ import { validationRecruitmentThreadsDeadlineDate } from 'app/@database/recruitm
 // ---------------------------------------------
 
 import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js';
-import FormHardwares from 'app/common/hardware/v2/components/form.js';
+// import FormHardwares from 'app/common/hardware/v2/components/form.js';
 import WebPuchCheckbox from 'app/common/web-push/v2/components/checkbox.js';
 import FormIDsInformations from 'app/gc/rec/v2/components/form/ids-informations.js';
-import FormDeadline from 'app/gc/rec/v2/components/form/deadline.js';
+// import FormDeadline from 'app/gc/rec/v2/components/form/deadline.js';
 
 
 
@@ -142,6 +138,8 @@ const Component = (props) => {
     
     gameCommunities_id,
     recruitmentThreads_id,
+    recruitmentComments_id,
+    publicSettingThread,
     
     setShowForm,
     // setPanelExpanded,
@@ -159,9 +157,6 @@ const Component = (props) => {
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
-  const [hardwaresArr, setHardwaresArr] = useState([]);
-  const [category, setCategory] = useState('');
-  const [title, setTitle] = useState('');
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
   const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
@@ -194,8 +189,6 @@ const Component = (props) => {
   const [information5, setInformation5] = useState('');
   const [publicSetting, setPublicSetting] = useState(1);
   
-  const [deadlineDate, setDeadlineDate] = useState('');
-  
   const [webPushAvailable, setWebPushAvailable] = useState(false);
   const [webPushSubscriptionObj, setWebPushSubscriptionObj] = useState({});
   
@@ -214,8 +207,8 @@ const Component = (props) => {
     //   編集用データを読み込む
     // --------------------------------------------------
     
-    if (recruitmentThreads_id) {
-      handleGetEditData({ recruitmentThreads_id });
+    if (recruitmentComments_id) {
+      handleGetEditData({ recruitmentComments_id });
     }
     
     
@@ -267,20 +260,20 @@ const Component = (props) => {
   
   /**
    * 編集用データを読み込む
-   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドのID
+   * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントのID
    */
-  const handleGetEditData = async ({ recruitmentThreads_id }) => {
+  const handleGetEditData = async ({ recruitmentComments_id }) => {
     
     
     try {
       
       
       // ---------------------------------------------
-      //   recruitmentThreads_id が存在しない場合エラー
+      //   recruitmentComments_id が存在しない場合エラー
       // ---------------------------------------------
       
-      if (!recruitmentThreads_id) {
-        throw new CustomError({ errorsArr: [{ code: '1sfB7JPUO', messageID: 'Error' }] });
+      if (!recruitmentComments_id) {
+        throw new CustomError({ errorsArr: [{ code: 'cWwMK65fH', messageID: 'Error' }] });
       }
       
       
@@ -292,7 +285,7 @@ const Component = (props) => {
       
       handleScrollTo({
         
-        to: recruitmentThreads_id,
+        to: recruitmentComments_id,
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -325,7 +318,7 @@ const Component = (props) => {
       
       const formDataObj = {
         
-        recruitmentThreads_id,
+        recruitmentComments_id,
         
       };
       
@@ -336,7 +329,7 @@ const Component = (props) => {
       
       const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/get-edit-data`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-comments/get-edit-data`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
         
@@ -365,10 +358,6 @@ const Component = (props) => {
       //   Set Form Data
       // ---------------------------------------------
       
-      setHardwaresArr(lodashGet(resultObj, ['data', 'hardwaresArr'], []));
-      setCategory(lodashGet(resultObj, ['data', 'category'], ''));
-      
-      
       const localesArr = lodashGet(resultObj, ['data', 'localesArr'], []);
       
       const filteredArr = localesArr.filter((filterObj) => {
@@ -377,13 +366,11 @@ const Component = (props) => {
       
       if (lodashHas(filteredArr, [0])) {
         
-        setTitle(lodashGet(filteredArr, [0, 'title'], ''));
         setName(lodashGet(filteredArr, [0, 'name'], ''));
         setComment(lodashGet(filteredArr, [0, 'comment'], ''));
         
       } else {
         
-        setTitle(lodashGet(localesArr, [0, 'title'], ''));
         setName(lodashGet(localesArr, [0, 'name'], ''));
         setComment(lodashGet(localesArr, [0, 'comment'], ''));
         
@@ -428,7 +415,6 @@ const Component = (props) => {
       setInformation4(lodashGet(resultObj, ['data', 'information4'], ''));
       setInformation5(lodashGet(resultObj, ['data', 'information5'], ''));
       setPublicSetting(lodashGet(resultObj, ['data', 'publicSetting'], 1));
-      setDeadlineDate(lodashGet(resultObj, ['data', 'deadlineDate'], ''));
       setWebPushAvailable(lodashGet(resultObj, ['data', 'webPushAvailable'], false));
       setWebPushSubscriptionObj(lodashGet(resultObj, ['data', 'webPushesObj', 'subscriptionObj'], {}));
       
@@ -441,8 +427,10 @@ const Component = (props) => {
       // ---------------------------------------------
       
       handleSnackbarOpen({
+        
         variant: 'error',
         errorObj,
+        
       });
       
       
@@ -472,16 +460,18 @@ const Component = (props) => {
   
   
   /**
-   * 募集を投稿する
+   * コメントを投稿する
    * @param {Object} eventObj - イベント
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
    * @param {string} recruitmentThreads_id - DB recruitment-threads _id / 募集スレッドのID
+   * @param {string} recruitmentComments_id - DB recruitment-comments _id / 募集コメントのID
    */
   const handleSubmit = async ({
     
     eventObj,
     gameCommunities_id,
     recruitmentThreads_id,
+    recruitmentComments_id,
     
   }) => {
     
@@ -494,10 +484,10 @@ const Component = (props) => {
     
     
     // ---------------------------------------------
-    //   新規投稿時の recruitmentThreads_id
+    //   新規投稿時の recruitmentComments_id
     // ---------------------------------------------
     
-    let newRecruitmentThreads_id = 'nEQMNMWDy';
+    let newRecruitmentComments_id = 'nEQMNMWDy';
     
     
     
@@ -516,12 +506,8 @@ const Component = (props) => {
       //   Temp Data
       // ---------------------------------------------
       
-      // setHardwaresArr([ { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },  { hardwareID: '2yKF4qXAw', name: 'メガドライブ' } ]);
-      // setCategory(1);
-      // setTitle('テストタイトル');
       // setName('テストネーム');
       // setComment('テストコメント');
-      // setWebPushAvailable(true);
       // setPlatform1('Other');
       // setPlatform2('Other');
       // setPlatform3('Other');
@@ -529,7 +515,7 @@ const Component = (props) => {
       // setInformationTitle1('情報タイトル1');
       // setInformation1('情報1');
       // setPublicSetting(1);
-      // setDeadlineDate('');
+      // setWebPushAvailable(true);
       // setWebPushSubscriptionObj({
         
       //   endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
@@ -547,12 +533,6 @@ const Component = (props) => {
       //   Property
       // ---------------------------------------------
       
-      const hardwareIDsArr = [];
-      
-      for (let valueObj of hardwaresArr.values()) {
-        hardwareIDsArr.push(valueObj.hardwareID);
-      }
-      
       const threadLimit = parseInt((getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
       const commentLimit = parseInt((getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
       const replyLimit = parseInt((getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
@@ -566,9 +546,6 @@ const Component = (props) => {
       
       if (
         
-        validationRecruitmentThreadsCategory({ value: category }).error ||
-        
-        validationRecruitmentThreadsTitle({ value: title }).error ||
         validationHandleName({ value: name }).error ||
         validationRecruitmentThreadsComment({ value: comment }).error ||
         
@@ -594,13 +571,11 @@ const Component = (props) => {
         
         validationRecruitmentThreadsPublicSetting({ value: publicSetting }).error ||
         
-        validationRecruitmentThreadsDeadlineDate({ value: deadlineDate }).error ||
-        
         validationBoolean({ value: webPushAvailable }).error
         
       ) {
         
-        throw new CustomError({ errorsArr: [{ code: 'S0JRF6V5l', messageID: 'uwHIKBy7c' }] });
+        throw new CustomError({ errorsArr: [{ code: '-2btbTXrm', messageID: 'uwHIKBy7c' }] });
         
       }
       
@@ -631,9 +606,7 @@ const Component = (props) => {
         
         gameCommunities_id,
         recruitmentThreads_id,
-        hardwareIDsArr,
-        category,
-        title,
+        recruitmentComments_id,
         name,
         comment,
         idsArr,
@@ -654,7 +627,6 @@ const Component = (props) => {
         information4,
         information5,
         publicSetting,
-        deadlineDate,
         webPushAvailable,
         threadLimit,
         commentLimit,
@@ -684,7 +656,7 @@ const Component = (props) => {
       
       const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/upsert`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-comments/upsert`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
         
@@ -733,10 +705,10 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   新規投稿時の recruitmentThreads_id
+      //   新規投稿時の recruitmentComments_id
       // ---------------------------------------------
       
-      newRecruitmentThreads_id = lodashGet(resultObj, ['data', 'recruitmentThreadsObj', 'page1Obj', 'arr', 0], '');
+      newRecruitmentComments_id = lodashGet(resultObj, ['data', 'recruitmentCommentsObj', recruitmentThreads_id, 'page1Obj', 'arr', 0], '');
       
       
       
@@ -748,7 +720,7 @@ const Component = (props) => {
       handleSnackbarOpen({
         
         variant: 'success',
-        messageID: recruitmentThreads_id ? 'xM5NqhTq5' : 'B9Goe5scP',
+        messageID: recruitmentComments_id ? 'NKsMLWvkt' : 'fhi9lUaap',
         
       });
       
@@ -761,7 +733,7 @@ const Component = (props) => {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/gc/rec/v2/components/form/thread.js / handleSubmit
+      //   /app/gc/rec/v2/components/form/comment.js / handleSubmit
       // `);
       
       // console.log(`
@@ -777,8 +749,8 @@ const Component = (props) => {
       // `);
       
       // console.log(chalk`
-      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-      //   newRecruitmentThreads_id: {green ${newRecruitmentThreads_id}}
+      //   recruitmentComments_id: {green ${recruitmentComments_id}}
+      //   newRecruitmentComments_id: {green ${newRecruitmentComments_id}}
       // `);
       
       
@@ -820,7 +792,7 @@ const Component = (props) => {
       //   編集の場合
       // ---------------------------------------------
       
-      if (recruitmentThreads_id) {
+      if (recruitmentComments_id) {
         
         
         // ---------------------------------------------
@@ -841,9 +813,6 @@ const Component = (props) => {
         //   Reset Form
         // ---------------------------------------------
         
-        setHardwaresArr([]);
-        setCategory('');
-        setTitle('');
         setName('');
         setComment('');
         setImagesAndVideosObj({
@@ -875,7 +844,6 @@ const Component = (props) => {
         setInformation4('');
         setInformation5('');
         setPublicSetting(1);
-        setDeadlineDate('');
         setWebPushAvailable(false);
         setWebPushSubscriptionObj({});
         
@@ -900,7 +868,7 @@ const Component = (props) => {
       
       handleScrollTo({
         
-        to: recruitmentThreads_id || newRecruitmentThreads_id || 'recruitmentThreads',
+        to: recruitmentComments_id || newRecruitmentComments_id || recruitmentThreads_id || 'recruitmentThreads',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -919,9 +887,15 @@ const Component = (props) => {
   
   /**
    * フォームを閉じる
-   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドのID
+   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
+   * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントのID
    */
-  const handleClose = async ({ recruitmentThreads_id }) => {
+  const handleClose = async ({
+    
+    recruitmentThreads_id,
+    recruitmentComments_id,
+    
+  }) => {
     
     
     // ---------------------------------------------
@@ -930,14 +904,14 @@ const Component = (props) => {
     
     setShowForm(false);
       
-      
+    
     // ---------------------------------------------
     //   Scroll To
     // ---------------------------------------------
     
     handleScrollTo({
       
-      to: recruitmentThreads_id,
+      to: recruitmentComments_id || recruitmentThreads_id,
       duration: 0,
       delay: 0,
       smooth: 'easeInOutQuart',
@@ -952,11 +926,28 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
+  //   storeGcRecruitment
+  // --------------------------------------------------
+  
+  // const {
+    
+  //   dataObj,
+  //   handleEdit,
+  //   handleSubmitRecruitmentComment,
+  //   handleGetWebPushSubscribeObj,
+  //   // handleDeleteRecruitmentComment,
+  //   handleHideFormRecruitmentComment,
+    
+  // } = storeGcRecruitment;
+  
+  
+  
+  
+  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
-  const limitHardwares = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT, 10);
-  const limitImagesAndVideos = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_IMAGES_AND_VIDEOS_LIMIT, 10);
+  const limitImagesAndVideos = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_IMAGES_AND_VIDEOS_LIMIT, 10);
   
   
   
@@ -965,7 +956,6 @@ const Component = (props) => {
   //   Validations
   // --------------------------------------------------
   
-  const validationRecruitmentThreadsTitleObj = validationRecruitmentThreadsTitle({ value: title });
   const validationHandleNameObj = validationHandleName({ value: name });
   
   
@@ -975,7 +965,7 @@ const Component = (props) => {
   //   Element Name
   // --------------------------------------------------
   
-  const elementName = recruitmentThreads_id ? `${recruitmentThreads_id}-formThread` : `${gameCommunities_id}-formThread`;
+  const elementName = recruitmentComments_id ? `${recruitmentComments_id}-formComment` : `${gameCommunities_id}-formComment`;
   
   
   
@@ -986,18 +976,14 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/gc/rec/v2/components/form/thread.js
+  //   /app/gc/rec/v2/components/form/comment.js
   // `);
-  
-  // console.log(chalk`
-  //   category: {green ${category} / ${typeof category}}
-  // `);
-  
+    
   // console.log(chalk`
   //   gameCommunities_id: {green ${gameCommunities_id}}
   //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-  //   login: {green ${login}}
-  //   formName: {green ${formName}}
+  //   recruitmentComments_id: {green ${recruitmentComments_id}}
+  //   publicSettingThread: {green ${publicSettingThread}}
   // `);
   
   // console.log(`
@@ -1026,12 +1012,13 @@ const Component = (props) => {
           eventObj,
           gameCommunities_id,
           recruitmentThreads_id,
+          recruitmentComments_id,
         })}
       >
         
         
         {/* Heading & Explanation */}
-        {recruitmentThreads_id &&
+        {recruitmentComments_id &&
           <React.Fragment>
           
             <h3
@@ -1040,7 +1027,7 @@ const Component = (props) => {
                 margin: 0 0 12px 0;
               `}
             >
-              募集編集フォーム
+              コメント投稿フォーム
             </h3>
             
             
@@ -1049,147 +1036,28 @@ const Component = (props) => {
                 margin: 0 0 14px 0;
               `}
             >
-              投稿済みの募集を編集できます。
+              投稿済みのコメントを編集できます。
             </p>
             
           </React.Fragment>
         }
         
         
-        {!recruitmentThreads_id &&
+        {!recruitmentComments_id &&
           <p
             css={css`
               margin: 0 0 14px 0;
             `}
           >
-            募集を新しく投稿する場合、こちらのフォームを利用して投稿してください。ログインして投稿すると募集をいつでも編集できるようになり、ID・情報の公開相手を選ぶことができるようになります。
+            募集にコメントを投稿する場合、こちらのフォームを利用してください。ログインして投稿するとコメントをいつでも編集できるようになり、ID・情報の公開相手を選ぶことができるようになります。
           </p>
         }
         
         
         
         
-        {/* Form Hardware */}
-        <div css={cssBox}>
-          
-          <h3
-            css={css`
-              font-weight: bold;
-              margin: 0 0 2px 0;
-            `}
-          >
-            ハードウェア
-          </h3>
-          
-          
-          <p
-            css={css`
-              margin: 0 0 14px 0;
-            `}
-          >
-            募集に関係するハードウェアを選んでください（PC版、○○版などの情報です）
-          </p>
-          
-          <p
-            css={css`
-              margin: 0 0 14px 0;
-            `}
-          >
-            ハードウェア名（またはSFC、N64などの略称）の一部を入力すると、入力フォームの下に一覧でハードウェアの正式名称が表示されます。一覧上でハードウェアをクリック（タップ）すると入力は完了です。この欄では複数のハードウェアを入力することが可能です。
-          </p>
-          
-          <p>
-            ゲームのハードウェア名だけでなく、「Android」「iOS」「PC」などもハードウェアとして入力できます。
-          </p>
-          
-          
-          
-          
-          <FormHardwares
-            hardwaresArr={hardwaresArr}
-            setHardwaresArr={setHardwaresArr}
-            limit={limitHardwares}
-          />
-          
-        </div>
-        
-        
-        
-        
-        {/* Category */}
-        <div css={cssBox}>
-          
-          <h3
-            css={css`
-              font-weight: bold;
-              margin: 0 0 2px 0;
-            `}
-          >
-            カテゴリー
-          </h3>
-          
-          <p
-            css={css`
-              margin: 0 0 24px 0;
-            `}
-          >
-            当てはまるカテゴリーを選んでください。どのカテゴリーにも当てはまらない場合は「なし」を選んでください。
-          </p>
-          
-          
-          <FormControl>
-            
-            <InputLabel shrink id="categoryLabel">募集のカテゴリー</InputLabel>
-            
-            <Select
-              css={css`
-                && {
-                  width: 200px;
-                }
-              `}
-              labelId="categoryLabel"
-              value={category}
-              onChange={(eventObj) => setCategory(eventObj.target.value)}
-              displayEmpty
-            >
-              <MenuItem value="">なし</MenuItem>
-              <MenuItem value={1}>フレンド募集</MenuItem>
-              <MenuItem value={2}>メンバー募集</MenuItem>
-              <MenuItem value={3}>売買・交換相手募集</MenuItem>
-            </Select>
-            
-          </FormControl>
-          
-        </div>
-        
-        
-        
-        
         {/* Title & Handle Name & Comment */}
         <div css={cssBox}>
-          
-          
-          {/* Title */}
-          <TextField
-            css={css`
-              && {
-                width: 100%;
-                max-width: 500px;
-                ${recruitmentThreads_id && `margin-top: 4px;`}
-              }
-            `}
-            label="募集タイトル"
-            value={validationRecruitmentThreadsTitleObj.value}
-            onChange={(eventObj) => setTitle(eventObj.target.value)}
-            error={validationRecruitmentThreadsTitleObj.error}
-            helperText={intl.formatMessage({ id: validationRecruitmentThreadsTitleObj.messageID }, { numberOfCharacters: validationRecruitmentThreadsTitleObj.numberOfCharacters })}
-            margin="normal"
-            inputProps={{
-              maxLength: 100,
-            }}
-          />
-          
-          
           
           
           {/* Name */}
@@ -1241,7 +1109,7 @@ const Component = (props) => {
                 }
               `}
               rows={5}
-              placeholder="募集について必要な情報をこちらに記述してください。"
+              placeholder="コメントを入力してください。"
               value={comment}
               maxLength={3000}
               disabled={buttonDisabled}
@@ -1262,8 +1130,8 @@ const Component = (props) => {
             
             <FormImageAndVideo
               type="recruitment"
-              descriptionImage="募集に表示する画像をアップロードできます。"
-              descriptionVideo="募集に表示する動画を登録できます。"
+              descriptionImage="コメントに表示する画像をアップロードできます。"
+              descriptionVideo="コメントに表示する動画を登録できます。"
               showImageCaption={true}
               limit={limitImagesAndVideos}
               imagesAndVideosObj={imagesAndVideosObj}
@@ -1282,7 +1150,8 @@ const Component = (props) => {
         <div css={cssBox}>
           
           <FormIDsInformations
-            type="thread"
+            type="comment"
+            publicSettingThread={publicSettingThread}
             
             // gameCommunities_id={gameCommunities_id}
             // recruitmentThreads_id={recruitmentThreads_id}
@@ -1328,20 +1197,6 @@ const Component = (props) => {
             
             publicSetting={publicSetting}
             setPublicSetting={setPublicSetting}
-          />
-          
-        </div>
-        
-        
-        
-        
-        {/* Deadline */}
-        <div css={cssBox}>
-          
-          <FormDeadline
-            deadlineDate={deadlineDate}
-            setDeadlineDate={setDeadlineDate}
-            recruitmentThreads_id={recruitmentThreads_id}
           />
           
         </div>
@@ -1405,7 +1260,7 @@ const Component = (props) => {
             flex-flow: row nowrap;
             border-top: 1px dashed #848484;
             margin: 24px 0 0 0;
-            padding: 36px 0 0 0;
+            padding: 24px 0 0 0;
           `}
         >
           
@@ -1417,29 +1272,28 @@ const Component = (props) => {
             color="primary"
             disabled={buttonDisabled}
           >
-            {recruitmentThreads_id ? '編集する' : '投稿する'}
+            {recruitmentComments_id ? '編集する' : '投稿する'}
           </Button>
           
           
           
           
           {/* Close */}
-          {recruitmentThreads_id &&
-            <div
-              css={css`
-                margin: 0 0 0 auto;
-              `}
+          <div
+            css={css`
+              margin: 0 0 0 auto;
+            `}
+          >
+            <Button
+              variant="outlined"
+              color="secondary"
+              disabled={buttonDisabled}
+              onClick={() => handleClose({ recruitmentThreads_id, recruitmentComments_id })}
             >
-              <Button
-                variant="outlined"
-                color="secondary"
-                disabled={buttonDisabled}
-                onClick={() => handleClose({ recruitmentThreads_id })}
-              >
-                閉じる
-              </Button>
-            </div>
-          }
+              閉じる
+            </Button>
+          </div>
+          
           
         </div>
         

@@ -52,11 +52,13 @@ const validationRecruitmentThreadsName = ({ throwError = false, required = false
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
+    
     value: data,
     numberOfCharacters,
     messageID: 'yhgyXHqZu',
     error: false,
+    
   };
   
   

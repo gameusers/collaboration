@@ -197,185 +197,185 @@ class Store {
    * @param {number} page - スレッドのページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
-  @action.bound
-  async handleReadRecruitmentThreads({
+  // @action.bound
+  // async handleReadRecruitmentThreads({
     
-    pathArr,
-    urlID,
-    gameCommunities_id,
-    page,
-    changeLimit,
+  //   pathArr,
+  //   urlID,
+  //   gameCommunities_id,
+  //   page,
+  //   changeLimit,
     
-  }) {
-    
-    
-    try {
-      
-      
-      // ---------------------------------------------
-      //   For Search
-      // ---------------------------------------------
-      
-      const pathNavigationArr = [gameCommunities_id, 'recruitment', 'navigation'];
-      
-      const hardwaresArr = lodashGet(storeHardware, ['dataObj', ...pathNavigationArr, 'hardwaresArr'], []);
-      const hardwareIDsArr = [];
-      
-      for (let valueObj of hardwaresArr.values()) {
-        hardwareIDsArr.push(valueObj.hardwareID);
-      }
-      
-      const categoriesArr = lodashGet(this.dataObj, [...pathNavigationArr, 'categoriesArr'], []);
-      const keyword = lodashGet(this.dataObj, [...pathNavigationArr, 'keyword'], '');
-      
-      
-      // ---------------------------------------------
-      //   Router.push 用
-      // ---------------------------------------------
-      
-      const urlHardwares = hardwareIDsArr.length > 0 ? `hardwares=${hardwareIDsArr.join(',')}&` : '';
-      const urlCategories = categoriesArr.length > 0 ? `categories=${categoriesArr.join(',')}&` : '';
-      const urlKeyword = keyword ? `keyword=${encodeURI(keyword)}&` : '';
-      
-      let url = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
-      let as = `/gc/${urlID}/rec/search?${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
-      
-      if (!urlHardwares && !urlCategories && !urlKeyword) {
-        
-        if (page === 1) {
-          
-          url = `/gc/[urlID]/rec/index?urlID=${urlID}&page=${page}`;
-          as = `/gc/${urlID}/rec`;
-          
-        } else {
-          
-          url = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}&page=${page}`;
-          as = `/gc/${urlID}/rec/${page}`;
-          
-        }
-        
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Change Limit / Set Cookie
-      // ---------------------------------------------
-      
-      if (changeLimit) {
-        
-        Cookies.set('recruitmentThreadLimit', changeLimit);
-        
-        // console.log(chalk`
-        //   changeLimit: {green ${changeLimit}}
-        // `);
-        
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   console.log
-      // ---------------------------------------------
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/gc/rec/stores/store.js - handleReadRecruitmentThreads
-      // `);
-      
-      // console.log(`
-      //   ----- recruitmentObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- pathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   urlHardwares: {green ${urlHardwares}}
-      //   urlCategories: {green ${urlCategories}}
-      //   urlKeyword: {green ${urlKeyword}}
-      //   url: {green ${url}}
-      //   as: {green ${as}}
-      // `);
-      
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   page: {green ${page}}
-      //   loadedDate: {green ${loadedDate}}
-      //   changeLimit：{green ${changeLimit}}
-      // `);
-      
-      // console.log(`
-      //   ----- hardwareIDsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(hardwareIDsArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- categoriesArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(categoriesArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   keyword: {green ${keyword}}
-      // `);
-      
-      // console.log(`
-      //   ----- arr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // return;
-      
-      
-      // ---------------------------------------------
-      //   Router.push = History API pushState()
-      // ---------------------------------------------
-      
-      // Router.push(url, as, { shallow: true });
-      await Router.push(url, as);
-      
-      
-      // ---------------------------------------------
-      //   Scroll
-      // ---------------------------------------------
-      
-      if (page === 1) {
-        
-        storeLayout.handleScrollTo({
-          
-          to: 'recruitmentThreads',
-          duration: 0,
-          delay: 0,
-          smooth: 'easeInOutQuart',
-          offset: -50,
-          
-        });
-        
-      }
-      
-      
-    } catch (errorObj) {
-      
-      
-      
-    } finally {
-      
-      
-      
-    }
+  // }) {
     
     
-  };
+  //   try {
+      
+      
+  //     // ---------------------------------------------
+  //     //   For Search
+  //     // ---------------------------------------------
+      
+  //     const pathNavigationArr = [gameCommunities_id, 'recruitment', 'navigation'];
+      
+  //     const hardwaresArr = lodashGet(storeHardware, ['dataObj', ...pathNavigationArr, 'hardwaresArr'], []);
+  //     const hardwareIDsArr = [];
+      
+  //     for (let valueObj of hardwaresArr.values()) {
+  //       hardwareIDsArr.push(valueObj.hardwareID);
+  //     }
+      
+  //     const categoriesArr = lodashGet(this.dataObj, [...pathNavigationArr, 'categoriesArr'], []);
+  //     const keyword = lodashGet(this.dataObj, [...pathNavigationArr, 'keyword'], '');
+      
+      
+  //     // ---------------------------------------------
+  //     //   Router.push 用
+  //     // ---------------------------------------------
+      
+  //     const urlHardwares = hardwareIDsArr.length > 0 ? `hardwares=${hardwareIDsArr.join(',')}&` : '';
+  //     const urlCategories = categoriesArr.length > 0 ? `categories=${categoriesArr.join(',')}&` : '';
+  //     const urlKeyword = keyword ? `keyword=${encodeURI(keyword)}&` : '';
+      
+  //     let url = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
+  //     let as = `/gc/${urlID}/rec/search?${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
+      
+  //     if (!urlHardwares && !urlCategories && !urlKeyword) {
+        
+  //       if (page === 1) {
+          
+  //         url = `/gc/[urlID]/rec/index?urlID=${urlID}&page=${page}`;
+  //         as = `/gc/${urlID}/rec`;
+          
+  //       } else {
+          
+  //         url = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}&page=${page}`;
+  //         as = `/gc/${urlID}/rec/${page}`;
+          
+  //       }
+        
+  //     }
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   Change Limit / Set Cookie
+  //     // ---------------------------------------------
+      
+  //     if (changeLimit) {
+        
+  //       Cookies.set('recruitmentThreadLimit', changeLimit);
+        
+  //       // console.log(chalk`
+  //       //   changeLimit: {green ${changeLimit}}
+  //       // `);
+        
+  //     }
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   console.log
+  //     // ---------------------------------------------
+      
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/gc/rec/stores/store.js - handleReadRecruitmentThreads
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- recruitmentObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- pathArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(chalk`
+  //     //   urlHardwares: {green ${urlHardwares}}
+  //     //   urlCategories: {green ${urlCategories}}
+  //     //   urlKeyword: {green ${urlKeyword}}
+  //     //   url: {green ${url}}
+  //     //   as: {green ${as}}
+  //     // `);
+      
+  //     // console.log(chalk`
+  //     //   gameCommunities_id: {green ${gameCommunities_id}}
+  //     //   page: {green ${page}}
+  //     //   loadedDate: {green ${loadedDate}}
+  //     //   changeLimit：{green ${changeLimit}}
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- hardwareIDsArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(hardwareIDsArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- categoriesArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(categoriesArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(chalk`
+  //     //   keyword: {green ${keyword}}
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- arr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // return;
+      
+      
+  //     // ---------------------------------------------
+  //     //   Router.push = History API pushState()
+  //     // ---------------------------------------------
+      
+  //     // Router.push(url, as, { shallow: true });
+  //     await Router.push(url, as);
+      
+      
+  //     // ---------------------------------------------
+  //     //   Scroll
+  //     // ---------------------------------------------
+      
+  //     if (page === 1) {
+        
+  //       storeLayout.handleScrollTo({
+          
+  //         to: 'recruitmentThreads',
+  //         duration: 0,
+  //         delay: 0,
+  //         smooth: 'easeInOutQuart',
+  //         offset: -50,
+          
+  //       });
+        
+  //     }
+      
+      
+  //   } catch (errorObj) {
+      
+      
+      
+  //   } finally {
+      
+      
+      
+  //   }
+    
+    
+  // };
   
   
   
@@ -388,390 +388,390 @@ class Store {
    * @param {number} page - コメントのページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
-  @action.bound
-  async handleReadRecruitmentComments({
+  // @action.bound
+  // async handleReadRecruitmentComments({
     
-    pathArr,
-    gameCommunities_id,
-    recruitmentThreads_id,
-    page,
-    changeLimit,
+  //   pathArr,
+  //   gameCommunities_id,
+  //   recruitmentThreads_id,
+  //   page,
+  //   changeLimit,
     
-  }) {
-    
-    
-    try {
-      
-      
-      // ---------------------------------------------
-      //   Property
-      // ---------------------------------------------
-      
-      const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
-      const clonedObj = lodashCloneDeep(recruitmentObj);
-      
-      const loadedDate = lodashGet(recruitmentObj, ['recruitmentCommentsObj ', recruitmentThreads_id, `page${page}Obj`, 'loadedDate'], '');
-      const arr = lodashGet(recruitmentObj, ['recruitmentCommentsObj', recruitmentThreads_id, `page${page}Obj`, 'arr'], []);
-      const reloadComments = lodashGet(recruitmentObj, ['reloadComments'], false);
-      
-      const threadLimit = parseInt((storeData.getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
-      let commentLimit = parseInt((storeData.getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
-      const replyLimit = parseInt((storeData.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Change Limit
-      // ---------------------------------------------
-      
-      if (changeLimit) {
-        
-        
-        commentLimit = changeLimit;
-        
-        
-        // ---------------------------------------------
-        //   Set Cookie - recruitmentCommentLimit
-        // ---------------------------------------------
-        
-        Cookies.set('recruitmentCommentLimit', changeLimit);
-        
-        
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   再読込するかどうか
-      // ---------------------------------------------
-      
-      let reload = false;
-      
-      
-      // ---------------------------------------------
-      //   1ページに表示する件数を変更した場合、再読込
-      // ---------------------------------------------
-      
-      if (changeLimit || reloadComments) {
-        
-        
-        // ---------------------------------------------
-        //   スレッド＆コメント　次回の読み込み時に強制リロード
-        // ---------------------------------------------
-        
-        lodashSet(clonedObj, ['reloadThreads'], true);
-        lodashSet(clonedObj, ['reloadComments'], false);
-        
-        
-        // ---------------------------------------------
-        //   再読込
-        // ---------------------------------------------
-        
-        reload = true;
-        
-      
-      // ---------------------------------------------
-      //   最後の読み込み以降に募集の更新があった場合
-      //   または最後の読み込みからある程度時間（10分）が経っていた場合、再読込する
-      // ---------------------------------------------
-        
-      } else if (loadedDate) {
-        
-        const recruitmentUpdatedDate = lodashGet(recruitmentObj, ['updatedDateObj', 'recruitment'], '0000-01-01T00:00:00Z');
-        
-        const datetimeLoaded = moment(loadedDate).utcOffset(0);
-        const datetimeRecruitmentUpdated = moment(recruitmentUpdatedDate).utcOffset(0);
-        const datetimeNow = moment().utcOffset(0);
-        const datetimeReloadLimit = moment(loadedDate).add(process.env.NEXT_PUBLIC_RECRUITMENT_RELOAD_MINUTES, 'm').utcOffset(0);
-        
-        if (
-          datetimeRecruitmentUpdated.isAfter(datetimeLoaded) ||
-          datetimeNow.isAfter(datetimeReloadLimit)
-        ) {
-          reload = true;
-        }
-        
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   console.log
-      // ---------------------------------------------
-      
-      // console.log(`
-      //   ----- recruitmentObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- pathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- arr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-      //   page: {green ${page}}
-      //   threadLimit: {green ${threadLimit}}
-      //   commentLimit: {green ${commentLimit}}
-      //   replyLimit: {green ${replyLimit}}
-      //   loadedDate: {green ${loadedDate}}
-      //   changeLimit：{green ${changeLimit}}
-      // `);
-      
-      // console.log(chalk`
-      //   reload: {green ${reload}}
-      // `);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   すでにデータを読み込んでいる場合は、ストアのデータを表示する
-      // ---------------------------------------------
-      
-      if (!reload && arr.length > 0) {
-        
-        
-        console.log('store');
-        
-        
-        // ---------------------------------------------
-        //   Page 更新
-        // ---------------------------------------------
-        
-        lodashSet(clonedObj, ['recruitmentCommentsObj', recruitmentThreads_id, 'page'], page);
-        
-        this.handleEdit({
-          pathArr: [gameCommunities_id],
-          value: clonedObj
-        });
-        
-        
-        // ---------------------------------------------
-        //   Return
-        // ---------------------------------------------
-        
-        return;
-        
-        
-      }
-      
-      console.log('fetch');
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   recruitmentThreads_idsArr
-      // ---------------------------------------------
-      
-      let recruitmentThreads_idsArr = [recruitmentThreads_id];
-      
-      // 表示件数を変更する場合は他のスレッドも一緒に更新するため、現在表示されているスレッドのIDを取得する
-      if (changeLimit) {
-        
-        const recruitmentThreadsObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj'], {});
-        const recruitmentThreadsPage = lodashGet(recruitmentThreadsObj, ['page'], 1);
-        recruitmentThreads_idsArr = lodashGet(recruitmentThreadsObj, [`page${recruitmentThreadsPage}Obj`, 'arr'], []);
-        
-      }
-      
-      
-      // console.log(`
-      //   ----- recruitmentThreads_idsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreads_idsArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
-      
-      const formDataObj = {
-        
-        gameCommunities_id,
-        recruitmentThreads_idsArr,
-        threadPage: 1,
-        threadLimit,
-        commentPage: page,
-        commentLimit,
-        replyPage: 1,
-        replyLimit,
-        
-      };
-      
-      
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
-      
-      const resultObj = await fetchWrapper({
-        
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-comments/read-comments`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
-        
-      });
-      
-      
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-      
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   recruitmentThreadsDataObj - dataObj / [データオブジェクトのみ]
-      // ---------------------------------------------
-      
-      const recruitmentThreadsOldDataObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj', 'dataObj'], {});
-      const recruitmentThreadsNewDataObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj', 'dataObj'], {});
-      
-      // スレッドはデータオブジェクトのみ古いデータと新しいデータをマージする
-      const recruitmentThreadsMergedDataObj = lodashMerge(recruitmentThreadsOldDataObj, recruitmentThreadsNewDataObj);
-      
-      lodashSet(clonedObj, ['recruitmentThreadsObj', 'dataObj'], recruitmentThreadsMergedDataObj);
-      
-      
-      // ---------------------------------------------
-      //   recruitmentCommentsObj
-      // ---------------------------------------------
-      
-      const recruitmentCommentsOldObj = lodashGet(recruitmentObj, ['recruitmentCommentsObj'], {});
-      const recruitmentCommentsNewObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
-      
-      // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
-      const recruitmentCommentsMergedObj = reload ? recruitmentCommentsNewObj : lodashMerge(recruitmentCommentsOldObj, recruitmentCommentsNewObj);
-      
-      clonedObj.recruitmentCommentsObj = recruitmentCommentsMergedObj;
-      
-      
-      // ---------------------------------------------
-      //   recruitmentRepliesObj
-      // ---------------------------------------------
-      
-      const recruitmentRepliesOldObj = lodashGet(recruitmentObj, ['recruitmentRepliesObj'], {});
-      const recruitmentRepliesNewObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
-      
-      // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
-      const recruitmentRepliesMergedObj = reload ? recruitmentRepliesNewObj : lodashMerge(recruitmentRepliesOldObj, recruitmentRepliesNewObj);
-      
-      clonedObj.recruitmentRepliesObj = recruitmentRepliesMergedObj;
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Page
-      // ---------------------------------------------
-      
-      lodashSet(clonedObj, ['recruitmentCommentsObj', recruitmentThreads_id, 'page'], page);
-      
-      
-      // --------------------------------------------------
-      //   Community UpdatedDateObj
-      // --------------------------------------------------
-      
-      const updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
-      clonedObj.updatedDateObj = updatedDateObj;
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Update
-      // ---------------------------------------------
-      
-      this.handleEdit({
-        pathArr: ['recruitmentCommentLimit'],
-        value: commentLimit,
-      });
-      
-      this.handleEdit({
-        pathArr: [gameCommunities_id],
-        value: clonedObj
-      });
-      
-      
-    } catch (errorObj) {
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      // storeLayout.handleSnackbarOpen({
-      //   variant: 'error',
-      //   errorObj,
-      // });
-      
-      
-    } finally {
-      
-      
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
-      
-      
-      // ---------------------------------------------
-      //   Scroll
-      // ---------------------------------------------
-      
-      storeLayout.handleScrollTo({
-        
-        to: pathArr.join('-'),
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
-        
-      });
-      
-      
-    }
+  // }) {
     
     
-  };
+  //   try {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Property
+  //     // ---------------------------------------------
+      
+  //     const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
+  //     const clonedObj = lodashCloneDeep(recruitmentObj);
+      
+  //     const loadedDate = lodashGet(recruitmentObj, ['recruitmentCommentsObj ', recruitmentThreads_id, `page${page}Obj`, 'loadedDate'], '');
+  //     const arr = lodashGet(recruitmentObj, ['recruitmentCommentsObj', recruitmentThreads_id, `page${page}Obj`, 'arr'], []);
+  //     const reloadComments = lodashGet(recruitmentObj, ['reloadComments'], false);
+      
+  //     const threadLimit = parseInt((storeData.getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
+  //     let commentLimit = parseInt((storeData.getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
+  //     const replyLimit = parseInt((storeData.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   Change Limit
+  //     // ---------------------------------------------
+      
+  //     if (changeLimit) {
+        
+        
+  //       commentLimit = changeLimit;
+        
+        
+  //       // ---------------------------------------------
+  //       //   Set Cookie - recruitmentCommentLimit
+  //       // ---------------------------------------------
+        
+  //       Cookies.set('recruitmentCommentLimit', changeLimit);
+        
+        
+  //     }
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   再読込するかどうか
+  //     // ---------------------------------------------
+      
+  //     let reload = false;
+      
+      
+  //     // ---------------------------------------------
+  //     //   1ページに表示する件数を変更した場合、再読込
+  //     // ---------------------------------------------
+      
+  //     if (changeLimit || reloadComments) {
+        
+        
+  //       // ---------------------------------------------
+  //       //   スレッド＆コメント　次回の読み込み時に強制リロード
+  //       // ---------------------------------------------
+        
+  //       lodashSet(clonedObj, ['reloadThreads'], true);
+  //       lodashSet(clonedObj, ['reloadComments'], false);
+        
+        
+  //       // ---------------------------------------------
+  //       //   再読込
+  //       // ---------------------------------------------
+        
+  //       reload = true;
+        
+      
+  //     // ---------------------------------------------
+  //     //   最後の読み込み以降に募集の更新があった場合
+  //     //   または最後の読み込みからある程度時間（10分）が経っていた場合、再読込する
+  //     // ---------------------------------------------
+        
+  //     } else if (loadedDate) {
+        
+  //       const recruitmentUpdatedDate = lodashGet(recruitmentObj, ['updatedDateObj', 'recruitment'], '0000-01-01T00:00:00Z');
+        
+  //       const datetimeLoaded = moment(loadedDate).utcOffset(0);
+  //       const datetimeRecruitmentUpdated = moment(recruitmentUpdatedDate).utcOffset(0);
+  //       const datetimeNow = moment().utcOffset(0);
+  //       const datetimeReloadLimit = moment(loadedDate).add(process.env.NEXT_PUBLIC_RECRUITMENT_RELOAD_MINUTES, 'm').utcOffset(0);
+        
+  //       if (
+  //         datetimeRecruitmentUpdated.isAfter(datetimeLoaded) ||
+  //         datetimeNow.isAfter(datetimeReloadLimit)
+  //       ) {
+  //         reload = true;
+  //       }
+        
+  //     }
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   console.log
+  //     // ---------------------------------------------
+      
+  //     // console.log(`
+  //     //   ----- recruitmentObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- pathArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- arr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(chalk`
+  //     //   gameCommunities_id: {green ${gameCommunities_id}}
+  //     //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+  //     //   page: {green ${page}}
+  //     //   threadLimit: {green ${threadLimit}}
+  //     //   commentLimit: {green ${commentLimit}}
+  //     //   replyLimit: {green ${replyLimit}}
+  //     //   loadedDate: {green ${loadedDate}}
+  //     //   changeLimit：{green ${changeLimit}}
+  //     // `);
+      
+  //     // console.log(chalk`
+  //     //   reload: {green ${reload}}
+  //     // `);
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   すでにデータを読み込んでいる場合は、ストアのデータを表示する
+  //     // ---------------------------------------------
+      
+  //     if (!reload && arr.length > 0) {
+        
+        
+  //       console.log('store');
+        
+        
+  //       // ---------------------------------------------
+  //       //   Page 更新
+  //       // ---------------------------------------------
+        
+  //       lodashSet(clonedObj, ['recruitmentCommentsObj', recruitmentThreads_id, 'page'], page);
+        
+  //       this.handleEdit({
+  //         pathArr: [gameCommunities_id],
+  //         value: clonedObj
+  //       });
+        
+        
+  //       // ---------------------------------------------
+  //       //   Return
+  //       // ---------------------------------------------
+        
+  //       return;
+        
+        
+  //     }
+      
+  //     console.log('fetch');
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   recruitmentThreads_idsArr
+  //     // ---------------------------------------------
+      
+  //     let recruitmentThreads_idsArr = [recruitmentThreads_id];
+      
+  //     // 表示件数を変更する場合は他のスレッドも一緒に更新するため、現在表示されているスレッドのIDを取得する
+  //     if (changeLimit) {
+        
+  //       const recruitmentThreadsObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj'], {});
+  //       const recruitmentThreadsPage = lodashGet(recruitmentThreadsObj, ['page'], 1);
+  //       recruitmentThreads_idsArr = lodashGet(recruitmentThreadsObj, [`page${recruitmentThreadsPage}Obj`, 'arr'], []);
+        
+  //     }
+      
+      
+  //     // console.log(`
+  //     //   ----- recruitmentThreads_idsArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreads_idsArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
+      
+  //     const formDataObj = {
+        
+  //       gameCommunities_id,
+  //       recruitmentThreads_idsArr,
+  //       threadPage: 1,
+  //       threadLimit,
+  //       commentPage: page,
+  //       commentLimit,
+  //       replyPage: 1,
+  //       replyLimit,
+        
+  //     };
+      
+      
+  //     // ---------------------------------------------
+  //     //   Fetch
+  //     // ---------------------------------------------
+      
+  //     const resultObj = await fetchWrapper({
+        
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-comments/read-comments`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj),
+        
+  //     });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
+      
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
+      
+      
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   recruitmentThreadsDataObj - dataObj / [データオブジェクトのみ]
+  //     // ---------------------------------------------
+      
+  //     const recruitmentThreadsOldDataObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj', 'dataObj'], {});
+  //     const recruitmentThreadsNewDataObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj', 'dataObj'], {});
+      
+  //     // スレッドはデータオブジェクトのみ古いデータと新しいデータをマージする
+  //     const recruitmentThreadsMergedDataObj = lodashMerge(recruitmentThreadsOldDataObj, recruitmentThreadsNewDataObj);
+      
+  //     lodashSet(clonedObj, ['recruitmentThreadsObj', 'dataObj'], recruitmentThreadsMergedDataObj);
+      
+      
+  //     // ---------------------------------------------
+  //     //   recruitmentCommentsObj
+  //     // ---------------------------------------------
+      
+  //     const recruitmentCommentsOldObj = lodashGet(recruitmentObj, ['recruitmentCommentsObj'], {});
+  //     const recruitmentCommentsNewObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
+      
+  //     // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+  //     const recruitmentCommentsMergedObj = reload ? recruitmentCommentsNewObj : lodashMerge(recruitmentCommentsOldObj, recruitmentCommentsNewObj);
+      
+  //     clonedObj.recruitmentCommentsObj = recruitmentCommentsMergedObj;
+      
+      
+  //     // ---------------------------------------------
+  //     //   recruitmentRepliesObj
+  //     // ---------------------------------------------
+      
+  //     const recruitmentRepliesOldObj = lodashGet(recruitmentObj, ['recruitmentRepliesObj'], {});
+  //     const recruitmentRepliesNewObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
+      
+  //     // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+  //     const recruitmentRepliesMergedObj = reload ? recruitmentRepliesNewObj : lodashMerge(recruitmentRepliesOldObj, recruitmentRepliesNewObj);
+      
+  //     clonedObj.recruitmentRepliesObj = recruitmentRepliesMergedObj;
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   Page
+  //     // ---------------------------------------------
+      
+  //     lodashSet(clonedObj, ['recruitmentCommentsObj', recruitmentThreads_id, 'page'], page);
+      
+      
+  //     // --------------------------------------------------
+  //     //   Community UpdatedDateObj
+  //     // --------------------------------------------------
+      
+  //     const updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+  //     clonedObj.updatedDateObj = updatedDateObj;
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   Update
+  //     // ---------------------------------------------
+      
+  //     this.handleEdit({
+  //       pathArr: ['recruitmentCommentLimit'],
+  //       value: commentLimit,
+  //     });
+      
+  //     this.handleEdit({
+  //       pathArr: [gameCommunities_id],
+  //       value: clonedObj
+  //     });
+      
+      
+  //   } catch (errorObj) {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
+      
+  //     // storeLayout.handleSnackbarOpen({
+  //     //   variant: 'error',
+  //     //   errorObj,
+  //     // });
+      
+      
+  //   } finally {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Scroll
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleScrollTo({
+        
+  //       to: pathArr.join('-'),
+  //       duration: 0,
+  //       delay: 0,
+  //       smooth: 'easeInOutQuart',
+  //       offset: -50,
+        
+  //     });
+      
+      
+  //   }
+    
+    
+  // };
   
   
   
@@ -1163,202 +1163,202 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
    */
-  @action.bound
-  async handleShowFormRecruitmentThread({ pathArr, recruitmentThreads_id }) {
+  // @action.bound
+  // async handleShowFormRecruitmentThread({ pathArr, recruitmentThreads_id }) {
     
     
-    try {
+  //   try {
       
       
-      // ---------------------------------------------
-      //   recruitmentThreads_id が存在しない場合エラー
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   recruitmentThreads_id が存在しない場合エラー
+  //     // ---------------------------------------------
       
-      if (!recruitmentThreads_id) {
-        throw new CustomError({ errorsArr: [{ code: '1sfB7JPUO', messageID: 'Error' }] });
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Loading 表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingShow({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
+  //     if (!recruitmentThreads_id) {
+  //       throw new CustomError({ errorsArr: [{ code: '1sfB7JPUO', messageID: 'Error' }] });
+  //     }
       
       
       
       
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Loading 表示
+  //     // ---------------------------------------------
       
-      const formDataObj = {
-        recruitmentThreads_id,
-      };
+  //     storeLayout.handleLoadingShow({});
       
       
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
       
-      const resultObj = await fetchWrapper({
+  //     storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
+      
+  //     const formDataObj = {
+  //       recruitmentThreads_id,
+  //     };
+      
+      
+  //     // ---------------------------------------------
+  //     //   Fetch
+  //     // ---------------------------------------------
+      
+  //     const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/get-edit-data`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/get-edit-data`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj),
         
-      });
+  //     });
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
       
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Hardware
-      // ---------------------------------------------
-      
-      const hardwaresArr = lodashGet(resultObj, ['data', 'hardwaresArr'], []);
-      lodashSet(storeHardware, ['dataObj', ...pathArr, 'hardwaresArr'], hardwaresArr);
-      
-      
-      // ---------------------------------------------
-      //   Images And Videos
-      // ---------------------------------------------
-      
-      const imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
-      
-      if (Object.keys(imagesAndVideosObj).length !== 0) {
-        storeImageAndVideoForm.handleSetImagesAndVideosObj({ pathArr, imagesAndVideosObj });
-      }
-      
-      
-      // ---------------------------------------------
-      //   Data
-      // ---------------------------------------------
-      
-      const editObj = lodashGet(resultObj, ['data'], {});
-      
-      editObj.title = lodashGet(resultObj, ['data', 'localesArr', 0, 'title'], ''),
-      editObj.name = lodashGet(resultObj, ['data', 'localesArr', 0, 'name'], ''),
-      editObj.comment = lodashGet(resultObj, ['data', 'localesArr', 0, 'comment'], ''),
-      
-      lodashSet(this.dataObj, [...pathArr], editObj);
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
       
       
       
       
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Hardware
+  //     // ---------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/gc/rec/stores/store.js - handleShowFormRecruitmentThread
-      // `);
-      
-      // console.log(`
-      //   ----- pathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-      // `);
-      
-      // console.log(`
-      //   ----- hardwaresArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(hardwaresArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- editObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(editObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     const hardwaresArr = lodashGet(resultObj, ['data', 'hardwaresArr'], []);
+  //     lodashSet(storeHardware, ['dataObj', ...pathArr, 'hardwaresArr'], hardwaresArr);
       
       
-      // ---------------------------------------------
-      //   Show Form Thread
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Images And Videos
+  //     // ---------------------------------------------
       
-      lodashSet(this.dataObj, [...pathArr, 'showFormThread'], true);
+  //     const imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
       
-      
-    } catch (errorObj) {
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
+  //     if (Object.keys(imagesAndVideosObj).length !== 0) {
+  //       storeImageAndVideoForm.handleSetImagesAndVideosObj({ pathArr, imagesAndVideosObj });
+  //     }
       
       
-    } finally {
+  //     // ---------------------------------------------
+  //     //   Data
+  //     // ---------------------------------------------
+      
+  //     const editObj = lodashGet(resultObj, ['data'], {});
+      
+  //     editObj.title = lodashGet(resultObj, ['data', 'localesArr', 0, 'title'], ''),
+  //     editObj.name = lodashGet(resultObj, ['data', 'localesArr', 0, 'name'], ''),
+  //     editObj.comment = lodashGet(resultObj, ['data', 'localesArr', 0, 'comment'], ''),
+      
+  //     lodashSet(this.dataObj, [...pathArr], editObj);
       
       
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
       
       
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
       
-      storeLayout.handleLoadingHide({});
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/gc/rec/stores/store.js - handleShowFormRecruitmentThread
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- pathArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(chalk`
+  //     //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- hardwaresArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(hardwaresArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- editObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(editObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
-      // ---------------------------------------------
-      //   Scroll
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Show Form Thread
+  //     // ---------------------------------------------
       
-      storeLayout.handleScrollTo({
+  //     lodashSet(this.dataObj, [...pathArr, 'showFormThread'], true);
+      
+      
+  //   } catch (errorObj) {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
+      
+      
+  //   } finally {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading 非表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingHide({});
+      
+      
+  //     // ---------------------------------------------
+  //     //   Scroll
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleScrollTo({
         
-        to: recruitmentThreads_id,
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
+  //       to: recruitmentThreads_id,
+  //       duration: 0,
+  //       delay: 0,
+  //       smooth: 'easeInOutQuart',
+  //       offset: -50,
         
-      });
+  //     });
       
       
-    }
+  //   }
     
     
-  };
+  // };
   
   
   
@@ -1368,33 +1368,33 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
    */
-  @action.bound
-  async handleHideFormRecruitmentThread({ pathArr, recruitmentThreads_id }) {
+  // @action.bound
+  // async handleHideFormRecruitmentThread({ pathArr, recruitmentThreads_id }) {
     
     
-    // ---------------------------------------------
-    //   Hide Form Thread
-    // ---------------------------------------------
+  //   // ---------------------------------------------
+  //   //   Hide Form Thread
+  //   // ---------------------------------------------
     
-    lodashSet(this.dataObj, [...pathArr, 'showFormThread'], false);
+  //   lodashSet(this.dataObj, [...pathArr, 'showFormThread'], false);
     
     
-    // ---------------------------------------------
-    //   Scroll
-    // ---------------------------------------------
+  //   // ---------------------------------------------
+  //   //   Scroll
+  //   // ---------------------------------------------
     
-    storeLayout.handleScrollTo({
+  //   storeLayout.handleScrollTo({
       
-      to: recruitmentThreads_id,
-      duration: 0,
-      delay: 0,
-      smooth: 'easeInOutQuart',
-      offset: -50,
+  //     to: recruitmentThreads_id,
+  //     duration: 0,
+  //     delay: 0,
+  //     smooth: 'easeInOutQuart',
+  //     offset: -50,
       
-    });
+  //   });
     
     
-  };
+  // };
   
   
   
@@ -1404,204 +1404,204 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントID
    */
-  @action.bound
-  async handleShowFormRecruitmentComment({ pathArr, recruitmentComments_id }) {
+  // @action.bound
+  // async handleShowFormRecruitmentComment({ pathArr, recruitmentComments_id }) {
     
     
-    try {
+  //   try {
       
       
-      // ---------------------------------------------
-      //   recruitmentComments_id が存在しない場合エラー
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   recruitmentComments_id が存在しない場合エラー
+  //     // ---------------------------------------------
       
-      if (!recruitmentComments_id) {
-        throw new CustomError({ errorsArr: [{ code: 'cWwMK65fH', messageID: 'Error' }] });
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Loading 表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingShow({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
+  //     if (!recruitmentComments_id) {
+  //       throw new CustomError({ errorsArr: [{ code: 'cWwMK65fH', messageID: 'Error' }] });
+  //     }
       
       
       
       
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Loading 表示
+  //     // ---------------------------------------------
       
-      const formDataObj = {
+  //     storeLayout.handleLoadingShow({});
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
+      
+  //     const formDataObj = {
         
-        recruitmentComments_id,
+  //       recruitmentComments_id,
         
-      };
+  //     };
       
       
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Fetch
+  //     // ---------------------------------------------
       
-      const resultObj = await fetchWrapper({
+  //     const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-comments/get-edit-data`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-comments/get-edit-data`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj),
         
-      });
+  //     });
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
       
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Hardware
-      // ---------------------------------------------
-      
-      // const hardwaresArr = lodashGet(resultObj, ['data', 'hardwaresArr'], []);
-      // lodashSet(storeHardware, ['dataObj', ...pathArr, 'hardwaresArr'], hardwaresArr);
-      
-      
-      // ---------------------------------------------
-      //   Images And Videos
-      // ---------------------------------------------
-      
-      const imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
-      
-      if (Object.keys(imagesAndVideosObj).length !== 0) {
-        storeImageAndVideoForm.handleSetImagesAndVideosObj({ pathArr, imagesAndVideosObj });
-      }
-      
-      
-      // ---------------------------------------------
-      //   Data
-      // ---------------------------------------------
-      
-      const editObj = lodashGet(resultObj, ['data'], {});
-      
-      // editObj.title = lodashGet(resultObj, ['data', 'localesArr', 0, 'title'], ''),
-      editObj.name = lodashGet(resultObj, ['data', 'localesArr', 0, 'name'], ''),
-      editObj.comment = lodashGet(resultObj, ['data', 'localesArr', 0, 'comment'], ''),
-      
-      lodashSet(this.dataObj, [...pathArr], editObj);
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
       
       
       
       
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Hardware
+  //     // ---------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/gc/rec/stores/store.js - handleShowFormRecruitmentComment
-      // `);
-      
-      // console.log(`
-      //   ----- pathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   recruitmentComments_id: {green ${recruitmentComments_id}}
-      // `);
-      
-      // console.log(`
-      //   ----- hardwaresArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(hardwaresArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- editObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(editObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     // const hardwaresArr = lodashGet(resultObj, ['data', 'hardwaresArr'], []);
+  //     // lodashSet(storeHardware, ['dataObj', ...pathArr, 'hardwaresArr'], hardwaresArr);
       
       
-      // ---------------------------------------------
-      //   Show Form
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Images And Videos
+  //     // ---------------------------------------------
       
-      lodashSet(this.dataObj, [...pathArr, 'showFormComment'], true);
+  //     const imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
       
-      
-    } catch (errorObj) {
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
+  //     if (Object.keys(imagesAndVideosObj).length !== 0) {
+  //       storeImageAndVideoForm.handleSetImagesAndVideosObj({ pathArr, imagesAndVideosObj });
+  //     }
       
       
-    } finally {
+  //     // ---------------------------------------------
+  //     //   Data
+  //     // ---------------------------------------------
+      
+  //     const editObj = lodashGet(resultObj, ['data'], {});
+      
+  //     // editObj.title = lodashGet(resultObj, ['data', 'localesArr', 0, 'title'], ''),
+  //     editObj.name = lodashGet(resultObj, ['data', 'localesArr', 0, 'name'], ''),
+  //     editObj.comment = lodashGet(resultObj, ['data', 'localesArr', 0, 'comment'], ''),
+      
+  //     lodashSet(this.dataObj, [...pathArr], editObj);
       
       
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
       
       
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
       
-      storeLayout.handleLoadingHide({});
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/gc/rec/stores/store.js - handleShowFormRecruitmentComment
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- pathArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(chalk`
+  //     //   recruitmentComments_id: {green ${recruitmentComments_id}}
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- hardwaresArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(hardwaresArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- editObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(editObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
-      // ---------------------------------------------
-      //   Scroll
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Show Form
+  //     // ---------------------------------------------
       
-      storeLayout.handleScrollTo({
+  //     lodashSet(this.dataObj, [...pathArr, 'showFormComment'], true);
+      
+      
+  //   } catch (errorObj) {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
+      
+      
+  //   } finally {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading 非表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingHide({});
+      
+      
+  //     // ---------------------------------------------
+  //     //   Scroll
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleScrollTo({
         
-        to: recruitmentComments_id,
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
+  //       to: recruitmentComments_id,
+  //       duration: 0,
+  //       delay: 0,
+  //       smooth: 'easeInOutQuart',
+  //       offset: -50,
         
-      });
+  //     });
       
       
-    }
+  //   }
     
     
-  };
+  // };
   
   
   
@@ -1612,38 +1612,38 @@ class Store {
    * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
    * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントID
    */
-  @action.bound
-  async handleHideFormRecruitmentComment({ pathArr, recruitmentThreads_id, recruitmentComments_id }) {
+  // @action.bound
+  // async handleHideFormRecruitmentComment({ pathArr, recruitmentThreads_id, recruitmentComments_id }) {
     
     
-    // console.log(chalk`
-    //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-    //   recruitmentComments_id: {green ${recruitmentComments_id}}
-    // `);
+  //   // console.log(chalk`
+  //   //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+  //   //   recruitmentComments_id: {green ${recruitmentComments_id}}
+  //   // `);
     
-    // ---------------------------------------------
-    //   Hide Form Comment
-    // ---------------------------------------------
+  //   // ---------------------------------------------
+  //   //   Hide Form Comment
+  //   // ---------------------------------------------
     
-    lodashSet(this.dataObj, [...pathArr, 'showFormComment'], false);
+  //   lodashSet(this.dataObj, [...pathArr, 'showFormComment'], false);
     
     
-    // ---------------------------------------------
-    //   Scroll
-    // ---------------------------------------------
+  //   // ---------------------------------------------
+  //   //   Scroll
+  //   // ---------------------------------------------
     
-    storeLayout.handleScrollTo({
+  //   storeLayout.handleScrollTo({
       
-      to: recruitmentComments_id || recruitmentThreads_id,
-      duration: 0,
-      delay: 0,
-      smooth: 'easeInOutQuart',
-      offset: -50,
+  //     to: recruitmentComments_id || recruitmentThreads_id,
+  //     duration: 0,
+  //     delay: 0,
+  //     smooth: 'easeInOutQuart',
+  //     offset: -50,
       
-    });
+  //   });
     
     
-  };
+  // };
   
   
   
@@ -3288,43 +3288,43 @@ class Store {
    * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントID
    * @param {string} recruitmentReplies_id - DB recruitment-replies _id / 返信ID
    */
-  @action.bound
-  async handleShowDeleteDialog({
+  // @action.bound
+  // async handleShowDeleteDialog({
     
-    gameCommunities_id,
-    recruitmentThreads_id,
-    recruitmentComments_id,
-    recruitmentReplies_id,
+  //   gameCommunities_id,
+  //   recruitmentThreads_id,
+  //   recruitmentComments_id,
+  //   recruitmentReplies_id,
     
-  }) {
+  // }) {
     
     
-    // ---------------------------------------------
-    //   Set deleteDialogObj
-    // ---------------------------------------------
+  //   // ---------------------------------------------
+  //   //   Set deleteDialogObj
+  //   // ---------------------------------------------
     
-    const deleteDialogObj = {
+  //   const deleteDialogObj = {
       
-      recruitmentThreads_id,
-      recruitmentComments_id,
-      recruitmentReplies_id,
+  //     recruitmentThreads_id,
+  //     recruitmentComments_id,
+  //     recruitmentReplies_id,
       
-    };
+  //   };
     
-    lodashSet(this.dataObj, [gameCommunities_id, 'deleteDialogObj'], deleteDialogObj);
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/gc/rec/stores/store.js - handleShowDeleteDialog
-    // `);
+  //   lodashSet(this.dataObj, [gameCommunities_id, 'deleteDialogObj'], deleteDialogObj);
     
     
-  };
+  //   // --------------------------------------------------
+  //   //   console.log
+  //   // --------------------------------------------------
+    
+  //   // console.log(`
+  //   //   ----------------------------------------\n
+  //   //   /app/gc/rec/stores/store.js - handleShowDeleteDialog
+  //   // `);
+    
+    
+  // };
   
   
   
@@ -3337,111 +3337,111 @@ class Store {
    * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントID
    * @param {string} recruitmentReplies_id - DB recruitment-replies _id / 返信ID
    */
-  @action.bound
-  async handleDeleteRecruitment({
+  // @action.bound
+  // async handleDeleteRecruitment({
     
-    gameCommunities_id,
+  //   gameCommunities_id,
     
-  }) {
-    
-    
-    // ---------------------------------------------
-    //   Property
-    // ---------------------------------------------
-    
-    const recruitmentThreads_id = lodashGet(this.dataObj, [gameCommunities_id, 'deleteDialogObj', 'recruitmentThreads_id'], '');
-    const recruitmentComments_id = lodashGet(this.dataObj, [gameCommunities_id, 'deleteDialogObj', 'recruitmentComments_id'], '');
-    const recruitmentReplies_id = lodashGet(this.dataObj, [gameCommunities_id, 'deleteDialogObj', 'recruitmentReplies_id'], '');
+  // }) {
     
     
+  //   // ---------------------------------------------
+  //   //   Property
+  //   // ---------------------------------------------
+    
+  //   const recruitmentThreads_id = lodashGet(this.dataObj, [gameCommunities_id, 'deleteDialogObj', 'recruitmentThreads_id'], '');
+  //   const recruitmentComments_id = lodashGet(this.dataObj, [gameCommunities_id, 'deleteDialogObj', 'recruitmentComments_id'], '');
+  //   const recruitmentReplies_id = lodashGet(this.dataObj, [gameCommunities_id, 'deleteDialogObj', 'recruitmentReplies_id'], '');
     
     
-    // ---------------------------------------------
-    //   Fetch で削除する
-    // ---------------------------------------------
     
-    // ----------------------------------------
-    //   - Reply
-    // ----------------------------------------
     
-    if (recruitmentReplies_id) {
+  //   // ---------------------------------------------
+  //   //   Fetch で削除する
+  //   // ---------------------------------------------
+    
+  //   // ----------------------------------------
+  //   //   - Reply
+  //   // ----------------------------------------
+    
+  //   if (recruitmentReplies_id) {
       
-      await this.handleDeleteRecruitmentReply({
+  //     await this.handleDeleteRecruitmentReply({
         
-        gameCommunities_id,
-        recruitmentThreads_id,
-        recruitmentComments_id,
-        recruitmentReplies_id,
+  //       gameCommunities_id,
+  //       recruitmentThreads_id,
+  //       recruitmentComments_id,
+  //       recruitmentReplies_id,
         
-      });
+  //     });
       
     
-    // ----------------------------------------
-    //   - Comment
-    // ----------------------------------------
+  //   // ----------------------------------------
+  //   //   - Comment
+  //   // ----------------------------------------
     
-    } else if (recruitmentComments_id) {
+  //   } else if (recruitmentComments_id) {
       
-      await this.handleDeleteRecruitmentComment({
+  //     await this.handleDeleteRecruitmentComment({
         
-        gameCommunities_id,
-        recruitmentThreads_id,
-        recruitmentComments_id,
+  //       gameCommunities_id,
+  //       recruitmentThreads_id,
+  //       recruitmentComments_id,
         
-      });
+  //     });
       
       
-    // ----------------------------------------
-    //   - Thread
-    // ----------------------------------------
+  //   // ----------------------------------------
+  //   //   - Thread
+  //   // ----------------------------------------
       
-    } else if (recruitmentThreads_id) {
+  //   } else if (recruitmentThreads_id) {
       
-      await this.handleDeleteRecruitmentThread({
+  //     await this.handleDeleteRecruitmentThread({
         
-        gameCommunities_id,
-        recruitmentThreads_id,
+  //       gameCommunities_id,
+  //       recruitmentThreads_id,
         
-      });
+  //     });
       
-    }
+  //   }
     
     
     
     
-    // ---------------------------------------------
-    //   ダイアログを閉じる
-    // ---------------------------------------------
+  //   // ---------------------------------------------
+  //   //   ダイアログを閉じる
+  //   // ---------------------------------------------
     
-    lodashSet(this.dataObj, [gameCommunities_id, 'deleteDialogObj'], {});
-    
-    
+  //   lodashSet(this.dataObj, [gameCommunities_id, 'deleteDialogObj'], {});
     
     
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/gc/rec/stores/store.js / handleDeleteRecruitment
-    // `);
-    
-    // console.log(chalk`
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-    //   recruitmentComments_id: {green ${recruitmentComments_id}}
-    //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
-    // `);
-    
-    // console.log(`
-    //   ----- this.dataObj[gameCommunities_id].recruitmentRepliesObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj[gameCommunities_id].recruitmentRepliesObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
-  };
+  //   // --------------------------------------------------
+  //   //   console.log
+  //   // --------------------------------------------------
+    
+  //   // console.log(`
+  //   //   ----------------------------------------\n
+  //   //   /app/gc/rec/stores/store.js / handleDeleteRecruitment
+  //   // `);
+    
+  //   // console.log(chalk`
+  //   //   gameCommunities_id: {green ${gameCommunities_id}}
+  //   //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+  //   //   recruitmentComments_id: {green ${recruitmentComments_id}}
+  //   //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
+  //   // `);
+    
+  //   // console.log(`
+  //   //   ----- this.dataObj[gameCommunities_id].recruitmentRepliesObj -----\n
+  //   //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj[gameCommunities_id].recruitmentRepliesObj)), { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
+    
+    
+  // };
   
   
   
@@ -3452,187 +3452,187 @@ class Store {
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
    * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
    */
-  @action.bound
-  async handleDeleteRecruitmentThread({
+  // @action.bound
+  // async handleDeleteRecruitmentThread({
     
-    pathArr,
-    gameCommunities_id,
-    recruitmentThreads_id,
+  //   pathArr,
+  //   gameCommunities_id,
+  //   recruitmentThreads_id,
     
-  }) {
-    
-    
-    try {
-      
-      
-      // ---------------------------------------------
-      //   Property
-      // ---------------------------------------------
-      
-      const threadLimit = parseInt((storeData.getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
-      const commentLimit = parseInt((storeData.getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
-      const replyLimit = parseInt((storeData.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Loading 表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingShow({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
-      
-      const formDataObj = {
-        
-        recruitmentThreads_id,
-        threadLimit,
-        commentLimit,
-        replyLimit,
-        
-      };
-      
-      
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
-      
-      const resultObj = await fetchWrapper({
-        
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/delete`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
-        
-      });
-      
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   DOM 削除
-      // ---------------------------------------------
-      
-      const page = lodashGet(this.dataObj, [gameCommunities_id, 'recruitmentThreadsObj', 'page'], 1);
-      const arr = lodashGet(this.dataObj, [gameCommunities_id, 'recruitmentThreadsObj', `page${page}Obj`, 'arr'], []);
-      const newArr = arr.filter(value => value !== recruitmentThreads_id);
-      lodashSet(this.dataObj, [gameCommunities_id, 'recruitmentThreadsObj', `page${page}Obj`, 'arr'], newArr);
-      
-      const dataObj = lodashGet(this.dataObj, [gameCommunities_id, 'recruitmentThreadsObj', 'dataObj'], {});
-      delete dataObj[recruitmentThreads_id];
-      
-      
-      // ---------------------------------------------
-      //   Scroll
-      // ---------------------------------------------
-      
-      storeLayout.handleScrollTo({
-        
-        to: 'recruitmentThreads',
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
-        
-      });
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Success
-      // ---------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'success',
-        messageID: 'j6lSS-Zf5',
-      });
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/gc/rec/stores/store.js / handleDeleteRecruitmentComment
-      // `);
-      
-      // console.log(`
-      //   ----- pathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-      //   recruitmentComments_id: {green ${recruitmentComments_id}}
-      // `);
-      
-      
-    } catch (errorObj) {
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
-      
-      
-    } finally {
-      
-      
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
-      
-      
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingHide({});
-      
-      
-    }
+  // }) {
     
     
-  };
+  //   try {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Property
+  //     // ---------------------------------------------
+      
+  //     const threadLimit = parseInt((storeData.getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
+  //     const commentLimit = parseInt((storeData.getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
+  //     const replyLimit = parseInt((storeData.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading 表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingShow({});
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
+      
+  //     const formDataObj = {
+        
+  //       recruitmentThreads_id,
+  //       threadLimit,
+  //       commentLimit,
+  //       replyLimit,
+        
+  //     };
+      
+      
+  //     // ---------------------------------------------
+  //     //   Fetch
+  //     // ---------------------------------------------
+      
+  //     const resultObj = await fetchWrapper({
+        
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/delete`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj),
+        
+  //     });
+      
+      
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+      
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
+      
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   DOM 削除
+  //     // ---------------------------------------------
+      
+  //     const page = lodashGet(this.dataObj, [gameCommunities_id, 'recruitmentThreadsObj', 'page'], 1);
+  //     const arr = lodashGet(this.dataObj, [gameCommunities_id, 'recruitmentThreadsObj', `page${page}Obj`, 'arr'], []);
+  //     const newArr = arr.filter(value => value !== recruitmentThreads_id);
+  //     lodashSet(this.dataObj, [gameCommunities_id, 'recruitmentThreadsObj', `page${page}Obj`, 'arr'], newArr);
+      
+  //     const dataObj = lodashGet(this.dataObj, [gameCommunities_id, 'recruitmentThreadsObj', 'dataObj'], {});
+  //     delete dataObj[recruitmentThreads_id];
+      
+      
+  //     // ---------------------------------------------
+  //     //   Scroll
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleScrollTo({
+        
+  //       to: 'recruitmentThreads',
+  //       duration: 0,
+  //       delay: 0,
+  //       smooth: 'easeInOutQuart',
+  //       offset: -50,
+        
+  //     });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Snackbar: Success
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'success',
+  //       messageID: 'j6lSS-Zf5',
+  //     });
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
+      
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/gc/rec/stores/store.js / handleDeleteRecruitmentComment
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- pathArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(chalk`
+  //     //   gameCommunities_id: {green ${gameCommunities_id}}
+  //     //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+  //     //   recruitmentComments_id: {green ${recruitmentComments_id}}
+  //     // `);
+      
+      
+  //   } catch (errorObj) {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
+      
+      
+  //   } finally {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading 非表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingHide({});
+      
+      
+  //   }
+    
+    
+  // };
   
   
   

@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
+import Router from 'next/router';
 import Error from 'next/error';
 import moment from 'moment';
 import { animateScroll as scroll } from 'react-scroll';
@@ -260,6 +261,33 @@ export async function getServerSideProps({ req, res, query }) {
     
   ];
   
+  
+  
+  
+  // --------------------------------------------------
+  //   ログインしている場合はログアウトページにリダイレクト
+  // --------------------------------------------------
+  
+  if (login) {
+    
+    const isServer = !process.browser;
+    
+    if (isServer && res) {
+      
+      res.writeHead(302, {
+        Location: '/logout'
+      });
+      
+      res.end();
+      
+    } else {
+      
+      Router.replace('/logout');
+      
+    }
+    
+  }
+    
   
   
   

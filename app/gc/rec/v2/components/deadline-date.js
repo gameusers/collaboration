@@ -174,7 +174,7 @@ const Component = (props) => {
             margin: 2px 0 0 4px;
           `}
         >
-          募集期間:
+          募集期限:
         </h3>
         
         

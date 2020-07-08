@@ -441,16 +441,16 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
   
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/rec/index.js
-  // `);
+  console.log(`
+    ----------------------------------------\n
+    /pages/gc/[urlID]/rec/index.js
+  `);
   
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  console.log(`
+    ----- resultObj -----\n
+    ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+    --------------------\n
+  `);
   
   // console.log(chalk`
   //   threadPage: {green ${threadPage}}

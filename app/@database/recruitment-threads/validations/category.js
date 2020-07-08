@@ -15,6 +15,12 @@ const util = require('util');
 // ---------------------------------------------
 
 const validator = require('validator');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 
 
@@ -23,6 +29,8 @@ const lodashGet = require('lodash/get');
 // ---------------------------------------------
 
 const { CustomError } = require('../../../@modules/error/custom.js');
+
+
 
 
 
@@ -53,10 +61,12 @@ const validationRecruitmentThreadsCategory = ({ throwError = false, required = f
   const numberOfCharacters = data ? data.length : 0;
   
   const resultObj = {
+    
     value: data,
     numberOfCharacters,
     messageID: 'Nbu_IqorV',
     error: false,
+    
   };
   
   

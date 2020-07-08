@@ -24,7 +24,7 @@ import { css, jsx } from '@emotion/core';
 //   Lodash
 // ---------------------------------------------
 
-import lodashGet from 'lodash/get';
+// import lodashGet from 'lodash/get';
 // import lodashSet from 'lodash/set';
 // import lodashHas from 'lodash/has';
 // import lodashCloneDeep from 'lodash/cloneDeep';

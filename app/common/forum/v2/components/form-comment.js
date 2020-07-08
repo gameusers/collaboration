@@ -628,8 +628,10 @@ const Component = (props) => {
       // ---------------------------------------------
       
       handleSnackbarOpen({
+        
         variant: 'success',
         messageID: forumComments_id ? 'NKsMLWvkt' : 'fhi9lUaap',
+        
       });
       
       
@@ -641,8 +643,10 @@ const Component = (props) => {
       // ---------------------------------------------
       
       handleSnackbarOpen({
+        
         variant: 'error',
         errorObj,
+        
       });
       
       

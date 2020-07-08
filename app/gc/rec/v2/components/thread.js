@@ -18,8 +18,8 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useIntl } from 'react-intl';
 import { Element } from 'react-scroll';
-import Pagination from 'rc-pagination';
-import localeInfo from 'rc-pagination/lib/locale/ja_JP';
+// import Pagination from 'rc-pagination';
+// import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 import SimpleIcons from 'simple-icons-react-component';
 
 /** @jsx jsx */
@@ -48,17 +48,12 @@ import IconButton from '@material-ui/core/IconButton';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
-import Paper from '@material-ui/core/Paper';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+// import Paper from '@material-ui/core/Paper';
+// import OutlinedInput from '@material-ui/core/OutlinedInput';
+// import MenuItem from '@material-ui/core/MenuItem';
+// import FormControl from '@material-ui/core/FormControl';
+// import Select from '@material-ui/core/Select';
 import Avatar from '@material-ui/core/Avatar';
-// import Dialog from '@material-ui/core/Dialog';
-// import DialogActions from '@material-ui/core/DialogActions';
-// import DialogContent from '@material-ui/core/DialogContent';
-// import DialogContentText from '@material-ui/core/DialogContentText';
-// import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 // ---------------------------------------------
@@ -102,9 +97,9 @@ import HardwaresChip from 'app/common/hardware/v2/components/chip.js';
 // import Panel from 'app/common/layout/components/panel.js';
 
 import CategoryChip from 'app/gc/rec/v2/components/category-chip.js';
-import RecruitmentComment from 'app/gc/rec/components/recruitment-comment.js';
 import FormThread from 'app/gc/rec/v2/components/form/thread.js';
-import FormComment from 'app/gc/rec/components/form/comment.js';
+import FormComment from 'app/gc/rec/v2/components/form/comment.js';
+import Comment from 'app/gc/rec/v2/components/comment.js';
 import Public from 'app/gc/rec/v2/components/public.js';
 import DeadlineDate from 'app/gc/rec/v2/components/deadline-date.js';
 import Notification from 'app/gc/rec/v2/components/notification.js';
@@ -172,13 +167,8 @@ const Component = (props) => {
   const [panelExpanded, setPanelExpanded] = useState(true);
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
-  // const [showComment, setShowComment] = useState(true);
   const [showFormThread, setShowFormThread] = useState(false);
   const [showFormComment, setShowFormComment] = useState(false);
-  // const [showHardwareExplanation, setShowHardwareExplanation] = useState(false);
-  // const [hardwaresArr, setHardwaresArr] = useState([]);
-  // const [categoriesArr, setCategoriesArr] = useState([]);
-  // const [keyword, setKeyword] = useState('');
   
   
   useEffect(() => {
@@ -203,7 +193,7 @@ const Component = (props) => {
     handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
-    handleScrollTo,
+    // handleScrollTo,
     
   } = stateLayout;
   
@@ -225,16 +215,12 @@ const Component = (props) => {
   // --------------------------------------------------
   
   /**
-   * スレッドを削除する
-   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
-   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
-   * @param {string} forumThreads_id - DB forum-threads _id / 削除するスレッドのID
+   * 募集を削除する
+   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
    */
   const handleDelete = async ({
     
-    gameCommunities_id,
-    userCommunities_id,
-    forumThreads_id,
+    recruitmentThreads_id,
     
   }) => {
     
@@ -246,7 +232,7 @@ const Component = (props) => {
       //   _id が存在しない場合エラー
       // ---------------------------------------------
       
-      if ((!gameCommunities_id && !forumThreads_id) || (!userCommunities_id && !forumThreads_id)) {
+      if (!recruitmentThreads_id) {
         throw new CustomError({ errorsArr: [{ code: 'cGHv25p8q', messageID: '1YJnibkmh' }] });
       }
       
@@ -270,32 +256,12 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   console.log
-      // ---------------------------------------------
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/thread.js - handleDelete
-      // `);
-      
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id}}
-      //   forumThreads_id: {green ${forumThreads_id}}
-      // `);
-      
-      
-      
-      
-      // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
       
       const formDataObj = {
         
-        gameCommunities_id,
-        userCommunities_id,
-        forumThreads_id,
+        recruitmentThreads_id,
         
       };
       
@@ -304,29 +270,13 @@ const Component = (props) => {
       //   Fetch
       // ---------------------------------------------
       
-      let resultObj = {};
-      
-      if (gameCommunities_id) {
+      const resultObj = await fetchWrapper({
         
-        resultObj = await fetchWrapper({
-          
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/delete-gc`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-          
-        });
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/delete`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
         
-      } else if (userCommunities_id) {
-        
-        resultObj = await fetchWrapper({
-          
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/delete-uc`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-          
-        });
-        
-      }
+      });
       
       
       // console.log(`
@@ -351,17 +301,12 @@ const Component = (props) => {
       //   State 削除
       // ---------------------------------------------
       
-      const clonedForumThreadsObj = lodashCloneDeep(forumThreadsObj);
+      const clonedObj = lodashCloneDeep(recruitmentThreadsObj);
       
-      // const page = lodashGet(forumThreadsObj, ['page'], 1);
-      // const arr = lodashGet(forumThreadsObj, [`page${page}Obj`, 'arr'], []);
-      // const newArr = arr.filter(value => value !== forumThreads_id);
-      // lodashSet(clonedForumThreadsObj, [`page${page}Obj`, 'arr'], newArr);
+      const dataObj = lodashGet(clonedObj, ['dataObj'], {});
+      delete dataObj[recruitmentThreads_id];
       
-      const dataObj = lodashGet(clonedForumThreadsObj, ['dataObj'], {});
-      delete dataObj[forumThreads_id];
-      
-      setForumThreadsObj(clonedForumThreadsObj);
+      setRecruitmentThreadsObj(clonedObj);
       
       
       // console.log(`
@@ -386,9 +331,28 @@ const Component = (props) => {
       // ---------------------------------------------
       
       handleSnackbarOpen({
+        
         variant: 'success',
-        messageID: 'KBPPfi4f9',
+        messageID: 'j6lSS-Zf5',
+        
       });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/forum/v2/components/thread.js - handleDelete
+      // `);
+      
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   forumThreads_id: {green ${forumThreads_id}}
+      // `);
       
       
     } catch (errorObj) {
@@ -399,8 +363,10 @@ const Component = (props) => {
       // ---------------------------------------------
       
       handleSnackbarOpen({
+        
         variant: 'error',
         errorObj,
+        
       });
       
       
@@ -425,24 +391,6 @@ const Component = (props) => {
     
     
   };
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Forum
-  // --------------------------------------------------
-  
-  // const {
-    
-  //   dataObj,
-  //   handleEdit,
-  //   handleReadRecruitmentThreads,
-  //   handleShowFormRecruitmentThread,
-  //   handleDeleteRecruitment,
-  //   handleShowDeleteDialog,
-    
-  // } = storeGcRecruitment;
   
   
   
@@ -913,7 +861,7 @@ const Component = (props) => {
                   
                   
                   
-                  {/* 募集期間 ＆ 通知方法 */}
+                  {/* 募集期限 ＆ 通知方法 */}
                   {(deadlineDate || notification) &&
                     <div
                       css={css`
@@ -1027,11 +975,10 @@ const Component = (props) => {
                               :
                                 () => handleDialogOpen({
                                 
-                                  title: 'スレッド削除',
-                                  description: 'スレッドを削除しますか？',
+                                  title: '募集削除',
+                                  description: '募集を削除しますか？',
                                   handle: handleDelete,
                                   argumentsObj: {
-                                    gameCommunities_id,
                                     recruitmentThreads_id,
                                   },
                                   
@@ -1151,10 +1098,6 @@ const Component = (props) => {
                         disabled={buttonDisabled}
                         startIcon={<IconReply />}
                         onClick={() => setShowFormComment(!showFormComment)}
-                        // onClick={() => handleEdit({
-                        //   pathArr: [...pathRecruitmentCommentNewFormArr, 'showFormComment'],
-                        //   value: !showFormComment,
-                        // })}
                       >
                         コメント投稿フォーム
                       </Button>
@@ -1192,10 +1135,11 @@ const Component = (props) => {
                     >
                       
                       <FormComment
-                        // pathArr={pathRecruitmentCommentNewFormArr}
                         gameCommunities_id={gameCommunities_id}
                         recruitmentThreads_id={recruitmentThreads_id}
                         publicSettingThread={publicSetting}
+                        
+                        setShowForm={setShowFormComment}
                       />
                       
                     </div>
@@ -1208,11 +1152,11 @@ const Component = (props) => {
                 
                 
                 {/* Comment */}
-                {/*<RecruitmentComment
+                <Comment
                   urlID={urlID}
                   gameCommunities_id={gameCommunities_id}
                   recruitmentThreads_id={recruitmentThreads_id}
-                />*/}
+                />
                 
                 
               </div>

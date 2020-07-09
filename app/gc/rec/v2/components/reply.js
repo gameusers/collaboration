@@ -33,6 +33,7 @@ import { css, jsx } from '@emotion/core';
 
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 import lodashCloneDeep from 'lodash/cloneDeep';
 import lodashMerge from 'lodash/merge';
 
@@ -51,14 +52,22 @@ import Select from '@material-ui/core/Select';
 
 
 // ---------------------------------------------
-//   Material UI / Icon
+//   Material UI / Icons
 // ---------------------------------------------
 
 import IconPublic from '@material-ui/icons/Public';
 import IconUpdate from '@material-ui/icons/Update';
+// import IconThumbUp from '@material-ui/icons/ThumbUp';
 import IconDelete from '@material-ui/icons/Delete';
 import IconEdit from '@material-ui/icons/Edit';
 import IconReply from '@material-ui/icons/Reply';
+
+
+// ---------------------------------------------
+//   Material UI / Color
+// ---------------------------------------------
+
+// import green from '@material-ui/core/colors/green';
 
 
 // ---------------------------------------------
@@ -86,7 +95,11 @@ import Paragraph from 'app/common/layout/v2/components/paragraph.js';
 import User from 'app/common/user/v2/components/user.js';
 import ImageAndVideo from 'app/common/image-and-video/v2/components/image-and-video.js';
 import GoodButton from 'app/common/good/v2/components/button.js';
-import FormReply from 'app/common/forum/v2/components/form-reply.js';
+
+import FormReply from 'app/gc/rec/v2/components/form/reply.js';
+// import Reply from 'app/gc/rec/components/recruitment-reply.js';
+// import Public from 'app/gc/rec/v2/components/public.js';
+// import Notification from 'app/gc/rec/v2/components/notification.js';
 
 
 // ---------------------------------------------
@@ -138,12 +151,9 @@ const Reply = (props) => {
     
     urlID,
     gameCommunities_id,
-    userCommunityID,
-    userCommunities_id,
-    forumThreads_id,
-    forumComments_id,
-    forumReplies_id,
-    enableAnonymity,
+    recruitmentThreads_id,
+    recruitmentComments_id,
+    recruitmentReplies_id,
     
   } = props;
   
@@ -170,11 +180,16 @@ const Reply = (props) => {
   
   const {
     
+    gameCommunityObj,
     setGameCommunityObj,
-    forumCommentsObj,
-    forumRepliesObj,
-    setForumRepliesObj,
-    setReloadForceForumReply,
+    recruitmentThreadsObj,
+    setRecruitmentThreadsObj,
+    recruitmentCommentsObj,
+    setRecruitmentCommentsObj,
+    recruitmentRepliesObj,
+    setRecruitmentRepliesObj,
+    reloadForceRecruitmentComment,
+    setReloadForceRecruitmentComment,
     
   } = stateGc;
   
@@ -189,9 +204,9 @@ const Reply = (props) => {
   const intl = useIntl();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
-  const [showFormReply, setShowFormReply] = useState(false);
-  const [showFormReplyNew, setShowFormReplyNew] = useState(false);
-  const [goods, setGoods] = useState(lodashGet(forumCommentsObj, ['dataObj', forumComments_id, 'goods'], 0));
+  const [showFormEdit, setShowFormEdit] = useState(false);
+  const [showFormNew, setShowFormNew] = useState(false);
+  const [goods, setGoods] = useState(lodashGet(recruitmentCommentsObj, ['dataObj', recruitmentComments_id, 'goods'], 0));
   
   
   useEffect(() => {
@@ -208,20 +223,18 @@ const Reply = (props) => {
   // --------------------------------------------------
   
   /**
-   * 返信を削除する
+   * コメントを削除する
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
-   * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
-   * @param {string} forumComments_id - DB forum-comments _id / コメントのID
-   * @param {string} forumReplies_id - DB forum-comments _id / 返信のID（コメントと返信は同じコレクションなので、コメントのIDと同じもの）
+   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドのID
+   * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントのID
    */
   const handleDelete = async ({
     
     gameCommunities_id,
     userCommunities_id,
-    forumThreads_id,
-    forumComments_id,
-    forumReplies_id,
+    recruitmentThreads_id,
+    recruitmentComments_id,
     
   }) => {
     
@@ -233,8 +246,8 @@ const Reply = (props) => {
       //   _id が存在しない場合エラー
       // ---------------------------------------------
       
-      if ((!gameCommunities_id && !userCommunities_id) || !forumThreads_id || !forumComments_id || !forumReplies_id) {
-        throw new CustomError({ errorsArr: [{ code: 'cqD8ikZJ_', messageID: '1YJnibkmh' }] });
+      if ((!gameCommunities_id && !userCommunities_id) || !recruitmentThreads_id || !recruitmentComments_id) {
+        throw new CustomError({ errorsArr: [{ code: '_quWlqMjb', messageID: '1YJnibkmh' }] });
       }
       
       
@@ -262,13 +275,13 @@ const Reply = (props) => {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/thread.js - handleDelete
+      //   /app/common/recruitment/v2/components/thread.js - handleDelete
       // `);
       
       // console.log(chalk`
       //   gameCommunities_id: {green ${gameCommunities_id}}
       //   userCommunities_id: {green ${userCommunities_id}}
-      //   forumThreads_id: {green ${forumThreads_id}}
+      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
       // `);
       
       
@@ -282,9 +295,8 @@ const Reply = (props) => {
         
         gameCommunities_id,
         userCommunities_id,
-        forumThreads_id,
-        forumComments_id,
-        forumReplies_id,
+        recruitmentThreads_id,
+        recruitmentComments_id,
         
       };
       
@@ -299,7 +311,7 @@ const Reply = (props) => {
         
         resultObj = await fetchWrapper({
           
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/delete-reply-gc`,
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-comments/delete-comment-gc`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
           
@@ -309,7 +321,7 @@ const Reply = (props) => {
         
         resultObj = await fetchWrapper({
           
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/delete-reply-uc`,
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-comments/delete-comment-uc`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
           
@@ -334,28 +346,34 @@ const Reply = (props) => {
       }
       
       
+      // console.log(`
+      //   ----- recruitmentCommentsObj -----\n
+      //   ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
       //   State 削除
       // ---------------------------------------------
       
-      const clonedForumRepliesObj = lodashCloneDeep(forumRepliesObj);
+      const clonedRecruitmentCommentsObj = lodashCloneDeep(recruitmentCommentsObj);
       
-      // const page = lodashGet(forumRepliesObj, [forumComments_id, 'page'], 1);
-      // const arr = lodashGet(forumRepliesObj, [forumComments_id, `page${page}Obj`, 'arr'], []);
-      // const newArr = arr.filter(value => value !== forumReplies_id);
-      // lodashSet(clonedForumRepliesObj, [forumComments_id, `page${page}Obj`, 'arr'], newArr);
+      // const page = lodashGet(recruitmentCommentsObj, [recruitmentThreads_id, 'page'], 1);
+      // const arr = lodashGet(recruitmentCommentsObj, [recruitmentThreads_id, `page${page}Obj`, 'arr'], []);
+      // const newArr = arr.filter(value => value !== recruitmentComments_id);
+      // lodashSet(clonedRecruitmentCommentsObj, [recruitmentThreads_id, `page${page}Obj`, 'arr'], newArr);
       
-      const dataObj = lodashGet(clonedForumRepliesObj, ['dataObj'], {});
-      delete dataObj[forumReplies_id];
+      const dataObj = lodashGet(clonedRecruitmentCommentsObj, ['dataObj'], {});
+      delete dataObj[recruitmentComments_id];
       
-      setForumRepliesObj(clonedForumRepliesObj);
+      setRecruitmentCommentsObj(clonedRecruitmentCommentsObj);
+      // setRecruitmentCommentsObj({ dataObj: {}, limit: 1 });
       
       
       // console.log(`
-      //   ----- clonedForumRepliesObj -----\n
-      //   ${util.inspect(clonedForumRepliesObj, { colors: true, depth: null })}\n
+      //   ----- clonedRecruitmentCommentsObj -----\n
+      //   ${util.inspect(clonedRecruitmentCommentsObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -372,7 +390,7 @@ const Reply = (props) => {
       //   次回の読み込み時に強制リロード
       // ---------------------------------------------
       
-      setReloadForceForumReply(true);
+      setReloadForceRecruitmentComment(true);
       
       
       
@@ -383,7 +401,7 @@ const Reply = (props) => {
       
       handleSnackbarOpen({
         variant: 'success',
-        messageID: 'o4fiADvZR',
+        messageID: 'GERzvKtUN',
       });
       
       
@@ -426,37 +444,10 @@ const Reply = (props) => {
   
   
   // --------------------------------------------------
-  //   console.log
-  // --------------------------------------------------
-  
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /app/common/forum/v2/components/reply.js
-  // `);
-  
-  // console.log(chalk`
-  //   urlID: {green ${urlID}}
-  //   gameCommunities_id: {green ${gameCommunities_id}}
-  //   userCommunityID: {green ${userCommunityID}}
-  //   userCommunities_id: {green ${userCommunities_id}}
-  //   forumThreads_id: {green ${forumThreads_id}}
-  //   enableAnonymity: {green ${enableAnonymity}}
-  // `);
-  
-  // console.log(chalk`
-  //   page: {green ${page}}
-  //   count: {green ${count}}
-  //   limit: {green ${limit}}
-  // `);
-  
-  
-  
-  
-  // --------------------------------------------------
   //   dataObj
   // --------------------------------------------------
   
-  const dataObj = lodashGet(forumRepliesObj, ['dataObj', forumReplies_id], {});
+  const dataObj = lodashGet(recruitmentRepliesObj, ['dataObj', recruitmentReplies_id], {});
   
   // console.log(`
   //   ----- dataObj -----\n
@@ -525,27 +516,15 @@ const Reply = (props) => {
   //   Link
   // --------------------------------------------------
   
-  let linkHref = '';
-  let linkAs = '';
-  
-  if (urlID) {
-    
-    linkHref = `/gc/[urlID]/forum/[...slug]?urlID=${urlID}&forumID=${forumReplies_id}`;
-    linkAs = `/gc/${urlID}/forum/${forumReplies_id}`;
-    
-  } else if (userCommunityID) {
-    
-    linkHref = `/uc/[userCommunityID]/forum/[...slug]?userCommunityID=${userCommunityID}&forumID=${forumReplies_id}`;
-    linkAs = `/uc/${userCommunityID}/forum/${forumReplies_id}`;
-    
-  }
+  const linkHref = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}&recruitmentID=${recruitmentReplies_id}`;
+  const linkAs = `/gc/${urlID}/rec/${recruitmentReplies_id}`;
   
   
   // --------------------------------------------------
   //   Reply to
   // --------------------------------------------------
   
-  const replyToForumComments_id = lodashGet(dataObj, ['replyToForumComments_id'], '');
+  const replyToRecruitmentReplies_id = lodashGet(dataObj, ['replyToRecruitmentReplies_id'], '');
   
   let replyToName = lodashGet(dataObj, ['replyToName'], '');
   
@@ -553,7 +532,7 @@ const Reply = (props) => {
     replyToName = 'ななしさん';
   }
   
-  const replyTo = `${replyToName} | ${replyToForumComments_id}`;
+  const replyTo = `${replyToName} | ${replyToRecruitmentReplies_id}`;
   
   
   // --------------------------------------------------
@@ -573,261 +552,277 @@ const Reply = (props) => {
     <Element
       css={css`
         border-top: 1px dashed #BDBDBD;
-        padding: 20px 0 0 0;
         margin: 20px 0 0 0;
+        padding: 20px 0 0 0;
       `}
-      name={forumReplies_id}
+      name={recruitmentReplies_id}
     >
       
       
-      {/* Form */}
-      {showFormReply &&
+      {/* Reply - Edit Form */}
+      {showFormEdit &&
         <FormReply
           gameCommunities_id={gameCommunities_id}
-          userCommunities_id={userCommunities_id}
-          forumThreads_id={forumThreads_id}
-          forumComments_id={forumComments_id}
-          forumReplies_id={forumReplies_id}
-          replyToForumComments_id={replyToForumComments_id}
-          enableAnonymity={enableAnonymity}
-          setShowFormReply={setShowFormReply}
+          recruitmentThreads_id={recruitmentThreads_id}
+          recruitmentComments_id={recruitmentComments_id}
+          recruitmentReplies_id={recruitmentReplies_id}
+          replyToRecruitmentReplies_id={replyToRecruitmentReplies_id}
+          setShowForm={setShowFormEdit}
         />
       }
       
       
       
       
-      {/* Replies */}
-      {!showFormReply &&
+      {/* Reply */}
+      {!showFormEdit &&
         <React.Fragment>
-        {/*<div
-          css={css`
-            display: flex;
-            flex-flow: column nowrap;
-            // border-top: 1px dashed #BDBDBD;
-            // margin: 20px 0 0 0;
-            // padding: 20px 0 0 0;
-          `}
-        >*/}
           
           
-          {/*<div
+          {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
+          <User
+            imagesAndVideosThumbnailObj={imagesAndVideosThumbnailObj}
+            name={name}
+            userID={userID}
+            status={status}
+            accessDate={accessDate}
+            exp={exp}
+            cardPlayers_id={cardPlayers_id}
+          />
+          
+          
+          
+          
+          {/* Images and Videos */}
+          {Object.keys(imagesAndVideosObj).length > 0 &&
+            <div
+              css={css`
+                margin: 12px 0 0 0;
+              `}
+            >
+              
+              <ImageAndVideo
+                imagesAndVideosObj={imagesAndVideosObj}
+              />
+              
+            </div>
+          }
+          
+          
+          
+          
+          {/* Reply */}
+          <div
             css={css`
-              border-top: 1px dashed #BDBDBD;
-              padding: 12px 0 0 0;
+              border-left: 4px solid #A9A9F5;
+              margin: 12px 0;
+              padding: 8px 0 8px 16px;
+              
+              @media screen and (max-width: 480px) {
+                padding: 8px 0 8px 12px;
+              }
             `}
-          >*/}
+          >
             
             
-            {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
-            <User
-              imagesAndVideosThumbnailObj={imagesAndVideosThumbnailObj}
-              name={name}
-              userID={userID}
-              status={status}
-              accessDate={accessDate}
-              exp={exp}
-              cardPlayers_id={cardPlayers_id}
-            />
-            
-            
-            
-            
-            {/* Images and Videos */}
-            {Object.keys(imagesAndVideosObj).length > 0 &&
+            {/* Reply To */}
+            {replyToRecruitmentReplies_id &&
               <div
                 css={css`
-                  margin: 12px 0 0 0;
+                  display: flex;
+                  flex-flow: row nowrap;
+                  margin: 0 0 12px 0;
+                  color: #7401DF;
                 `}
               >
-                
-                <ImageAndVideo
-                  imagesAndVideosObj={imagesAndVideosObj}
+                <IconReply
+                  css={css`
+                    && {
+                      font-size: 16px;
+                      margin: 4px 4px 0 0;
+                    }
+                  `}
                 />
-                
+                <p>{replyTo}</p>
               </div>
             }
             
             
             
             
-            {/* Reply Container / Left Purple Line */}
+            {/* Comment */}
+            <Paragraph text={comment} />
+            
+            
+            
+            
+            {/* Bottom Container */}
             <div
               css={css`
-                border-left: 4px solid #A9A9F5;
-                margin: 10px 0 0 0;
-                padding: 0 0 0 16px;
+                display: flex;
+                flex-flow: row wrap;
+                margin: 12px 0 0 0;
                 
                 @media screen and (max-width: 480px) {
-                  padding: 0 0 0 12px;
+                  flex-flow: column wrap;
                 }
               `}
             >
               
               
-              {/* Reply To */}
-              {replyToForumComments_id &&
+              {/* Good Button & Updated Date & recruitmentComments_id */}
+              <div
+                css={css`
+                  display: flex;
+                  flex-flow: row nowrap;
+                `}
+              >
+                
+                
+                {/* Good Button */}
+                <div
+                  css={css`
+                    && {
+                      margin: 2px 12px 0 0;
+                      
+                      @media screen and (max-width: 480px) {
+                        margin: 2px 8px 0 0;
+                      }
+                    }
+                  `}
+                >
+                  
+                  <GoodButton
+                    goods={goods}
+                    setGoods={setGoods}
+                    type="recruitmentReply"
+                    target_id={recruitmentReplies_id}
+                  />
+                  
+                </div>
+                
+                
+                
+                
+                {/* Updated Date */}
                 <div
                   css={css`
                     display: flex;
                     flex-flow: row nowrap;
-                    margin: 0 0 12px 0;
-                    color: #7401DF;
+                    margin: 4px 12px 0 0;
+                    
+                    @media screen and (max-width: 480px) {
+                      margin: 4px 8px 0 0;
+                    }
                   `}
                 >
-                  <IconReply
+                  <IconUpdate
                     css={css`
                       && {
-                        font-size: 16px;
-                        margin: 4px 4px 0 0;
+                        font-size: 22px;
+                        margin: 0 2px 0 0;
                       }
                     `}
                   />
-                  <p>{replyTo}</p>
+                  
+                  <div
+                    css={css`
+                      font-size: 12px;
+                      margin: 1px 0 0 0;
+                    `}
+                  >
+                    {datetimeFrom}
+                  </div>
                 </div>
-              }
+                
+                
+                
+                
+                {/* recruitmentReplies_id */}
+                <div
+                  css={css`
+                    display: flex;
+                    flex-flow: row nowrap;
+                    margin: 1px 0 0 0;
+                  `}
+                >
+                  <IconPublic
+                    css={css`
+                      && {
+                        font-size: 20px;
+                        margin: 3px 2px 0 0;
+                      }
+                    `}
+                  />
+                  <div
+                    css={css`
+                      font-size: 12px;
+                      color: #009933;
+                      margin: 4px 0 0 0;
+                    `}
+                  >
+                    <Link href={linkHref} as={linkAs}>
+                      <a>{recruitmentReplies_id}</a>
+                    </Link>
+                  </div>
+                </div>
+                
+              </div>
               
               
               
               
-              {/* Comment */}
-              <Paragraph text={comment} />
-              
-              
-              
-              
-              {/* Bottom Container */}
+              {/* Buttons */}
               <div
                 css={css`
                   display: flex;
-                  flex-flow: row wrap;
-                  margin: 12px 0 0 0;
+                  flex-flow: row nowrap;
+                  margin-left: auto;
                   
                   @media screen and (max-width: 480px) {
-                    flex-flow: column wrap;
+                    margin-top: 12px;
                   }
                 `}
               >
                 
                 
-                {/* Good Button & Updated Date & forumComments_id */}
-                <div
+                {/* Reply Button */}
+                <Button
                   css={css`
-                    display: flex;
-                    flex-flow: row nowrap;
-                  `}
-                >
-                  
-                  
-                  {/* Good Button */}
-                  <div
-                    css={css`
-                      && {
-                        margin: 2px 12px 0 0;
-                        
-                        @media screen and (max-width: 480px) {
-                          margin: 2px 8px 0 0;
-                        }
-                      }
-                    `}
-                  >
-                    
-                    <GoodButton
-                      goods={goods}
-                      setGoods={setGoods}
-                      type="forumReply"
-                      target_id={forumReplies_id}
-                    />
-                    
-                  </div>
-                  
-                  
-                  
-                  
-                  {/* Updated Date */}
-                  <div
-                    css={css`
-                      display: flex;
-                      flex-flow: row nowrap;
-                      margin: 4px 12px 0 0;
+                    && {
+                      font-size: 12px;
+                      height: 22px;
+                      min-width: 54px;
+                      min-height: 22px;
+                      // margin: 4px 12px 0 0;
+                      padding: 0 3px;
                       
                       @media screen and (max-width: 480px) {
-                        margin: 4px 8px 0 0;
+                        min-width: 36px;
+                        min-height: 22px;
                       }
-                    `}
-                  >
-                    <IconUpdate
-                      css={css`
-                        && {
-                          font-size: 22px;
-                          margin: 0 2px 0 0;
-                        }
-                      `}
-                    />
-                    
-                    <div
-                      css={css`
-                        font-size: 12px;
-                        margin: 1px 0 0 0;
-                      `}
-                    >
-                      {datetimeFrom}
-                    </div>
-                  </div>
-                  
-                  
-                  
-                  
-                  {/* forumReplies_id */}
-                  <div
-                    css={css`
-                      display: flex;
-                      flex-flow: row nowrap;
-                      margin: 1px 0 0 0;
-                    `}
-                  >
-                    <IconPublic
-                      css={css`
-                        && {
-                          font-size: 20px;
-                          margin: 3px 2px 0 0;
-                        }
-                      `}
-                    />
-                    <div
-                      css={css`
-                        font-size: 12px;
-                        color: #009933;
-                        margin: 4px 0 0 0;
-                      `}
-                    >
-                      <Link href={linkHref} as={linkAs}>
-                        <a>{forumReplies_id}</a>
-                      </Link>
-                    </div>
-                  </div>
-                  
-                  
-                </div>
-                
-                
-                
-                
-                {/* Buttons */}
-                <div
-                  css={css`
-                    display: flex;
-                    flex-flow: row nowrap;
-                    margin-left: auto;
-                    
-                    @media screen and (max-width: 480px) {
-                      margin-top: 12px;
                     }
                   `}
+                  variant="outlined"
+                  disabled={buttonDisabled}
+                  onClick={() => setShowFormNew(true)}
                 >
-                  
-                  
-                  {/* Reply Button */}
+                  <IconReply
+                    css={css`
+                      && {
+                        font-size: 16px;
+                        margin: 0 1px 3px 0;
+                      }
+                    `}
+                  />
+                  返信
+                </Button>
+                
+                
+                
+                
+                {/* Delete Button */}
+                {editable &&
                   <Button
                     css={css`
                       && {
@@ -835,155 +830,120 @@ const Reply = (props) => {
                         height: 22px;
                         min-width: 54px;
                         min-height: 22px;
-                        // margin: 4px 12px 0 0;
-                        padding: 0 3px;
+                        margin: 0 0 0 12px;
+                        padding: 0 4px;
                         
                         @media screen and (max-width: 480px) {
                           min-width: 36px;
                           min-height: 22px;
-                          // margin: 4px 8px 0 0;
                         }
                       }
                     `}
                     variant="outlined"
+                    color="secondary"
                     disabled={buttonDisabled}
-                    onClick={() => setShowFormReplyNew(true)}
+                    onClick={
+                      buttonDisabled
+                        ?
+                          () => {}
+                        :
+                          () => handleDialogOpen({
+                          
+                            title: '返信削除',
+                            description: '返信を削除しますか？',
+                            handle: handleDelete,
+                            argumentsObj: {
+                              gameCommunities_id,
+                              recruitmentThreads_id,
+                              recruitmentComments_id,
+                              recruitmentReplies_id,
+                            },
+                            
+                          })
+                    }
                   >
-                    <IconReply
+                    <IconDelete
                       css={css`
                         && {
                           font-size: 16px;
-                          margin: 0 1px 3px 0;
+                          margin: 0 2px 1px 0;
                         }
                       `}
                     />
-                    返信
+                    削除
                   </Button>
-                  
-                  
-                  
-                  
-                  {/* Delete Button */}
-                  {editable &&
-                    <Button
-                      css={css`
-                        && {
-                          font-size: 12px;
-                          height: 22px;
-                          min-width: 54px;
+                }
+                
+                
+                
+                
+                {/* Edit Button */}
+                {editable &&
+                  <Button
+                    css={css`
+                      && {
+                        font-size: 12px;
+                        height: 22px;
+                        min-width: 54px;
+                        min-height: 22px;
+                        margin: 0 0 0 12px;
+                        padding: 0 4px;
+                        
+                        @media screen and (max-width: 480px) {
+                          min-width: 36px;
                           min-height: 22px;
-                          margin: 0 0 0 12px;
-                          padding: 0 4px;
-                          
-                          @media screen and (max-width: 480px) {
-                            min-width: 36px;
-                            min-height: 22px;
-                          }
                         }
-                      `}
-                      variant="outlined"
-                      color="secondary"
-                      disabled={buttonDisabled}
-                      onClick={
-                        buttonDisabled
-                          ?
-                            () => {}
-                          :
-                            () => handleDialogOpen({
-                            
-                              title: '返信削除',
-                              description: '返信を削除しますか？',
-                              handle: handleDelete,
-                              argumentsObj: {
-                                gameCommunities_id,
-                                userCommunities_id,
-                                forumThreads_id,
-                                forumComments_id,
-                                forumReplies_id,
-                              },
-                              
-                            })
                       }
-                    >
-                      <IconDelete
-                        css={css`
-                          && {
-                            font-size: 16px;
-                            margin: 0 2px 1px 0;
-                          }
-                        `}
-                      />
-                      削除
-                    </Button>
-                  }
-                  
-                  
-                  
-                  
-                  {/* Edit Button */}
-                  {editable &&
-                    <Button
+                    `}
+                    variant="outlined"
+                    color="primary"
+                    disabled={buttonDisabled}
+                    onClick={() => setShowFormEdit(true)}
+                  >
+                    <IconEdit
                       css={css`
                         && {
-                          font-size: 12px;
-                          height: 22px;
-                          min-width: 54px;
-                          min-height: 22px;
-                          margin: 0 0 0 12px;
-                          padding: 0 4px;
-                          
-                          @media screen and (max-width: 480px) {
-                            min-width: 36px;
-                            min-height: 22px;
-                          }
+                          font-size: 16px;
+                          margin: 0 2px 3px 0;
                         }
                       `}
-                      variant="outlined"
-                      color="primary"
-                      disabled={buttonDisabled}
-                      onClick={() => setShowFormReply(true)}
-                    >
-                      <IconEdit
-                        css={css`
-                          && {
-                            font-size: 16px;
-                            margin: 0 2px 3px 0;
-                          }
-                        `}
-                      />
-                      編集
-                    </Button>
-                  }
-                  
-                  
-                </div>
+                    />
+                    編集
+                  </Button>
+                }
                 
                 
               </div>
-              
-              
-              
-              
-              {/* Form Reply */}
-              {showFormReplyNew &&
-                <FormReply
-                  gameCommunities_id={gameCommunities_id}
-                  userCommunities_id={userCommunities_id}
-                  forumThreads_id={forumThreads_id}
-                  forumComments_id={forumComments_id}
-                  replyToForumComments_id={forumReplies_id}
-                  enableAnonymity={enableAnonymity}
-                  setShowFormReply={setShowFormReplyNew}
-                />
-              }
-              
-              
+                
+                
             </div>
             
             
-          {/*</div>*/}
-          
-          
+            
+            
+            {/* Reply - New Form */}
+            {showFormNew &&
+              <div
+                css={css`
+                  margin: 6px 0 0 0;
+                `}
+              >
+                
+                <FormReply
+                  gameCommunities_id={gameCommunities_id}
+                  recruitmentThreads_id={recruitmentThreads_id}
+                  recruitmentComments_id={recruitmentComments_id}
+                  replyToRecruitmentReplies_id={recruitmentReplies_id}
+                  setShowForm={setShowFormNew}
+                />
+                
+              </div>
+            }
+            
+            
+          </div>
+        
+        
         </React.Fragment>
       }
     
@@ -1011,11 +971,8 @@ const Component = (props) => {
     
     urlID,
     gameCommunities_id,
-    userCommunityID,
-    userCommunities_id,
-    forumThreads_id,
-    forumComments_id,
-    enableAnonymity,
+    recruitmentThreads_id,
+    recruitmentComments_id,
     
   } = props;
   
@@ -1050,9 +1007,6 @@ const Component = (props) => {
     
     ISO8601,
     handleSnackbarOpen,
-    // handleDialogOpen,
-    // handleLoadingOpen,
-    // handleLoadingClose,
     handleScrollTo,
     
   } = stateLayout;
@@ -1061,13 +1015,16 @@ const Component = (props) => {
     
     gameCommunityObj,
     setGameCommunityObj,
-    forumThreadsObj,
-    forumCommentsObj,
-    forumRepliesObj,
-    setForumRepliesObj,
-    setReloadForceForumComment,
-    reloadForceForumReply,
-    setReloadForceForumReply,
+    recruitmentThreadsObj,
+    // setRecruitmentThreadsObj,
+    recruitmentCommentsObj,
+    // setRecruitmentCommentsObj,
+    recruitmentRepliesObj,
+    setRecruitmentRepliesObj,
+    // reloadForceRecruitmentComment,
+    setReloadForceRecruitmentComment,
+    
+    // setReloadForceRecruitmentReply,
     
   } = stateGc;
   
@@ -1078,8 +1035,7 @@ const Component = (props) => {
   //   Data
   // --------------------------------------------------
   
-  /////////////////////
-  const updatedDate = lodashGet(gameCommunityObj, ['updatedDateObj', 'forum'], '0000-01-01T00:00:00Z');
+  const updatedDate = lodashGet(gameCommunityObj, ['updatedDateObj', 'recruitment'], '0000-01-01T00:00:00Z');
   
   
   
@@ -1090,17 +1046,15 @@ const Component = (props) => {
   
   /**
    * 返信を読み込む
-   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
-   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
-   * @param {string} forumComments_id - DB forum-comments _id / コメントのID
+   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
+   * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントID
    * @param {number} page - 返信のページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
   const handleRead = async ({
     
     gameCommunities_id,
-    userCommunities_id,
-    forumComments_id,
+    recruitmentComments_id,
     page,
     changeLimit,
     
@@ -1114,12 +1068,11 @@ const Component = (props) => {
       //   Property
       // ---------------------------------------------
       
-      const loadedDate = lodashGet(forumRepliesObj, [forumComments_id, `page${page}Obj`, 'loadedDate'], '');
-      const arr = lodashGet(forumRepliesObj, [forumComments_id, `page${page}Obj`, 'arr'], []);
+      const loadedDate = lodashGet(recruitmentRepliesObj, [recruitmentComments_id, `page${page}Obj`, 'loadedDate'], '');
+      const arr = lodashGet(recruitmentRepliesObj, [recruitmentComments_id, `page${page}Obj`, 'arr'], []);
       
-      // const threadLimit = parseInt((getCookie({ key: 'forumThreadLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT), 10);
-      const commentLimit = parseInt((getCookie({ key: 'forumCommentLimit' }) || process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT), 10);
-      let replyLimit = parseInt((getCookie({ key: 'forumReplyLimit' }) || process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT), 10);
+      const commentLimit = parseInt((getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
+      let replyLimit = parseInt((getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
       
       
       
@@ -1131,14 +1084,14 @@ const Component = (props) => {
       if (changeLimit) {
         
         
-        replyLimit = changeLimit;
+        commentLimit = changeLimit;
         
         
         // ---------------------------------------------
-        //   Set Cookie - forumReplyLimit
+        //   Set Cookie - recruitmentReplyLimit
         // ---------------------------------------------
         
-        Cookies.set('forumReplyLimit', changeLimit);
+        Cookies.set('recruitmentReplyLimit', changeLimit);
         
         
       }
@@ -1157,15 +1110,7 @@ const Component = (props) => {
       //   1ページに表示する件数を変更した場合、再読込
       // ---------------------------------------------
       
-      if (changeLimit || reloadForceForumReply) {
-      // if (changeLimit) {
-        
-        
-        // ---------------------------------------------
-        //   次回の読み込み時にコメントを強制リロード
-        // ---------------------------------------------
-        
-        setReloadForceForumComment(true);
+      if (changeLimit) {
         
         
         // ---------------------------------------------
@@ -1183,25 +1128,17 @@ const Component = (props) => {
       } else if (loadedDate) {
         
         const datetimeLoaded = moment(loadedDate).utcOffset(0);
-        const datetimeForumUpdated = moment(updatedDate).utcOffset(0);
+        const datetimeRecruitmentUpdated = moment(updatedDate).utcOffset(0);
         const datetimeNow = moment().utcOffset(0);
-        const datetimeReloadLimit = moment(loadedDate).add(process.env.NEXT_PUBLIC_FORUM_RELOAD_MINUTES, 'm').utcOffset(0);
+        const datetimeReloadLimit = moment(loadedDate).add(process.env.NEXT_PUBLIC_RECRUITMENT_RELOAD_MINUTES, 'm').utcOffset(0);
         
-        if (datetimeForumUpdated.isAfter(datetimeLoaded) || datetimeNow.isAfter(datetimeReloadLimit)) {
+        if (datetimeRecruitmentUpdated.isAfter(datetimeLoaded) || datetimeNow.isAfter(datetimeReloadLimit)) {
           reload = true;
         }
         
       }
       
-      
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/reply.js - handleRead
-      // `);
-      
       // console.log(chalk`
-      //   reloadForceForumReply: {green ${reloadForceForumReply}}
       //   reload: {green ${reload}}
       // `);
       
@@ -1225,9 +1162,9 @@ const Component = (props) => {
         //   Set Page
         // ---------------------------------------------
         
-        const clonedObj = lodashCloneDeep(forumRepliesObj);
-        lodashSet(clonedObj, [forumComments_id, 'page'], page);
-        setForumRepliesObj(clonedObj);
+        const clonedObj = lodashCloneDeep(recruitmentRepliesObj);
+        lodashSet(clonedObj, [recruitmentComments_id, 'page'], page);
+        setRecruitmentRepliesObj(clonedObj);
         
         
         // ---------------------------------------------
@@ -1252,28 +1189,27 @@ const Component = (props) => {
       
       
       
-      
       // ---------------------------------------------
-      //   forumComments_idsArr
+      //   recruitmentComments_idsArr
       // ---------------------------------------------
       
-      let forumComments_idsArr = [forumComments_id];
+      let recruitmentComments_idsArr = [recruitmentComments_id];
       
-      // 表示件数を変更する場合は他の返信も一緒に更新するため、現在表示されているコメントのIDを取得する
+      // 表示件数を変更する場合は他のコメントも一緒に更新するため、現在表示されているコメントのIDを取得する
       if (changeLimit) {
         
-        const forumThreadsPage = lodashGet(forumThreadsObj, ['page'], 1);
-        const forumThreads_idArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
+        const recruitmentThreadsPage = lodashGet(recruitmentThreadsObj, ['page'], 1);
+        const recruitmentThreads_idsArr = lodashGet(recruitmentThreadsObj, [`page${recruitmentThreadsPage}Obj`, 'arr'], []);
         
         
-        forumComments_idsArr = [];
+        recruitmentComments_idsArr = [];
         
-        for (let forumThreads_id of forumThreads_idArr.values()) {
+        for (let recruitmentThreads_id of recruitmentThreads_idsArr.values()) {
           
-          const forumCommentsPage = lodashGet(forumCommentsObj, [forumThreads_id, 'page'], 1);
-          const tempForumComments_idArr = lodashGet(forumCommentsObj, [forumThreads_id, `page${forumCommentsPage}Obj`, 'arr'], []);
+          const recruitmentCommentsPage = lodashGet(recruitmentCommentsObj, [recruitmentThreads_id, 'page'], 1);
+          const tempRecruitmentComments_idsArr = lodashGet(recruitmentCommentsObj, [recruitmentThreads_id, `page${recruitmentCommentsPage}Obj`, 'arr'], []);
           
-          forumComments_idsArr = forumComments_idsArr.concat(tempForumComments_idArr);
+          recruitmentComments_idsArr = recruitmentComments_idsArr.concat(tempRecruitmentComments_idsArr);
           
         }
         
@@ -1288,21 +1224,17 @@ const Component = (props) => {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/reply.js - handleRead
+      //   /app/gc/rec/v2/components/reply.js - handleRead
       // `);
       
       // console.log(chalk`
       //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id}}
-      //   forumThreads_id: {green ${forumThreads_id}}
-      //   forumComments_id: {green ${forumComments_id}}
-      //   commentLimit: {green ${commentLimit}}
-      //   replyLimit: {green ${replyLimit}}
+      //   recruitmentComments_id: {green ${recruitmentComments_id}}
       // `);
       
       // console.log(`
-      //   ----- forumComments_idsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumComments_idsArr)), { colors: true, depth: null })}\n
+      //   ----- recruitmentComments_idsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentComments_idsArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -1316,8 +1248,7 @@ const Component = (props) => {
       const formDataObj = {
         
         gameCommunities_id,
-        userCommunities_id,
-        forumComments_idsArr,
+        recruitmentComments_idsArr,
         commentPage: 1,
         commentLimit,
         replyPage: page,
@@ -1332,7 +1263,7 @@ const Component = (props) => {
       
       const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/read-replies`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-replies/read-replies`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
         
@@ -1366,19 +1297,19 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Update - forumRepliesObj
+      //   Update - recruitmentRepliesObj
       // ---------------------------------------------
       
-      const forumRepliesNewObj = lodashGet(resultObj, ['data', 'forumRepliesObj'], {});
-      const forumRepliesMergedObj = reload ? forumRepliesNewObj : lodashMerge(forumRepliesObj, forumRepliesNewObj);
-      setForumRepliesObj(forumRepliesMergedObj);
+      const recruitmentRepliesNewObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
+      const recruitmentRepliesMergedObj = reload ? recruitmentRepliesNewObj : lodashMerge(recruitmentRepliesObj, recruitmentRepliesNewObj);
+      setRecruitmentRepliesObj(recruitmentRepliesMergedObj);
       
       
       // ---------------------------------------------
-      //   返信の強制リロード解除
+      //   コメントの強制リロード解除
       // ---------------------------------------------
       
-      setReloadForceForumReply(false);
+      setReloadForceRecruitmentComment(false);
       
       
     } catch (errorObj) {
@@ -1389,8 +1320,10 @@ const Component = (props) => {
       // ---------------------------------------------
       
       handleSnackbarOpen({
+        
         variant: 'error',
         errorObj,
+        
       });
       
       
@@ -1410,7 +1343,7 @@ const Component = (props) => {
       
       handleScrollTo({
         
-        to: `forumReplies-${forumComments_id}`,
+        to: `recruitmentReplies-${recruitmentComments_id}`,
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -1426,15 +1359,31 @@ const Component = (props) => {
   
   
   
+  // --------------------------------------------------
+  //   storeGcRecruitment
+  // --------------------------------------------------
+  
+  // const {
+    
+  //   dataObj,
+  //   handleEdit,
+  //   handleReadRecruitmentReplies,
+  //   handleShowFormRecruitmentReply,
+  //   handleShowDeleteDialog,
+    
+  // } = storeGcRecruitment;
+  
+  
+  
   
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
-  const page = lodashGet(forumRepliesObj, [forumComments_id, 'page'], 1);
-  const count = lodashGet(forumRepliesObj, [forumComments_id, 'count'], 0);
-  const limit = parseInt((forumRepliesObj.limit || process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT), 10);
-  const arr = lodashGet(forumRepliesObj, [forumComments_id, `page${page}Obj`, 'arr'], []);
+  const page = lodashGet(recruitmentRepliesObj, [recruitmentComments_id, 'page'], 1);
+  const count = lodashGet(recruitmentRepliesObj, [recruitmentComments_id, 'count'], 0);
+  const limit = parseInt((recruitmentRepliesObj.limit || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
+  const arr = lodashGet(recruitmentRepliesObj, [recruitmentComments_id, `page${page}Obj`, 'arr'], []);
   
   
   
@@ -1445,16 +1394,14 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/forum/v2/components/reply.js
+  //   /app/gc/rec/v2/components/reply.js
   // `);
   
   // console.log(chalk`
   //   urlID: {green ${urlID}}
   //   gameCommunities_id: {green ${gameCommunities_id}}
-  //   userCommunityID: {green ${userCommunityID}}
-  //   userCommunities_id: {green ${userCommunities_id}}
-  //   forumThreads_id: {green ${forumThreads_id}}
-  //   enableAnonymity: {green ${enableAnonymity}}
+  //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+  //   recruitmentComments_id: {green ${recruitmentComments_id}}
   // `);
   
   // console.log(chalk`
@@ -1484,24 +1431,21 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Component - Comment & Reply
+  //   Component - Reply
   // --------------------------------------------------
   
   const componentArr = [];
   
-  for (let forumReplies_id of arr.values()) {
+  for (let recruitmentReplies_id of arr.values()) {
     
     componentArr.push(
       <Reply
-        key={forumReplies_id}
+        key={recruitmentReplies_id}
         urlID={urlID}
         gameCommunities_id={gameCommunities_id}
-        userCommunityID={userCommunityID}
-        userCommunities_id={userCommunities_id}
-        forumThreads_id={forumThreads_id}
-        forumComments_id={forumComments_id}
-        forumReplies_id={forumReplies_id}
-        enableAnonymity={enableAnonymity}
+        recruitmentThreads_id={recruitmentThreads_id}
+        recruitmentComments_id={recruitmentComments_id}
+        recruitmentReplies_id={recruitmentReplies_id}
       />
     );
     
@@ -1516,10 +1460,10 @@ const Component = (props) => {
   
   return (
     <Element
-      // css={css`
-      //   margin: 24px 0 0 0;
-      // `}
-      name={`forumReplies-${forumComments_id}`}
+      css={css`
+        margin: 24px 0 0 0;
+      `}
+      name={`recruitmentReplies-${recruitmentComments_id}`}
     >
       
       
@@ -1555,8 +1499,8 @@ const Component = (props) => {
             onChange={() => {}}
             onChange={(page) => handleRead({
               gameCommunities_id,
-              userCommunities_id,
-              forumComments_id,
+              recruitmentThreads_id,
+              recruitmentComments_id,
               page,
             })}
             pageSize={limit}
@@ -1582,8 +1526,8 @@ const Component = (props) => {
             onChange={() => {}}
             onChange={(eventObj) => handleRead({
               gameCommunities_id,
-              userCommunities_id,
-              forumComments_id,
+              recruitmentThreads_id,
+              recruitmentComments_id,
               page: 1,
               changeLimit: eventObj.target.value,
             })}
@@ -1592,7 +1536,7 @@ const Component = (props) => {
                 classes={{
                   input: classes.input
                 }}
-                name="forum-replies-pagination"
+                name="recruitment-replies-pagination"
               />
             }
           >

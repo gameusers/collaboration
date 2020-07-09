@@ -784,370 +784,370 @@ class Store {
    * @param {number} page - 返信のページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
-  @action.bound
-  async handleReadRecruitmentReplies({
+  // @action.bound
+  // async handleReadRecruitmentReplies({
     
-    pathArr,
-    gameCommunities_id,
-    recruitmentComments_id,
-    page,
-    changeLimit,
+  //   pathArr,
+  //   gameCommunities_id,
+  //   recruitmentComments_id,
+  //   page,
+  //   changeLimit,
     
-  }) {
+  // }) {
     
     
-    try {
+  //   try {
       
       
-      // ---------------------------------------------
-      //   Property
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Property
+  //     // ---------------------------------------------
       
-      const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
-      const clonedObj = lodashCloneDeep(recruitmentObj);
+  //     const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
+  //     const clonedObj = lodashCloneDeep(recruitmentObj);
       
-      const loadedDate = lodashGet(recruitmentObj, ['recruitmentRepliesObj ', recruitmentComments_id, `page${page}Obj`, 'loadedDate'], '');
-      const arr = lodashGet(recruitmentObj, ['recruitmentRepliesObj', recruitmentComments_id, `page${page}Obj`, 'arr'], []);
-      // const reloadComments = lodashGet(recruitmentObj, ['reloadComments'], false);
+  //     const loadedDate = lodashGet(recruitmentObj, ['recruitmentRepliesObj ', recruitmentComments_id, `page${page}Obj`, 'loadedDate'], '');
+  //     const arr = lodashGet(recruitmentObj, ['recruitmentRepliesObj', recruitmentComments_id, `page${page}Obj`, 'arr'], []);
+  //     // const reloadComments = lodashGet(recruitmentObj, ['reloadComments'], false);
       
-      // const threadLimit = parseInt((storeData.getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
-      const commentLimit = parseInt((storeData.getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
-      let replyLimit = parseInt((storeData.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
-      
-      
+  //     // const threadLimit = parseInt((storeData.getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
+  //     const commentLimit = parseInt((storeData.getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
+  //     let replyLimit = parseInt((storeData.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
       
       
-      // ---------------------------------------------
-      //   Change Limit
-      // ---------------------------------------------
       
-      if (changeLimit) {
+      
+  //     // ---------------------------------------------
+  //     //   Change Limit
+  //     // ---------------------------------------------
+      
+  //     if (changeLimit) {
         
         
-        replyLimit = changeLimit;
+  //       replyLimit = changeLimit;
         
         
-        // ---------------------------------------------
-        //   Set Cookie - recruitmentReplyLimit
-        // ---------------------------------------------
+  //       // ---------------------------------------------
+  //       //   Set Cookie - recruitmentReplyLimit
+  //       // ---------------------------------------------
         
-        Cookies.set('recruitmentReplyLimit', changeLimit);
-        
-        
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   再読込するかどうか
-      // ---------------------------------------------
-      
-      let reload = false;
-      
-      
-      // ---------------------------------------------
-      //   1ページに表示する件数を変更した場合、再読込
-      // ---------------------------------------------
-      
-      if (changeLimit) {
+  //       Cookies.set('recruitmentReplyLimit', changeLimit);
         
         
-        // ---------------------------------------------
-        //   スレッド＆コメント　次回の読み込み時に強制リロード
-        // ---------------------------------------------
-        
-        lodashSet(clonedObj, ['reloadThreads'], true);
-        lodashSet(clonedObj, ['reloadComments'], false);
-        
-        
-        // ---------------------------------------------
-        //   再読込
-        // ---------------------------------------------
-        
-        reload = true;
-        
-      
-      // ---------------------------------------------
-      //   最後の読み込み以降に募集の更新があった場合
-      //   または最後の読み込みからある程度時間（10分）が経っていた場合、再読込する
-      // ---------------------------------------------
-        
-      } else if (loadedDate) {
-        
-        const recruitmentUpdatedDate = lodashGet(recruitmentObj, ['updatedDateObj', 'recruitment'], '0000-01-01T00:00:00Z');
-        
-        const datetimeLoaded = moment(loadedDate).utcOffset(0);
-        const datetimeRecruitmentUpdated = moment(recruitmentUpdatedDate).utcOffset(0);
-        const datetimeNow = moment().utcOffset(0);
-        const datetimeReloadLimit = moment(loadedDate).add(process.env.NEXT_PUBLIC_RECRUITMENT_RELOAD_MINUTES, 'm').utcOffset(0);
-        
-        if (datetimeRecruitmentUpdated.isAfter(datetimeLoaded) || datetimeNow.isAfter(datetimeReloadLimit)) {
-          reload = true;
-        }
-        
-      }
+  //     }
       
       
       
       
-      // ---------------------------------------------
-      //   console.log
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   再読込するかどうか
+  //     // ---------------------------------------------
       
-      // console.log(`
-      //   ----- recruitmentObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- pathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- arr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   recruitmentComments_id: {green ${recruitmentComments_id}}
-      //   page: {green ${page}}
-      //   commentLimit: {green ${commentLimit}}
-      //   replyLimit: {green ${replyLimit}}
-      //   loadedDate: {green ${loadedDate}}
-      //   changeLimit：{green ${changeLimit}}
-      // `);
-      
-      // console.log(chalk`
-      //   reload: {green ${reload}}
-      // `);
+  //     let reload = false;
       
       
+  //     // ---------------------------------------------
+  //     //   1ページに表示する件数を変更した場合、再読込
+  //     // ---------------------------------------------
       
-      
-      // ---------------------------------------------
-      //   すでにデータを読み込んでいる場合は、ストアのデータを表示する
-      // ---------------------------------------------
-      
-      if (!reload && arr.length > 0) {
+  //     if (changeLimit) {
         
         
-        console.log('store');
+  //       // ---------------------------------------------
+  //       //   スレッド＆コメント　次回の読み込み時に強制リロード
+  //       // ---------------------------------------------
+        
+  //       lodashSet(clonedObj, ['reloadThreads'], true);
+  //       lodashSet(clonedObj, ['reloadComments'], false);
         
         
-        // ---------------------------------------------
-        //   Page 更新
-        // ---------------------------------------------
+  //       // ---------------------------------------------
+  //       //   再読込
+  //       // ---------------------------------------------
         
-        lodashSet(clonedObj, ['recruitmentRepliesObj', recruitmentComments_id, 'page'], page);
+  //       reload = true;
         
-        this.handleEdit({
-          pathArr: [gameCommunities_id],
-          value: clonedObj
-        });
-        
-        
-        // ---------------------------------------------
-        //   Return
-        // ---------------------------------------------
-        
-        return;
-        
-        
-      }
       
-      console.log('fetch');
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
-      
-      
+  //     // ---------------------------------------------
+  //     //   最後の読み込み以降に募集の更新があった場合
+  //     //   または最後の読み込みからある程度時間（10分）が経っていた場合、再読込する
+  //     // ---------------------------------------------
+        
+  //     } else if (loadedDate) {
+        
+  //       const recruitmentUpdatedDate = lodashGet(recruitmentObj, ['updatedDateObj', 'recruitment'], '0000-01-01T00:00:00Z');
+        
+  //       const datetimeLoaded = moment(loadedDate).utcOffset(0);
+  //       const datetimeRecruitmentUpdated = moment(recruitmentUpdatedDate).utcOffset(0);
+  //       const datetimeNow = moment().utcOffset(0);
+  //       const datetimeReloadLimit = moment(loadedDate).add(process.env.NEXT_PUBLIC_RECRUITMENT_RELOAD_MINUTES, 'm').utcOffset(0);
+        
+  //       if (datetimeRecruitmentUpdated.isAfter(datetimeLoaded) || datetimeNow.isAfter(datetimeReloadLimit)) {
+  //         reload = true;
+  //       }
+        
+  //     }
       
       
-      // ---------------------------------------------
-      //   recruitmentComments_idsArr
-      // ---------------------------------------------
       
-      let recruitmentComments_idsArr = [recruitmentComments_id];
       
-      // 表示件数を変更する場合は他のスレッドも一緒に更新するため、現在表示されているスレッドのIDを取得する
-      if (changeLimit) {
+  //     // ---------------------------------------------
+  //     //   console.log
+  //     // ---------------------------------------------
+      
+  //     // console.log(`
+  //     //   ----- recruitmentObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- pathArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- arr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(chalk`
+  //     //   gameCommunities_id: {green ${gameCommunities_id}}
+  //     //   recruitmentComments_id: {green ${recruitmentComments_id}}
+  //     //   page: {green ${page}}
+  //     //   commentLimit: {green ${commentLimit}}
+  //     //   replyLimit: {green ${replyLimit}}
+  //     //   loadedDate: {green ${loadedDate}}
+  //     //   changeLimit：{green ${changeLimit}}
+  //     // `);
+      
+  //     // console.log(chalk`
+  //     //   reload: {green ${reload}}
+  //     // `);
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   すでにデータを読み込んでいる場合は、ストアのデータを表示する
+  //     // ---------------------------------------------
+      
+  //     if (!reload && arr.length > 0) {
         
-        const recruitmentThreadsObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj'], {});
-        const recruitmentThreadsPage = lodashGet(recruitmentThreadsObj, ['page'], 1);
-        const recruitmentThreads_idsArr = lodashGet(recruitmentThreadsObj, [`page${recruitmentThreadsPage}Obj`, 'arr'], []);
+        
+  //       console.log('store');
         
         
-        recruitmentComments_idsArr = [];
+  //       // ---------------------------------------------
+  //       //   Page 更新
+  //       // ---------------------------------------------
         
-        for (let recruitmentThreads_id of recruitmentThreads_idsArr.values()) {
+  //       lodashSet(clonedObj, ['recruitmentRepliesObj', recruitmentComments_id, 'page'], page);
+        
+  //       this.handleEdit({
+  //         pathArr: [gameCommunities_id],
+  //         value: clonedObj
+  //       });
+        
+        
+  //       // ---------------------------------------------
+  //       //   Return
+  //       // ---------------------------------------------
+        
+  //       return;
+        
+        
+  //     }
+      
+  //     console.log('fetch');
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   recruitmentComments_idsArr
+  //     // ---------------------------------------------
+      
+  //     let recruitmentComments_idsArr = [recruitmentComments_id];
+      
+  //     // 表示件数を変更する場合は他のスレッドも一緒に更新するため、現在表示されているスレッドのIDを取得する
+  //     if (changeLimit) {
+        
+  //       const recruitmentThreadsObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj'], {});
+  //       const recruitmentThreadsPage = lodashGet(recruitmentThreadsObj, ['page'], 1);
+  //       const recruitmentThreads_idsArr = lodashGet(recruitmentThreadsObj, [`page${recruitmentThreadsPage}Obj`, 'arr'], []);
+        
+        
+  //       recruitmentComments_idsArr = [];
+        
+  //       for (let recruitmentThreads_id of recruitmentThreads_idsArr.values()) {
           
-          const recruitmentCommentsPage = lodashGet(recruitmentObj, ['recruitmentCommentsObj', recruitmentThreads_id, 'page'], 1);
-          const tempRecruitmentComments_idsArr = lodashGet(recruitmentObj, ['recruitmentCommentsObj', recruitmentThreads_id, `page${recruitmentCommentsPage}Obj`, 'arr'], []);
+  //         const recruitmentCommentsPage = lodashGet(recruitmentObj, ['recruitmentCommentsObj', recruitmentThreads_id, 'page'], 1);
+  //         const tempRecruitmentComments_idsArr = lodashGet(recruitmentObj, ['recruitmentCommentsObj', recruitmentThreads_id, `page${recruitmentCommentsPage}Obj`, 'arr'], []);
           
-          recruitmentComments_idsArr = recruitmentComments_idsArr.concat(tempRecruitmentComments_idsArr);
+  //         recruitmentComments_idsArr = recruitmentComments_idsArr.concat(tempRecruitmentComments_idsArr);
           
-        }
+  //       }
         
-      }
+  //     }
       
       
-      // console.log(`
-      //   ----- recruitmentComments_idsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentComments_idsArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     // console.log(`
+  //     //   ----- recruitmentComments_idsArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentComments_idsArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
       
       
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
       
-      const formDataObj = {
+  //     const formDataObj = {
         
-        gameCommunities_id,
-        recruitmentComments_idsArr,
-        commentPage: 1,
-        commentLimit,
-        replyPage: page,
-        replyLimit,
+  //       gameCommunities_id,
+  //       recruitmentComments_idsArr,
+  //       commentPage: 1,
+  //       commentLimit,
+  //       replyPage: page,
+  //       replyLimit,
         
-      };
+  //     };
       
       
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Fetch
+  //     // ---------------------------------------------
       
-      const resultObj = await fetchWrapper({
+  //     const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-replies/read-replies`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-replies/read-replies`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj),
         
-      });
+  //     });
       
       
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
       
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-      
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
       
       
-      
-      
-      // ---------------------------------------------
-      //   recruitmentRepliesObj
-      // ---------------------------------------------
-      
-      const recruitmentRepliesOldObj = lodashGet(recruitmentObj, ['recruitmentRepliesObj'], {});
-      const recruitmentRepliesNewObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
-      
-      // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
-      const recruitmentRepliesMergedObj = reload ? recruitmentRepliesNewObj : lodashMerge(recruitmentRepliesOldObj, recruitmentRepliesNewObj);
-      
-      clonedObj.recruitmentRepliesObj = recruitmentRepliesMergedObj;
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
       
       
-      // ---------------------------------------------
-      //   Page
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   recruitmentRepliesObj
+  //     // ---------------------------------------------
       
-      lodashSet(clonedObj, ['recruitmentRepliesObj', recruitmentComments_id, 'page'], page);
+  //     const recruitmentRepliesOldObj = lodashGet(recruitmentObj, ['recruitmentRepliesObj'], {});
+  //     const recruitmentRepliesNewObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
       
+  //     // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+  //     const recruitmentRepliesMergedObj = reload ? recruitmentRepliesNewObj : lodashMerge(recruitmentRepliesOldObj, recruitmentRepliesNewObj);
       
-      // --------------------------------------------------
-      //   Community UpdatedDateObj
-      // --------------------------------------------------
-      
-      const updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
-      clonedObj.updatedDateObj = updatedDateObj;
+  //     clonedObj.recruitmentRepliesObj = recruitmentRepliesMergedObj;
       
       
       
       
-      // ---------------------------------------------
-      //   Update
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Page
+  //     // ---------------------------------------------
       
-      this.handleEdit({
-        pathArr: ['recruitmentReplyLimit'],
-        value: replyLimit,
-      });
-      
-      this.handleEdit({
-        pathArr: [gameCommunities_id],
-        value: clonedObj
-      });
+  //     lodashSet(clonedObj, ['recruitmentRepliesObj', recruitmentComments_id, 'page'], page);
       
       
-    } catch (errorObj) {
+  //     // --------------------------------------------------
+  //     //   Community UpdatedDateObj
+  //     // --------------------------------------------------
+      
+  //     const updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+  //     clonedObj.updatedDateObj = updatedDateObj;
       
       
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      // storeLayout.handleSnackbarOpen({
-      //   variant: 'error',
-      //   errorObj,
-      // });
       
       
-    } finally {
+  //     // ---------------------------------------------
+  //     //   Update
+  //     // ---------------------------------------------
+      
+  //     this.handleEdit({
+  //       pathArr: ['recruitmentReplyLimit'],
+  //       value: replyLimit,
+  //     });
+      
+  //     this.handleEdit({
+  //       pathArr: [gameCommunities_id],
+  //       value: clonedObj
+  //     });
       
       
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
+  //   } catch (errorObj) {
       
       
-      // ---------------------------------------------
-      //   Scroll
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
       
-      storeLayout.handleScrollTo({
+  //     // storeLayout.handleSnackbarOpen({
+  //     //   variant: 'error',
+  //     //   errorObj,
+  //     // });
+      
+      
+  //   } finally {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Scroll
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleScrollTo({
         
-        to: pathArr.join('-'),
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
+  //       to: pathArr.join('-'),
+  //       duration: 0,
+  //       delay: 0,
+  //       smooth: 'easeInOutQuart',
+  //       offset: -50,
         
-      });
+  //     });
       
       
-    }
+  //   }
     
     
-  };
+  // };
   
   
   
@@ -1653,189 +1653,189 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {string} recruitmentReplies_id - DB recruitment-replies _id / 返信ID
    */
-  @action.bound
-  async handleShowFormRecruitmentReply({ pathArr, recruitmentReplies_id }) {
+  // @action.bound
+  // async handleShowFormRecruitmentReply({ pathArr, recruitmentReplies_id }) {
     
     
-    try {
+  //   try {
       
       
-      // ---------------------------------------------
-      //   recruitmentReplies_id が存在しない場合エラー
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   recruitmentReplies_id が存在しない場合エラー
+  //     // ---------------------------------------------
       
-      if (!recruitmentReplies_id) {
-        throw new CustomError({ errorsArr: [{ code: 'eryvlZc7N', messageID: 'Error' }] });
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Loading 表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingShow({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
+  //     if (!recruitmentReplies_id) {
+  //       throw new CustomError({ errorsArr: [{ code: 'eryvlZc7N', messageID: 'Error' }] });
+  //     }
       
       
       
       
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Loading 表示
+  //     // ---------------------------------------------
       
-      const formDataObj = {
+  //     storeLayout.handleLoadingShow({});
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
+      
+  //     const formDataObj = {
         
-        recruitmentReplies_id,
+  //       recruitmentReplies_id,
         
-      };
+  //     };
       
       
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Fetch
+  //     // ---------------------------------------------
       
-      const resultObj = await fetchWrapper({
+  //     const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-replies/get-edit-data`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-replies/get-edit-data`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj),
         
-      });
+  //     });
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
       
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Images And Videos
-      // ---------------------------------------------
-      
-      const imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
-      
-      if (Object.keys(imagesAndVideosObj).length !== 0) {
-        storeImageAndVideoForm.handleSetImagesAndVideosObj({ pathArr, imagesAndVideosObj });
-      }
-      
-      
-      // ---------------------------------------------
-      //   Data
-      // ---------------------------------------------
-      
-      const editObj = lodashGet(resultObj, ['data'], {});
-      
-      editObj.name = lodashGet(resultObj, ['data', 'localesArr', 0, 'name'], ''),
-      editObj.comment = lodashGet(resultObj, ['data', 'localesArr', 0, 'comment'], ''),
-      
-      lodashSet(this.dataObj, [...pathArr], editObj);
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
       
       
       
       
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Images And Videos
+  //     // ---------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/gc/rec/stores/store.js - handleShowFormRecruitmentReply
-      // `);
+  //     const imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
       
-      // console.log(`
-      //   ----- pathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
-      // `);
-      
-      // console.log(`
-      //   ----- editObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(editObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     if (Object.keys(imagesAndVideosObj).length !== 0) {
+  //       storeImageAndVideoForm.handleSetImagesAndVideosObj({ pathArr, imagesAndVideosObj });
+  //     }
       
       
-      // ---------------------------------------------
-      //   Show Form
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Data
+  //     // ---------------------------------------------
       
-      lodashSet(this.dataObj, [...pathArr, 'showFormReply'], true);
+  //     const editObj = lodashGet(resultObj, ['data'], {});
       
+  //     editObj.name = lodashGet(resultObj, ['data', 'localesArr', 0, 'name'], ''),
+  //     editObj.comment = lodashGet(resultObj, ['data', 'localesArr', 0, 'comment'], ''),
       
-    } catch (errorObj) {
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
+  //     lodashSet(this.dataObj, [...pathArr], editObj);
       
       
-    } finally {
       
       
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
       
-      storeLayout.handleButtonEnable({ pathArr });
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/gc/rec/stores/store.js - handleShowFormRecruitmentReply
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- pathArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(chalk`
+  //     //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- editObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(editObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Show Form
+  //     // ---------------------------------------------
       
-      storeLayout.handleLoadingHide({});
+  //     lodashSet(this.dataObj, [...pathArr, 'showFormReply'], true);
       
       
-      // ---------------------------------------------
-      //   Scroll
-      // ---------------------------------------------
+  //   } catch (errorObj) {
       
-      storeLayout.handleScrollTo({
+      
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
+      
+      
+  //   } finally {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading 非表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingHide({});
+      
+      
+  //     // ---------------------------------------------
+  //     //   Scroll
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleScrollTo({
         
-        to: recruitmentReplies_id,
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
+  //       to: recruitmentReplies_id,
+  //       duration: 0,
+  //       delay: 0,
+  //       smooth: 'easeInOutQuart',
+  //       offset: -50,
         
-      });
+  //     });
       
       
-    }
+  //   }
     
     
-  };
+  // };
   
   
   
@@ -1848,121 +1848,121 @@ class Store {
    * @param {string} replyToRecruitmentReplies_id - DB recruitment-replies _id / 返信ID
    * @param {string} scrollTo - スクロールする移動先
    */
-  @action.bound
-  async handleHideFormRecruitmentReply({
+  // @action.bound
+  // async handleHideFormRecruitmentReply({
     
-    pathArr,
-    recruitmentComments_id,
-    recruitmentReplies_id,
-    replyToRecruitmentReplies_id,
-    scrollTo,
+  //   pathArr,
+  //   recruitmentComments_id,
+  //   recruitmentReplies_id,
+  //   replyToRecruitmentReplies_id,
+  //   scrollTo,
     
-  }) {
-    
-    
-    // ---------------------------------------------
-    //   スクロールする対象の _id
-    // ---------------------------------------------
-    
-    let scrollToTarget = '';
+  // }) {
     
     
-    // ---------------------------------------------
-    //   Update - 返信対象が存在する
-    // ---------------------------------------------
+  //   // ---------------------------------------------
+  //   //   スクロールする対象の _id
+  //   // ---------------------------------------------
     
-    if (recruitmentReplies_id && replyToRecruitmentReplies_id) {
+  //   let scrollToTarget = '';
+    
+    
+  //   // ---------------------------------------------
+  //   //   Update - 返信対象が存在する
+  //   // ---------------------------------------------
+    
+  //   if (recruitmentReplies_id && replyToRecruitmentReplies_id) {
       
-      lodashSet(this.dataObj, [...pathArr, 'showFormReply'], false);
-      scrollToTarget = recruitmentReplies_id;
-      
-      
-    // ---------------------------------------------
-    //   Update - 返信対象が存在しない
-    // ---------------------------------------------
-      
-    } else if (recruitmentReplies_id && !replyToRecruitmentReplies_id) {
-      
-      lodashSet(this.dataObj, [...pathArr, 'showFormReply'], false);
-      scrollToTarget = recruitmentReplies_id;
-    
-      
-    // ---------------------------------------------
-    //   Insert - 返信対象が存在する
-    // ---------------------------------------------
-      
-    } else if (!recruitmentReplies_id && replyToRecruitmentReplies_id) {
-      // console.log('Insert - 返信対象が存在する');
-      lodashSet(this.dataObj, [...pathArr, 'showFormReplyTo'], false);
-      scrollToTarget = replyToRecruitmentReplies_id;
+  //     lodashSet(this.dataObj, [...pathArr, 'showFormReply'], false);
+  //     scrollToTarget = recruitmentReplies_id;
       
       
-    // ---------------------------------------------
-    //   Insert - 返信対象が存在しない
-    // ---------------------------------------------
+  //   // ---------------------------------------------
+  //   //   Update - 返信対象が存在しない
+  //   // ---------------------------------------------
       
-    } else {
+  //   } else if (recruitmentReplies_id && !replyToRecruitmentReplies_id) {
       
-      lodashSet(this.dataObj, [...pathArr, 'showFormReply'], false);
-      scrollToTarget = recruitmentComments_id;
+  //     lodashSet(this.dataObj, [...pathArr, 'showFormReply'], false);
+  //     scrollToTarget = recruitmentReplies_id;
+    
       
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   スクロール先の指定がある場合はそちらに移動させる
-    // ---------------------------------------------
-    
-    if (scrollTo) {
-      scrollToTarget = scrollTo;
-    }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/gc/rec/stores/store.js - handleHideFormRecruitmentReply
-    // `);
-    
-    // console.log(`
-    //   ----- pathArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   recruitmentComments_id: {green ${recruitmentComments_id}}
-    //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
-    //   replyToRecruitmentReplies_id: {green ${replyToRecruitmentReplies_id}}
-    //   scrollTo: {green ${scrollTo}}
-    // `);
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   Scroll
-    // ---------------------------------------------
-    
-    storeLayout.handleScrollTo({
+  //   // ---------------------------------------------
+  //   //   Insert - 返信対象が存在する
+  //   // ---------------------------------------------
       
-      to: scrollToTarget,
-      duration: 0,
-      delay: 0,
-      smooth: 'easeInOutQuart',
-      offset: -50,
+  //   } else if (!recruitmentReplies_id && replyToRecruitmentReplies_id) {
+  //     // console.log('Insert - 返信対象が存在する');
+  //     lodashSet(this.dataObj, [...pathArr, 'showFormReplyTo'], false);
+  //     scrollToTarget = replyToRecruitmentReplies_id;
       
-    });
+      
+  //   // ---------------------------------------------
+  //   //   Insert - 返信対象が存在しない
+  //   // ---------------------------------------------
+      
+  //   } else {
+      
+  //     lodashSet(this.dataObj, [...pathArr, 'showFormReply'], false);
+  //     scrollToTarget = recruitmentComments_id;
+      
+  //   }
     
     
-  };
+    
+    
+  //   // ---------------------------------------------
+  //   //   スクロール先の指定がある場合はそちらに移動させる
+  //   // ---------------------------------------------
+    
+  //   if (scrollTo) {
+  //     scrollToTarget = scrollTo;
+  //   }
+    
+    
+    
+    
+  //   // --------------------------------------------------
+  //   //   console.log
+  //   // --------------------------------------------------
+    
+  //   // console.log(`
+  //   //   ----------------------------------------\n
+  //   //   /app/gc/rec/stores/store.js - handleHideFormRecruitmentReply
+  //   // `);
+    
+  //   // console.log(`
+  //   //   ----- pathArr -----\n
+  //   //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
+    
+  //   // console.log(chalk`
+  //   //   recruitmentComments_id: {green ${recruitmentComments_id}}
+  //   //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
+  //   //   replyToRecruitmentReplies_id: {green ${replyToRecruitmentReplies_id}}
+  //   //   scrollTo: {green ${scrollTo}}
+  //   // `);
+    
+    
+    
+    
+  //   // ---------------------------------------------
+  //   //   Scroll
+  //   // ---------------------------------------------
+    
+  //   storeLayout.handleScrollTo({
+      
+  //     to: scrollToTarget,
+  //     duration: 0,
+  //     delay: 0,
+  //     smooth: 'easeInOutQuart',
+  //     offset: -50,
+      
+  //   });
+    
+    
+  // };
   
   
   
@@ -2518,476 +2518,476 @@ class Store {
    * @param {string} recruitmentThreads_id - DB recruitment-threads _id / 募集スレッドのID
    * @param {string} recruitmentComments_id - DB recruitment-comments _id / 募集コメントのID
    */
-  @action.bound
-  async handleSubmitRecruitmentComment({
+  // @action.bound
+  // async handleSubmitRecruitmentComment({
     
-    eventObj,
-    pathArr,
-    gameCommunities_id,
-    recruitmentThreads_id,
-    recruitmentComments_id,
+  //   eventObj,
+  //   pathArr,
+  //   gameCommunities_id,
+  //   recruitmentThreads_id,
+  //   recruitmentComments_id,
     
-  }) {
-    
-    
-    // ---------------------------------------------
-    //   フォームの送信処理停止
-    // ---------------------------------------------
-    
-    eventObj.preventDefault();
+  // }) {
     
     
+  //   // ---------------------------------------------
+  //   //   フォームの送信処理停止
+  //   // ---------------------------------------------
+    
+  //   eventObj.preventDefault();
     
     
-    try {
+    
+    
+  //   try {
       
       
-      // ---------------------------------------------
-      //   Temp Data
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Temp Data
+  //     // ---------------------------------------------
       
-      // const newObj = {
+  //     // const newObj = {
         
-      //   gameCommunities_id,
-      //   // recruitmentThreads_id: '',
-      //   // recruitmentComments_id: '',
-      //   category: 1,
-      //   // name: 'テストネーム',
-      //   // comment: 'テストコメント',
-      //   platform1: 'Other',
-      //   platform2: 'Other',
-      //   platform3: 'Other',
-      //   id1: 'test-id-1',
-      //   id2: '',
-      //   id3: '',
-      //   informationTitle1: '情報タイトル1',
-      //   informationTitle2: '',
-      //   informationTitle3: '',
-      //   informationTitle4: '',
-      //   informationTitle5: '',
-      //   information1: '情報1',
-      //   information2: '',
-      //   information3: '',
-      //   information4: '',
-      //   information5: '',
-      //   publicSetting: 1,
-      //   webPush: true,
-      //   webPushSubscriptionObj: {
-      //     endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
-      //     keys: {
-      //       p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
-      //       auth: 'siDbUa9DCbg-n9AMsvWA1w'
-      //     }
-      //   },
+  //     //   gameCommunities_id,
+  //     //   // recruitmentThreads_id: '',
+  //     //   // recruitmentComments_id: '',
+  //     //   category: 1,
+  //     //   // name: 'テストネーム',
+  //     //   // comment: 'テストコメント',
+  //     //   platform1: 'Other',
+  //     //   platform2: 'Other',
+  //     //   platform3: 'Other',
+  //     //   id1: 'test-id-1',
+  //     //   id2: '',
+  //     //   id3: '',
+  //     //   informationTitle1: '情報タイトル1',
+  //     //   informationTitle2: '',
+  //     //   informationTitle3: '',
+  //     //   informationTitle4: '',
+  //     //   informationTitle5: '',
+  //     //   information1: '情報1',
+  //     //   information2: '',
+  //     //   information3: '',
+  //     //   information4: '',
+  //     //   information5: '',
+  //     //   publicSetting: 1,
+  //     //   webPush: true,
+  //     //   webPushSubscriptionObj: {
+  //     //     endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
+  //     //     keys: {
+  //     //       p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
+  //     //       auth: 'siDbUa9DCbg-n9AMsvWA1w'
+  //     //     }
+  //     //   },
         
-      // };
+  //     // };
       
-      // const oldObj = lodashGet(this.dataObj, [...pathArr], {});
-      // const mergedObj = lodashMerge(oldObj, newObj);
+  //     // const oldObj = lodashGet(this.dataObj, [...pathArr], {});
+  //     // const mergedObj = lodashMerge(oldObj, newObj);
       
-      // lodashSet(this.dataObj, [...pathArr], mergedObj);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Property
-      // ---------------------------------------------
-      
-      const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
-      const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
-      const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj', ...pathArr, 'imagesAndVideosObj'], {});
-      
-      const idsArr = lodashGet(this.dataObj, [...pathArr, 'idsArr'], []);
-      
-      const platform1 = lodashGet(this.dataObj, [...pathArr, 'platform1'], 'Other');
-      const platform2 = lodashGet(this.dataObj, [...pathArr, 'platform2'], 'Other');
-      const platform3 = lodashGet(this.dataObj, [...pathArr, 'platform3'], 'Other');
-      
-      const id1 = lodashGet(this.dataObj, [...pathArr, 'id1'], '');
-      const id2 = lodashGet(this.dataObj, [...pathArr, 'id2'], '');
-      const id3 = lodashGet(this.dataObj, [...pathArr, 'id3'], '');
-      
-      const informationTitle1 = lodashGet(this.dataObj, [...pathArr, 'informationTitle1'], '');
-      const informationTitle2 = lodashGet(this.dataObj, [...pathArr, 'informationTitle2'], '');
-      const informationTitle3 = lodashGet(this.dataObj, [...pathArr, 'informationTitle3'], '');
-      const informationTitle4 = lodashGet(this.dataObj, [...pathArr, 'informationTitle4'], '');
-      const informationTitle5 = lodashGet(this.dataObj, [...pathArr, 'informationTitle5'], '');
-      
-      const information1 = lodashGet(this.dataObj, [...pathArr, 'information1'], '');
-      const information2 = lodashGet(this.dataObj, [...pathArr, 'information2'], '');
-      const information3 = lodashGet(this.dataObj, [...pathArr, 'information3'], '');
-      const information4 = lodashGet(this.dataObj, [...pathArr, 'information4'], '');
-      const information5 = lodashGet(this.dataObj, [...pathArr, 'information5'], '');
-      
-      const publicSetting = lodashGet(this.dataObj, [...pathArr, 'publicSetting'], 1);
-      
-      const webPushAvailable = lodashGet(this.dataObj, [...pathArr, 'webPushAvailable'], false);
-      const webPushSubscriptionObj = lodashGet(this.dataObj, [...pathArr, 'webPushSubscriptionObj'], {});
-      
-      
-      const threadLimit = parseInt((storeData.getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
-      const commentLimit = parseInt((storeData.getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
-      const replyLimit = parseInt((storeData.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
+  //     // lodashSet(this.dataObj, [...pathArr], mergedObj);
       
       
       
       
-      // ---------------------------------------------
-      //   Validations
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Property
+  //     // ---------------------------------------------
       
-      if (
+  //     const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
+  //     const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
+  //     const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj', ...pathArr, 'imagesAndVideosObj'], {});
+      
+  //     const idsArr = lodashGet(this.dataObj, [...pathArr, 'idsArr'], []);
+      
+  //     const platform1 = lodashGet(this.dataObj, [...pathArr, 'platform1'], 'Other');
+  //     const platform2 = lodashGet(this.dataObj, [...pathArr, 'platform2'], 'Other');
+  //     const platform3 = lodashGet(this.dataObj, [...pathArr, 'platform3'], 'Other');
+      
+  //     const id1 = lodashGet(this.dataObj, [...pathArr, 'id1'], '');
+  //     const id2 = lodashGet(this.dataObj, [...pathArr, 'id2'], '');
+  //     const id3 = lodashGet(this.dataObj, [...pathArr, 'id3'], '');
+      
+  //     const informationTitle1 = lodashGet(this.dataObj, [...pathArr, 'informationTitle1'], '');
+  //     const informationTitle2 = lodashGet(this.dataObj, [...pathArr, 'informationTitle2'], '');
+  //     const informationTitle3 = lodashGet(this.dataObj, [...pathArr, 'informationTitle3'], '');
+  //     const informationTitle4 = lodashGet(this.dataObj, [...pathArr, 'informationTitle4'], '');
+  //     const informationTitle5 = lodashGet(this.dataObj, [...pathArr, 'informationTitle5'], '');
+      
+  //     const information1 = lodashGet(this.dataObj, [...pathArr, 'information1'], '');
+  //     const information2 = lodashGet(this.dataObj, [...pathArr, 'information2'], '');
+  //     const information3 = lodashGet(this.dataObj, [...pathArr, 'information3'], '');
+  //     const information4 = lodashGet(this.dataObj, [...pathArr, 'information4'], '');
+  //     const information5 = lodashGet(this.dataObj, [...pathArr, 'information5'], '');
+      
+  //     const publicSetting = lodashGet(this.dataObj, [...pathArr, 'publicSetting'], 1);
+      
+  //     const webPushAvailable = lodashGet(this.dataObj, [...pathArr, 'webPushAvailable'], false);
+  //     const webPushSubscriptionObj = lodashGet(this.dataObj, [...pathArr, 'webPushSubscriptionObj'], {});
+      
+      
+  //     const threadLimit = parseInt((storeData.getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
+  //     const commentLimit = parseInt((storeData.getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
+  //     const replyLimit = parseInt((storeData.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   Validations
+  //     // ---------------------------------------------
+      
+  //     if (
         
-        validationHandleName({ value: name }).error ||
-        validationRecruitmentThreadsComment({ value: comment }).error ||
+  //       validationHandleName({ value: name }).error ||
+  //       validationRecruitmentThreadsComment({ value: comment }).error ||
         
-        validationRecruitmentThreadsPlatform({ value: platform1 }).error ||
-        validationRecruitmentThreadsPlatform({ value: platform2 }).error ||
-        validationRecruitmentThreadsPlatform({ value: platform3 }).error ||
+  //       validationRecruitmentThreadsPlatform({ value: platform1 }).error ||
+  //       validationRecruitmentThreadsPlatform({ value: platform2 }).error ||
+  //       validationRecruitmentThreadsPlatform({ value: platform3 }).error ||
         
-        validationRecruitmentThreadsID({ value: id1 }).error ||
-        validationRecruitmentThreadsID({ value: id2 }).error ||
-        validationRecruitmentThreadsID({ value: id3 }).error ||
+  //       validationRecruitmentThreadsID({ value: id1 }).error ||
+  //       validationRecruitmentThreadsID({ value: id2 }).error ||
+  //       validationRecruitmentThreadsID({ value: id3 }).error ||
         
-        validationRecruitmentThreadsInformationTitle({ value: informationTitle1 }).error ||
-        validationRecruitmentThreadsInformationTitle({ value: informationTitle2 }).error ||
-        validationRecruitmentThreadsInformationTitle({ value: informationTitle3 }).error ||
-        validationRecruitmentThreadsInformationTitle({ value: informationTitle4 }).error ||
-        validationRecruitmentThreadsInformationTitle({ value: informationTitle5 }).error ||
+  //       validationRecruitmentThreadsInformationTitle({ value: informationTitle1 }).error ||
+  //       validationRecruitmentThreadsInformationTitle({ value: informationTitle2 }).error ||
+  //       validationRecruitmentThreadsInformationTitle({ value: informationTitle3 }).error ||
+  //       validationRecruitmentThreadsInformationTitle({ value: informationTitle4 }).error ||
+  //       validationRecruitmentThreadsInformationTitle({ value: informationTitle5 }).error ||
         
-        validationRecruitmentThreadsInformation({ value: information1 }).error ||
-        validationRecruitmentThreadsInformation({ value: information2 }).error ||
-        validationRecruitmentThreadsInformation({ value: information3 }).error ||
-        validationRecruitmentThreadsInformation({ value: information4 }).error ||
-        validationRecruitmentThreadsInformation({ value: information5 }).error ||
+  //       validationRecruitmentThreadsInformation({ value: information1 }).error ||
+  //       validationRecruitmentThreadsInformation({ value: information2 }).error ||
+  //       validationRecruitmentThreadsInformation({ value: information3 }).error ||
+  //       validationRecruitmentThreadsInformation({ value: information4 }).error ||
+  //       validationRecruitmentThreadsInformation({ value: information5 }).error ||
         
-        validationRecruitmentThreadsPublicSetting({ value: publicSetting }).error ||
+  //       validationRecruitmentThreadsPublicSetting({ value: publicSetting }).error ||
         
-        validationBoolean({ value: webPushAvailable }).error
+  //       validationBoolean({ value: webPushAvailable }).error
         
-      ) {
+  //     ) {
         
-        throw new CustomError({ errorsArr: [{ code: '-2btbTXrm', messageID: 'uwHIKBy7c' }] });
+  //       throw new CustomError({ errorsArr: [{ code: '-2btbTXrm', messageID: 'uwHIKBy7c' }] });
         
-      }
+  //     }
       
       
       
       
-      // ---------------------------------------------
-      //   Loading 表示
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Loading 表示
+  //     // ---------------------------------------------
       
-      storeLayout.handleLoadingShow({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
+  //     storeLayout.handleLoadingShow({});
       
       
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonDisable({ pathArr });
       
       
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
       
-      const formDataObj = {
+      
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
+      
+  //     const formDataObj = {
         
-        gameCommunities_id,
-        recruitmentThreads_id,
-        recruitmentComments_id,
-        name,
-        comment,
-        idsArr,
-        platform1,
-        platform2,
-        platform3,
-        id1,
-        id2,
-        id3,
-        informationTitle1,
-        informationTitle2,
-        informationTitle3,
-        informationTitle4,
-        informationTitle5,
-        information1,
-        information2,
-        information3,
-        information4,
-        information5,
-        publicSetting,
-        webPushAvailable,
-        threadLimit,
-        commentLimit,
-        replyLimit,
+  //       gameCommunities_id,
+  //       recruitmentThreads_id,
+  //       recruitmentComments_id,
+  //       name,
+  //       comment,
+  //       idsArr,
+  //       platform1,
+  //       platform2,
+  //       platform3,
+  //       id1,
+  //       id2,
+  //       id3,
+  //       informationTitle1,
+  //       informationTitle2,
+  //       informationTitle3,
+  //       informationTitle4,
+  //       informationTitle5,
+  //       information1,
+  //       information2,
+  //       information3,
+  //       information4,
+  //       information5,
+  //       publicSetting,
+  //       webPushAvailable,
+  //       threadLimit,
+  //       commentLimit,
+  //       replyLimit,
         
-      };
+  //     };
       
-      if (Object.keys(imagesAndVideosObj).length !== 0) {
-        formDataObj.imagesAndVideosObj = imagesAndVideosObj;
-      }
+  //     if (Object.keys(imagesAndVideosObj).length !== 0) {
+  //       formDataObj.imagesAndVideosObj = imagesAndVideosObj;
+  //     }
       
-      if (webPushAvailable && Object.keys(webPushSubscriptionObj).length !== 0) {
-        formDataObj.webPushSubscriptionObj = webPushSubscriptionObj;
-      }
-      
-      
-      // nOVilxpSk
-      // formDataObj.webPushSubscriptionObj = {
-      //   endpoint: 'https://fcm.googleapis.com/fcm/send/cOsJ3EXpj2E:APA91bHnycUwE37fsnmlRNYEuJYx_kf67jaq7CFmr7oFIGzIqRk8tXi8BhHmtCfL7MlMjhyYoFwhhvLMx7sfUCqh00wDXVIovAp5hamTe2UWGDF4QUd4Z8VRNkNcrQadHGUuy7k-Jqbd',
-      //   keys: {
-      //     p256dh: 'BCCZ55xYxmC_6JNemzKc1FzAiz-fUEz4xCA3WXqVq2MRBaSJA3SUKtlY_G_747sT2C0Xm6QJD4L7KKzunNtj-Zo',
-      //     auth: 'EYpxeXGdImUIaTpBqVca0A'
-      //   }
-      // };
-      
-      // L4D5QB9p4
-      // formDataObj.webPushSubscriptionObj = {
-      //   endpoint: 'https://fcm.googleapis.com/fcm/send/fCVMofN4BLo:APA91bFShjo-hy02fDaVOpLDHQE_TaRRCPSG1IJIc_2qhndZuqkC67x4_RFbWp5uH4I11SKRdxpVquPQP59QNcomJw4irs0F-EWqOUu6ydVDMZ0Gau92YGmEV36SSO5a63vxUet7wEIo',
-      //   keys: {
-      //     p256dh: 'BLPT_K71Dk35Le_w0eyviBXXNRBsaZc-5o1-D0VKp18XW_N4wCPyzilZE-j0V-eJ4Cz5irqOZt0nePNG8zLDdaQ',
-      //     auth: '0MuLywCY4rbTg5I2_nFEOQ'
-      //   }
-      // };
-      
-      // Error
-      // formDataObj.webPushSubscriptionObj = {
-      //   endpoint: 'https://fcm.googleapis.com/fcm/send/aaa',
-      //   keys: {
-      //     p256dh: 'bbb',
-      //     auth: 'ccc'
-      //   }
-      // };
+  //     if (webPushAvailable && Object.keys(webPushSubscriptionObj).length !== 0) {
+  //       formDataObj.webPushSubscriptionObj = webPushSubscriptionObj;
+  //     }
       
       
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
+  //     // nOVilxpSk
+  //     // formDataObj.webPushSubscriptionObj = {
+  //     //   endpoint: 'https://fcm.googleapis.com/fcm/send/cOsJ3EXpj2E:APA91bHnycUwE37fsnmlRNYEuJYx_kf67jaq7CFmr7oFIGzIqRk8tXi8BhHmtCfL7MlMjhyYoFwhhvLMx7sfUCqh00wDXVIovAp5hamTe2UWGDF4QUd4Z8VRNkNcrQadHGUuy7k-Jqbd',
+  //     //   keys: {
+  //     //     p256dh: 'BCCZ55xYxmC_6JNemzKc1FzAiz-fUEz4xCA3WXqVq2MRBaSJA3SUKtlY_G_747sT2C0Xm6QJD4L7KKzunNtj-Zo',
+  //     //     auth: 'EYpxeXGdImUIaTpBqVca0A'
+  //     //   }
+  //     // };
       
-      const resultObj = await fetchWrapper({
+  //     // L4D5QB9p4
+  //     // formDataObj.webPushSubscriptionObj = {
+  //     //   endpoint: 'https://fcm.googleapis.com/fcm/send/fCVMofN4BLo:APA91bFShjo-hy02fDaVOpLDHQE_TaRRCPSG1IJIc_2qhndZuqkC67x4_RFbWp5uH4I11SKRdxpVquPQP59QNcomJw4irs0F-EWqOUu6ydVDMZ0Gau92YGmEV36SSO5a63vxUet7wEIo',
+  //     //   keys: {
+  //     //     p256dh: 'BLPT_K71Dk35Le_w0eyviBXXNRBsaZc-5o1-D0VKp18XW_N4wCPyzilZE-j0V-eJ4Cz5irqOZt0nePNG8zLDdaQ',
+  //     //     auth: '0MuLywCY4rbTg5I2_nFEOQ'
+  //     //   }
+  //     // };
+      
+  //     // Error
+  //     // formDataObj.webPushSubscriptionObj = {
+  //     //   endpoint: 'https://fcm.googleapis.com/fcm/send/aaa',
+  //     //   keys: {
+  //     //     p256dh: 'bbb',
+  //     //     auth: 'ccc'
+  //     //   }
+  //     // };
+      
+      
+  //     // ---------------------------------------------
+  //     //   Fetch
+  //     // ---------------------------------------------
+      
+  //     const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-comments/upsert`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-comments/upsert`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj),
         
-      });
+  //     });
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
       
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   スレッド更新
-      // ---------------------------------------------
-      
-      const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
-      const clonedObj = lodashCloneDeep(recruitmentObj);
-      
-      clonedObj.recruitmentThreadsObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {});
-      clonedObj.recruitmentCommentsObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
-      clonedObj.recruitmentRepliesObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
-      clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
-      
-      this.handleEdit({
-        pathArr: [gameCommunities_id],
-        value: clonedObj
-      });
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
       
       
       
       
-      // ---------------------------------------------
-      //   Hide Form
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   スレッド更新
+  //     // ---------------------------------------------
       
-      lodashSet(this.dataObj, [...pathArr, 'showFormComment'], false);
+  //     const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
+  //     const clonedObj = lodashCloneDeep(recruitmentObj);
+      
+  //     clonedObj.recruitmentThreadsObj = lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {});
+  //     clonedObj.recruitmentCommentsObj = lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {});
+  //     clonedObj.recruitmentRepliesObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
+  //     clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+      
+  //     this.handleEdit({
+  //       pathArr: [gameCommunities_id],
+  //       value: clonedObj
+  //     });
       
       
-      // ---------------------------------------------
-      //   Scroll
-      // ---------------------------------------------
       
-      storeLayout.handleScrollTo({
+      
+  //     // ---------------------------------------------
+  //     //   Hide Form
+  //     // ---------------------------------------------
+      
+  //     lodashSet(this.dataObj, [...pathArr, 'showFormComment'], false);
+      
+      
+  //     // ---------------------------------------------
+  //     //   Scroll
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleScrollTo({
         
-        to: recruitmentComments_id,
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
+  //       to: recruitmentComments_id,
+  //       duration: 0,
+  //       delay: 0,
+  //       smooth: 'easeInOutQuart',
+  //       offset: -50,
         
-      });
+  //     });
       
-      // ---------------------------------------------
-      //   編集の場合
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   編集の場合
+  //     // ---------------------------------------------
       
-      // if (recruitmentComments_id) {
-        
-        
-      //   // ---------------------------------------------
-      //   //   Hide Form
-      //   // ---------------------------------------------
-        
-      //   lodashSet(this.dataObj, [...pathArr, 'showFormComment'], false);
+  //     // if (recruitmentComments_id) {
         
         
-      //   // ---------------------------------------------
-      //   //   Scroll
-      //   // ---------------------------------------------
+  //     //   // ---------------------------------------------
+  //     //   //   Hide Form
+  //     //   // ---------------------------------------------
         
-      //   storeLayout.handleScrollTo({
+  //     //   lodashSet(this.dataObj, [...pathArr, 'showFormComment'], false);
+        
+        
+  //     //   // ---------------------------------------------
+  //     //   //   Scroll
+  //     //   // ---------------------------------------------
+        
+  //     //   storeLayout.handleScrollTo({
           
-      //     to: recruitmentComments_id,
-      //     duration: 0,
-      //     delay: 0,
-      //     smooth: 'easeInOutQuart',
-      //     offset: -50,
+  //     //     to: recruitmentComments_id,
+  //     //     duration: 0,
+  //     //     delay: 0,
+  //     //     smooth: 'easeInOutQuart',
+  //     //     offset: -50,
           
-      //   });
+  //     //   });
         
-      // }
+  //     // }
       
       
       
       
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/gc/rec/stores/store.js / handleSubmitRecruitmentComment
-      // `);
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/gc/rec/stores/store.js / handleSubmitRecruitmentComment
+  //     // `);
       
-      // console.log(`
-      //   ----- pathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     // console.log(`
+  //     //   ----- pathArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
-      // console.log(`
-      //   ----- formDataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     // console.log(`
+  //     //   ----- formDataObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
-      // console.log(`
-      //   ----- ids_idsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     // console.log(`
+  //     //   ----- ids_idsArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
-      // console.log(`
-      //   ----- hardwaresArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(hardwaresArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     // console.log(`
+  //     //   ----- hardwaresArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(hardwaresArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
-      // console.log(`
-      //   ----- hardwareIDsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(hardwareIDsArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     // console.log(`
+  //     //   ----- hardwareIDsArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(hardwareIDsArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-      //   recruitmentComments_id: {green ${recruitmentComments_id}}
-      //   name: {green ${name}}
-      //   comment: {green ${comment}}
-      // `);
+  //     // console.log(chalk`
+  //     //   gameCommunities_id: {green ${gameCommunities_id}}
+  //     //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+  //     //   recruitmentComments_id: {green ${recruitmentComments_id}}
+  //     //   name: {green ${name}}
+  //     //   comment: {green ${comment}}
+  //     // `);
       
-      // console.log(`
-      //   ----- imagesAndVideosObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     // console.log(`
+  //     //   ----- imagesAndVideosObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
-      // console.log(chalk`
-      //   platform1: {green ${platform1}}
-      //   id1: {green ${id1}}
-      //   platform2: {green ${platform2}}
-      //   id2: {green ${id2}}
-      //   platform3: {green ${platform3}}
-      //   id3: {green ${id3}}
+  //     // console.log(chalk`
+  //     //   platform1: {green ${platform1}}
+  //     //   id1: {green ${id1}}
+  //     //   platform2: {green ${platform2}}
+  //     //   id2: {green ${id2}}
+  //     //   platform3: {green ${platform3}}
+  //     //   id3: {green ${id3}}
         
-      //   informationTitle1: {green ${informationTitle1}}
-      //   information1: {green ${information1}}
-      //   informationTitle2: {green ${informationTitle2}}
-      //   information2: {green ${information2}}
-      //   informationTitle3: {green ${informationTitle3}}
-      //   information3: {green ${information3}}
-      //   informationTitle4: {green ${informationTitle4}}
-      //   information4: {green ${information4}}
-      //   informationTitle5: {green ${informationTitle5}}
-      //   information5: {green ${information5}}
+  //     //   informationTitle1: {green ${informationTitle1}}
+  //     //   information1: {green ${information1}}
+  //     //   informationTitle2: {green ${informationTitle2}}
+  //     //   information2: {green ${information2}}
+  //     //   informationTitle3: {green ${informationTitle3}}
+  //     //   information3: {green ${information3}}
+  //     //   informationTitle4: {green ${informationTitle4}}
+  //     //   information4: {green ${information4}}
+  //     //   informationTitle5: {green ${informationTitle5}}
+  //     //   information5: {green ${information5}}
         
-      //   publicSetting: {green ${publicSetting}}
+  //     //   publicSetting: {green ${publicSetting}}
         
-      //   deadlineDate: {green ${deadlineDate}}
-      // `);
+  //     //   deadlineDate: {green ${deadlineDate}}
+  //     // `);
       
-      // console.log(chalk`
-      //   twitter: {green ${twitter}}
-      //   webPush: {green ${webPush}}
-      // `);
+  //     // console.log(chalk`
+  //     //   twitter: {green ${twitter}}
+  //     //   webPush: {green ${webPush}}
+  //     // `);
       
-      // return;
-      
-      
-    } catch (errorObj) {
+  //     // return;
       
       
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
+  //   } catch (errorObj) {
       
       
-    } finally {
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
       
       
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
+  //   } finally {
       
       
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
       
-      storeLayout.handleLoadingHide({});
+  //     storeLayout.handleButtonEnable({ pathArr });
       
       
-    }
+  //     // ---------------------------------------------
+  //     //   Loading 非表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingHide({});
+      
+      
+  //   }
     
     
-  };
+  // };
   
   
   
@@ -3002,274 +3002,274 @@ class Store {
    * @param {string} recruitmentReplies_id - DB recruitment-replies _id / 返信ID
    * @param {string} replyToRecruitmentReplies_id - DB recruitment-replies _id / 返信対象の返信ID
    */
-  @action.bound
-  async handleSubmitRecruitmentReply({
+  // @action.bound
+  // async handleSubmitRecruitmentReply({
     
-    eventObj,
-    pathArr,
-    gameCommunities_id,
-    recruitmentThreads_id,
-    recruitmentComments_id,
-    recruitmentReplies_id,
-    replyToRecruitmentReplies_id,
+  //   eventObj,
+  //   pathArr,
+  //   gameCommunities_id,
+  //   recruitmentThreads_id,
+  //   recruitmentComments_id,
+  //   recruitmentReplies_id,
+  //   replyToRecruitmentReplies_id,
     
-  }) {
-    
-    
-    // ---------------------------------------------
-    //   フォームの送信処理停止
-    // ---------------------------------------------
-    
-    eventObj.preventDefault();
+  // }) {
     
     
+  //   // ---------------------------------------------
+  //   //   フォームの送信処理停止
+  //   // ---------------------------------------------
+    
+  //   eventObj.preventDefault();
     
     
-    try {
-      
-      
-      // ---------------------------------------------
-      //   Temp Data
-      // ---------------------------------------------
-      
-      // const newObj = {
-        
-      //   gameCommunities_id,
-      //   // recruitmentThreads_id: '',
-      //   // recruitmentComments_id: '',
-      //   name: 'テストネーム',
-      //   comment: 'テストコメント',
-        
-      // };
-      
-      // const oldObj = lodashGet(this.dataObj, [...pathArr], {});
-      // const mergedObj = lodashMerge(oldObj, newObj);
-      
-      // lodashSet(this.dataObj, [...pathArr], mergedObj);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Property
-      // ---------------------------------------------
-      
-      const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
-      const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
-      const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj', ...pathArr, 'imagesAndVideosObj'], {});
-      
-      const threadLimit = parseInt((storeData.getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
-      const commentLimit = parseInt((storeData.getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
-      const replyLimit = parseInt((storeData.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Validations
-      // ---------------------------------------------
-      
-      if (
-        
-        validationHandleName({ value: name }).error ||
-        validationRecruitmentThreadsComment({ value: comment }).error
-        
-      ) {
-        
-        throw new CustomError({ errorsArr: [{ code: 'gNEl9TZsF', messageID: 'uwHIKBy7c' }] });
-        
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Loading 表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingShow({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
-      
-      const formDataObj = {
-        
-        gameCommunities_id,
-        recruitmentThreads_id,
-        recruitmentComments_id,
-        recruitmentReplies_id,
-        replyToRecruitmentReplies_id,
-        name,
-        comment,
-        threadLimit,
-        commentLimit,
-        replyLimit,
-        
-      };
-      
-      if (Object.keys(imagesAndVideosObj).length !== 0) {
-        formDataObj.imagesAndVideosObj = imagesAndVideosObj;
-      }
-      
-      
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
-      
-      const resultObj = await fetchWrapper({
-        
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-replies/upsert`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
-        
-      });
-      
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   募集更新
-      // ---------------------------------------------
-      
-      const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
-      const clonedObj = lodashCloneDeep(recruitmentObj);
-      
-      const recruitmentRepliesOldObj = lodashGet(recruitmentObj, ['recruitmentRepliesObj'], {});
-      const recruitmentRepliesNewObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
-      
-      clonedObj.recruitmentRepliesObj = lodashMerge(recruitmentRepliesOldObj, recruitmentRepliesNewObj);
-      clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
-      
-      this.handleEdit({
-        pathArr: [gameCommunities_id],
-        value: clonedObj
-      });
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Hide Form & Scroll To
-      // ---------------------------------------------
-      
-      this.handleHideFormRecruitmentReply({
-        
-        pathArr,
-        recruitmentComments_id,
-        recruitmentReplies_id,
-        // recruitmentReplies_id: lodashGet(resultObj, ['data', 'scrollTo_id'], ''),
-        replyToRecruitmentReplies_id,
-        
-      });
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Reset Form
-      // ---------------------------------------------
-      
-      lodashSet(this.dataObj, [...pathArr, 'name'], '');
-      lodashSet(this.dataObj, [...pathArr, 'comment'], '');
-      
-      storeImageAndVideoForm.handleResetForm({ pathArr });
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/gc/rec/stores/store.js / handleSubmitRecruitmentReply
-      // `);
-      
-      // console.log(`
-      //   ----- pathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-      //   recruitmentComments_id: {green ${recruitmentComments_id}}
-      //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
-      //   replyToRecruitmentReplies_id: {green ${replyToRecruitmentReplies_id}}
-      //   name: {green ${name}}
-      //   comment: {green ${comment}}
-      // `);
-      
-      // console.log(`
-      //   ----- imagesAndVideosObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-    } catch (errorObj) {
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
-      
-      
-    } finally {
-      
-      
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
-      
-      
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingHide({});
-      
-      
-    }
     
     
-  };
+  //   try {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Temp Data
+  //     // ---------------------------------------------
+      
+  //     // const newObj = {
+        
+  //     //   gameCommunities_id,
+  //     //   // recruitmentThreads_id: '',
+  //     //   // recruitmentComments_id: '',
+  //     //   name: 'テストネーム',
+  //     //   comment: 'テストコメント',
+        
+  //     // };
+      
+  //     // const oldObj = lodashGet(this.dataObj, [...pathArr], {});
+  //     // const mergedObj = lodashMerge(oldObj, newObj);
+      
+  //     // lodashSet(this.dataObj, [...pathArr], mergedObj);
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   Property
+  //     // ---------------------------------------------
+      
+  //     const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
+  //     const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
+  //     const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj', ...pathArr, 'imagesAndVideosObj'], {});
+      
+  //     const threadLimit = parseInt((storeData.getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
+  //     const commentLimit = parseInt((storeData.getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
+  //     const replyLimit = parseInt((storeData.getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   Validations
+  //     // ---------------------------------------------
+      
+  //     if (
+        
+  //       validationHandleName({ value: name }).error ||
+  //       validationRecruitmentThreadsComment({ value: comment }).error
+        
+  //     ) {
+        
+  //       throw new CustomError({ errorsArr: [{ code: 'gNEl9TZsF', messageID: 'uwHIKBy7c' }] });
+        
+  //     }
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading 表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingShow({});
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
+      
+  //     const formDataObj = {
+        
+  //       gameCommunities_id,
+  //       recruitmentThreads_id,
+  //       recruitmentComments_id,
+  //       recruitmentReplies_id,
+  //       replyToRecruitmentReplies_id,
+  //       name,
+  //       comment,
+  //       threadLimit,
+  //       commentLimit,
+  //       replyLimit,
+        
+  //     };
+      
+  //     if (Object.keys(imagesAndVideosObj).length !== 0) {
+  //       formDataObj.imagesAndVideosObj = imagesAndVideosObj;
+  //     }
+      
+      
+  //     // ---------------------------------------------
+  //     //   Fetch
+  //     // ---------------------------------------------
+      
+  //     const resultObj = await fetchWrapper({
+        
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-replies/upsert`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj),
+        
+  //     });
+      
+      
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+      
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
+      
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   募集更新
+  //     // ---------------------------------------------
+      
+  //     const recruitmentObj = lodashGet(this.dataObj, [gameCommunities_id], {});
+  //     const clonedObj = lodashCloneDeep(recruitmentObj);
+      
+  //     const recruitmentRepliesOldObj = lodashGet(recruitmentObj, ['recruitmentRepliesObj'], {});
+  //     const recruitmentRepliesNewObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
+      
+  //     clonedObj.recruitmentRepliesObj = lodashMerge(recruitmentRepliesOldObj, recruitmentRepliesNewObj);
+  //     clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+      
+  //     this.handleEdit({
+  //       pathArr: [gameCommunities_id],
+  //       value: clonedObj
+  //     });
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   Hide Form & Scroll To
+  //     // ---------------------------------------------
+      
+  //     this.handleHideFormRecruitmentReply({
+        
+  //       pathArr,
+  //       recruitmentComments_id,
+  //       recruitmentReplies_id,
+  //       // recruitmentReplies_id: lodashGet(resultObj, ['data', 'scrollTo_id'], ''),
+  //       replyToRecruitmentReplies_id,
+        
+  //     });
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   Reset Form
+  //     // ---------------------------------------------
+      
+  //     lodashSet(this.dataObj, [...pathArr, 'name'], '');
+  //     lodashSet(this.dataObj, [...pathArr, 'comment'], '');
+      
+  //     storeImageAndVideoForm.handleResetForm({ pathArr });
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
+      
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/gc/rec/stores/store.js / handleSubmitRecruitmentReply
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- pathArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(chalk`
+  //     //   gameCommunities_id: {green ${gameCommunities_id}}
+  //     //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+  //     //   recruitmentComments_id: {green ${recruitmentComments_id}}
+  //     //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
+  //     //   replyToRecruitmentReplies_id: {green ${replyToRecruitmentReplies_id}}
+  //     //   name: {green ${name}}
+  //     //   comment: {green ${comment}}
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- imagesAndVideosObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+      
+  //   } catch (errorObj) {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
+      
+      
+  //   } finally {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading 非表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingHide({});
+      
+      
+  //   }
+    
+    
+  // };
   
   
   

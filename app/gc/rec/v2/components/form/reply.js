@@ -16,6 +16,7 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
+import { Element } from 'react-scroll';
 import TextareaAutosize from 'react-autosize-textarea';
 
 /** @jsx jsx */
@@ -27,14 +28,18 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-import lodashMerge from 'lodash/merge';
+import lodashHas from 'lodash/has';
+import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
+// import { makeStyles } from '@material-ui/core/styles';
+
 import Button from '@material-ui/core/Button';
+// import TextField from '@material-ui/core/TextField';
 
 
 // ---------------------------------------------
@@ -48,6 +53,7 @@ import IconReply from '@material-ui/icons/Reply';
 //   States
 // ---------------------------------------------
 
+import { ContainerStateUser } from 'app/@states/user.js';
 import { ContainerStateLayout } from 'app/@states/layout.js';
 import { ContainerStateGc } from 'app/@states/gc.js';
 
@@ -65,10 +71,11 @@ import { getCookie } from 'app/@modules/cookie.js';
 //   Validations
 // ---------------------------------------------
 
-import { validationHandleName } from 'app/@validations/name.js';
 import { validationBoolean } from 'app/@validations/boolean.js';
+import { validationHandleName } from 'app/@validations/name.js';
 
-import { validationForumCommentsComment } from 'app/@database/forum-comments/validations/comment.js';
+import { validationRecruitmentThreadsComment } from 'app/@database/recruitment-threads/validations/comment.js';
+import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } from 'app/@database/recruitment-threads/validations/ids-informations.js';
 
 
 // ---------------------------------------------
@@ -88,15 +95,25 @@ import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js'
 //   https://emotion.sh/docs/composition
 // --------------------------------------------------
 
-const cssNew = css`
-  border-top: 1px dashed #BDBDBD;
-  margin: 12px 0 0 0;
-  padding: 12px 0 12px 0;
-`;
+// const cssBox = css`
+//   border-top: 1px dashed #848484;
+//   margin: 24px 0 0 0;
+//   padding: 24px 0 0 0;
+// `;
 
-const cssEdit = css`
-  padding: 0 0 12px 0;
-`;
+
+// // --------------------------------------------------
+// //   Material UI Style Overrides
+// //   https://material-ui.com/styles/basics/
+// // --------------------------------------------------
+
+// const useStyles = makeStyles({
+  
+//   label: {
+//     fontSize: 14
+//   },
+  
+// });
 
 
 
@@ -120,14 +137,12 @@ const Component = (props) => {
   const {
     
     gameCommunities_id,
-    userCommunities_id,
-    forumThreads_id,
-    forumComments_id,
-    forumReplies_id,
-    replyToForumComments_id,
-    enableAnonymity,
+    recruitmentThreads_id,
+    recruitmentComments_id,
+    recruitmentReplies_id,
+    replyToRecruitmentReplies_id,
     
-    setShowFormReply,
+    setShowForm,
     
   } = props;
   
@@ -139,10 +154,10 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const intl = useIntl();
+  // const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [name, setName] = useState('');
-  const [anonymity, setAnonymity] = useState(false);
   const [comment, setComment] = useState('');
   const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
     
@@ -150,7 +165,7 @@ const Component = (props) => {
     createdDate: '',
     updatedDate: '',
     users_id: '',
-    type: 'forum',
+    type: 'recruitment',
     arr: [],
     
   });
@@ -170,8 +185,8 @@ const Component = (props) => {
     //   編集用データを読み込む
     // --------------------------------------------------
     
-    if (forumReplies_id) {
-      handleGetEditData({ forumReplies_id });
+    if (recruitmentReplies_id) {
+      handleGetEditData();
     }
     
     
@@ -184,8 +199,15 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
   
+  const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
   const stateGc = ContainerStateGc.useContainer();
+  
+  const {
+    
+    localeObj,
+    
+  } = stateUser;
   
   const {
     
@@ -199,11 +221,10 @@ const Component = (props) => {
   const {
     
     setGameCommunityObj,
-    // setForumThreadsForListObj,
-    // setForumThreadsObj,
-    // setForumCommentsObj,
-    forumRepliesObj,
-    setForumRepliesObj,
+    // setRecruitmentThreadsObj,
+    // setRecruitmentCommentsObj,
+    recruitmentRepliesObj,
+    setRecruitmentRepliesObj,
     
   } = stateGc;
   
@@ -216,20 +237,19 @@ const Component = (props) => {
   
   /**
    * 編集用データを読み込む
-   * @param {string} forumReplies_id - DB forum-replies _id / 返信のID
    */
-  const handleGetEditData = async ({ forumReplies_id }) => {
+  const handleGetEditData = async () => {
     
     
     try {
       
       
       // ---------------------------------------------
-      //   forumReplies_id が存在しない場合エラー
+      //   recruitmentReplies_id が存在しない場合エラー
       // ---------------------------------------------
       
-      if (!forumReplies_id) {
-        throw new CustomError({ errorsArr: [{ code: '3cWrPpMq8', messageID: 'Error' }] });
+      if (!recruitmentReplies_id) {
+        throw new CustomError({ errorsArr: [{ code: 'eryvlZc7N', messageID: 'Error' }] });
       }
       
       
@@ -257,7 +277,7 @@ const Component = (props) => {
       
       handleScrollTo({
         
-        to: forumReplies_id,
+        to: recruitmentReplies_id,
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -274,7 +294,7 @@ const Component = (props) => {
       
       const formDataObj = {
         
-        forumComments_id: forumReplies_id,
+        recruitmentReplies_id,
         
       };
       
@@ -285,7 +305,7 @@ const Component = (props) => {
       
       const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/get-edit-data`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-replies/get-edit-data`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
         
@@ -321,30 +341,43 @@ const Component = (props) => {
       //   Set Form Data
       // ---------------------------------------------
       
-      const name = lodashGet(resultObj, ['data', 'name'], '');
-      const anonymity = lodashGet(resultObj, ['data', 'anonymity'], false);
-      const comment = lodashGet(resultObj, ['data', 'comment'], '');
-      let imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
+      const localesArr = lodashGet(resultObj, ['data', 'localesArr'], []);
       
-      if (Object.keys(imagesAndVideosObj).length === 0) {
+      const filteredArr = localesArr.filter((filterObj) => {
+        return filterObj.language === localeObj.language;
+      });
+      
+      if (lodashHas(filteredArr, [0])) {
         
-        imagesAndVideosObj = {
+        setName(lodashGet(filteredArr, [0, 'name'], ''));
+        setComment(lodashGet(filteredArr, [0, 'comment'], ''));
+        
+      } else {
+        
+        setName(lodashGet(localesArr, [0, 'name'], ''));
+        setComment(lodashGet(localesArr, [0, 'comment'], ''));
+        
+      }
+      
+      
+      let tempImagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
+      
+      if (Object.keys(tempImagesAndVideosObj).length === 0) {
+        
+        tempImagesAndVideosObj = {
           
           _id: '',
           createdDate: '',
           updatedDate: '',
           users_id: '',
-          type: 'forum',
+          type: 'recruitment',
           arr: [],
           
         };
         
       }
       
-      setName(name);
-      setAnonymity(anonymity);
-      setComment(comment);
-      setImagesAndVideosObj(imagesAndVideosObj);
+      setImagesAndVideosObj(tempImagesAndVideosObj);
       
       
     } catch (errorObj) {
@@ -362,8 +395,10 @@ const Component = (props) => {
       // ---------------------------------------------
       
       handleSnackbarOpen({
+        
         variant: 'error',
         errorObj,
+        
       });
       
       
@@ -383,25 +418,15 @@ const Component = (props) => {
   };
   
   
+  
+  
   /**
-   * 返信作成・編集フォームを送信する
+   * 返信を投稿する
    * @param {Object} eventObj - イベント
-   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
-   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
-   * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
-   * @param {string} forumComments_id - DB forum-comments _id / コメントのID
-   * @param {string} forumReplies_id - DB forum-comments _id / 返信のID（コメントと返信は同じコレクションなので、コメントのIDと同じもの）
-   * @param {string} replyToForumComments_id - DB forum-comments _id / 返信先のID
    */
   const handleSubmit = async ({
     
     eventObj,
-    gameCommunities_id,
-    userCommunities_id,
-    forumThreads_id,
-    forumComments_id,
-    forumReplies_id,
-    replyToForumComments_id,
     
   }) => {
     
@@ -413,12 +438,11 @@ const Component = (props) => {
     eventObj.preventDefault();
     
     
-    
     // ---------------------------------------------
-    //   新規投稿時の forumReplies_id
+    //   新規投稿時の recruitmentReplies_id
     // ---------------------------------------------
     
-    let newForumReplies_id = '';
+    let newRecruitmentReplies_id = '';
     
     
     
@@ -427,39 +451,38 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
+      //   Temp Data
+      // ---------------------------------------------
+      
+      // setName('テストネーム');
+      // setComment('テストコメント');
+      
+      
+      
+      
+      // ---------------------------------------------
       //   Property
       // ---------------------------------------------
       
-      const threadListLimit = parseInt((getCookie({ key: 'forumThreadListLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIST_LIMIT), 10);
-      const threadLimit = parseInt((getCookie({ key: 'forumThreadLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT), 10);
-      const commentLimit = parseInt((getCookie({ key: 'forumCommentLimit' }) || process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT), 10);
-      const replyLimit = parseInt((getCookie({ key: 'forumReplyLimit' }) || process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT), 10);
+      const threadLimit = parseInt((getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
+      const commentLimit = parseInt((getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
+      const replyLimit = parseInt((getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
       
       
       
       
       // ---------------------------------------------
-      //   _id が存在しない場合エラー
-      // ---------------------------------------------
-      
-      if ((!gameCommunities_id && !userCommunities_id) || !forumThreads_id || !forumComments_id) {
-        throw new CustomError({ errorsArr: [{ code: 'ooDR_zAOu', messageID: '1YJnibkmh' }] });
-      }
-      
-      
-      // ---------------------------------------------
-      //   Validation Error
+      //   Validations
       // ---------------------------------------------
       
       if (
         
         validationHandleName({ value: name }).error ||
-        validationBoolean({ value: anonymity }).error ||
-        validationForumCommentsComment({ value: comment }).error
+        validationRecruitmentThreadsComment({ value: comment }).error
         
       ) {
         
-        throw new CustomError({ errorsArr: [{ code: 'keP5ra5TO', messageID: 'uwHIKBy7c' }] });
+        throw new CustomError({ errorsArr: [{ code: 'gNEl9TZsF', messageID: 'uwHIKBy7c' }] });
         
       }
       
@@ -489,61 +512,34 @@ const Component = (props) => {
       const formDataObj = {
         
         gameCommunities_id,
-        userCommunities_id,
-        forumThreads_id,
-        forumComments_id,
+        recruitmentThreads_id,
+        recruitmentComments_id,
+        recruitmentReplies_id,
+        replyToRecruitmentReplies_id,
         name,
-        anonymity,
         comment,
-        threadListLimit,
         threadLimit,
         commentLimit,
         replyLimit,
         
       };
       
-      if (forumReplies_id) {
-        formDataObj.forumReplies_id = forumReplies_id;
-      }
-      
-      if (replyToForumComments_id) {
-        formDataObj.replyToForumComments_id = replyToForumComments_id;
-      }
-      
       if (imagesAndVideosObj.arr.length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
-      
-      
       
       
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
       
-      let resultObj = {};
-      
-      if (gameCommunities_id) {
+      const resultObj = await fetchWrapper({
         
-        resultObj = await fetchWrapper({
-          
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/upsert-reply-gc`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-          
-        });
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-replies/upsert`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
         
-      } else if (userCommunities_id) {
-        
-        resultObj = await fetchWrapper({
-          
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/upsert-reply-uc`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-          
-        });
-        
-      }
+      });
       
       
       // ---------------------------------------------
@@ -562,7 +558,6 @@ const Component = (props) => {
       // ---------------------------------------------
       
       setName('');
-      setAnonymity(false);
       setComment('');
       setImagesAndVideosObj({
         
@@ -570,9 +565,9 @@ const Component = (props) => {
         createdDate: '',
         updatedDate: '',
         users_id: '',
-        type: 'forum',
+        type: 'recruitment',
         arr: [],
-      
+        
       });
       
       
@@ -594,24 +589,15 @@ const Component = (props) => {
       //   forumRepliesObj
       // ---------------------------------------------
       
-      setForumRepliesObj(lodashGet(resultObj, ['data', 'forumRepliesObj'], {}));
+      setRecruitmentRepliesObj(lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {}));
       
       
       // ---------------------------------------------
-      //   Update - forumRepliesObj
+      //   新規投稿時の recruitmentReplies_id
       // ---------------------------------------------
       
-      // const forumRepliesNewObj = lodashGet(resultObj, ['data', 'forumRepliesObj'], {});
-      // const forumRepliesMergedObj = lodashMerge(forumRepliesObj, forumRepliesNewObj);
-      // setForumRepliesObj(forumRepliesMergedObj);
-      
-      
-      // ---------------------------------------------
-      //   新規投稿時の forumReplies_id
-      // ---------------------------------------------
-      
-      const page = lodashGet(resultObj, ['data', 'forumRepliesObj', forumComments_id, 'page'], 1);
-      newForumReplies_id = lodashGet(resultObj, ['data', 'forumRepliesObj', forumComments_id, `page${page}Obj`, 'arr', 0], '');
+      const page = lodashGet(resultObj, ['data', 'recruitmentRepliesObj', recruitmentComments_id, 'page'], 1);
+      newRecruitmentReplies_id = lodashGet(resultObj, ['data', 'recruitmentRepliesObj', recruitmentComments_id, `page${page}Obj`, 'arr', 0], '');
       
       
       // ---------------------------------------------
@@ -621,59 +607,40 @@ const Component = (props) => {
       handleSnackbarOpen({
         
         variant: 'success',
-        messageID: forumReplies_id ? '0q0NzGlLb' : 'cuaQHE4lG',
+        messageID: recruitmentComments_id ? '0q0NzGlLb' : 'cuaQHE4lG',
         
       });
       
       
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   console.log
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/form-reply.js - handleSubmit
+      //   /app/gc/rec/v2/components/form/comment.js / handleSubmit
+      // `);
+      
+      // console.log(`
+      //   ----- formDataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
       // `);
       
       // console.log(`
       //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- forumRepliesMergedObj -----\n
-      //   ${util.inspect(forumRepliesMergedObj, { colors: true, depth: null })}\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
       // console.log(chalk`
-      //   forumComments_id: {green ${forumComments_id}}
-      //   forumReplies_id: {green ${forumReplies_id}}
-      //   newForumReplies_id: {green ${newForumReplies_id}}
+      //   recruitmentComments_id: {green ${recruitmentComments_id}}
+      //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
+      //   replyToRecruitmentReplies_id:  {green ${replyToRecruitmentReplies_id}}
+      //   newRecruitmentReplies_id: {green ${newRecruitmentReplies_id}}
       // `);
-      
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id}}
-      //   forumThreads_id: {green ${forumThreads_id}}
-      //   forumComments_id: {green ${forumComments_id}}
-      //   forumReplies_id: {green ${forumReplies_id}}
-      //   replyToForumComments_id: {green ${replyToForumComments_id}}
-      //   name: {green ${name}}
-      //   anonymity: {green ${anonymity}}
-      //   comment: {green ${comment}}
-      // `);
-      
-      // console.log(`
-      //   ----- imagesAndVideosObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // return;
       
       
     } catch (errorObj) {
@@ -705,9 +672,24 @@ const Component = (props) => {
       //   Hide Form
       // ---------------------------------------------
       
-      if (forumReplies_id) {
-        setShowFormReply(false);
+      if (!replyToRecruitmentReplies_id) {
+        setShowForm(false);
       }
+      
+      
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      handleScrollTo({
+        
+        to: recruitmentReplies_id || newRecruitmentReplies_id || recruitmentComments_id || recruitmentThreads_id || 'recruitmentThreads',
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+        
+      });
       
       
       // ---------------------------------------------
@@ -715,21 +697,6 @@ const Component = (props) => {
       // ---------------------------------------------
       
       handleLoadingClose();
-      
-      
-      // ---------------------------------------------
-      //   Scroll To
-      // ---------------------------------------------
-      
-      handleScrollTo({
-        
-        to: forumReplies_id || newForumReplies_id || forumComments_id || forumThreads_id || 'forumThreads',
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
-        
-      });
       
       
     }
@@ -740,32 +707,65 @@ const Component = (props) => {
   
   
   
+  /**
+   * フォームを閉じる
+   */
+  const handleClose = async () => {
+    
+    
+    // ---------------------------------------------
+    //   閉じる
+    // ---------------------------------------------
+    
+    setShowForm(false);
+      
+    
+    // ---------------------------------------------
+    //   Scroll To
+    // ---------------------------------------------
+    
+    handleScrollTo({
+      
+      to: replyToRecruitmentReplies_id || recruitmentReplies_id || recruitmentComments_id || recruitmentThreads_id,
+      duration: 0,
+      delay: 0,
+      smooth: 'easeInOutQuart',
+      offset: -50,
+      
+    });
+    
+    
+  };
+  
+  
+  
+  
   // --------------------------------------------------
-  //   Limit
+  //   Property
   // --------------------------------------------------
   
-  const limit = parseInt(process.env.NEXT_PUBLIC_FORUM_REPLY_IMAGES_AND_VIDEOS_LIMIT, 10);
-  
-  
+  const limitImagesAndVideos = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_IMAGES_AND_VIDEOS_LIMIT, 10);
   
   
   // --------------------------------------------------
   //   Reply to
   // --------------------------------------------------
   
+  const dataObj = lodashGet(recruitmentRepliesObj, ['dataObj'], {});
+  
   let replyToName = '';
-  let repliesDataObj = {};
   let replyTo = '';
   
-  if (forumReplies_id) {
+  if (recruitmentReplies_id) {
     
-    repliesDataObj = lodashGet(forumRepliesObj, ['dataObj', forumReplies_id], {});
-    replyToName = lodashGet(repliesDataObj, ['replyToName'], '');
+    replyToName = lodashGet(dataObj, [recruitmentReplies_id, 'replyToName'], '');
     
-  } else if (replyToForumComments_id) {
+  } else if (replyToRecruitmentReplies_id) {
     
-    repliesDataObj = lodashGet(forumRepliesObj, ['dataObj', replyToForumComments_id], {});
-    replyToName = lodashGet(repliesDataObj, ['cardPlayersObj', 'name'], repliesDataObj.name);
+    const nonLoginUsersName = lodashGet(dataObj, [replyToRecruitmentReplies_id, 'name'], '');
+    const loginUsersName = lodashGet(dataObj, [replyToRecruitmentReplies_id, 'cardPlayersObj', 'name'], '');
+    
+    replyToName = loginUsersName || nonLoginUsersName;
     
     if (!replyToName) {
       replyToName = 'ななしさん';
@@ -774,8 +774,15 @@ const Component = (props) => {
   }
   
   if (replyToName) {
-    replyTo = `${replyToName} | ${replyToForumComments_id} への返信`;
+    replyTo = `${replyToName} | ${replyToRecruitmentReplies_id} への返信`;
   }
+  
+  
+  // --------------------------------------------------
+  //   Element Name
+  // --------------------------------------------------
+  
+  const elementName = recruitmentReplies_id ? `${recruitmentReplies_id}-formReply` : `${recruitmentComments_id}-formReply`;
   
   
   
@@ -786,23 +793,21 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/forum/v2/components/form-thread.js
+  //   /app/gc/rec/v2/components/form/reply.js
   // `);
-  
-  // console.log(`
-  //   ----- imagesAndVideosObj -----\n
-  //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- validationForumThreadsNameObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(validationForumThreadsNameObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
+    
   // console.log(chalk`
-  //   forumThreads_id: {green ${forumThreads_id}}
+  //   gameCommunities_id: {green ${gameCommunities_id}}
+  //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+  //   recruitmentComments_id: {green ${recruitmentComments_id}}
+  //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
+  //   replyToRecruitmentReplies_id: {green ${replyToRecruitmentReplies_id}}
+  // `);
+  
+  // console.log(`
+  //   ----- dataObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
   // `);
   
   
@@ -813,141 +818,147 @@ const Component = (props) => {
   // --------------------------------------------------
   
   return (
-    <form
-      css={forumReplies_id ? cssEdit : cssNew}
-      name={`form-${forumComments_id}-reply`}
-      onSubmit={(eventObj) => handleSubmit({
-        eventObj,
-        gameCommunities_id,
-        userCommunities_id,
-        forumThreads_id,
-        forumComments_id,
-        forumReplies_id,
-        replyToForumComments_id,
-      })}
+    <Element
+      css={css`
+        ${!recruitmentReplies_id &&
+          `
+            border-top: 1px dashed #848484;
+            margin: 24px 0 0 0;
+            padding: 24px 0 0 0;
+          `
+        }
+      `}
+      name={elementName}
     >
       
       
-      {/* Reply To */}
-      {replyTo &&
+      {/* Form */}
+      <form
+        name={elementName}
+        onSubmit={(eventObj) => handleSubmit({
+          eventObj,
+        })}
+      >
+        
+        
+        {/* Reply To */}
+        {replyTo &&
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row nowrap;
+              margin: 0 0 12px 0;
+              color: #7401DF;
+            `}
+          >
+            <IconReply
+              css={css`
+                && {
+                  font-size: 16px;
+                  margin: 4px 4px 0 0;
+                }
+              `}
+            />
+            <p>{replyTo}</p>
+          </div>
+        }
+        
+        
+        
+        
+        {/* Name */}
+        <FormName
+          name={name}
+          setName={setName}
+        />
+        
+        
+        
+        
+        {/* Comment */}
+        <div
+          css={css`
+            margin: 12px 0 0 0;
+          `}
+        >
+          
+          <TextareaAutosize
+            css={css`
+              && {
+                width: 100%;
+                border-radius: 4px;
+                box-sizing: border-box;
+                padding: 8px 12px;
+                line-height: 1.8;
+                
+                &:focus {
+                  outline: 1px #A9F5F2 solid;
+                }
+                
+                resize: none;
+              }
+            `}
+            rows={5}
+            placeholder="返信を入力してください。"
+            value={comment}
+            maxLength={3000}
+            disabled={buttonDisabled}
+            onChange={(eventObj) => setComment(eventObj.target.value)}
+          />
+          
+        </div>
+        
+        
+        
+        
+        {/* Form Images & Videos */}
+        <div
+          css={css`
+            margin: 12px 0 0 0;
+          `}
+        >
+          
+          <FormImageAndVideo
+            type="recruitment"
+            descriptionImage="返信に表示する画像をアップロードできます。"
+            descriptionVideo="返信に表示する動画を登録できます。"
+            showImageCaption={true}
+            limit={limitImagesAndVideos}
+            imagesAndVideosObj={imagesAndVideosObj}
+            setImagesAndVideosObj={setImagesAndVideosObj}
+          />
+          
+        </div>
+        
+        
+        
+        
+        {/* Buttons */}
         <div
           css={css`
             display: flex;
             flex-flow: row nowrap;
-            margin: 8px 0 12px 0;
-            color: #7401DF;
+            border-top: 1px dashed #848484;
+            margin: 24px 0 0 0;
+            padding: 24px 0 0 0;
           `}
         >
-          <IconReply
-            css={css`
-              && {
-                font-size: 16px;
-                margin: 4px 4px 0 0;
-              }
-            `}
-          />
-          <p>{replyTo}</p>
-        </div>
-      }
-      
-      
-      
-      
-      {/* Name */}
-      <FormName
-        name={name}
-        setName={setName}
-        anonymity={anonymity}
-        setAnonymity={setAnonymity}
-        enableAnonymity={enableAnonymity}
-      />
-      
-      
-      
-      
-      {/* Comment */}
-      <div
-        css={css`
-          margin: 12px 0 0 0;
-        `}
-      >
-        
-        <TextareaAutosize
-          css={css`
-            && {
-              width: 100%;
-              border-radius: 4px;
-              box-sizing: border-box;
-              padding: 8px 12px;
-              line-height: 1.8;
-              
-              &:focus {
-                outline: 1px #A9F5F2 solid;
-              }
-              
-              resize: none;
-            }
-          `}
-          rows={5}
-          placeholder="返信を書き込んでください。"
-          value={comment}
-          onChange={(eventObj) => setComment(eventObj.target.value)}
-          maxLength={3000}
-          disabled={buttonDisabled}
-        />
-        
-      </div>
-      
-      
-      
-      
-      {/* Form Images & Videos */}
-      <div
-        css={css`
-          margin: 12px 0 0 0;
-        `}
-      >
-        
-        <FormImageAndVideo
-          type="forum"
-          descriptionImage="返信に表示する画像をアップロードできます。"
-          descriptionVideo="返信に表示する動画を登録できます。"
-          showImageCaption={true}
-          limit={limit}
-          imagesAndVideosObj={imagesAndVideosObj}
-          setImagesAndVideosObj={setImagesAndVideosObj}
-        />
-        
-      </div>
-      
-      
-      
-      
-      {/* Buttons */}
-      <div
-        css={css`
-          display: flex;
-          flex-flow: row nowrap;
-          margin: 36px 0 0 0;
-        `}
-      >
-        
-        
-        {/* Submit */}
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={buttonDisabled}
-        >
-          {forumReplies_id ? '返信を編集する' : '返信を投稿する'}
-        </Button>
-        
-        
-        
-        
-        {/* Close */}
-        {forumComments_id &&
+          
+          
+          {/* Submit */}
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={buttonDisabled}
+          >
+            {recruitmentReplies_id ? '編集する' : '投稿する'}
+          </Button>
+          
+          
+          
+          
+          {/* Close */}
           <div
             css={css`
               margin: 0 0 0 auto;
@@ -957,17 +968,20 @@ const Component = (props) => {
               variant="outlined"
               color="secondary"
               disabled={buttonDisabled}
-              onClick={() => setShowFormReply(false)}
+              onClick={() => handleClose()}
             >
               閉じる
             </Button>
           </div>
-        }
+          
+          
+        </div>
         
-      </div>
+        
+      </form>
       
       
-    </form>
+    </Element>
   );
   
   

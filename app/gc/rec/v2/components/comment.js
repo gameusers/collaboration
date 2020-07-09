@@ -57,7 +57,7 @@ import Select from '@material-ui/core/Select';
 
 import IconPublic from '@material-ui/icons/Public';
 import IconUpdate from '@material-ui/icons/Update';
-import IconThumbUp from '@material-ui/icons/ThumbUp';
+// import IconThumbUp from '@material-ui/icons/ThumbUp';
 import IconDelete from '@material-ui/icons/Delete';
 import IconEdit from '@material-ui/icons/Edit';
 import IconReply from '@material-ui/icons/Reply';
@@ -96,11 +96,11 @@ import User from 'app/common/user/v2/components/user.js';
 import ImageAndVideo from 'app/common/image-and-video/v2/components/image-and-video.js';
 import GoodButton from 'app/common/good/v2/components/button.js';
 
-import FormComment from 'app/gc/rec/v2/components/form/comment.js';
-import FormReply from 'app/gc/rec/components/form/reply.js';
-import Reply from 'app/gc/rec/components/recruitment-reply.js';
 import Public from 'app/gc/rec/v2/components/public.js';
 import Notification from 'app/gc/rec/v2/components/notification.js';
+import FormComment from 'app/gc/rec/v2/components/form/comment.js';
+import FormReply from 'app/gc/rec/v2/components/form/reply.js';
+import Reply from 'app/gc/rec/v2/components/reply.js';
 
 
 // ---------------------------------------------
@@ -155,7 +155,7 @@ const Comment = (props) => {
     gameCommunities_id,
     recruitmentThreads_id,
     recruitmentComments_id,
-    enableAnonymity,
+    // enableAnonymity,
     publicSettingThread,
     
   } = props;
@@ -641,7 +641,7 @@ const Comment = (props) => {
               gameCommunities_id={gameCommunities_id}
               recruitmentThreads_id={recruitmentThreads_id}
               recruitmentComments_id={recruitmentComments_id}
-              enableAnonymity={enableAnonymity}
+              // enableAnonymity={enableAnonymity}
               publicSettingThread={publicSettingThread}
               setShowForm={setShowFormComment}
             />
@@ -1012,13 +1012,12 @@ const Comment = (props) => {
                 `}
               >
                 
-                {/*<FormReply
+                <FormReply
                   gameCommunities_id={gameCommunities_id}
                   recruitmentThreads_id={recruitmentThreads_id}
                   recruitmentComments_id={recruitmentComments_id}
-                  enableAnonymity={enableAnonymity}
-                  setShowFormReply={setShowFormReply}
-                />*/}
+                  setShowForm={setShowFormReply}
+                />
                 
               </div>
             }
@@ -1027,13 +1026,12 @@ const Comment = (props) => {
             
             
             {/* Reply */}
-            {/*<Reply
+            <Reply
               urlID={urlID}
               gameCommunities_id={gameCommunities_id}
               recruitmentThreads_id={recruitmentThreads_id}
               recruitmentComments_id={recruitmentComments_id}
-              enableAnonymity={enableAnonymity}
-            />*/}
+            />
             
             
           </div>
@@ -1067,7 +1065,7 @@ const Component = (props) => {
     urlID,
     gameCommunities_id,
     recruitmentThreads_id,
-    enableAnonymity,
+    // enableAnonymity,
     
   } = props;
   
@@ -1554,13 +1552,12 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Component - Comment & Reply
+  //   Component - Comment
   // --------------------------------------------------
   
   const componentArr = [];
   
   for (const [index, recruitmentComments_id] of arr.entries()) {
-  // for (let recruitmentComments_id of arr.values()) {
     
     componentArr.push(
       <Comment
@@ -1570,7 +1567,7 @@ const Component = (props) => {
         gameCommunities_id={gameCommunities_id}
         recruitmentThreads_id={recruitmentThreads_id}
         recruitmentComments_id={recruitmentComments_id}
-        enableAnonymity={enableAnonymity}
+        // enableAnonymity={enableAnonymity}
         publicSettingThread={publicSettingThread}
       />
     );

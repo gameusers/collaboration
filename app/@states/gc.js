@@ -57,7 +57,7 @@ const useGc = (initialStateObj) => {
   const [recruitmentRepliesObj, setRecruitmentRepliesObj] = useState(lodashGet(initialStateObj, ['recruitmentRepliesObj'], {}));
   
   const [reloadForceRecruitmentComment, setReloadForceRecruitmentComment] = useState(false);
-  const [reloadForceRecruitmentReply, setReloadForceRecruitmentReply] = useState(false);
+  // const [reloadForceRecruitmentReply, setReloadForceRecruitmentReply] = useState(false);
   
   
   
@@ -127,8 +127,8 @@ const useGc = (initialStateObj) => {
     reloadForceRecruitmentComment,
     setReloadForceRecruitmentComment,
     
-    reloadForceRecruitmentReply,
-    setReloadForceRecruitmentReply,
+    // reloadForceRecruitmentReply,
+    // setReloadForceRecruitmentReply,
     
   };
   

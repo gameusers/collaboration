@@ -537,31 +537,6 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Forum Threads
-    // --------------------------------------------------
-    
-    // const forumObj = await ModelForumThreads.findForForum({
-      
-    //   req,
-    //   localeObj,
-    //   loginUsers_id,
-    //   gameCommunities_id,
-    //   threadPage: 1,
-    //   threadLimit,
-    //   commentPage: 1,
-    //   commentLimit,
-    //   replyPage: 1,
-    //   replyLimit,
-      
-    // });
-    
-    // returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    // returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    // returnObj.forumRepliesObj = forumObj.forumRepliesObj;
-    
-    
-    
-    // --------------------------------------------------
     //   DB find / Game Community
     // --------------------------------------------------
     

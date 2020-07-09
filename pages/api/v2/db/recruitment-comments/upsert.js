@@ -91,15 +91,6 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
@@ -115,6 +106,15 @@ export default async (req, res) => {
   const language = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: language
+  });
   
   
   
@@ -1030,23 +1030,15 @@ export default async (req, res) => {
     returnObj.recruitmentRepliesObj = recruitmentObj.recruitmentRepliesObj;
     
     
-    
-    
     // --------------------------------------------------
-    //   DB find / Game Communities / 最新の更新日時情報を取得する
+    //   DB find / Game Community
     // --------------------------------------------------
     
-    const gameCommunityArr = await ModelGameCommunities.find({
+    returnObj.gameCommunityObj = await ModelGameCommunities.findForGameCommunityByGameCommunities_id({
       
-      conditionObj: {
-        _id: gameCommunities_id
-      }
+      gameCommunities_id,
       
     });
-    
-    const updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
-    
-    returnObj.updatedDateObj = updatedDateObj;
     
     
     

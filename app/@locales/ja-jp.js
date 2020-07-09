@@ -302,16 +302,18 @@ const ja_JP = {
   'pInPmleQh': 'スレッドを作成しました',
   'HINAkcSmJ': 'スレッドを編集しました',
   
+  'B9Goe5scP': '募集を投稿しました',
+  'xM5NqhTq5': '募集を編集しました',
+  
   'fhi9lUaap': 'コメントを投稿しました',
   'NKsMLWvkt': 'コメントを編集しました',
+  
+  'cuaQHE4lG': '返信を投稿しました',
+  '0q0NzGlLb': '返信を編集しました',
   
   'KBPPfi4f9': 'スレッドを削除しました',
   'GERzvKtUN': 'コメントを削除しました',
   'o4fiADvZR': '返信を削除しました',
-  
-  
-  'B9Goe5scP': '募集を投稿しました',
-  'xM5NqhTq5': '募集を編集しました',
   
   
   

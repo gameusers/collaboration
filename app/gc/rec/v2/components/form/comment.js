@@ -39,9 +39,6 @@ import lodashCloneDeep from 'lodash/cloneDeep';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import Checkbox from '@material-ui/core/Checkbox';
 
 
 // ---------------------------------------------
@@ -69,21 +66,18 @@ import { getCookie } from 'app/@modules/cookie.js';
 import { validationBoolean } from 'app/@validations/boolean.js';
 import { validationHandleName } from 'app/@validations/name.js';
 
-// import { validationRecruitmentThreadsName } from 'app/@database/recruitment-threads/validations/name.js';
 import { validationRecruitmentThreadsComment } from 'app/@database/recruitment-threads/validations/comment.js';
 import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } from 'app/@database/recruitment-threads/validations/ids-informations.js';
-// import { validationRecruitmentThreadsDeadlineDate } from 'app/@database/recruitment-threads/validations/deadline.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
+import FormName from 'app/common/form/components/name.js';
 import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js';
-// import FormHardwares from 'app/common/hardware/v2/components/form.js';
 import WebPuchCheckbox from 'app/common/web-push/v2/components/checkbox.js';
 import FormIDsInformations from 'app/gc/rec/v2/components/form/ids-informations.js';
-// import FormDeadline from 'app/gc/rec/v2/components/form/deadline.js';
 
 
 
@@ -142,7 +136,6 @@ const Component = (props) => {
     publicSettingThread,
     
     setShowForm,
-    // setPanelExpanded,
     
   } = props;
   
@@ -227,7 +220,6 @@ const Component = (props) => {
   
   const {
     
-    login,
     localeObj,
     
   } = stateUser;
@@ -235,7 +227,6 @@ const Component = (props) => {
   const {
     
     handleSnackbarOpen,
-    // handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
@@ -849,12 +840,11 @@ const Component = (props) => {
         
         
         // ---------------------------------------------
-        //   パネルを閉じる
+        //   フォームを閉じる
         // ---------------------------------------------
         
-        // setPanelExpanded(false);
-        
-        // window.setTimeout(() => setPanelExpanded(false), 1000);
+        setShowForm(false);
+        // handleClose({ recruitmentComments_id });
         
         
       }
@@ -926,46 +916,17 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   storeGcRecruitment
-  // --------------------------------------------------
-  
-  // const {
-    
-  //   dataObj,
-  //   handleEdit,
-  //   handleSubmitRecruitmentComment,
-  //   handleGetWebPushSubscribeObj,
-  //   // handleDeleteRecruitmentComment,
-  //   handleHideFormRecruitmentComment,
-    
-  // } = storeGcRecruitment;
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
   const limitImagesAndVideos = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_IMAGES_AND_VIDEOS_LIMIT, 10);
   
   
-  
-  
-  // --------------------------------------------------
-  //   Validations
-  // --------------------------------------------------
-  
-  const validationHandleNameObj = validationHandleName({ value: name });
-  
-  
-  
-  
   // --------------------------------------------------
   //   Element Name
   // --------------------------------------------------
   
-  const elementName = recruitmentComments_id ? `${recruitmentComments_id}-formComment` : `${gameCommunities_id}-formComment`;
+  const elementName = recruitmentComments_id ? `${recruitmentComments_id}-formComment` : `${recruitmentThreads_id}-formComment`;
   
   
   
@@ -1018,28 +979,24 @@ const Component = (props) => {
         
         
         {/* Heading & Explanation */}
+        <h3
+          css={css`
+            font-weight: bold;
+            margin: 0 0 12px 0;
+          `}
+        >
+          コメント投稿フォーム
+        </h3>
+        
+        
         {recruitmentComments_id &&
-          <React.Fragment>
-          
-            <h3
-              css={css`
-                font-weight: bold;
-                margin: 0 0 12px 0;
-              `}
-            >
-              コメント投稿フォーム
-            </h3>
-            
-            
-            <p
-              css={css`
-                margin: 0 0 14px 0;
-              `}
-            >
-              投稿済みのコメントを編集できます。
-            </p>
-            
-          </React.Fragment>
+          <p
+            css={css`
+              margin: 0 0 14px 0;
+            `}
+          >
+            投稿済みのコメントを編集できます。
+          </p>
         }
         
         
@@ -1061,26 +1018,10 @@ const Component = (props) => {
           
           
           {/* Name */}
-          {!login &&
-            <TextField
-              css={css`
-                && {
-                  width: 100%;
-                  max-width: 500px;
-                  ${recruitmentThreads_id && `margin-top: 4px;`}
-                }
-              `}
-              label="ハンドルネーム"
-              value={validationHandleNameObj.value}
-              onChange={(eventObj) => setName(eventObj.target.value)}
-              error={validationHandleNameObj.error}
-              helperText={intl.formatMessage({ id: validationHandleNameObj.messageID }, { numberOfCharacters: validationHandleNameObj.numberOfCharacters })}
-              margin="normal"
-              inputProps={{
-                maxLength: 50,
-              }}
-            />
-          }
+          <FormName
+            name={name}
+            setName={setName}
+          />
           
           
           

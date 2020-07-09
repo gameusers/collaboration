@@ -73,7 +73,6 @@ import { validationHandleName } from 'app/@validations/name.js';
 
 import { validationRecruitmentThreadsCategory } from 'app/@database/recruitment-threads/validations/category.js';
 import { validationRecruitmentThreadsTitle } from 'app/@database/recruitment-threads/validations/title.js';
-// import { validationRecruitmentThreadsName } from 'app/@database/recruitment-threads/validations/name.js';
 import { validationRecruitmentThreadsComment } from 'app/@database/recruitment-threads/validations/comment.js';
 import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } from 'app/@database/recruitment-threads/validations/ids-informations.js';
 import { validationRecruitmentThreadsDeadlineDate } from 'app/@database/recruitment-threads/validations/deadline.js';
@@ -83,6 +82,7 @@ import { validationRecruitmentThreadsDeadlineDate } from 'app/@database/recruitm
 //   Components
 // ---------------------------------------------
 
+import FormName from 'app/common/form/components/name.js';
 import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js';
 import FormHardwares from 'app/common/hardware/v2/components/form.js';
 import WebPuchCheckbox from 'app/common/web-push/v2/components/checkbox.js';
@@ -234,7 +234,7 @@ const Component = (props) => {
   
   const {
     
-    login,
+    // login,
     localeObj,
     
   } = stateUser;
@@ -959,16 +959,11 @@ const Component = (props) => {
   const limitImagesAndVideos = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_IMAGES_AND_VIDEOS_LIMIT, 10);
   
   
-  
-  
   // --------------------------------------------------
   //   Validations
   // --------------------------------------------------
   
   const validationRecruitmentThreadsTitleObj = validationRecruitmentThreadsTitle({ value: title });
-  const validationHandleNameObj = validationHandleName({ value: name });
-  
-  
   
   
   // --------------------------------------------------
@@ -990,14 +985,8 @@ const Component = (props) => {
   // `);
   
   // console.log(chalk`
-  //   category: {green ${category} / ${typeof category}}
-  // `);
-  
-  // console.log(chalk`
   //   gameCommunities_id: {green ${gameCommunities_id}}
   //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-  //   login: {green ${login}}
-  //   formName: {green ${formName}}
   // `);
   
   // console.log(`
@@ -1193,26 +1182,10 @@ const Component = (props) => {
           
           
           {/* Name */}
-          {!login &&
-            <TextField
-              css={css`
-                && {
-                  width: 100%;
-                  max-width: 500px;
-                  ${recruitmentThreads_id && `margin-top: 4px;`}
-                }
-              `}
-              label="ハンドルネーム"
-              value={validationHandleNameObj.value}
-              onChange={(eventObj) => setName(eventObj.target.value)}
-              error={validationHandleNameObj.error}
-              helperText={intl.formatMessage({ id: validationHandleNameObj.messageID }, { numberOfCharacters: validationHandleNameObj.numberOfCharacters })}
-              margin="normal"
-              inputProps={{
-                maxLength: 50,
-              }}
-            />
-          }
+          <FormName
+            name={name}
+            setName={setName}
+          />
           
           
           

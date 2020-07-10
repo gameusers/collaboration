@@ -57,8 +57,12 @@ const useGc = (initialStateObj) => {
   const [recruitmentRepliesObj, setRecruitmentRepliesObj] = useState(lodashGet(initialStateObj, ['recruitmentRepliesObj'], {}));
   
   const [reloadForceRecruitmentComment, setReloadForceRecruitmentComment] = useState(false);
-  // const [reloadForceRecruitmentReply, setReloadForceRecruitmentReply] = useState(false);
+  const [reloadForceRecruitmentReply, setReloadForceRecruitmentReply] = useState(false);
   
+  
+  const [searchHardwares, setSearchHardwares] = useState(lodashGet(initialStateObj, ['searchHardwares'], ''));
+  const [searchCategories, setSearchCategories] = useState(lodashGet(initialStateObj, ['searchCategories'], ''));
+  const [searchKeyword, setSearchKeyword] = useState(lodashGet(initialStateObj, ['searchKeyword'], ''));
   
   
   // const [forumThreadsReload, setForumThreadsReload] = useState(false);
@@ -96,6 +100,8 @@ const useGc = (initialStateObj) => {
     setGameCommunityObj,
     
     
+    
+    
     forumThreadsForListObj,
     setForumThreadsForListObj,
     
@@ -115,6 +121,8 @@ const useGc = (initialStateObj) => {
     setReloadForceForumReply,
     
     
+    
+    
     recruitmentThreadsObj,
     setRecruitmentThreadsObj,
     
@@ -127,8 +135,21 @@ const useGc = (initialStateObj) => {
     reloadForceRecruitmentComment,
     setReloadForceRecruitmentComment,
     
-    // reloadForceRecruitmentReply,
-    // setReloadForceRecruitmentReply,
+    reloadForceRecruitmentReply,
+    setReloadForceRecruitmentReply,
+    
+    
+    
+    
+    searchHardwares,
+    setSearchHardwares,
+    
+    searchCategories,
+    setSearchCategories,
+    
+    searchKeyword,
+    setSearchKeyword,
+    
     
   };
   

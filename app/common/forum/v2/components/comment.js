@@ -1208,16 +1208,16 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   forumThreads_idArr
+      //   forumThreads_idsArr
       // ---------------------------------------------
       
-      let forumThreads_idArr = [forumThreads_id];
+      let forumThreads_idsArr = [forumThreads_id];
       
       // 表示件数を変更する場合は他のスレッドも一緒に更新するため、現在表示されているスレッドのIDを取得する
       if (changeLimit) {
         
         const forumThreadsPage = lodashGet(forumThreadsObj, ['page'], 1);
-        forumThreads_idArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
+        forumThreads_idsArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
         
       }
       
@@ -1241,8 +1241,8 @@ const Component = (props) => {
       // `);
       
       // console.log(`
-      //   ----- forumThreads_idArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
+      //   ----- forumThreads_idsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idsArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -1257,7 +1257,7 @@ const Component = (props) => {
         
         gameCommunities_id,
         userCommunities_id,
-        forumThreads_idArr,
+        forumThreads_idsArr,
         threadPage: 1,
         threadLimit,
         commentPage: page,

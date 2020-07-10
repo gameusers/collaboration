@@ -31,7 +31,6 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import ModelGameCommunities from 'app/@database/game-communities/model.js';
-import ModelRecruitmentThreads from 'app/@database/recruitment-threads/model.js';
 import ModelRecruitmentComments from 'app/@database/recruitment-comments/model.js';
 
 
@@ -49,10 +48,6 @@ import { CustomError } from 'app/@modules/error/custom.js';
 // ---------------------------------------------
 
 import { validationIP } from 'app/@validations/ip.js';
-
-import { validationRecruitmentThreadsLimit } from 'app/@database/recruitment-threads/validations/limit.js';
-import { validationRecruitmentCommentsLimit } from 'app/@database/recruitment-comments/validations/limit.js';
-import { validationRecruitmentRepliesLimit } from 'app/@database/recruitment-replies/validations/limit.js';
 
 
 // ---------------------------------------------
@@ -121,17 +116,11 @@ export default async (req, res) => {
     const {
       
       recruitmentComments_id,
-      threadLimit,
-      commentLimit,
-      replyLimit,
       
     } = bodyObj;
     
     
     lodashSet(requestParametersObj, ['recruitmentComments_id'], recruitmentComments_id);
-    lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
-    lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
-    lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
     
     
     
@@ -150,10 +139,6 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     await validationIP({ throwError: true, value: ip });
-    
-    await validationRecruitmentThreadsLimit({ throwError: true, required: true, value: threadLimit });
-    await validationRecruitmentCommentsLimit({ throwError: true, required: true, value: commentLimit });
-    await validationRecruitmentRepliesLimit({ throwError: true, required: true, value: replyLimit });
     
     
     
@@ -334,30 +319,6 @@ export default async (req, res) => {
     }
     
     
-    
-    
-    // --------------------------------------------------
-    //   DB find / Recruitments
-    // --------------------------------------------------
-    
-    const recruitmentObj = await ModelRecruitmentThreads.findRecruitments({
-      
-      req,
-      localeObj,
-      loginUsers_id,
-      gameCommunities_id,
-      threadPage: 1,
-      threadLimit,
-      commentPage: 1,
-      commentLimit,
-      replyPage: 1,
-      replyLimit,
-      
-    });
-    
-    returnObj.recruitmentThreadsObj = recruitmentObj.recruitmentThreadsObj;
-    returnObj.recruitmentCommentsObj = recruitmentObj.recruitmentCommentsObj;
-    returnObj.recruitmentRepliesObj = recruitmentObj.recruitmentRepliesObj;
     
     
     // --------------------------------------------------

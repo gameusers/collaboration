@@ -2096,8 +2096,8 @@ const findForNotification = async ({
       //   $project
       // --------------------------------------------------
       
-      { $project:
-        {
+      {
+        $project: {
           localesArr: 1,
           webPushesObj: 1,
         }
@@ -2118,6 +2118,27 @@ const findForNotification = async ({
     };
     
     const docObj = lodashGet(docArr, [0], {});
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   データが存在しない場合は処理停止
+    // --------------------------------------------------
+    
+    if (Object.keys(docObj).length === 0) {
+      return {};
+    }
+    
+    // console.log(chalk`
+    //   Object.keys(docObj).length: {green ${Object.keys(docObj).length}}
+    // `);
+    
+    // console.log(`
+    //   ----- docObj -----\n
+    //   ${util.inspect(docArr, { docObj: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------

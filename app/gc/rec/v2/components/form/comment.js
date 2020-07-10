@@ -29,7 +29,6 @@ import { css, jsx } from '@emotion/core';
 
 import lodashGet from 'lodash/get';
 import lodashHas from 'lodash/has';
-import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
@@ -201,7 +200,7 @@ const Component = (props) => {
     // --------------------------------------------------
     
     if (recruitmentComments_id) {
-      handleGetEditData({ recruitmentComments_id });
+      handleGetEditData();
     }
     
     
@@ -253,7 +252,7 @@ const Component = (props) => {
    * 編集用データを読み込む
    * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントのID
    */
-  const handleGetEditData = async ({ recruitmentComments_id }) => {
+  const handleGetEditData = async () => {
     
     
     try {
@@ -271,6 +270,22 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
+      //   Loading Open
+      // ---------------------------------------------
+      
+      handleLoadingOpen({});
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      setButtonDisabled(true);
+      
+      
+      
+      
+      // ---------------------------------------------
       //   Scroll To
       // ---------------------------------------------
       
@@ -283,22 +298,6 @@ const Component = (props) => {
         offset: -50,
         
       });
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Loading Open
-      // ---------------------------------------------
-      
-      handleLoadingOpen({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      setButtonDisabled(true);
       
       
       
@@ -343,6 +342,13 @@ const Component = (props) => {
       }
       
       
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      setButtonDisabled(false);
       
       
       // ---------------------------------------------
@@ -414,6 +420,13 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      setButtonDisabled(false);
+      
+      
+      // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
       
@@ -426,13 +439,6 @@ const Component = (props) => {
       
       
     } finally {
-      
-      
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      setButtonDisabled(false);
       
       
       // ---------------------------------------------
@@ -453,16 +459,10 @@ const Component = (props) => {
   /**
    * コメントを投稿する
    * @param {Object} eventObj - イベント
-   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
-   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / 募集スレッドのID
-   * @param {string} recruitmentComments_id - DB recruitment-comments _id / 募集コメントのID
    */
   const handleSubmit = async ({
     
     eventObj,
-    gameCommunities_id,
-    recruitmentThreads_id,
-    recruitmentComments_id,
     
   }) => {
     
@@ -478,7 +478,7 @@ const Component = (props) => {
     //   新規投稿時の recruitmentComments_id
     // ---------------------------------------------
     
-    let newRecruitmentComments_id = 'nEQMNMWDy';
+    let newRecruitmentComments_id = '';
     
     
     
@@ -634,13 +634,6 @@ const Component = (props) => {
       }
       
       
-      // console.log(`
-      //   ----- idsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
@@ -663,6 +656,54 @@ const Component = (props) => {
       }
       
       
+      
+      
+      // ---------------------------------------------
+      //   Reset Form
+      // ---------------------------------------------
+      
+      setName('');
+      setComment('');
+      setImagesAndVideosObj({
+        
+        _id: '',
+        createdDate: '',
+        updatedDate: '',
+        users_id: '',
+        type: 'recruitment',
+        arr: [],
+        
+      });
+      
+      setIDsArr([]);
+      setPlatform1('Other');
+      setPlatform2('Other');
+      setPlatform3('Other');
+      setID1('');
+      setID2('');
+      setID3('');
+      setInformationTitle1('');
+      setInformationTitle2('');
+      setInformationTitle3('');
+      setInformationTitle4('');
+      setInformationTitle5('');
+      setInformation1('');
+      setInformation2('');
+      setInformation3('');
+      setInformation4('');
+      setInformation5('');
+      setPublicSetting(1);
+      setWebPushAvailable(false);
+      setWebPushSubscriptionObj({});
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      setButtonDisabled(false);
       
       
       // --------------------------------------------------
@@ -693,15 +734,11 @@ const Component = (props) => {
       setRecruitmentRepliesObj(lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {}));
       
       
-      
-      
       // ---------------------------------------------
       //   新規投稿時の recruitmentComments_id
       // ---------------------------------------------
       
       newRecruitmentComments_id = lodashGet(resultObj, ['data', 'recruitmentCommentsObj', recruitmentThreads_id, 'page1Obj', 'arr', 0], '');
-      
-      
       
       
       // ---------------------------------------------
@@ -749,6 +786,13 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      setButtonDisabled(false);
+      
+      
+      // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
       
@@ -764,92 +808,10 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Button Enable
+      //   Hide Form
       // ---------------------------------------------
       
-      setButtonDisabled(false);
-      
-      
-      // ---------------------------------------------
-      //   Loading Close
-      // ---------------------------------------------
-      
-      handleLoadingClose();
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   編集の場合
-      // ---------------------------------------------
-      
-      if (recruitmentComments_id) {
-        
-        
-        // ---------------------------------------------
-        //   Hide Form
-        // ---------------------------------------------
-        
-        setShowForm(false);
-        
-        
-      // ---------------------------------------------
-      //   新規投稿の場合
-      // ---------------------------------------------
-        
-      } else {
-        
-        
-        // ---------------------------------------------
-        //   Reset Form
-        // ---------------------------------------------
-        
-        setName('');
-        setComment('');
-        setImagesAndVideosObj({
-          
-          _id: '',
-          createdDate: '',
-          updatedDate: '',
-          users_id: '',
-          type: 'recruitment',
-          arr: [],
-          
-        });
-        
-        setIDsArr([]);
-        setPlatform1('Other');
-        setPlatform2('Other');
-        setPlatform3('Other');
-        setID1('');
-        setID2('');
-        setID3('');
-        setInformationTitle1('');
-        setInformationTitle2('');
-        setInformationTitle3('');
-        setInformationTitle4('');
-        setInformationTitle5('');
-        setInformation1('');
-        setInformation2('');
-        setInformation3('');
-        setInformation4('');
-        setInformation5('');
-        setPublicSetting(1);
-        setWebPushAvailable(false);
-        setWebPushSubscriptionObj({});
-        
-        
-        // ---------------------------------------------
-        //   フォームを閉じる
-        // ---------------------------------------------
-        
-        setShowForm(false);
-        // handleClose({ recruitmentComments_id });
-        
-        
-      }
-      
-      
+      setShowForm(false);
       
       
       // ---------------------------------------------
@@ -867,6 +829,13 @@ const Component = (props) => {
       });
       
       
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
+      
+      handleLoadingClose();
+      
+      
     }
     
     
@@ -877,15 +846,8 @@ const Component = (props) => {
   
   /**
    * フォームを閉じる
-   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
-   * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントのID
    */
-  const handleClose = async ({
-    
-    recruitmentThreads_id,
-    recruitmentComments_id,
-    
-  }) => {
+  const handleClose = async () => {
     
     
     // ---------------------------------------------
@@ -971,9 +933,6 @@ const Component = (props) => {
         name={elementName}
         onSubmit={(eventObj) => handleSubmit({
           eventObj,
-          gameCommunities_id,
-          recruitmentThreads_id,
-          recruitmentComments_id,
         })}
       >
         
@@ -1093,9 +1052,6 @@ const Component = (props) => {
           <FormIDsInformations
             type="comment"
             publicSettingThread={publicSettingThread}
-            
-            // gameCommunities_id={gameCommunities_id}
-            // recruitmentThreads_id={recruitmentThreads_id}
             
             idsArr={idsArr}
             setIDsArr={setIDsArr}
@@ -1229,7 +1185,7 @@ const Component = (props) => {
               variant="outlined"
               color="secondary"
               disabled={buttonDisabled}
-              onClick={() => handleClose({ recruitmentThreads_id, recruitmentComments_id })}
+              onClick={() => handleClose()}
             >
               閉じる
             </Button>

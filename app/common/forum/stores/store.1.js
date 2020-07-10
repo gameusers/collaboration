@@ -1043,30 +1043,30 @@ class Store {
       
       
       // ---------------------------------------------
-      //   forumThreads_idArr
+      //   forumThreads_idsArr
       // ---------------------------------------------
       
-      let forumThreads_idArr = [forumThreads_id];
+      let forumThreads_idsArr = [forumThreads_id];
       // const forumThreadsObj = lodashGet(forumObj, ['forumThreadsObj'], {});
       // const forumThreadsPage = lodashGet(forumThreadsObj, ['page'], 1);
-      // forumThreads_idArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
+      // forumThreads_idsArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
       
       // 表示件数を変更する場合は他のスレッドも一緒に更新するため、現在表示されているスレッドのIDを取得する
       if (changeLimit) {
         
         const forumThreadsObj = lodashGet(forumObj, ['forumThreadsObj'], {});
         const forumThreadsPage = lodashGet(forumThreadsObj, ['page'], 1);
-        forumThreads_idArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
+        forumThreads_idsArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
         
         // 現在表示しているスレッドのIDを取得して、
-        // forumThreads_idArr = forumThreads_idArr.filter(_id => _id !== forumThreads_id);
+        // forumThreads_idsArr = forumThreads_idsArr.filter(_id => _id !== forumThreads_id);
         
       }
       
       
       // console.log(`
-      //   ----- forumThreads_idArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
+      //   ----- forumThreads_idsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idsArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -1081,7 +1081,7 @@ class Store {
         
         gameCommunities_id,
         userCommunities_id,
-        forumThreads_idArr,
+        forumThreads_idsArr,
         threadPage: 1,
         threadLimit,
         commentPage: page,
@@ -1478,12 +1478,12 @@ class Store {
         
         const forumThreadsObj = lodashGet(forumObj, ['forumThreadsObj'], {});
         const forumThreadsPage = lodashGet(forumThreadsObj, ['page'], 1);
-        const forumThreads_idArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
+        const forumThreads_idsArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
         
         
         forumComments_idsArr = [];
         
-        for (let forumThreads_id of forumThreads_idArr.values()) {
+        for (let forumThreads_id of forumThreads_idsArr.values()) {
           
           const forumCommentsPage = lodashGet(forumObj, ['forumCommentsObj', forumThreads_id, 'page'], 1);
           const tempForumComments_idArr = lodashGet(forumObj, ['forumCommentsObj', forumThreads_id, `page${forumCommentsPage}Obj`, 'arr'], []);

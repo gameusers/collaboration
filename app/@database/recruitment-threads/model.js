@@ -455,7 +455,6 @@ const findRecruitments = async ({
     });
     
     const recruitmentThreadsObj = lodashGet(formattedThreadsObj, ['recruitmentThreadsObj'], {});
-    // const recruitmentThreads_idsArr = lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []);
     
     
     
@@ -502,6 +501,12 @@ const findRecruitments = async ({
     //   commentLimit: {green ${commentLimit}}
     //   replyPage: {green ${replyPage}}
     //   replyLimit: {green ${replyLimit}}
+    // `);
+    
+    // console.log(`
+    //   ----- matchConditionArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(matchConditionArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(`
@@ -2923,8 +2928,8 @@ const findForNotification = async ({
       //   $project
       // --------------------------------------------------
       
-      { $project:
-        {
+      {
+        $project: {
           localesArr: 1,
           gamesObj: 1,
           webPushesObj: 1,
@@ -2946,6 +2951,19 @@ const findForNotification = async ({
     };
     
     const docObj = lodashGet(docArr, [0], {});
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   データが存在しない場合は処理停止
+    // --------------------------------------------------
+    
+    if (Object.keys(docObj).length === 0) {
+      return {};
+    }
+    
+    
     
     
     // --------------------------------------------------

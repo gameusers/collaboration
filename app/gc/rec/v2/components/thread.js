@@ -18,8 +18,6 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useIntl } from 'react-intl';
 import { Element } from 'react-scroll';
-// import Pagination from 'rc-pagination';
-// import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 import SimpleIcons from 'simple-icons-react-component';
 
 /** @jsx jsx */
@@ -48,11 +46,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
-// import Paper from '@material-ui/core/Paper';
-// import OutlinedInput from '@material-ui/core/OutlinedInput';
-// import MenuItem from '@material-ui/core/MenuItem';
-// import FormControl from '@material-ui/core/FormControl';
-// import Select from '@material-ui/core/Select';
 import Avatar from '@material-ui/core/Avatar';
 
 
@@ -65,7 +58,6 @@ import IconExpandMore from '@material-ui/icons/ExpandMore';
 import IconPublic from '@material-ui/icons/Public';
 import IconDelete from '@material-ui/icons/Delete';
 import IconEdit from '@material-ui/icons/Edit';
-import IconDoubleArrow from '@material-ui/icons/KeyboardReturn';
 import IconReply from '@material-ui/icons/Reply';
 
 
@@ -83,7 +75,6 @@ import { ContainerStateGc } from 'app/@states/gc.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
@@ -94,7 +85,6 @@ import Paragraph from 'app/common/layout/v2/components/paragraph.js';
 import User from 'app/common/user/v2/components/user.js';
 import ImageAndVideo from 'app/common/image-and-video/v2/components/image-and-video.js';
 import HardwaresChip from 'app/common/hardware/v2/components/chip.js';
-// import Panel from 'app/common/layout/components/panel.js';
 
 import CategoryChip from 'app/gc/rec/v2/components/category-chip.js';
 import FormThread from 'app/gc/rec/v2/components/form/thread.js';
@@ -193,7 +183,6 @@ const Component = (props) => {
     handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
-    // handleScrollTo,
     
   } = stateLayout;
   
@@ -202,8 +191,6 @@ const Component = (props) => {
     setGameCommunityObj,
     recruitmentThreadsObj,
     setRecruitmentThreadsObj,
-    setRecruitmentCommentsObj,
-    setRecruitmentRepliesObj,
     
   } = stateGc;
   
@@ -216,13 +203,8 @@ const Component = (props) => {
   
   /**
    * 募集を削除する
-   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
    */
-  const handleDelete = async ({
-    
-    recruitmentThreads_id,
-    
-  }) => {
+  const handleDelete = async () => {
     
     
     try {
@@ -233,7 +215,7 @@ const Component = (props) => {
       // ---------------------------------------------
       
       if (!recruitmentThreads_id) {
-        throw new CustomError({ errorsArr: [{ code: 'cGHv25p8q', messageID: '1YJnibkmh' }] });
+        throw new CustomError({ errorsArr: [{ code: 'jVXVASs_N', messageID: '1YJnibkmh' }] });
       }
       
       
@@ -279,13 +261,6 @@ const Component = (props) => {
       });
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
@@ -298,7 +273,15 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   State 削除
+      //   Update - Game Community
+      // ---------------------------------------------
+      
+      const gameCommunityObj = lodashGet(resultObj, ['data', 'gameCommunityObj'], {});
+      setGameCommunityObj(gameCommunityObj);
+      
+      
+      // ---------------------------------------------
+      //   Delete Thread Data
       // ---------------------------------------------
       
       const clonedObj = lodashCloneDeep(recruitmentThreadsObj);
@@ -307,21 +290,6 @@ const Component = (props) => {
       delete dataObj[recruitmentThreads_id];
       
       setRecruitmentThreadsObj(clonedObj);
-      
-      
-      // console.log(`
-      //   ----- clonedForumThreadsObj -----\n
-      //   ${util.inspect(clonedForumThreadsObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      // ---------------------------------------------
-      //   Game Community データ更新
-      // ---------------------------------------------
-      
-      const gameCommunityObj = lodashGet(resultObj, ['data', 'gameCommunityObj'], {});
-      setGameCommunityObj(gameCommunityObj);
       
       
       
@@ -352,6 +320,12 @@ const Component = (props) => {
       // console.log(chalk`
       //   gameCommunities_id: {green ${gameCommunities_id}}
       //   forumThreads_id: {green ${forumThreads_id}}
+      // `);
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
       // `);
       
       
@@ -401,27 +375,11 @@ const Component = (props) => {
   
   const dataObj = lodashGet(recruitmentThreadsObj, ['dataObj', recruitmentThreads_id], {});
   
-  // console.log(`
-  //   ----- dataObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
   if (Object.keys(dataObj).length === 0) {
     return null;
   }
   
   
-  
-  
-  // --------------------------------------------------
-  //   Path Array
-  // --------------------------------------------------
-  
-  // const pathRecruitmentThreadArr = [recruitmentThreads_id, 'recruitmentThreadObj'];
-  // const pathRecruitmentThreadEditFormArr = [recruitmentThreads_id, 'recruitmentThreadEditFormObj'];
-  // const pathRecruitmentCommentNewFormArr = [recruitmentThreads_id, 'recruitmentCommentNewFormObj'];
-  // const pathRecruitmentCommentEditFormArr = [recruitmentThreads_id, 'recruitmentCommentEditFormObj'];
   
   
   // --------------------------------------------------
@@ -435,7 +393,6 @@ const Component = (props) => {
   
   // 管理者権限がある、またはスレッドを建てた本人の場合、編集ボタンを表示する
   const editable = lodashGet(dataObj, ['editable'], false);
-  // const editable = true;
   
   const category = lodashGet(dataObj, ['category'], 1);
   const hardwaresArr = lodashGet(dataObj, ['hardwaresArr'], []);
@@ -1111,8 +1068,6 @@ const Component = (props) => {
                   {showFormComment &&
                     <div
                       css={css`
-                        // border-top: 2px dashed red;
-                        // border-bottom: 2px dashed red;
                         border-left: 4px solid #84cacb;
                         
                         ${comments > 0

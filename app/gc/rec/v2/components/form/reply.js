@@ -75,7 +75,6 @@ import { validationBoolean } from 'app/@validations/boolean.js';
 import { validationHandleName } from 'app/@validations/name.js';
 
 import { validationRecruitmentThreadsComment } from 'app/@database/recruitment-threads/validations/comment.js';
-import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } from 'app/@database/recruitment-threads/validations/ids-informations.js';
 
 
 // ---------------------------------------------
@@ -221,8 +220,6 @@ const Component = (props) => {
   const {
     
     setGameCommunityObj,
-    // setRecruitmentThreadsObj,
-    // setRecruitmentCommentsObj,
     recruitmentRepliesObj,
     setRecruitmentRepliesObj,
     

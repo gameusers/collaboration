@@ -333,7 +333,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {Array} forumThreads_idArr - DB forum-threads _id / _idが入っている配列
+ * @param {Array} forumThreads_idsArr - DB forum-threads _id / _idが入っている配列
  * @param {Object} forumThreadsObj - スレッド情報の入ったオブジェクト / カウントの取得に使う
  * @param {number} commentPage - コメントのページ
  * @param {number} commentLimit - コメントのリミット
@@ -1954,7 +1954,7 @@ const formatVer2 = ({
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {Array} forumThreads_idArr - DB forum-threads _id / _idが入っている配列
+ * @param {Array} forumThreads_idsArr - DB forum-threads _id / _idが入っている配列
  * @param {Object} forumThreadsObj - スレッド情報の入ったオブジェクト / カウントの取得に使う
  * @param {number} commentPage - コメントのページ
  * @param {number} commentLimit - コメントのリミット

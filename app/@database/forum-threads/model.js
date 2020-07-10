@@ -615,7 +615,7 @@ const findForForum = async ({
   loginUsers_id,
   gameCommunities_id,
   userCommunities_id,
-  forumThreads_idArr = [],
+  forumThreads_idsArr = [],
   threadPage = 1,
   threadLimit = process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT,
   commentPage = 1,
@@ -668,13 +668,13 @@ const findForForum = async ({
         },
       ];
       
-      if (forumThreads_idArr.length > 0) {
+      if (forumThreads_idsArr.length > 0) {
         
         matchConditionArr = [
           {
             $match: {
               $and: [
-                { _id: { $in: forumThreads_idArr } },
+                { _id: { $in: forumThreads_idsArr } },
                 { gameCommunities_id },
               ]
             },
@@ -711,13 +711,13 @@ const findForForum = async ({
         },
       ];
       
-      if (forumThreads_idArr.length > 0) {
+      if (forumThreads_idsArr.length > 0) {
         
         matchConditionArr = [
           {
             $match: {
               $and: [
-                { _id: { $in: forumThreads_idArr } },
+                { _id: { $in: forumThreads_idsArr } },
                 { userCommunities_id },
               ]
             },

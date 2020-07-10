@@ -33,7 +33,6 @@ import { css, jsx } from '@emotion/core';
 
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
-import lodashHas from 'lodash/has';
 import lodashCloneDeep from 'lodash/cloneDeep';
 import lodashMerge from 'lodash/merge';
 
@@ -57,17 +56,9 @@ import Select from '@material-ui/core/Select';
 
 import IconPublic from '@material-ui/icons/Public';
 import IconUpdate from '@material-ui/icons/Update';
-// import IconThumbUp from '@material-ui/icons/ThumbUp';
 import IconDelete from '@material-ui/icons/Delete';
 import IconEdit from '@material-ui/icons/Edit';
 import IconReply from '@material-ui/icons/Reply';
-
-
-// ---------------------------------------------
-//   Material UI / Color
-// ---------------------------------------------
-
-import green from '@material-ui/core/colors/green';
 
 
 // ---------------------------------------------
@@ -155,7 +146,6 @@ const Comment = (props) => {
     gameCommunities_id,
     recruitmentThreads_id,
     recruitmentComments_id,
-    // enableAnonymity,
     publicSettingThread,
     
   } = props;
@@ -177,21 +167,14 @@ const Comment = (props) => {
     handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
-    // handleScrollTo,
     
   } = stateLayout;
   
   const {
     
-    gameCommunityObj,
     setGameCommunityObj,
-    recruitmentThreadsObj,
-    setRecruitmentThreadsObj,
     recruitmentCommentsObj,
     setRecruitmentCommentsObj,
-    recruitmentRepliesObj,
-    setRecruitmentRepliesObj,
-    reloadForceRecruitmentComment,
     setReloadForceRecruitmentComment,
     
   } = stateGc;
@@ -227,19 +210,8 @@ const Comment = (props) => {
   
   /**
    * コメントを削除する
-   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
-   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
-   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドのID
-   * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントのID
    */
-  const handleDelete = async ({
-    
-    gameCommunities_id,
-    userCommunities_id,
-    recruitmentThreads_id,
-    recruitmentComments_id,
-    
-  }) => {
+  const handleDelete = async () => {
     
     
     try {
@@ -249,8 +221,8 @@ const Comment = (props) => {
       //   _id が存在しない場合エラー
       // ---------------------------------------------
       
-      if ((!gameCommunities_id && !userCommunities_id) || !recruitmentThreads_id || !recruitmentComments_id) {
-        throw new CustomError({ errorsArr: [{ code: '_quWlqMjb', messageID: '1YJnibkmh' }] });
+      if (!recruitmentComments_id) {
+        throw new CustomError({ errorsArr: [{ code: 'De5qHqucM', messageID: '1YJnibkmh' }] });
       }
       
       
@@ -273,32 +245,11 @@ const Comment = (props) => {
       
       
       // ---------------------------------------------
-      //   console.log
-      // ---------------------------------------------
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/recruitment/v2/components/thread.js - handleDelete
-      // `);
-      
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id}}
-      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-      // `);
-      
-      
-      
-      
-      // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
       
       const formDataObj = {
         
-        gameCommunities_id,
-        userCommunities_id,
-        recruitmentThreads_id,
         recruitmentComments_id,
         
       };
@@ -308,36 +259,13 @@ const Comment = (props) => {
       //   Fetch
       // ---------------------------------------------
       
-      let resultObj = {};
-      
-      if (gameCommunities_id) {
+      const resultObj = await fetchWrapper({
         
-        resultObj = await fetchWrapper({
-          
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-comments/delete-comment-gc`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-          
-        });
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-comments/delete`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
         
-      } else if (userCommunities_id) {
-        
-        resultObj = await fetchWrapper({
-          
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-comments/delete-comment-uc`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-          
-        });
-        
-      }
-      
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      });
       
       
       // ---------------------------------------------
@@ -349,44 +277,26 @@ const Comment = (props) => {
       }
       
       
-      // console.log(`
-      //   ----- recruitmentCommentsObj -----\n
-      //   ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       
       // ---------------------------------------------
-      //   State 削除
-      // ---------------------------------------------
-      
-      const clonedRecruitmentCommentsObj = lodashCloneDeep(recruitmentCommentsObj);
-      
-      // const page = lodashGet(recruitmentCommentsObj, [recruitmentThreads_id, 'page'], 1);
-      // const arr = lodashGet(recruitmentCommentsObj, [recruitmentThreads_id, `page${page}Obj`, 'arr'], []);
-      // const newArr = arr.filter(value => value !== recruitmentComments_id);
-      // lodashSet(clonedRecruitmentCommentsObj, [recruitmentThreads_id, `page${page}Obj`, 'arr'], newArr);
-      
-      const dataObj = lodashGet(clonedRecruitmentCommentsObj, ['dataObj'], {});
-      delete dataObj[recruitmentComments_id];
-      
-      setRecruitmentCommentsObj(clonedRecruitmentCommentsObj);
-      // setRecruitmentCommentsObj({ dataObj: {}, limit: 1 });
-      
-      
-      // console.log(`
-      //   ----- clonedRecruitmentCommentsObj -----\n
-      //   ${util.inspect(clonedRecruitmentCommentsObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      // ---------------------------------------------
-      //   Game Community データ更新
+      //   Update - Game Community
       // ---------------------------------------------
       
       const gameCommunityObj = lodashGet(resultObj, ['data', 'gameCommunityObj'], {});
       setGameCommunityObj(gameCommunityObj);
+      
+      
+      // ---------------------------------------------
+      //   Delete Comment Data
+      // ---------------------------------------------
+      
+      const clonedObj = lodashCloneDeep(recruitmentCommentsObj);
+      
+      const dataObj = lodashGet(clonedObj, ['dataObj'], {});
+      delete dataObj[recruitmentComments_id];
+      
+      setRecruitmentCommentsObj(clonedObj);
       
       
       // ---------------------------------------------
@@ -403,9 +313,35 @@ const Comment = (props) => {
       // ---------------------------------------------
       
       handleSnackbarOpen({
+        
         variant: 'success',
         messageID: 'GERzvKtUN',
+        
       });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/gc/rec/v2/components/comment.js - handleDelete
+      // `);
+      
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+      // `);
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
     } catch (errorObj) {
@@ -416,8 +352,10 @@ const Comment = (props) => {
       // ---------------------------------------------
       
       handleSnackbarOpen({
+        
         variant: 'error',
         errorObj,
+        
       });
       
       
@@ -452,43 +390,9 @@ const Comment = (props) => {
   
   const dataObj = lodashGet(recruitmentCommentsObj, ['dataObj', recruitmentComments_id], {});
   
-  // console.log(`
-  //   ----- dataObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
   if (Object.keys(dataObj).length === 0) {
     return null;
   }
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   storeGcRecruitment
-  // --------------------------------------------------
-  
-  // const {
-    
-  //   dataObj,
-  //   handleEdit,
-  //   handleReadRecruitmentComments,
-  //   handleShowFormRecruitmentComment,
-  //   handleShowDeleteDialog,
-    
-  // } = storeGcRecruitment;
-  
-  
-  // // --------------------------------------------------
-  // //   storeGood
-  // // --------------------------------------------------
-  
-  // const {
-    
-  //   handleSubmitGood,
-    
-  // } = storeGood;
   
   
   
@@ -641,7 +545,6 @@ const Comment = (props) => {
               gameCommunities_id={gameCommunities_id}
               recruitmentThreads_id={recruitmentThreads_id}
               recruitmentComments_id={recruitmentComments_id}
-              // enableAnonymity={enableAnonymity}
               publicSettingThread={publicSettingThread}
               setShowForm={setShowFormComment}
             />
@@ -878,7 +781,6 @@ const Comment = (props) => {
                       height: 22px;
                       min-width: 54px;
                       min-height: 22px;
-                      // margin: 4px 12px 0 0;
                       padding: 0 3px;
                       
                       @media screen and (max-width: 480px) {
@@ -1065,7 +967,6 @@ const Component = (props) => {
     urlID,
     gameCommunities_id,
     recruitmentThreads_id,
-    // enableAnonymity,
     
   } = props;
   
@@ -1137,15 +1038,11 @@ const Component = (props) => {
   
   /**
    * コメントを読み込む
-   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
-   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドID
    * @param {number} page - コメントのページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
   const handleRead = async ({
     
-    gameCommunities_id,
-    recruitmentThreads_id,
     page,
     changeLimit,
     
@@ -1237,15 +1134,7 @@ const Component = (props) => {
         
       }
       
-      // console.log(chalk`
-      //   reload: {green ${reload}}
-      // `);
       
-      // console.log(`
-      //   ----- arr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       
       // ---------------------------------------------
@@ -1290,41 +1179,18 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   recruitmentThreads_idArr
+      //   recruitmentThreads_idsArr
       // ---------------------------------------------
       
-      let recruitmentThreads_idArr = [recruitmentThreads_id];
+      let recruitmentThreads_idsArr = [recruitmentThreads_id];
       
       // 表示件数を変更する場合は他のスレッドも一緒に更新するため、現在表示されているスレッドのIDを取得する
       if (changeLimit) {
         
         const recruitmentThreadsPage = lodashGet(recruitmentThreadsObj, ['page'], 1);
-        recruitmentThreads_idArr = lodashGet(recruitmentThreadsObj, [`page${recruitmentThreadsPage}Obj`, 'arr'], []);
+        recruitmentThreads_idsArr = lodashGet(recruitmentThreadsObj, [`page${recruitmentThreadsPage}Obj`, 'arr'], []);
         
       }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   console.log
-      // ---------------------------------------------
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/recruitment/v2/components/comment.js - handleRead
-      // `);
-      
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-      // `);
-      
-      // console.log(`
-      //   ----- recruitmentThreads_idArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreads_idArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       
       
@@ -1336,7 +1202,7 @@ const Component = (props) => {
       const formDataObj = {
         
         gameCommunities_id,
-        recruitmentThreads_idArr,
+        recruitmentThreads_idsArr,
         threadPage: 1,
         threadLimit,
         commentPage: page,
@@ -1367,13 +1233,6 @@ const Component = (props) => {
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
-      
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       
       
@@ -1438,10 +1297,57 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   コメントの強制リロード解除
+      //   強制リロード解除
       // ---------------------------------------------
       
       setReloadForceRecruitmentComment(false);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/recruitment/v2/components/comment.js - handleRead
+      // `);
+      
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+      // `);
+      
+      // console.log(`
+      //   ----- recruitmentThreads_idsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentThreads_idsArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- formDataObj -----\n
+      //   ${util.inspect(formDataObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- resultObj.data.recruitmentCommentsObj -----\n
+      //   ${util.inspect(resultObj.data.recruitmentCommentsObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- recruitmentCommentsMergedObj -----\n
+      //   ${util.inspect(recruitmentCommentsMergedObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
     } catch (errorObj) {
@@ -1452,8 +1358,10 @@ const Component = (props) => {
       // ---------------------------------------------
       
       handleSnackbarOpen({
+        
         variant: 'error',
         errorObj,
+        
       });
       
       
@@ -1522,7 +1430,6 @@ const Component = (props) => {
   //   urlID: {green ${urlID}}
   //   gameCommunities_id: {green ${gameCommunities_id}}
   //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-  //   enableAnonymity: {green ${enableAnonymity}}
   // `);
   
   // console.log(chalk`
@@ -1567,7 +1474,6 @@ const Component = (props) => {
         gameCommunities_id={gameCommunities_id}
         recruitmentThreads_id={recruitmentThreads_id}
         recruitmentComments_id={recruitmentComments_id}
-        // enableAnonymity={enableAnonymity}
         publicSettingThread={publicSettingThread}
       />
     );
@@ -1621,8 +1527,6 @@ const Component = (props) => {
             disabled={buttonDisabled}
             onChange={() => {}}
             onChange={(page) => handleRead({
-              gameCommunities_id,
-              recruitmentThreads_id,
               page,
             })}
             pageSize={limit}
@@ -1647,8 +1551,6 @@ const Component = (props) => {
             value={limit}
             onChange={() => {}}
             onChange={(eventObj) => handleRead({
-              gameCommunities_id,
-              recruitmentThreads_id,
               page: 1,
               changeLimit: eventObj.target.value,
             })}

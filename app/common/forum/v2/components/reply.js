@@ -1263,12 +1263,12 @@ const Component = (props) => {
       if (changeLimit) {
         
         const forumThreadsPage = lodashGet(forumThreadsObj, ['page'], 1);
-        const forumThreads_idArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
+        const forumThreads_idsArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
         
         
         forumComments_idsArr = [];
         
-        for (let forumThreads_id of forumThreads_idArr.values()) {
+        for (let forumThreads_id of forumThreads_idsArr.values()) {
           
           const forumCommentsPage = lodashGet(forumCommentsObj, [forumThreads_id, 'page'], 1);
           const tempForumComments_idArr = lodashGet(forumCommentsObj, [forumThreads_id, `page${forumCommentsPage}Obj`, 'arr'], []);

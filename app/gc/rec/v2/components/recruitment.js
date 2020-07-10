@@ -32,7 +32,6 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-// import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
@@ -131,7 +130,6 @@ const Component = (props) => {
   
   const intl = useIntl();
   const classes = useStyles();
-  // const [panelExpanded, setPanelExpanded] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   
@@ -154,9 +152,18 @@ const Component = (props) => {
     
     recruitmentThreadsObj,
     
+    searchHardwares,
+    searchCategories,
+    searchKeyword,
+    
   } = stateGc;
   
-  
+  console.log(chalk`
+    /app/gc/rec/v2/components/recruitment.js
+    searchHardwares: {green ${searchHardwares}}
+    searchCategories: {green ${searchCategories}}
+    searchKeyword: {green ${searchKeyword}}
+  `);
   
   
   // --------------------------------------------------
@@ -165,13 +172,11 @@ const Component = (props) => {
   
   /**
    * スレッドを読み込む
-   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
    * @param {number} page - スレッドのページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
   const handleRead = async ({
     
-    gameCommunities_id,
     page,
     changeLimit,
     
@@ -185,20 +190,52 @@ const Component = (props) => {
       //   Router.push 用
       // ---------------------------------------------
       
-      let url = '';
-      let as = '';
+      const urlHardwares = searchHardwares ? `hardwares=${searchHardwares}&` : '';
+      const urlCategories = searchCategories ? `categories=${searchCategories}&` : '';
+      const urlKeyword = searchKeyword ? `keyword=${encodeURI(searchKeyword)}&` : '';
       
-      if (page === 1) {
+      let url = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
+      let as = `/gc/${urlID}/rec/search?${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
+      
+      if (!urlHardwares && !urlCategories && !urlKeyword) {
         
-        url = `/gc/[urlID]/rec/index?urlID=${urlID}`;
-        as = `/gc/${urlID}/rec`;
-        
-      } else {
-        
-        url = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}&page=${page}`;
-        as = `/gc/${urlID}/rec/${page}`;
+        if (page === 1) {
+          
+          url = `/gc/[urlID]/rec/index?urlID=${urlID}&page=${page}`;
+          as = `/gc/${urlID}/rec`;
+          
+        } else {
+          
+          url = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}&page=${page}`;
+          as = `/gc/${urlID}/rec/${page}`;
+          
+        }
         
       }
+      
+      
+      console.log(chalk`
+        /app/gc/rec/v2/components/recruitment.js - handleRead
+        searchHardwares: {green ${searchHardwares}}
+        searchCategories: {green ${searchCategories}}
+        searchKeyword: {green ${searchKeyword}}
+      `);
+      
+      
+      // let url = '';
+      // let as = '';
+      
+      // if (page === 1) {
+        
+      //   url = `/gc/[urlID]/rec/index?urlID=${urlID}`;
+      //   as = `/gc/${urlID}/rec`;
+        
+      // } else {
+        
+      //   url = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}&page=${page}`;
+      //   as = `/gc/${urlID}/rec/${page}`;
+        
+      // }
       
       
       
@@ -344,14 +381,11 @@ const Component = (props) => {
         <Panel
           heading="募集投稿フォーム"
           defaultExpanded={false}
-          // panelExpanded={panelExpanded}
-          // setPanelExpanded={setPanelExpanded}
         >
           
           <FormThread
             gameCommunities_id={gameCommunities_id}
             recruitmentThreads_id=""
-            // setPanelExpanded={setPanelExpanded}
           />
           
         </Panel>
@@ -421,7 +455,6 @@ const Component = (props) => {
             <Pagination
               disabled={buttonDisabled}
               onChange={(page) => handleRead({
-                gameCommunities_id,
                 page,
               })}
               pageSize={limit}
@@ -444,7 +477,6 @@ const Component = (props) => {
             <Select
               value={limit}
               onChange={(eventObj) => handleRead({
-                gameCommunities_id,
                 page: 1,
                 changeLimit: eventObj.target.value,
               })}

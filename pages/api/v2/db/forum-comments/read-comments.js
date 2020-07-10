@@ -114,7 +114,7 @@ export default async (req, res) => {
       
       gameCommunities_id,
       userCommunities_id,
-      forumThreads_idArr,
+      forumThreads_idsArr,
       threadPage,
       threadLimit,
       commentPage, 
@@ -127,7 +127,7 @@ export default async (req, res) => {
     
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
-    lodashSet(requestParametersObj, ['forumThreads_idArr'], forumThreads_idArr);
+    lodashSet(requestParametersObj, ['forumThreads_idsArr'], forumThreads_idsArr);
     lodashSet(requestParametersObj, ['threadPage'], threadPage);
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentPage'], commentPage);
@@ -152,8 +152,8 @@ export default async (req, res) => {
     // `);
     
     // console.log(`
-    //   ----- forumThreads_idArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
+    //   ----- forumThreads_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -206,7 +206,7 @@ export default async (req, res) => {
       localeObj,
       loginUsers_id,
       userCommunities_id,
-      forumThreads_idArr,
+      forumThreads_idsArr,
       threadPage,
       threadLimit,
       commentPage,

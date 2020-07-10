@@ -29,7 +29,6 @@ import { css, jsx } from '@emotion/core';
 
 import lodashGet from 'lodash/get';
 import lodashHas from 'lodash/has';
-import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
@@ -144,7 +143,6 @@ const Component = (props) => {
     recruitmentThreads_id,
     
     setShowForm,
-    // setPanelExpanded,
     
   } = props;
   
@@ -215,7 +213,7 @@ const Component = (props) => {
     // --------------------------------------------------
     
     if (recruitmentThreads_id) {
-      handleGetEditData({ recruitmentThreads_id });
+      handleGetEditData();
     }
     
     
@@ -234,7 +232,6 @@ const Component = (props) => {
   
   const {
     
-    // login,
     localeObj,
     
   } = stateUser;
@@ -242,7 +239,6 @@ const Component = (props) => {
   const {
     
     handleSnackbarOpen,
-    // handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
@@ -267,9 +263,8 @@ const Component = (props) => {
   
   /**
    * 編集用データを読み込む
-   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドのID
    */
-  const handleGetEditData = async ({ recruitmentThreads_id }) => {
+  const handleGetEditData = async () => {
     
     
     try {
@@ -287,6 +282,22 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
+      //   Loading Open
+      // ---------------------------------------------
+      
+      handleLoadingOpen({});
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      setButtonDisabled(true);
+      
+      
+      
+      
+      // ---------------------------------------------
       //   Scroll To
       // ---------------------------------------------
       
@@ -299,22 +310,6 @@ const Component = (props) => {
         offset: -50,
         
       });
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Loading Open
-      // ---------------------------------------------
-      
-      handleLoadingOpen({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      setButtonDisabled(true);
       
       
       
@@ -359,6 +354,13 @@ const Component = (props) => {
       }
       
       
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      setButtonDisabled(false);
       
       
       // ---------------------------------------------
@@ -437,23 +439,25 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
-      
-      
-    } finally {
-      
-      
-      // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
       
       setButtonDisabled(false);
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      handleSnackbarOpen({
+        
+        variant: 'error',
+        errorObj,
+        
+      });
+      
+      
+    } finally {
       
       
       // ---------------------------------------------
@@ -474,14 +478,10 @@ const Component = (props) => {
   /**
    * 募集を投稿する
    * @param {Object} eventObj - イベント
-   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
-   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / 募集スレッドのID
    */
   const handleSubmit = async ({
     
     eventObj,
-    gameCommunities_id,
-    recruitmentThreads_id,
     
   }) => {
     
@@ -497,7 +497,7 @@ const Component = (props) => {
     //   新規投稿時の recruitmentThreads_id
     // ---------------------------------------------
     
-    let newRecruitmentThreads_id = 'nEQMNMWDy';
+    let newRecruitmentThreads_id = '';
     
     
     
@@ -671,11 +671,6 @@ const Component = (props) => {
       }
       
       
-      // console.log(`
-      //   ----- idsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       
       // ---------------------------------------------
@@ -700,6 +695,58 @@ const Component = (props) => {
       }
       
       
+      
+      
+      // ---------------------------------------------
+      //   Reset Form
+      // ---------------------------------------------
+      
+      setHardwaresArr([]);
+      setCategory('');
+      setTitle('');
+      setName('');
+      setComment('');
+      setImagesAndVideosObj({
+        
+        _id: '',
+        createdDate: '',
+        updatedDate: '',
+        users_id: '',
+        type: 'recruitment',
+        arr: [],
+        
+      });
+      
+      setIDsArr([]);
+      setPlatform1('Other');
+      setPlatform2('Other');
+      setPlatform3('Other');
+      setID1('');
+      setID2('');
+      setID3('');
+      setInformationTitle1('');
+      setInformationTitle2('');
+      setInformationTitle3('');
+      setInformationTitle4('');
+      setInformationTitle5('');
+      setInformation1('');
+      setInformation2('');
+      setInformation3('');
+      setInformation4('');
+      setInformation5('');
+      setPublicSetting(1);
+      setDeadlineDate('');
+      setWebPushAvailable(false);
+      setWebPushSubscriptionObj({});
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      setButtonDisabled(false);
       
       
       // --------------------------------------------------
@@ -728,8 +775,6 @@ const Component = (props) => {
       // ---------------------------------------------
       
       setRecruitmentRepliesObj(lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {}));
-      
-      
       
       
       // ---------------------------------------------
@@ -786,6 +831,13 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      setButtonDisabled(false);
+      
+      
+      // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
       
@@ -801,97 +853,12 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      setButtonDisabled(false);
-      
-      
-      // ---------------------------------------------
-      //   Loading Close
-      // ---------------------------------------------
-      
-      handleLoadingClose();
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   編集の場合
+      //   Hide Form
       // ---------------------------------------------
       
       if (recruitmentThreads_id) {
-        
-        
-        // ---------------------------------------------
-        //   Hide Form
-        // ---------------------------------------------
-        
         setShowForm(false);
-        
-        
-      // ---------------------------------------------
-      //   新規投稿の場合
-      // ---------------------------------------------
-        
-      } else {
-        
-        
-        // ---------------------------------------------
-        //   Reset Form
-        // ---------------------------------------------
-        
-        setHardwaresArr([]);
-        setCategory('');
-        setTitle('');
-        setName('');
-        setComment('');
-        setImagesAndVideosObj({
-          
-          _id: '',
-          createdDate: '',
-          updatedDate: '',
-          users_id: '',
-          type: 'recruitment',
-          arr: [],
-          
-        });
-        
-        setIDsArr([]);
-        setPlatform1('Other');
-        setPlatform2('Other');
-        setPlatform3('Other');
-        setID1('');
-        setID2('');
-        setID3('');
-        setInformationTitle1('');
-        setInformationTitle2('');
-        setInformationTitle3('');
-        setInformationTitle4('');
-        setInformationTitle5('');
-        setInformation1('');
-        setInformation2('');
-        setInformation3('');
-        setInformation4('');
-        setInformation5('');
-        setPublicSetting(1);
-        setDeadlineDate('');
-        setWebPushAvailable(false);
-        setWebPushSubscriptionObj({});
-        
-        
-        // ---------------------------------------------
-        //   パネルを閉じる
-        // ---------------------------------------------
-        
-        // setPanelExpanded(false);
-        
-        // window.setTimeout(() => setPanelExpanded(false), 1000);
-        
-        
       }
-      
-      
       
       
       // ---------------------------------------------
@@ -909,6 +876,13 @@ const Component = (props) => {
       });
       
       
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
+      
+      handleLoadingClose();
+      
+      
     }
     
     
@@ -919,9 +893,8 @@ const Component = (props) => {
   
   /**
    * フォームを閉じる
-   * @param {string} recruitmentThreads_id - DB recruitment-threads _id / スレッドのID
    */
-  const handleClose = async ({ recruitmentThreads_id }) => {
+  const handleClose = async () => {
     
     
     // ---------------------------------------------
@@ -1013,8 +986,6 @@ const Component = (props) => {
         name={elementName}
         onSubmit={(eventObj) => handleSubmit({
           eventObj,
-          gameCommunities_id,
-          recruitmentThreads_id,
         })}
       >
         
@@ -1257,9 +1228,6 @@ const Component = (props) => {
           <FormIDsInformations
             type="thread"
             
-            // gameCommunities_id={gameCommunities_id}
-            // recruitmentThreads_id={recruitmentThreads_id}
-            
             idsArr={idsArr}
             setIDsArr={setIDsArr}
             
@@ -1407,7 +1375,7 @@ const Component = (props) => {
                 variant="outlined"
                 color="secondary"
                 disabled={buttonDisabled}
-                onClick={() => handleClose({ recruitmentThreads_id })}
+                onClick={() => handleClose()}
               >
                 閉じる
               </Button>

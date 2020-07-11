@@ -133,30 +133,6 @@ const ContainerLayout = (props) => {
   
   
   // --------------------------------------------------
-  //   console.log
-  // --------------------------------------------------
-  
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/rec/[...slug].js - ContainerLayout
-  // `);
-  
-  // console.log(`
-  //   ----- props -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(props)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(chalk`
-  //   props.searchHardwares: {green ${props.searchHardwares}}
-  //   props.searchCategories: {green ${props.searchCategories}}
-  //   props.searchKeyword: {green ${props.searchKeyword}}
-  // `);
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Component - Sidebar
   // --------------------------------------------------
   
@@ -227,18 +203,17 @@ const Component = (props) => {
     recruitmentCommentsObj: props.recruitmentCommentsObj,
     recruitmentRepliesObj: props.recruitmentRepliesObj,
     
-    searchHardwares: props.searchHardwares,
-    searchCategories: props.searchCategories,
-    searchKeyword: props.searchKeyword,
+    hardwaresArr: props.hardwaresArr,
+    categories: props.categories,
+    keyword: props.keyword,
     
   };
   
-  console.log(chalk`
-    /pages/gc/[urlID]/rec/[...slug].js - Component
-    searchHardwares: {green ${props.searchHardwares}}
-    searchCategories: {green ${props.searchCategories}}
-    searchKeyword: {green ${props.searchKeyword}}
-  `);
+  // console.log(chalk`
+  //   /pages/gc/[urlID]/rec/[...slug].js - Component
+  //   categories: {green ${props.categories}}
+  //   keyword: {green ${props.keyword}}
+  // `);
   
   
   // --------------------------------------------------
@@ -303,9 +278,9 @@ export async function getServerSideProps({ req, res, query }) {
   //   Query
   // --------------------------------------------------
   
-  const searchHardwares = lodashGet(query, ['hardwares'], '');
-  const searchCategories = lodashGet(query, ['categories'], '');
-  const searchKeyword = lodashGet(query, ['keyword'], '');
+  const hardwares = lodashGet(query, ['hardwares'], '');
+  const categories = lodashGet(query, ['categories'], '');
+  const keyword = lodashGet(query, ['keyword'], '');
   const urlID = lodashGet(query, ['urlID'], '');
   const slugsArr = lodashGet(query, ['slug'], []);
   
@@ -329,13 +304,6 @@ export async function getServerSideProps({ req, res, query }) {
     
   }
   
-  
-  console.log(chalk`
-    /pages/gc/[urlID]/rec/[...slug].js - getServerSideProps
-    searchHardwares: {green ${searchHardwares}}
-    searchCategories: {green ${searchCategories}}
-    searchKeyword: {green ${searchKeyword}}
-  `);
   
   
   
@@ -365,7 +333,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   const resultObj = await fetchWrapper({
     
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/${urlID}/rec?recruitmentID=${recruitmentID}&threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}&hardwares=${searchHardwares}&categories=${searchCategories}&keyword=${searchKeyword}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/${urlID}/rec?recruitmentID=${recruitmentID}&threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}&hardwares=${hardwares}&categories=${categories}&keyword=${keyword}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -393,6 +361,8 @@ export async function getServerSideProps({ req, res, query }) {
   const recruitmentThreadsObj = lodashGet(dataObj, ['recruitmentThreadsObj'], {});
   const recruitmentCommentsObj = lodashGet(dataObj, ['recruitmentCommentsObj'], {});
   const recruitmentRepliesObj = lodashGet(dataObj, ['recruitmentRepliesObj'], {});
+  
+  const hardwaresArr = lodashGet(dataObj, ['hardwaresArr'], []);
   
   
   
@@ -580,6 +550,12 @@ export async function getServerSideProps({ req, res, query }) {
   //   replyLimit: {green ${replyLimit}}
   // `);
   
+  // console.log(chalk`
+  //   hardwares: {green ${hardwares}}
+  //   categories: {green ${categories}}
+  //   keyword: {green ${keyword}}
+  // `);
+  
   
   
   
@@ -608,9 +584,9 @@ export async function getServerSideProps({ req, res, query }) {
       recruitmentCommentsObj,
       recruitmentRepliesObj,
       
-      searchHardwares,
-      searchCategories,
-      searchKeyword,
+      hardwaresArr,
+      categories,
+      keyword,
       
     }
     

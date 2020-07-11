@@ -152,18 +152,13 @@ const Component = (props) => {
     
     recruitmentThreadsObj,
     
-    searchHardwares,
-    searchCategories,
+    searchHardwaresArr,
+    searchCategoriesArr,
     searchKeyword,
     
   } = stateGc;
   
-  console.log(chalk`
-    /app/gc/rec/v2/components/recruitment.js
-    searchHardwares: {green ${searchHardwares}}
-    searchCategories: {green ${searchCategories}}
-    searchKeyword: {green ${searchKeyword}}
-  `);
+  
   
   
   // --------------------------------------------------
@@ -190,8 +185,14 @@ const Component = (props) => {
       //   Router.push 用
       // ---------------------------------------------
       
-      const urlHardwares = searchHardwares ? `hardwares=${searchHardwares}&` : '';
-      const urlCategories = searchCategories ? `categories=${searchCategories}&` : '';
+      const hardwareIDsArr = [];
+      
+      for (let valueObj of searchHardwaresArr.values()) {
+        hardwareIDsArr.push(valueObj.hardwareID);
+      }
+      
+      const urlHardwares = hardwareIDsArr.length > 0 ? `hardwares=${hardwareIDsArr.join(',')}&` : '';
+      const urlCategories = searchCategoriesArr.length > 0 ? `categories=${searchCategoriesArr.join(',')}&` : '';
       const urlKeyword = searchKeyword ? `keyword=${encodeURI(searchKeyword)}&` : '';
       
       let url = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
@@ -214,12 +215,12 @@ const Component = (props) => {
       }
       
       
-      console.log(chalk`
-        /app/gc/rec/v2/components/recruitment.js - handleRead
-        searchHardwares: {green ${searchHardwares}}
-        searchCategories: {green ${searchCategories}}
-        searchKeyword: {green ${searchKeyword}}
-      `);
+      // console.log(chalk`
+      //   /app/gc/rec/v2/components/recruitment.js - handleRead
+      //   searchHardwares: {green ${searchHardwares}}
+      //   searchCategories: {green ${searchCategories}}
+      //   searchKeyword: {green ${searchKeyword}}
+      // `);
       
       
       // let url = '';

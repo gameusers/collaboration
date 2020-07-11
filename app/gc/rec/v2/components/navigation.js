@@ -54,6 +54,13 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
 // ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateGc } from 'app/@states/gc.js';
+
+
+// ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
@@ -97,6 +104,62 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateGc = ContainerStateGc.useContainer();
+  
+  const {
+    
+    searchHardwaresArr,
+    setSearchHardwaresArr,
+    
+    searchCategoriesArr,
+    setSearchCategoriesArr,
+    
+    searchKeyword,
+    setSearchKeyword,
+    
+  } = stateGc;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /app/gc/rec/v2/components/navigation.js
+  // `);
+  
+  // console.log(chalk`
+  //   searchHardwares: {green ${searchHardwares}}
+  //   searchCategories: {green ${searchCategories}}
+  //   searchKeyword: {green ${searchKeyword}}
+  // `);
+  
+  // console.log(`
+  //   ----- searchHardwaresArr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(searchHardwaresArr)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(`
+  //   ----- searchCategoriesArr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(searchCategoriesArr)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(chalk`
+  //   searchKeyword: {green ${searchKeyword}}
+  //   encodeURI(initialKeyword): {green ${encodeURI(searchKeyword)}}
+  // `);
+  
+  
+  
+  // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
@@ -104,9 +167,9 @@ const Component = (props) => {
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [showHardwareExplanation, setShowHardwareExplanation] = useState(false);
-  const [hardwaresArr, setHardwaresArr] = useState([]);
-  const [categoriesArr, setCategoriesArr] = useState([]);
-  const [keyword, setKeyword] = useState('');
+  // const [hardwaresArr, setHardwaresArr] = useState(searchHardwaresArr);
+  // const [categoriesArr, setCategoriesArr] = useState(searchCategoriesArr);
+  // const [keyword, setKeyword] = useState(searchKeyword);
   
   
   useEffect(() => {
@@ -133,7 +196,7 @@ const Component = (props) => {
     //   Clone
     // --------------------------------------------------
     
-    let clonedArr = lodashCloneDeep(categoriesArr);
+    let clonedArr = lodashCloneDeep(searchCategoriesArr);
     
     
     // --------------------------------------------------
@@ -165,7 +228,7 @@ const Component = (props) => {
     //   更新
     // --------------------------------------------------
     
-    setCategoriesArr(clonedArr);
+    setSearchCategoriesArr(clonedArr);
     
     
   };
@@ -197,7 +260,7 @@ const Component = (props) => {
       
       const hardwareIDsArr = [];
       
-      for (let valueObj of hardwaresArr.values()) {
+      for (let valueObj of searchHardwaresArr.values()) {
         hardwareIDsArr.push(valueObj.hardwareID);
       }
       
@@ -207,8 +270,8 @@ const Component = (props) => {
       // ---------------------------------------------
       
       const urlHardwares = hardwareIDsArr.length > 0 ? `hardwares=${hardwareIDsArr.join(',')}&` : '';
-      const urlCategories = categoriesArr.length > 0 ? `categories=${categoriesArr.join(',')}&` : '';
-      const urlKeyword = keyword ? `keyword=${encodeURI(keyword)}&` : '';
+      const urlCategories = searchCategoriesArr.length > 0 ? `categories=${searchCategoriesArr.join(',')}&` : '';
+      const urlKeyword = searchKeyword ? `keyword=${encodeURI(searchKeyword)}&` : '';
       
       let url = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
       let as = `/gc/${urlID}/rec/search?${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
@@ -262,13 +325,13 @@ const Component = (props) => {
       // `);
       
       // console.log(`
-      //   ----- categoriesArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(categoriesArr)), { colors: true, depth: null })}\n
+      //   ----- searchCategoriesArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(searchCategoriesArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
       // console.log(chalk`
-      //   keyword: {green ${keyword}}
+      //   searchKeyword: {green ${searchKeyword}}
       // `);
       
       
@@ -302,7 +365,7 @@ const Component = (props) => {
   //   Validations
   // --------------------------------------------------
   
-  const validationKeywordObj = validationKeyword({ value: keyword });
+  const validationKeywordObj = validationKeyword({ value: searchKeyword });
   
   
   
@@ -425,8 +488,8 @@ const Component = (props) => {
         
         {/* Form */}
         <FormHardwares
-          hardwaresArr={hardwaresArr}
-          setHardwaresArr={setHardwaresArr}
+          hardwaresArr={searchHardwaresArr}
+          setHardwaresArr={setSearchHardwaresArr}
           limit={limitHardwares}
         />
         
@@ -470,7 +533,7 @@ const Component = (props) => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={categoriesArr.indexOf(1) !== -1}
+                  checked={searchCategoriesArr.indexOf(1) !== -1}
                   onChange={() => handleCategory({
                     value: 1,
                   })}
@@ -483,7 +546,7 @@ const Component = (props) => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={categoriesArr.indexOf(2) !== -1}
+                  checked={searchCategoriesArr.indexOf(2) !== -1}
                   onChange={() => handleCategory({
                     value: 2,
                   })}
@@ -496,7 +559,7 @@ const Component = (props) => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={categoriesArr.indexOf(3) !== -1}
+                  checked={searchCategoriesArr.indexOf(3) !== -1}
                   onChange={() => handleCategory({
                     value: 3,
                   })}
@@ -547,7 +610,7 @@ const Component = (props) => {
           id="keyword"
           label="キーワード"
           value={validationKeywordObj.value}
-          onChange={(eventObj) => setKeyword(eventObj.target.value)}
+          onChange={(eventObj) => setSearchKeyword(eventObj.target.value)}
           error={validationKeywordObj.error}
           helperText={intl.formatMessage({ id: validationKeywordObj.messageID }, { numberOfCharacters: validationKeywordObj.numberOfCharacters })}
           margin="normal"

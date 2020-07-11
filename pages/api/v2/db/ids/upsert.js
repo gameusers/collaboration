@@ -1,61 +1,69 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const shortid = require('shortid');
-const moment = require('moment');
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import shortid from 'shortid';
+import moment from 'moment';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelIDs = require('../../../../../app/@database/ids/model');
+import ModelIDs from 'app/@database/ids/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationBoolean } = require('../../../../../app/@validations/boolean');
+import { validationIP } from 'app/@validations/ip.js';
+import { validationBoolean } from 'app/@validations/boolean.js';
 
-const { validationIDs_idServer } = require('../../../../../app/@database/ids/validations/_id-server');
-const { validationIDsPlatform } = require('../../../../../app/@database/ids/validations/platform');
-const { validationIDsLabel } = require('../../../../../app/@database/ids/validations/label');
-const { validationIDsID } = require('../../../../../app/@database/ids/validations/id');
-const { validationIDsPublicSetting } = require('../../../../../app/@database/ids/validations/public-setting');
-const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
+import { validationIDs_idServer } from 'app/@database/ids/validations/_id-server.js';
+import { validationIDsPlatform } from 'app/@database/ids/validations/platform.js';
+import { validationIDsLabel } from 'app/@database/ids/validations/label.js';
+import { validationIDsID } from 'app/@database/ids/validations/id.js';
+import { validationIDsPublicSetting } from 'app/@database/ids/validations/public-setting.js';
+import { validationGameCommunities_idServer } from 'app/@database/game-communities/validations/_id-server.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from 'app/@locales/locale.js';
+
+
 
 
 
@@ -75,21 +83,30 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
   let returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: language
+  });
   
   
   
@@ -150,7 +167,7 @@ export default async (req, res) => {
     //   Validation
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: req.ip });
+    await validationIP({ throwError: true, value: ip });
     await validationIDsPlatform({ throwError: true, value: platform });
     await validationIDsLabel({ throwError: true, value: label });
     await validationIDsID({ throwError: true, value: id });
@@ -212,9 +229,11 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const count = await ModelIDs.count({
+      
       conditionObj: {
         users_id: loginUsers_id,
       },
+      
     });
     
     if (count > parseInt(process.env.NEXT_PUBLIC_ID_INSERT_LIMIT, 10)) {
@@ -339,11 +358,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'bqaZQRkex',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

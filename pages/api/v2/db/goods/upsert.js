@@ -1,50 +1,57 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const shortid = require('shortid');
-const moment = require('moment');
+import shortid from 'shortid';
+import moment from 'moment';
 
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelGoods = require('../../../../../app/@database/goods/model');
-const ModelForumComments = require('../../../../../app/@database/forum-comments/model');
-const ModelRecruitmentComments = require('../../../../../app/@database/recruitment-comments/model');
-const ModelRecruitmentReplies = require('../../../../../app/@database/recruitment-replies/model');
+import ModelGoods from 'app/@database/goods/model.js';
+import ModelForumComments from 'app/@database/forum-comments/model.js';
+import ModelRecruitmentComments from 'app/@database/recruitment-comments/model.js';
+import ModelRecruitmentReplies from 'app/@database/recruitment-replies/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
+import { validationIP } from 'app/@validations/ip.js';
+
+
 
 
 
@@ -73,9 +80,10 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   IP & User Agent
+  //   Language & IP & User Agent
   // --------------------------------------------------
   
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
@@ -563,6 +571,10 @@ export default async (req, res) => {
 
 
 
+
+// --------------------------------------------------
+//   config
+// --------------------------------------------------
 
 export const config = {
   api: {

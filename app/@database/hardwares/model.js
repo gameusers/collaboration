@@ -11,7 +11,7 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Node Packages
+//   Lodash
 // ---------------------------------------------
 
 const lodashGet = require('lodash/get');
@@ -22,6 +22,8 @@ const lodashGet = require('lodash/get');
 // ---------------------------------------------
 
 const SchemaHardwares = require('./schema.js');
+
+
 
 
 
@@ -297,7 +299,12 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * @param {string} keyword - 検索キーワード
  * @return {Array} 取得データ
  */
-const findForSuggestion = async ({ localeObj, keyword }) => {
+const findForSuggestion = async ({
+  
+  localeObj,
+  keyword,
+  
+}) => {
   
   
   // --------------------------------------------------
@@ -383,6 +390,10 @@ const findHardwaresArr = async ({
         }
       },
       
+      
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
       
       {
         $project: {

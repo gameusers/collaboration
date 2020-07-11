@@ -36,6 +36,25 @@ import lodashGet from 'lodash/get';
 const useGc = (initialStateObj) => {
   
   
+  
+  // --------------------------------------------------
+  //   Initial State
+  // --------------------------------------------------
+  
+  const categories = lodashGet(initialStateObj, ['categories'], '');
+  
+  let categoriesArr = [];
+  
+  if (categories) {
+    
+    categoriesArr = categories.split(',');
+    categoriesArr = categoriesArr.map(value => parseInt(value, 10));
+    
+  }
+  
+  
+  
+  
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
@@ -60,9 +79,9 @@ const useGc = (initialStateObj) => {
   const [reloadForceRecruitmentReply, setReloadForceRecruitmentReply] = useState(false);
   
   
-  const [searchHardwares, setSearchHardwares] = useState(lodashGet(initialStateObj, ['searchHardwares'], ''));
-  const [searchCategories, setSearchCategories] = useState(lodashGet(initialStateObj, ['searchCategories'], ''));
-  const [searchKeyword, setSearchKeyword] = useState(lodashGet(initialStateObj, ['searchKeyword'], ''));
+  const [searchHardwaresArr, setSearchHardwaresArr] = useState(lodashGet(initialStateObj, ['hardwaresArr'], []));
+  const [searchCategoriesArr, setSearchCategoriesArr] = useState(categoriesArr);
+  const [searchKeyword, setSearchKeyword] = useState(lodashGet(initialStateObj, ['keyword'], ''));
   
   
   // const [forumThreadsReload, setForumThreadsReload] = useState(false);
@@ -141,11 +160,11 @@ const useGc = (initialStateObj) => {
     
     
     
-    searchHardwares,
-    setSearchHardwares,
+    searchHardwaresArr,
+    setSearchHardwaresArr,
     
-    searchCategories,
-    setSearchCategories,
+    searchCategoriesArr,
+    setSearchCategoriesArr,
     
     searchKeyword,
     setSearchKeyword,

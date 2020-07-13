@@ -45,6 +45,8 @@ import IconHome from '@material-ui/icons/Home';
 import IconLogin from '@material-ui/icons/ExitToApp';
 import IconLogout from '@material-ui/icons/Eject';
 import IconGames from '@material-ui/icons/Games';
+import IconUCList from '@material-ui/icons/MenuBook';
+import IconUserCommunity from '@material-ui/icons/SupervisedUserCircle';
 
 import IconForum from '@material-ui/icons/Forum';
 import IconDescription from '@material-ui/icons/Description';
@@ -96,6 +98,8 @@ const Component = (props) => {
     let anchorText = '';
     
     
+    
+    
     // --------------------------------------------------
     //   - Login
     // --------------------------------------------------
@@ -105,26 +109,22 @@ const Component = (props) => {
       icon = <IconLogin fontSize="small" />;
       anchorText = 'ログイン';
       
-    }
-    
     
     // --------------------------------------------------
     //   - Logout
     // --------------------------------------------------
     
-    if (valueObj.type === 'logout') {
+    } else if (valueObj.type === 'logout') {
       
       icon = <IconLogout fontSize="small" />;
       anchorText = 'ログアウト';
-      
-    }
     
     
     // --------------------------------------------------
     //   - Game Community
     // --------------------------------------------------
     
-    if (valueObj.type === 'gc') {
+    } else if (valueObj.type === 'gc') {
       
       icon = <IconGames fontSize="small" />;
       anchorText = valueObj.anchorText;
@@ -149,7 +149,24 @@ const Component = (props) => {
       icon = <IconSearch fontSize="small" />;
       anchorText = '検索';
       
+      
+    // --------------------------------------------------
+    //   - User Community
+    // --------------------------------------------------
+      
+    } else if (valueObj.type === 'uc') {
+      
+      icon = <IconUCList fontSize="small" />;
+      anchorText = 'ユーザーコミュニティ';
+      
+    } else if (valueObj.type === 'uc/index') {
+      
+      icon = <IconUserCommunity fontSize="small" />;
+      anchorText = valueObj.anchorText;
+      
     }
+    
+    
     
     
     // --------------------------------------------------

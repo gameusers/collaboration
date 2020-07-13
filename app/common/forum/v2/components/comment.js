@@ -66,7 +66,8 @@ import IconReply from '@material-ui/icons/Reply';
 // ---------------------------------------------
 
 import { ContainerStateLayout } from 'app/@states/layout.js';
-import { ContainerStateGc } from 'app/@states/gc.js';
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateForum } from 'app/@states/forum.js';
 
 
 // ---------------------------------------------
@@ -87,8 +88,8 @@ import User from 'app/common/user/v2/components/user.js';
 import ImageAndVideo from 'app/common/image-and-video/v2/components/image-and-video.js';
 import GoodButton from 'app/common/good/v2/components/button.js';
 
-import FormComment from 'app/common/forum/v2/components/form-comment.js';
-import FormReply from 'app/common/forum/v2/components/form-reply.js';
+import FormComment from 'app/common/forum/v2/components/form/comment.js';
+import FormReply from 'app/common/forum/v2/components/form/reply.js';
 import Reply from 'app/common/forum/v2/components/reply.js';
 
 
@@ -157,7 +158,8 @@ const Comment = (props) => {
   // --------------------------------------------------
   
   const stateLayout = ContainerStateLayout.useContainer();
-  const stateGc = ContainerStateGc.useContainer();
+  const stateCommunity = ContainerStateCommunity.useContainer();
+  const stateForum = ContainerStateForum.useContainer();
   
   const {
     
@@ -166,21 +168,22 @@ const Comment = (props) => {
     handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
-    // handleScrollTo,
     
   } = stateLayout;
   
   const {
     
-    // gameCommunityObj,
     setGameCommunityObj,
-    // forumThreadsObj,
-    // setForumThreadsObj,
+    
+  } = stateCommunity;
+  
+  const {
+    
     forumCommentsObj,
     setForumCommentsObj,
     setReloadForceForumComment,
     
-  } = stateGc;
+  } = stateForum;
   
   
   
@@ -1016,7 +1019,8 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const stateLayout = ContainerStateLayout.useContainer();
-  const stateGc = ContainerStateGc.useContainer();
+  const stateCommunity = ContainerStateCommunity.useContainer();
+  const stateForum = ContainerStateForum.useContainer();
   
   const {
     
@@ -1030,6 +1034,11 @@ const Component = (props) => {
     
     gameCommunityObj,
     setGameCommunityObj,
+    
+  } = stateCommunity;
+  
+  const {
+    
     forumThreadsObj,
     setForumThreadsObj,
     forumCommentsObj,
@@ -1039,7 +1048,7 @@ const Component = (props) => {
     reloadForceForumComment,
     setReloadForceForumComment,
     
-  } = stateGc;
+  } = stateForum;
   
   
   

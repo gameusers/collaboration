@@ -35,7 +35,8 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import { ContainerStateLayout } from 'app/@states/layout.js';
-import { ContainerStateGc } from 'app/@states/gc.js';
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 
 
 // ---------------------------------------------
@@ -74,7 +75,8 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
   
   const stateLayout = ContainerStateLayout.useContainer();
-  const stateGc = ContainerStateGc.useContainer();
+  const stateCommunity = ContainerStateCommunity.useContainer();
+  const stateRecruitment = ContainerStateRecruitment.useContainer();
   
   const {
     
@@ -85,11 +87,16 @@ const ContainerLayout = (props) => {
   const {
     
     setGameCommunityObj,
+    
+  } = stateCommunity;
+  
+  const {
+    
     setRecruitmentThreadsObj,
     setRecruitmentCommentsObj,
     setRecruitmentRepliesObj,
     
-  } = stateGc;
+  } = stateRecruitment;
   
   
   
@@ -209,11 +216,7 @@ const Component = (props) => {
     
   };
   
-  // console.log(chalk`
-  //   /pages/gc/[urlID]/rec/[...slug].js - Component
-  //   categories: {green ${props.categories}}
-  //   keyword: {green ${props.keyword}}
-  // `);
+  
   
   
   // --------------------------------------------------
@@ -233,11 +236,15 @@ const Component = (props) => {
   // --------------------------------------------------
   
   return (
-    <ContainerStateGc.Provider initialState={initialStateObj}>
+    <ContainerStateCommunity.Provider initialState={initialStateObj}>
       
-      <ContainerLayout {...props} />
+      <ContainerStateRecruitment.Provider initialState={initialStateObj}>
+        
+        <ContainerLayout {...props} />
+        
+      </ContainerStateRecruitment.Provider>
       
-    </ContainerStateGc.Provider>
+    </ContainerStateCommunity.Provider>
   );
   
   

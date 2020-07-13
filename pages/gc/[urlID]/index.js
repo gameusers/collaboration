@@ -53,8 +53,8 @@ import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
 //   States
 // ---------------------------------------------
 
-import { ContainerStateLayout } from 'app/@states/layout.js';
-import { ContainerStateGc } from 'app/@states/gc.js';
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateForum } from 'app/@states/forum.js';
 
 
 
@@ -73,24 +73,23 @@ const ContainerLayout = (props) => {
   //   States
   // --------------------------------------------------
   
-  const stateLayout = ContainerStateLayout.useContainer();
-  const stateGc = ContainerStateGc.useContainer();
-  
-  const {
-    
-    handleScrollTo,
-    
-  } = stateLayout;
+  const stateCommunity = ContainerStateCommunity.useContainer();
+  const stateForum = ContainerStateForum.useContainer();
   
   const {
     
     setGameCommunityObj,
+    
+  } = stateCommunity;
+  
+  const {
+    
     setForumThreadsForListObj,
     setForumThreadsObj,
     setForumCommentsObj,
     setForumRepliesObj,
     
-  } = stateGc;
+  } = stateForum;
   
   
   
@@ -118,18 +117,7 @@ const ContainerLayout = (props) => {
     //   Scroll To
     // ---------------------------------------------
     
-    // window.scrollTo(0, 0);
     scroll.scrollToTop({ duration: 0 });
-    
-    // handleScrollTo({
-      
-    //   to: 'forumThreads',
-    //   duration: 0,
-    //   delay: 0,
-    //   smooth: 'easeInOutQuart',
-    //   offset: -50,
-      
-    // });
     
     
   }, [props.ISO8601]);
@@ -256,43 +244,19 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   console.log
-  // --------------------------------------------------
-  
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/index.js
-  // `);
-  
-  // console.log(`
-  //   ----- headerObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(headerObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- headerNavMainArr -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(headerNavMainArr)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(chalk`
-  //   gameCommunities_id: {green ${gameCommunities_id}}
-  // `);
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Return
   // --------------------------------------------------
   
   return (
-    <ContainerStateGc.Provider initialState={initialStateObj}>
+    <ContainerStateCommunity.Provider initialState={initialStateObj}>
       
-      <ContainerLayout {...props} />
+      <ContainerStateForum.Provider initialState={initialStateObj}>
+        
+        <ContainerLayout {...props} />
+        
+      </ContainerStateForum.Provider>
       
-    </ContainerStateGc.Provider>
+    </ContainerStateCommunity.Provider>
   );
   
   
@@ -481,16 +445,16 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
   
-  console.log(`
-    ----------------------------------------\n
-    /pages/gc/[urlID]/index.js
-  `);
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /pages/gc/[urlID]/index.js
+  // `);
   
-  console.log(`
-    ----- resultObj -----\n
-    ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- resultObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   // console.log(chalk`
   //   threadListPage: {green ${threadListPage}}

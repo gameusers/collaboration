@@ -77,7 +77,7 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/forum/v2/components/form-thread.js
+  //   /app/common/forum/v2/components/form/thread.js
   // `);
   
   // console.log(`

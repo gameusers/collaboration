@@ -53,7 +53,8 @@ import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
 // ---------------------------------------------
 
 import { ContainerStateLayout } from 'app/@states/layout.js';
-import { ContainerStateGc } from 'app/@states/gc.js';
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateForum } from 'app/@states/forum.js';
 
 
 
@@ -73,7 +74,8 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
   
   const stateLayout = ContainerStateLayout.useContainer();
-  const stateGc = ContainerStateGc.useContainer();
+  const stateCommunity = ContainerStateCommunity.useContainer();
+  const stateForum = ContainerStateForum.useContainer();
   
   const {
     
@@ -84,12 +86,17 @@ const ContainerLayout = (props) => {
   const {
     
     setGameCommunityObj,
+    
+  } = stateCommunity;
+  
+  const {
+    
     setForumThreadsForListObj,
     setForumThreadsObj,
     setForumCommentsObj,
     setForumRepliesObj,
     
-  } = stateGc;
+  } = stateForum;
   
   
   
@@ -117,8 +124,6 @@ const ContainerLayout = (props) => {
     //   Scroll To
     // ---------------------------------------------
     
-    // if (window.scrollY !== 0) {
-    
     handleScrollTo({
       
       to: 'forumThreads',
@@ -136,40 +141,13 @@ const ContainerLayout = (props) => {
   
   
   // --------------------------------------------------
-  //   console.log
-  // --------------------------------------------------
-  
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/forum/[...slug].js - ContainerLayout
-  // `);
-  
-  // console.log(`
-  //   ----- props -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(props)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- forumThreadsObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(chalk`
-  //   gameCommunities_id: {green ${gameCommunities_id}}
-  // `);
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Component - Sidebar
   // --------------------------------------------------
   
   const componentSidebar =
     <ForumNavigation
       urlID={props.urlID}
+      forumID={props.forumID}
       gameCommunities_id={props.gameCommunities_id}
     />
   ;
@@ -255,43 +233,19 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   console.log
-  // --------------------------------------------------
-  
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/forum/[...slug].js - Component
-  // `);
-  
-  // console.log(`
-  //   ----- props.forumThreadsObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(props.forumThreadsObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- forumThreadsObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(chalk`
-  //   gameCommunities_id: {green ${gameCommunities_id}}
-  // `);
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Return
   // --------------------------------------------------
   
   return (
-    <ContainerStateGc.Provider initialState={initialStateObj}>
+    <ContainerStateCommunity.Provider initialState={initialStateObj}>
       
-      <ContainerLayout {...props} />
+      <ContainerStateForum.Provider initialState={initialStateObj}>
+        
+        <ContainerLayout {...props} />
+        
+      </ContainerStateForum.Provider>
       
-    </ContainerStateGc.Provider>
+    </ContainerStateCommunity.Provider>
   );
   
   
@@ -566,16 +520,16 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
   
-  console.log(`
-    ----------------------------------------\n
-    /pages/gc/[urlID]/forum/[...slug].js
-  `);
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /pages/gc/[urlID]/forum/[...slug].js
+  // `);
   
-  console.log(`
-    ----- resultObj -----\n
-    ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- resultObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   // console.log(chalk`
   //   threadListPage: {green ${threadListPage}}
@@ -621,6 +575,7 @@ export async function getServerSideProps({ req, res, query }) {
       urlID,
       gameCommunities_id,
       gameCommunityObj,
+      forumID,
       forumThreadsForListObj,
       forumThreadsObj,
       forumCommentsObj,

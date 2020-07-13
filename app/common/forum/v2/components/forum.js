@@ -32,7 +32,6 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-// import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
@@ -57,19 +56,19 @@ import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 
 
 // ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateForum } from 'app/@states/forum.js';
+
+
+// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
 import Panel from 'app/common/layout/v2/components/panel.js';
 import Thread from 'app/common/forum/v2/components/thread.js';
-import FormThread from 'app/common/forum/v2/components/form-thread.js';
-
-
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateGc } from 'app/@states/gc.js';
+import FormThread from 'app/common/forum/v2/components/form/thread.js';
 
 
 
@@ -151,13 +150,13 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
   
-  const stateGc = ContainerStateGc.useContainer();
+  const stateForum = ContainerStateForum.useContainer();
   
   const {
     
     forumThreadsObj,
     
-  } = stateGc;
+  } = stateForum;
   
   
   

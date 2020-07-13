@@ -59,7 +59,7 @@ import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 //   States
 // ---------------------------------------------
 
-import { ContainerStateGc } from 'app/@states/gc.js';
+import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 
 
 // ---------------------------------------------
@@ -146,7 +146,7 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
   
-  const stateGc = ContainerStateGc.useContainer();
+  const stateRecruitment = ContainerStateRecruitment.useContainer();
   
   const {
     
@@ -156,7 +156,7 @@ const Component = (props) => {
     searchCategoriesArr,
     searchKeyword,
     
-  } = stateGc;
+  } = stateRecruitment;
   
   
   

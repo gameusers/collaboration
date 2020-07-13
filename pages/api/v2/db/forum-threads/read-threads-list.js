@@ -24,6 +24,7 @@ import lodashSet from 'lodash/set';
 
 import ModelForumThreads from 'app/@database/forum-threads/model.js';
 import ModelGameCommunities from 'app/@database/game-communities/model.js';
+import ModelUserCommunities from 'app/@database/user-communities/model.js';
 
 
 // ---------------------------------------------
@@ -192,18 +193,30 @@ export default async (req, res) => {
     //   DB find / Game Community
     // --------------------------------------------------
     
-    returnObj.gameCommunityObj = await ModelGameCommunities.findForGameCommunityByGameCommunities_id({
+    if (gameCommunities_id) {
       
-      gameCommunities_id,
+      returnObj.gameCommunityObj = await ModelGameCommunities.findForGameCommunityByGameCommunities_id({
+        
+        gameCommunities_id,
+        
+      });
       
-    });
+      
+    // --------------------------------------------------
+    //   DB find / User Community
+    // --------------------------------------------------
+      
+    } else {
+      
+      returnObj.userCommunityObj = await ModelUserCommunities.findForUserCommunityByUserCommunities_id({
+        
+        localeObj,
+        userCommunities_id,
+        
+      });
+      
+    }
     
-    
-    // console.log(`
-    //   ----- returnObj.gameCommunityObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj.gameCommunityObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     

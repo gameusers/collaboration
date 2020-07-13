@@ -46,7 +46,8 @@ import Button from '@material-ui/core/Button';
 
 import { ContainerStateUser } from 'app/@states/user.js';
 import { ContainerStateLayout } from 'app/@states/layout.js';
-import { ContainerStateGc } from 'app/@states/gc.js';
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 
 
 // ---------------------------------------------
@@ -76,6 +77,7 @@ import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, v
 import FormName from 'app/common/form/components/name.js';
 import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js';
 import WebPuchCheckbox from 'app/common/web-push/v2/components/checkbox.js';
+
 import FormIDsInformations from 'app/gc/rec/v2/components/form/ids-informations.js';
 
 
@@ -215,7 +217,8 @@ const Component = (props) => {
   
   const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
-  const stateGc = ContainerStateGc.useContainer();
+  const stateCommunity = ContainerStateCommunity.useContainer();
+  const stateRecruitment = ContainerStateRecruitment.useContainer();
   
   const {
     
@@ -235,11 +238,16 @@ const Component = (props) => {
   const {
     
     setGameCommunityObj,
+    
+  } = stateCommunity;
+  
+  const {
+    
     setRecruitmentThreadsObj,
     setRecruitmentCommentsObj,
     setRecruitmentRepliesObj,
     
-  } = stateGc;
+  } = stateRecruitment;
   
   
   

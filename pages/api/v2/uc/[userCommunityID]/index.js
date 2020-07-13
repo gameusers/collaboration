@@ -1,61 +1,63 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
-//   Node Packages
+//   Lodash
 // ---------------------------------------------
 
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
-const lodashHas = require('lodash/has');
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
-const ModelForumThreads = require('../../../../../app/@database/forum-threads/model');
+import ModelUserCommunities from 'app/@database/user-communities/model.js';
+import ModelForumThreads from 'app/@database/forum-threads/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationInteger } = require('../../../../../app/@validations/integer');
-const { validationForumThreadsListLimit, validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
-const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
+import { validationInteger } from 'app/@validations/integer.js';
+import { validationForumThreadsListLimit, validationForumThreadsLimit } from 'app/@database/forum-threads/validations/limit.js';
+import { validationForumCommentsLimit, validationForumRepliesLimit } from 'app/@database/forum-comments/validations/limit.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from 'app/@locales/locale.js';
 
 
 // ---------------------------------------------
 //   API
 // ---------------------------------------------
 
-const { initialProps } = require('../../../../../app/@api/v2/common');
+import { initialProps } from 'app/@api/v2/common.js';
+
+
 
 
 
@@ -75,15 +77,6 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
@@ -91,6 +84,24 @@ export default async (req, res) => {
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   const loginUsersRole = lodashGet(req, ['user', 'role'], '');
+  
+  
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: language
+  });
   
   
   
@@ -102,13 +113,13 @@ export default async (req, res) => {
     //   GET Data
     // --------------------------------------------------
     
-    const userCommunityID = req.query.userCommunityID;
-    const threadListPage = parseInt(req.query.threadListPage, 10);
-    const threadListLimit = parseInt(req.query.threadListLimit, 10);
-    const threadPage = parseInt(req.query.threadPage, 10);
-    const threadLimit = parseInt(req.query.threadLimit, 10);
-    const commentLimit = parseInt(req.query.commentLimit, 10);
-    const replyLimit = parseInt(req.query.replyLimit, 10);
+    const userCommunityID = lodashGet(req, ['query', 'userCommunityID'], '');
+    const threadListPage = parseInt(lodashGet(req, ['query', 'threadListPage'], 1), 10);
+    const threadListLimit = parseInt(lodashGet(req, ['query', 'threadListLimit'], ''), 10);
+    const threadPage = parseInt(lodashGet(req, ['query', 'threadPage'], 1), 10);
+    const threadLimit = parseInt(lodashGet(req, ['query', 'threadLimit'], ''), 10);
+    const commentLimit = parseInt(lodashGet(req, ['query', 'commentLimit'], ''), 10);
+    const replyLimit = parseInt(lodashGet(req, ['query', 'replyLimit'], ''), 10);
     
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
     lodashSet(requestParametersObj, ['threadListPage'], threadListPage);
@@ -133,6 +144,21 @@ export default async (req, res) => {
     
     
     
+    // --------------------------------------------------
+    //   ログインしているユーザー情報＆ログインチェック
+    // --------------------------------------------------
+    
+    // returnObj.login = false;
+    
+    // if (req.isAuthenticated() && req.user) {
+      
+    //   returnObj.loginUsersObj = req.user;
+    //   returnObj.login = true;
+      
+    // }
+    
+    
+    
     
     // --------------------------------------------------
     //   DB find / User Community
@@ -152,8 +178,10 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     if (Object.keys(userCommunityObj).length === 0) {
+      
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'retRq6eFo', messageID: 'Error' }] });
+      
     }
     
     
@@ -277,10 +305,6 @@ export default async (req, res) => {
     //   returnObj.accessRightRead: {green ${returnObj.accessRightRead}}
     // `);
     
-    // console.log(`
-    //   ----------------------------------------
-    // `);
-    
     
     
     
@@ -296,9 +320,11 @@ export default async (req, res) => {
       // --------------------------------------------------
       
       let argumentsObj = {
+        
         localeObj,
         loginUsers_id,
         userCommunities_id,
+        
       };
       
       if (await validationInteger({ throwError: false, required: true, value: threadListPage }).error === false) {
@@ -317,10 +343,12 @@ export default async (req, res) => {
       // --------------------------------------------------
       
       argumentsObj = {
+        
         req,
         localeObj,
         loginUsers_id,
         userCommunities_id,
+        
       };
       
       if (await validationInteger({ throwError: false, required: true, value: threadPage }).error === false) {
@@ -366,11 +394,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'R8-TcJ2vj',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

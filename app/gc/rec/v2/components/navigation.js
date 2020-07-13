@@ -57,7 +57,7 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 //   States
 // ---------------------------------------------
 
-import { ContainerStateGc } from 'app/@states/gc.js';
+import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 
 
 // ---------------------------------------------
@@ -107,7 +107,7 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
   
-  const stateGc = ContainerStateGc.useContainer();
+  const stateRecruitment = ContainerStateRecruitment.useContainer();
   
   const {
     
@@ -120,7 +120,7 @@ const Component = (props) => {
     searchKeyword,
     setSearchKeyword,
     
-  } = stateGc;
+  } = stateRecruitment;
   
   
   
@@ -167,9 +167,6 @@ const Component = (props) => {
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [showHardwareExplanation, setShowHardwareExplanation] = useState(false);
-  // const [hardwaresArr, setHardwaresArr] = useState(searchHardwaresArr);
-  // const [categoriesArr, setCategoriesArr] = useState(searchCategoriesArr);
-  // const [keyword, setKeyword] = useState(searchKeyword);
   
   
   useEffect(() => {

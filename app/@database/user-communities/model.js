@@ -11,10 +11,9 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Node Packages
+//   Lodash
 // ---------------------------------------------
 
-const moment = require('moment');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
@@ -25,7 +24,7 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Model
 // ---------------------------------------------
 
-const Schema = require('./schema');
+const SchemaUserCommunities = require('./schema');
 const SchemaImagesAndVideos = require('../images-and-videos/schema');
 const SchemaFollows = require('../follows/schema');
 
@@ -36,6 +35,8 @@ const SchemaFollows = require('../follows/schema');
 
 const { formatImagesAndVideosArr, formatImagesAndVideosObj } = require('../images-and-videos/format');
 const { formatFollowsObj } = require('../follows/format');
+
+
 
 
 
@@ -72,7 +73,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await Schema.findOne(conditionObj).exec();
+    return await SchemaUserCommunities.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -115,7 +116,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.find(conditionObj).exec();
+    return await SchemaUserCommunities.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -157,7 +158,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.countDocuments(conditionObj).exec();
+    return await SchemaUserCommunities.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -204,7 +205,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await SchemaUserCommunities.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -246,7 +247,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await Schema.insertMany(saveArr);
+    return await SchemaUserCommunities.insertMany(saveArr);
     
     
   } catch (err) {
@@ -289,7 +290,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await Schema.deleteMany(conditionObj);
+    return await SchemaUserCommunities.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -314,7 +315,14 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * @param {string} userCommunityID - DB user-communities userCommunityID / コミュニティID
  * @return {Array} 取得データ
  */
-const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_id, userCommunityID }) => {
+const findForUserCommunity = async ({
+  
+  localeObj,
+  loginUsers_id,
+  userCommunities_id,
+  userCommunityID,
+  
+}) => {
   
   
   // --------------------------------------------------
@@ -357,8 +365,12 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_
     //   Aggregation
     // --------------------------------------------------
     
-    const resultArr = await Schema.aggregate([
+    const resultArr = await SchemaUserCommunities.aggregate([
       
+      
+      // --------------------------------------------------
+      //   Match Condition Array
+      // --------------------------------------------------
       
       ...matchConditionArr,
       
@@ -423,8 +435,8 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_
               },
               
               
-              { $project:
-                {
+              {
+                $project: {
                   gameCommunities_id: 1,
                   urlID: 1,
                   name: 1,
@@ -511,12 +523,18 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_
       },
       
       
-      { $project:
-        {
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+      
+      {
+        $project: {
           users_id: 1,
           createdDate: 1,
           localesArr: 1,
           communityType: 1,
+          forumObj: 1,
+          updatedDateObj: 1,
           anonymity: 1,
           imagesAndVideosObj: 1,
           gamesArr: 1,
@@ -680,7 +698,14 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_
  * @param {string} userCommunities_id - DB user-communities _id / _id
  * @return {Array} 取得データ
  */
-const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userCommunityID, userCommunities_id }) => {
+const findForUserCommunitySettings = async ({
+  
+  localeObj,
+  loginUsers_id,
+  userCommunityID,
+  userCommunities_id,
+  
+}) => {
   
   
   // --------------------------------------------------
@@ -723,7 +748,7 @@ const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userComm
     //   Aggregation
     // --------------------------------------------------
     
-    const resultArr = await Schema.aggregate([
+    const resultArr = await SchemaUserCommunities.aggregate([
       
       
       ...matchConditionArr,
@@ -1001,6 +1026,166 @@ const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userComm
 
 
 /**
+ * データを取得する / フォーラム＆募集の更新日時取得用
+ * @param {string} userCommunities_id - DB user-communities _id / ID
+ * @return {Object} 取得データ
+ */
+const findForUserCommunityByUserCommunities_id = async ({
+  
+  localeObj,
+  userCommunities_id,
+  
+}) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Match Condition Array
+    // --------------------------------------------------
+    
+    const matchConditionArr = [
+      {
+        $match: {
+          _id: userCommunities_id,
+        }
+      },
+    ];
+    
+    
+    // --------------------------------------------------
+    //   Aggregation - user-communities
+    // --------------------------------------------------
+    
+    const docArr = await SchemaUserCommunities.aggregate([
+      
+      
+      // --------------------------------------------------
+      //   Match Condition Array
+      // --------------------------------------------------
+      
+      ...matchConditionArr,
+      
+      
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+      
+      {
+        $project: {
+          createdDate: 0,
+          updatedDate: 0,
+          gameCommunities_idsArr: 0,
+          userCommunityID: 0,
+          imagesAndVideos_id: 0,
+          imagesAndVideosThumbnail_id: 0,
+          __v: 0,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   returnObj
+    // --------------------------------------------------
+    
+    const returnObj = lodashGet(docArr, [0], {});
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Locale / name & description
+    // --------------------------------------------------
+    
+    const localesArr = lodashGet(returnObj, ['localesArr'], []);
+    
+    const filteredArr = localesArr.filter((filterObj) => {
+      return filterObj.language === localeObj.language;
+    });
+    
+    
+    if (lodashHas(filteredArr, [0])) {
+      
+      returnObj.name = lodashGet(filteredArr, [0, 'name'], '');;
+      returnObj.description = lodashGet(filteredArr, [0, 'description'], '');
+      
+    } else {
+      
+      returnObj.name = lodashGet(localesArr, [0, 'name'], '');
+      returnObj.description = lodashGet(localesArr, [0, 'description'], '');
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   不要な項目を削除する
+    // --------------------------------------------------
+    
+    delete returnObj.localesArr;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/user-communities/model.js - findForUserCommunityByUserCommunities_id
+    // `);
+    
+    // console.log(chalk`
+    //   userCommunities_id: {green ${userCommunities_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
+/**
  * Transaction 挿入 / 更新する
  * ユーザーコミュニティ、フォロー、画像＆動画を同時に更新する
  * 
@@ -1039,7 +1224,7 @@ const transactionForUpsertSettings = async ({
   //   Transaction / Session
   // --------------------------------------------------
   
-  const session = await Schema.startSession();
+  const session = await SchemaUserCommunities.startSession();
   
   
   
@@ -1064,7 +1249,7 @@ const transactionForUpsertSettings = async ({
     //   DB user-communities
     // --------------------------------------------------
     
-    await Schema.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session, upsert: true });
+    await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session, upsert: true });
     
     
     // --------------------------------------------------
@@ -1258,6 +1443,7 @@ module.exports = {
   
   findForUserCommunity,
   findForUserCommunitySettings,
+  findForUserCommunityByUserCommunities_id,
   
   transactionForUpsertSettings,
   

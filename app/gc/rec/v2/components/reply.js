@@ -66,7 +66,8 @@ import IconReply from '@material-ui/icons/Reply';
 // ---------------------------------------------
 
 import { ContainerStateLayout } from 'app/@states/layout.js';
-import { ContainerStateGc } from 'app/@states/gc.js';
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 
 
 // ---------------------------------------------
@@ -153,7 +154,8 @@ const Reply = (props) => {
   // --------------------------------------------------
   
   const stateLayout = ContainerStateLayout.useContainer();
-  const stateGc = ContainerStateGc.useContainer();
+  const stateCommunity = ContainerStateCommunity.useContainer();
+  const stateRecruitment = ContainerStateRecruitment.useContainer();
   
   const {
     
@@ -168,14 +170,18 @@ const Reply = (props) => {
   const {
     
     setGameCommunityObj,
+    
+  } = stateCommunity;
+  
+  const {
+    
     recruitmentCommentsObj,
     recruitmentRepliesObj,
     setRecruitmentRepliesObj,
     setReloadForceRecruitmentComment,
-    // reloadForceRecruitmentReply,
     setReloadForceRecruitmentReply,
     
-  } = stateGc;
+  } = stateRecruitment;
   
   
   
@@ -927,7 +933,8 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const stateLayout = ContainerStateLayout.useContainer();
-  const stateGc = ContainerStateGc.useContainer();
+  const stateCommunity = ContainerStateCommunity.useContainer();
+  const stateRecruitment = ContainerStateRecruitment.useContainer();
   
   const {
     
@@ -941,6 +948,11 @@ const Component = (props) => {
     
     gameCommunityObj,
     setGameCommunityObj,
+    
+  } = stateCommunity;
+  
+  const {
+    
     recruitmentThreadsObj,
     recruitmentCommentsObj,
     recruitmentRepliesObj,
@@ -949,7 +961,7 @@ const Component = (props) => {
     reloadForceRecruitmentReply,
     setReloadForceRecruitmentReply,
     
-  } = stateGc;
+  } = stateRecruitment;
   
   
   

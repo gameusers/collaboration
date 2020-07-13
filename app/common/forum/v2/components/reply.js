@@ -66,7 +66,8 @@ import IconReply from '@material-ui/icons/Reply';
 // ---------------------------------------------
 
 import { ContainerStateLayout } from 'app/@states/layout.js';
-import { ContainerStateGc } from 'app/@states/gc.js';
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateForum } from 'app/@states/forum.js';
 
 
 // ---------------------------------------------
@@ -86,7 +87,8 @@ import Paragraph from 'app/common/layout/v2/components/paragraph.js';
 import User from 'app/common/user/v2/components/user.js';
 import ImageAndVideo from 'app/common/image-and-video/v2/components/image-and-video.js';
 import GoodButton from 'app/common/good/v2/components/button.js';
-import FormReply from 'app/common/forum/v2/components/form-reply.js';
+
+import FormReply from 'app/common/forum/v2/components/form/reply.js';
 
 
 // ---------------------------------------------
@@ -155,7 +157,8 @@ const Reply = (props) => {
   // --------------------------------------------------
   
   const stateLayout = ContainerStateLayout.useContainer();
-  const stateGc = ContainerStateGc.useContainer();
+  const stateCommunity = ContainerStateCommunity.useContainer();
+  const stateForum = ContainerStateForum.useContainer();
   
   const {
     
@@ -164,19 +167,23 @@ const Reply = (props) => {
     handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
-    // handleScrollTo,
     
   } = stateLayout;
   
   const {
     
     setGameCommunityObj,
+    
+  } = stateCommunity;
+  
+  const {
+    
     forumCommentsObj,
     forumRepliesObj,
     setForumRepliesObj,
     setReloadForceForumReply,
     
-  } = stateGc;
+  } = stateForum;
   
   
   
@@ -1044,15 +1051,13 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const stateLayout = ContainerStateLayout.useContainer();
-  const stateGc = ContainerStateGc.useContainer();
+  const stateCommunity = ContainerStateCommunity.useContainer();
+  const stateForum = ContainerStateForum.useContainer();
   
   const {
     
     ISO8601,
     handleSnackbarOpen,
-    // handleDialogOpen,
-    // handleLoadingOpen,
-    // handleLoadingClose,
     handleScrollTo,
     
   } = stateLayout;
@@ -1061,6 +1066,11 @@ const Component = (props) => {
     
     gameCommunityObj,
     setGameCommunityObj,
+    
+  } = stateCommunity;
+  
+  const {
+    
     forumThreadsObj,
     forumCommentsObj,
     forumRepliesObj,
@@ -1069,7 +1079,7 @@ const Component = (props) => {
     reloadForceForumReply,
     setReloadForceForumReply,
     
-  } = stateGc;
+  } = stateForum;
   
   
   

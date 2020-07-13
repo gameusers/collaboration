@@ -18,8 +18,8 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useIntl } from 'react-intl';
 import { Element } from 'react-scroll';
-import Pagination from 'rc-pagination';
-import localeInfo from 'rc-pagination/lib/locale/ja_JP';
+// import Pagination from 'rc-pagination';
+// import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 import SimpleIcons from 'simple-icons-react-component';
 
 /** @jsx jsx */
@@ -46,11 +46,11 @@ import IconButton from '@material-ui/core/IconButton';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
-import Paper from '@material-ui/core/Paper';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+// import Paper from '@material-ui/core/Paper';
+// import OutlinedInput from '@material-ui/core/OutlinedInput';
+// import MenuItem from '@material-ui/core/MenuItem';
+// import FormControl from '@material-ui/core/FormControl';
+// import Select from '@material-ui/core/Select';
 import Avatar from '@material-ui/core/Avatar';
 
 
@@ -64,19 +64,16 @@ import IconAssignment from '@material-ui/icons/Assignment';
 import IconPublic from '@material-ui/icons/Public';
 import IconDelete from '@material-ui/icons/Delete';
 import IconEdit from '@material-ui/icons/Edit';
-import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
+// import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 
 
 // ---------------------------------------------
-//   Components
+//   States
 // ---------------------------------------------
 
-import Panel from 'app/common/layout/v2/components/panel.js';
-import Paragraph from 'app/common/layout/v2/components/paragraph.js';
-import ImageAndVideo from 'app/common/image-and-video/v2/components/image-and-video.js';
-import FormThread from 'app/common/forum/v2/components/form-thread.js';
-import FormComment from 'app/common/forum/v2/components/form-comment.js';
-import Comment from 'app/common/forum/v2/components/comment.js';
+import { ContainerStateLayout } from 'app/@states/layout.js';
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateForum } from 'app/@states/forum.js';
 
 
 // ---------------------------------------------
@@ -89,11 +86,15 @@ import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
-//   States
+//   Components
 // ---------------------------------------------
 
-import { ContainerStateLayout } from 'app/@states/layout.js';
-import { ContainerStateGc } from 'app/@states/gc.js';
+import Panel from 'app/common/layout/v2/components/panel.js';
+import Paragraph from 'app/common/layout/v2/components/paragraph.js';
+import ImageAndVideo from 'app/common/image-and-video/v2/components/image-and-video.js';
+import FormThread from 'app/common/forum/v2/components/form/thread.js';
+import FormComment from 'app/common/forum/v2/components/form/comment.js';
+import Comment from 'app/common/forum/v2/components/comment.js';
 
 
 
@@ -178,7 +179,8 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const stateLayout = ContainerStateLayout.useContainer();
-  const stateGc = ContainerStateGc.useContainer();
+  const stateCommunity = ContainerStateCommunity.useContainer();
+  const stateForum = ContainerStateForum.useContainer();
   
   const {
     
@@ -186,17 +188,21 @@ const Component = (props) => {
     handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
-    handleScrollTo,
     
   } = stateLayout;
   
   const {
     
     setGameCommunityObj,
+    
+  } = stateCommunity;
+  
+  const {
+    
     forumThreadsObj,
     setForumThreadsObj,
     
-  } = stateGc;
+  } = stateForum;
   
   
   
@@ -207,17 +213,8 @@ const Component = (props) => {
   
   /**
    * スレッドを削除する
-   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
-   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
-   * @param {string} forumThreads_id - DB forum-threads _id / 削除するスレッドのID
    */
-  const handleDelete = async ({
-    
-    gameCommunities_id,
-    userCommunities_id,
-    forumThreads_id,
-    
-  }) => {
+  const handleDelete = async () => {
     
     
     try {
@@ -246,24 +243,6 @@ const Component = (props) => {
       // ---------------------------------------------
       
       setButtonDisabled(true);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   console.log
-      // ---------------------------------------------
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/thread.js - handleDelete
-      // `);
-      
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id}}
-      //   forumThreads_id: {green ${forumThreads_id}}
-      // `);
       
       
       
@@ -310,13 +289,6 @@ const Component = (props) => {
       }
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
@@ -329,35 +301,23 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   State 削除
-      // ---------------------------------------------
-      
-      const clonedForumThreadsObj = lodashCloneDeep(forumThreadsObj);
-      
-      // const page = lodashGet(forumThreadsObj, ['page'], 1);
-      // const arr = lodashGet(forumThreadsObj, [`page${page}Obj`, 'arr'], []);
-      // const newArr = arr.filter(value => value !== forumThreads_id);
-      // lodashSet(clonedForumThreadsObj, [`page${page}Obj`, 'arr'], newArr);
-      
-      const dataObj = lodashGet(clonedForumThreadsObj, ['dataObj'], {});
-      delete dataObj[forumThreads_id];
-      
-      setForumThreadsObj(clonedForumThreadsObj);
-      
-      
-      // console.log(`
-      //   ----- clonedForumThreadsObj -----\n
-      //   ${util.inspect(clonedForumThreadsObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      // ---------------------------------------------
-      //   Game Community データ更新
+      //   Update - Game Community
       // ---------------------------------------------
       
       const gameCommunityObj = lodashGet(resultObj, ['data', 'gameCommunityObj'], {});
       setGameCommunityObj(gameCommunityObj);
+      
+      
+      // ---------------------------------------------
+      //   Delete Thread Data
+      // ---------------------------------------------
+      
+      const clonedObj = lodashCloneDeep(forumThreadsObj);
+      
+      const dataObj = lodashGet(clonedObj, ['dataObj'], {});
+      delete dataObj[forumThreads_id];
+      
+      setForumThreadsObj(clonedObj);
       
       
       
@@ -370,6 +330,36 @@ const Component = (props) => {
         variant: 'success',
         messageID: 'KBPPfi4f9',
       });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/forum/v2/components/thread.js - handleDelete
+      // `);
+      
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   forumThreads_id: {green ${forumThreads_id}}
+      // `);
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- clonedObj -----\n
+      //   ${util.inspect(clonedObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
     } catch (errorObj) {
@@ -871,10 +861,7 @@ const Component = (props) => {
                                 title: 'スレッド削除',
                                 description: 'スレッドを削除しますか？',
                                 handle: handleDelete,
-                                argumentsObj: {
-                                  gameCommunities_id,
-                                  forumThreads_id,
-                                },
+                                argumentsObj: {},
                                 
                               })
                         }

@@ -820,9 +820,7 @@ const findForGameCommunityByGameCommunities_id = async ({ gameCommunities_id }) 
     const matchConditionArr = [
       {
         $match: {
-          
           _id: gameCommunities_id,
-          
         }
       },
     ];
@@ -832,7 +830,7 @@ const findForGameCommunityByGameCommunities_id = async ({ gameCommunities_id }) 
     //   Aggregation - game-communities
     // --------------------------------------------------
     
-    const docGameCommunitiesArr = await SchemaGameCommunities.aggregate([
+    const docArr = await SchemaGameCommunities.aggregate([
       
       
       // --------------------------------------------------
@@ -864,7 +862,7 @@ const findForGameCommunityByGameCommunities_id = async ({ gameCommunities_id }) 
     //   returnObj
     // --------------------------------------------------
     
-    const returnObj = lodashGet(docGameCommunitiesArr, [0], {});
+    const returnObj = lodashGet(docArr, [0], {});
     
     
     
@@ -883,8 +881,8 @@ const findForGameCommunityByGameCommunities_id = async ({ gameCommunities_id }) 
     // `);
     
     // console.log(`
-    //   ----- docGameCommunitiesArr -----\n
-    //   ${util.inspect(docGameCommunitiesArr, { colors: true, depth: null })}\n
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

@@ -120,7 +120,6 @@ export default async (req, res) => {
     const categories = lodashGet(req, ['query', 'categories'], '');
     const keyword = lodashGet(req, ['query', 'keyword'], '');
     
-    
     lodashSet(requestParametersObj, ['urlID'], urlID);
     lodashSet(requestParametersObj, ['recruitmentID'], recruitmentID);
     lodashSet(requestParametersObj, ['threadPage'], threadPage);

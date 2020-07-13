@@ -36,10 +36,7 @@ import lodashCloneDeep from 'lodash/cloneDeep';
 //   Material UI
 // ---------------------------------------------
 
-// import { makeStyles } from '@material-ui/core/styles';
-
 import Button from '@material-ui/core/Button';
-// import TextField from '@material-ui/core/TextField';
 
 
 // ---------------------------------------------
@@ -55,7 +52,8 @@ import IconReply from '@material-ui/icons/Reply';
 
 import { ContainerStateUser } from 'app/@states/user.js';
 import { ContainerStateLayout } from 'app/@states/layout.js';
-import { ContainerStateGc } from 'app/@states/gc.js';
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 
 
 // ---------------------------------------------
@@ -71,7 +69,6 @@ import { getCookie } from 'app/@modules/cookie.js';
 //   Validations
 // ---------------------------------------------
 
-import { validationBoolean } from 'app/@validations/boolean.js';
 import { validationHandleName } from 'app/@validations/name.js';
 
 import { validationRecruitmentThreadsComment } from 'app/@database/recruitment-threads/validations/comment.js';
@@ -83,36 +80,6 @@ import { validationRecruitmentThreadsComment } from 'app/@database/recruitment-t
 
 import FormName from 'app/common/form/components/name.js';
 import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js';
-
-
-
-
-
-
-// --------------------------------------------------
-//   Emotion
-//   https://emotion.sh/docs/composition
-// --------------------------------------------------
-
-// const cssBox = css`
-//   border-top: 1px dashed #848484;
-//   margin: 24px 0 0 0;
-//   padding: 24px 0 0 0;
-// `;
-
-
-// // --------------------------------------------------
-// //   Material UI Style Overrides
-// //   https://material-ui.com/styles/basics/
-// // --------------------------------------------------
-
-// const useStyles = makeStyles({
-  
-//   label: {
-//     fontSize: 14
-//   },
-  
-// });
 
 
 
@@ -200,7 +167,8 @@ const Component = (props) => {
   
   const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
-  const stateGc = ContainerStateGc.useContainer();
+  const stateCommunity = ContainerStateCommunity.useContainer();
+  const stateRecruitment = ContainerStateRecruitment.useContainer();
   
   const {
     
@@ -220,10 +188,15 @@ const Component = (props) => {
   const {
     
     setGameCommunityObj,
+    
+  } = stateCommunity;
+  
+  const {
+    
     recruitmentRepliesObj,
     setRecruitmentRepliesObj,
     
-  } = stateGc;
+  } = stateRecruitment;
   
   
   

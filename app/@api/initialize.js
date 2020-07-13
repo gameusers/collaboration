@@ -3550,7 +3550,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
           threadCount: 6,
         },
         updatedDateObj: {
-          notification: ISO8601,
           forum: ISO8601,
         },
         communityType: 'open',

@@ -41,7 +41,8 @@ import Button from '@material-ui/core/Button';
 // ---------------------------------------------
 
 import { ContainerStateLayout } from 'app/@states/layout.js';
-import { ContainerStateGc } from 'app/@states/gc.js';
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateForum } from 'app/@states/forum.js';
 
 
 // ---------------------------------------------
@@ -155,7 +156,8 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const stateLayout = ContainerStateLayout.useContainer();
-  const stateGc = ContainerStateGc.useContainer();
+  const stateCommunity = ContainerStateCommunity.useContainer();
+  const stateForum = ContainerStateForum.useContainer();
   
   const {
     
@@ -169,12 +171,17 @@ const Component = (props) => {
   const {
     
     setGameCommunityObj,
+    
+  } = stateCommunity;
+  
+  const {
+    
     setForumThreadsForListObj,
     setForumThreadsObj,
     setForumCommentsObj,
     setForumRepliesObj,
     
-  } = stateGc;
+  } = stateForum;
   
   
   
@@ -444,7 +451,7 @@ const Component = (props) => {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/form-comment.js - handleSubmit
+      //   /app/common/forum/v2/components/form/comment.js - handleSubmit
       // `);
       
       // console.log(chalk`
@@ -736,7 +743,7 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/forum/v2/components/form-thread.js
+  //   /app/common/forum/v2/components/form/thread.js
   // `);
   
   // console.log(`

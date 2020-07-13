@@ -34,8 +34,8 @@ import lodashGet from 'lodash/get';
 //   States
 // ---------------------------------------------
 
-// import { ContainerStateLayout } from 'app/@states/layout.js';
-import { ContainerStateGc } from 'app/@states/gc.js';
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 
 
 // ---------------------------------------------
@@ -73,23 +73,22 @@ const ContainerLayout = (props) => {
   //   States
   // --------------------------------------------------
   
-  // const stateLayout = ContainerStateLayout.useContainer();
-  const stateGc = ContainerStateGc.useContainer();
-  
-  // const {
-    
-  //   handleScrollTo,
-    
-  // } = stateLayout;
+  const stateCommunity = ContainerStateCommunity.useContainer();
+  const stateRecruitment = ContainerStateRecruitment.useContainer();
   
   const {
     
     setGameCommunityObj,
+    
+  } = stateCommunity;
+  
+  const {
+    
     setRecruitmentThreadsObj,
     setRecruitmentCommentsObj,
     setRecruitmentRepliesObj,
     
-  } = stateGc;
+  } = stateRecruitment;
   
   
   
@@ -120,34 +119,6 @@ const ContainerLayout = (props) => {
     
     
   }, [props.ISO8601]);
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   console.log
-  // --------------------------------------------------
-  
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/rec/index.js - ContainerLayout
-  // `);
-  
-  // console.log(`
-  //   ----- props -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(props)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- forumThreadsObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(chalk`
-  //   gameCommunities_id: {green ${gameCommunities_id}}
-  // `);
   
   
   
@@ -245,11 +216,15 @@ const Component = (props) => {
   // --------------------------------------------------
   
   return (
-    <ContainerStateGc.Provider initialState={initialStateObj}>
+    <ContainerStateCommunity.Provider initialState={initialStateObj}>
       
-      <ContainerLayout {...props} />
+      <ContainerStateRecruitment.Provider initialState={initialStateObj}>
+        
+        <ContainerLayout {...props} />
+        
+      </ContainerStateRecruitment.Provider>
       
-    </ContainerStateGc.Provider>
+    </ContainerStateCommunity.Provider>
   );
   
   
@@ -292,11 +267,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   const urlID = query.urlID;
   
-  // console.log(`
-  //   ----- query -----\n
-  //   ${util.inspect(query, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  
   
   
   // --------------------------------------------------
@@ -379,12 +350,14 @@ export async function getServerSideProps({ req, res, query }) {
       as: `/gc/${urlID}`,
       active: false,
     },
+    
     {
       name: '募集',
       href: `/gc/[urlID]/rec?urlID=${urlID}`,
       as: `/gc/${urlID}/rec`,
       active: true,
     },
+    
     {
       name: 'フォロワー',
       href: '/',

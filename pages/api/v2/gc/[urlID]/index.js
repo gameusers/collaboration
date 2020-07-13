@@ -115,13 +115,6 @@ export default async (req, res) => {
     const commentLimit = parseInt(lodashGet(req, ['query', 'commentLimit'], ''), 10);
     const replyLimit = parseInt(lodashGet(req, ['query', 'replyLimit'], ''), 10);
     
-    // const threadListPage = parseInt(req.query.threadListPage, 10);
-    // const threadListLimit = parseInt(req.query.threadListLimit, 10);
-    // const threadPage = parseInt(req.query.threadPage, 10);
-    // const threadLimit = parseInt(req.query.threadLimit, 10);
-    // const commentLimit = parseInt(req.query.commentLimit, 10);
-    // const replyLimit = parseInt(req.query.replyLimit, 10);
-    
     lodashSet(requestParametersObj, ['urlID'], urlID);
     lodashSet(requestParametersObj, ['forumID'], forumID);
     lodashSet(requestParametersObj, ['threadListPage'], threadListPage);

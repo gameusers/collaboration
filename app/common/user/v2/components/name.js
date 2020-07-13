@@ -470,7 +470,7 @@ const Component = (props) => {
       
   //     // console.log(`
   //     //   ----------------------------------------\n
-  //     //   /app/common/forum/v2/components/form-thread.js - handleSubmit
+  //     //   /app/common/forum/v2/components/form/thread.js - handleSubmit
   //     // `);
       
   //     // console.log(chalk`
@@ -945,7 +945,7 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/forum/v2/components/form-thread.js
+  //   /app/common/forum/v2/components/form/thread.js
   // `);
   
   // console.log(`

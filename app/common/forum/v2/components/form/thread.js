@@ -137,7 +137,7 @@ const Component = (props) => {
     // --------------------------------------------------
     
     if (forumThreads_id) {
-      handleGetEditData({ forumThreads_id });
+      handleGetEditData();
     }
     
     
@@ -166,6 +166,7 @@ const Component = (props) => {
   const {
     
     setGameCommunityObj,
+    setUserCommunityObj,
     
   } = stateCommunity;
   
@@ -187,9 +188,8 @@ const Component = (props) => {
   
   /**
    * 編集用データを読み込む
-   * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
    */
-  const handleGetEditData = async ({ forumThreads_id }) => {
+  const handleGetEditData = async () => {
     
     
     try {
@@ -218,6 +218,23 @@ const Component = (props) => {
       // ---------------------------------------------
       
       setButtonDisabled(true);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Scroll To
+      // ---------------------------------------------
+      
+      handleScrollTo({
+        
+        to: forumThreads_id,
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+        
+      });
       
       
       
@@ -265,6 +282,13 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      setButtonDisabled(false);
+      
+      
+      // ---------------------------------------------
       //   Set Form Data
       // ---------------------------------------------
       
@@ -296,19 +320,6 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
-      
-      
-    } finally {
-      
-      
-      // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
       
@@ -316,25 +327,25 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      handleSnackbarOpen({
+        
+        variant: 'error',
+        errorObj,
+        
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
       //   Loading Close
       // ---------------------------------------------
       
       handleLoadingClose();
-      
-      
-      // ---------------------------------------------
-      //   Scroll To
-      // ---------------------------------------------
-      
-      handleScrollTo({
-        
-        to: forumThreads_id,
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
-        
-      });
       
       
     }
@@ -346,16 +357,10 @@ const Component = (props) => {
   /**
    * スレッド作成・編集フォームを送信する
    * @param {Object} eventObj - イベント
-   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
-   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
-   * @param {string} forumThreads_id - DB forum-threads _id / 編集するスレッドのID
    */
   const handleSubmit = async ({
     
     eventObj,
-    gameCommunities_id,
-    userCommunities_id,
-    forumThreads_id,
     
   }) => {
     
@@ -400,12 +405,6 @@ const Component = (props) => {
       }
       
       
-      // ---------------------------------------------
-      //   Validation
-      // ---------------------------------------------
-      
-      // const validationHandleNameObj = validationForumThreadsName({ value: name });
-      // const validationForumThreadsCommentObj = validationForumThreadsComment({ value: comment });
       
       
       // ---------------------------------------------
@@ -419,7 +418,7 @@ const Component = (props) => {
         
       ) {
         
-        throw new CustomError({ errorsArr: [{ code: '3NtQODEsb', messageID: 'uwHIKBy7c' }] });
+        throw new CustomError({ errorsArr: [{ code: 'Gd0MdEBNq', messageID: 'uwHIKBy7c' }] });
         
       }
       
@@ -438,34 +437,6 @@ const Component = (props) => {
       // ---------------------------------------------
       
       setButtonDisabled(true);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   console.log
-      // ---------------------------------------------
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/form/thread.js - handleSubmit
-      // `);
-      
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id}}
-      //   forumThreads_id: {green ${forumThreads_id}}
-      //   name: {green ${name}}
-      //   comment: {green ${comment}}
-      // `);
-      
-      // console.log(`
-      //   ----- imagesAndVideosObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // return;
       
       
       
@@ -491,8 +462,6 @@ const Component = (props) => {
       if (imagesAndVideosObj.arr.length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
-      
-      
       
       
       // ---------------------------------------------
@@ -524,13 +493,6 @@ const Component = (props) => {
       }
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
@@ -542,11 +504,46 @@ const Component = (props) => {
       
       
       
-      // --------------------------------------------------
-      //   gameCommunityObj
-      // --------------------------------------------------
+      // ---------------------------------------------
+      //   Reset Form
+      // ---------------------------------------------
       
-      setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
+      setName('');
+      setComment('');
+      setImagesAndVideosObj({
+        
+        _id: '',
+        createdDate: '',
+        updatedDate: '',
+        users_id: '',
+        type: 'forum',
+        arr: [],
+        
+      });
+        
+      
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      setButtonDisabled(false);
+      
+      
+      // ---------------------------------------------
+      //   Update - gameCommunityObj / userCommunityObj
+      // ---------------------------------------------
+      
+      if (gameCommunities_id) {
+        
+        setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
+        
+      } else {
+        
+        setUserCommunityObj(lodashGet(resultObj, ['data', 'userCommunityObj'], {}));
+        
+      }
       
       
       // ---------------------------------------------
@@ -577,45 +574,11 @@ const Component = (props) => {
       setForumRepliesObj(lodashGet(resultObj, ['data', 'forumRepliesObj'], {}));
       
       
-      
-      
-      // ---------------------------------------------
-      //   Close Form & Reset Form
-      // ---------------------------------------------
-      
-      if (forumThreads_id) {
-        
-        setShowForm(false);
-        
-      } else {
-        
-        setName('');
-        setComment('');
-        setImagesAndVideosObj({
-          
-          _id: '',
-          createdDate: '',
-          updatedDate: '',
-          users_id: '',
-          type: 'forum',
-          arr: [],
-          
-        });
-        
-      }
-      
-      
-      
-      
       // ---------------------------------------------
       //   新規投稿時の forumThreads_id
       // ---------------------------------------------
       
       newForumThreads_id = lodashGet(resultObj, ['data', 'forumThreadsObj', 'page1Obj', 'arr', 0], '');
-      
-      // console.log(chalk`
-      //   forumThreads_id: {green ${forumThreads_id}}
-      // `);
       
       
       
@@ -625,25 +588,46 @@ const Component = (props) => {
       // ---------------------------------------------
       
       handleSnackbarOpen({
+        
         variant: 'success',
         messageID: forumThreads_id ? 'HINAkcSmJ' : 'pInPmleQh',
+        
       });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/forum/v2/components/form/thread.js - handleSubmit
+      // `);
+      
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   forumThreads_id: {green ${forumThreads_id}}
+      //   name: {green ${name}}
+      //   comment: {green ${comment}}
+      // `);
+      
+      // console.log(`
+      //   ----- imagesAndVideosObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
     } catch (errorObj) {
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
-      
-      
-    } finally {
       
       
       // ---------------------------------------------
@@ -654,10 +638,27 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Loading Close
+      //   Snackbar: Error
       // ---------------------------------------------
       
-      handleLoadingClose();
+      handleSnackbarOpen({
+        
+        variant: 'error',
+        errorObj,
+        
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Hide Form
+      // ---------------------------------------------
+      
+      if (forumThreads_id) {
+        setShowForm(false);
+      }
       
       
       // ---------------------------------------------
@@ -673,6 +674,13 @@ const Component = (props) => {
         offset: -50,
         
       });
+      
+      
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
+      
+      handleLoadingClose();
       
       
     }
@@ -741,9 +749,6 @@ const Component = (props) => {
       name={`form-${forumThreads_id}`}
       onSubmit={(eventObj) => handleSubmit({
         eventObj,
-        gameCommunities_id,
-        userCommunities_id,
-        forumThreads_id,
       })}
     >
       

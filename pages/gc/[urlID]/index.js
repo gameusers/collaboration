@@ -233,7 +233,7 @@ const Component = (props) => {
   
   // --------------------------------------------------
   //   Error
-  //   参考：https://github.com/zeit/next.js#custom-error-handling
+  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
   // --------------------------------------------------
   
   if (props.statusCode !== 200) {

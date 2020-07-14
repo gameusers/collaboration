@@ -547,21 +547,6 @@ export default async (req, res) => {
     });
     
     
-    // --------------------------------------------------
-    //   DB find / User Communities / 最新の更新日時情報を取得する
-    // --------------------------------------------------
-    
-    // const gameCommunityArr = await ModelGameCommunities.find({
-      
-    //   conditionObj: {
-    //     _id: gameCommunities_id
-    //   }
-      
-    // });
-    
-    // returnObj.updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
-    
-    
     
     
     // --------------------------------------------------

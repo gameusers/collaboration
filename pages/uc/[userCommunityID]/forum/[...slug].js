@@ -16,7 +16,6 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
-import { animateScroll as scroll } from 'react-scroll';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -28,14 +27,6 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-
-
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateCommunity } from 'app/@states/community.js';
-import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 
 
 // ---------------------------------------------
@@ -52,9 +43,18 @@ import { getCookie } from 'app/@modules/cookie.js';
 // ---------------------------------------------
 
 import Layout from 'app/common/layout/v2/components/layout.js';
-import RecruitmentNavigation from 'app/gc/rec/v2/components/navigation.js';
-import Recruitment from 'app/gc/rec/v2/components/recruitment.js';
+import ForumNavigation from 'app/common/forum/v2/components/navigation.js';
+import Forum from 'app/common/forum/v2/components/forum.js';
 import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
+
+
+// ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateForum } from 'app/@states/forum.js';
 
 
 
@@ -63,7 +63,7 @@ import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/gc/rec
+//   URL: https://dev-1.gameusers.org/gc/***/forum/***
 // --------------------------------------------------
 
 const ContainerLayout = (props) => {
@@ -73,22 +73,30 @@ const ContainerLayout = (props) => {
   //   States
   // --------------------------------------------------
   
+  const stateLayout = ContainerStateLayout.useContainer();
   const stateCommunity = ContainerStateCommunity.useContainer();
-  const stateRecruitment = ContainerStateRecruitment.useContainer();
+  const stateForum = ContainerStateForum.useContainer();
   
   const {
     
-    setGameCommunityObj,
+    handleScrollTo,
+    
+  } = stateLayout;
+  
+  const {
+    
+    setUserCommunityObj,
     
   } = stateCommunity;
   
   const {
     
-    setRecruitmentThreadsObj,
-    setRecruitmentCommentsObj,
-    setRecruitmentRepliesObj,
+    setForumThreadsForListObj,
+    setForumThreadsObj,
+    setForumCommentsObj,
+    setForumRepliesObj,
     
-  } = stateRecruitment;
+  } = stateForum;
   
   
   
@@ -105,17 +113,26 @@ const ContainerLayout = (props) => {
     //   getServerSideProps でデータを取得してからデータを更新する
     // --------------------------------------------------
     
-    setGameCommunityObj(props.gameCommunityObj);
-    setRecruitmentThreadsObj(props.recruitmentThreadsObj);
-    setRecruitmentCommentsObj(props.recruitmentCommentsObj);
-    setRecruitmentRepliesObj(props.recruitmentRepliesObj);
+    setUserCommunityObj(props.userCommunityObj);
+    setForumThreadsForListObj(props.forumThreadsForListObj);
+    setForumThreadsObj(props.forumThreadsObj);
+    setForumCommentsObj(props.forumCommentsObj);
+    setForumRepliesObj(props.forumRepliesObj);
     
     
     // ---------------------------------------------
     //   Scroll To
     // ---------------------------------------------
     
-    scroll.scrollToTop({ duration: 0 });
+    handleScrollTo({
+      
+      to: 'forumThreads',
+      duration: 0,
+      delay: 0,
+      smooth: 'easeInOutQuart',
+      offset: -50,
+      
+    });
     
     
   }, [props.ISO8601]);
@@ -128,9 +145,10 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
   
   const componentSidebar =
-    <RecruitmentNavigation
-      urlID={props.urlID}
-      gameCommunities_id={props.gameCommunities_id}
+    <ForumNavigation
+      userCommunityID={props.userCommunityID}
+      userCommunities_id={props.userCommunities_id}
+      forumID={props.forumID}
     />
   ;
   
@@ -141,16 +159,19 @@ const ContainerLayout = (props) => {
   //   Component - Contents
   // --------------------------------------------------
   
-  const componentContent =
+  // const componentContent = '';
+  const componentContent = 
     <React.Fragment>
       
       <Breadcrumbs
         arr={props.breadcrumbsArr}
       />
       
-      <Recruitment
-        urlID={props.urlID}
-        gameCommunities_id={props.gameCommunities_id}
+      <Forum
+        userCommunityID={props.userCommunityID}
+        userCommunities_id={props.userCommunities_id}
+        enableAnonymity={props.enableAnonymity}
+        individual={props.individual}
       />
       
     </React.Fragment>
@@ -189,10 +210,11 @@ const Component = (props) => {
   
   const initialStateObj = {
     
-    gameCommunityObj: props.gameCommunityObj,
-    recruitmentThreadsObj: props.recruitmentThreadsObj,
-    recruitmentCommentsObj: props.recruitmentCommentsObj,
-    recruitmentRepliesObj: props.recruitmentRepliesObj,
+    userCommunityObj: props.userCommunityObj,
+    forumThreadsForListObj: props.forumThreadsForListObj,
+    forumThreadsObj: props.forumThreadsObj,
+    forumCommentsObj: props.forumCommentsObj,
+    forumRepliesObj: props.forumRepliesObj,
     
   };
   
@@ -218,11 +240,11 @@ const Component = (props) => {
   return (
     <ContainerStateCommunity.Provider initialState={initialStateObj}>
       
-      <ContainerStateRecruitment.Provider initialState={initialStateObj}>
+      <ContainerStateForum.Provider initialState={initialStateObj}>
         
         <ContainerLayout {...props} />
         
-      </ContainerStateRecruitment.Provider>
+      </ContainerStateForum.Provider>
       
     </ContainerStateCommunity.Provider>
   );
@@ -265,7 +287,39 @@ export async function getServerSideProps({ req, res, query }) {
   //   Query
   // --------------------------------------------------
   
-  const urlID = query.urlID;
+  const userCommunityID = query.userCommunityID;
+  
+  const slugsArr = lodashGet(query, ['slug'], []);
+  
+  let threadPage = lodashGet(query, ['page'], 1);
+  let forumID = '';
+  let pageType = 'forum';
+  
+  if (Math.sign(slugsArr[0]) === 1) {
+    
+    threadPage = slugsArr[0];
+    
+  } else {
+    
+    forumID = slugsArr[0];
+    pageType = 'individual';
+    
+  }
+  
+  let individual = false;
+  
+  
+  // console.log(`
+  //   ----- query -----\n
+  //   ${util.inspect(query, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(`
+  //   ----- slugsArr -----\n
+  //   ${util.inspect(slugsArr, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   
   
@@ -280,13 +334,15 @@ export async function getServerSideProps({ req, res, query }) {
   
   
   // --------------------------------------------------
-  //   Get Cookie Data
+  //   Get Cookie Data & Temporary Data for Fetch
   // --------------------------------------------------
   
-  const threadPage = 1;
-  const threadLimit = getCookie({ key: 'recruitmentThreadLimit', reqHeadersCookie });
-  const commentLimit = getCookie({ key: 'recruitmentCommentLimit', reqHeadersCookie });
-  const replyLimit = getCookie({ key: 'recruitmentReplyLimit', reqHeadersCookie });
+  const threadListPage = 1;
+  const threadListLimit = getCookie({ key: 'forumThreadListLimit', reqHeadersCookie });
+  
+  const threadLimit = getCookie({ key: 'forumThreadLimit', reqHeadersCookie });
+  const commentLimit = getCookie({ key: 'forumCommentLimit', reqHeadersCookie });
+  const replyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
   
   
   
@@ -297,7 +353,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   const resultObj = await fetchWrapper({
     
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/${urlID}/rec?threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/uc/${userCommunityID}?forumID=${forumID}&threadListPage=${threadListPage}&threadListLimit=${threadListLimit}&threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -318,13 +374,17 @@ export async function getServerSideProps({ req, res, query }) {
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
-  const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
-  const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
   
-  const gameCommunityObj = lodashGet(dataObj, ['gameCommunityObj'], {});
-  const recruitmentThreadsObj = lodashGet(dataObj, ['recruitmentThreadsObj'], {});
-  const recruitmentCommentsObj = lodashGet(dataObj, ['recruitmentCommentsObj'], {});
-  const recruitmentRepliesObj = lodashGet(dataObj, ['recruitmentRepliesObj'], {});
+  const userCommunities_id = lodashGet(dataObj, ['userCommunityObj', '_id'], '');
+  const userCommunityName = lodashGet(dataObj, ['userCommunityObj', 'name'], '');
+  const enableAnonymity = lodashGet(dataObj, ['userCommunityObj', 'anonymity'], false);
+  const accessRightRead = lodashGet(dataObj, ['accessRightRead'], false);
+  
+  const userCommunityObj = lodashGet(dataObj, ['userCommunityObj'], {});
+  const forumThreadsForListObj = lodashGet(dataObj, ['forumThreadsForListObj'], {});
+  const forumThreadsObj = lodashGet(dataObj, ['forumThreadsObj'], {});
+  const forumCommentsObj = lodashGet(dataObj, ['forumCommentsObj'], {});
+  const forumRepliesObj = lodashGet(dataObj, ['forumRepliesObj'], {});
   
   
   
@@ -333,7 +393,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Title
   // --------------------------------------------------
   
-  const title = `募集 - ${gameName}`;
+  let title = `フォーラム: Page ${threadPage} - ${userCommunityName}`;
   
   
   
@@ -346,36 +406,33 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       name: 'トップ',
-      href: `/gc/[urlID]/index?urlID=${urlID}`,
-      as: `/gc/${urlID}`,
-      active: false,
-    },
-    
-    {
-      name: '募集',
-      href: `/gc/[urlID]/rec?urlID=${urlID}`,
-      as: `/gc/${urlID}/rec`,
+      href: `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`,
+      as: `/uc/${userCommunityID}`,
       active: true,
     },
     
-    {
-      name: 'フォロワー',
-      href: '/',
-      as: '/',
-      active: false,
-      // href: `/gc/[urlID]/followers?urlID=${urlID}`,
-      // as: `/gc/${urlID}/followers`,
-    }
-    
   ];
   
-  if (accessLevel === 100) {
+  if (accessRightRead) {
+    
+    headerNavMainArr.push(
+      {
+        name: 'メンバー',
+        href: `/uc/[userCommunityID]/members?userCommunityID=${userCommunityID}`,
+        as: `/uc/${userCommunityID}/members`,
+        active: false,
+      }
+    );
+    
+  }
+  
+  if (accessLevel >= 50) {
     
     headerNavMainArr.push(
       {
         name: '設定',
-        href: `/gc/[urlID]/settings?urlID=${urlID}`,
-        as: `/gc/${urlID}/settings`,
+        href: `/uc/[userCommunityID]/settings?userCommunityID=${userCommunityID}`,
+        as: `/uc/${userCommunityID}/settings`,
         active: false,
       }
     );
@@ -392,20 +449,88 @@ export async function getServerSideProps({ req, res, query }) {
   const breadcrumbsArr = [
     
     {
-      type: 'gc',
-      anchorText: lodashGet(dataObj, ['headerObj', 'name'], ''),
-      href: `/gc/[urlID]/index?urlID=${urlID}`,
-      as: `/gc/${urlID}`,
+      type: 'uc',
+      anchorText: '',
+      href: `/uc/index`,
+      as: `/uc`,
     },
     
     {
-      type: 'gc/rec',
-      anchorText: '',
-      href: '',
-      as: '',
+      type: 'uc/index',
+      anchorText: userCommunityName,
+      href: `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`,
+      as: `/uc/${userCommunityID}`,
     },
     
   ];
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   通常のフォーラム
+  // --------------------------------------------------
+  
+  if (pageType === 'forum') {
+    
+    
+    // ---------------------------------------------
+    //   - パンくずリスト
+    // ---------------------------------------------
+    
+    breadcrumbsArr.push(
+      
+      {
+        type: 'uc/forum',
+        anchorText: '',
+        href: '',
+        as: '',
+      },
+      
+    );
+  
+  
+  // --------------------------------------------------
+  //   個別のフォーラム
+  // --------------------------------------------------
+    
+  } else if (pageType === 'individual') {
+    
+    
+    // ---------------------------------------------
+    //   - Title
+    // ---------------------------------------------
+    
+    const forumThreadsArr = lodashGet(dataObj, ['forumThreadsObj', 'page1Obj', 'arr'], []);
+    const forumName = lodashGet(dataObj, ['forumThreadsObj', 'dataObj', forumThreadsArr[0], 'name'], '');
+    
+    title = `${forumName} - ${userCommunityName}`;
+    
+    
+    // ---------------------------------------------
+    //   - パンくずリスト
+    // ---------------------------------------------
+    
+    breadcrumbsArr.push(
+      
+      {
+        type: 'uc/forum/individual',
+        anchorText: forumName,
+        href: '',
+        as: '',
+      }
+      
+    );
+    
+    
+    // ---------------------------------------------
+    //   - Individual
+    // ---------------------------------------------
+    
+    individual = true;
+    
+    
+  }
   
   
   
@@ -416,7 +541,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/rec/index.js
+  //   /pages/gc/[urlID]/forum/[...slug].js
   // `);
   
   // console.log(`
@@ -426,7 +551,10 @@ export async function getServerSideProps({ req, res, query }) {
   // `);
   
   // console.log(chalk`
+  //   threadListPage: {green ${threadListPage}}
   //   threadPage: {green ${threadPage}}
+    
+  //   threadListLimit: {green ${threadListLimit}}
   //   threadLimit: {green ${threadLimit}}
   //   commentLimit: {green ${commentLimit}}
   //   replyLimit: {green ${replyLimit}}
@@ -463,12 +591,16 @@ export async function getServerSideProps({ req, res, query }) {
       headerNavMainArr,
       breadcrumbsArr,
       
-      urlID,
-      gameCommunities_id,
-      gameCommunityObj,
-      recruitmentThreadsObj,
-      recruitmentCommentsObj,
-      recruitmentRepliesObj,
+      userCommunityID,
+      userCommunities_id,
+      userCommunityObj,
+      forumID,
+      forumThreadsForListObj,
+      forumThreadsObj,
+      forumCommentsObj,
+      forumRepliesObj,
+      enableAnonymity,
+      individual,
       
     }
     

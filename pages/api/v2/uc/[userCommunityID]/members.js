@@ -1,5 +1,5 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
@@ -14,49 +14,57 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-// const moment = require('moment');
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
-const lodashHas = require('lodash/has');
+// import moment from 'moment';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
-// const ModelFollows = require('../../../../../app/@database/follows/model');
-const ModelCardPlayers = require('../../../../../app/@database/card-players/model');
+import ModelUserCommunities from 'app/@database/user-communities/model.js';
+// import ModelFollows from 'app/@database/follows/model.js';
+import ModelCardPlayers from 'app/@database/card-players/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationInteger } = require('../../../../../app/@validations/integer');
-const { validationFollowLimit } = require('../../../../../app/@database/follows/validations/follow-limit');
+import { validationInteger } from 'app/@validations/integer.js';
+import { validationFollowLimit } from 'app/@database/follows/validations/follow-limit.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from 'app/@locales/locale.js';
 
 
 // ---------------------------------------------
 //   API
 // ---------------------------------------------
 
-const { initialProps } = require('../../../../../app/@api/v2/common');
+import { initialProps } from 'app/@api/v2/common.js';
+
+
 
 
 
@@ -76,15 +84,6 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
@@ -94,11 +93,24 @@ export default async (req, res) => {
   const loginUsersRole = lodashGet(req, ['user', 'role'], '');
   
   
-  // console.log(`
-  //   ----- req.user -----\n
-  //   ${util.inspect(req.user, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: language
+  });
+  
+  
   
   
   try {
@@ -108,9 +120,9 @@ export default async (req, res) => {
     //   GET Data
     // --------------------------------------------------
     
-    const userCommunityID = req.query.userCommunityID;
-    const page = parseInt(req.query.page, 10);
-    const limit = parseInt(req.query.limit, 10);
+    const userCommunityID = lodashGet(req, ['query', 'userCommunityID'], '');
+    const page = parseInt(lodashGet(req, ['query', 'page'], 1), 10);
+    const limit = parseInt(lodashGet(req, ['query', 'limit'], 1), 10);
     
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
     lodashSet(requestParametersObj, ['page'], page);
@@ -166,8 +178,10 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     if (Object.keys(userCommunityObj).length === 0) {
+      
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'X0Y2qe9V8', messageID: 'Error' }] });
+      
     }
     
     
@@ -207,9 +221,12 @@ export default async (req, res) => {
     const followsBlocked = lodashGet(returnObj, ['headerObj', 'followsObj', 'followBlocked'], false);
     
     if (communityType === 'closed' && !followsFollow) {
+      
       statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'zoqcOuILt', messageID: 'Error' }] });
+      
     }
+    
     
     // console.log(`
     //   ----- returnObj.headerObj -----\n
@@ -373,11 +390,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'K3yzgjQpD',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

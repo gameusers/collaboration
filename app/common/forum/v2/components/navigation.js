@@ -411,23 +411,16 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Update - gameCommunityObj
+      //   Update - gameCommunityObj / userCommunityObj
       // ---------------------------------------------
       
       if (gameCommunities_id) {
         
-        const gameCommunityObj = lodashGet(resultObj, ['data', 'gameCommunityObj'], {});
-        setGameCommunityObj(gameCommunityObj);
-        
-        
-      // ---------------------------------------------
-      //   Update - userCommunityObj
-      // ---------------------------------------------
+        setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
         
       } else {
         
-        const userCommunityObj = lodashGet(resultObj, ['data', 'userCommunityObj'], {});
-        setUserCommunityObj(userCommunityObj);
+        setUserCommunityObj(lodashGet(resultObj, ['data', 'userCommunityObj'], {}));
         
       }
       
@@ -925,7 +918,6 @@ const Component = (props) => {
           >
             
             <Tab label="スレッド一覧" />
-            {/*<Tab label="スレッド作成" />*/}
             
           </Tabs>
           
@@ -970,26 +962,6 @@ const Component = (props) => {
             </Tooltip>
             
             
-            {/* スレッド作成 */}
-            {/*<Tooltip
-              css={css`
-                && {
-                  @media screen and (max-width: 947px) {
-                    display: none;
-                  }
-                }
-              `}
-              title="スレッド作成"
-            >
-              <Tab
-                style={{
-                  minWidth: '92px',
-                }}
-                icon={<IconCreate />}
-              />
-            </Tooltip>*/}
-            
-            
           </Tabs>
           
           
@@ -1009,34 +981,8 @@ const Component = (props) => {
           
           
           
-          {/* スレッド作成フォーム */}
-          {currentTabNo === 1 &&
-            {/*<div
-              css={css`
-                padding: 0 16px 16px;
-              `}
-            >
-              
-              <FormThread
-                gameCommunities_id={gameCommunities_id}
-                userCommunities_id={userCommunities_id}
-                forumThreads_id=""
-                imagesAndVideos_id=""
-                
-                name={name}
-                setName={setName}
-                comment={comment}
-                setComment={setComment}
-              />
-              
-            </div>*/}
-          }
-          
-          
-          
-          
           {/* Search */}
-          {currentTabNo === 2 &&
+          {currentTabNo === 1 &&
             {/*<div
               css={css`
                 padding: 0 16px 16px;

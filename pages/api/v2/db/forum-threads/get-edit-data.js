@@ -121,10 +121,12 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const returnObj = await ModelForumThreads.findForEdit({
+      
       req,
       localeObj,
       loginUsers_id,
       forumThreads_id,
+      
     });
     
     

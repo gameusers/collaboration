@@ -42,7 +42,7 @@ function Index({ data, datetimeCurrent }) {
   
   // --------------------------------------------------
   //   Error
-  //   参考：https://github.com/zeit/next.js#custom-error-handling
+  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
   // --------------------------------------------------
   
   // if (this.error) {

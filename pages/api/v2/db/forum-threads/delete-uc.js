@@ -16,6 +16,12 @@ import util from 'util';
 
 import moment from 'moment';
 import rimraf from 'rimraf';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 
@@ -44,8 +50,6 @@ import { CustomError } from 'app/@modules/error/custom.js';
 import { validationIP } from 'app/@validations/ip.js';
 import { validationUserCommunities_idAndAuthorityServer } from 'app/@database/user-communities/validations/_id-server.js';
 import { validationForumThreads_idServerUC } from 'app/@database/forum-threads/validations/_id-server.js';
-// import { validationForumThreadsListLimit, validationForumThreadsLimit } from 'app/@database/forum-threads/validations/limit.js';
-// import { validationForumCommentsLimit, validationForumRepliesLimit } from 'app/@database/forum-comments/validations/limit.js';
 
 
 // ---------------------------------------------
@@ -115,20 +119,12 @@ export default async (req, res) => {
       
       userCommunities_id,
       forumThreads_id,
-      // threadListLimit,
-      // threadLimit,
-      // commentLimit,
-      // replyLimit,
       
     } = bodyObj;
     
     
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
     lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
-    // lodashSet(requestParametersObj, ['threadListLimit'], threadListLimit);
-    // lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
-    // lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
-    // lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
     
     
     
@@ -150,10 +146,6 @@ export default async (req, res) => {
     
     await validationUserCommunities_idAndAuthorityServer({ value: userCommunities_id, loginUsers_id });
     await validationForumThreads_idServerUC({ forumThreads_id, userCommunities_id });
-    // await validationForumThreadsListLimit({ throwError: true, required: true, value: threadListLimit });
-    // await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
-    // await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
-    // await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
     
     
     
@@ -287,55 +279,15 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Forum Threads List
+    //   DB find / User Community
     // --------------------------------------------------
     
-    // returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
+    returnObj.userCommunityObj = await ModelUserCommunities.findForUserCommunityByUserCommunities_id({
       
-    //   localeObj,
-    //   loginUsers_id,
-    //   userCommunities_id,
-    //   page: 1,
-    //   limit: threadListLimit,
+      localeObj,
+      userCommunities_id,
       
-    // });
-    
-    
-    // // --------------------------------------------------
-    // //   DB find / Forum Threads
-    // // --------------------------------------------------
-    
-    // const forumObj = await ModelForumThreads.findForForum({
-      
-    //   req,
-    //   localeObj,
-    //   loginUsers_id,
-    //   userCommunities_id,
-    //   threadPage: 1,
-    //   threadLimit,
-    //   commentPage: 1,
-    //   commentLimit,
-    //   replyPage: 1,
-    //   replyLimit,
-      
-    // });
-    
-    // returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    // returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    // returnObj.forumRepliesObj = forumObj.forumRepliesObj;
-    
-    
-    // --------------------------------------------------
-    //   DB find / User Communities / 最新の更新日時情報を取得する
-    // --------------------------------------------------
-    
-    // const userCommunityArr = await ModelUserCommunities.find({
-    //   conditionObj: {
-    //     _id: userCommunities_id
-    //   }
-    // });
-    
-    // returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+    });
     
     
     

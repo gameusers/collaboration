@@ -98,7 +98,7 @@ const Component = (props) => {
     forumComments_id,
     enableAnonymity,
     
-    setShowFormComment,
+    setShowForm,
     
   } = props;
   
@@ -142,7 +142,7 @@ const Component = (props) => {
     // --------------------------------------------------
     
     if (forumComments_id) {
-      handleGetEditData({ forumComments_id });
+      handleGetEditData();
     }
     
     
@@ -171,6 +171,7 @@ const Component = (props) => {
   const {
     
     setGameCommunityObj,
+    setUserCommunityObj,
     
   } = stateCommunity;
   
@@ -192,9 +193,8 @@ const Component = (props) => {
   
   /**
    * 編集用データを読み込む
-   * @param {string} forumComments_id - DB forum-comments _id / コメントのID
    */
-  const handleGetEditData = async ({ forumComments_id }) => {
+  const handleGetEditData = async () => {
     
     
     try {
@@ -223,6 +223,23 @@ const Component = (props) => {
       // ---------------------------------------------
       
       setButtonDisabled(true);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Scroll To
+      // ---------------------------------------------
+      
+      handleScrollTo({
+        
+        to: forumComments_id,
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+        
+      });
       
       
       
@@ -270,6 +287,13 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      setButtonDisabled(false);
+      
+      
+      // ---------------------------------------------
       //   Set Form Data
       // ---------------------------------------------
       
@@ -303,23 +327,25 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
-      
-      
-    } finally {
-      
-      
-      // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
       
       setButtonDisabled(false);
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      handleSnackbarOpen({
+        
+        variant: 'error',
+        errorObj,
+        
+      });
+      
+      
+    } finally {
       
       
       // ---------------------------------------------
@@ -328,20 +354,6 @@ const Component = (props) => {
       
       handleLoadingClose();
       
-      
-      // ---------------------------------------------
-      //   Scroll To
-      // ---------------------------------------------
-      
-      handleScrollTo({
-        
-        to: forumComments_id,
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
-        
-      });
       
       
     }
@@ -353,18 +365,10 @@ const Component = (props) => {
   /**
    * コメント作成・編集フォームを送信する
    * @param {Object} eventObj - イベント
-   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
-   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
-   * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
-   * @param {string} forumComments_id - DB forum-comments _id / コメントのID
    */
   const handleSubmit = async ({
     
     eventObj,
-    gameCommunities_id,
-    userCommunities_id,
-    forumThreads_id,
-    forumComments_id,
     
   }) => {
     
@@ -410,6 +414,8 @@ const Component = (props) => {
       }
       
       
+      
+      
       // ---------------------------------------------
       //   Validation Error
       // ---------------------------------------------
@@ -441,35 +447,6 @@ const Component = (props) => {
       // ---------------------------------------------
       
       setButtonDisabled(true);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   console.log
-      // ---------------------------------------------
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/form/comment.js - handleSubmit
-      // `);
-      
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id}}
-      //   forumThreads_id: {green ${forumThreads_id}}
-      //   forumComments_id: {green ${forumComments_id}}
-      //   name: {green ${name}}
-      //   comment: {green ${comment}}
-      // `);
-      
-      // console.log(`
-      //   ----- imagesAndVideosObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // return;
       
       
       
@@ -533,13 +510,6 @@ const Component = (props) => {
       }
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
@@ -551,11 +521,47 @@ const Component = (props) => {
       
       
       
-      // --------------------------------------------------
-      //   gameCommunityObj
-      // --------------------------------------------------
+      // ---------------------------------------------
+      //   Reset Form
+      // ---------------------------------------------
       
-      setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
+      setName('');
+      setAnonymity(false);
+      setComment('');
+      setImagesAndVideosObj({
+        
+        _id: '',
+        createdDate: '',
+        updatedDate: '',
+        users_id: '',
+        type: 'forum',
+        arr: [],
+        
+      });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      setButtonDisabled(false);
+      
+      
+      // ---------------------------------------------
+      //   Update - gameCommunityObj / userCommunityObj
+      // ---------------------------------------------
+      
+      if (gameCommunities_id) {
+        
+        setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
+        
+      } else {
+        
+        setUserCommunityObj(lodashGet(resultObj, ['data', 'userCommunityObj'], {}));
+        
+      }
       
       
       // ---------------------------------------------
@@ -586,46 +592,11 @@ const Component = (props) => {
       setForumRepliesObj(lodashGet(resultObj, ['data', 'forumRepliesObj'], {}));
       
       
-      
-      
-      // // ---------------------------------------------
-      // //   Close Form & Reset Form
-      // // ---------------------------------------------
-      
-      // if (forumComments_id) {
-        
-      //   // setShowFormComment(false);
-        
-      // } else {
-        
-      //   setName('');
-      //   setAnonymity(false);
-      //   setComment('');
-      //   setImagesAndVideosObj({
-          
-      //     _id: '',
-      //     createdDate: '',
-      //     updatedDate: '',
-      //     users_id: '',
-      //     type: 'forum',
-      //     arr: [],
-          
-      //   });
-        
-      // }
-      
-      
-      
-      
       // ---------------------------------------------
       //   新規投稿時の forumComments_id
       // ---------------------------------------------
       
       newForumComments_id = lodashGet(resultObj, ['data', 'forumCommentsObj', forumThreads_id, 'page1Obj', 'arr', 0], '');
-      
-      // console.log(chalk`
-      //   newForumComments_id: {green ${newForumComments_id}}
-      // `);
       
       
       
@@ -642,7 +613,49 @@ const Component = (props) => {
       });
       
       
+      
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/forum/v2/components/form/comment.js - handleSubmit
+      // `);
+      
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   forumThreads_id: {green ${forumThreads_id}}
+      //   forumComments_id: {green ${forumComments_id}}
+      //   name: {green ${name}}
+      //   comment: {green ${comment}}
+      // `);
+      
+      // console.log(`
+      //   ----- imagesAndVideosObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // return;
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
     } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      setButtonDisabled(false);
       
       
       // ---------------------------------------------
@@ -661,48 +674,10 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Button Enable
+      //   Hide Form
       // ---------------------------------------------
       
-      setButtonDisabled(false);
-      
-      
-      // ---------------------------------------------
-      //   Loading Close
-      // ---------------------------------------------
-      
-      handleLoadingClose();
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Close Form & Reset Form
-      // ---------------------------------------------
-      
-      if (forumComments_id) {
-        
-        setShowFormComment(false);
-        
-      } else {
-        
-        setName('');
-        setAnonymity(false);
-        setComment('');
-        setImagesAndVideosObj({
-          
-          _id: '',
-          createdDate: '',
-          updatedDate: '',
-          users_id: '',
-          type: 'forum',
-          arr: [],
-          
-        });
-        
-      }
-      
-      
+      setShowForm(false);
       
       
       // ---------------------------------------------
@@ -718,6 +693,13 @@ const Component = (props) => {
         offset: -50,
         
       });
+      
+      
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
+      
+      handleLoadingClose();
       
       
     }
@@ -889,7 +871,7 @@ const Component = (props) => {
               variant="outlined"
               color="secondary"
               disabled={buttonDisabled}
-              onClick={() => setShowFormComment(false)}
+              onClick={() => setShowForm(false)}
             >
               閉じる
             </Button>

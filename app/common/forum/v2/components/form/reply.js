@@ -128,7 +128,7 @@ const Component = (props) => {
     replyToForumComments_id,
     enableAnonymity,
     
-    setShowFormReply,
+    setShowForm,
     
   } = props;
   
@@ -172,7 +172,7 @@ const Component = (props) => {
     // --------------------------------------------------
     
     if (forumReplies_id) {
-      handleGetEditData({ forumReplies_id });
+      handleGetEditData();
     }
     
     
@@ -201,6 +201,7 @@ const Component = (props) => {
   const {
     
     setGameCommunityObj,
+    setUserCommunityObj,
     
   } = stateCommunity;
   
@@ -220,9 +221,8 @@ const Component = (props) => {
   
   /**
    * 編集用データを読み込む
-   * @param {string} forumReplies_id - DB forum-replies _id / 返信のID
    */
-  const handleGetEditData = async ({ forumReplies_id }) => {
+  const handleGetEditData = async () => {
     
     
     try {
@@ -390,22 +390,10 @@ const Component = (props) => {
   /**
    * 返信作成・編集フォームを送信する
    * @param {Object} eventObj - イベント
-   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
-   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
-   * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
-   * @param {string} forumComments_id - DB forum-comments _id / コメントのID
-   * @param {string} forumReplies_id - DB forum-comments _id / 返信のID（コメントと返信は同じコレクションなので、コメントのIDと同じもの）
-   * @param {string} replyToForumComments_id - DB forum-comments _id / 返信先のID
    */
   const handleSubmit = async ({
     
     eventObj,
-    gameCommunities_id,
-    userCommunities_id,
-    forumThreads_id,
-    forumComments_id,
-    forumReplies_id,
-    replyToForumComments_id,
     
   }) => {
     
@@ -449,6 +437,8 @@ const Component = (props) => {
       if ((!gameCommunities_id && !userCommunities_id) || !forumThreads_id || !forumComments_id) {
         throw new CustomError({ errorsArr: [{ code: 'ooDR_zAOu', messageID: '1YJnibkmh' }] });
       }
+      
+      
       
       
       // ---------------------------------------------
@@ -580,6 +570,8 @@ const Component = (props) => {
       });
       
       
+      
+      
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
@@ -587,11 +579,19 @@ const Component = (props) => {
       setButtonDisabled(false);
       
       
-      // --------------------------------------------------
-      //   gameCommunityObj
-      // --------------------------------------------------
+      // ---------------------------------------------
+      //   Update - gameCommunityObj / userCommunityObj
+      // ---------------------------------------------
       
-      setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
+      if (gameCommunities_id) {
+        
+        setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
+        
+      } else {
+        
+        setUserCommunityObj(lodashGet(resultObj, ['data', 'userCommunityObj'], {}));
+        
+      }
       
       
       // ---------------------------------------------
@@ -616,6 +616,8 @@ const Component = (props) => {
       
       const page = lodashGet(resultObj, ['data', 'forumRepliesObj', forumComments_id, 'page'], 1);
       newForumReplies_id = lodashGet(resultObj, ['data', 'forumRepliesObj', forumComments_id, `page${page}Obj`, 'arr', 0], '');
+      
+      
       
       
       // ---------------------------------------------
@@ -677,8 +679,6 @@ const Component = (props) => {
       //   --------------------\n
       // `);
       
-      // return;
-      
       
     } catch (errorObj) {
       
@@ -710,15 +710,8 @@ const Component = (props) => {
       // ---------------------------------------------
       
       if (forumReplies_id) {
-        setShowFormReply(false);
+        setShowForm(false);
       }
-      
-      
-      // ---------------------------------------------
-      //   Loading Close
-      // ---------------------------------------------
-      
-      handleLoadingClose();
       
       
       // ---------------------------------------------
@@ -734,6 +727,13 @@ const Component = (props) => {
         offset: -50,
         
       });
+      
+      
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
+      
+      handleLoadingClose();
       
       
     }
@@ -822,12 +822,6 @@ const Component = (props) => {
       name={`form-${forumComments_id}-reply`}
       onSubmit={(eventObj) => handleSubmit({
         eventObj,
-        gameCommunities_id,
-        userCommunities_id,
-        forumThreads_id,
-        forumComments_id,
-        forumReplies_id,
-        replyToForumComments_id,
       })}
     >
       
@@ -961,7 +955,7 @@ const Component = (props) => {
               variant="outlined"
               color="secondary"
               disabled={buttonDisabled}
-              onClick={() => setShowFormReply(false)}
+              onClick={() => setShowForm(false)}
             >
               閉じる
             </Button>

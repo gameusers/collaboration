@@ -31,7 +31,6 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import ModelUserCommunities from 'app/@database/user-communities/model.js';
-import ModelForumThreads from 'app/@database/forum-threads/model.js';
 import ModelForumComments from 'app/@database/forum-comments/model.js';
 
 
@@ -52,8 +51,6 @@ import { validationIP } from 'app/@validations/ip.js';
 
 import { validationUserCommunities_idAndAuthorityServer } from 'app/@database/user-communities/validations/_id-server.js';
 import { validationForumThreads_idServerUC } from 'app/@database/forum-threads/validations/_id-server.js';
-// import { validationForumThreadsListLimit, validationForumThreadsLimit } from 'app/@database/forum-threads/validations/limit.js';
-// import { validationForumCommentsLimit, validationForumRepliesLimit } from 'app/@database/forum-comments/validations/limit.js';
 
 
 // ---------------------------------------------
@@ -125,10 +122,6 @@ export default async (req, res) => {
       forumThreads_id,
       forumComments_id,
       forumReplies_id,
-      // threadListLimit,
-      // threadLimit,
-      // commentLimit,
-      // replyLimit,
       
     } = bodyObj;
     
@@ -137,10 +130,6 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
     lodashSet(requestParametersObj, ['forumComments_id'], forumComments_id);
     lodashSet(requestParametersObj, ['forumReplies_id'], forumReplies_id);
-    // lodashSet(requestParametersObj, ['threadListLimit'], threadListLimit);
-    // lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
-    // lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
-    // lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
     
     
     
@@ -162,11 +151,6 @@ export default async (req, res) => {
     
     await validationUserCommunities_idAndAuthorityServer({ value: userCommunities_id, loginUsers_id });
     await validationForumThreads_idServerUC({ forumThreads_id, userCommunities_id });
-    
-    // await validationForumThreadsListLimit({ throwError: true, required: true, value: threadListLimit });
-    // await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
-    // await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
-    // await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
     
     
     
@@ -196,34 +180,6 @@ export default async (req, res) => {
     const imagesAndVideos_id = lodashGet(docForumCommentsObj, ['imagesAndVideos_id'], '');
     const images = lodashGet(docForumCommentsObj, ['images'], 0);
     const videos = lodashGet(docForumCommentsObj, ['images'], 0);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/db/forum-comments/delete-reply-uc.js
-    // `);
-    
-    // console.log(`
-    //   ----- forumCommentsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   userCommunities_id: {green ${userCommunities_id}}
-    //   forumThreads_id: {green ${forumThreads_id}}
-    //   forumComments_id: {green ${forumComments_id}}
-    //   forumReplies_id: {green ${forumReplies_id}}
-    //   imagesAndVideos_id: {green ${imagesAndVideos_id}}
-    //   images: {green ${images}}
-    //   videos: {green ${videos}}
-    // `);
     
     
     
@@ -350,57 +306,15 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Forum Threads List
+    //   DB find / User Community
     // --------------------------------------------------
     
-    // returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
+    returnObj.userCommunityObj = await ModelUserCommunities.findForUserCommunityByUserCommunities_id({
       
-    //   localeObj,
-    //   loginUsers_id,
-    //   userCommunities_id,
-    //   page: 1,
-    //   limit: threadListLimit,
+      localeObj,
+      userCommunities_id,
       
-    // });
-    
-    
-    // // --------------------------------------------------
-    // //   DB find / Forum Threads
-    // // --------------------------------------------------
-    
-    // const forumObj = await ModelForumThreads.findForForum({
-      
-    //   req,
-    //   localeObj,
-    //   loginUsers_id,
-    //   userCommunities_id,
-    //   threadPage: 1,
-    //   threadLimit,
-    //   commentPage: 1,
-    //   commentLimit,
-    //   replyPage: 1,
-    //   replyLimit,
-      
-    // });
-    
-    // returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    // returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    // returnObj.forumRepliesObj = forumObj.forumRepliesObj;
-    
-    
-    // --------------------------------------------------
-    //   DB find / User Communities / 最新の更新日時情報を取得する
-    // --------------------------------------------------
-    
-    // const userCommunityArr = await ModelUserCommunities.find({
-      
-    //   conditionObj: {
-    //     _id: userCommunities_id
-    //   }
-      
-    // });
-    
-    // returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+    });
     
     
     
@@ -408,6 +322,27 @@ export default async (req, res) => {
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/forum-comments/delete-reply-uc.js
+    // `);
+    
+    // console.log(`
+    //   ----- forumCommentsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   forumThreads_id: {green ${forumThreads_id}}
+    //   forumComments_id: {green ${forumComments_id}}
+    //   forumReplies_id: {green ${forumReplies_id}}
+    //   imagesAndVideos_id: {green ${imagesAndVideos_id}}
+    //   images: {green ${images}}
+    //   videos: {green ${videos}}
+    // `);
     
     // console.log(chalk`
     //   userCommunities_id: {green ${userCommunities_id}}

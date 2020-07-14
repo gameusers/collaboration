@@ -31,14 +31,6 @@ import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateCommunity } from 'app/@states/community.js';
-import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
-
-
-// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -52,9 +44,18 @@ import { getCookie } from 'app/@modules/cookie.js';
 // ---------------------------------------------
 
 import Layout from 'app/common/layout/v2/components/layout.js';
-import RecruitmentNavigation from 'app/gc/rec/v2/components/navigation.js';
-import Recruitment from 'app/gc/rec/v2/components/recruitment.js';
+import ForumNavigation from 'app/common/forum/v2/components/navigation.js';
+import Forum from 'app/common/forum/v2/components/forum.js';
 import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
+
+
+// ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateForum } from 'app/@states/forum.js';
 
 
 
@@ -63,7 +64,7 @@ import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/gc/rec
+//   URL: https://dev-1.gameusers.org/gc/***/forum/***
 // --------------------------------------------------
 
 const ContainerLayout = (props) => {
@@ -73,22 +74,30 @@ const ContainerLayout = (props) => {
   //   States
   // --------------------------------------------------
   
-  const stateCommunity = ContainerStateCommunity.useContainer();
-  const stateRecruitment = ContainerStateRecruitment.useContainer();
+  // const stateLayout = ContainerStateLayout.useContainer();
+  // const stateCommunity = ContainerStateCommunity.useContainer();
+  // const stateForum = ContainerStateForum.useContainer();
   
-  const {
+  // const {
     
-    setGameCommunityObj,
+  //   handleScrollTo,
     
-  } = stateCommunity;
+  // } = stateLayout;
   
-  const {
+  // const {
     
-    setRecruitmentThreadsObj,
-    setRecruitmentCommentsObj,
-    setRecruitmentRepliesObj,
+  //   setUserCommunityObj,
     
-  } = stateRecruitment;
+  // } = stateCommunity;
+  
+  // const {
+    
+  //   setForumThreadsForListObj,
+  //   setForumThreadsObj,
+  //   setForumCommentsObj,
+  //   setForumRepliesObj,
+    
+  // } = stateForum;
   
   
   
@@ -105,10 +114,11 @@ const ContainerLayout = (props) => {
     //   getServerSideProps でデータを取得してからデータを更新する
     // --------------------------------------------------
     
-    setGameCommunityObj(props.gameCommunityObj);
-    setRecruitmentThreadsObj(props.recruitmentThreadsObj);
-    setRecruitmentCommentsObj(props.recruitmentCommentsObj);
-    setRecruitmentRepliesObj(props.recruitmentRepliesObj);
+    // setUserCommunityObj(props.userCommunityObj);
+    // setForumThreadsForListObj(props.forumThreadsForListObj);
+    // setForumThreadsObj(props.forumThreadsObj);
+    // setForumCommentsObj(props.forumCommentsObj);
+    // setForumRepliesObj(props.forumRepliesObj);
     
     
     // ---------------------------------------------
@@ -127,12 +137,14 @@ const ContainerLayout = (props) => {
   //   Component - Sidebar
   // --------------------------------------------------
   
-  const componentSidebar =
-    <RecruitmentNavigation
-      urlID={props.urlID}
-      gameCommunities_id={props.gameCommunities_id}
-    />
-  ;
+  const componentSidebar = '';
+  // const componentSidebar =
+  //   <ForumNavigation
+  //     userCommunityID={props.userCommunityID}
+  //     userCommunities_id={props.userCommunities_id}
+  //     forumID={props.forumID}
+  //   />
+  // ;
   
   
   
@@ -141,17 +153,19 @@ const ContainerLayout = (props) => {
   //   Component - Contents
   // --------------------------------------------------
   
-  const componentContent =
+  const componentContent = 
     <React.Fragment>
       
       <Breadcrumbs
         arr={props.breadcrumbsArr}
       />
       
-      <Recruitment
-        urlID={props.urlID}
-        gameCommunities_id={props.gameCommunities_id}
-      />
+      {/*<Forum
+        userCommunityID={props.userCommunityID}
+        userCommunities_id={props.userCommunities_id}
+        enableAnonymity={props.enableAnonymity}
+        individual={props.individual}
+      />*/}
       
     </React.Fragment>
   ;
@@ -187,14 +201,15 @@ const Component = (props) => {
   //   unstated-next - Initial State
   // --------------------------------------------------
   
-  const initialStateObj = {
+  // const initialStateObj = {
     
-    gameCommunityObj: props.gameCommunityObj,
-    recruitmentThreadsObj: props.recruitmentThreadsObj,
-    recruitmentCommentsObj: props.recruitmentCommentsObj,
-    recruitmentRepliesObj: props.recruitmentRepliesObj,
+  //   userCommunityObj: props.userCommunityObj,
+  //   forumThreadsForListObj: props.forumThreadsForListObj,
+  //   forumThreadsObj: props.forumThreadsObj,
+  //   forumCommentsObj: props.forumCommentsObj,
+  //   forumRepliesObj: props.forumRepliesObj,
     
-  };
+  // };
   
   
   
@@ -216,15 +231,7 @@ const Component = (props) => {
   // --------------------------------------------------
   
   return (
-    <ContainerStateCommunity.Provider initialState={initialStateObj}>
-      
-      <ContainerStateRecruitment.Provider initialState={initialStateObj}>
-        
-        <ContainerLayout {...props} />
-        
-      </ContainerStateRecruitment.Provider>
-      
-    </ContainerStateCommunity.Provider>
+    <ContainerLayout {...props} />
   );
   
   
@@ -265,7 +272,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Query
   // --------------------------------------------------
   
-  const urlID = query.urlID;
+  const userCommunityID = query.userCommunityID;
   
   
   
@@ -280,13 +287,11 @@ export async function getServerSideProps({ req, res, query }) {
   
   
   // --------------------------------------------------
-  //   Get Cookie Data
+  //   Get Cookie Data & Temporary Data for Fetch
   // --------------------------------------------------
   
-  const threadPage = 1;
-  const threadLimit = getCookie({ key: 'recruitmentThreadLimit', reqHeadersCookie });
-  const commentLimit = getCookie({ key: 'recruitmentCommentLimit', reqHeadersCookie });
-  const replyLimit = getCookie({ key: 'recruitmentReplyLimit', reqHeadersCookie });
+  const page = 1;
+  const limit = getCookie({ key: 'followLimit', reqHeadersCookie });
   
   
   
@@ -297,7 +302,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   const resultObj = await fetchWrapper({
     
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/${urlID}/rec?threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/uc/${userCommunityID}/members?page=${page}&limit=${limit}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -318,13 +323,11 @@ export async function getServerSideProps({ req, res, query }) {
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
-  const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
-  const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
   
-  const gameCommunityObj = lodashGet(dataObj, ['gameCommunityObj'], {});
-  const recruitmentThreadsObj = lodashGet(dataObj, ['recruitmentThreadsObj'], {});
-  const recruitmentCommentsObj = lodashGet(dataObj, ['recruitmentCommentsObj'], {});
-  const recruitmentRepliesObj = lodashGet(dataObj, ['recruitmentRepliesObj'], {});
+  const userCommunities_id = lodashGet(dataObj, ['userCommunityObj', '_id'], '');
+  const userCommunityName = lodashGet(dataObj, ['userCommunityObj', 'name'], '');
+  const accessRightRead = lodashGet(dataObj, ['accessRightRead'], false);
+  const communityType = lodashGet(dataObj, ['userCommunityObj', 'communityType'], 'open');
   
   
   
@@ -333,7 +336,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Title
   // --------------------------------------------------
   
-  const title = `募集 - ${gameName}`;
+  const title = `${userCommunityName}: メンバー`;
   
   
   
@@ -346,36 +349,33 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       name: 'トップ',
-      href: `/gc/[urlID]/index?urlID=${urlID}`,
-      as: `/gc/${urlID}`,
+      href: `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`,
+      as: `/uc/${userCommunityID}`,
       active: false,
     },
-    
-    {
-      name: '募集',
-      href: `/gc/[urlID]/rec?urlID=${urlID}`,
-      as: `/gc/${urlID}/rec`,
-      active: true,
-    },
-    
-    {
-      name: 'フォロワー',
-      href: '/',
-      as: '/',
-      active: false,
-      // href: `/gc/[urlID]/followers?urlID=${urlID}`,
-      // as: `/gc/${urlID}/followers`,
-    }
     
   ];
   
-  if (accessLevel === 100) {
+  if (communityType === 'open' || (communityType === 'closed' && accessLevel >= 3)) {
+    
+    headerNavMainArr.push(
+      {
+        name: 'メンバー',
+        href: `/uc/[userCommunityID]/members/index?userCommunityID=${userCommunityID}`,
+        as: `/uc/${userCommunityID}/members`,
+        active: true,
+      }
+    );
+    
+  }
+  
+  if (accessLevel >= 50) {
     
     headerNavMainArr.push(
       {
         name: '設定',
-        href: `/gc/[urlID]/settings?urlID=${urlID}`,
-        as: `/gc/${urlID}/settings`,
+        href: `/uc/[userCommunityID]/settings?userCommunityID=${userCommunityID}`,
+        as: `/uc/${userCommunityID}/settings`,
         active: false,
       }
     );
@@ -392,14 +392,21 @@ export async function getServerSideProps({ req, res, query }) {
   const breadcrumbsArr = [
     
     {
-      type: 'gc',
-      anchorText: lodashGet(dataObj, ['headerObj', 'name'], ''),
-      href: `/gc/[urlID]/index?urlID=${urlID}`,
-      as: `/gc/${urlID}`,
+      type: 'uc',
+      anchorText: '',
+      href: `/uc/index`,
+      as: `/uc`,
     },
     
     {
-      type: 'gc/rec',
+      type: 'uc/index',
+      anchorText: userCommunityName,
+      href: `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`,
+      as: `/uc/${userCommunityID}`,
+    },
+    
+    {
+      type: 'uc/members',
       anchorText: '',
       href: '',
       as: '',
@@ -414,33 +421,21 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
   
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/rec/index.js
-  // `);
+  console.log(`
+    ----------------------------------------\n
+    /pages/uc/[userCommunityID]/members/index.js
+  `);
   
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  console.log(`
+    ----- resultObj -----\n
+    ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+    --------------------\n
+  `);
   
-  // console.log(chalk`
-  //   threadPage: {green ${threadPage}}
-  //   threadLimit: {green ${threadLimit}}
-  //   commentLimit: {green ${commentLimit}}
-  //   replyLimit: {green ${replyLimit}}
-  // `);
-  
-  // console.log(`
-  //   ----- reqHeadersCookie -----\n
-  //   ${util.inspect(reqHeadersCookie, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(chalk`
-  //   reqAcceptLanguage: {green ${reqAcceptLanguage}}
-  // `);
+  console.log(chalk`
+    page: {green ${page}}
+    limit: {green ${limit}}
+  `);
   
   
   
@@ -463,12 +458,8 @@ export async function getServerSideProps({ req, res, query }) {
       headerNavMainArr,
       breadcrumbsArr,
       
-      urlID,
-      gameCommunities_id,
-      gameCommunityObj,
-      recruitmentThreadsObj,
-      recruitmentCommentsObj,
-      recruitmentRepliesObj,
+      userCommunityID,
+      userCommunities_id,
       
     }
     

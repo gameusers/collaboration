@@ -119,20 +119,12 @@ export default async (req, res) => {
       
       gameCommunities_id,
       forumThreads_id,
-      // threadListLimit,
-      // threadLimit,
-      // commentLimit,
-      // replyLimit,
       
     } = bodyObj;
     
     
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
-    // lodashSet(requestParametersObj, ['threadListLimit'], threadListLimit);
-    // lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
-    // lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
-    // lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
     
     
     
@@ -154,10 +146,6 @@ export default async (req, res) => {
     
     await validationGameCommunities_idServer({ value: gameCommunities_id });
     await validationForumThreads_idServerGC({ forumThreads_id, gameCommunities_id });
-    // await validationForumThreadsListLimit({ throwError: true, required: true, value: threadListLimit });
-    // await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
-    // await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
-    // await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
     
     
     
@@ -178,11 +166,7 @@ export default async (req, res) => {
     
     const imagesAndVideos_idsArr = lodashGet(findForDeleteThreadObj, ['imagesAndVideos_idsArr'], []);
     
-    // console.log(`
-    //   ----- imagesAndVideos_idsArr -----\n
-    //   ${util.inspect(imagesAndVideos_idsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    
     
     
     // --------------------------------------------------
@@ -292,45 +276,6 @@ export default async (req, res) => {
     }
     
     
-    
-    
-    // --------------------------------------------------
-    //   DB find / Forum Threads List
-    // --------------------------------------------------
-    
-    // returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
-      
-    //   localeObj,
-    //   loginUsers_id,
-    //   gameCommunities_id,
-    //   page: 1,
-    //   limit: threadListLimit,
-      
-    // });
-    
-    
-    // // --------------------------------------------------
-    // //   DB find / Forum Threads
-    // // --------------------------------------------------
-    
-    // const forumObj = await ModelForumThreads.findForForum({
-      
-    //   req,
-    //   localeObj,
-    //   loginUsers_id,
-    //   gameCommunities_id,
-    //   threadPage: 1,
-    //   threadLimit,
-    //   commentPage: 1,
-    //   commentLimit,
-    //   replyPage: 1,
-    //   replyLimit,
-      
-    // });
-    
-    // returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    // returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    // returnObj.forumRepliesObj = forumObj.forumRepliesObj;
     
     
     // --------------------------------------------------

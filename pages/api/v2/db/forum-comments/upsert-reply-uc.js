@@ -31,7 +31,6 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import ModelUserCommunities from 'app/@database/user-communities/model.js';
-// import ModelForumThreads from 'app/@database/forum-threads/model.js';
 import ModelForumComments from 'app/@database/forum-comments/model.js';
 
 
@@ -573,18 +572,15 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / User Communities / 最新の更新日時情報を取得する
+    //   DB find / User Community
     // --------------------------------------------------
     
-    // const userCommunityArr = await ModelUserCommunities.find({
+    returnObj.userCommunityObj = await ModelUserCommunities.findForUserCommunityByUserCommunities_id({
       
-    //   conditionObj: {
-    //     _id: userCommunities_id
-    //   }
+      localeObj,
+      userCommunities_id,
       
-    // });
-    
-    // returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+    });
     
     
     

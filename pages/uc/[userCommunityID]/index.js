@@ -31,6 +31,14 @@ import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateForum } from 'app/@states/forum.js';
+
+
+// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -47,15 +55,6 @@ import Layout from 'app/common/layout/v2/components/layout.js';
 import ForumNavigation from 'app/common/forum/v2/components/navigation.js';
 import Forum from 'app/common/forum/v2/components/forum.js';
 import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
-
-
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-// import { ContainerStateLayout } from 'app/@states/layout.js';
-import { ContainerStateCommunity } from 'app/@states/community.js';
-import { ContainerStateForum } from 'app/@states/forum.js';
 
 
 
@@ -179,11 +178,11 @@ const ContainerLayout = (props) => {
         arr={props.breadcrumbsArr}
       />
       
-      {/*<Forum
-        urlID={props.urlID}
-        gameCommunities_id={props.gameCommunities_id}
-        enableAnonymity={true}
-      />*/}
+      <Forum
+        userCommunityID={props.userCommunityID}
+        userCommunities_id={props.userCommunities_id}
+        enableAnonymity={props.enableAnonymity}
+      />
       
     </React.Fragment>
   ;
@@ -234,7 +233,7 @@ const Component = (props) => {
   
   // --------------------------------------------------
   //   Error
-  //   参考：https://github.com/zeit/next.js#custom-error-handling
+  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
   // --------------------------------------------------
   
   if (props.statusCode !== 200) {
@@ -328,11 +327,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   const userCommunityID = query.userCommunityID;
   
-  // console.log(`
-  //   ----- query -----\n
-  //   ${util.inspect(query, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  
   
   
   // --------------------------------------------------
@@ -483,16 +478,16 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
   
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/uc/[userCommunityID]/index.js
-  // `);
+  console.log(`
+    ----------------------------------------\n
+    /pages/uc/[userCommunityID]/index.js
+  `);
   
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  console.log(`
+    ----- resultObj -----\n
+    ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+    --------------------\n
+  `);
   
   // console.log(chalk`
   //   threadListPage: {green ${threadListPage}}
@@ -532,6 +527,7 @@ export async function getServerSideProps({ req, res, query }) {
       forumThreadsObj,
       forumCommentsObj,
       forumRepliesObj,
+      enableAnonymity,
       
     }
     

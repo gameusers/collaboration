@@ -170,7 +170,7 @@ const ContainerLayout = (props) => {
         urlID={props.urlID}
         gameCommunities_id={props.gameCommunities_id}
         enableAnonymity={true}
-        individual={props.pageType === 'individual'}
+        individual={props.individual}
       />
       
     </React.Fragment>
@@ -222,7 +222,7 @@ const Component = (props) => {
   
   // --------------------------------------------------
   //   Error
-  //   参考：https://github.com/zeit/next.js#custom-error-handling
+  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
   // --------------------------------------------------
   
   if (props.statusCode !== 200) {
@@ -304,6 +304,8 @@ export async function getServerSideProps({ req, res, query }) {
     pageType = 'individual';
     
   }
+  
+  let individual = false;
   
   
   // console.log(`
@@ -511,6 +513,13 @@ export async function getServerSideProps({ req, res, query }) {
     );
     
     
+    // ---------------------------------------------
+    //   - Individual
+    // ---------------------------------------------
+    
+    individual = true;
+    
+    
   }
   
   
@@ -580,7 +589,7 @@ export async function getServerSideProps({ req, res, query }) {
       forumThreadsObj,
       forumCommentsObj,
       forumRepliesObj,
-      pageType,
+      individual,
       
     }
     

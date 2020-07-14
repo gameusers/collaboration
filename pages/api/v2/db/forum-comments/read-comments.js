@@ -180,7 +180,6 @@ export default async (req, res) => {
     } else {
       
       await validationUserCommunities_idAndAuthorityServer({ value: userCommunities_id, loginUsers_id });
-      // await validationUserCommunities_idServer({ value: userCommunities_id });
       
     }
     
@@ -224,17 +223,10 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   Community
+    //   DB find / Game Community
     // --------------------------------------------------
     
-    // let updatedDateObj = {};
-    
     if (gameCommunities_id) {
-      
-      
-      // --------------------------------------------------
-      //   DB find / Game Community
-      // --------------------------------------------------
       
       returnObj.gameCommunityObj = await ModelGameCommunities.findForGameCommunityByGameCommunities_id({
         
@@ -242,44 +234,21 @@ export default async (req, res) => {
         
       });
       
-      // const gameCommunityArr = await ModelGameCommunities.find({
-        
-      //   conditionObj: {
-      //     _id: gameCommunities_id
-      //   }
-        
-      // });
       
-      // updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
+    // --------------------------------------------------
+    //   DB find / User Community
+    // --------------------------------------------------
       
     } else {
       
-      // const userCommunityArr = await ModelUserCommunities.find({
+      returnObj.userCommunityObj = await ModelUserCommunities.findForUserCommunityByUserCommunities_id({
         
-      //   conditionObj: {
-      //     _id: userCommunities_id
-      //   }
+        localeObj,
+        userCommunities_id,
         
-      // });
-      
-      // updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+      });
       
     }
-    
-    // returnObj.updatedDateObj = updatedDateObj;
-    
-    
-    // --------------------------------------------------
-    //   DB find / User Communities
-    // --------------------------------------------------
-    
-    // const userCommunityArr = await ModelUserCommunities.find({
-    //   conditionObj: {
-    //     _id: userCommunities_id
-    //   }
-    // });
-    
-    // returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
     
     
     

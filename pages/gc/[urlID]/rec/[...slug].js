@@ -167,6 +167,7 @@ const ContainerLayout = (props) => {
       <Recruitment
         urlID={props.urlID}
         gameCommunities_id={props.gameCommunities_id}
+        individual={props.individual}
       />
       
     </React.Fragment>
@@ -294,7 +295,7 @@ export async function getServerSideProps({ req, res, query }) {
   let threadPage = lodashGet(query, ['page'], 1);
   let recruitmentID = '';
   
-  let type = 'recruitment';
+  let pageType = 'recruitment';
   
   if (Math.sign(slugsArr[0]) === 1) {
     
@@ -303,13 +304,15 @@ export async function getServerSideProps({ req, res, query }) {
   } else if (slugsArr[0] !== 'search') {
     
     recruitmentID = slugsArr[0];
-    type = 'individual';
+    pageType = 'individual';
     
   } else if (slugsArr[0] === 'search') {
     
-    type = 'search';
+    pageType = 'search';
     
   }
+  
+  let individual = false;
   
   
   
@@ -457,7 +460,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   募集
   // --------------------------------------------------
   
-  if (type === 'recruitment') {
+  if (pageType === 'recruitment') {
     
     
     // ---------------------------------------------
@@ -471,7 +474,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   個別の募集
   // --------------------------------------------------
     
-  } else if (type === 'individual') {
+  } else if (pageType === 'individual') {
     
     
     // ---------------------------------------------
@@ -500,11 +503,18 @@ export async function getServerSideProps({ req, res, query }) {
     );
     
     
+    // ---------------------------------------------
+    //   - Individual
+    // ---------------------------------------------
+    
+    individual = true;
+    
+    
   // --------------------------------------------------
   //   検索
   // --------------------------------------------------
     
-  } else if (type === 'search') {
+  } else if (pageType === 'search') {
     
     
     // ---------------------------------------------
@@ -590,6 +600,7 @@ export async function getServerSideProps({ req, res, query }) {
       recruitmentThreadsObj,
       recruitmentCommentsObj,
       recruitmentRepliesObj,
+      individual,
       
       hardwaresArr,
       categories,

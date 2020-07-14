@@ -21,7 +21,7 @@ import { useIntl } from 'react-intl';
 import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -41,6 +41,7 @@ import lodashGet from 'lodash/get';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Paper from '@material-ui/core/Paper';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -52,27 +53,45 @@ import Select from '@material-ui/core/Select';
 //   Material UI / Icons
 // ---------------------------------------------
 
-import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
+// import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 
 
 // ---------------------------------------------
 //   States
 // ---------------------------------------------
 
-import { ContainerStateForum } from 'app/@states/forum.js';
+// import { ContainerStateForum } from 'app/@states/forum.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import Panel from 'app/common/layout/v2/components/panel.js';
-import Thread from 'app/common/forum/v2/components/thread.js';
-import FormThread from 'app/common/forum/v2/components/form/thread.js';
+// import CardPlayer from '../../card/player/components/player';
+
+// import Panel from 'app/common/layout/v2/components/panel.js';
+// import Thread from 'app/common/forum/v2/components/thread.js';
+// import FormThread from 'app/common/forum/v2/components/form/thread.js';
 
 
 
 
+
+
+// --------------------------------------------------
+//   Emotion
+//   https://emotion.sh/docs/composition
+// --------------------------------------------------
+
+const cssButton = css`
+  && {
+    font-size: 12px;
+    min-width: 40px;
+    min-height: 24px;
+    margin: 0 12px 0 0;
+    padding: 2px 8px 0;
+  }
+`;
 
 
 // --------------------------------------------------
@@ -81,10 +100,6 @@ import FormThread from 'app/common/forum/v2/components/form/thread.js';
 // --------------------------------------------------
 
 const useStyles = makeStyles({
-  
-  expanded: {
-    marginBottom: '0 !important',
-  },
   
   input: {
     fontSize: '12px',
@@ -115,13 +130,18 @@ const Component = (props) => {
   
   const {
     
-    urlID,
-    gameCommunities_id,
-    userCommunityID,
-    userCommunities_id,
+    // urlID,
+    // gameCommunities_id,
+    // userCommunityID,
+    // userCommunities_id,
     
-    enableAnonymity,
-    individual,
+    pageType,
+    users_id,
+    gameCommunities_id,
+    userCommunities_id,
+    pathArr,
+    pathname,
+    accessLevel,
     
   } = props;
   
@@ -150,13 +170,13 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
   
-  const stateForum = ContainerStateForum.useContainer();
+  // const stateForum = ContainerStateForum.useContainer();
   
-  const {
+  // const {
     
-    forumThreadsObj,
+  //   forumThreadsObj,
     
-  } = stateForum;
+  // } = stateForum;
   
   
   
@@ -277,40 +297,40 @@ const Component = (props) => {
   //   Thread
   // --------------------------------------------------
   
-  const page = lodashGet(forumThreadsObj, ['page'], 1);
-  const limit = lodashGet(forumThreadsObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT, 10));
-  const count = lodashGet(forumThreadsObj, ['count'], 0);
-  const arr = lodashGet(forumThreadsObj, [`page${page}Obj`, 'arr'], []);
+  // const page = lodashGet(forumThreadsObj, ['page'], 1);
+  // const limit = lodashGet(forumThreadsObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT, 10));
+  // const count = lodashGet(forumThreadsObj, ['count'], 0);
+  // const arr = lodashGet(forumThreadsObj, [`page${page}Obj`, 'arr'], []);
   
   
-  // --------------------------------------------------
-  //   Link Return Top
-  // --------------------------------------------------
+  // // --------------------------------------------------
+  // //   Link Return Top
+  // // --------------------------------------------------
   
-  let linkReturnTopHref = '';
-  let linkReturnTopAs = '';
+  // let linkReturnTopHref = '';
+  // let linkReturnTopAs = '';
   
   
-  // ---------------------------------------------
-  //   - Game Community
-  // ---------------------------------------------
+  // // ---------------------------------------------
+  // //   - Game Community
+  // // ---------------------------------------------
   
-  if (urlID) {
+  // if (urlID) {
     
-    linkReturnTopHref = `/gc/[urlID]/index?urlID=${urlID}`;
-    linkReturnTopAs = `/gc/${urlID}`;
+  //   linkReturnTopHref = `/gc/[urlID]/index?urlID=${urlID}`;
+  //   linkReturnTopAs = `/gc/${urlID}`;
     
     
-  // ---------------------------------------------
-  //   - User Community
-  // ---------------------------------------------
+  // // ---------------------------------------------
+  // //   - User Community
+  // // ---------------------------------------------
   
-  } else if (userCommunityID) {
+  // } else if (userCommunityID) {
     
-    linkReturnTopHref = `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`;
-    linkReturnTopAs = `/uc/${userCommunityID}`;
+  //   linkReturnTopHref = `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`;
+  //   linkReturnTopAs = `/uc/${userCommunityID}`;
     
-  }
+  // }
   
   
   
@@ -351,21 +371,21 @@ const Component = (props) => {
   const componentsArr = [];
   
   
-  for (let forumThreads_id of arr.values()) {
+  // for (let forumThreads_id of arr.values()) {
     
-    componentsArr.push(
-      <Thread
-        key={forumThreads_id}
-        urlID={urlID}
-        gameCommunities_id={gameCommunities_id}
-        userCommunityID={userCommunityID}
-        userCommunities_id={userCommunities_id}
-        forumThreads_id={forumThreads_id}
-        enableAnonymity={enableAnonymity}
-      />
-    );
+  //   componentsArr.push(
+  //     <Thread
+  //       key={forumThreads_id}
+  //       urlID={urlID}
+  //       gameCommunities_id={gameCommunities_id}
+  //       userCommunityID={userCommunityID}
+  //       userCommunities_id={userCommunities_id}
+  //       forumThreads_id={forumThreads_id}
+  //       enableAnonymity={enableAnonymity}
+  //     />
+  //   );
     
-  }
+  // }
   
   
   
@@ -376,33 +396,8 @@ const Component = (props) => {
   
   return (
     <Element
-      name="forumThreads"
+      name="followMembers"
     >
-      
-      
-      {/* Form - Post New Thread */}
-      <div
-        css={css`
-          margin: 0 0 16px 0;
-        `}
-      >
-        
-        <Panel
-          heading="スレッド投稿フォーム"
-          defaultExpanded={false}
-        >
-          
-          <FormThread
-            gameCommunities_id={gameCommunities_id}
-            userCommunities_id={userCommunities_id}
-            forumThreads_id=""
-          />
-          
-        </Panel>
-        
-      </div>
-      
-      
       
       
       {/* Forum */}
@@ -412,108 +407,72 @@ const Component = (props) => {
       
       
       {/* Pagination */}
-      {individual ? (
+      <Paper
+        css={css`
+          display: flex;
+          flex-flow: row wrap;
+          padding: 0 8px 8px 8px;
+        `}
+      >
         
+        
+        {/* Pagination */}
         <div
           css={css`
-            margin: 24px 0 8px 0;
+            margin: 8px 24px 0 0;
           `}
         >
           
-          <Paper
-            css={css`
-              display: flex;
-              flex-flow: row wrap;
-              padding: 12px 0 12px 12px;
-            `}
-          >
-            
-            <Link href={linkReturnTopHref} as={linkReturnTopAs}>
-              <Button
-                type="submit"
-                variant="outlined"
-                size="small"
-                disabled={buttonDisabled}
-              >
-                <IconDoubleArrow />
-                フォーラムトップに戻る
-              </Button>
-            </Link>
-            
-          </Paper>
+          <Pagination
+            disabled={buttonDisabled}
+            onChange={(page) => handleRead({
+              page,
+            })}
+            pageSize={limit}
+            current={page}
+            total={count}
+            locale={localeInfo}
+          />
           
         </div>
         
-      ) : (
         
-        <Paper
+        {/* Rows Per Page */}
+        <FormControl
           css={css`
-            display: flex;
-            flex-flow: row wrap;
-            padding: 0 8px 8px 8px;
+            margin: 8px 0 0 0 !important;
           `}
+          variant="outlined"
         >
           
-          
-          {/* Pagination */}
-          <div
-            css={css`
-              margin: 8px 24px 0 0;
-            `}
+          <Select
+            value={limit}
+            onChange={(eventObj) => handleRead({
+              page: 1,
+              changeLimit: eventObj.target.value,
+            })}
+            input={
+              <OutlinedInput
+                classes={{
+                  input: classes.input
+                }}
+                name="forum-threads-pagination"
+                id="outlined-rows-per-page"
+              />
+            }
           >
-            
-            <Pagination
-              disabled={buttonDisabled}
-              onChange={(page) => handleRead({
-                page,
-              })}
-              pageSize={limit}
-              current={page}
-              total={count}
-              locale={localeInfo}
-            />
-            
-          </div>
+            <MenuItem value={1}>1</MenuItem>
+            <MenuItem value={3}>3</MenuItem>
+            <MenuItem value={5}>5</MenuItem>
+            <MenuItem value={10}>10</MenuItem>
+            <MenuItem value={20}>20</MenuItem>
+            <MenuItem value={50}>50</MenuItem>
+          </Select>
           
-          
-          {/* Rows Per Page */}
-          <FormControl
-            css={css`
-              margin: 8px 0 0 0 !important;
-            `}
-            variant="outlined"
-          >
-            
-            <Select
-              value={limit}
-              onChange={(eventObj) => handleRead({
-                page: 1,
-                changeLimit: eventObj.target.value,
-              })}
-              input={
-                <OutlinedInput
-                  classes={{
-                    input: classes.input
-                  }}
-                  name="forum-threads-pagination"
-                  id="outlined-rows-per-page"
-                />
-              }
-            >
-              <MenuItem value={1}>1</MenuItem>
-              <MenuItem value={3}>3</MenuItem>
-              <MenuItem value={5}>5</MenuItem>
-              <MenuItem value={10}>10</MenuItem>
-              <MenuItem value={20}>20</MenuItem>
-              <MenuItem value={50}>50</MenuItem>
-            </Select>
-            
-          </FormControl>
-          
-          
-        </Paper>
+        </FormControl>
         
-      )}
+        
+      </Paper>
       
       
     </Element>

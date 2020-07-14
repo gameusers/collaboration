@@ -47,6 +47,7 @@ import IconLogout from '@material-ui/icons/Eject';
 import IconGames from '@material-ui/icons/Games';
 import IconUCList from '@material-ui/icons/MenuBook';
 import IconUserCommunity from '@material-ui/icons/SupervisedUserCircle';
+import IconMembers from '@material-ui/icons/SentimentSatisfiedAlt';
 
 import IconForum from '@material-ui/icons/Forum';
 import IconDescription from '@material-ui/icons/Description';
@@ -129,7 +130,7 @@ const Component = (props) => {
       icon = <IconGames fontSize="small" />;
       anchorText = valueObj.anchorText;
       
-    } else if (valueObj.type === 'gc/forum') {
+    } else if (valueObj.type === 'gc/forum' || valueObj.type === 'uc/forum') {
       
       icon = <IconForum fontSize="small" />;
       anchorText = 'フォーラム';
@@ -139,7 +140,7 @@ const Component = (props) => {
       icon = <IconDescription fontSize="small" />;
       anchorText = '募集';
       
-    } else if (valueObj.type === 'gc/forum/individual' || valueObj.type === 'gc/rec/individual') {
+    } else if (valueObj.type === 'gc/forum/individual' || valueObj.type === 'gc/rec/individual' || valueObj.type === 'uc/forum/individual') {
       
       icon = <IconIndividual fontSize="small" />;
       anchorText = valueObj.anchorText;
@@ -163,6 +164,11 @@ const Component = (props) => {
       
       icon = <IconUserCommunity fontSize="small" />;
       anchorText = valueObj.anchorText;
+      
+    } else if (valueObj.type === 'uc/members') {
+      
+      icon = <IconMembers fontSize="small" />;
+      anchorText = 'メンバー';
       
     }
     
@@ -192,12 +198,13 @@ const Component = (props) => {
         >
           
           {valueObj.href && valueObj.as ?
-          
+            
             <Link href={valueObj.href} as={valueObj.as}>
               <a>
                 <span
                   css={css`
-                    color: rgba(0, 0, 0, 0.54);
+                    // color: rgba(0, 0, 0, 0.54);
+                    color: rgba(0, 0, 0, 0.7);
                     cursor: pointer;
                   `}
                 >
@@ -280,7 +287,7 @@ const Component = (props) => {
               <a>
                 <span
                   css={css`
-                    color: rgba(0, 0, 0, 0.54);
+                    color: rgba(0, 0, 0, 0.7);
                     cursor: pointer;
                   `}
                 >

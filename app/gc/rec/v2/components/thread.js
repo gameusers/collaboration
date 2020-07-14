@@ -283,8 +283,7 @@ const Component = (props) => {
       //   Update - Game Community
       // ---------------------------------------------
       
-      const gameCommunityObj = lodashGet(resultObj, ['data', 'gameCommunityObj'], {});
-      setGameCommunityObj(gameCommunityObj);
+      setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
       
       
       // ---------------------------------------------

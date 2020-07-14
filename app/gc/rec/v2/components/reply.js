@@ -287,8 +287,7 @@ const Reply = (props) => {
       //   Update - Game Community
       // ---------------------------------------------
       
-      const gameCommunityObj = lodashGet(resultObj, ['data', 'gameCommunityObj'], {});
-      setGameCommunityObj(gameCommunityObj);
+      setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
       
       
       // ---------------------------------------------
@@ -1224,11 +1223,10 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Update - gameCommunityObj
+      //   Update - Game Community
       // ---------------------------------------------
       
-      const gameCommunityObj = lodashGet(resultObj, ['data', 'gameCommunityObj'], {});
-      setGameCommunityObj(gameCommunityObj);
+      setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
       
       
       // ---------------------------------------------

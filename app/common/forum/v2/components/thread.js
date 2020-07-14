@@ -18,8 +18,6 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useIntl } from 'react-intl';
 import { Element } from 'react-scroll';
-// import Pagination from 'rc-pagination';
-// import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 import SimpleIcons from 'simple-icons-react-component';
 
 /** @jsx jsx */
@@ -46,11 +44,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
-// import Paper from '@material-ui/core/Paper';
-// import OutlinedInput from '@material-ui/core/OutlinedInput';
-// import MenuItem from '@material-ui/core/MenuItem';
-// import FormControl from '@material-ui/core/FormControl';
-// import Select from '@material-ui/core/Select';
 import Avatar from '@material-ui/core/Avatar';
 
 
@@ -64,7 +57,6 @@ import IconAssignment from '@material-ui/icons/Assignment';
 import IconPublic from '@material-ui/icons/Public';
 import IconDelete from '@material-ui/icons/Delete';
 import IconEdit from '@material-ui/icons/Edit';
-// import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 
 
 // ---------------------------------------------
@@ -82,14 +74,12 @@ import { ContainerStateForum } from 'app/@states/forum.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import Panel from 'app/common/layout/v2/components/panel.js';
 import Paragraph from 'app/common/layout/v2/components/paragraph.js';
 import ImageAndVideo from 'app/common/image-and-video/v2/components/image-and-video.js';
 import FormThread from 'app/common/forum/v2/components/form/thread.js';
@@ -194,6 +184,7 @@ const Component = (props) => {
   const {
     
     setGameCommunityObj,
+    setUserCommunityObj,
     
   } = stateCommunity;
   
@@ -276,7 +267,7 @@ const Component = (props) => {
           
         });
         
-      } else if (userCommunities_id) {
+      } else {
         
         resultObj = await fetchWrapper({
           
@@ -301,11 +292,18 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Update - Game Community
+      //   Update - gameCommunityObj / userCommunityObj
       // ---------------------------------------------
       
-      const gameCommunityObj = lodashGet(resultObj, ['data', 'gameCommunityObj'], {});
-      setGameCommunityObj(gameCommunityObj);
+      if (gameCommunities_id) {
+        
+        setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
+        
+      } else {
+        
+        setUserCommunityObj(lodashGet(resultObj, ['data', 'userCommunityObj'], {}));
+        
+      }
       
       
       // ---------------------------------------------
@@ -327,8 +325,10 @@ const Component = (props) => {
       // ---------------------------------------------
       
       handleSnackbarOpen({
+        
         variant: 'success',
         messageID: 'KBPPfi4f9',
+        
       });
       
       
@@ -370,8 +370,10 @@ const Component = (props) => {
       // ---------------------------------------------
       
       handleSnackbarOpen({
+        
         variant: 'error',
         errorObj,
+        
       });
       
       
@@ -473,12 +475,31 @@ const Component = (props) => {
     shareTwitterText = name.substr(0, 50) + '…';
   }
   
-  let shareTwitter = `https://twitter.com/intent/tweet?text=${encodeURI(shareTwitterText)}&url=${process.env.NEXT_PUBLIC_URL_BASE}gc/${urlID}/forum/${forumThreads_id}`;
+  let shareTwitter = '';
+  
+  
+  // ---------------------------------------------
+  //   - Game Community
+  // ---------------------------------------------
+  
+  if (urlID) {
+    
+    shareTwitter = `https://twitter.com/intent/tweet?text=${encodeURI(shareTwitterText)}&url=${process.env.NEXT_PUBLIC_URL_BASE}gc/${urlID}/forum/${forumThreads_id}`;
+    
+    
+  // ---------------------------------------------
+  //   - User Community
+  // ---------------------------------------------
+  
+  } else if (userCommunityID) {
+    
+    shareTwitter = `https://twitter.com/intent/tweet?text=${encodeURI(shareTwitterText)}&url=${process.env.NEXT_PUBLIC_URL_BASE}uc/${userCommunityID}/forum/${forumThreads_id}`;
+    
+  }
+  
   
   if (twitterHashtagsArr.length > 0) {
-    
     shareTwitter += `&hashtags=${twitterHashtagsArr.join(',')}`;
-    
   }
   
   

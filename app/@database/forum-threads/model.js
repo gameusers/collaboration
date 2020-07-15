@@ -819,7 +819,7 @@ const findForForum = async ({
       //   $sort / $skip / $limit
       // --------------------------------------------------
       
-      { '$sort': { 'updatedDate': -1 } },
+      { $sort: { updatedDate: -1 } },
       { $skip: (threadPage - 1) * intThreadLimit },
       { $limit: intThreadLimit },
       
@@ -1598,7 +1598,7 @@ const findForForumBy_forumID = async ({
       },
       
       
-      { '$sort': { 'updatedDate': -1 } },
+      { $sort: { updatedDate: -1 } },
       { $skip: (threadPage - 1) * intThreadLimit },
       { $limit: intThreadLimit },
       

@@ -14,89 +14,197 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
-import Head from 'next/head';
-import { observer, Provider } from 'mobx-react';
-import { Element } from 'react-scroll';
-import lodashGet from 'lodash/get';
+import { animateScroll as scroll } from 'react-scroll';
+import moment from 'moment';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
+
+
+// ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateForum } from 'app/@states/forum.js';
+
+
+// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from '../../../app/@modules/fetch';
-import { createCsrfToken } from '../../../app/@modules/csrf';
-
-
-// ---------------------------------------------
-//   Stores
-// ---------------------------------------------
-
-import initStoreRoot from '../../../app/@stores/root';
-import initStoreUrUser from '../../../app/ur/user/stores/store';
-import initStoreCardPlayer from '../../../app/common/card/player/stores/player';
-import initStoreIDForm from '../../../app/common/id/stores/form';
-import initStoreGameForm from '../../../app/common/game/stores/form';
-import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
-import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
-import initStoreFollow from '../../../app/common/follow/stores/store';
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { createCsrfToken } from 'app/@modules/csrf.js';
+import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import Layout from '../../../app/common/layout/components/layout';
-import Sidebar from '../../../app/common/layout/components/sidebar';
-import Drawer from '../../../app/common/layout/components/drawer';
-import CardPlayer from '../../../app/common/card/player/components/player';
-import CardPlayerDialog from '../../../app/common/card/player/components/dialog';
+import Layout from 'app/common/layout/v2/components/layout.js';
+import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
+
+import Cards from 'app/ur/v2/components/cards.js';
 
 
 
 
-/**
- * ストアを読み込む、または作成する
- * @param {Object} propsObj - ストアに入れる値
- */
-const getOrCreateStore = ({ propsObj }) => {
+
+
+// --------------------------------------------------
+//   Function Components
+//   URL: https://dev-1.gameusers.org/gc/***
+// --------------------------------------------------
+
+const ContainerLayout = (props) => {
   
   
   // --------------------------------------------------
-  //   Stores
+  //   States
   // --------------------------------------------------
   
-  initStoreRoot({ propsObj });
+  const stateCommunity = ContainerStateCommunity.useContainer();
+  const stateForum = ContainerStateForum.useContainer();
   
-  const storeUrUser = initStoreUrUser({ propsObj });
-  const storeCardPlayer = initStoreCardPlayer({});
-  const storeIDForm = initStoreIDForm({});
-  const storeGameForm = initStoreGameForm({});
-  const storeImageAndVideo = initStoreImageAndVideo({});
-  const storeImageAndVideoForm = initStoreImageAndVideoForm({});
-  const storeFollow = initStoreFollow({});
+  const {
+    
+    setUserCommunityObj,
+    
+  } = stateCommunity;
+  
+  const {
+    
+    setForumThreadsForListObj,
+    setForumThreadsObj,
+    setForumCommentsObj,
+    setForumRepliesObj,
+    
+  } = stateForum;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Hooks
+  // --------------------------------------------------
+  
+  useEffect(() => {
+    
+    
+    // --------------------------------------------------
+    //   Router.push でページを移動した際の処理
+    //   getServerSideProps でデータを取得してからデータを更新する
+    // --------------------------------------------------
+    
+    setUserCommunityObj(props.userCommunityObj);
+    setForumThreadsForListObj(props.forumThreadsForListObj);
+    setForumThreadsObj(props.forumThreadsObj);
+    setForumCommentsObj(props.forumCommentsObj);
+    setForumRepliesObj(props.forumRepliesObj);
+    
+    
+    // ---------------------------------------------
+    //   Scroll To
+    // ---------------------------------------------
+    
+    scroll.scrollToTop({ duration: 0 });
+    
+    
+  }, [props.ISO8601]);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /pages/uc/[userCommunityID]/index.js - ContainerLayout
+  // `);
+  
+  // console.log(`
+  //   ----- props -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(props)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(`
+  //   ----- forumThreadsObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(chalk`
+  //   gameCommunities_id: {green ${gameCommunities_id}}
+  // `);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Component - Sidebar
+  // --------------------------------------------------
+  
+  // const componentSidebar = '';
+  
+  const componentSidebar =
+    <img
+      src="/img/common/advertisement/300x250.jpg"
+      width="300"
+      height="250"
+    />
+  ;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Component - Contents
+  // --------------------------------------------------
+  
+  const componentContent = 
+    <React.Fragment>
+      
+      <Breadcrumbs
+        arr={props.breadcrumbsArr}
+      />
+      
+      <Cards
+        arr={props.cardPlayersArr}
+      />
+      
+    </React.Fragment>
+  ;
+  
+  
   
   
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
   
-  return {
-    
-    storeUrUser,
-    storeCardPlayer,
-    storeIDForm,
-    storeGameForm,
-    storeImageAndVideo,
-    storeImageAndVideoForm,
-    storeFollow,
-    
-  };
+  return (
+    <Layout
+      title={props.title}
+      componentSidebar={componentSidebar}
+      componentContent={componentContent}
+      
+      headerObj={props.headerObj}
+      headerNavMainArr={props.headerNavMainArr}
+    />
+  );
   
   
 };
@@ -104,393 +212,316 @@ const getOrCreateStore = ({ propsObj }) => {
 
 
 
-// --------------------------------------------------
-//   Class
-//   URL: http://dev-1.gameusers.org:8080/ur/***
-// --------------------------------------------------
+const Component = (props) => {
+  
+  
+  // --------------------------------------------------
+  //   unstated-next - Initial State
+  // --------------------------------------------------
+  
+  const initialStateObj = {
+    
+    userCommunityObj: props.userCommunityObj,
+    forumThreadsForListObj: props.forumThreadsForListObj,
+    forumThreadsObj: props.forumThreadsObj,
+    forumCommentsObj: props.forumCommentsObj,
+    forumRepliesObj: props.forumRepliesObj,
+    
+  };
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Error
+  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
+  // --------------------------------------------------
+  
+  if (props.statusCode !== 200) {
+    return <Error statusCode={props.statusCode} />;
+  }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /pages/uc/[userCommunityID]/index.js
+  // `);
+  
+  // console.log(`
+  //   ----- headerObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(headerObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(`
+  //   ----- headerNavMainArr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(headerNavMainArr)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(chalk`
+  //   gameCommunities_id: {green ${gameCommunities_id}}
+  // `);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return (
+    <ContainerStateCommunity.Provider initialState={initialStateObj}>
+      
+      <ContainerStateForum.Provider initialState={initialStateObj}>
+        
+        <ContainerLayout {...props} />
+        
+      </ContainerStateForum.Provider>
+      
+    </ContainerStateCommunity.Provider>
+  );
+  
+  
+};
 
-@observer
-export default class extends React.Component {
+
+
+
+/**
+ * getServerSideProps
+ * @param {Object} req - リクエスト
+ * @param {Object} res - レスポンス
+ * @param {Object} query - クエリー
+ */
+export async function getServerSideProps({ req, res, query }) {
   
   
   // --------------------------------------------------
-  //   getInitialProps
+  //   CSRF
   // --------------------------------------------------
   
-  static async getInitialProps({ req, res, query, datetimeCurrent }) {
+  createCsrfToken(req, res);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Cookie & Accept Language
+  // --------------------------------------------------
+  
+  const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
+  const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Query
+  // --------------------------------------------------
+  
+  const userID = query.userID;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const ISO8601 = moment().utc().toISOString();
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Get Cookie Data
+  // --------------------------------------------------
+  
+  // const threadListPage = 1;
+  // const threadListLimit = getCookie({ key: 'forumThreadListLimit', reqHeadersCookie });
+  
+  // const threadPage = 1;
+  // const threadLimit = getCookie({ key: 'forumThreadLimit', reqHeadersCookie });
+  // const commentLimit = getCookie({ key: 'forumCommentLimit', reqHeadersCookie });
+  // const replyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Fetch
+  // --------------------------------------------------
+  
+  const resultObj = await fetchWrapper({
     
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}`),
+    methodType: 'GET',
+    reqHeadersCookie,
+    reqAcceptLanguage,
     
-    // --------------------------------------------------
-    //   CSRF
-    // --------------------------------------------------
+  });
+  
+  const statusCode = lodashGet(resultObj, ['statusCode'], 400);
+  const dataObj = lodashGet(resultObj, ['data'], {});
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   dataObj
+  // --------------------------------------------------
+  
+  const login = lodashGet(dataObj, ['login'], false);
+  const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
+  const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
+  const headerObj = lodashGet(dataObj, ['headerObj'], {});
+  
+  const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
+  const cardPlayersArr = lodashGet(dataObj, ['cardPlayersArr'], []);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Title
+  // --------------------------------------------------
+  
+  const topPagesObj = pagesArr.find((valueObj) => {
+    return valueObj.type === 'top';
+  });
+  
+  const topPageName = lodashGet(topPagesObj, ['name'], '');
+  
+  const userName = lodashGet(cardPlayersArr, [0, 'nameObj', 'value'], '');
+  const title = topPageName ? topPageName : `${userName} - Game Users`;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Header Navigation Link
+  // --------------------------------------------------
+  
+  const headerNavMainArr = [
     
-    createCsrfToken(req, res);
+    {
+      name: 'トップ',
+      href: `/ur/[userID]/index?userID=${userID}`,
+      as: `/ur/${userID}`,
+      active: true,
+    },
     
+    {
+      name: 'フォロー',
+      href: `/ur/[userID]/follow?userID=${userID}`,
+      as: `/ur/${userID}/follow`,
+      active: false,
+    },
     
+  ];
+  
+  if (accessLevel >= 50) {
     
-    
-    // --------------------------------------------------
-    //   Property
-    // --------------------------------------------------
-    
-    const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
-    const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-    const userID = query.userID;
-    const pathname = `/ur/${userID}`;
-    
-    
-    // --------------------------------------------------
-    //   Fetch
-    // --------------------------------------------------
-    
-    const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}`),
-      methodType: 'GET',
-      reqHeadersCookie,
-      reqAcceptLanguage,
-    });
-    
-    const statusCode = lodashGet(resultObj, ['statusCode'], 400);
-    let propsObj = lodashGet(resultObj, ['data'], {});
-    
-    // const cardPlayersObj = lodashGet(resultObj, ['data', 'cardPlayersObj'], {});
-    // const cardPlayersArr = lodashGet(resultObj, ['data', 'cardPlayersArr'], []);
-    // const pagesObj = lodashGet(resultObj, ['data', 'pagesObj'], []);
-    const accessLevel = lodashGet(resultObj, ['data', 'accessLevel'], 1);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Stores
-    // --------------------------------------------------
-    
-    const headerNavMainArr = [
+    headerNavMainArr.push(
       {
-        name: 'トップ',
-        href: `/ur/[userID]/index?userID=${userID}`,
-        as: `/ur/${userID}`,
-      },
-      {
-        name: 'フォロー',
-        href: `/ur/[userID]/follow?userID=${userID}`,
-        as: `/ur/${userID}/follow`,
-      },
-    ];
-    
-    if (accessLevel >= 50) {
-      
-      headerNavMainArr.push(
-        {
-          name: '設定',
-          href: `/ur/[userID]/settings?userID=${userID}`,
-          as: `/ur/${userID}/settings`,
-        }
-      );
-      
-    }
-    
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr };
-    
-    const storesObj = getOrCreateStore({ propsObj });
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/ur/[userID]/index.js
-    // `);
-    
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   userID: {green ${userID}}
-    //   accessLevel: {green ${accessLevel} / ${typeof accessLevel}}
-    //   accessLevel => 50: {green ${accessLevel >= 50}}
-    // `);
-    
-    // console.log(`
-    //   ----------------------------------------
-    // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return { 
-      
-      statusCode,
-      reqAcceptLanguage,
-      storesObj,
-      propsObj,
-      
-    };
-    
-    
-  }
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  constructor(props) {
-    
-    
-    // --------------------------------------------------
-    //   super
-    // --------------------------------------------------
-    
-    super(props);
-    
-    
-    // --------------------------------------------------
-    //   Property / Error Flag
-    // --------------------------------------------------
-    
-    this.error = false;
-    
-    
-    try {
-      
-      
-      // --------------------------------------------------
-      //   Error
-      // --------------------------------------------------
-      
-      if (
-        this.props.statusCode !== 200 ||
-        'cardPlayersObj' in props.propsObj === false ||
-        'cardPlayersArr' in props.propsObj === false
-      ) {
-        throw new Error();
+        name: '設定',
+        href: `/ur/[userID]/settings?userID=${userID}`,
+        as: `/ur/${userID}/settings`,
+        active: false,
       }
-      
-      
-      // --------------------------------------------------
-      //   Stores
-      // --------------------------------------------------
-      
-      const isServer = !process.browser;
-      
-      if (isServer) {
-        this.storesObj = props.storesObj;
-      } else {
-        this.storesObj = getOrCreateStore({ propsObj: props.propsObj });
-      }
-      
-      
-    } catch (e) {
-      this.error = true;
-    }
-    
-    
-  }
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   render
-  // --------------------------------------------------
-  
-  render() {
-    
-    
-    // --------------------------------------------------
-    //   Error
-    //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
-    // --------------------------------------------------
-    
-    if (this.error) {
-      return <Error statusCode={this.props.statusCode} />;
-    }
-    
-    
-    // --------------------------------------------------
-    //   Props
-    // --------------------------------------------------
-    
-    // const stores = this.stores;
-    
-    const cardPlayersArr = lodashGet(this.props, ['propsObj', 'cardPlayersArr'], []);
-    
-    // console.log(`
-    //   ----- cardPlayersArr -----\n
-    //   ${util.inspect(cardPlayersArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   Player Card
-    // --------------------------------------------------
-    
-    let userName = '';
-    
-    const componentCardsArr = [];
-    
-    for (const [index, cardPlayers_id] of cardPlayersArr.entries()) {
-      
-      userName = lodashGet(this.props, ['propsObj', 'cardPlayersObj', cardPlayers_id, 'nameObj', 'value'], '');
-      
-      componentCardsArr.push(
-        <CardPlayer
-          cardPlayers_id={cardPlayers_id}
-          showFollow={true}
-          showEditButton={true}
-          key={index}
-        />
-      );
-      
-    }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Header Title
-    // --------------------------------------------------
-    
-    const pagesArr = lodashGet(this.props, ['propsObj', 'pagesObj', 'arr'], []);
-    
-    const topPagesObj = pagesArr.find((valueObj) => {
-      return valueObj.type === 'top';
-    });
-    
-    const topPageName = lodashGet(topPagesObj, ['name'], '');
-    const title = topPageName ? topPageName : `${userName} - Game Users`;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return (
-      <Provider { ...this.storesObj }>
-        
-        <Layout>
-          
-          
-          {/* Head 内部のタグをここで追記する */}
-          <Head>
-            <title>{title}</title>
-          </Head>
-          
-          
-          
-          {/* 2 Column */}
-          <div
-            css={css`
-              display: flex;
-              flex-flow: row nowrap;
-              justify-content: center;
-              margin: 0 auto;
-              padding: 16px;
-              
-              @media screen and (max-width: 947px) {
-                display: flex;
-                flex-flow: column nowrap;
-                padding: 10px 0 10px 0;
-              }
-            `}
-          >
-            
-            
-            {/* Sidebar */}
-            <div
-              css={css`
-                width: 300px;
-                margin: 0 16px 0 0;
-                
-                @media screen and (max-width: 947px) {
-                  width: auto;
-                  margin: 0 0 16px 0;
-                }
-              `}
-            >
-              
-              
-              <Sidebar>
-                <img
-                  src="/img/common/advertisement/300x250.jpg"
-                  width="300"
-                  height="250"
-                />
-              </Sidebar>
-              
-              
-              Sidebar
-              
-            </div>
-            
-            
-            
-            
-            {/* Main */}
-            <div
-              css={css`
-                width: 100%;
-                max-width: 800px;
-                
-                @media screen and (max-width: 947px) {
-                  max-width: none;
-                }
-              `}
-            >
-              
-              
-              {/* プレイヤーカード */}
-              <Element
-                name="cardPlayer"
-              >
-                {componentCardsArr}
-              </Element>
-              
-              
-            </div>
-            
-            
-          </div>
-          
-          
-          
-          
-          {/* プレイヤーカードを表示するダイアログ */}
-          <CardPlayerDialog />
-          
-          
-          
-          
-          {/* Drawer */}
-          <Drawer>
-            Drawer
-          </Drawer>
-          
-          
-          
-          
-        </Layout>
-        
-      </Provider>
     );
     
   }
   
+  
+  
+  
+  // --------------------------------------------------
+  //   パンくずリスト
+  // --------------------------------------------------
+  
+  const breadcrumbsArr = [
+    
+    {
+      type: 'ur',
+      anchorText: '',
+      href: '',
+      as: '',
+    },
+    
+  ];
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  console.log(`
+    ----------------------------------------\n
+    /pages/ur/[userID]/index.js
+  `);
+  
+  console.log(`
+    ----- resultObj -----\n
+    ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+    --------------------\n
+  `);
+  
+  // console.log(chalk`
+  //   threadListPage: {green ${threadListPage}}
+  //   threadPage: {green ${threadPage}}
+    
+  //   threadListLimit: {green ${threadListLimit}}
+  //   threadLimit: {green ${threadLimit}}
+  //   commentLimit: {green ${commentLimit}}
+  //   replyLimit: {green ${replyLimit}}
+  // `);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return { 
+    
+    props: {
+      
+      reqAcceptLanguage,
+      ISO8601,
+      statusCode,
+      login,
+      loginUsersObj,
+      title,
+      headerObj,
+      headerNavMainArr,
+      breadcrumbsArr,
+      
+      userID,
+      cardPlayersArr,
+      
+    }
+    
+  };
+  
+  
 }
+
+
+
+
+// --------------------------------------------------
+//   Export
+// --------------------------------------------------
+
+export default Component;

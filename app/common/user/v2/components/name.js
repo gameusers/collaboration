@@ -40,6 +40,13 @@ import IconStars from '@material-ui/icons/Stars';
 import IconLayers from '@material-ui/icons/Layers';
 
 
+// ---------------------------------------------
+//   Moment Locale
+// ---------------------------------------------
+
+moment.locale('ja');
+
+
 
 
 
@@ -977,10 +984,6 @@ const Component = (props) => {
         display: flex;
         flex-flow: column wrap;
         line-height: 1.6em;
-        
-        // @media screen and (max-width: 768px) {
-        //   flex-flow: row wrap;
-        // }
       `}
     >
       

@@ -1007,7 +1007,7 @@ const findCommentsAndReplies = async ({
                 },
                 
                 
-                { '$sort': { 'createdDate': 1 } },
+                { $sort: { createdDate: 1 } },
                 { $skip: (replyPage - 1) * intReplyLimit },
                 { $limit: intReplyLimit },
                 
@@ -1035,7 +1035,7 @@ const findCommentsAndReplies = async ({
         //   $sort / $skip / $limit
         // --------------------------------------------------
         
-        { '$sort': { 'updatedDate': -1 } },
+        { $sort: { updatedDate: -1 } },
         { $skip: (commentPage - 1) * intCommentLimit },
         { $limit: intCommentLimit },
         
@@ -1900,7 +1900,7 @@ const getPage = async ({
       },
       
       
-      { '$sort': { 'updatedDate': -1 } },
+      { $sort: { updatedDate: -1 } },
       
       
       { $project:

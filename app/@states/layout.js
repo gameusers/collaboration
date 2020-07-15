@@ -49,6 +49,7 @@ const useLayout = (initialStateObj) => {
   const [loadingObj, setLoadingObj] = useState({});
   const [videoObj, setVideoObj] = useState({});
   const [navigationForLightbox, setNavigationForLightbox] = useState(true);
+  const [cardPlayersObj, setCardPlayersObj] = useState({});
   
   
   
@@ -363,6 +364,9 @@ const useLayout = (initialStateObj) => {
     navigationForLightbox,
     handleNavigationForLightboxShow,
     handleNavigationForLightboxHide,
+    
+    cardPlayersObj,
+    setCardPlayersObj,
     
   };
   

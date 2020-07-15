@@ -789,7 +789,7 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                 },
                 
                 
-                { '$sort': { 'createdDate': 1 } },
+                { $sort: { createdDate: 1 } },
                 { $skip: (replyPage - 1) * intReplyLimit },
                 { $limit: parseInt(intReplyLimit, 10) },
                 
@@ -1429,7 +1429,7 @@ const findRepliesByForumComments_idsArr = async ({
       },
       
       
-      { '$sort': { 'updatedDate': -1 } },
+      { $sort: { updatedDate: -1 } },
       { $skip: (commentPage - 1) * intCommentLimit },
       { $limit: intCommentLimit },
       
@@ -2012,7 +2012,7 @@ const getPage = async ({
       },
       
       
-      { '$sort': { 'updatedDate': -1 } },
+      { $sort: { updatedDate: -1 } },
       
       
       { $project:
@@ -2071,7 +2071,7 @@ const getPage = async ({
         },
         
         
-        { '$sort': { 'createdDate': 1 } },
+        { $sort: { createdDate: 1 } },
         
         
         { $project:
@@ -2514,7 +2514,7 @@ const findRepliesForUpsert = async ({
         ...matchConditionArr,
         
         
-        { '$sort': { 'createdDate': 1 } },
+        { $sort: { createdDate: 1 } },
         
         
         { $project:

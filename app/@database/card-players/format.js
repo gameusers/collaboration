@@ -42,7 +42,13 @@ const { formatIDsArr } = require('../ids/format');
  * @param {Array} arr - データの入った配列
  * @return {Object} フォーマットされたオブジェクトと cardPlayers_id の入った配列
  */
-const formatCardPlayersArr = ({ localeObj, loginUsers_id, arr }) => {
+const formatCardPlayersArr = ({
+  
+  localeObj,
+  loginUsers_id,
+  arr,
+  
+}) => {
   
   
   // --------------------------------------------------
@@ -51,6 +57,8 @@ const formatCardPlayersArr = ({ localeObj, loginUsers_id, arr }) => {
   
   const returnObj = {};
   const returnArr = [];
+  
+  
   
   
   // --------------------------------------------------
@@ -203,7 +211,7 @@ const formatCardPlayersArr = ({ localeObj, loginUsers_id, arr }) => {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/@database/card-players/format.js - format
+    //   /app/@database/card-players/format.js - formatCardPlayersArr
     // `);
     
     // console.log(chalk`
@@ -224,7 +232,6 @@ const formatCardPlayersArr = ({ localeObj, loginUsers_id, arr }) => {
     //   不要な項目を削除する
     // --------------------------------------------------
     
-    // delete clonedObj._id;
     delete clonedObj.ids_idsArr;
     delete clonedObj.hardwareActiveObj;
     delete clonedObj.hardwareInactiveObj;
@@ -240,16 +247,23 @@ const formatCardPlayersArr = ({ localeObj, loginUsers_id, arr }) => {
     
     // returnObj[valueObj._id] = clonedObj;
     // returnArr.push(valueObj._id);
+    // returnObj[cardPlayers_id] = clonedObj;
+    // returnArr.push(cardPlayers_id);
+    
     returnObj[cardPlayers_id] = clonedObj;
-    returnArr.push(cardPlayers_id);
+    returnArr.push(clonedObj);
     
     
   }
   
   
+  
+  
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
+  
+  // return returnArr;
   
   return {
     

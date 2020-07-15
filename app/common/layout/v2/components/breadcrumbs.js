@@ -48,6 +48,7 @@ import IconGames from '@material-ui/icons/Games';
 import IconUCList from '@material-ui/icons/MenuBook';
 import IconUserCommunity from '@material-ui/icons/SupervisedUserCircle';
 import IconMembers from '@material-ui/icons/SentimentSatisfiedAlt';
+import IconUser from '@material-ui/icons/Person';
 
 import IconForum from '@material-ui/icons/Forum';
 import IconDescription from '@material-ui/icons/Description';
@@ -169,6 +170,16 @@ const Component = (props) => {
       
       icon = <IconMembers fontSize="small" />;
       anchorText = 'メンバー';
+    
+    
+    // --------------------------------------------------
+    //   - User
+    // --------------------------------------------------
+      
+    } else if (valueObj.type === 'ur') {
+      
+      icon = <IconUser fontSize="small" />;
+      anchorText = 'ユーザー';
       
     }
     

@@ -336,7 +336,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Title
   // --------------------------------------------------
   
-  const title = `${userCommunityName}: メンバー`;
+  const title = `メンバー: ${userCommunityName}`;
   
   
   

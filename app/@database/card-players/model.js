@@ -16,6 +16,11 @@ const util = require('util');
 
 const moment = require('moment');
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashCloneDeep = require('lodash/cloneDeep');
@@ -25,28 +30,30 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Schema & Model
 // ---------------------------------------------
 
-const Schema = require('./schema');
-const SchemaUsers = require('../users/schema');
-const SchemaImagesAndVideos = require('../images-and-videos/schema');
+const SchemaCardPlayers = require('./schema.js');
+const SchemaUsers = require('../users/schema.js');
+const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
 
-const ModelIDs = require('../ids/model');
-const ModelFollows = require('../follows/model');
+const ModelIDs = require('../ids/model.js');
+const ModelFollows = require('../follows/model.js');
 
 
 // ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatCardPlayersArr, formatCardPlayersArrFromSchemaCardPlayers } = require('./format');
-const { formatImagesAndVideosObj } = require('../images-and-videos/format');
-const { formatFollowsObj } = require('../follows/format');
+const { formatCardPlayersArr, formatCardPlayersArrFromSchemaCardPlayers } = require('./format.js');
+const { formatImagesAndVideosObj } = require('../images-and-videos/format.js');
+const { formatFollowsObj } = require('../follows/format.js');
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../@modules/error/custom');
+const { CustomError } = require('../../@modules/error/custom.js');
+
+
 
 
 
@@ -83,7 +90,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await Schema.findOne(conditionObj).exec();
+    return await SchemaCardPlayers.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -126,7 +133,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.find(conditionObj).exec();
+    return await SchemaCardPlayers.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -168,7 +175,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.countDocuments(conditionObj).exec();
+    return await SchemaCardPlayers.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -215,7 +222,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await SchemaCardPlayers.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -257,7 +264,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await Schema.insertMany(saveArr);
+    return await SchemaCardPlayers.insertMany(saveArr);
     
     
   } catch (err) {
@@ -300,7 +307,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await Schema.deleteMany(conditionObj);
+    return await SchemaCardPlayers.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -324,14 +331,21 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * @param {string} cardPlayers_id - DB card-players _id
  * @return {Object} 取得データ
  */
-const findForCardPlayers = async ({ localeObj, loginUsers_id, users_id, cardPlayers_id }) => {
+const findForCardPlayers = async ({
+  
+  localeObj,
+  loginUsers_id,
+  users_id,
+  cardPlayers_id,
+  
+}) => {
   
   
   // --------------------------------------------------
   //   Match Condition Array
   // --------------------------------------------------
   
-  let matchConditionArr = [
+  const matchConditionArr = [
     {
       $match : { _id: users_id }
     },
@@ -353,7 +367,6 @@ const findForCardPlayers = async ({ localeObj, loginUsers_id, users_id, cardPlay
 /**
  * aggregate でデータを取得し、フォーマットして返す
  * schema: users をベースにして検索
- * 
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {Array} matchConditionArr - 検索条件
@@ -366,8 +379,8 @@ const aggregateAndFormat = async ({
   localeObj,
   loginUsers_id,
   matchConditionArr,
-  page,
-  limit,
+  page = 1,
+  limit = 1,
   
 }) => {
   
@@ -389,19 +402,11 @@ const aggregateAndFormat = async ({
     
     
     // --------------------------------------------------
-    //   parseInt
+    //   parse
     // --------------------------------------------------
     
-    let intPage = 1;
-    let intLimit = 1;
-    
-    if (page) {
-      intPage = parseInt(page, 10);
-    }
-    
-    if (limit) {
-      intLimit = parseInt(limit, 10);
-    }
+    const intPage = parseInt(page, 10);
+    const intLimit = parseInt(limit, 10);
     
     
     // --------------------------------------------------
@@ -419,7 +424,7 @@ const aggregateAndFormat = async ({
     //   ShemaUsers をベースにしているのは accessDate でソートするため
     // --------------------------------------------------
     
-    const docUsersArr = await SchemaUsers.aggregate([
+    const docArr = await SchemaUsers.aggregate([
       
       
       // --------------------------------------------------
@@ -437,11 +442,11 @@ const aggregateAndFormat = async ({
         $lookup:
           {
             from: 'card-players',
-            let: { users_id: '$_id' },
+            let: { let_id: '$_id' },
             pipeline: [
               { $match:
                 { $expr:
-                  { $eq: ['$users_id', '$$users_id'] },
+                  { $eq: ['$users_id', '$$let_id'] },
                 }
               },
               
@@ -454,11 +459,11 @@ const aggregateAndFormat = async ({
                 $lookup:
                   {
                     from: 'images-and-videos',
-                    let: { cardPlayersImagesAndVideos_id: '$imagesAndVideos_id' },
+                    let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
                     pipeline: [
                       { $match:
                         { $expr:
-                          { $eq: ['$_id', '$$cardPlayersImagesAndVideos_id'] },
+                          { $eq: ['$_id', '$$letImagesAndVideos_id'] },
                         }
                       },
                       { $project:
@@ -490,15 +495,15 @@ const aggregateAndFormat = async ({
                 $lookup:
                   {
                     from: 'images-and-videos',
-                    let: { cardPlayersImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                    let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
                     pipeline: [
                       { $match:
                         { $expr:
-                          { $eq: ['$_id', '$$cardPlayersImagesAndVideosThumbnail_id'] },
+                          { $eq: ['$_id', '$$letImagesAndVideosThumbnail_id'] },
                         }
                       },
-                      { $project:
-                        {
+                      {
+                        $project: {
                           createdDate: 0,
                           updatedDate: 0,
                           users_id: 0,
@@ -527,8 +532,8 @@ const aggregateAndFormat = async ({
                   {
                     from: 'hardwares',
                     let: {
-                      cardPlayersHardwareActiveArr: '$hardwareActiveObj.valueArr',
-                      cardPlayersHardwareInactiveArr: '$hardwareInactiveObj.valueArr'
+                      letHardwareActiveArr: '$hardwareActiveObj.valueArr',
+                      letHardwareInactiveArr: '$hardwareInactiveObj.valueArr'
                     },
                     pipeline: [
                       { $match:
@@ -539,22 +544,22 @@ const aggregateAndFormat = async ({
                                 [
                                   { $eq: ['$language', language] },
                                   { $eq: ['$country', country] },
-                                  { $in: ['$hardwareID', '$$cardPlayersHardwareActiveArr'] }
+                                  { $in: ['$hardwareID', '$$letHardwareActiveArr'] }
                                 ]
                               },
                               { $and:
                                 [
                                   { $eq: ['$language', language] },
                                   { $eq: ['$country', country] },
-                                  { $in: ['$hardwareID', '$$cardPlayersHardwareInactiveArr'] }
+                                  { $in: ['$hardwareID', '$$letHardwareInactiveArr'] }
                                 ]
                               }
                             ]
                           }
                         }
                       },
-                      { $project:
-                        {
+                      {
+                        $project: {
                           _id: 0,
                           hardwareID: 1,
                           name: 1,
@@ -574,11 +579,11 @@ const aggregateAndFormat = async ({
                 $lookup:
                   {
                     from: 'follows',
-                    let: { cardPlayersUsers_id: '$users_id' },
+                    let: { letUsers_id: '$users_id' },
                     pipeline: [
                       { $match:
                         { $expr:
-                          { $eq: ['$users_id', '$$cardPlayersUsers_id'] },
+                          { $eq: ['$users_id', '$$letUsers_id'] },
                         }
                       },
                     ],
@@ -599,11 +604,11 @@ const aggregateAndFormat = async ({
                 $lookup:
                   {
                     from: 'ids',
-                    let: { cardPlayersIds_idArr: '$ids_idsArr' },
+                    let: { letIDs_idArr: '$ids_idsArr' },
                     pipeline: [
                       { $match:
                         { $expr:
-                          { $in: ['$_id', '$$cardPlayersIds_idArr'] }
+                          { $in: ['$_id', '$$letIDs_idArr'] }
                         }
                       },
                       
@@ -616,7 +621,7 @@ const aggregateAndFormat = async ({
                         $lookup:
                           {
                             from: 'games',
-                            let: { idsGameCommunities_id: '$gameCommunities_id' },
+                            let: { letGameCommunities_id: '$gameCommunities_id' },
                             pipeline: [
                               { $match:
                                 { $expr:
@@ -624,7 +629,7 @@ const aggregateAndFormat = async ({
                                     [
                                       { $eq: ['$language', language] },
                                       { $eq: ['$country', country] },
-                                      { $eq: ['$gameCommunities_id', '$$idsGameCommunities_id'] }
+                                      { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
                                     ]
                                   },
                                 }
@@ -639,11 +644,11 @@ const aggregateAndFormat = async ({
                                 $lookup:
                                   {
                                     from: 'images-and-videos',
-                                    let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                                    let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
                                     pipeline: [
                                       { $match:
                                         { $expr:
-                                          { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
+                                          { $eq: ['$_id', '$$letImagesAndVideosThumbnail_id'] },
                                         }
                                       },
                                       { $project:
@@ -667,8 +672,8 @@ const aggregateAndFormat = async ({
                               },
                               
                               
-                              { $project:
-                                {
+                              {
+                                $project: {
                                   _id: 1,
                                   gameCommunities_id: 1,
                                   name: 1,
@@ -689,8 +694,8 @@ const aggregateAndFormat = async ({
                       },
                       
                       
-                      { $project:
-                        {
+                      {
+                        $project: {
                           createdDate: 0,
                           updatedDate: 0,
                           users_id: 0,
@@ -703,6 +708,10 @@ const aggregateAndFormat = async ({
                   }
               },
               
+              
+              // --------------------------------------------------
+              //   $project
+              // --------------------------------------------------
               
               {
                 $project: {
@@ -745,8 +754,12 @@ const aggregateAndFormat = async ({
       },
       
       
-      { $project:
-        {
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+      
+      {
+        $project: {
           accessDate: 1,
           exp: 1,
           userID: 1,
@@ -755,7 +768,11 @@ const aggregateAndFormat = async ({
       },
       
       
-      { '$sort': { 'accessDate': -1 } },
+      // --------------------------------------------------
+      //   $sort / $skip / $limit
+      // --------------------------------------------------
+      
+      { $sort: { accessDate: -1 } },
       { $skip: (intPage - 1) * intLimit },
       { $limit: intLimit },
       
@@ -773,7 +790,7 @@ const aggregateAndFormat = async ({
       
       localeObj,
       loginUsers_id,
-      arr: docUsersArr,
+      arr: docArr,
       
     });
     
@@ -799,8 +816,8 @@ const aggregateAndFormat = async ({
     // `);
     
     // console.log(`
-    //   ----- docUsersArr -----\n
-    //   ${util.inspect(docUsersArr, { colors: true, depth: null })}\n
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -911,7 +928,7 @@ const findFromSchemaCardPlayers = async ({
     //   Card Players のデータを取得
     // --------------------------------------------------
     
-    const docArr = await Schema.aggregate([
+    const docArr = await SchemaCardPlayers.aggregate([
       
       
       // --------------------------------------------------
@@ -1352,7 +1369,7 @@ const findOneForEdit = async ({
     //   Aggregate
     // --------------------------------------------------
     
-    const docCardPlayersArr = await Schema.aggregate([
+    const docArr = await SchemaCardPlayers.aggregate([
       
       
       // --------------------------------------------------
@@ -1383,8 +1400,8 @@ const findOneForEdit = async ({
                   { $eq: ['$_id', '$$letImagesAndVideos_id'] },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -1419,8 +1436,8 @@ const findOneForEdit = async ({
                   { $eq: ['$_id', '$$letImagesAndVideosThumbnail_id'] },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -1475,8 +1492,8 @@ const findOneForEdit = async ({
                   }
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   _id: 0,
                   hardwareID: 1,
                   name: 1,
@@ -1618,7 +1635,7 @@ const findOneForEdit = async ({
     //   配列が空の場合は処理停止
     // --------------------------------------------------
     
-    if (docCardPlayersArr.length === 0) {
+    if (docArr.length === 0) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: 'bGSSbWbBE', messageID: 'cvS0qSAlE' }] });
     }
     
@@ -1629,7 +1646,7 @@ const findOneForEdit = async ({
     //   Format
     // --------------------------------------------------
     
-    const formattedObj = docCardPlayersArr[0];
+    const formattedObj = docArr[0];
     
     const hardwaresArr = lodashGet(formattedObj, ['hardwaresArr'], []);
     
@@ -1745,8 +1762,8 @@ const findOneForEdit = async ({
     // `);
     
     // console.log(`
-    //   ----- docCardPlayersArr -----\n
-    //   ${util.inspect(docCardPlayersArr, { colors: true, depth: null })}\n
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -1810,7 +1827,7 @@ const findOneBy_idForEditForm = async ({
     //   Aggregate
     // --------------------------------------------------
     
-    let resultCardPlayersArr = await Schema.aggregate([
+    let resultCardPlayersArr = await SchemaCardPlayers.aggregate([
       
       {
         $match:
@@ -2318,8 +2335,8 @@ const findForMember = async ({
       },
       
       
-      { $project:
-        {
+      {
+        $project: {
           // _id: 0,
           accessDate: 1,
           exp: 1,
@@ -2332,7 +2349,7 @@ const findForMember = async ({
       },
       
       
-      { '$sort': { 'accessDate': -1 } },
+      { $sort: { accessDate: -1 } },
       { $skip: (intPage - 1) * intLimit },
       { $limit: intLimit },
       
@@ -3130,7 +3147,7 @@ const transactionForUpsert = async ({
   //   Transaction / Session
   // --------------------------------------------------
   
-  const session = await Schema.startSession();
+  const session = await SchemaCardPlayers.startSession();
   
   
   // --------------------------------------------------
@@ -3153,7 +3170,7 @@ const transactionForUpsert = async ({
     //   Card Player
     // --------------------------------------------------
     
-    await Schema.updateOne(cardPlayersConditionObj, cardPlayersSaveObj, { session, upsert: true });
+    await SchemaCardPlayers.updateOne(cardPlayersConditionObj, cardPlayersSaveObj, { session, upsert: true });
     
     
     

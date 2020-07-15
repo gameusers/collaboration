@@ -1,52 +1,54 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
-//   Node Packages
+//   Lodash
 // ---------------------------------------------
 
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
-const lodashHas = require('lodash/has');
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUsers = require('../../../../../app/@database/users/model');
-const ModelCardPlayers = require('../../../../../app/@database/card-players/model');
+import ModelUsers from 'app/@database/users/model.js';
+import ModelCardPlayers from 'app/@database/card-players/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from 'app/@locales/locale.js';
 
 
 // ---------------------------------------------
 //   API
 // ---------------------------------------------
 
-const { initialProps } = require('../../../../../app/@api/v2/common');
+import { initialProps } from 'app/@api/v2/common.js';
+
+
 
 
 
@@ -66,23 +68,30 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const returnObj = {};
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
   //   Locale
   // --------------------------------------------------
   
   const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
+    acceptLanguage: language
   });
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const returnObj = {
-    cardsArr: [],
-  };
-  const requestParametersObj = {};
-  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
   
@@ -94,7 +103,7 @@ export default async (req, res) => {
     //   GET Data
     // --------------------------------------------------
     
-    const userID = req.query.userID;
+    const userID = lodashGet(req, ['query', 'userID'], '');
     
     lodashSet(requestParametersObj, ['userID'], userID);
     
@@ -111,11 +120,7 @@ export default async (req, res) => {
     returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
     const gamesImagesAndVideosObj = lodashGet(commonInitialPropsObj, ['headerObj', 'imagesAndVideosObj'], {});
     
-    // console.log(`
-    //   ----- gamesImagesAndVideosObj -----\n
-    //   ${util.inspect(gamesImagesAndVideosObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    
     
     
     // --------------------------------------------------
@@ -140,8 +145,10 @@ export default async (req, res) => {
     const users_id = lodashGet(usersObj, ['_id'], '');
     
     if (!users_id) {
+      
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: '1G6OYPg8p', messageID: 'Error' }] });
+      
     }
     
     
@@ -156,15 +163,9 @@ export default async (req, res) => {
       lodashSet(returnObj, ['headerObj', 'imagesAndVideosObj'], gamesImagesAndVideosObj);
     }
     
-    // console.log(`
-    //   ----- usersObj.headerObj -----\n
-    //   ${util.inspect(usersObj.headerObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     
     // --------------------------------------------------
-    //   pagesObj
+    //   pagesObj - ユーザー各自が設定したページのタイトル
     // --------------------------------------------------
     
     returnObj.pagesObj = lodashGet(usersObj, ['pagesObj'], []);
@@ -186,37 +187,8 @@ export default async (req, res) => {
       
     });
     
-    returnObj.cardPlayersObj = resultCardPlayersObj.cardPlayersObj;
+    // returnObj.cardPlayersObj = resultCardPlayersObj.cardPlayersObj;
     returnObj.cardPlayersArr = resultCardPlayersObj.cardPlayersArr;
-    
-    
-    // --------------------------------------------------
-    //   データ取得 / Card Players
-    //   アクセスしたページ所有者のプレイヤーカード情報
-    // --------------------------------------------------
-    
-    // const cardPlayersObj = await ModelCardPlayers.findForCardPlayer({
-      
-    //   localeObj,
-    //   users_id,
-    //   loginUsers_id,
-      
-    // });
-    
-    // returnObj.cardPlayersObj = cardPlayersObj;
-    
-    
-    // // --------------------------------------------------
-    // //   カードを一覧で表示するための配列を作成する
-    // // --------------------------------------------------
-    
-    // const cardPlayersKeysArr = Object.keys(cardPlayersObj);
-    
-    // if (cardPlayersKeysArr.length > 0) {
-    //   returnObj.cardsArr.push({
-    //     cardPlayers_id: cardPlayersKeysArr[0]
-    //   });
-    // }
     
     
     
@@ -299,11 +271,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'CuUwo1avA',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

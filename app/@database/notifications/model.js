@@ -397,7 +397,7 @@ const send = async ({}) => {
         },
       },
       
-      { '$sort': { 'createdDate': 1 } },
+      { $sort: { createdDate: 1 } },
       { $limit: parseInt(process.env.NOTIFICATION_QUEUE_LIMIT, 10) },
       
     ]).exec();

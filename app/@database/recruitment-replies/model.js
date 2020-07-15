@@ -696,7 +696,7 @@ const findReplies = async ({
         },
         
         
-        { '$sort': { 'createdDate': 1 } },
+        { $sort: { createdDate: 1 } },
         { $skip: (replyPage - 1) * intReplyLimit },
         { $limit: intReplyLimit },
         
@@ -907,7 +907,7 @@ const findRepliesForUpsert = async ({
         },
         
         
-        { '$sort': { 'createdDate': 1 } },
+        { $sort: { createdDate: 1 } },
         
         
         { $project:
@@ -1290,7 +1290,7 @@ const getPage = async ({
       },
       
       
-      { '$sort': { 'updatedDate': -1 } },
+      { $sort: { updatedDate: -1 } },
       
       
       { $project:
@@ -1341,7 +1341,7 @@ const getPage = async ({
       },
       
       
-      { '$sort': { 'createdDate': 1 } },
+      { $sort: { createdDate: 1 } },
       
       
       { $project:

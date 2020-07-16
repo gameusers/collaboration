@@ -74,7 +74,7 @@ import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, v
 //   Components
 // ---------------------------------------------
 
-import FormName from 'app/common/form/components/name.js';
+import FormName from 'app/common/form/v2/components/name.js';
 import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js';
 import WebPuchCheckbox from 'app/common/web-push/v2/components/checkbox.js';
 
@@ -1037,7 +1037,7 @@ const Component = (props) => {
           >
             
             <FormImageAndVideo
-              type="recruitment"
+              // type="recruitment"
               descriptionImage="コメントに表示する画像をアップロードできます。"
               descriptionVideo="コメントに表示する動画を登録できます。"
               showImageCaption={true}

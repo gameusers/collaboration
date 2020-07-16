@@ -277,7 +277,11 @@ const Component = (props) => {
       
       
       {/* Form */}
-      <form onSubmit={(eventObj) => handleSubmit({ eventObj })}>
+      <form
+        onSubmit={(eventObj) => handleSubmit({
+          eventObj
+        })}
+      >
         
         
         {/* Submit Button */}

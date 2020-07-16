@@ -183,6 +183,8 @@ const ContainerLayout = (props) => {
       
       <Cards
         arr={props.cardPlayersArr}
+        showEditButton={true}
+        defaultExpanded={true}
       />
       
     </React.Fragment>

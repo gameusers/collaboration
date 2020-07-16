@@ -401,7 +401,9 @@ const Component = (props) => {
       
       {/* Form */}
       <form
-        onSubmit={(eventObj) => handleSubmit({ eventObj })}
+        onSubmit={(eventObj) => handleSubmit({
+          eventObj
+        })}
       >
         
         

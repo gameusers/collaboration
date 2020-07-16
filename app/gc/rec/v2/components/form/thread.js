@@ -82,7 +82,7 @@ import { validationRecruitmentThreadsDeadlineDate } from 'app/@database/recruitm
 //   Components
 // ---------------------------------------------
 
-import FormName from 'app/common/form/components/name.js';
+import FormName from 'app/common/form/v2/components/name.js';
 import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js';
 import FormHardwares from 'app/common/hardware/v2/components/form.js';
 import WebPuchCheckbox from 'app/common/web-push/v2/components/checkbox.js';
@@ -1210,7 +1210,7 @@ const Component = (props) => {
           >
             
             <FormImageAndVideo
-              type="recruitment"
+              // type="recruitment"
               descriptionImage="募集に表示する画像をアップロードできます。"
               descriptionVideo="募集に表示する動画を登録できます。"
               showImageCaption={true}

@@ -132,7 +132,7 @@ const Component = (props) => {
     
     arr = [],
     // showFollow,
-    showEditButton,
+    showEditButton = true,
     defaultExpanded = true,
     
   } = props;

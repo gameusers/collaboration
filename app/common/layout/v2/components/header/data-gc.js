@@ -316,6 +316,7 @@ const Component = (props) => {
           
           
           <FollowButton
+            type="header"
             gameCommunities_id={gameCommunities_id}
             followsObj={followsObj}
           />

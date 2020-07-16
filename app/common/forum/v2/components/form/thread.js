@@ -834,7 +834,7 @@ const Component = (props) => {
       >
         
         <FormImageAndVideo
-          type="forum"
+          // type="forum"
           descriptionImage="スレッドに表示する画像をアップロードできます。"
           descriptionVideo="スレッドに表示する動画を登録できます。"
           showImageCaption={true}

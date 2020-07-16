@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useIntl } from 'react-intl';
 import TextareaAutosize from 'react-autosize-textarea';
 
@@ -23,34 +24,32 @@ import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
-//   Lodash
+//   Node Packages
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-import lodashMerge from 'lodash/merge';
+import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
+import { makeStyles } from '@material-ui/core/styles';
+
 import Button from '@material-ui/core/Button';
-
-
-// ---------------------------------------------
-//   Material UI / Icon
-// ---------------------------------------------
-
-import IconReply from '@material-ui/icons/Reply';
+import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 
 // ---------------------------------------------
 //   States
 // ---------------------------------------------
 
+import { ContainerStateUser } from 'app/@states/user.js';
 import { ContainerStateLayout } from 'app/@states/layout.js';
-import { ContainerStateCommunity } from 'app/@states/community.js';
-import { ContainerStateForum } from 'app/@states/forum.js';
 
 
 // ---------------------------------------------
@@ -59,7 +58,6 @@ import { ContainerStateForum } from 'app/@states/forum.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
@@ -67,16 +65,14 @@ import { getCookie } from 'app/@modules/cookie.js';
 // ---------------------------------------------
 
 import { validationHandleName } from 'app/@validations/name.js';
-import { validationBoolean } from 'app/@validations/boolean.js';
-
-import { validationForumCommentsComment } from 'app/@database/forum-comments/validations/comment.js';
+import { validationCardPlayersStatus } from 'app/@database/card-players/validations/status.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import FormName from 'app/common/form/v2/components/name.js';
+// import FormName from 'app/common/form/v2/components/name.js';
 import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js';
 
 
@@ -89,15 +85,25 @@ import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js'
 //   https://emotion.sh/docs/composition
 // --------------------------------------------------
 
-const cssNew = css`
-  border-top: 1px dashed #BDBDBD;
-  margin: 12px 0 0 0;
-  padding: 12px 0 12px 0;
+const cssBox = css`
+  border-top: 1px dashed #848484;
+  margin: 24px 0 0 0;
+  padding: 24px 0 0 0;
 `;
 
-const cssEdit = css`
-  padding: 0 0 12px 0;
-`;
+
+// --------------------------------------------------
+//   Material UI Style Overrides
+//   https://material-ui.com/styles/basics/
+// --------------------------------------------------
+
+const useStyles = makeStyles({
+  
+  label: {
+    fontSize: 14
+  },
+  
+});
 
 
 
@@ -108,9 +114,6 @@ const cssEdit = css`
 //   Function Components
 // --------------------------------------------------
 
-/**
- * Export Component
- */
 const Component = (props) => {
   
   
@@ -120,14 +123,8 @@ const Component = (props) => {
   
   const {
     
-    gameCommunities_id,
-    userCommunities_id,
-    forumThreads_id,
-    forumComments_id,
-    forumReplies_id,
-    replyToForumComments_id,
-    enableAnonymity,
-    
+    cardPlayers_id,
+    // users_id,
     setShowForm,
     
   } = props;
@@ -140,18 +137,34 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const intl = useIntl();
+  const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [name, setName] = useState('');
-  const [anonymity, setAnonymity] = useState(false);
+  const [nameSearch, setNameSearch] = useState(true);
+  const [status, setStatus] = useState('');
+  const [statusSearch, setStatusSearch] = useState(true);
   const [comment, setComment] = useState('');
+  const [commentSearch, setCommentSearch] = useState(true);
+  
   const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
     
     _id: '',
     createdDate: '',
     updatedDate: '',
     users_id: '',
-    type: 'forum',
+    type: 'ur',
+    arr: [],
+    
+  });
+  
+  const [imagesAndVideosThumbnailObj, setImagesAndVideosThumbnailObj] = useState({
+    
+    _id: '',
+    createdDate: '',
+    updatedDate: '',
+    users_id: '',
+    type: 'ur',
     arr: [],
     
   });
@@ -171,7 +184,7 @@ const Component = (props) => {
     //   編集用データを読み込む
     // --------------------------------------------------
     
-    if (forumReplies_id) {
+    if (cardPlayers_id) {
       handleGetEditData();
     }
     
@@ -185,9 +198,10 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
   
+  const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
-  const stateCommunity = ContainerStateCommunity.useContainer();
-  const stateForum = ContainerStateForum.useContainer();
+  
+  const { login, loginUsersObj } = stateUser;
   
   const {
     
@@ -197,20 +211,6 @@ const Component = (props) => {
     handleScrollTo,
     
   } = stateLayout;
-  
-  const {
-    
-    setGameCommunityObj,
-    setUserCommunityObj,
-    
-  } = stateCommunity;
-  
-  const {
-    
-    forumRepliesObj,
-    setForumRepliesObj,
-    
-  } = stateForum;
   
   
   
@@ -229,11 +229,11 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   forumReplies_id が存在しない場合エラー
+      //   cardPlayers_id が存在しない場合エラー
       // ---------------------------------------------
       
-      if (!forumReplies_id) {
-        throw new CustomError({ errorsArr: [{ code: '3cWrPpMq8', messageID: 'Error' }] });
+      if (!cardPlayers_id) {
+        throw new CustomError({ errorsArr: [{ code: 'yYI5YlDcS', messageID: 'Error' }] });
       }
       
       
@@ -261,7 +261,7 @@ const Component = (props) => {
       
       handleScrollTo({
         
-        to: forumReplies_id,
+        to: cardPlayers_id,
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -278,7 +278,7 @@ const Component = (props) => {
       
       const formDataObj = {
         
-        forumComments_id: forumReplies_id,
+        cardPlayers_id,
         
       };
       
@@ -289,18 +289,11 @@ const Component = (props) => {
       
       const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/get-edit-data`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/card-players/get-edit-data`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
         
       });
-      
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       
       // ---------------------------------------------
@@ -325,30 +318,52 @@ const Component = (props) => {
       //   Set Form Data
       // ---------------------------------------------
       
-      const name = lodashGet(resultObj, ['data', 'name'], '');
-      const anonymity = lodashGet(resultObj, ['data', 'anonymity'], false);
-      const comment = lodashGet(resultObj, ['data', 'comment'], '');
-      let imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
+      // const name = lodashGet(resultObj, ['data', 'name'], '');
+      // const anonymity = lodashGet(resultObj, ['data', 'anonymity'], false);
+      // const comment = lodashGet(resultObj, ['data', 'comment'], '');
+      // let imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
       
-      if (Object.keys(imagesAndVideosObj).length === 0) {
+      // if (Object.keys(imagesAndVideosObj).length === 0) {
         
-        imagesAndVideosObj = {
+      //   imagesAndVideosObj = {
           
-          _id: '',
-          createdDate: '',
-          updatedDate: '',
-          users_id: '',
-          type: 'forum',
-          arr: [],
+      //     _id: '',
+      //     createdDate: '',
+      //     updatedDate: '',
+      //     users_id: '',
+      //     type: 'forum',
+      //     arr: [],
           
-        };
+      //   };
         
-      }
+      // }
       
-      setName(name);
-      setAnonymity(anonymity);
-      setComment(comment);
-      setImagesAndVideosObj(imagesAndVideosObj);
+      // setName(name);
+      // setAnonymity(anonymity);
+      // setComment(comment);
+      // setImagesAndVideosObj(imagesAndVideosObj);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
+      console.log(`
+        ----------------------------------------\n
+        /app/common/card/v2/components/parts/edit-button.js - handleGetEditData
+      `);
+      
+      console.log(chalk`
+        cardPlayers_id: {green ${cardPlayers_id}}
+      `);
+      
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
     } catch (errorObj) {
@@ -366,8 +381,10 @@ const Component = (props) => {
       // ---------------------------------------------
       
       handleSnackbarOpen({
+        
         variant: 'error',
         errorObj,
+        
       });
       
       
@@ -381,14 +398,17 @@ const Component = (props) => {
       handleLoadingClose();
       
       
+      
     }
     
     
   };
   
   
+  
+  
   /**
-   * 返信作成・編集フォームを送信する
+   * コメント作成・編集フォームを送信する
    * @param {Object} eventObj - イベント
    */
   const handleSubmit = async ({
@@ -407,10 +427,10 @@ const Component = (props) => {
     
     
     // ---------------------------------------------
-    //   新規投稿時の forumReplies_id
+    //   新規投稿時の forumComments_id
     // ---------------------------------------------
     
-    let newForumReplies_id = '';
+    let newForumComments_id = '';
     
     
     
@@ -434,8 +454,8 @@ const Component = (props) => {
       //   _id が存在しない場合エラー
       // ---------------------------------------------
       
-      if ((!gameCommunities_id && !userCommunities_id) || !forumThreads_id || !forumComments_id) {
-        throw new CustomError({ errorsArr: [{ code: 'ooDR_zAOu', messageID: '1YJnibkmh' }] });
+      if ((!gameCommunities_id && !userCommunities_id) || !forumThreads_id) {
+        throw new CustomError({ errorsArr: [{ code: 'UsXqWgrd6', messageID: '1YJnibkmh' }] });
       }
       
       
@@ -453,7 +473,7 @@ const Component = (props) => {
         
       ) {
         
-        throw new CustomError({ errorsArr: [{ code: 'keP5ra5TO', messageID: 'uwHIKBy7c' }] });
+        throw new CustomError({ errorsArr: [{ code: 'evE70gDt0', messageID: 'uwHIKBy7c' }] });
         
       }
       
@@ -485,7 +505,6 @@ const Component = (props) => {
         gameCommunities_id,
         userCommunities_id,
         forumThreads_id,
-        forumComments_id,
         name,
         anonymity,
         comment,
@@ -496,12 +515,8 @@ const Component = (props) => {
         
       };
       
-      if (forumReplies_id) {
-        formDataObj.forumReplies_id = forumReplies_id;
-      }
-      
-      if (replyToForumComments_id) {
-        formDataObj.replyToForumComments_id = replyToForumComments_id;
+      if (forumComments_id) {
+        formDataObj.forumComments_id = forumComments_id;
       }
       
       if (imagesAndVideosObj.arr.length !== 0) {
@@ -521,7 +536,7 @@ const Component = (props) => {
         
         resultObj = await fetchWrapper({
           
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/upsert-reply-gc`,
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/upsert-comment-gc`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
           
@@ -531,7 +546,7 @@ const Component = (props) => {
         
         resultObj = await fetchWrapper({
           
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/upsert-reply-uc`,
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/upsert-comment-uc`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
           
@@ -566,7 +581,7 @@ const Component = (props) => {
         users_id: '',
         type: 'forum',
         arr: [],
-      
+        
       });
       
       
@@ -595,6 +610,27 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
+      //   forumThreadsForListObj
+      // ---------------------------------------------
+      
+      setForumThreadsForListObj(lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {}));
+      
+      
+      // ---------------------------------------------
+      //   forumThreadsObj
+      // ---------------------------------------------
+      
+      setForumThreadsObj(lodashGet(resultObj, ['data', 'forumThreadsObj'], {}));
+      
+      
+      // ---------------------------------------------
+      //   forumCommentsObj
+      // ---------------------------------------------
+      
+      setForumCommentsObj(lodashGet(resultObj, ['data', 'forumCommentsObj'], {}));
+      
+      
+      // ---------------------------------------------
       //   forumRepliesObj
       // ---------------------------------------------
       
@@ -602,20 +638,10 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Update - forumRepliesObj
+      //   新規投稿時の forumComments_id
       // ---------------------------------------------
       
-      // const forumRepliesNewObj = lodashGet(resultObj, ['data', 'forumRepliesObj'], {});
-      // const forumRepliesMergedObj = lodashMerge(forumRepliesObj, forumRepliesNewObj);
-      // setForumRepliesObj(forumRepliesMergedObj);
-      
-      
-      // ---------------------------------------------
-      //   新規投稿時の forumReplies_id
-      // ---------------------------------------------
-      
-      const page = lodashGet(resultObj, ['data', 'forumRepliesObj', forumComments_id, 'page'], 1);
-      newForumReplies_id = lodashGet(resultObj, ['data', 'forumRepliesObj', forumComments_id, `page${page}Obj`, 'arr', 0], '');
+      newForumComments_id = lodashGet(resultObj, ['data', 'forumCommentsObj', forumThreads_id, 'page1Obj', 'arr', 0], '');
       
       
       
@@ -627,7 +653,7 @@ const Component = (props) => {
       handleSnackbarOpen({
         
         variant: 'success',
-        messageID: forumReplies_id ? '0q0NzGlLb' : 'cuaQHE4lG',
+        messageID: forumComments_id ? 'NKsMLWvkt' : 'fhi9lUaap',
         
       });
       
@@ -640,25 +666,7 @@ const Component = (props) => {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   //app/common/forum/v2/components/form/reply.js - handleSubmit
-      // `);
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- forumRepliesMergedObj -----\n
-      //   ${util.inspect(forumRepliesMergedObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   forumComments_id: {green ${forumComments_id}}
-      //   forumReplies_id: {green ${forumReplies_id}}
-      //   newForumReplies_id: {green ${newForumReplies_id}}
+      //   /app/common/forum/v2/components/form/comment.js - handleSubmit
       // `);
       
       // console.log(chalk`
@@ -666,16 +674,21 @@ const Component = (props) => {
       //   userCommunities_id: {green ${userCommunities_id}}
       //   forumThreads_id: {green ${forumThreads_id}}
       //   forumComments_id: {green ${forumComments_id}}
-      //   forumReplies_id: {green ${forumReplies_id}}
-      //   replyToForumComments_id: {green ${replyToForumComments_id}}
       //   name: {green ${name}}
-      //   anonymity: {green ${anonymity}}
       //   comment: {green ${comment}}
       // `);
       
       // console.log(`
       //   ----- imagesAndVideosObj -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // return;
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -709,9 +722,7 @@ const Component = (props) => {
       //   Hide Form
       // ---------------------------------------------
       
-      if (forumReplies_id) {
-        setShowForm(false);
-      }
+      setShowForm(false);
       
       
       // ---------------------------------------------
@@ -720,7 +731,7 @@ const Component = (props) => {
       
       handleScrollTo({
         
-        to: forumReplies_id || newForumReplies_id || forumComments_id || forumThreads_id || 'forumThreads',
+        to: forumComments_id || newForumComments_id || forumThreads_id || 'forumThreads',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -744,42 +755,55 @@ const Component = (props) => {
   
   
   
+  /**
+   * フォームを閉じる
+   */
+  const handleClose = async () => {
+    
+    
+    // ---------------------------------------------
+    //   閉じる
+    // ---------------------------------------------
+    
+    setShowForm(false);
+      
+      
+    // ---------------------------------------------
+    //   Scroll To
+    // ---------------------------------------------
+    
+    handleScrollTo({
+      
+      to: cardPlayers_id,
+      duration: 0,
+      delay: 0,
+      smooth: 'easeInOutQuart',
+      offset: -50,
+      
+    });
+    
+    
+  };
+  
+  
+  
+  
   // --------------------------------------------------
-  //   Limit
+  //   Property
   // --------------------------------------------------
   
-  const limit = parseInt(process.env.NEXT_PUBLIC_FORUM_REPLY_IMAGES_AND_VIDEOS_LIMIT, 10);
-  
+  const limitImagesAndVideos = parseInt(process.env.NEXT_PUBLIC_CARD_PLAYER_IMAGES_AND_VIDEOS_LIMIT, 10);
+  const limitImagesAndVideosThumbnail = parseInt(process.env.NEXT_PUBLIC_CARD_PLAYER_IMAGES_AND_VIDEOS_THUMBNAIL_LIMIT, 10);
   
   
   
   // --------------------------------------------------
-  //   Reply to
+  //   Validation
   // --------------------------------------------------
   
-  let replyToName = '';
-  let repliesDataObj = {};
-  let replyTo = '';
+  const validationHandleNameObj = validationHandleName({ value: name });
+  const validationCardPlayersStatusObj = validationCardPlayersStatus({ value: status });
   
-  if (forumReplies_id) {
-    
-    repliesDataObj = lodashGet(forumRepliesObj, ['dataObj', forumReplies_id], {});
-    replyToName = lodashGet(repliesDataObj, ['replyToName'], '');
-    
-  } else if (replyToForumComments_id) {
-    
-    repliesDataObj = lodashGet(forumRepliesObj, ['dataObj', replyToForumComments_id], {});
-    replyToName = lodashGet(repliesDataObj, ['cardPlayersObj', 'name'], repliesDataObj.name);
-    
-    if (!replyToName) {
-      replyToName = 'ななしさん';
-    }
-    
-  }
-  
-  if (replyToName) {
-    replyTo = `${replyToName} | ${replyToForumComments_id} への返信`;
-  }
   
   
   
@@ -790,23 +814,23 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/forum/v2/components/form/thread.js
-  // `);
-  
-  // console.log(`
-  //   ----- imagesAndVideosObj -----\n
-  //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- validationForumThreadsNameObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(validationForumThreadsNameObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
+  //   /app/common/card/v2/components/form-card-player.js
   // `);
   
   // console.log(chalk`
-  //   forumThreads_id: {green ${forumThreads_id}}
+  //   login: {green ${login}}
+  // `);
+  
+  // console.log(`
+  //   ----- loginUsersObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(loginUsersObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(`
+  //   ----- followsObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(followsObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
   // `);
   
   
@@ -818,57 +842,200 @@ const Component = (props) => {
   
   return (
     <form
-      css={forumReplies_id ? cssEdit : cssNew}
-      name={`form-${forumComments_id}-reply`}
+      css={css`
+        padding: 20px 16px 16px;
+      `}
+      name={`form-${cardPlayers_id}`}
       onSubmit={(eventObj) => handleSubmit({
         eventObj,
       })}
     >
       
       
-      {/* Reply To */}
-      {replyTo &&
-        <div
+      <h2
+        css={css`
+          margin: 0 0 12px 0;
+        `}
+      >
+        プレイヤーカード
+      </h2>
+      
+      
+      <p
+        css={css`
+          margin: 0 0 24px 0;
+        `}
+      >
+        プレイヤーカードとは、Game Users 内で基本的なプロフィールとして扱われるデータです。あなたがどんなゲームプレイヤーなのか知ってもらう情報になります。
+      </p>
+      
+      
+      
+      
+      {/* ハンドルネーム */}
+      <div css={cssBox}>
+        
+        <TextField
           css={css`
-            display: flex;
-            flex-flow: row nowrap;
-            margin: 8px 0 12px 0;
-            color: #7401DF;
+            && {
+              width: 100%;
+              max-width: 500px;
+            }
+          `}
+          label="ハンドルネーム"
+          value={validationHandleNameObj.value}
+          onChange={(eventObj) => setName(eventObj.target.value)}
+          error={validationHandleNameObj.error}
+          helperText={intl.formatMessage({ id: validationHandleNameObj.messageID }, { numberOfCharacters: validationHandleNameObj.numberOfCharacters })}
+          margin="normal"
+          inputProps={{
+            maxLength: 50,
+          }}
+        />
+        
+        
+        <div>
+          <FormControlLabel
+            classes={{
+              label: classes.label
+            }}
+            control={
+              <Checkbox
+                checked={nameSearch}
+                onChange={(eventObj) => setNameSearch(eventObj.target.checked)}
+              />
+            }
+            label="ハンドルネームで検索可能にする"
+          />
+        </div>
+        
+      </div>
+      
+      
+      
+      
+      {/* ステータス */}
+      <div css={cssBox}>
+        
+        <TextField
+          css={css`
+            && {
+              width: 100%;
+              max-width: 500px;
+            }
+          `}
+          label="ステータス"
+          value={validationCardPlayersStatusObj.value}
+          onChange={(eventObj) => setStatus(eventObj.target.value)}
+          error={validationCardPlayersStatusObj.error}
+          helperText={intl.formatMessage({ id: validationCardPlayersStatusObj.messageID }, { numberOfCharacters: validationCardPlayersStatusObj.numberOfCharacters })}
+          margin="normal"
+          inputProps={{
+            maxLength: 50,
+          }}
+        />
+        
+        
+        <div>
+          <FormControlLabel
+            classes={{
+              label: classes.label
+            }}
+            control={
+              <Checkbox
+                checked={statusSearch}
+                onChange={(eventObj) => setStatusSearch(eventObj.target.checked)}
+              />
+            }
+            label="ステータスで検索可能にする"
+          />
+        </div>
+        
+      </div>
+      
+      
+      
+      
+      {/* Form Images & Videos */}
+      <div css={cssBox}>
+        
+        <h3
+          css={css`
+            margin: 0 0 6px 0;
           `}
         >
-          <IconReply
-            css={css`
-              && {
-                font-size: 16px;
-                margin: 4px 4px 0 0;
-              }
-            `}
-          />
-          <p>{replyTo}</p>
-        </div>
-      }
+          メイン画像
+        </h3>
+        
+        <p
+          css={css`
+            margin: 0 0 12px 0;
+          `}
+        >
+          プレイヤーカードのトップに表示される大きな画像です。横長の画像（推奨サイズ 1920 x ---）をアップロードしてください。
+        </p>
+        
+        
+        <FormImageAndVideo
+          showVideoButton={false}
+          descriptionImage="横長の大きな画像をアップロードしてください。"
+          showImageCaption={true}
+          limit={limitImagesAndVideos}
+          imagesAndVideosObj={imagesAndVideosObj}
+          setImagesAndVideosObj={setImagesAndVideosObj}
+        />
+        
+      </div>
       
       
       
       
-      {/* Name */}
-      <FormName
-        name={name}
-        setName={setName}
-        anonymity={anonymity}
-        setAnonymity={setAnonymity}
-        enableAnonymity={enableAnonymity}
-      />
+      {/* Form Images & Videos */}
+      <div css={cssBox}>
+        
+        <h3
+          css={css`
+            margin: 0 0 6px 0;
+          `}
+        >
+          サムネイル画像
+        </h3>
+        
+        <p
+          css={css`
+            margin: 0 0 12px 0;
+          `}
+        >
+          ハンドルネームの左側に表示される小さな画像です。正方形の画像（推奨サイズ 256 x 256 ピクセル以上）をアップロードしてください。
+        </p>
+        
+        
+        <FormImageAndVideo
+          showVideoButton={false}
+          descriptionImage="サムネイル画像をアップロードできます。"
+          showImageCaption={true}
+          limit={limitImagesAndVideosThumbnail}
+          imagesAndVideosObj={imagesAndVideosThumbnailObj}
+          setImagesAndVideosObj={setImagesAndVideosThumbnailObj}
+        />
+        
+      </div>
+      
       
       
       
       
       {/* Comment */}
-      <div
-        css={css`
-          margin: 12px 0 0 0;
-        `}
-      >
+      <div css={cssBox}>
+        
+        <h3
+          css={css`
+            margin: 0 0 12px 0;
+          `}
+        >
+          コメント
+        </h3>
+        
         
         <TextareaAutosize
           css={css`
@@ -887,34 +1054,28 @@ const Component = (props) => {
             }
           `}
           rows={5}
-          placeholder="返信を書き込んでください。"
+          placeholder="コメントを入力してください。"
           value={comment}
-          onChange={(eventObj) => setComment(eventObj.target.value)}
           maxLength={3000}
           disabled={buttonDisabled}
+          onChange={(eventObj) => setComment(eventObj.target.value)}
         />
         
-      </div>
-      
-      
-      
-      
-      {/* Form Images & Videos */}
-      <div
-        css={css`
-          margin: 12px 0 0 0;
-        `}
-      >
         
-        <FormImageAndVideo
-          // type="forum"
-          descriptionImage="返信に表示する画像をアップロードできます。"
-          descriptionVideo="返信に表示する動画を登録できます。"
-          showImageCaption={true}
-          limit={limit}
-          imagesAndVideosObj={imagesAndVideosObj}
-          setImagesAndVideosObj={setImagesAndVideosObj}
-        />
+        <div>
+          <FormControlLabel
+            classes={{
+              label: classes.label
+            }}
+            control={
+              <Checkbox
+                checked={commentSearch}
+                onChange={(eventObj) => setCommentSearch(eventObj.target.checked)}
+              />
+            }
+            label="コメントで検索可能にする"
+          />
+        </div>
         
       </div>
       
@@ -926,7 +1087,9 @@ const Component = (props) => {
         css={css`
           display: flex;
           flex-flow: row nowrap;
-          margin: 36px 0 0 0;
+          border-top: 1px dashed #848484;
+          margin: 24px 0 0 0;
+          padding: 36px 0 0 0;
         `}
       >
         
@@ -938,14 +1101,14 @@ const Component = (props) => {
           color="primary"
           disabled={buttonDisabled}
         >
-          {forumReplies_id ? '返信を編集する' : '返信を投稿する'}
+          {cardPlayers_id ? '編集する' : '投稿する'}
         </Button>
         
         
         
         
         {/* Close */}
-        {forumComments_id &&
+        {cardPlayers_id &&
           <div
             css={css`
               margin: 0 0 0 auto;
@@ -955,12 +1118,13 @@ const Component = (props) => {
               variant="outlined"
               color="secondary"
               disabled={buttonDisabled}
-              onClick={() => setShowForm(false)}
+              onClick={() => handleClose()}
             >
               閉じる
             </Button>
           </div>
         }
+        
         
       </div>
       

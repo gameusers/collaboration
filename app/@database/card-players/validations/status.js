@@ -15,6 +15,12 @@ const util = require('util');
 // ---------------------------------------------
 
 const validator = require('validator');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 
 
@@ -22,7 +28,9 @@ const lodashGet = require('lodash/get');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom.js');
+
+
 
 
 
@@ -51,11 +59,13 @@ const validationCardPlayersStatus = ({ throwError = false, value }) => {
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
+    
     value: data,
     numberOfCharacters,
     messageID: 'RuqHo4jGS',
     error: false,
+    
   };
   
   
@@ -116,5 +126,7 @@ const validationCardPlayersStatus = ({ throwError = false, value }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationCardPlayersStatus
+  
+  validationCardPlayersStatus,
+  
 };

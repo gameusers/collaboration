@@ -68,7 +68,7 @@ import { validationForumCommentsComment } from 'app/@database/forum-comments/val
 //   Components
 // ---------------------------------------------
 
-import FormName from 'app/common/form/components/name.js';
+import FormName from 'app/common/form/v2/components/name.js';
 import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js';
 
 
@@ -759,10 +759,6 @@ const Component = (props) => {
       name={`form-${forumComments_id}`}
       onSubmit={(eventObj) => handleSubmit({
         eventObj,
-        gameCommunities_id,
-        userCommunities_id,
-        forumThreads_id,
-        forumComments_id,
       })}
     >
       
@@ -823,7 +819,6 @@ const Component = (props) => {
       >
         
         <FormImageAndVideo
-          type="forum"
           descriptionImage="コメントに表示する画像をアップロードできます。"
           descriptionVideo="コメントに表示する動画を登録できます。"
           showImageCaption={true}

@@ -14,7 +14,7 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 /** @jsx jsx */
@@ -77,6 +77,7 @@ const Component = (props) => {
   
   const {
     
+    type,
     gameCommunities_id,
     userCommunities_id,
     users_id,
@@ -110,7 +111,7 @@ const Component = (props) => {
   const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
   
-  const { loginUsersObj } = stateUser;
+  const { login } = stateUser;
   const { handleSnackbarOpen, handleDialogOpen } = stateLayout;
   
   
@@ -412,8 +413,10 @@ const Component = (props) => {
       
       
       handleSnackbarOpen({
+        
         variant: 'success',
         messageID,
+        
       });
       
       
@@ -436,8 +439,10 @@ const Component = (props) => {
       // ---------------------------------------------
       
       handleSnackbarOpen({
+        
         variant: 'error',
         errorObj,
+        
       });
       
       
@@ -463,7 +468,7 @@ const Component = (props) => {
   //   Property
   // --------------------------------------------------
   
-  const login = lodashHas(loginUsersObj, ['_id']);
+  // const login = lodashHas(loginUsersObj, ['_id']);
   
   const approval = lodashGet(followsObj, ['approval'], false);
   const admin = lodashGet(followsObj, ['admin'], false);
@@ -473,6 +478,16 @@ const Component = (props) => {
   const followBlocked = lodashGet(followsObj, ['followBlocked'], false);
   
   
+  
+  
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /app/common/follow/v2/components/follow-button.js
+  // `);
   
   // console.log(chalk`
   //   login: {green ${login}}
@@ -510,6 +525,7 @@ const Component = (props) => {
   // --------------------------------------------------
   
   let component =  '';
+  const size = type === 'header' ? 'small' : 'medium';
   
   
   // ---------------------------------------------
@@ -530,7 +546,7 @@ const Component = (props) => {
           <Button
             variant="contained"
             color="secondary"
-            size="small"
+            size={size}
           >
             フォローする
           </Button>
@@ -550,20 +566,12 @@ const Component = (props) => {
         <Button
           variant="contained"
           color="secondary"
-          size="small"
+          size={size}
           disabled={buttonDisabled}
-          onClick={
-            buttonDisabled
-              ?
-                () => {}
-              :
-                () => handleFollow({
-                
-                  type: 'followGc',
-                  gameCommunities_id,
-                  
-                })
-          }
+          onClick={() => handleFollow({
+            type: 'followGc',
+            gameCommunities_id,
+          })}
         >
           フォローする
         </Button>
@@ -582,25 +590,17 @@ const Component = (props) => {
         <Button
           variant="contained"
           color="primary"
-          size="small"
+          size={size}
           disabled={buttonDisabled}
-          onClick={
-            buttonDisabled
-              ?
-                () => {}
-              :
-                () => handleDialogOpen({
-                
-                  title: 'フォロー解除',
-                  description: 'フォローを解除しますか？',
-                  handle: handleFollow,
-                  argumentsObj: {
-                    type: 'unfollowGc',
-                    gameCommunities_id,
-                  },
-                  
-                })
-          }
+          onClick={() => handleDialogOpen({
+            title: 'フォロー解除',
+            description: 'フォローを解除しますか？',
+            handle: handleFollow,
+            argumentsObj: {
+              type: 'unfollowGc',
+              gameCommunities_id,
+            },
+          })}
         >
           フォロー中
         </Button>
@@ -627,7 +627,7 @@ const Component = (props) => {
           <Button
             variant="contained"
             color="secondary"
-            size="small"
+            size={size}
           >
             コミュニティに参加する
           </Button>
@@ -654,19 +654,12 @@ const Component = (props) => {
           <Button
             variant="contained"
             color="secondary"
-            size="small"
+            size={size}
             disabled={buttonDisabled}
-            onClick={buttonDisabled
-              ?
-                () => {}
-              :
-                () => handleFollow({
-                
-                  type: 'followApprovalUc',
-                  userCommunities_id,
-                  
-                })
-            }
+            onClick={() => handleFollow({
+              type: 'followApprovalUc',
+              userCommunities_id,
+            })}
           >
             コミュニティに参加申請する
           </Button>
@@ -683,19 +676,12 @@ const Component = (props) => {
           <Button
             variant="contained"
             color="secondary"
-            size="small"
+            size={size}
             disabled={buttonDisabled}
-            onClick={buttonDisabled
-              ?
-                () => {}
-              :
-                () => handleFollow({
-                
-                  type: 'followUc',
-                  userCommunities_id,
-                  
-                })
-            }
+            onClick={() => handleFollow({
+              type: 'followUc',
+              userCommunities_id,
+            })}
           >
             コミュニティに参加する
           </Button>
@@ -717,25 +703,17 @@ const Component = (props) => {
         <Button
           variant="contained"
           color="primary"
-          size="small"
+          size={size}
           disabled={buttonDisabled}
-          onClick={
-            buttonDisabled
-              ?
-                () => {}
-              :
-                () => handleDialogOpen({
-                
-                  title: 'コミュニティの退会',
-                  description: 'コミュニティから退会しますか？',
-                  handle: handleFollow,
-                  argumentsObj: {
-                    type: 'unfollowUc',
-                    gameCommunities_id,
-                  },
-                  
-                })
-          }
+          onClick={() => handleDialogOpen({
+            title: 'コミュニティの退会',
+            description: 'コミュニティから退会しますか？',
+            handle: handleFollow,
+            argumentsObj: {
+              type: 'unfollowUc',
+              gameCommunities_id,
+            },
+          })}
         >
           コミュニティから退会する
         </Button>
@@ -754,25 +732,17 @@ const Component = (props) => {
         <Button
           variant="contained"
           color="primary"
-          size="small"
+          size={size}
           disabled={buttonDisabled}
-          onClick={
-            buttonDisabled
-              ?
-                () => {}
-              :
-                () => handleDialogOpen({
-                
-                  title: '参加申請の取り下げ',
-                  description: '参加申請を取り下げますか？',
-                  handle: handleFollow,
-                  argumentsObj: {
-                    type: 'unfollowApprovalUc',
-                    gameCommunities_id,
-                  },
-                  
-                })
-          }
+          onClick={() => handleDialogOpen({
+            title: '参加申請の取り下げ',
+            description: '参加申請を取り下げますか？',
+            handle: handleFollow,
+            argumentsObj: {
+              type: 'unfollowApprovalUc',
+              gameCommunities_id,
+            },
+          })}
         >
           参加申請を取り下げる
         </Button>
@@ -799,7 +769,7 @@ const Component = (props) => {
           <Button
             variant="contained"
             color="secondary"
-            size="small"
+            size={size}
           >
             フォローする
           </Button>
@@ -826,19 +796,12 @@ const Component = (props) => {
           <Button
             variant="contained"
             color="secondary"
-            size="small"
+            size={size}
             disabled={buttonDisabled}
-            onClick={buttonDisabled
-              ?
-                () => {}
-              :
-                () => handleFollow({
-                
-                  type: 'followApproval',
-                  users_id,
-                  
-                })
-            }
+            onClick={() => handleFollow({
+              type: 'followApproval',
+              users_id,
+            })}
           >
             フォロー申請をする
           </Button>
@@ -855,19 +818,12 @@ const Component = (props) => {
           <Button
             variant="contained"
             color="secondary"
-            size="small"
+            size={size}
             disabled={buttonDisabled}
-            onClick={buttonDisabled
-              ?
-                () => {}
-              :
-                () => handleFollow({
-                
-                  type: 'follow',
-                  users_id,
-                  
-                })
-            }
+            onClick={() => handleFollow({
+              type: 'follow',
+              users_id,
+            })}
           >
             フォローする
           </Button>
@@ -889,25 +845,17 @@ const Component = (props) => {
         <Button
           variant="contained"
           color="primary"
-          size="small"
+          size={size}
           disabled={buttonDisabled}
-          onClick={
-            buttonDisabled
-              ?
-                () => {}
-              :
-                () => handleDialogOpen({
-                
-                  title: 'フォローの解除',
-                  description: 'フォローを解除しますか？',
-                  handle: handleFollow,
-                  argumentsObj: {
-                    type: 'unfollow',
-                    users_id,
-                  },
-                  
-                })
-          }
+          onClick={() => handleDialogOpen({
+            title: 'フォローの解除',
+            description: 'フォローを解除しますか？',
+            handle: handleFollow,
+            argumentsObj: {
+              type: 'unfollow',
+              users_id,
+            },
+          })}
         >
           フォロー中
         </Button>
@@ -926,25 +874,17 @@ const Component = (props) => {
         <Button
           variant="contained"
           color="primary"
-          size="small"
+          size={size}
           disabled={buttonDisabled}
-          onClick={
-            buttonDisabled
-              ?
-                () => {}
-              :
-                () => handleDialogOpen({
-                
-                  title: 'フォロー申請の取り下げ',
-                  description: 'フォロー申請を取り下げますか？',
-                  handle: handleFollow,
-                  argumentsObj: {
-                    type: 'unfollowApproval',
-                    users_id,
-                  },
-                  
-                })
-          }
+          onClick={() => handleDialogOpen({
+            title: 'フォロー申請の取り下げ',
+            description: 'フォロー申請を取り下げますか？',
+            handle: handleFollow,
+            argumentsObj: {
+              type: 'unfollowApproval',
+              users_id,
+            },
+          })}
         >
           フォロー申請を取り下げる
         </Button>
@@ -954,32 +894,6 @@ const Component = (props) => {
     
     
   }
-  
-  
-  
-  
-  // component = 
-  //   <Button
-  //     variant="contained"
-  //     color="secondary"
-  //     size="small"
-  //     onClick={() => handleDialogOpen({
-        
-  //       title: 'フォロー解除2',
-  //       description: 'フォローを解除しますか？2',
-  //       handle: handleFollow,
-  //       argumentsObj: {
-  //         type: 'unfollowGc',
-  //         gameCommunities_id,
-  //       },
-        
-  //     })}
-  //     // onClick={() => handleFollow()}
-  //     disabled={buttonDisabled}
-  //   >
-  //     Snackbar
-  //   </Button>
-  // ;
   
   
   
@@ -1039,9 +953,20 @@ const Component = (props) => {
   return (
     <div
       css={css`
-        border-top: 1px dashed #A4A4A4;
-        margin: 12px 12px 4px;
-        padding: 12px 0 0 0;
+        ${type === 'header' &&
+          `
+            border-top: 1px dashed #A4A4A4;
+            margin: 12px 12px 4px;
+            padding: 12px 0 0 0;
+          `
+        }
+        ${type === 'cardPlayer' &&
+          `
+            border-top: 1px dashed #A4A4A4;
+            margin: 24px 0 0 0;
+            padding: 24px 0 0 0;
+          `
+        }
       `}
     >
       

@@ -74,7 +74,7 @@ const validationCardPlayersSex = ({ throwError = false, required = false, value 
     //   適切な値が選択されているかチェック
     // ---------------------------------------------
     
-    if (!validator.isIn(value, ['empty', 'male', 'female'])) {
+    if (!validator.isIn(value, ['male', 'female'])) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'PbaKwvYK7', messageID: 'PH8jcw-VF' }] });
     }
     

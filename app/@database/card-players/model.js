@@ -347,7 +347,9 @@ const findForCardPlayers = async ({
   
   const matchConditionArr = [
     {
-      $match : { _id: users_id }
+      $match: {
+        _id: users_id
+      }
     },
   ];
   
@@ -386,15 +388,6 @@ const aggregateAndFormat = async ({
   
   
   // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  let returnObj = {};
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Database
   // --------------------------------------------------
   
@@ -410,7 +403,7 @@ const aggregateAndFormat = async ({
     
     
     // --------------------------------------------------
-    //   Property
+    //   Language & Country
     // --------------------------------------------------
     
     const language = lodashGet(localeObj, ['language'], '');
@@ -444,9 +437,11 @@ const aggregateAndFormat = async ({
             from: 'card-players',
             let: { let_id: '$_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$users_id', '$$let_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$users_id', '$$let_id']
+                  },
                 }
               },
               
@@ -461,13 +456,15 @@ const aggregateAndFormat = async ({
                     from: 'images-and-videos',
                     let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $eq: ['$_id', '$$letImagesAndVideos_id'] },
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$_id', '$$letImagesAndVideos_id']
+                          },
                         }
                       },
-                      { $project:
-                        {
+                      {
+                        $project: {
                           createdDate: 0,
                           updatedDate: 0,
                           users_id: 0,
@@ -497,9 +494,11 @@ const aggregateAndFormat = async ({
                     from: 'images-and-videos',
                     let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $eq: ['$_id', '$$letImagesAndVideosThumbnail_id'] },
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                          },
                         }
                       },
                       {
@@ -532,23 +531,23 @@ const aggregateAndFormat = async ({
                   {
                     from: 'hardwares',
                     let: {
-                      letHardwareActiveArr: '$hardwareActiveObj.valueArr',
-                      letHardwareInactiveArr: '$hardwareInactiveObj.valueArr'
+                      letHardwareActiveArr: '$hardwareActiveArr',
+                      letHardwareInactiveArr: '$hardwareInactiveArr'
                     },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $or:
-                            [
-                              { $and:
-                                [
+                      {
+                        $match: {
+                          $expr: {
+                            $or: [
+                              {
+                                $and: [
                                   { $eq: ['$language', language] },
                                   { $eq: ['$country', country] },
                                   { $in: ['$hardwareID', '$$letHardwareActiveArr'] }
                                 ]
                               },
-                              { $and:
-                                [
+                              {
+                                $and: [
                                   { $eq: ['$language', language] },
                                   { $eq: ['$country', country] },
                                   { $in: ['$hardwareID', '$$letHardwareInactiveArr'] }
@@ -581,9 +580,11 @@ const aggregateAndFormat = async ({
                     from: 'follows',
                     let: { letUsers_id: '$users_id' },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $eq: ['$users_id', '$$letUsers_id'] },
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$users_id', '$$letUsers_id']
+                          },
                         }
                       },
                     ],
@@ -606,9 +607,11 @@ const aggregateAndFormat = async ({
                     from: 'ids',
                     let: { letIDs_idArr: '$ids_idsArr' },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $in: ['$_id', '$$letIDs_idArr'] }
+                      {
+                        $match: {
+                          $expr: {
+                            $in: ['$_id', '$$letIDs_idArr']
+                          }
                         }
                       },
                       
@@ -623,10 +626,10 @@ const aggregateAndFormat = async ({
                             from: 'games',
                             let: { letGameCommunities_id: '$gameCommunities_id' },
                             pipeline: [
-                              { $match:
-                                { $expr:
-                                  { $and:
-                                    [
+                              {
+                                $match: {
+                                  $expr: {
+                                    $and: [
                                       { $eq: ['$language', language] },
                                       { $eq: ['$country', country] },
                                       { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
@@ -646,13 +649,15 @@ const aggregateAndFormat = async ({
                                     from: 'images-and-videos',
                                     let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
                                     pipeline: [
-                                      { $match:
-                                        { $expr:
-                                          { $eq: ['$_id', '$$letImagesAndVideosThumbnail_id'] },
+                                      {
+                                        $match: {
+                                          $expr: {
+                                            $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                                          },
                                         }
                                       },
-                                      { $project:
-                                        {
+                                      {
+                                        $project: {
                                           createdDate: 0,
                                           updatedDate: 0,
                                           users_id: 0,
@@ -686,11 +691,10 @@ const aggregateAndFormat = async ({
                       },
                       
                       {
-                        $unwind:
-                          {
-                            path: '$gamesObj',
-                            preserveNullAndEmptyArrays: true
-                          }
+                        $unwind: {
+                          path: '$gamesObj',
+                          preserveNullAndEmptyArrays: true
+                        }
                       },
                       
                       
@@ -718,25 +722,9 @@ const aggregateAndFormat = async ({
                   __v: 0,
                   createdDate: 0,
                   language: 0,
-                  nameObj: { search: 0 },
-                  statusObj: { search: 0 },
-                  commentObj: { search: 0 },
-                  ageObj: { search: 0 },
-                  sexObj: { search: 0 },
-                  addressObj: { search: 0 },
-                  gamingExperienceObj: { search: 0 },
-                  hobbiesObj: { search: 0 },
-                  specialSkillsObj: { search: 0 },
-                  smartphoneObj: { search: 0 },
-                  tabletObj: { search: 0 },
-                  pcObj: { search: 0 },
-                  hardwareActiveObj: { search: 0 },
-                  hardwareInactiveObj: { search: 0 },
-                  activityTimeObj: { search: 0 },
-                  'activityTimeObj.valueArr': { _id: 0 },
-                  lookingForFriendsObj: { search: 0 },
-                  voiceChatObj: { search: 0 },
-                  linkArr: { _id: 0, search: 0 },
+                  activityTimeArr: { _id: 0 },
+                  linkArr: { _id: 0 },
+                  search: 0,
                 }
               },
               
@@ -793,6 +781,8 @@ const aggregateAndFormat = async ({
       arr: docArr,
       
     });
+    
+    const returnObj = {};
     
     returnObj.cardPlayersObj = lodashGet(formattedObj, ['obj'], {});
     returnObj.cardPlayersArr = lodashGet(formattedObj, ['arr'], []);
@@ -871,15 +861,6 @@ const findFromSchemaCardPlayers = async ({
   
   
   // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  let returnObj = {};
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Database
   // --------------------------------------------------
   
@@ -887,7 +868,7 @@ const findFromSchemaCardPlayers = async ({
     
     
     // --------------------------------------------------
-    //   Property
+    //   Language & Country
     // --------------------------------------------------
     
     const language = lodashGet(localeObj, ['language'], '');
@@ -902,7 +883,9 @@ const findFromSchemaCardPlayers = async ({
     
     let matchConditionArr = [
       {
-        $match: { users_id }
+        $match: {
+          users_id
+        }
       },
     ];
     
@@ -910,7 +893,9 @@ const findFromSchemaCardPlayers = async ({
       
       matchConditionArr = [
         {
-          $match: { _id: cardPlayers_id }
+          $match: {
+            _id: cardPlayers_id
+          }
         },
       ];
       
@@ -946,15 +931,17 @@ const findFromSchemaCardPlayers = async ({
         $lookup:
           {
             from: 'images-and-videos',
-            let: { cardPlayersImagesAndVideos_id: '$imagesAndVideos_id' },
+            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$cardPlayersImagesAndVideos_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideos_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -982,15 +969,17 @@ const findFromSchemaCardPlayers = async ({
         $lookup:
           {
             from: 'images-and-videos',
-            let: { cardPlayersImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+            let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$cardPlayersImagesAndVideosThumbnail_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -1018,15 +1007,17 @@ const findFromSchemaCardPlayers = async ({
         $lookup:
           {
             from: 'users',
-            let: { cardPlayersUsers_id: '$users_id' },
+            let: { letUsers_id: '$users_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$cardPlayersUsers_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letUsers_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   _id: 0,
                   accessDate: 1,
                   exp: 1,
@@ -1052,34 +1043,34 @@ const findFromSchemaCardPlayers = async ({
           {
             from: 'hardwares',
             let: {
-              cardPlayersHardwareActiveArr: '$hardwareActiveObj.valueArr',
-              cardPlayersHardwareInactiveArr: '$hardwareInactiveObj.valueArr'
+              letHardwareActiveArr: '$hardwareActiveArr',
+              letHardwareInactiveArr: '$hardwareInactiveArr'
             },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $or:
-                    [
-                      { $and:
-                        [
+              {
+                $match: {
+                  $expr: {
+                    $or: [
+                      {
+                        $and: [
                           { $eq: ['$language', language] },
                           { $eq: ['$country', country] },
-                          { $in: ['$hardwareID', '$$cardPlayersHardwareActiveArr'] }
+                          { $in: ['$hardwareID', '$$letHardwareActiveArr'] }
                         ]
                       },
-                      { $and:
-                        [
+                      {
+                        $and: [
                           { $eq: ['$language', language] },
                           { $eq: ['$country', country] },
-                          { $in: ['$hardwareID', '$$cardPlayersHardwareInactiveArr'] }
+                          { $in: ['$hardwareID', '$$letHardwareInactiveArr'] }
                         ]
                       }
                     ]
                   }
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   _id: 0,
                   hardwareID: 1,
                   name: 1,
@@ -1099,11 +1090,11 @@ const findFromSchemaCardPlayers = async ({
         $lookup:
           {
             from: 'follows',
-            let: { cardPlayersUsers_id: '$users_id' },
+            let: { letUsers_id: '$users_id' },
             pipeline: [
               { $match:
                 { $expr:
-                  { $eq: ['$users_id', '$$cardPlayersUsers_id'] },
+                  { $eq: ['$users_id', '$$letUsers_id'] },
                 }
               },
             ],
@@ -1126,9 +1117,11 @@ const findFromSchemaCardPlayers = async ({
             from: 'ids',
             let: { cardPlayersIds_idArr: '$ids_idsArr' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $in: ['$_id', '$$cardPlayersIds_idArr'] }
+              {
+                $match: {
+                  $expr: {
+                    $in: ['$_id', '$$cardPlayersIds_idArr']
+                  }
                 }
               },
               
@@ -1141,15 +1134,15 @@ const findFromSchemaCardPlayers = async ({
                 $lookup:
                   {
                     from: 'games',
-                    let: { idsGameCommunities_id: '$gameCommunities_id' },
+                    let: { letGameCommunities_id: '$gameCommunities_id' },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $and:
-                            [
+                      {
+                        $match: {
+                          $expr: {
+                            $and: [
                               { $eq: ['$language', language] },
                               { $eq: ['$country', country] },
-                              { $eq: ['$gameCommunities_id', '$$idsGameCommunities_id'] }
+                              { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
                             ]
                           },
                         }
@@ -1164,15 +1157,17 @@ const findFromSchemaCardPlayers = async ({
                         $lookup:
                           {
                             from: 'images-and-videos',
-                            let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                            let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
                             pipeline: [
-                              { $match:
-                                { $expr:
-                                  { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
+                              {
+                                $match: {
+                                  $expr: {
+                                    $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                                  },
                                 }
                               },
-                              { $project:
-                                {
+                              {
+                                $project: {
                                   createdDate: 0,
                                   updatedDate: 0,
                                   users_id: 0,
@@ -1192,8 +1187,8 @@ const findFromSchemaCardPlayers = async ({
                       },
                       
                       
-                      { $project:
-                        {
+                      {
+                        $project: {
                           _id: 1,
                           gameCommunities_id: 1,
                           name: 1,
@@ -1206,16 +1201,15 @@ const findFromSchemaCardPlayers = async ({
               },
               
               {
-                $unwind:
-                  {
-                    path: '$gamesObj',
-                    preserveNullAndEmptyArrays: true
-                  }
+                $unwind: {
+                  path: '$gamesObj',
+                  preserveNullAndEmptyArrays: true
+                }
               },
               
               
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -1238,26 +1232,9 @@ const findFromSchemaCardPlayers = async ({
           __v: 0,
           createdDate: 0,
           language: 0,
-          nameObj: { search: 0 },
-          statusObj: { search: 0 },
-          commentObj: { search: 0 },
-          ageObj: { search: 0 },
-          sexObj: { search: 0 },
-          addressObj: { search: 0 },
-          gamingExperienceObj: { search: 0 },
-          hobbiesObj: { search: 0 },
-          specialSkillsObj: { search: 0 },
-          smartphoneObj: { search: 0 },
-          tabletObj: { search: 0 },
-          pcObj: { search: 0 },
-          hardwareActiveObj: { search: 0 },
-          hardwareInactiveObj: { search: 0 },
-          activityTimeObj: { search: 0 },
-          'activityTimeObj.valueArr': { _id: 0 },
-          lookingForFriendsObj: { search: 0 },
-          voiceChatObj: { search: 0 },
-          idArr: { _id: 0, search: 0 },
-          linkArr: { _id: 0, search: 0 },
+          activityTimeArr: { _id: 0 },
+          linkArr: { _id: 0 },
+          search: 0,
         }
       },
       
@@ -1271,7 +1248,7 @@ const findFromSchemaCardPlayers = async ({
     //   Format
     // --------------------------------------------------
     
-    returnObj = formatCardPlayersArrFromSchemaCardPlayers({
+    const returnObj = formatCardPlayersArrFromSchemaCardPlayers({
       
       localeObj,
       loginUsers_id,
@@ -1333,7 +1310,6 @@ const findFromSchemaCardPlayers = async ({
 
 /**
  * 編集用データを取得する（権限もチェック）[2020/04/16]
- * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} cardPlayers_id - DB card-players _id / カードのID
@@ -1349,20 +1325,20 @@ const findOneForEdit = async ({
   
   
   // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const language = lodashGet(localeObj, ['language'], '');
-  const country = lodashGet(localeObj, ['country'], '');
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Database
   // --------------------------------------------------
   
   try {
+    
+    
+    // --------------------------------------------------
+    //   Language & Country
+    // --------------------------------------------------
+    
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+    
+    
     
     
     // --------------------------------------------------
@@ -1377,11 +1353,10 @@ const findOneForEdit = async ({
       // --------------------------------------------------
       
       {
-        $match:
-          {
-            _id: cardPlayers_id,
-            users_id: loginUsers_id,
-          }
+        $match: {
+          _id: cardPlayers_id,
+          users_id: loginUsers_id,
+        }
       },
       
       
@@ -1395,9 +1370,11 @@ const findOneForEdit = async ({
             from: 'images-and-videos',
             let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$letImagesAndVideos_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideos_id']
+                  },
                 }
               },
               {
@@ -1431,9 +1408,11 @@ const findOneForEdit = async ({
             from: 'images-and-videos',
             let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$letImagesAndVideosThumbnail_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                  },
                 }
               },
               {
@@ -1466,23 +1445,23 @@ const findOneForEdit = async ({
           {
             from: 'hardwares',
             let: {
-              letHardwareActiveArr: '$hardwareActiveObj.valueArr',
-              letHardwareInactiveArr: '$hardwareInactiveObj.valueArr'
+              letHardwareActiveArr: '$hardwareActiveArr',
+              letHardwareInactiveArr: '$hardwareInactiveArr'
             },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $or:
-                    [
-                      { $and:
-                        [
+              {
+                $match: {
+                  $expr: {
+                    $or: [
+                      {
+                        $and: [
                           { $eq: ['$language', language] },
                           { $eq: ['$country', country] },
                           { $in: ['$hardwareID', '$$letHardwareActiveArr'] }
                         ]
                       },
-                      { $and:
-                        [
+                      {
+                        $and: [
                           { $eq: ['$language', language] },
                           { $eq: ['$country', country] },
                           { $in: ['$hardwareID', '$$letHardwareInactiveArr'] }
@@ -1518,10 +1497,10 @@ const findOneForEdit = async ({
               letUsers_id: '$users_id',
             },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
                       { $eq: ['$users_id', '$$letUsers_id'] },
                       { $in: ['$_id', '$$letIDs_idsArr'] }
                     ]
@@ -1538,15 +1517,15 @@ const findOneForEdit = async ({
                 $lookup:
                   {
                     from: 'games',
-                    let: { letIDsGameCommunities_id: '$gameCommunities_id' },
+                    let: { letGameCommunities_id: '$gameCommunities_id' },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $and:
-                            [
+                      {
+                        $match: {
+                          $expr: {
+                            $and: [
                               { $eq: ['$language', language] },
                               { $eq: ['$country', country] },
-                              { $eq: ['$gameCommunities_id', '$$letIDsGameCommunities_id'] }
+                              { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
                             ]
                           },
                         }
@@ -1561,15 +1540,17 @@ const findOneForEdit = async ({
                         $lookup:
                           {
                             from: 'images-and-videos',
-                            let: { letIDsGamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                            let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
                             pipeline: [
-                              { $match:
-                                { $expr:
-                                  { $eq: ['$_id', '$$letIDsGamesImagesAndVideosThumbnail_id'] },
+                              {
+                                $match: {
+                                  $expr: {
+                                    $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                                  },
                                 }
                               },
-                              { $project:
-                                {
+                              {
+                                $project: {
                                   createdDate: 0,
                                   updatedDate: 0,
                                   users_id: 0,
@@ -1589,8 +1570,8 @@ const findOneForEdit = async ({
                       },
                       
                       
-                      { $project:
-                        {
+                      {
+                        $project: {
                           _id: 1,
                           gameCommunities_id: 1,
                           name: 1,
@@ -1603,16 +1584,15 @@ const findOneForEdit = async ({
               },
               
               {
-                $unwind:
-                  {
-                    path: '$gamesObj',
-                    preserveNullAndEmptyArrays: true
-                  }
+                $unwind: {
+                  path: '$gamesObj',
+                  preserveNullAndEmptyArrays: true
+                }
               },
               
               
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -1655,7 +1635,7 @@ const findOneForEdit = async ({
     //   hardwareActive
     // --------------------------------------------------
     
-    const hardwareActiveValueArr = lodashGet(formattedObj, ['hardwareActiveObj', 'valueArr'], []);
+    const hardwareActiveValueArr = lodashGet(formattedObj, ['hardwareActiveArr'], []);
     
     const hardwareActiveArr = [];
     
@@ -1683,7 +1663,7 @@ const findOneForEdit = async ({
     //   hardwareInactive
     // --------------------------------------------------
     
-    const hardwareInactiveValueArr = lodashGet(formattedObj, ['hardwareInactiveObj', 'valueArr'], []);
+    const hardwareInactiveValueArr = lodashGet(formattedObj, ['hardwareInactiveArr'], []);
     
     const hardwareInactiveArr = [];
     
@@ -1810,13 +1790,6 @@ const findOneBy_idForEditForm = async ({
   
   
   // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  let returnObj = {};
-  
-  
-  // --------------------------------------------------
   //   Database
   // --------------------------------------------------
   
@@ -1824,35 +1797,48 @@ const findOneBy_idForEditForm = async ({
     
     
     // --------------------------------------------------
+    //   Language & Country
+    // --------------------------------------------------
+    
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+    
+    
+    
+    
+    // --------------------------------------------------
     //   Aggregate
     // --------------------------------------------------
     
-    let resultCardPlayersArr = await SchemaCardPlayers.aggregate([
+    const docArr = await SchemaCardPlayers.aggregate([
       
       {
-        $match:
-          {
-            _id,
-            users_id: loginUsers_id
-          }
+        $match: {
+          _id,
+          users_id: loginUsers_id
+        }
       },
       
       
-      // 画像と動画を取得
+      // --------------------------------------------------
+      //   images-and-videos - メイン画像
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
             from: 'images-and-videos',
-            let: { cardPlayersImagesAndVideos_id: '$imagesAndVideos_id' },
+            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$cardPlayersImagesAndVideos_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideos_id']
+                  },
                 }
               },
-              { $project:
-                {
-                  // _id: 0,
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -1872,21 +1858,25 @@ const findOneBy_idForEditForm = async ({
       },
       
       
-      // 画像と動画を取得 - サムネイル用
+      // --------------------------------------------------
+      //   images-and-videos - サムネイル画像
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
             from: 'images-and-videos',
-            let: { cardPlayersImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+            let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$cardPlayersImagesAndVideosThumbnail_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                  },
                 }
               },
-              { $project:
-                {
-                  // _id: 0,
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -1906,40 +1896,43 @@ const findOneBy_idForEditForm = async ({
       },
       
       
-      // ハードウェア
+      // --------------------------------------------------
+      //   hardwares
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
             from: 'hardwares',
             let: {
-              cardPlayersHardwareActiveArr: '$hardwareActiveObj.valueArr',
-              cardPlayersHardwareInactiveArr: '$hardwareInactiveObj.valueArr'
+              letHardwareActiveArr: '$hardwareActiveArr',
+              letHardwareInactiveArr: '$hardwareInactiveArr'
             },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $or:
-                    [
-                      { $and:
-                        [
-                          { $eq: ['$language', localeObj.language] },
-                          { $eq: ['$country', localeObj.country] },
-                          { $in: ['$hardwareID', '$$cardPlayersHardwareActiveArr'] }
+              {
+                $match: {
+                  $expr: {
+                    $or: [
+                      {
+                        $and: [
+                          { $eq: ['$language', language] },
+                          { $eq: ['$country', country] },
+                          { $in: ['$hardwareID', '$$letHardwareActiveArr'] }
                         ]
                       },
-                      { $and:
-                        [
-                          { $eq: ['$language', localeObj.language] },
-                          { $eq: ['$country', localeObj.country] },
-                          { $in: ['$hardwareID', '$$cardPlayersHardwareInactiveArr'] }
+                      {
+                        $and: [
+                          { $eq: ['$language', language] },
+                          { $eq: ['$country', country] },
+                          { $in: ['$hardwareID', '$$letHardwareInactiveArr'] }
                         ]
                       }
                     ]
                   }
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   _id: 0,
                   hardwareID: 1,
                   name: 1,
@@ -1962,7 +1955,7 @@ const findOneBy_idForEditForm = async ({
     
     let ids_idsArr = [];
     
-    for (let valueObj of resultCardPlayersArr.values()) {
+    for (let valueObj of docArr.values()) {
       ids_idsArr = ids_idsArr.concat(valueObj.ids_idsArr);
     }
     
@@ -1981,9 +1974,11 @@ const findOneBy_idForEditForm = async ({
     //   カードデータのフォーマット
     // --------------------------------------------------
     
-    returnObj = formatForEditForm({
-      cardPlayersArr: resultCardPlayersArr,
-      idsObj: resultIDsObj
+    const returnObj = formatForEditForm({
+      
+      cardPlayersArr: docArr,
+      idsObj: resultIDsObj,
+      
     });
     
     
@@ -2058,13 +2053,6 @@ const findForMember = async ({
   
   
   // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  let returnObj = {};
-  
-  
-  // --------------------------------------------------
   //   Database
   // --------------------------------------------------
   
@@ -2078,19 +2066,26 @@ const findForMember = async ({
     const intPage = parseInt(page, 10);
     const intLimit = parseInt(limit, 10);
     
-    // console.log(chalk`
-    //   intPage: {green ${intPage}}
-    //   intLimit: {green ${intLimit}}
-    // `);
+    
+    // --------------------------------------------------
+    //   Language & Country
+    // --------------------------------------------------
+    
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+    
+    
     
     
     // --------------------------------------------------
     //   Match Condition Array
     // --------------------------------------------------
     
-    let matchConditionArr = [
+    const matchConditionArr = [
       {
-        $match : { _id: { $in: users_idsArr } },
+        $match: {
+          _id: { $in: users_idsArr }
+        },
       },
     ];
     
@@ -2099,40 +2094,54 @@ const findForMember = async ({
     //   Card Players のデータを取得
     // --------------------------------------------------
     
-    const resultArr = await SchemaUsers.aggregate([
+    const docArr = await SchemaUsers.aggregate([
       
+      
+      // --------------------------------------------------
+      //   Match Condition Array
+      // --------------------------------------------------
       
       ...matchConditionArr,
       
       
-      // プレイヤーカードを取得
+      // --------------------------------------------------
+      //   card-players
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
             from: 'card-players',
-            let: { users_id: '$_id' },
+            let: { let_id: '$_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$users_id', '$$users_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$users_id', '$$let_id']
+                  },
                 }
               },
               
               
-              // 画像と動画を取得
+              // --------------------------------------------------
+              //   images-and-videos - メイン画像
+              // --------------------------------------------------
+              
               {
                 $lookup:
                   {
                     from: 'images-and-videos',
-                    let: { cardPlayersImagesAndVideos_id: '$imagesAndVideos_id' },
+                    let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $eq: ['$_id', '$$cardPlayersImagesAndVideos_id'] },
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$_id', '$$letImagesAndVideos_id']
+                          },
                         }
                       },
-                      { $project:
-                        {
+                      {
+                        $project: {
                           createdDate: 0,
                           updatedDate: 0,
                           users_id: 0,
@@ -2152,20 +2161,25 @@ const findForMember = async ({
               },
               
               
-              // 画像と動画を取得 - サムネイル用
+              // --------------------------------------------------
+              //   images-and-videos - サムネイル画像
+              // --------------------------------------------------
+              
               {
                 $lookup:
                   {
                     from: 'images-and-videos',
-                    let: { cardPlayersImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                    let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $eq: ['$_id', '$$cardPlayersImagesAndVideosThumbnail_id'] },
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                          },
                         }
                       },
-                      { $project:
-                        {
+                      {
+                        $project: {
                           createdDate: 0,
                           updatedDate: 0,
                           users_id: 0,
@@ -2185,27 +2199,29 @@ const findForMember = async ({
               },
               
               
-              // ユーザー情報
+              // --------------------------------------------------
+              //   users
+              // --------------------------------------------------
+              
               {
                 $lookup:
                   {
                     from: 'users',
-                    let: { cardPlayersUsers_id: '$users_id' },
+                    let: { letUsers_id: '$users_id' },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $eq: ['$_id', '$$cardPlayersUsers_id'] },
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$_id', '$$letUsers_id']
+                          },
                         }
                       },
-                      { $project:
-                        {
+                      {
+                        $project: {
                           _id: 0,
                           accessDate: 1,
                           exp: 1,
                           userID: 1,
-                          // followArr: 1,
-                          // followedArr: 1,
-                          // followedCount: 1,
                         }
                       }
                     ],
@@ -2218,40 +2234,43 @@ const findForMember = async ({
               },
               
               
-              // ハードウェア
+              // --------------------------------------------------
+              //   hardwares
+              // --------------------------------------------------
+              
               {
                 $lookup:
                   {
                     from: 'hardwares',
                     let: {
-                      cardPlayersHardwareActiveArr: '$hardwareActiveObj.valueArr',
-                      cardPlayersHardwareInactiveArr: '$hardwareInactiveObj.valueArr'
+                      letHardwareActiveArr: '$hardwareActiveArr',
+                      letHardwareInactiveArr: '$hardwareInactiveArr'
                     },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $or:
-                            [
-                              { $and:
-                                [
-                                  { $eq: ['$language', localeObj.language] },
-                                  { $eq: ['$country', localeObj.country] },
-                                  { $in: ['$hardwareID', '$$cardPlayersHardwareActiveArr'] }
+                      {
+                        $match: {
+                          $expr: {
+                            $or: [
+                              {
+                                $and: [
+                                  { $eq: ['$language', language] },
+                                  { $eq: ['$country', country] },
+                                  { $in: ['$hardwareID', '$$letHardwareActiveArr'] }
                                 ]
                               },
-                              { $and:
-                                [
-                                  { $eq: ['$language', localeObj.language] },
-                                  { $eq: ['$country', localeObj.country] },
-                                  { $in: ['$hardwareID', '$$cardPlayersHardwareInactiveArr'] }
+                              {
+                                $and: [
+                                  { $eq: ['$language', language] },
+                                  { $eq: ['$country', country] },
+                                  { $in: ['$hardwareID', '$$letHardwareInactiveArr'] }
                                 ]
                               }
                             ]
                           }
                         }
                       },
-                      { $project:
-                        {
+                      {
+                        $project: {
                           _id: 0,
                           hardwareID: 1,
                           name: 1,
@@ -2263,20 +2282,25 @@ const findForMember = async ({
               },
               
               
-              // Follows
+              // --------------------------------------------------
+              //   follows
+              // --------------------------------------------------
+              
               {
                 $lookup:
                   {
                     from: 'follows',
-                    let: { cardPlayersUsers_id: '$users_id' },
+                    let: { letUsers_id: '$users_id' },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $eq: ['$users_id', '$$cardPlayersUsers_id'] },
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$users_id', '$$letUsers_id']
+                          },
                         }
                       },
-                      { $project:
-                        {
+                      {
+                        $project: {
                           _id: 0,
                           followArr: 1,
                           followedArr: 1,
@@ -2298,26 +2322,9 @@ const findForMember = async ({
                   __v: 0,
                   createdDate: 0,
                   language: 0,
-                  nameObj: { search: 0 },
-                  statusObj: { search: 0 },
-                  commentObj: { search: 0 },
-                  ageObj: { search: 0 },
-                  sexObj: { search: 0 },
-                  addressObj: { search: 0 },
-                  gamingExperienceObj: { search: 0 },
-                  hobbiesObj: { search: 0 },
-                  specialSkillsObj: { search: 0 },
-                  smartphoneObj: { search: 0 },
-                  tabletObj: { search: 0 },
-                  pcObj: { search: 0 },
-                  hardwareActiveObj: { search: 0 },
-                  hardwareInactiveObj: { search: 0 },
-                  activityTimeObj: { search: 0 },
-                  'activityTimeObj.valueArr': { _id: 0 },
-                  lookingForFriendsObj: { search: 0 },
-                  voiceChatObj: { search: 0 },
-                  idArr: { _id: 0, search: 0 },
-                  linkArr: { _id: 0, search: 0 },
+                  activityTimeArr: { _id: 0 },
+                  linkArr: { _id: 0 },
+                  search: 0,
                 }
               },
               
@@ -2335,9 +2342,12 @@ const findForMember = async ({
       },
       
       
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+      
       {
         $project: {
-          // _id: 0,
           accessDate: 1,
           exp: 1,
           userID: 1,
@@ -2348,6 +2358,10 @@ const findForMember = async ({
         }
       },
       
+      
+      // --------------------------------------------------
+      //   $sort / $skip / $limit
+      // --------------------------------------------------
       
       { $sort: { accessDate: -1 } },
       { $skip: (intPage - 1) * intLimit },
@@ -2366,7 +2380,7 @@ const findForMember = async ({
     const cardPlayersArr = [];
     const cardPlayersForOrderArr = [];
     
-    for (let valueObj of resultArr.values()) {
+    for (let valueObj of docArr.values()) {
       
       const usersObj = {
         
@@ -2413,6 +2427,8 @@ const findForMember = async ({
     //   フォーマット
     // --------------------------------------------------
     
+    const returnObj = {};
+    
     returnObj.cardPlayersObj = format({
       
       localeObj,
@@ -2455,8 +2471,8 @@ const findForMember = async ({
     // `);
     
     // console.log(`
-    //   ----- resultArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   ----- docArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -2639,7 +2655,9 @@ const findForFollowers = async ({
     
     let matchConditionArr = [
       {
-        $match : { _id: { $in: users_idsArr } },
+        $match : {
+          _id: { $in: users_idsArr }
+        },
       },
     ];
     
@@ -3333,6 +3351,8 @@ const transactionForUpsert = async ({
   }
   
 };
+
+
 
 
 

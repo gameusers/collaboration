@@ -82,8 +82,8 @@ const formatCardPlayersArr = ({
     const users_id = lodashGet(valueObj, ['cardPlayerObj', 'users_id'], '');
     const imagesAndVideosObj = lodashGet(valueObj, ['cardPlayerObj', 'imagesAndVideosObj'], {});
     const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayerObj', 'imagesAndVideosThumbnailObj'], {});
-    const hardwareActiveArr = lodashGet(valueObj, ['cardPlayerObj', 'hardwareActiveObj', 'valueArr'], []);
-    const hardwareInactiveArr = lodashGet(valueObj, ['cardPlayerObj', 'hardwareInactiveObj', 'valueArr'], []);
+    const hardwareActiveArr = lodashGet(valueObj, ['cardPlayerObj', 'hardwareActiveArr'], []);
+    const hardwareInactiveArr = lodashGet(valueObj, ['cardPlayerObj', 'hardwareInactiveArr'], []);
     const hardwaresArr = lodashGet(valueObj, ['cardPlayerObj', 'hardwaresArr'], []);
     const followsObj = lodashGet(valueObj, ['cardPlayerObj', 'followsObj'], {});
     const idsArr = lodashGet(valueObj, ['cardPlayerObj', 'idsArr'], []);
@@ -233,8 +233,8 @@ const formatCardPlayersArr = ({
     // --------------------------------------------------
     
     delete clonedObj.ids_idsArr;
-    delete clonedObj.hardwareActiveObj;
-    delete clonedObj.hardwareInactiveObj;
+    // delete clonedObj.hardwareActiveObj;
+    // delete clonedObj.hardwareInactiveObj;
     delete clonedObj.hardwaresArr;
     delete clonedObj.imagesAndVideos_id;
     delete clonedObj.imagesAndVideosThumbnail_id;
@@ -285,7 +285,13 @@ const formatCardPlayersArr = ({
  * @param {Array} arr - データの入った配列
  * @return {Object} フォーマットされたオブジェクト
  */
-const formatCardPlayersArrFromSchemaCardPlayers = ({ localeObj, loginUsers_id, arr }) => {
+const formatCardPlayersArrFromSchemaCardPlayers = ({
+  
+  localeObj,
+  loginUsers_id,
+  arr,
+  
+}) => {
   
   
   // --------------------------------------------------
@@ -317,8 +323,8 @@ const formatCardPlayersArrFromSchemaCardPlayers = ({ localeObj, loginUsers_id, a
     const users_id = lodashGet(valueObj, ['users_id'], '');
     const imagesAndVideosObj = lodashGet(valueObj, ['imagesAndVideosObj'], {});
     const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['imagesAndVideosThumbnailObj'], {});
-    const hardwareActiveArr = lodashGet(valueObj, ['hardwareActiveObj', 'valueArr'], []);
-    const hardwareInactiveArr = lodashGet(valueObj, ['hardwareInactiveObj', 'valueArr'], []);
+    const hardwareActiveArr = lodashGet(valueObj, ['hardwareActiveArr'], []);
+    const hardwareInactiveArr = lodashGet(valueObj, ['hardwareInactiveArr'], []);
     const hardwaresArr = lodashGet(valueObj, ['hardwaresArr'], []);
     const followsObj = lodashGet(valueObj, ['followsObj'], {});
     const idsArr = lodashGet(valueObj, ['idsArr'], []);
@@ -468,8 +474,8 @@ const formatCardPlayersArrFromSchemaCardPlayers = ({ localeObj, loginUsers_id, a
     // --------------------------------------------------
     
     delete clonedObj.ids_idsArr;
-    delete clonedObj.hardwareActiveObj;
-    delete clonedObj.hardwareInactiveObj;
+    // delete clonedObj.hardwareActiveObj;
+    // delete clonedObj.hardwareInactiveObj;
     delete clonedObj.hardwaresArr;
     delete clonedObj.imagesAndVideos_id;
     delete clonedObj.imagesAndVideosThumbnail_id;

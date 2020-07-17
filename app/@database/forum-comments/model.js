@@ -453,12 +453,14 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                 },
                 
                 
-                { $project:
-                  {
+                {
+                  $project: {
                     // _id: 0,
                     // users_id: 1,
-                    name: '$nameObj.value',
-                    status: '$statusObj.value',
+                    // name: '$nameObj.value',
+                    // status: '$statusObj.value',
+                    name: 1,
+                    status: 1,
                     imagesAndVideosThumbnailObj: 1,
                   }
                 }
@@ -615,12 +617,14 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                         },
                         
                         
-                        { $project:
-                          {
+                        {
+                          $project: {
                             // _id: 0,
                             // users_id: 1,
-                            name: '$nameObj.value',
-                            status: '$statusObj.value',
+                            // name: '$nameObj.value',
+                            // status: '$statusObj.value',
+                            name: 1,
+                            status: 1,
                             imagesAndVideosThumbnailObj: 1,
                           }
                         }
@@ -740,9 +744,10 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                                 },
                                 
                                 
-                                { $project:
-                                  {
-                                    name: '$nameObj.value',
+                                {
+                                  $project: {
+                                    name: 1,
+                                    // name: '$nameObj.value',
                                   }
                                 }
                               ],
@@ -1073,10 +1078,12 @@ const findRepliesByForumComments_idsArr = async ({
               },
               
               
-              { $project:
-                {
-                  name: '$nameObj.value',
-                  status: '$statusObj.value',
+              {
+                $project: {
+                  name: 1,
+                  status: 1,
+                  // name: '$nameObj.value',
+                  // status: '$statusObj.value',
                   imagesAndVideosThumbnailObj: 1,
                 }
               }
@@ -1237,10 +1244,12 @@ const findRepliesByForumComments_idsArr = async ({
                       },
                       
                       
-                      { $project:
-                        {
-                          name: '$nameObj.value',
-                          status: '$statusObj.value',
+                      {
+                        $project: {
+                          name: 1,
+                          status: 1,
+                          // name: '$nameObj.value',
+                          // status: '$statusObj.value',
                           imagesAndVideosThumbnailObj: 1,
                         }
                       }
@@ -1360,9 +1369,10 @@ const findRepliesByForumComments_idsArr = async ({
                               },
                               
                               
-                              { $project:
-                                {
-                                  name: '$nameObj.value',
+                              {
+                                $project: {
+                                  name: 1,
+                                  // name: '$nameObj.value',
                                 }
                               }
                             ],

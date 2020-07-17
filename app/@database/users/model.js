@@ -393,10 +393,12 @@ const findOneForUser = async ({
               },
               
               
-              { $project:
-                {
-                  name: '$nameObj.value',
-                  status: '$statusObj.value',
+              {
+                $project: {
+                  name: 1,
+                  status: 1,
+                  // name: '$nameObj.value',
+                  // status: '$statusObj.value',
                 }
               }
             ],
@@ -688,11 +690,11 @@ const findOneForLoginUsersObj = async ({
               },
               
               
-              { $project:
-                {
+              {
+                $project: {
                   _id: 0,
-                  nameObj: 1,
-                  statusObj: 1,
+                  name: 1,
+                  status: 1,
                   imagesAndVideosThumbnailObj: 1,
                 }
               }

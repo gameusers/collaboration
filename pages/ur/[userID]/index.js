@@ -157,8 +157,6 @@ const ContainerLayout = (props) => {
   //   Component - Sidebar
   // --------------------------------------------------
   
-  // const componentSidebar = '';
-  
   const componentSidebar =
     <img
       src="/img/common/advertisement/300x250.jpg"
@@ -343,21 +341,6 @@ export async function getServerSideProps({ req, res, query }) {
   
   
   // --------------------------------------------------
-  //   Get Cookie Data
-  // --------------------------------------------------
-  
-  // const threadListPage = 1;
-  // const threadListLimit = getCookie({ key: 'forumThreadListLimit', reqHeadersCookie });
-  
-  // const threadPage = 1;
-  // const threadLimit = getCookie({ key: 'forumThreadLimit', reqHeadersCookie });
-  // const commentLimit = getCookie({ key: 'forumCommentLimit', reqHeadersCookie });
-  // const replyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
   
@@ -401,7 +384,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   const topPageName = lodashGet(topPagesObj, ['name'], '');
   
-  const userName = lodashGet(cardPlayersArr, [0, 'nameObj', 'value'], '');
+  const userName = lodashGet(cardPlayersArr, [0, 'name'], '');
   const title = topPageName ? topPageName : `${userName} - Game Users`;
   
   
@@ -477,16 +460,6 @@ export async function getServerSideProps({ req, res, query }) {
     ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
     --------------------\n
   `);
-  
-  // console.log(chalk`
-  //   threadListPage: {green ${threadListPage}}
-  //   threadPage: {green ${threadPage}}
-    
-  //   threadListLimit: {green ${threadListLimit}}
-  //   threadLimit: {green ${threadLimit}}
-  //   commentLimit: {green ${commentLimit}}
-  //   replyLimit: {green ${replyLimit}}
-  // `);
   
   
   

@@ -323,9 +323,9 @@ const Component = (props) => {
   //   User
   // ---------------------------------------------
   
-  const name = lodashGet(obj, ['nameObj', 'value'], '');
-  const status = lodashGet(obj, ['statusObj', 'value'], '');
-  const comment = lodashGet(obj, ['commentObj', 'value'], '');
+  const name = lodashGet(obj, ['name'], '');
+  const status = lodashGet(obj, ['status'], '');
+  const comment = lodashGet(obj, ['comment'], '');
   const exp = lodashGet(obj, ['usersObj', 'exp'], 0);
   const accessDate = lodashGet(obj, ['usersObj', 'accessDate'], '');
   const userID = lodashGet(obj, ['usersObj', 'userID'], '');
@@ -346,15 +346,15 @@ const Component = (props) => {
   //   Profile
   // ---------------------------------------------
   
-  const ageValue = lodashGet(obj, ['ageObj', 'value'], '');
-  const ageAlternativeText = lodashGet(obj, ['ageObj', 'alternativeText'], '');
-  const sexValue = lodashGet(obj, ['sexObj', 'value'], '');
-  const sexAlternativeText = lodashGet(obj, ['sexObj', 'alternativeText'], '');
-  const addressAlternativeText = lodashGet(obj, ['addressObj', 'alternativeText'], '');
-  const gamingExperienceValue = lodashGet(obj, ['gamingExperienceObj', 'value'], '');
-  const gamingExperienceAlternativeText = lodashGet(obj, ['gamingExperienceObj', 'alternativeText'], '');
-  const hobbiesValueArr = lodashGet(obj, ['hobbiesObj', 'valueArr'], []);
-  const specialSkillsValueArr = lodashGet(obj, ['specialSkillsObj', 'valueArr'], []);
+  const ageValue = lodashGet(obj, ['age'], '');
+  const ageAlternativeText = lodashGet(obj, ['ageAlternativeText'], '');
+  const sexValue = lodashGet(obj, ['sex'], '');
+  const sexAlternativeText = lodashGet(obj, ['sexAlternativeText'], '');
+  const addressAlternativeText = lodashGet(obj, ['addressAlternativeText'], '');
+  const gamingExperienceValue = lodashGet(obj, ['gamingExperience'], '');
+  const gamingExperienceAlternativeText = lodashGet(obj, ['gamingExperienceAlternativeText'], '');
+  const hobbiesValueArr = lodashGet(obj, ['hobbiesArr'], []);
+  const specialSkillsValueArr = lodashGet(obj, ['specialSkillsArr'], []);
   
   
   // ---------------------------------------------
@@ -369,37 +369,37 @@ const Component = (props) => {
   //   Smartphone
   // ---------------------------------------------
   
-  const smartphoneModel = lodashGet(obj, ['smartphoneObj', 'model'], '');
-  const smartphoneComment = lodashGet(obj, ['smartphoneObj', 'comment'], '');
+  const smartphoneModel = lodashGet(obj, ['smartphoneModel'], '');
+  const smartphoneComment = lodashGet(obj, ['smartphoneComment'], '');
   
   
   // ---------------------------------------------
   //   Tablet
   // ---------------------------------------------
   
-  const tabletModel = lodashGet(obj, ['tabletObj', 'model'], '');
-  const tabletComment = lodashGet(obj, ['tabletObj', 'comment'], '');
+  const tabletModel = lodashGet(obj, ['tabletModel'], '');
+  const tabletComment = lodashGet(obj, ['tabletComment'], '');
   
   
   // ---------------------------------------------
   //   PC
   // ---------------------------------------------
   
-  const pcModel = lodashGet(obj, ['pcObj', 'model'], '');
-  const pcComment = lodashGet(obj, ['pcObj', 'comment'], '');
-  const pcOs = lodashGet(obj, ['pcObj', 'specsObj', 'os'], '');
-  const pcCpu = lodashGet(obj, ['pcObj', 'specsObj', 'cpu'], '');
-  const pcCpuCooler = lodashGet(obj, ['pcObj', 'specsObj', 'cpuCooler'], '');
-  const pcMotherboard = lodashGet(obj, ['pcObj', 'specsObj', 'motherboard'], '');
-  const pcMemory = lodashGet(obj, ['pcObj', 'specsObj', 'memory'], '');
-  const pcStorage = lodashGet(obj, ['pcObj', 'specsObj', 'storage'], '');
-  const pcGraphicsCard = lodashGet(obj, ['pcObj', 'specsObj', 'graphicsCard'], '');
-  const pcOpticalDrive = lodashGet(obj, ['pcObj', 'specsObj', 'opticalDrive'], '');
-  const pcPowerSupply = lodashGet(obj, ['pcObj', 'specsObj', 'powerSupply'], '');
-  const pcCase = lodashGet(obj, ['pcObj', 'specsObj', 'pcCase'], '');
-  const pcMonitor = lodashGet(obj, ['pcObj', 'specsObj', 'monitor'], '');
-  const pcMouse = lodashGet(obj, ['pcObj', 'specsObj', 'mouse'], '');
-  const pcKeyboard = lodashGet(obj, ['pcObj', 'specsObj', 'keyboard'], '');
+  const pcModel = lodashGet(obj, ['pcModel'], '');
+  const pcComment = lodashGet(obj, ['pcComment'], '');
+  const pcOs = lodashGet(obj, ['pcSpecsObj', 'os'], '');
+  const pcCpu = lodashGet(obj, ['pcSpecsObj', 'cpu'], '');
+  const pcCpuCooler = lodashGet(obj, ['pcSpecsObj', 'cpuCooler'], '');
+  const pcMotherboard = lodashGet(obj, ['pcSpecsObj', 'motherboard'], '');
+  const pcMemory = lodashGet(obj, ['pcSpecsObj', 'memory'], '');
+  const pcStorage = lodashGet(obj, ['pcSpecsObj', 'storage'], '');
+  const pcGraphicsCard = lodashGet(obj, ['pcSpecsObj', 'graphicsCard'], '');
+  const pcOpticalDrive = lodashGet(obj, ['pcSpecsObj', 'opticalDrive'], '');
+  const pcPowerSupply = lodashGet(obj, ['pcSpecsObj', 'powerSupply'], '');
+  const pcCase = lodashGet(obj, ['pcSpecsObj', 'pcCase'], '');
+  const pcMonitor = lodashGet(obj, ['pcSpecsObj', 'monitor'], '');
+  const pcMouse = lodashGet(obj, ['pcSpecsObj', 'mouse'], '');
+  const pcKeyboard = lodashGet(obj, ['pcSpecsObj', 'keyboard'], '');
     
   
   // ---------------------------------------------
@@ -413,24 +413,24 @@ const Component = (props) => {
   //   活動時間
   // ---------------------------------------------
   
-  const activityTimeArr = lodashGet(obj, ['activityTimeObj', 'valueArr'], []);
+  const activityTimeArr = lodashGet(obj, ['activityTimeArr'], []);
   
   
   // ---------------------------------------------
   //   フレンド募集
   // ---------------------------------------------
   
-  const lookingForFriendsValue = lodashGet(obj, ['lookingForFriendsObj', 'value'], '');
-  const lookingForFriendsIcon = lodashGet(obj, ['lookingForFriendsObj', 'icon'], '');
-  const lookingForFriendsComment = lodashGet(obj, ['lookingForFriendsObj', 'comment'], '');
+  const lookingForFriendsValue = lodashGet(obj, ['lookingForFriends'], '');
+  const lookingForFriendsIcon = lodashGet(obj, ['lookingForFriendsIcon'], '');
+  const lookingForFriendsComment = lodashGet(obj, ['lookingForFriendsComment'], '');
   
   
   // ---------------------------------------------
   //   ボイスチャット
   // ---------------------------------------------
   
-  const voiceChatValue = lodashGet(obj, ['voiceChatObj', 'value'], '');
-  const voiceChatComment = lodashGet(obj, ['voiceChatObj', 'comment'], '');
+  const voiceChatValue = lodashGet(obj, ['voiceChat'], '');
+  const voiceChatComment = lodashGet(obj, ['voiceChatComment'], '');
   
   
   // ---------------------------------------------

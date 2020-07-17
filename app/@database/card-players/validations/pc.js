@@ -15,6 +15,12 @@ const util = require('util');
 // ---------------------------------------------
 
 const validator = require('validator');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 
 
@@ -22,7 +28,9 @@ const lodashGet = require('lodash/get');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom.js');
+
+
 
 
 
@@ -52,11 +60,13 @@ const validationCardPlayersPCModel = ({ throwError = false, required = false, va
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
+    
     value: data,
     numberOfCharacters,
     messageID: 'KGJvD0Fj3',
     error: false,
+    
   };
   
   
@@ -152,11 +162,13 @@ const validationCardPlayersPCComment = ({ throwError = false, required = false, 
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
+    
     value: data,
     numberOfCharacters,
     messageID: 'Error',
     error: false,
+    
   };
   
   
@@ -249,10 +261,12 @@ const validationCardPlayersPCSpec = ({ throwError = false, required = false, val
   //   Result Object
   // ---------------------------------------------
   
-  let resultObj = {
+  const resultObj = {
+    
     valueObj,
     messageID: 'Error',
     error: false,
+    
   };
   
   
@@ -332,7 +346,9 @@ const validationCardPlayersPCSpec = ({ throwError = false, required = false, val
 // --------------------------------------------------
 
 module.exports = {
+  
   validationCardPlayersPCModel,
   validationCardPlayersPCComment,
-  validationCardPlayersPCSpec
+  validationCardPlayersPCSpec,
+  
 };

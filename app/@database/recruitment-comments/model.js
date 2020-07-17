@@ -482,10 +482,12 @@ const findCommentsAndReplies = async ({
                 },
                 
                 
-                { $project:
-                  {
-                    name: '$nameObj.value',
-                    status: '$statusObj.value',
+                {
+                  $project: {
+                    name: 1,
+                    status: 1,
+                    // name: '$nameObj.value',
+                    // status: '$statusObj.value',
                     imagesAndVideosThumbnailObj: 1,
                   }
                 }
@@ -825,10 +827,12 @@ const findCommentsAndReplies = async ({
                         },
                         
                         
-                        { $project:
-                          {
-                            name: '$nameObj.value',
-                            status: '$statusObj.value',
+                        {
+                          $project: {
+                            name: 1,
+                            status: 1,
+                            // name: '$nameObj.value',
+                            // status: '$statusObj.value',
                             imagesAndVideosThumbnailObj: 1,
                           }
                         }
@@ -959,9 +963,10 @@ const findCommentsAndReplies = async ({
                                 },
                                 
                                 
-                                { $project:
-                                  {
-                                    name: '$nameObj.value',
+                                {
+                                  $project: {
+                                    name: 1,
+                                    // name: '$nameObj.value',
                                   }
                                 }
                               ],

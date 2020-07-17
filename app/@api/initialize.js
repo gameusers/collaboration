@@ -2092,103 +2092,53 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         users_id: 'etJp0y_Vt',
         language: 'ja',
-        nameObj: {
-          value: 'Administrator',
-          search: false,
-        },
-        statusObj: {
-          value: 'Status',
-          search: false,
-        },
+        name: 'Administrator',
+        status: 'Status',
         imagesAndVideos_id: '',
         imagesAndVideosThumbnail_id: '',
-        commentObj: {
-          value: 'Comment',
-          search: false,
+        comment: `Comment`,
+        age: '',
+        ageAlternativeText: '',
+        sex: '',
+        sexAlternativeText: '',
+        address: '',
+        addressAlternativeText: '',
+        gamingExperience: '',
+        gamingExperienceAlternativeText: '',
+        hobbiesArr: [],
+        specialSkillsArr: [],
+        smartphoneModel: '',
+        smartphoneComment: ``,
+        tabletModel: '',
+        tabletComment: ``,
+        pcModel: '',
+        pcComment: ``,
+        pcSpecsObj: {
+          os: '',
+          cpu: '',
+          cpuCooler: '',
+          motherboard: '',
+          memory: '',
+          storage: '',
+          graphicsCard: '',
+          opticalDrive: '',
+          powerSupply: '',
+          pcCase: '',
+          monitor: '',
+          mouse: '',
+          keyboard: '',
         },
-        ageObj: {
-          value: '',
-          alternativeText: '',
-          search: false,
-        },
-        sexObj: {
-          value: 'empty',
-          alternativeText: '',
-          search: false,
-        },
-        addressObj: {
-          value: '',
-          alternativeText: '',
-          search: false,
-        },
-        gamingExperienceObj: {
-          value: '',
-          alternativeText: '',
-          search: false,
-        },
-        hobbiesObj: {
-          valueArr: [],
-          search: false,
-        },
-        specialSkillsObj: {
-          valueArr: [],
-          search: false,
-        },
-        smartphoneObj: {
-          model: '',
-          comment: ``,
-          search: false,
-        },
-        tabletObj: {
-          model: '',
-          comment: ``,
-          search: false,
-        },
-        pcObj: {
-          model: '',
-          comment: ``,
-          specsObj: {
-            os: '',
-            cpu: '',
-            cpuCooler: '',
-            motherboard: '',
-            memory: '',
-            storage: '',
-            graphicsCard: '',
-            opticalDrive: '',
-            powerSupply: '',
-            pcCase: '',
-            monitor: '',
-            mouse: '',
-            keyboard: ''
-          },
-          search: false,
-        },
-        hardwareActiveObj: {
-          valueArr: [],
-          search: false,
-        },
-        hardwareInactiveObj: {
-          valueArr: [],
-          search: false,
-        },
+        hardwareActiveArr: [],
+        hardwareInactiveArr: [],
         ids_idsArr: [],
-        activityTimeObj: {
-          valueArr: [],
-          search: false,
-        },
-        lookingForFriendsObj: {
-          value: false,
-          icon: 'emoji_u1f47f',
-          comment: '',
-          search: false,
-        },
-        voiceChatObj: {
-          value: false,
-          comment: '',
-          search: false,
-        },
-        linkArr: []
+        activityTimeArr: [],
+        lookingForFriends: false,
+        lookingForFriendsIcon: 'emoji_u1f47f',
+        lookingForFriendsComment: '',
+        voiceChat: false,
+        voiceChatComment: '',
+        linkArr: [],
+        search: false,
       },
       
       
@@ -2198,198 +2148,137 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         language: 'ja',
-        nameObj: {
-          value: 'マリオ',
-          search: true,
-        },
-        statusObj: {
-          value: 'ビルダー',
-          search: true,
-        },
+        name: 'マリオ',
+        status: 'ビルダー',
         imagesAndVideos_id: '-uskdLoSC',
         imagesAndVideosThumbnail_id: '9h6n2gyyK',
-        commentObj: {
-          value: `Next.js を試してみたところ、とても優秀だったので採用することに決めました。サーバーサイドレンダリングの機能や、Code Splitting をデフォルトで行ってくれるのは非常に便利です。ただすべての機能を提供してくれるわけではないので、結局、自分で Express を利用したサーバー用コードを書かないといけない部分も多くあるのですが。
+        comment: `Next.js を試してみたところ、とても優秀だったので採用することに決めました。サーバーサイドレンダリングの機能や、Code Splitting をデフォルトで行ってくれるのは非常に便利です。ただすべての機能を提供してくれるわけではないので、結局、自分で Express を利用したサーバー用コードを書かないといけない部分も多くあるのですが。
   
   それと Next.js はデータベースへのアクセスをすべて API で行うことを推奨しているようです。そこそこの規模のサイトになると、そういった構成が増えてくるのかもしれないのですが、自分は小規模なサイトしか作ったことがないので、初めての経験でちょっと不安です。`,
-          search: true,
-        },
-        ageObj: {
-          value: '2002-10-19T00:00:00Z',
-          alternativeText: '',
-          search: true,
-        },
-        sexObj: {
-          value: 'male',
-          alternativeText: '',
-          search: true,
-        },
-        addressObj: {
-          value: '',
-          alternativeText: '大阪',
-          search: true,
-        },
-        gamingExperienceObj: {
-          value: '2008-09-19T00:00:00Z',
-          alternativeText: '',
-          search: true,
-        },
-        hobbiesObj: {
-          valueArr: ['映画鑑賞', '料理', '海外旅行', 'ヴァイオリン演奏'],
-          search: true,
-        },
-        specialSkillsObj: {
-          valueArr: ['英語を話せる！'],
-          search: true,
-        },
-        smartphoneObj: {
-          model: 'g06',
-          comment: `月額無料でスマホを利用したい！ということで買った端末です。電話としては機能してるけど、これでゲームをやるのは難しそうです。`,
-          search: true,
-        },
-        tabletObj: {
-          model: 'Google Nexus 9 Wi-Fiモデル 32GB',
-          comment: `2015年に買ったタブレットなので最近はブラウザをチェックするだけでも重い…。`,
-          search: true,
-        },
-        pcObj: {
-          model: '自作PC',
-          comment: `BTOで買ったPCが壊れそうになったので、ケースや光学ドライブなを流用しながらパーツを新しくしました。HDからSSDに移行したときはその速さに驚きましたね！容量があまりないので大量にゲームをインストールできないのですが、高速なのでなんとかSSDでやりくりしていきたいです。
+        age: '2002-10-19T00:00:00Z',
+        ageAlternativeText: '',
+        sex: 'male',
+        sexAlternativeText: '',
+        address: '',
+        addressAlternativeText: '大阪',
+        gamingExperience: '2008-09-19T00:00:00Z',
+        gamingExperienceAlternativeText: '',
+        hobbiesArr: ['映画鑑賞', '料理', '海外旅行', 'ヴァイオリン演奏'],
+        specialSkillsArr: ['英語を話せる！'],
+        smartphoneModel: 'g06',
+        smartphoneComment: `月額無料でスマホを利用したい！ということで買った端末です。電話としては機能してるけど、これでゲームをやるのは難しそうです。`,
+        tabletModel: 'Google Nexus 9 Wi-Fiモデル 32GB',
+        tabletComment: `2015年に買ったタブレットなので最近はブラウザをチェックするだけでも重い…。`,
+        pcModel: '自作PC',
+        pcComment: `BTOで買ったPCが壊れそうになったので、ケースや光学ドライブなを流用しながらパーツを新しくしました。HDからSSDに移行したときはその速さに驚きましたね！容量があまりないので大量にゲームをインストールできないのですが、高速なのでなんとかSSDでやりくりしていきたいです。
     
     グラボを積んでいないのですが、Ryzen 3 2200Gの機能で昔のゲームや2Dゲームなら普通に動きます。比較的最近のゲームですが、ダーケストダンジョンもいけました。`,
-          specsObj: {
-            os: 'Windows 10 Home',
-            cpu: 'AMD CPU Ryzen 3 2200G',
-            cpuCooler: 'CPU 付属品',
-            motherboard: 'MSI B350 PC MATE',
-            memory: 'Crucial DDR4 8GB x 2',
-            storage: 'WD SSD 240GB / WD Green / WDS240G2G0A',
-            graphicsCard: '-',
-            opticalDrive: 'NEC AD7240S/BK',
-            powerSupply: 'Antec EARTHWATTS EA650 650W',
-            pcCase: 'COOLER MASTER CM690',
-            monitor: 'MITSUBISHI TFT RDT233WX / ASUS VZ239HR',
-            mouse: 'Logitech MX300',
-            keyboard: 'Microsoft Keyboard With Fingerprint Reader'
-          },
-          search: true,
+        pcSpecsObj: {
+          os: 'Windows 10 Home',
+          cpu: 'AMD CPU Ryzen 3 2200G',
+          cpuCooler: 'CPU 付属品',
+          motherboard: 'MSI B350 PC MATE',
+          memory: 'Crucial DDR4 8GB x 2',
+          storage: 'WD SSD 240GB / WD Green / WDS240G2G0A',
+          graphicsCard: '-',
+          opticalDrive: 'NEC AD7240S/BK',
+          powerSupply: 'Antec EARTHWATTS EA650 650W',
+          pcCase: 'COOLER MASTER CM690',
+          monitor: 'MITSUBISHI TFT RDT233WX / ASUS VZ239HR',
+          mouse: 'Logitech MX300',
+          keyboard: 'Microsoft Keyboard With Fingerprint Reader',
         },
-        hardwareActiveObj: {
-          valueArr: ['P0UG-LHOQ', 'n3wYKZ_ao', 'TdK3Oc-yV', 'Zd_Ia4Hwm', 'qk9DiUwN-', 'SXybALV1f', 'YNZ6nb1Ki', '8RERfeQQ9'],
-          search: true,
-        },
-        hardwareInactiveObj: {
-          valueArr: ['I-iu-WmkO', 'KyOSlwcLk', 'eKmDxi8lX', 'lBSGQeGmx', '45syCFviA', '_z4DBLYNi', 'HATpnt7sl', 'M7YVRglvr'],
-          search: true,
-        },
+        hardwareActiveArr: ['P0UG-LHOQ', 'n3wYKZ_ao', 'TdK3Oc-yV', 'Zd_Ia4Hwm', 'qk9DiUwN-', 'SXybALV1f', 'YNZ6nb1Ki', '8RERfeQQ9'],
+        hardwareInactiveArr: ['I-iu-WmkO', 'KyOSlwcLk', 'eKmDxi8lX', 'lBSGQeGmx', '45syCFviA', '_z4DBLYNi', 'HATpnt7sl', 'M7YVRglvr'],
         ids_idsArr: ['GcymNACvc', 'mDuSVm6S7', 'n4I1BDtxH', 'L00bEpD46', '8bJV9G6MU', 'UVOFSNbXR'],
-        activityTimeObj: {
-          valueArr: [
-            {
-              _id: 'fkqjMZzff',
-              beginTime: '19:00',
-              endTime: '00:00',
-              weekArr: [1, 2, 3, 4, 5]
-            },
-            {
-              _id: 'J-ReJUaTK',
-              beginTime: '09:00',
-              endTime: '23:30',
-              weekArr: [0, 6]
-            }
-          ],
-          search: true,
-        },
-        lookingForFriendsObj: {
-          value: true,
-          icon: 'emoji_u1f61c',
-          comment: 'ゲーム配信をしているので、その際に一緒に遊べる人がいればいいなと思ってます。学生から社会人の方まで、誰でもフレンド申請してもらってOKです。ただ配信外ではひとりで遊ぶのが好きなので、招待をもらっても応えられないのですが、それでもいい方はぜひフレンドになってください。',
-          search: true,
-        },
-        voiceChatObj: {
-          value: false,
-          comment: 'ボイスチャットはゲーム配信のときにどうしても必要になったら使いますが、基本的には使っていません。',
-          search: true,
-        },
+        activityTimeArr: [
+          {
+            _id: 'fkqjMZzff',
+            beginTime: '19:00',
+            endTime: '00:00',
+            weekArr: [1, 2, 3, 4, 5]
+          },
+          {
+            _id: 'J-ReJUaTK',
+            beginTime: '09:00',
+            endTime: '23:30',
+            weekArr: [0, 6]
+          }
+        ],
+        lookingForFriends: true,
+        lookingForFriendsIcon: 'emoji_u1f61c',
+        lookingForFriendsComment: 'ゲーム配信をしているので、その際に一緒に遊べる人がいればいいなと思ってます。学生から社会人の方まで、誰でもフレンド申請してもらってOKです。ただ配信外ではひとりで遊ぶのが好きなので、招待をもらっても応えられないのですが、それでもいい方はぜひフレンドになってください。',
+        voiceChat: false,
+        voiceChatComment: 'ボイスチャットはゲーム配信のときにどうしても必要になったら使いますが、基本的には使っていません。',
         linkArr: [
           {
             _id: 'FbbgE5PTW',
             type: 'Twitter',
             label: '',
             url: 'https://twitter.com/',
-            search: true,
           },
           {
             _id: 'VMp_Vlk_V',
             type: 'Facebook',
             label: '',
             url: 'https://www.facebook.com/',
-            search: true,
           },
           {
             _id: 'IqNtEQQsO',
             type: 'Instagram',
             label: '',
             url: 'https://www.instagram.com/',
-            search: true,
           },
           {
             _id: 'yBC3AHqrP',
             type: 'YouTube',
             label: '',
             url: 'https://www.youtube.com/',
-            search: true,
           },
           {
             _id: 'YD8DHCvb_',
             type: 'Twitch',
             label: '',
             url: 'https://www.twitch.tv/',
-            search: true,
           },
           {
             _id: '8u2ht4NLv',
             type: 'Steam',
             label: '',
             url: 'https://store.steampowered.com/',
-            search: true,
           },
           {
             _id: 'UxQZSjwRr',
             type: 'Discord',
             label: '',
             url: 'https://discordapp.com/',
-            search: true,
           },
           {
             _id: 'rHLKWD-1B',
             type: 'Flickr',
             label: '',
             url: 'https://www.flickr.com/',
-            search: true,
           },
           {
             _id: '7iq2JagxP',
             type: 'Tumblr',
             label: '',
             url: 'https://www.tumblr.com/',
-            search: true,
           },
           {
             _id: '3tx98YDjT',
             type: 'Pinterest',
             label: '',
             url: 'https://www.pinterest.jp/',
-            search: true,
           },
           {
             _id: 'zcPp3XyEw',
             type: 'Other',
             label: '開発サイト',
             url: 'http://dev-1.gameusers.org:8080/',
-            search: true,
           },
-        ]
+        ],
+        search: true,
       },
       
       
@@ -2399,126 +2288,75 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         users_id: 'P7UJMuUnx',
         language: 'ja',
-        nameObj: {
-          value: 'ジョナサン・ジョースター',
-          search: true,
-        },
-        statusObj: {
-          value: 'オーバードライブ',
-          search: true,
-        },
+        name: 'ジョナサン・ジョースター',
+        status: 'オーバードライブ',
         imagesAndVideos_id: '',
         imagesAndVideosThumbnail_id: '',
-        commentObj: {
-          value: `サブタイトルというのは例えば、ドラゴンクエストIII そして伝説へ… 「そして伝説へ…」の部分になります。未記入でも問題ありません。
+        comment: `サブタイトルというのは例えば、ドラゴンクエストIII そして伝説へ… 「そして伝説へ…」の部分になります。未記入でも問題ありません。
 
 ゲームを登録するとゲームページが同時に作成されます。登録直後はゲームページのURLは以下のようにランダムな文字列に設定され、運営が確認後、正式なURLに置き換わります。URLをブラウザのお気に入りに入れたり、ブログなどに掲載する場合は気をつけてください。`,
-          search: true,
+        age: '1868-04-04T00:00:00Z',
+        ageAlternativeText: '',
+        sex: 'male',
+        sexAlternativeText: '',
+        address: '',
+        addressAlternativeText: 'イギリス',
+        gamingExperience: '1878-04-04T00:00:00Z',
+        gamingExperienceAlternativeText: '',
+        hobbiesArr: ['サンライトイエローオーバードライブ', 'ターコイズブルーオーバードライブ', 'メタルシルバーオーバードライブ'],
+        specialSkillsArr: ['英国貴族'],
+        smartphoneModel: '',
+        smartphoneComment: ``,
+        tabletModel: '',
+        tabletComment: ``,
+        pcModel: '',
+        pcComment: ``,
+        pcSpecsObj: {
+          os: '',
+          cpu: '',
+          cpuCooler: '',
+          motherboard: '',
+          memory: '',
+          storage: '',
+          graphicsCard: '',
+          opticalDrive: '',
+          powerSupply: '',
+          pcCase: '',
+          monitor: '',
+          mouse: '',
+          keyboard: '',
         },
-        ageObj: {
-          value: '1868-04-04T00:00:00Z',
-          alternativeText: '',
-          search: true,
-        },
-        sexObj: {
-          value: 'male',
-          alternativeText: '',
-          search: true,
-        },
-        addressObj: {
-          value: '',
-          alternativeText: 'イギリス',
-          search: true,
-        },
-        gamingExperienceObj: {
-          value: '1878-04-04T00:00:00Z',
-          alternativeText: '',
-          search: true,
-        },
-        hobbiesObj: {
-          valueArr: ['サンライトイエローオーバードライブ', 'ターコイズブルーオーバードライブ', 'メタルシルバーオーバードライブ'],
-          search: true,
-        },
-        specialSkillsObj: {
-          valueArr: ['英国貴族'],
-          search: true,
-        },
-        smartphoneObj: {
-          model: '',
-          comment: ``,
-          search: true,
-        },
-        tabletObj: {
-          model: '',
-          comment: ``,
-          search: true,
-        },
-        pcObj: {
-          model: '',
-          comment: ``,
-          specsObj: {
-            os: '',
-            cpu: '',
-            cpuCooler: '',
-            motherboard: '',
-            memory: '',
-            storage: '',
-            graphicsCard: '',
-            opticalDrive: '',
-            powerSupply: '',
-            pcCase: '',
-            monitor: '',
-            mouse: '',
-            keyboard: ''
-          },
-          search: true,
-        },
-        hardwareActiveObj: {
-          valueArr: ['P0UG-LHOQ', 'n3wYKZ_ao', 'TdK3Oc-yV', 'Zd_Ia4Hwm', 'qk9DiUwN-', 'SXybALV1f', 'YNZ6nb1Ki', '8RERfeQQ9'],
-          search: true,
-        },
-        hardwareInactiveObj: {
-          valueArr: ['I-iu-WmkO', 'KyOSlwcLk', 'eKmDxi8lX', 'lBSGQeGmx', '45syCFviA', '_z4DBLYNi', 'HATpnt7sl', 'M7YVRglvr'],
-          search: true,
-        },
+        hardwareActiveArr: ['P0UG-LHOQ', 'n3wYKZ_ao', 'TdK3Oc-yV', 'Zd_Ia4Hwm', 'qk9DiUwN-', 'SXybALV1f', 'YNZ6nb1Ki', '8RERfeQQ9'],
+        hardwareInactiveArr: ['I-iu-WmkO', 'KyOSlwcLk', 'eKmDxi8lX', 'lBSGQeGmx', '45syCFviA', '_z4DBLYNi', 'HATpnt7sl', 'M7YVRglvr'],
         ids_idsArr: [],
-        activityTimeObj: {
-          valueArr: [
-            {
-              _id: 'QNRzpKmGB',
-              beginTime: '19:00',
-              endTime: '21:50',
-              weekArr: [0, 1, 2, 3, 4]
-            },
-            {
-              _id: '1qaGh3U0i',
-              beginTime: '09:00',
-              endTime: '22:00',
-              weekArr: [5, 6]
-            }
-          ],
-          search: true,
-        },
-        lookingForFriendsObj: {
-          value: true,
-          icon: 'emoji_u1f47f',
-          comment: '',
-          search: true,
-        },
-        voiceChatObj: {
-          value: true,
-          comment: '',
-          search: true,
-        },
+        activityTimeArr: [
+          {
+            _id: 'QNRzpKmGB',
+            beginTime: '19:00',
+            endTime: '21:50',
+            weekArr: [0, 1, 2, 3, 4]
+          },
+          {
+            _id: '1qaGh3U0i',
+            beginTime: '09:00',
+            endTime: '22:00',
+            weekArr: [5, 6]
+          }
+        ],
+        lookingForFriends: true,
+        lookingForFriendsIcon: 'emoji_u1f47f',
+        lookingForFriendsComment: '',
+        voiceChat: true,
+        voiceChatComment: '',
         linkArr: [
           {
             _id: 'KFOJ-nwgq',
             type: 'Twitter',
             label: '',
             url: 'https://twitter.com/',
-            search: true,
           },
-        ]
+        ],
+        search: true,
       },
       
       
@@ -2528,125 +2366,74 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         users_id: '6GWOpEcD3',
         language: 'ja',
-        nameObj: {
-          value: 'User No.3',
-          search: true,
-        },
-        statusObj: {
-          value: 'ステータス',
-          search: true,
-        },
+        name: 'User No.3',
+        status: 'ステータス',
         imagesAndVideos_id: '',
         imagesAndVideosThumbnail_id: '',
-        commentObj: {
-          value: `test comment`,
-          search: true,
+        comment: `test comment`,
+        age: '2000-01-01T00:00:00Z',
+        ageAlternativeText: '',
+        sex: 'female',
+        sexAlternativeText: '',
+        address: '',
+        addressAlternativeText: '天国',
+        gamingExperience: '2010-01-01T00:00:00Z',
+        gamingExperienceAlternativeText: '',
+        hobbiesArr: ['趣味'],
+        specialSkillsArr: ['特技'],
+        smartphoneModel: '',
+        smartphoneComment: ``,
+        tabletModel: '',
+        tabletComment: ``,
+        pcModel: '',
+        pcComment: ``,
+        pcSpecsObj: {
+          os: '',
+          cpu: '',
+          cpuCooler: '',
+          motherboard: '',
+          memory: '',
+          storage: '',
+          graphicsCard: '',
+          opticalDrive: '',
+          powerSupply: '',
+          pcCase: '',
+          monitor: '',
+          mouse: '',
+          keyboard: '',
         },
-        ageObj: {
-          value: '2000-01-01T00:00:00Z',
-          alternativeText: '',
-          search: true,
-        },
-        sexObj: {
-          value: 'male',
-          alternativeText: '',
-          search: true,
-        },
-        addressObj: {
-          value: '',
-          alternativeText: '天国',
-          search: true,
-        },
-        gamingExperienceObj: {
-          value: '2010-01-01T00:00:00Z',
-          alternativeText: '',
-          search: true,
-        },
-        hobbiesObj: {
-          valueArr: ['趣味'],
-          search: true,
-        },
-        specialSkillsObj: {
-          valueArr: ['特技'],
-          search: true,
-        },
-        smartphoneObj: {
-          model: '',
-          comment: ``,
-          search: true,
-        },
-        tabletObj: {
-          model: '',
-          comment: ``,
-          search: true,
-        },
-        pcObj: {
-          model: '',
-          comment: ``,
-          specsObj: {
-            os: '',
-            cpu: '',
-            cpuCooler: '',
-            motherboard: '',
-            memory: '',
-            storage: '',
-            graphicsCard: '',
-            opticalDrive: '',
-            powerSupply: '',
-            pcCase: '',
-            monitor: '',
-            mouse: '',
-            keyboard: ''
-          },
-          search: true,
-        },
-        hardwareActiveObj: {
-          valueArr: ['P0UG-LHOQ'],
-          search: true,
-        },
-        hardwareInactiveObj: {
-          valueArr: ['I-iu-WmkO'],
-          search: true,
-        },
+        hardwareActiveArr: ['P0UG-LHOQ'],
+        hardwareInactiveArr: ['I-iu-WmkO'],
         ids_idsArr: [],
-        activityTimeObj: {
-          valueArr: [
-            {
-              _id: 'ftXBIjJui',
-              beginTime: '20:00',
-              endTime: '23:00',
-              weekArr: [0, 1, 2, 3, 4]
-            },
-            {
-              _id: '_b9s9fzsy',
-              beginTime: '12:00',
-              endTime: '23:00',
-              weekArr: [5, 6]
-            }
-          ],
-          search: true,
-        },
-        lookingForFriendsObj: {
-          value: true,
-          icon: 'emoji_u1f47f',
-          comment: '',
-          search: true,
-        },
-        voiceChatObj: {
-          value: true,
-          comment: '',
-          search: true,
-        },
+        activityTimeArr: [
+          {
+            _id: 'ftXBIjJui',
+            beginTime: '20:00',
+            endTime: '23:00',
+            weekArr: [0, 1, 2, 3, 4]
+          },
+          {
+            _id: '_b9s9fzsy',
+            beginTime: '12:00',
+            endTime: '23:00',
+            weekArr: [5, 6]
+          }
+        ],
+        lookingForFriends: true,
+        lookingForFriendsIcon: 'emoji_u1f47f',
+        lookingForFriendsComment: '',
+        voiceChat: true,
+        voiceChatComment: '',
         linkArr: [
           {
             _id: 'qhvbe8GRl',
             type: 'Twitter',
             label: '',
             url: 'https://twitter.com/',
-            search: true,
           },
-        ]
-      }
+        ],
+        search: true,
+      },
       
     ];
     

@@ -72,8 +72,21 @@ import { validationCardPlayersStatus } from 'app/@database/card-players/validati
 //   Components
 // ---------------------------------------------
 
-// import FormName from 'app/common/form/v2/components/name.js';
 import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js';
+
+import FormNameStatus from 'app/common/card/v2/components/form/name-status.js';
+import FormAge from 'app/common/card/v2/components/form/age.js';
+import FormSex from 'app/common/card/v2/components/form/sex.js';
+import FormAddress from 'app/common/card/v2/components/form/address.js';
+import FormGamingExperience from 'app/common/card/v2/components/form/gaming-experience.js';
+import FormHobby from 'app/common/card/v2/components/form/hobby.js';
+import FormSpecialSkill from 'app/common/card/v2/components/form/special-skill.js';
+import FormSmartphone from 'app/common/card/v2/components/form/smartphone.js';
+import FormTablet from 'app/common/card/v2/components/form/tablet.js';
+import FormPC from 'app/common/card/v2/components/form/pc.js';
+import FormHardwareActive from 'app/common/card/v2/components/form/hardware-active.js';
+import FormHardwareInactive from 'app/common/card/v2/components/form/hardware-inactive.js';
+import FormID from 'app/common/card/v2/components/form/id.js';
 
 
 
@@ -141,11 +154,8 @@ const Component = (props) => {
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [name, setName] = useState('');
-  const [nameSearch, setNameSearch] = useState(true);
   const [status, setStatus] = useState('');
-  const [statusSearch, setStatusSearch] = useState(true);
   const [comment, setComment] = useState('');
-  const [commentSearch, setCommentSearch] = useState(true);
   
   const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
     
@@ -168,6 +178,45 @@ const Component = (props) => {
     arr: [],
     
   });
+  
+  const [age, setAge] = useState('');
+  const [ageAlternativeText, setAgeAlternativeText] = useState('');
+  const [sex, setSex] = useState('');
+  const [sexAlternativeText, setSexAlternativeText] = useState('');
+  const [addressAlternativeText, setAddressAlternativeText] = useState('');
+  const [gamingExperience, setGamingExperience] = useState('');
+  const [gamingExperienceAlternativeText, setGamingExperienceAlternativeText] = useState('');
+  const [hobbiesArr, setHobbiesArr] = useState(['']);
+  const [specialSkillsArr, setSpecialSkillsArr] = useState(['']);
+  const [smartphoneModel, setSmartphoneModel] = useState('');
+  const [smartphoneComment, setSmartphoneComment] = useState('');
+  const [tabletModel, setTabletModel] = useState('');
+  const [tabletComment, setTabletComment] = useState('');
+  const [pcModel, setPCModel] = useState('');
+  const [pcComment, setPCComment] = useState('');
+  const [pcSpecsObj, setPCSpecsObj] = useState({
+    
+    os: '',
+    cpu: '',
+    cpuCooler: '',
+    motherboard: '',
+    memory: '',
+    storage: '',
+    graphicsCard: '',
+    opticalDrive: '',
+    powerSupply: '',
+    pcCase: '',
+    monitor: '',
+    mouse: '',
+    keyboard: '',
+    
+  });
+  
+  const [hardwareActiveArr, setHardwareActiveArr] = useState([]);
+  const [hardwareInactiveArr, setHardwareInactiveArr] = useState([]);
+  const [idsArr, setIDsArr] = useState([]);
+  
+  const [search, setSearch] = useState(true);
   
   
   useEffect(() => {
@@ -350,20 +399,20 @@ const Component = (props) => {
       //   console.log
       // ---------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/common/card/v2/components/parts/edit-button.js - handleGetEditData
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/card/v2/components/parts/edit-button.js - handleGetEditData
+      // `);
       
-      console.log(chalk`
-        cardPlayers_id: {green ${cardPlayers_id}}
-      `);
+      // console.log(chalk`
+      //   cardPlayers_id: {green ${cardPlayers_id}}
+      // `);
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
     } catch (errorObj) {
@@ -801,8 +850,8 @@ const Component = (props) => {
   //   Validation
   // --------------------------------------------------
   
-  const validationHandleNameObj = validationHandleName({ value: name });
-  const validationCardPlayersStatusObj = validationCardPlayersStatus({ value: status });
+  // const validationHandleNameObj = validationHandleName({ value: name });
+  // const validationCardPlayersStatusObj = validationCardPlayersStatus({ value: status });
   
   
   
@@ -863,100 +912,39 @@ const Component = (props) => {
       
       <p
         css={css`
-          margin: 0 0 24px 0;
+          margin: 0 0 12px 0;
         `}
       >
         プレイヤーカードとは、Game Users 内で基本的なプロフィールとして扱われるデータです。あなたがどんなゲームプレイヤーなのか知ってもらう情報になります。
       </p>
       
+      <p
+        css={css`
+          margin: 0 0 24px 0;
+        `}
+      >
+        ハンドルネームとステータスは必ず入力してください。それ以外の項目は空欄でも問題ありません。
+      </p>
       
       
       
-      {/* ハンドルネーム */}
+      
+      {/* ハンドルネーム＆ステータス */}
       <div css={cssBox}>
         
-        <TextField
-          css={css`
-            && {
-              width: 100%;
-              max-width: 500px;
-            }
-          `}
-          label="ハンドルネーム"
-          value={validationHandleNameObj.value}
-          onChange={(eventObj) => setName(eventObj.target.value)}
-          error={validationHandleNameObj.error}
-          helperText={intl.formatMessage({ id: validationHandleNameObj.messageID }, { numberOfCharacters: validationHandleNameObj.numberOfCharacters })}
-          margin="normal"
-          inputProps={{
-            maxLength: 50,
-          }}
+        <FormNameStatus
+          name={name}
+          setName={setName}
+          status={status}
+          setStatus={setStatus}
         />
-        
-        
-        <div>
-          <FormControlLabel
-            classes={{
-              label: classes.label
-            }}
-            control={
-              <Checkbox
-                checked={nameSearch}
-                onChange={(eventObj) => setNameSearch(eventObj.target.checked)}
-              />
-            }
-            label="ハンドルネームで検索可能にする"
-          />
-        </div>
         
       </div>
       
       
       
       
-      {/* ステータス */}
-      <div css={cssBox}>
-        
-        <TextField
-          css={css`
-            && {
-              width: 100%;
-              max-width: 500px;
-            }
-          `}
-          label="ステータス"
-          value={validationCardPlayersStatusObj.value}
-          onChange={(eventObj) => setStatus(eventObj.target.value)}
-          error={validationCardPlayersStatusObj.error}
-          helperText={intl.formatMessage({ id: validationCardPlayersStatusObj.messageID }, { numberOfCharacters: validationCardPlayersStatusObj.numberOfCharacters })}
-          margin="normal"
-          inputProps={{
-            maxLength: 50,
-          }}
-        />
-        
-        
-        <div>
-          <FormControlLabel
-            classes={{
-              label: classes.label
-            }}
-            control={
-              <Checkbox
-                checked={statusSearch}
-                onChange={(eventObj) => setStatusSearch(eventObj.target.checked)}
-              />
-            }
-            label="ステータスで検索可能にする"
-          />
-        </div>
-        
-      </div>
-      
-      
-      
-      
-      {/* Form Images & Videos */}
+      {/* Form Images & Videos - Main */}
       <div css={cssBox}>
         
         <h3
@@ -990,7 +978,7 @@ const Component = (props) => {
       
       
       
-      {/* Form Images & Videos */}
+      {/* Form Images & Videos - Thumbnail */}
       <div css={cssBox}>
         
         <h3
@@ -1061,6 +1049,183 @@ const Component = (props) => {
           onChange={(eventObj) => setComment(eventObj.target.value)}
         />
         
+      </div>
+      
+      
+      
+      
+      {/* 年齢 */}
+      <div css={cssBox}>
+        
+        <FormAge
+          age={age}
+          setAge={setAge}
+          ageAlternativeText={ageAlternativeText}
+          setAgeAlternativeText={setAgeAlternativeText}
+        />
+        
+      </div>
+      
+      
+      
+      
+      {/* 性別 */}
+      <div css={cssBox}>
+        
+        <FormSex
+          sex={sex}
+          setSex={setSex}
+          sexAlternativeText={sexAlternativeText}
+          setSexAlternativeText={setSexAlternativeText}
+        />
+        
+      </div>
+      
+      
+      
+      
+      {/* 住所 */}
+      <div css={cssBox}>
+        
+        <FormAddress
+          addressAlternativeText={addressAlternativeText}
+          setAddressAlternativeText={setAddressAlternativeText}
+        />
+        
+      </div>
+      
+      
+      
+      
+      {/* 住所 */}
+      <div css={cssBox}>
+        
+        <FormGamingExperience
+          gamingExperience={gamingExperience}
+          setGamingExperience={setGamingExperience}
+          gamingExperienceAlternativeText={gamingExperienceAlternativeText}
+          setGamingExperienceAlternativeText={setGamingExperienceAlternativeText}
+        />
+        
+      </div>
+      
+      
+      
+      
+      {/* 趣味 */}
+      <div css={cssBox}>
+        
+        <FormHobby
+          hobbiesArr={hobbiesArr}
+          setHobbiesArr={setHobbiesArr}
+        />
+        
+      </div>
+      
+      
+      
+      
+      {/* 特技 */}
+      <div css={cssBox}>
+        
+        <FormSpecialSkill
+          specialSkillsArr={specialSkillsArr}
+          setSpecialSkillsArr={setSpecialSkillsArr}
+        />
+        
+      </div>
+      
+      
+      
+      
+      {/* スマートフォン */}
+      <div css={cssBox}>
+        
+        <FormSmartphone
+          smartphoneModel={smartphoneModel}
+          setSmartphoneModel={setSmartphoneModel}
+          smartphoneComment={smartphoneComment}
+          setSmartphoneComment={setSmartphoneComment}
+        />
+        
+      </div>
+      
+      
+      
+      
+      {/* タブレット */}
+      <div css={cssBox}>
+        
+        <FormTablet
+          tabletModel={tabletModel}
+          setTabletModel={setTabletModel}
+          tabletComment={tabletComment}
+          setTabletComment={setTabletComment}
+        />
+        
+      </div>
+      
+      
+      
+      
+      {/* PC */}
+      <div css={cssBox}>
+        
+        <FormPC
+          pcModel={pcModel}
+          setPCModel={setPCModel}
+          pcComment={pcComment}
+          setPCComment={setPCComment}
+          pcSpecsObj={pcSpecsObj}
+          setPCSpecsObj={setPCSpecsObj}
+        />
+        
+      </div>
+      
+      
+      
+      
+      {/* 所有ハードウェア */}
+      <div css={cssBox}>
+        
+        <FormHardwareActive
+          hardwaresArr={hardwareActiveArr}
+          setHardwaresArr={setHardwareActiveArr}
+        />
+        
+      </div>
+      
+      
+      
+      
+      {/* 昔、所有していたハードウェア */}
+      <div css={cssBox}>
+        
+        <FormHardwareInactive
+          hardwaresArr={hardwareInactiveArr}
+          setHardwaresArr={setHardwareInactiveArr}
+        />
+        
+      </div>
+      
+      
+      
+      
+      {/* ID */}
+      <div css={cssBox}>
+        
+        <FormID
+          idsArr={idsArr}
+          setIDsArr={setIDsArr}
+        />
+        
+      </div>
+      
+      
+      
+      
+      {/* 検索 */}
+      <div css={cssBox}>
         
         <div>
           <FormControlLabel
@@ -1069,11 +1234,11 @@ const Component = (props) => {
             }}
             control={
               <Checkbox
-                checked={commentSearch}
-                onChange={(eventObj) => setCommentSearch(eventObj.target.checked)}
+                checked={search}
+                onChange={(eventObj) => setSearch(eventObj.target.checked)}
               />
             }
-            label="コメントで検索可能にする"
+            label="プレイヤーカードを検索可能にする"
           />
         </div>
         

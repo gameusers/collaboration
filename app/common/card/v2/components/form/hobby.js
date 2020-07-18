@@ -71,6 +71,8 @@ const Component = (props) => {
     
   } = props;
   
+  const limit = parseInt(process.env.NEXT_PUBLIC_CARD_PLAYER_HOBBY_LIMIT, 10);
+  
   
   
   
@@ -90,7 +92,7 @@ const Component = (props) => {
   /**
    * <TextField /> に入力する
    */
-  const handleOnChange = (value, index) => {
+  const handleOnChange = ({ index, value }) => {
     
     const clonedArr = lodashCloneDeep(hobbiesArr);
     clonedArr[index] = value;
@@ -102,13 +104,17 @@ const Component = (props) => {
   
   
   /**
-   * <TextField /> の数を増やす
+   * フォームを増やす
    */
   const handleAdd = () => {
     
-    const clonedArr = lodashCloneDeep(hobbiesArr);
-    clonedArr.push('');
-    setHobbiesArr(clonedArr);
+    if (hobbiesArr.length < limit) {
+      
+      const clonedArr = lodashCloneDeep(hobbiesArr);
+      clonedArr.push('');
+      setHobbiesArr(clonedArr);
+      
+    }
     
   };
   
@@ -116,9 +122,9 @@ const Component = (props) => {
   
   
   /**
-   * <TextField /> の数を減らす
+   * フォームを減らす
    */
-  const handleRemove = (index) => {
+  const handleRemove = ({ index }) => {
     
     const clonedArr = lodashCloneDeep(hobbiesArr);
     clonedArr.splice(index, 1);
@@ -153,7 +159,7 @@ const Component = (props) => {
         key={index}
         id={`hobby-${index}`}
         value={value}
-        onChange={(eventObj) => handleOnChange(eventObj.target.value, index)}
+        onChange={(eventObj) => handleOnChange({ index, value: eventObj.target.value })}
         margin="dense"
         variant="outlined"
         inputProps={{
@@ -163,7 +169,7 @@ const Component = (props) => {
           endAdornment: (
             <InputAdornment position="end">
               <IconButton
-                onClick={() => handleRemove(index)}
+                onClick={() => handleRemove({ index })}
               >
                 <IconRemoveCircle />
               </IconButton>

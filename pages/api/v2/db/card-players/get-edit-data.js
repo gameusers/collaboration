@@ -1,5 +1,5 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
@@ -11,7 +11,7 @@ import util from 'util';
 
 
 // ---------------------------------------------
-//   Node Packages
+//   Lodash
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
@@ -22,31 +22,34 @@ import lodashSet from 'lodash/set';
 //   Model
 // ---------------------------------------------
 
-import ModelCardPlayers from '../../../../../app/@database/card-players/model';
+import ModelCardPlayers from 'app/@database/card-players/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-import { verifyCsrfToken } from '../../../../../app/@modules/csrf';
-import { returnErrorsArr } from '../../../../../app/@modules/log/log';
-import { CustomError } from '../../../../../app/@modules/error/custom';
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-import { validationIP } from '../../../../../app/@validations/ip';
-import { validationCardPlayers_idServer } from '../../../../../app/@database/card-players/validations/_id-server';
+import { validationIP } from 'app/@validations/ip.js';
+
+import { validationCardPlayers_idServer } from 'app/@database/card-players/validations/_id-server.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-import { locale } from '../../../../../app/@locales/locale';
+import { locale } from 'app/@locales/locale.js';
+
+
 
 
 
@@ -66,15 +69,6 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
@@ -83,11 +77,21 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   IP & User Agent
+  //   Language & IP & User Agent
   // --------------------------------------------------
   
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: language
+  });
   
   
   
@@ -127,8 +131,10 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (!req.isAuthenticated()) {
+      
       statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'lqld6ikrT', messageID: 'xLLNIpo6a' }] });
+      
     }
     
     

@@ -60,6 +60,8 @@ const Component = (props) => {
     
   } = props;
   
+  const limit = parseInt(process.env.NEXT_PUBLIC_CARD_PLAYER_HARDWARES_LIMIT, 10);
+  
   
   
   
@@ -68,15 +70,6 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const intl = useIntl();
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const limitHardwares = parseInt(process.env.NEXT_PUBLIC_CARD_PLAYER_HARDWARES_LIMIT, 10);
   
   
   
@@ -130,7 +123,7 @@ const Component = (props) => {
       <FormHardwares
         hardwaresArr={hardwaresArr}
         setHardwaresArr={setHardwaresArr}
-        limit={limitHardwares}
+        limit={limit}
       />
       
         

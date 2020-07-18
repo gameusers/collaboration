@@ -42,7 +42,7 @@ import { CustomError } from 'app/@modules/error/custom.js';
 
 const { validationCardPlayersName } = require('app/@database/card-players/validations/name.js');
 const { validationCardPlayersStatus } = require('app/@database/card-players/validations/status.js');
-// const { validationCardPlayersActivityTimeObjValueArr } = require('app/@database/card-players/validations/activity-time');
+// const { validationCardPlayersActivityTimeArr } = require('app/@database/card-players/validations/activity-time');
 // const { validationCardPlayersLinkArr } = require('app/@database/card-players/validations/link');
 
 
@@ -1502,7 +1502,7 @@ class Store {
         validationCardPlayersStatus({ value: this.cardPlayerEditFormDataObj[_id].statusObj.value }).error
         
         // 活動時間
-        // validationCardPlayersActivityTimeObjValueArr({ valueArr: this.cardPlayerEditFormDataObj[_id].activityTimeObj.valueArr }).error ||
+        // validationCardPlayersActivityTimeArr({ valueArr: this.cardPlayerEditFormDataObj[_id].activityTimeObj.valueArr }).error ||
         
         // リンク
         // validationCardPlayersLinkArr({ valueArr: this.cardPlayerEditFormDataObj[_id].linkArr }).error

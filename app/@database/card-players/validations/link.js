@@ -16,6 +16,12 @@ const util = require('util');
 
 const shortid = require('shortid');
 const validator = require('validator');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 
 
@@ -23,7 +29,9 @@ const lodashGet = require('lodash/get');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom.js');
+
+
 
 
 
@@ -54,10 +62,12 @@ const validationCardPlayersLinkArr = ({ throwError = false, required = false, va
   // ---------------------------------------------
   
   const resultObj = {
+    
     valueArr: [],
     formArr: [],
     messageID: 'Error',
     error: false,
+    
   };
   
   
@@ -265,5 +275,7 @@ const validationCardPlayersLinkArr = ({ throwError = false, required = false, va
 // --------------------------------------------------
 
 module.exports = {
+  
   validationCardPlayersLinkArr,
+  
 };

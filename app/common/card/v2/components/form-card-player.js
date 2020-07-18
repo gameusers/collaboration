@@ -17,6 +17,7 @@ import util from 'util';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useIntl } from 'react-intl';
+import shortid from 'shortid';
 import TextareaAutosize from 'react-autosize-textarea';
 
 /** @jsx jsx */
@@ -87,6 +88,10 @@ import FormPC from 'app/common/card/v2/components/form/pc.js';
 import FormHardwareActive from 'app/common/card/v2/components/form/hardware-active.js';
 import FormHardwareInactive from 'app/common/card/v2/components/form/hardware-inactive.js';
 import FormID from 'app/common/card/v2/components/form/id.js';
+import FormActivityTime from 'app/common/card/v2/components/form/activity-time.js';
+import FormLookingForFriends from 'app/common/card/v2/components/form/looking-for-friends.js';
+import FormVoiceChat from 'app/common/card/v2/components/form/voice-chat.js';
+import FormLink from 'app/common/card/v2/components/form/link.js';
 
 
 
@@ -215,6 +220,28 @@ const Component = (props) => {
   const [hardwareActiveArr, setHardwareActiveArr] = useState([]);
   const [hardwareInactiveArr, setHardwareInactiveArr] = useState([]);
   const [idsArr, setIDsArr] = useState([]);
+  const [activityTimeArr, setActivityTimeArr] = useState([{
+    
+    _id: shortid.generate(),
+    beginTime: '',
+    endTime: '',
+    weekArr: [],
+    
+  }]);
+  
+  const [lookingForFriends, setLookingForFriends] = useState(true);
+  const [lookingForFriendsIcon, setLookingForFriendsIcon] = useState('emoji_u1f603');
+  const [lookingForFriendsComment, setLookingForFriendsComment] = useState('');
+  const [voiceChat, setVoiceChat] = useState(true);
+  const [voiceChatComment, setVoiceChatComment] = useState('');
+  const [linkArr, setLinkArr] = useState([{
+    
+    _id: shortid.generate(),
+    type: 'Other',
+    label: '',
+    url: '',
+    
+  }]);
   
   const [search, setSearch] = useState(true);
   
@@ -367,31 +394,147 @@ const Component = (props) => {
       //   Set Form Data
       // ---------------------------------------------
       
-      // const name = lodashGet(resultObj, ['data', 'name'], '');
-      // const anonymity = lodashGet(resultObj, ['data', 'anonymity'], false);
-      // const comment = lodashGet(resultObj, ['data', 'comment'], '');
-      // let imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
+      const dataObj = lodashGet(resultObj, ['data'], {});
       
-      // if (Object.keys(imagesAndVideosObj).length === 0) {
+      const name = lodashGet(dataObj, ['name'], '');
+      const status = lodashGet(dataObj, ['status'], '');
+      const comment = lodashGet(dataObj, ['comment'], '');
+      
+      let imagesAndVideosObj = lodashGet(dataObj, ['imagesAndVideosObj'], {});
+      
+      if (Object.keys(imagesAndVideosObj).length === 0) {
         
-      //   imagesAndVideosObj = {
+        imagesAndVideosObj = {
           
-      //     _id: '',
-      //     createdDate: '',
-      //     updatedDate: '',
-      //     users_id: '',
-      //     type: 'forum',
-      //     arr: [],
+          _id: '',
+          createdDate: '',
+          updatedDate: '',
+          users_id: '',
+          type: 'ur',
+          arr: [],
           
-      //   };
+        };
         
-      // }
+      }
       
-      // setName(name);
-      // setAnonymity(anonymity);
-      // setComment(comment);
-      // setImagesAndVideosObj(imagesAndVideosObj);
+      let imagesAndVideosThumbnailObj = lodashGet(dataObj, ['imagesAndVideosThumbnailObj'], {});
       
+      if (Object.keys(imagesAndVideosThumbnailObj).length === 0) {
+        
+        imagesAndVideosThumbnailObj = {
+          
+          _id: '',
+          createdDate: '',
+          updatedDate: '',
+          users_id: '',
+          type: 'ur',
+          arr: [],
+          
+        };
+        
+      }
+      
+      const age = lodashGet(dataObj, ['age'], '');
+      const ageAlternativeText = lodashGet(dataObj, ['ageAlternativeText'], '');
+      const sex = lodashGet(dataObj, ['sex'], '');
+      const sexAlternativeText = lodashGet(dataObj, ['sexAlternativeText'], '');
+      const addressAlternativeText = lodashGet(dataObj, ['addressAlternativeText'], '');
+      
+      const gamingExperience = lodashGet(dataObj, ['gamingExperience'], '');
+      const gamingExperienceAlternativeText = lodashGet(dataObj, ['gamingExperienceAlternativeText'], '');
+      const hobbiesArr = lodashGet(dataObj, ['hobbiesArr'], []);
+      const specialSkillsArr = lodashGet(dataObj, ['specialSkillsArr'], []);
+      const smartphoneModel = lodashGet(dataObj, ['smartphoneModel'], '');
+      const smartphoneComment = lodashGet(dataObj, ['smartphoneComment'], '');
+      
+      const tabletModel = lodashGet(dataObj, ['tabletModel'], '');
+      const tabletComment = lodashGet(dataObj, ['tabletComment'], '');
+      const pcModel = lodashGet(dataObj, ['pcModel'], '');
+      const pcComment = lodashGet(dataObj, ['pcComment'], '');
+      const pcSpecsObj = lodashGet(dataObj, ['pcSpecsObj'], {
+        
+        os: '',
+        cpu: '',
+        cpuCooler: '',
+        motherboard: '',
+        memory: '',
+        storage: '',
+        graphicsCard: '',
+        opticalDrive: '',
+        powerSupply: '',
+        pcCase: '',
+        monitor: '',
+        mouse: '',
+        keyboard: '',
+        
+      });
+      
+      const hardwareActiveArr = lodashGet(dataObj, ['hardwareActiveArr'], []);
+      const hardwareInactiveArr = lodashGet(dataObj, ['hardwareInactiveArr'], []);
+      const idsArr = lodashGet(dataObj, ['idsArr'], []);
+      const activityTimeArr = lodashGet(dataObj, ['activityTimeArr'], [{
+        
+        _id: shortid.generate(),
+        beginTime: '',
+        endTime: '',
+        weekArr: [],
+        
+      }]);
+      
+      const lookingForFriends = lodashGet(dataObj, ['lookingForFriends'], true);
+      const lookingForFriendsIcon = lodashGet(dataObj, ['lookingForFriendsIcon'], 'emoji_u1f603');
+      const lookingForFriendsComment = lodashGet(dataObj, ['lookingForFriendsComment'], '');
+      const voiceChat = lodashGet(dataObj, ['voiceChat'], true);
+      const voiceChatComment = lodashGet(dataObj, ['voiceChatComment'], '');
+      
+      const linkArr = lodashGet(dataObj, ['linkArr'], [{
+        
+        _id: shortid.generate(),
+        type: 'Other',
+        label: '',
+        url: '',
+        
+      }]);
+      
+      const search = lodashGet(dataObj, ['search'], true);
+      
+      // const  = lodashGet(dataObj, [''], '');
+      
+      
+      setName(name);
+      setStatus(status);
+      setComment(comment);
+      setImagesAndVideosObj(imagesAndVideosObj);
+      setImagesAndVideosThumbnailObj(imagesAndVideosThumbnailObj);
+      setAge(age);
+      setAgeAlternativeText(ageAlternativeText);
+      setSex(sex);
+      setSexAlternativeText(sexAlternativeText);
+      setAddressAlternativeText(addressAlternativeText);
+      setGamingExperience(gamingExperience);
+      setGamingExperienceAlternativeText(gamingExperienceAlternativeText);
+      setHobbiesArr(hobbiesArr);
+      setSpecialSkillsArr(specialSkillsArr);
+      setSmartphoneModel(smartphoneModel);
+      setSmartphoneComment(smartphoneComment);
+      setTabletModel(tabletModel);
+      setTabletComment(tabletComment);
+      setPCModel(pcModel);
+      setPCComment(pcComment);
+      setPCSpecsObj(pcSpecsObj);
+      setHardwareActiveArr(hardwareActiveArr);
+      setHardwareInactiveArr(hardwareInactiveArr);
+      setIDsArr(idsArr);
+      setActivityTimeArr(activityTimeArr);
+      setLookingForFriends(lookingForFriends);
+      setLookingForFriendsIcon(lookingForFriendsIcon);
+      setLookingForFriendsComment(lookingForFriendsComment);
+      setVoiceChat(voiceChat);
+      setVoiceChatComment(voiceChatComment);
+      setLinkArr(linkArr);
+      setSearch(search);
+      
+      // set();
       
       
       
@@ -399,20 +542,20 @@ const Component = (props) => {
       //   console.log
       // ---------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/card/v2/components/parts/edit-button.js - handleGetEditData
-      // `);
+      console.log(`
+        ----------------------------------------\n
+        /app/common/card/v2/components/parts/edit-button.js - handleGetEditData
+      `);
       
-      // console.log(chalk`
-      //   cardPlayers_id: {green ${cardPlayers_id}}
-      // `);
+      console.log(chalk`
+        cardPlayers_id: {green ${cardPlayers_id}}
+      `);
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
     } catch (errorObj) {
@@ -1097,7 +1240,7 @@ const Component = (props) => {
       
       
       
-      {/* 住所 */}
+      {/* ゲーム歴 */}
       <div css={cssBox}>
         
         <FormGamingExperience
@@ -1217,6 +1360,64 @@ const Component = (props) => {
         <FormID
           idsArr={idsArr}
           setIDsArr={setIDsArr}
+        />
+        
+      </div>
+      
+      
+      
+      
+      {/* 活動時間 */}
+      <div css={cssBox}>
+        
+        <FormActivityTime
+          activityTimeArr={activityTimeArr}
+          setActivityTimeArr={setActivityTimeArr}
+        />
+        
+      </div>
+      
+      
+      
+      
+      {/* フレンド */}
+      <div css={cssBox}>
+        
+        <FormLookingForFriends
+          lookingForFriends={lookingForFriends}
+          setLookingForFriends={setLookingForFriends}
+          lookingForFriendsIcon={lookingForFriendsIcon}
+          setLookingForFriendsIcon={setLookingForFriendsIcon}
+          lookingForFriendsComment={lookingForFriendsComment}
+          setLookingForFriendsComment={setLookingForFriendsComment}
+        />
+        
+      </div>
+      
+      
+      
+      
+      {/* ボイスチャット */}
+      <div css={cssBox}>
+        
+        <FormVoiceChat
+          voiceChat={voiceChat}
+          setVoiceChat={setVoiceChat}
+          voiceChatComment={voiceChatComment}
+          setVoiceChatComment={setVoiceChatComment}
+        />
+        
+      </div>
+      
+      
+      
+      
+      {/* Link */}
+      <div css={cssBox}>
+        
+        <FormLink
+          linkArr={linkArr}
+          setLinkArr={setLinkArr}
         />
         
       </div>

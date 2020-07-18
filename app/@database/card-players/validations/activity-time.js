@@ -16,6 +16,12 @@ const util = require('util');
 
 const shortid = require('shortid');
 const validator = require('validator');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 
 
@@ -23,7 +29,9 @@ const lodashGet = require('lodash/get');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom.js');
+
+
 
 
 
@@ -35,7 +43,7 @@ const { CustomError } = require('../../../@modules/error/custom');
  * @param {Array} valueArr - 配列
  * @return {Object} バリデーション結果
  */
-const validationCardPlayersActivityTimeObjValueArr = ({ throwError = false, required = false, valueArr }) => {
+const validationCardPlayersActivityTimeArr = ({ throwError = false, required = false, valueArr }) => {
   
   
   // ---------------------------------------------
@@ -51,10 +59,12 @@ const validationCardPlayersActivityTimeObjValueArr = ({ throwError = false, requ
   // ---------------------------------------------
   
   const resultObj = {
+    
     valueArr: [],
     formArr: [],
     messageID: 'Error',
     error: false,
+    
   };
   
   
@@ -265,5 +275,7 @@ const validationCardPlayersActivityTimeObjValueArr = ({ throwError = false, requ
 // --------------------------------------------------
 
 module.exports = {
-  validationCardPlayersActivityTimeObjValueArr,
+  
+  validationCardPlayersActivityTimeArr,
+  
 };

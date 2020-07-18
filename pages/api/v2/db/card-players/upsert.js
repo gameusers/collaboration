@@ -60,7 +60,7 @@ import { validationCardPlayersSmartphoneModel, validationCardPlayersSmartphoneCo
 import { validationCardPlayersTabletModel, validationCardPlayersTabletComment } from '../../../../../app/@database/card-players/validations/tablet';
 import { validationCardPlayersPCModel, validationCardPlayersPCComment, validationCardPlayersPCSpec } from '../../../../../app/@database/card-players/validations/pc';
 import { validationCardPlayersHardwareActiveArrServer, validationCardPlayersHardwareInactiveArrServer } from '../../../../../app/@database/card-players/validations/hardware-server';
-import { validationCardPlayersActivityTimeObjValueArr } from '../../../../../app/@database/card-players/validations/activity-time';
+import { validationCardPlayersActivityTimeArr } from '../../../../../app/@database/card-players/validations/activity-time';
 import { validationCardPlayersLookingForFriendsValue, validationCardPlayersLookingForFriendsComment, validationCardPlayersLookingForFriendsIcon } from '../../../../../app/@database/card-players/validations/looking-for-friends';
 import { validationCardPlayersVoiceChatValue, validationCardPlayersVoiceChatComment } from '../../../../../app/@database/card-players/validations/voice-chat';
 import { validationCardPlayersLinkArr } from '../../../../../app/@database/card-players/validations/link';
@@ -405,7 +405,7 @@ export default async (req, res) => {
     //   - 活動時間
     // ---------------------------------------------
     
-    await validationCardPlayersActivityTimeObjValueArr({ throwError: true, valueArr: activityTimeObj.valueArr });
+    await validationCardPlayersActivityTimeArr({ throwError: true, valueArr: activityTimeObj.valueArr });
     await validationBoolean({ throwError: true, value: activityTimeObj.search });
     
     if (Object.keys(activityTimeObj).length !== 2) {

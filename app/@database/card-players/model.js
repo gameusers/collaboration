@@ -1693,41 +1693,9 @@ const findOneForEdit = async ({
     //   returnObj
     // --------------------------------------------------
     
-    const returnObj = {};
+    const returnObj = formattedObj;
     
-    returnObj[cardPlayers_id] = formattedObj;
-    
-    
-    
-    // --------------------------------------------------
-    //   ID データをまとめて取得
-    // --------------------------------------------------
-    
-    // let ids_idsArr = [];
-    
-    // for (let valueObj of resultCardPlayersArr.values()) {
-    //   ids_idsArr = ids_idsArr.concat(valueObj.ids_idsArr);
-    // }
-    
-    // const resultIDsObj = await ModelIDs.findForCardPlayer({
-      
-    //   localeObj,
-    //   loginUsers_id,
-    //   ids_idsArr,
-      
-    // });
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   カードデータのフォーマット
-    // --------------------------------------------------
-    
-    // returnObj = formatForEditForm({
-    //   cardPlayersArr: resultCardPlayersArr,
-    //   idsObj: resultIDsObj
-    // });
+    // returnObj[cardPlayers_id] = formattedObj;
     
     
     

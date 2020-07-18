@@ -48,7 +48,7 @@ import IconRemoveCircle from '@material-ui/icons/RemoveCircle';
 //   Validations
 // ---------------------------------------------
 
-const { validationCardPlayersActivityTimeObjValueArr } = require('../../../../../@database/card-players/validations/activity-time');
+const { validationCardPlayersActivityTimeArr } = require('../../../../../@database/card-players/validations/activity-time');
 
 
 
@@ -114,7 +114,7 @@ export default injectIntl(class extends React.Component {
     //   Validations
     // --------------------------------------------------
     
-    const validationObj = validationCardPlayersActivityTimeObjValueArr({ required: false, valueArr: activityTimeObj.valueArr });
+    const validationObj = validationCardPlayersActivityTimeArr({ required: false, valueArr: activityTimeObj.valueArr });
     
     
     // --------------------------------------------------

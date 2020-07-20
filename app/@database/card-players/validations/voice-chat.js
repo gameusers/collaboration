@@ -15,6 +15,12 @@ const util = require('util');
 // ---------------------------------------------
 
 const validator = require('validator');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 
 
@@ -22,7 +28,9 @@ const lodashGet = require('lodash/get');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom.js');
+
+
 
 
 
@@ -44,10 +52,12 @@ const validationCardPlayersVoiceChatValue = ({ throwError = false, value }) => {
   const numberOfCharacters = data ? data.length : 0;
   
   let resultObj = {
+    
     value: data,
     numberOfCharacters,
     messageID: 'Error',
     error: false,
+    
   };
   
   
@@ -129,10 +139,12 @@ const validationCardPlayersVoiceChatComment = ({ throwError = false, required = 
   const numberOfCharacters = data ? data.length : 0;
   
   let resultObj = {
+    
     value: data,
     numberOfCharacters,
     messageID: 'Error',
     error: false,
+    
   };
   
   
@@ -208,6 +220,8 @@ const validationCardPlayersVoiceChatComment = ({ throwError = false, required = 
 // --------------------------------------------------
 
 module.exports = {
+  
   validationCardPlayersVoiceChatValue,
   validationCardPlayersVoiceChatComment,
+  
 };

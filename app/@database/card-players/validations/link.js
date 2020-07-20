@@ -130,6 +130,7 @@ const validationCardPlayersLinkArr = ({ throwError = false, required = false, va
       const search = lodashGet(valueObj, ['search'], true);
       
       const formObj = {
+        
         typeObj: {
           messageID: 'Error',
           error: false
@@ -142,6 +143,7 @@ const validationCardPlayersLinkArr = ({ throwError = false, required = false, va
           messageID: 'CAhUTCx7B',
           error: false
         },
+        
       };
       
       
@@ -159,9 +161,11 @@ const validationCardPlayersLinkArr = ({ throwError = false, required = false, va
       // ---------------------------------------------
       
       if (!validator.isIn(type, ['Twitter', 'Facebook', 'Instagram', 'YouTube', 'Twitch', 'Steam', 'Discord', 'Flickr', 'Tumblr', 'Pinterest', 'Other'])) {
+        
         formObj.typeObj.error = true;
         formObj.typeObj.messageID = 'PH8jcw-VF';
         error = true;
+        
       }
       
       
@@ -171,16 +175,20 @@ const validationCardPlayersLinkArr = ({ throwError = false, required = false, va
       
       // Type が Other の場合、Label の入力が必要
       if (type === 'Other' && validator.isEmpty(label)) {
+        
         formObj.endTimeObj.error = true;
         formObj.endTimeObj.messageID = 'cFbXmuFVh';
         error = true;
+        
       }
       
       // 文字数チェック
       if (!validator.isEmpty(label) && !validator.isLength(label, { min: minLengthLabel, max: maxLengthLabel })) {
+        
         formObj.endTimeObj.error = true;
         formObj.endTimeObj.messageID = 'xdAU7SgoO';
         error = true;
+        
       }
       
       
@@ -190,16 +198,20 @@ const validationCardPlayersLinkArr = ({ throwError = false, required = false, va
       
       // 文字数チェック
       if (!validator.isLength(url, { min: minLengthURL, max: maxLengthURL })) {
+        
         formObj.urlObj.error = true;
         formObj.urlObj.messageID = 'eASl8OdnD';
         error = true;
+        
       }
       
       // URLチェック
       if (!validator.isURL(url)) {
+        
         formObj.urlObj.error = true;
         formObj.urlObj.messageID = 'Bv79Cmo2s';
         error = true;
+        
       }
       
       
@@ -223,6 +235,7 @@ const validationCardPlayersLinkArr = ({ throwError = false, required = false, va
       
       // データベース更新用
       if (!error) {
+        
         resultObj.valueArr.push({
           _id,
           type,
@@ -230,6 +243,7 @@ const validationCardPlayersLinkArr = ({ throwError = false, required = false, va
           url,
           search
         });
+        
       }
       
       

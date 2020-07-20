@@ -126,6 +126,7 @@ const validationCardPlayersActivityTimeArr = ({ throwError = false, required = f
       const weekArr = lodashGet(valueObj, ['weekArr'], []);
       
       const formObj = {
+        
         beginTimeObj: {
           messageID: 'vKhuy_98i',
           error: false
@@ -138,6 +139,7 @@ const validationCardPlayersActivityTimeArr = ({ throwError = false, required = f
           messageID: 'vplWXcVvo',
           error: false
         },
+        
       };
       
       
@@ -156,16 +158,20 @@ const validationCardPlayersActivityTimeArr = ({ throwError = false, required = f
       
       // 時間チェック
       if (beginTime.match(/^([0-1][0-9]|2[0-3]):[0-5][0-9]+$/) === null) {
+        
         formObj.beginTimeObj.error = true;
         formObj.beginTimeObj.messageID = 'McbWUO45b';
         error = true;
+        
       }
       
       // 存在チェック
       if (validator.isEmpty(beginTime)) {
+        
         formObj.beginTimeObj.error = true;
         formObj.beginTimeObj.messageID = 'cFbXmuFVh';
         error = true;
+        
       }
       
       
@@ -175,16 +181,20 @@ const validationCardPlayersActivityTimeArr = ({ throwError = false, required = f
       
       // 時間チェック
       if (endTime.match(/^([0-1][0-9]|2[0-3]):[0-5][0-9]+$/) === null) {
+        
         formObj.endTimeObj.error = true;
         formObj.endTimeObj.messageID = 'McbWUO45b';
         error = true;
+        
       }
       
       // 存在チェック
       if (validator.isEmpty(endTime)) {
+        
         formObj.endTimeObj.error = true;
         formObj.endTimeObj.messageID = 'cFbXmuFVh';
         error = true;
+        
       }
       
       
@@ -224,12 +234,14 @@ const validationCardPlayersActivityTimeArr = ({ throwError = false, required = f
       
       // データベース更新用
       if (!error) {
+        
         resultObj.valueArr.push({
           _id,
           beginTime,
           endTime,
           weekArr
         });
+        
       }
       
       

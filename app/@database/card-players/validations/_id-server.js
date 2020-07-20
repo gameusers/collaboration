@@ -28,7 +28,9 @@ const Model = require('../model');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom.js');
+
+
 
 
 
@@ -58,8 +60,10 @@ const validationCardPlayers_idServer = async ({ value, loginUsers_id }) => {
   const numberOfCharacters = data ? data.length : 0;
   
   let resultObj = {
+    
     value: data,
     numberOfCharacters,
+    
   };
   
   
@@ -86,10 +90,12 @@ const validationCardPlayers_idServer = async ({ value, loginUsers_id }) => {
   // ---------------------------------------------
   
   const count = await Model.count({
+    
     conditionObj: {
       _id: value,
       users_id: loginUsers_id,
     }
+    
   });
   
   if (count === 0) {
@@ -114,5 +120,7 @@ const validationCardPlayers_idServer = async ({ value, loginUsers_id }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationCardPlayers_idServer
+  
+  validationCardPlayers_idServer,
+  
 };

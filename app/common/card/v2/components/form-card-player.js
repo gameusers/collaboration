@@ -66,7 +66,23 @@ import { CustomError } from 'app/@modules/error/custom.js';
 // ---------------------------------------------
 
 import { validationHandleName } from 'app/@validations/name.js';
+import { validationBoolean } from 'app/@validations/boolean.js';
+
 import { validationCardPlayersStatus } from 'app/@database/card-players/validations/status.js';
+import { validationCardPlayersComment } from 'app/@database/card-players/validations/comment.js';
+import { validationCardPlayersAge, validationCardPlayersAgeAlternativeText } from 'app/@database/card-players/validations/age.js';
+import { validationCardPlayersSex, validationCardPlayersSexAlternativeText } from 'app/@database/card-players/validations/sex.js';
+import { validationCardPlayersAddressAlternativeText } from 'app/@database/card-players/validations/address.js';
+import { validationCardPlayersGamingExperience, validationCardPlayersGamingExperienceAlternativeText } from 'app/@database/card-players/validations/gaming-experience.js';
+import { validationCardPlayersHobby } from 'app/@database/card-players/validations/hobby.js';
+import { validationCardPlayersSpecialSkill } from 'app/@database/card-players/validations/special-skill.js';
+import { validationCardPlayersSmartphoneModel, validationCardPlayersSmartphoneComment } from 'app/@database/card-players/validations/smartphone.js';
+import { validationCardPlayersTabletModel, validationCardPlayersTabletComment } from 'app/@database/card-players/validations/tablet.js';
+import { validationCardPlayersPCModel, validationCardPlayersPCComment, validationCardPlayersPCSpec } from 'app/@database/card-players/validations/pc.js';
+import { validationCardPlayersActivityTimeArr } from 'app/@database/card-players/validations/activity-time.js';
+import { validationCardPlayersLookingForFriendsValue, validationCardPlayersLookingForFriendsIcon, validationCardPlayersLookingForFriendsComment } from 'app/@database/card-players/validations/looking-for-friends.js';
+import { validationCardPlayersVoiceChatValue, validationCardPlayersVoiceChatComment } from 'app/@database/card-players/validations/voice-chat.js';
+import { validationCardPlayersLinkArr } from 'app/@database/card-players/validations/link.js';
 
 
 // ---------------------------------------------
@@ -142,8 +158,8 @@ const Component = (props) => {
   const {
     
     cardPlayers_id,
-    // users_id,
     setShowForm,
+    setCardPlayersArr,
     
   } = props;
   
@@ -498,8 +514,6 @@ const Component = (props) => {
       
       const search = lodashGet(dataObj, ['search'], true);
       
-      // const  = lodashGet(dataObj, [''], '');
-      
       
       setName(name);
       setStatus(status);
@@ -542,20 +556,20 @@ const Component = (props) => {
       //   console.log
       // ---------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/common/card/v2/components/parts/edit-button.js - handleGetEditData
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/card/v2/components/parts/edit-button.js - handleGetEditData
+      // `);
       
-      console.log(chalk`
-        cardPlayers_id: {green ${cardPlayers_id}}
-      `);
+      // console.log(chalk`
+      //   cardPlayers_id: {green ${cardPlayers_id}}
+      // `);
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
     } catch (errorObj) {
@@ -600,7 +614,7 @@ const Component = (props) => {
   
   
   /**
-   * コメント作成・編集フォームを送信する
+   * フォームを送信する
    * @param {Object} eventObj - イベント
    */
   const handleSubmit = async ({
@@ -618,40 +632,20 @@ const Component = (props) => {
     
     
     
-    // ---------------------------------------------
-    //   新規投稿時の forumComments_id
-    // ---------------------------------------------
-    
-    let newForumComments_id = '';
-    
-    
-    
     
     try {
-      
-      
-      // ---------------------------------------------
-      //   Property
-      // ---------------------------------------------
-      
-      const threadListLimit = parseInt((getCookie({ key: 'forumThreadListLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIST_LIMIT), 10);
-      const threadLimit = parseInt((getCookie({ key: 'forumThreadLimit' }) || process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT), 10);
-      const commentLimit = parseInt((getCookie({ key: 'forumCommentLimit' }) || process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT), 10);
-      const replyLimit = parseInt((getCookie({ key: 'forumReplyLimit' }) || process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT), 10);
-      
-      
       
       
       // ---------------------------------------------
       //   _id が存在しない場合エラー
       // ---------------------------------------------
       
-      if ((!gameCommunities_id && !userCommunities_id) || !forumThreads_id) {
-        throw new CustomError({ errorsArr: [{ code: 'UsXqWgrd6', messageID: '1YJnibkmh' }] });
+      if (!cardPlayers_id) {
+        throw new CustomError({ errorsArr: [{ code: 'TlbdVZVuk', messageID: '1YJnibkmh' }] });
       }
       
       
-      
+       
       
       // ---------------------------------------------
       //   Validation Error
@@ -660,12 +654,36 @@ const Component = (props) => {
       if (
         
         validationHandleName({ value: name }).error ||
-        validationBoolean({ value: anonymity }).error ||
-        validationForumCommentsComment({ value: comment }).error
+        validationCardPlayersStatus({ value: status }).error ||
+        validationCardPlayersComment({ value: comment }).error ||
+        validationCardPlayersAge({ value: age }).error ||
+        validationCardPlayersAgeAlternativeText({ value: ageAlternativeText }).error ||
+        validationCardPlayersSex({ value: sex }).error ||
+        validationCardPlayersSexAlternativeText({ value: sexAlternativeText }).error ||
+        validationCardPlayersAddressAlternativeText({ value: addressAlternativeText }).error ||
+        validationCardPlayersGamingExperience({ value: gamingExperience }).error ||
+        validationCardPlayersGamingExperienceAlternativeText({ value: gamingExperienceAlternativeText }).error ||
+        validationCardPlayersHobby({ valueArr: hobbiesArr }).error ||
+        validationCardPlayersSpecialSkill({ valueArr: specialSkillsArr }).error ||
+        validationCardPlayersSmartphoneModel({ value: smartphoneModel }).error ||
+        validationCardPlayersSmartphoneComment({ value: smartphoneComment }).error ||
+        validationCardPlayersTabletModel({ value: tabletModel }).error ||
+        validationCardPlayersTabletComment({ value: tabletComment }).error ||
+        validationCardPlayersPCModel({ value: pcModel }).error ||
+        validationCardPlayersPCComment({ value: pcComment }).error ||
+        validationCardPlayersPCSpec({ valueObj: pcSpecsObj }).error ||
+        validationCardPlayersActivityTimeArr({ valueArr: activityTimeArr }).error ||
+        validationCardPlayersLookingForFriendsValue({ value: lookingForFriends }).error ||
+        validationCardPlayersLookingForFriendsComment({ value: lookingForFriendsComment }).error ||
+        validationCardPlayersLookingForFriendsIcon({ value: lookingForFriendsIcon }).error ||
+        validationCardPlayersVoiceChatValue({ value: voiceChat }).error ||
+        validationCardPlayersVoiceChatComment({ value: voiceChatComment }).error ||
+        validationCardPlayersLinkArr({ valueArr: linkArr }).error ||
+        validationBoolean({ value: search }).error
         
       ) {
         
-        throw new CustomError({ errorsArr: [{ code: 'evE70gDt0', messageID: 'uwHIKBy7c' }] });
+        throw new CustomError({ errorsArr: [{ code: 'g5D-Ev10X', messageID: 'uwHIKBy7c' }] });
         
       }
       
@@ -694,57 +712,60 @@ const Component = (props) => {
       
       const formDataObj = {
         
-        gameCommunities_id,
-        userCommunities_id,
-        forumThreads_id,
+        _id: cardPlayers_id,
         name,
-        anonymity,
+        status,
         comment,
-        threadListLimit,
-        threadLimit,
-        commentLimit,
-        replyLimit,
+        age,
+        ageAlternativeText,
+        sex,
+        sexAlternativeText,
+        addressAlternativeText,
+        gamingExperience,
+        gamingExperienceAlternativeText,
+        hobbiesArr,
+        specialSkillsArr,
+        smartphoneModel,
+        smartphoneComment,
+        tabletModel,
+        tabletComment,
+        pcModel,
+        pcComment,
+        pcSpecsObj,
+        hardwareActiveArr,
+        hardwareInactiveArr,
+        idsArr,
+        activityTimeArr,
+        lookingForFriends,
+        lookingForFriendsIcon,
+        lookingForFriendsComment,
+        voiceChat,
+        voiceChatComment,
+        linkArr,
+        search,
         
       };
-      
-      if (forumComments_id) {
-        formDataObj.forumComments_id = forumComments_id;
-      }
       
       if (imagesAndVideosObj.arr.length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
       
-      
+      if (imagesAndVideosThumbnailObj.arr.length !== 0) {
+        formDataObj.imagesAndVideosThumbnailObj = imagesAndVideosThumbnailObj;
+      }
       
       
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
       
-      let resultObj = {};
-      
-      if (gameCommunities_id) {
+      const resultObj = await fetchWrapper({
         
-        resultObj = await fetchWrapper({
-          
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/upsert-comment-gc`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-          
-        });
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/card-players/upsert`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
         
-      } else if (userCommunities_id) {
-        
-        resultObj = await fetchWrapper({
-          
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/upsert-comment-uc`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-          
-        });
-        
-      }
+      });
       
       
       // ---------------------------------------------
@@ -762,19 +783,19 @@ const Component = (props) => {
       //   Reset Form
       // ---------------------------------------------
       
-      setName('');
-      setAnonymity(false);
-      setComment('');
-      setImagesAndVideosObj({
+      // setName('');
+      // setAnonymity(false);
+      // setComment('');
+      // setImagesAndVideosObj({
         
-        _id: '',
-        createdDate: '',
-        updatedDate: '',
-        users_id: '',
-        type: 'forum',
-        arr: [],
+      //   _id: '',
+      //   createdDate: '',
+      //   updatedDate: '',
+      //   users_id: '',
+      //   type: 'forum',
+      //   arr: [],
         
-      });
+      // });
       
       
       
@@ -787,55 +808,10 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Update - gameCommunityObj / userCommunityObj
+      //   Update - cardPlayersArr
       // ---------------------------------------------
       
-      if (gameCommunities_id) {
-        
-        setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
-        
-      } else {
-        
-        setUserCommunityObj(lodashGet(resultObj, ['data', 'userCommunityObj'], {}));
-        
-      }
-      
-      
-      // ---------------------------------------------
-      //   forumThreadsForListObj
-      // ---------------------------------------------
-      
-      setForumThreadsForListObj(lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {}));
-      
-      
-      // ---------------------------------------------
-      //   forumThreadsObj
-      // ---------------------------------------------
-      
-      setForumThreadsObj(lodashGet(resultObj, ['data', 'forumThreadsObj'], {}));
-      
-      
-      // ---------------------------------------------
-      //   forumCommentsObj
-      // ---------------------------------------------
-      
-      setForumCommentsObj(lodashGet(resultObj, ['data', 'forumCommentsObj'], {}));
-      
-      
-      // ---------------------------------------------
-      //   forumRepliesObj
-      // ---------------------------------------------
-      
-      setForumRepliesObj(lodashGet(resultObj, ['data', 'forumRepliesObj'], {}));
-      
-      
-      // ---------------------------------------------
-      //   新規投稿時の forumComments_id
-      // ---------------------------------------------
-      
-      newForumComments_id = lodashGet(resultObj, ['data', 'forumCommentsObj', forumThreads_id, 'page1Obj', 'arr', 0], '');
-      
-      
+      setCardPlayersArr(lodashGet(resultObj, ['data', 'cardPlayersArr'], []));
       
       
       // ---------------------------------------------
@@ -845,7 +821,7 @@ const Component = (props) => {
       handleSnackbarOpen({
         
         variant: 'success',
-        messageID: forumComments_id ? 'NKsMLWvkt' : 'fhi9lUaap',
+        messageID: 'EnStWOly-',
         
       });
       
@@ -858,7 +834,7 @@ const Component = (props) => {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/form/comment.js - handleSubmit
+      //   /app/common/card/v2/components/form-card-player.js - handleSubmit
       // `);
       
       // console.log(chalk`
@@ -871,12 +847,10 @@ const Component = (props) => {
       // `);
       
       // console.log(`
-      //   ----- imagesAndVideosObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+      //   ----- formDataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      // return;
       
       // console.log(`
       //   ----- resultObj -----\n
@@ -923,7 +897,7 @@ const Component = (props) => {
       
       handleScrollTo({
         
-        to: forumComments_id || newForumComments_id || forumThreads_id || 'forumThreads',
+        to: cardPlayers_id,
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -986,16 +960,6 @@ const Component = (props) => {
   
   const limitImagesAndVideos = parseInt(process.env.NEXT_PUBLIC_CARD_PLAYER_IMAGES_AND_VIDEOS_LIMIT, 10);
   const limitImagesAndVideosThumbnail = parseInt(process.env.NEXT_PUBLIC_CARD_PLAYER_IMAGES_AND_VIDEOS_THUMBNAIL_LIMIT, 10);
-  
-  
-  
-  // --------------------------------------------------
-  //   Validation
-  // --------------------------------------------------
-  
-  // const validationHandleNameObj = validationHandleName({ value: name });
-  // const validationCardPlayersStatusObj = validationCardPlayersStatus({ value: status });
-  
   
   
   

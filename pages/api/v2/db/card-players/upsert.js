@@ -17,6 +17,11 @@ import util from 'util';
 import shortid from 'shortid';
 import moment from 'moment';
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 
@@ -25,53 +30,56 @@ import lodashSet from 'lodash/set';
 //   Model
 // ---------------------------------------------
 
-import ModelCardPlayers from '../../../../../app/@database/card-players/model';
-import ModelImagesAndVideos from '../../../../../app/@database/images-and-videos/model';
+import ModelCardPlayers from 'app/@database/card-players/model.js';
+import ModelImagesAndVideos from 'app/@database/images-and-videos/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-import { verifyCsrfToken } from '../../../../../app/@modules/csrf';
-import { returnErrorsArr } from '../../../../../app/@modules/log/log';
-import { CustomError } from '../../../../../app/@modules/error/custom';
-import { formatAndSave } from '../../../../../app/@modules/image/save';
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
+import { formatAndSave } from 'app/@modules/image/save.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-import { validationIP } from '../../../../../app/@validations/ip';
-import { validationBoolean } from '../../../../../app/@validations/boolean';
+import { validationIP } from 'app/@validations/ip.js';
+import { validationBoolean } from 'app/@validations/boolean.js';
 
-import { validationCardPlayers_idServer } from '../../../../../app/@database/card-players/validations/_id-server';
-import { validationCardPlayersName } from '../../../../../app/@database/card-players/validations/name';
-import { validationCardPlayersStatus } from '../../../../../app/@database/card-players/validations/status';
-import { validationCardPlayersComment } from '../../../../../app/@database/card-players/validations/comment';
-import { validationCardPlayersAge, validationCardPlayersAgeAlternativeText } from '../../../../../app/@database/card-players/validations/age';
-import { validationCardPlayersSex, validationCardPlayersSexAlternativeText } from '../../../../../app/@database/card-players/validations/sex';
-import { validationCardPlayersAddressAlternativeText } from '../../../../../app/@database/card-players/validations/address';
-import { validationCardPlayersGamingExperience, validationCardPlayersGamingExperienceAlternativeText } from '../../../../../app/@database/card-players/validations/gaming-experience';
-import { validationCardPlayersHobby } from '../../../../../app/@database/card-players/validations/hobby';
-import { validationCardPlayersSpecialSkill } from '../../../../../app/@database/card-players/validations/special-skill';
-import { validationCardPlayersSmartphoneModel, validationCardPlayersSmartphoneComment } from '../../../../../app/@database/card-players/validations/smartphone';
-import { validationCardPlayersTabletModel, validationCardPlayersTabletComment } from '../../../../../app/@database/card-players/validations/tablet';
-import { validationCardPlayersPCModel, validationCardPlayersPCComment, validationCardPlayersPCSpec } from '../../../../../app/@database/card-players/validations/pc';
-import { validationCardPlayersHardwareActiveArrServer, validationCardPlayersHardwareInactiveArrServer } from '../../../../../app/@database/card-players/validations/hardware-server';
-import { validationCardPlayersActivityTimeArr } from '../../../../../app/@database/card-players/validations/activity-time';
-import { validationCardPlayersLookingForFriendsValue, validationCardPlayersLookingForFriendsComment, validationCardPlayersLookingForFriendsIcon } from '../../../../../app/@database/card-players/validations/looking-for-friends';
-import { validationCardPlayersVoiceChatValue, validationCardPlayersVoiceChatComment } from '../../../../../app/@database/card-players/validations/voice-chat';
-import { validationCardPlayersLinkArr } from '../../../../../app/@database/card-players/validations/link';
-import { validationIDsArrServer } from '../../../../../app/@database/ids/validations/_id-server';
+// import { validationCardPlayers_idServer } from 'app/@database/card-players/validations/_id-server.js';
+import { validationCardPlayersName } from 'app/@database/card-players/validations/name.js';
+import { validationCardPlayersStatus } from 'app/@database/card-players/validations/status.js';
+import { validationCardPlayersComment } from 'app/@database/card-players/validations/comment.js';
+import { validationCardPlayersAge, validationCardPlayersAgeAlternativeText } from 'app/@database/card-players/validations/age.js';
+import { validationCardPlayersSex, validationCardPlayersSexAlternativeText } from 'app/@database/card-players/validations/sex.js';
+import { validationCardPlayersAddressAlternativeText } from 'app/@database/card-players/validations/address.js';
+import { validationCardPlayersGamingExperience, validationCardPlayersGamingExperienceAlternativeText } from 'app/@database/card-players/validations/gaming-experience.js';
+import { validationCardPlayersHobby } from 'app/@database/card-players/validations/hobby.js';
+import { validationCardPlayersSpecialSkill } from 'app/@database/card-players/validations/special-skill.js';
+import { validationCardPlayersSmartphoneModel, validationCardPlayersSmartphoneComment } from 'app/@database/card-players/validations/smartphone.js';
+import { validationCardPlayersTabletModel, validationCardPlayersTabletComment } from 'app/@database/card-players/validations/tablet.js';
+import { validationCardPlayersPCModel, validationCardPlayersPCComment, validationCardPlayersPCSpec } from 'app/@database/card-players/validations/pc.js';
+import { validationCardPlayersHardwareArrServer } from 'app/@database/card-players/validations/hardware-server.js';
+import { validationCardPlayersActivityTimeArr } from 'app/@database/card-players/validations/activity-time.js';
+import { validationCardPlayersLookingForFriendsValue, validationCardPlayersLookingForFriendsComment, validationCardPlayersLookingForFriendsIcon } from 'app/@database/card-players/validations/looking-for-friends.js';
+import { validationCardPlayersVoiceChatValue, validationCardPlayersVoiceChatComment } from 'app/@database/card-players/validations/voice-chat.js';
+import { validationCardPlayersLinkArr } from 'app/@database/card-players/validations/link.js';
+
+import { validationIDsArrServer } from 'app/@database/ids/validations/_id-server.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-import { locale } from '../../../../../app/@locales/locale';
+import { locale } from 'app/@locales/locale.js';
+
+
 
 
 
@@ -91,15 +99,6 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
@@ -109,11 +108,21 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   IP & User Agent
+  //   Language & IP & User Agent
   // --------------------------------------------------
   
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: language
+  });
   
   
   
@@ -130,56 +139,74 @@ export default async (req, res) => {
     const {
       
       _id,
-      nameObj,
-      statusObj,
-      commentObj,
-      ageObj,
-      sexObj,
-      addressObj,
-      gamingExperienceObj,
-      hobbiesObj,
-      specialSkillsObj,
-      smartphoneObj,
-      tabletObj,
-      pcObj,
-      hardwareActiveObj,
-      hardwareInactiveObj,
+      name,
+      status,
+      comment,
+      age,
+      ageAlternativeText,
+      sex,
+      sexAlternativeText,
+      addressAlternativeText,
+      gamingExperience,
+      gamingExperienceAlternativeText,
+      hobbiesArr,
+      specialSkillsArr,
+      smartphoneModel,
+      smartphoneComment,
+      tabletModel,
+      tabletComment,
+      pcModel,
+      pcComment,
+      pcSpecsObj,
+      hardwareActiveArr,
+      hardwareInactiveArr,
       idsArr,
-      activityTimeObj,
-      lookingForFriendsObj,
-      voiceChatObj,
+      activityTimeArr,
+      lookingForFriends,
+      lookingForFriendsIcon,
+      lookingForFriendsComment,
+      voiceChat,
+      voiceChatComment,
       linkArr,
-      imagesAndVideos_id,
+      search,
       imagesAndVideosObj,
-      imagesAndVideosThumbnail_id,
       imagesAndVideosThumbnailObj,
       
     } = bodyObj;
     
     
     lodashSet(requestParametersObj, ['_id'], _id);
-    lodashSet(requestParametersObj, ['nameObj'], nameObj);
-    lodashSet(requestParametersObj, ['statusObj'], statusObj);
-    lodashSet(requestParametersObj, ['commentObj'], commentObj);
-    lodashSet(requestParametersObj, ['ageObj'], ageObj);
-    lodashSet(requestParametersObj, ['sexObj'], sexObj);
-    lodashSet(requestParametersObj, ['addressObj'], addressObj);
-    lodashSet(requestParametersObj, ['gamingExperienceObj'], gamingExperienceObj);
-    lodashSet(requestParametersObj, ['hobbiesObj'], hobbiesObj);
-    lodashSet(requestParametersObj, ['specialSkillsObj'], specialSkillsObj);
-    lodashSet(requestParametersObj, ['smartphoneObj'], smartphoneObj);
-    lodashSet(requestParametersObj, ['tabletObj'], tabletObj);
-    lodashSet(requestParametersObj, ['pcObj'], pcObj);
-    lodashSet(requestParametersObj, ['hardwareActiveObj'], hardwareActiveObj);
-    lodashSet(requestParametersObj, ['hardwareInactiveObj'], hardwareInactiveObj);
+    lodashSet(requestParametersObj, ['name'], name);
+    lodashSet(requestParametersObj, ['status'], status);
+    lodashSet(requestParametersObj, ['comment'], comment);
+    lodashSet(requestParametersObj, ['age'], age);
+    lodashSet(requestParametersObj, ['ageAlternativeText'], ageAlternativeText);
+    lodashSet(requestParametersObj, ['sex'], sex);
+    lodashSet(requestParametersObj, ['sexAlternativeText'], sexAlternativeText);
+    lodashSet(requestParametersObj, ['addressAlternativeText'], addressAlternativeText);
+    lodashSet(requestParametersObj, ['gamingExperience'], gamingExperience);
+    lodashSet(requestParametersObj, ['gamingExperienceAlternativeText'], gamingExperienceAlternativeText);
+    lodashSet(requestParametersObj, ['hobbiesArr'], hobbiesArr);
+    lodashSet(requestParametersObj, ['specialSkillsArr'], specialSkillsArr);
+    lodashSet(requestParametersObj, ['smartphoneModel'], smartphoneModel);
+    lodashSet(requestParametersObj, ['smartphoneComment'], smartphoneComment);
+    lodashSet(requestParametersObj, ['tabletModel'], tabletModel);
+    lodashSet(requestParametersObj, ['tabletComment'], tabletComment);
+    lodashSet(requestParametersObj, ['pcModel'], pcModel);
+    lodashSet(requestParametersObj, ['pcComment'], pcComment);
+    lodashSet(requestParametersObj, ['pcSpecsObj'], pcSpecsObj);
+    lodashSet(requestParametersObj, ['hardwareActiveArr'], hardwareActiveArr);
+    lodashSet(requestParametersObj, ['hardwareInactiveArr'], hardwareInactiveArr);
     lodashSet(requestParametersObj, ['idsArr'], []);
-    lodashSet(requestParametersObj, ['activityTimeObj'], activityTimeObj);
-    lodashSet(requestParametersObj, ['lookingForFriendsObj'], lookingForFriendsObj);
-    lodashSet(requestParametersObj, ['voiceChatObj'], voiceChatObj);
+    lodashSet(requestParametersObj, ['activityTimeArr'], activityTimeArr);
+    lodashSet(requestParametersObj, ['lookingForFriends'], lookingForFriends);
+    lodashSet(requestParametersObj, ['lookingForFriendsIcon'], lookingForFriendsIcon);
+    lodashSet(requestParametersObj, ['lookingForFriendsComment'], lookingForFriendsComment);
+    lodashSet(requestParametersObj, ['voiceChat'], voiceChat);
+    lodashSet(requestParametersObj, ['voiceChatComment'], voiceChatComment);
     lodashSet(requestParametersObj, ['linkArr'], linkArr);
-    lodashSet(requestParametersObj, ['imagesAndVideos_id'], imagesAndVideos_id);
+    lodashSet(requestParametersObj, ['search'], search);
     lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
-    lodashSet(requestParametersObj, ['imagesAndVideosThumbnail_id'], imagesAndVideosThumbnail_id);
     lodashSet(requestParametersObj, ['imagesAndVideosThumbnailObj'], {});
     
     
@@ -197,254 +224,73 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (!req.isAuthenticated()) {
+      
       statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '8XcKQ7hce', messageID: 'xLLNIpo6a' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Dm7DF-nDZ', messageID: 'xLLNIpo6a' }] });
+      
     }
     
     
     
     
     // --------------------------------------------------
-    //   Validation
+    //   Validations
     // --------------------------------------------------
     
     await validationIP({ throwError: true, value: ip });
     
+    // await validationCardPlayers_idServer({ throwError: true, value: _id, loginUsers_id });
+    await validationCardPlayersName({ throwError: true, value: name });
+    await validationCardPlayersStatus({ throwError: true, value: status });
+    await validationCardPlayersComment({ throwError: true, value: comment });
+    await validationCardPlayersAge({ throwError: true, value: age });
+    await validationCardPlayersAgeAlternativeText({ throwError: true, value: ageAlternativeText });
+    await validationCardPlayersSex({ throwError: true, value: sex });
+    await validationCardPlayersSexAlternativeText({ throwError: true, value: sexAlternativeText });
+    await validationCardPlayersAddressAlternativeText({ throwError: true, value: addressAlternativeText });
+    await validationCardPlayersGamingExperience({ throwError: true, value: gamingExperience });
+    await validationCardPlayersGamingExperienceAlternativeText({ throwError: true, value: gamingExperienceAlternativeText });
+    await validationCardPlayersHobby({ throwError: true, valueArr: hobbiesArr });
+    await validationCardPlayersSpecialSkill({ throwError: true, valueArr: specialSkillsArr });
+    await validationCardPlayersSmartphoneModel({ throwError: true, value: smartphoneModel });
+    await validationCardPlayersSmartphoneComment({ throwError: true, value: smartphoneComment });
+    await validationCardPlayersTabletModel({ throwError: true, value: tabletModel });
+    await validationCardPlayersTabletComment({ throwError: true, value: tabletComment });
+    await validationCardPlayersPCModel({ throwError: true, value: pcModel });
+    await validationCardPlayersPCComment({ throwError: true, value: pcComment });
+    await validationCardPlayersPCSpec({ throwError: true, valueObj: pcSpecsObj });
     
-    // ---------------------------------------------
-    //   - _id
-    // ---------------------------------------------
-    
-    await validationCardPlayers_idServer({ throwError: true, value: _id, loginUsers_id });
-    
-    
-    // ---------------------------------------------
-    //   - ハンドルネーム
-    // ---------------------------------------------
-    
-    await validationCardPlayersName({ throwError: true, value: nameObj.value });
-    await validationBoolean({ throwError: true, value: nameObj.search });
-    
-    if (Object.keys(nameObj).length !== 2) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'NiN1I-nNK', messageID: '3mDvfqZHV' }] });
-    }
-    
-    
-    // ---------------------------------------------
-    //   - ステータス
-    // ---------------------------------------------
-    
-    await validationCardPlayersStatus({ throwError: true, value: statusObj.value });
-    await validationBoolean({ throwError: true, value: statusObj.search });
-    
-    if (Object.keys(statusObj).length !== 2) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'YQbotVBZ9', messageID: '3mDvfqZHV' }] });
-    }
-    
-    
-    // ---------------------------------------------
-    //   - コメント
-    // ---------------------------------------------
-    
-    await validationCardPlayersComment({ throwError: true, value: commentObj.value });
-    await validationBoolean({ throwError: true, value: commentObj.search });
-    
-    if (Object.keys(commentObj).length !== 2) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Zb8nAXY5y', messageID: '3mDvfqZHV' }] });
-    }
-    
-    
-    // ---------------------------------------------
-    //   - 年齢
-    // ---------------------------------------------
-    
-    await validationCardPlayersAge({ throwError: true, value: ageObj.value });
-    await validationCardPlayersAgeAlternativeText({ throwError: true, value: ageObj.alternativeText });
-    await validationBoolean({ throwError: true, value: ageObj.search });
-    
-    if (Object.keys(ageObj).length !== 3) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'bMm1hCGGg', messageID: '3mDvfqZHV' }] });
-    }
-    
-    
-    // ---------------------------------------------
-    //   - 性別
-    // ---------------------------------------------
-    
-    await validationCardPlayersSex({ throwError: true, value: sexObj.value });
-    await validationCardPlayersSexAlternativeText({ throwError: true, value: sexObj.alternativeText });
-    await validationBoolean({ throwError: true, value: sexObj.search });
-    
-    if (Object.keys(sexObj).length !== 3) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'JN81mRt-_', messageID: '3mDvfqZHV' }] });
-    }
-    
-    
-    // ---------------------------------------------
-    //   - 住所
-    // ---------------------------------------------
-    
-    await validationCardPlayersAddressAlternativeText({ throwError: true, value: addressObj.value });
-    await validationBoolean({ throwError: true, value: addressObj.search });
-    
-    if (Object.keys(addressObj).length !== 3) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'bV7lefvKr', messageID: '3mDvfqZHV' }] });
-    }
-    
-    
-    // ---------------------------------------------
-    //   - ゲーム歴
-    // ---------------------------------------------
-    
-    await validationCardPlayersGamingExperience({ throwError: true, value: gamingExperienceObj.value });
-    await validationCardPlayersGamingExperienceAlternativeText({ throwError: true, value: gamingExperienceObj.alternativeText });
-    await validationBoolean({ throwError: true, value: gamingExperienceObj.search });
-    
-    if (Object.keys(gamingExperienceObj).length !== 3) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'JN81mRt-_', messageID: '3mDvfqZHV' }] });
-    }
-    
-    
-    // ---------------------------------------------
-    //   - 趣味
-    // ---------------------------------------------
-    
-    await validationCardPlayersHobby({ throwError: true, valueArr: hobbiesObj.valueArr });
-    await validationBoolean({ throwError: true, value: hobbiesObj.search });
-    
-    if (Object.keys(hobbiesObj).length !== 2) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '6d0Cofy9_', messageID: '3mDvfqZHV' }] });
-    }
-    
-    
-    // ---------------------------------------------
-    //   - 特技
-    // ---------------------------------------------
-    
-    await validationCardPlayersSpecialSkill({ throwError: true, valueArr: specialSkillsObj.valueArr });
-    await validationBoolean({ throwError: true, value: specialSkillsObj.search });
-    
-    if (Object.keys(specialSkillsObj).length !== 2) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Iu5UbfKL9', messageID: '3mDvfqZHV' }] });
-    }
-    
-    
-    // ---------------------------------------------
-    //   - スマートフォン
-    // ---------------------------------------------
-    
-    await validationCardPlayersSmartphoneModel({ throwError: true, value: smartphoneObj.model });
-    await validationCardPlayersSmartphoneComment({ throwError: true, value: smartphoneObj.comment });
-    await validationBoolean({ throwError: true, value: smartphoneObj.search });
-    
-    if (Object.keys(smartphoneObj).length !== 3) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'PTUirZHOa', messageID: '3mDvfqZHV' }] });
-    }
-    
-    
-    // ---------------------------------------------
-    //   - タブレット
-    // ---------------------------------------------
-    
-    await validationCardPlayersTabletModel({ throwError: true, value: tabletObj.model });
-    await validationCardPlayersTabletComment({ throwError: true, value: tabletObj.comment });
-    await validationBoolean({ throwError: true, value: tabletObj.search });
-    
-    if (Object.keys(tabletObj).length !== 3) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'fYRjLAmsS', messageID: '3mDvfqZHV' }] });
-    }
-    
-    
-    // ---------------------------------------------
-    //   - PC
-    // ---------------------------------------------
-    
-    await validationCardPlayersPCModel({ throwError: true, value: pcObj.model });
-    await validationCardPlayersPCComment({ throwError: true, value: pcObj.comment });
-    await validationCardPlayersPCSpec({ throwError: true, valueObj: pcObj.specsObj });
-    await validationBoolean({ throwError: true, value: pcObj.search });
-    
-    if (Object.keys(pcObj).length !== 4) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '9tP9T_0Uc', messageID: '3mDvfqZHV' }] });
-    }
-    
-    // console.log('AAAAAAAAAAAAAAAAAAAAAAA');
-    // ---------------------------------------------
-    //   - 所有ハードウェア
-    // ---------------------------------------------
-    
-    const validatedHardwareActiveObj = await validationCardPlayersHardwareActiveArrServer({ throwError: true, valueArr: hardwareActiveObj.valueArr });
-    await validationBoolean({ throwError: true, value: hardwareActiveObj.search });
-    
-    if (Object.keys(hardwareActiveObj).length !== 2) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '4i7mp4lw8', messageID: '3mDvfqZHV' }] });
-    }
-    
-    
-    // ---------------------------------------------
-    //   - 昔、所有していたハードウェア
-    // ---------------------------------------------
-    
-    const validatedHardwareInactiveObj = await validationCardPlayersHardwareInactiveArrServer({ throwError: true, valueArr: hardwareInactiveObj.valueArr });
-    await validationBoolean({ throwError: true, value: hardwareInactiveObj.search });
-    
-    if (Object.keys(hardwareInactiveObj).length !== 2) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'D1H6NUQ2x', messageID: '3mDvfqZHV' }] });
-    }
-    
-    // console.log('AAAAAAAAAAAAAAAAAAAAAAA22222');
-    // console.log(idsArr);
-    // ---------------------------------------------
-    //   - ID
-    // ---------------------------------------------
-    
+    const validatedHardwareActiveObj = await validationCardPlayersHardwareArrServer({ throwError: true, valueArr: hardwareActiveArr });
+    const validatedHardwareInactiveObj = await validationCardPlayersHardwareArrServer({ throwError: true, valueArr: hardwareInactiveArr });
     const validatedIDsArrObj = await validationIDsArrServer({ valueArr: idsArr, loginUsers_id });
-    // console.log('AAAAAAAAAAAAAAAAAAAAAAA33333');
     
-    // ---------------------------------------------
-    //   - 活動時間
-    // ---------------------------------------------
-    
-    await validationCardPlayersActivityTimeArr({ throwError: true, valueArr: activityTimeObj.valueArr });
-    await validationBoolean({ throwError: true, value: activityTimeObj.search });
-    
-    if (Object.keys(activityTimeObj).length !== 2) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'FEhzo-7WZ', messageID: '3mDvfqZHV' }] });
-    }
-    
-    
-    // ---------------------------------------------
-    //   - フレンド募集
-    // ---------------------------------------------
-    
-    await validationCardPlayersLookingForFriendsValue({ throwError: true, value: lookingForFriendsObj.value });
-    await validationCardPlayersLookingForFriendsComment({ throwError: true, value: lookingForFriendsObj.comment });
-    await validationCardPlayersLookingForFriendsIcon({ throwError: true, value: lookingForFriendsObj.icon });
-    await validationBoolean({ throwError: true, value: lookingForFriendsObj.search });
-    
-    if (Object.keys(lookingForFriendsObj).length !== 4) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'O69WGDAX7', messageID: '3mDvfqZHV' }] });
-    }
-    
-    
-    // ---------------------------------------------
-    //   - ボイスチャット
-    // ---------------------------------------------
-    
-    await validationCardPlayersVoiceChatValue({ throwError: true, value: voiceChatObj.value });
-    await validationCardPlayersVoiceChatComment({ throwError: true, value: voiceChatObj.comment });
-    await validationBoolean({ throwError: true, value: voiceChatObj.search });
-    
-    if (Object.keys(voiceChatObj).length !== 3) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '5vBi76LZw', messageID: '3mDvfqZHV' }] });
-    }
-    
-    
-    // ---------------------------------------------
-    //   - リンク
-    // ---------------------------------------------
-    
+    await validationCardPlayersActivityTimeArr({ throwError: true, valueArr: activityTimeArr });
+    await validationCardPlayersLookingForFriendsValue({ throwError: true, value: lookingForFriends });
+    await validationCardPlayersLookingForFriendsIcon({ throwError: true, value: lookingForFriendsIcon });
+    await validationCardPlayersLookingForFriendsComment({ throwError: true, value: lookingForFriendsComment });
+    await validationCardPlayersVoiceChatValue({ throwError: true, value: voiceChat });
+    await validationCardPlayersVoiceChatComment({ throwError: true, value: voiceChatComment });
     await validationCardPlayersLinkArr({ throwError: true, valueArr: linkArr });
+    
+    await validationBoolean({ throwError: true, value: search });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   データ取得　存在しない、または【編集権限】がない場合はエラーが投げられる
+    // --------------------------------------------------
+    
+    const tempOldObj = await ModelCardPlayers.findOneForEdit({
+      
+      localeObj,
+      loginUsers_id,
+      cardPlayers_id: _id,
+      
+    });
+    
+    const oldImagesAndVideosObj = lodashGet(tempOldObj, ['imagesAndVideosObj'], {});
+    const oldImagesAndVideosThumbnailObj = lodashGet(tempOldObj, ['imagesAndVideosThumbnailObj'], {});
     
     
     
@@ -459,32 +305,18 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   メイン画像を保存する
+    //   画像と動画の処理 - メイン画像
     // --------------------------------------------------
     
     let imagesAndVideosConditionObj = {};
     let imagesAndVideosSaveObj = {};
-    let newImagesAndVideos_id = imagesAndVideos_id;
+    let imagesAndVideos_id = '';
     
     if (imagesAndVideosObj) {
       
       
       // --------------------------------------------------
-      //   現在の画像データを取得する
-      // --------------------------------------------------
-      
-      const oldImagesAndVideosObj = await ModelImagesAndVideos.findOne({
-        
-        conditionObj: {
-          _id: imagesAndVideos_id,
-          users_id: loginUsers_id,
-        }
-        
-      });
-      
-      
-      // --------------------------------------------------
-      //   保存する
+      //   画像を保存する
       // --------------------------------------------------
       
       const formatAndSaveObj = await formatAndSave({
@@ -496,19 +328,24 @@ export default async (req, res) => {
         
       });
       
+      
+      // --------------------------------------------------
+      //   imagesAndVideosSaveObj
+      // --------------------------------------------------
+      
       imagesAndVideosSaveObj = lodashGet(formatAndSaveObj, ['imagesAndVideosObj'], {});
       
       
       // --------------------------------------------------
-      //   画像＆動画がすべて削除されている場合は、newImagesAndVideos_id を空にする
+      //   画像＆動画がすべて削除されている場合は、imagesAndVideos_id を空にする
       // --------------------------------------------------
       
       const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
       
       if (arr.length === 0) {
-        newImagesAndVideos_id = '';
+        imagesAndVideos_id = '';
       } else {
-        newImagesAndVideos_id = lodashGet(imagesAndVideosSaveObj, ['_id'], '');
+        imagesAndVideos_id = lodashGet(imagesAndVideosSaveObj, ['_id'], '');
       }
       
       
@@ -527,32 +364,18 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   サムネイル画像を保存する
+    //   画像と動画の処理 - サムネイル画像
     // --------------------------------------------------
     
     let imagesAndVideosThumbnailConditionObj = {};
     let imagesAndVideosThumbnailSaveObj = {};
-    let newImagesAndVideosThumbnail_id = imagesAndVideosThumbnail_id;
+    let imagesAndVideosThumbnail_id = '';
     
     if (imagesAndVideosThumbnailObj) {
       
       
       // --------------------------------------------------
-      //   現在の画像データを取得する
-      // --------------------------------------------------
-      
-      const oldImagesAndVideosThumbnailObj = await ModelImagesAndVideos.findOne({
-        
-        conditionObj: {
-          _id: imagesAndVideosThumbnail_id,
-          users_id: loginUsers_id,
-        }
-        
-      });
-      
-      
-      // --------------------------------------------------
-      //   保存する
+      //   画像を保存する
       // --------------------------------------------------
       
       const formatAndSaveObj = await formatAndSave({
@@ -564,24 +387,29 @@ export default async (req, res) => {
         
       });
       
+      
+      // --------------------------------------------------
+      //   imagesAndVideosSaveObj
+      // --------------------------------------------------
+      
       imagesAndVideosThumbnailSaveObj = lodashGet(formatAndSaveObj, ['imagesAndVideosObj'], {});
       
       
       // --------------------------------------------------
-      //   画像＆動画がすべて削除されている場合は、newImagesAndVideosThumbnail_id を空にする
+      //   画像＆動画がすべて削除されている場合は、imagesAndVideosThumbnail_id を空にする
       // --------------------------------------------------
       
       const arr = lodashGet(imagesAndVideosThumbnailSaveObj, ['arr'], []);
       
       if (arr.length === 0) {
-        newImagesAndVideosThumbnail_id = '';
+        imagesAndVideosThumbnail_id = '';
       } else {
-        newImagesAndVideosThumbnail_id = lodashGet(imagesAndVideosThumbnailSaveObj, ['_id'], '');
+        imagesAndVideosThumbnail_id = lodashGet(imagesAndVideosThumbnailSaveObj, ['_id'], '');
       }
       
       
       // --------------------------------------------------
-      //   imagesAndVideosConditionObj
+      //   imagesAndVideosThumbnailConditionObj
       // --------------------------------------------------
       
       imagesAndVideosThumbnailConditionObj = {
@@ -595,8 +423,14 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   Card Players Save Object
+    //   Insert
     // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   - card-players
+    // ---------------------------------------------
+    
+    let cardPlayersConditionObj = {};
     
     let cardPlayersSaveObj = {
       
@@ -605,33 +439,39 @@ export default async (req, res) => {
       updatedDate: ISO8601,
       users_id: loginUsers_id,
       language: 'ja',
-      nameObj,
-      statusObj,
-      imagesAndVideos_id: newImagesAndVideos_id,
-      imagesAndVideosThumbnail_id: newImagesAndVideosThumbnail_id,
-      commentObj,
-      ageObj,
-      sexObj,
-      addressObj,
-      gamingExperienceObj,
-      hobbiesObj,
-      specialSkillsObj,
-      smartphoneObj,
-      tabletObj,
-      pcObj,
-      hardwareActiveObj: {
-        valueArr: validatedHardwareActiveObj.valueArr,
-        search: hardwareActiveObj.search,
-      },
-      hardwareInactiveObj: {
-        valueArr: validatedHardwareInactiveObj.valueArr,
-        search: hardwareInactiveObj.search,
-      },
+      name,
+      status,
+      imagesAndVideos_id,
+      imagesAndVideosThumbnail_id,
+      comment,
+      age,
+      ageAlternativeText,
+      sex,
+      sexAlternativeText,
+      address: '',
+      addressAlternativeText,
+      gamingExperience,
+      gamingExperienceAlternativeText,
+      hobbiesArr,
+      specialSkillsArr,
+      smartphoneModel,
+      smartphoneComment,
+      tabletModel,
+      tabletComment,
+      pcModel,
+      pcComment,
+      pcSpecsObj,
+      hardwareActiveArr: validatedHardwareActiveObj.valueArr,
+      hardwareInactiveArr: validatedHardwareInactiveObj.valueArr,
       ids_idsArr: validatedIDsArrObj.valueArr,
-      activityTimeObj,
-      lookingForFriendsObj,
-      voiceChatObj,
+      activityTimeArr,
+      lookingForFriends,
+      lookingForFriendsIcon,
+      lookingForFriendsComment,
+      voiceChat,
+      voiceChatComment,
       linkArr,
+      search,
       
     };
     
@@ -639,15 +479,8 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   データベースに保存
+    //   Update
     // --------------------------------------------------
-    
-    let cardPlayersConditionObj = {};
-    
-    
-    // ---------------------------------------------
-    //   - Update
-    // ---------------------------------------------
     
     if (_id) {
       
@@ -678,7 +511,7 @@ export default async (req, res) => {
       
       
       // --------------------------------------------------
-      //   現在、プレイヤーカードを新規追加する機能はないので、更新だけ行う
+      //   DB upsert Transaction
       // --------------------------------------------------
       
       await ModelCardPlayers.transactionForUpsert({
@@ -693,15 +526,14 @@ export default async (req, res) => {
       });
       
       
-    // ---------------------------------------------
-    //   - Insert　まだ作成していない
-    // ---------------------------------------------
+    // --------------------------------------------------
+    //   Insert
+    //   現在、プレイヤーカードを新規追加する機能はないので、更新だけ行う
+    // --------------------------------------------------
       
     } else {
       
-      // cardPlayersConditionObj = {
-      //   _id: shortid.generate()
-      // };
+      
       
     }
     
@@ -713,7 +545,7 @@ export default async (req, res) => {
     //   アクセスしたページ所有者のプレイヤーカード情報
     // --------------------------------------------------
     
-    returnObj.cardPlayersObj = await ModelCardPlayers.findFromSchemaCardPlayers({
+    const resultCardPlayersObj = await ModelCardPlayers.findForCardPlayers({
       
       localeObj,
       users_id: loginUsers_id,
@@ -721,19 +553,30 @@ export default async (req, res) => {
       
     });
     
+    returnObj.cardPlayersArr = resultCardPlayersObj.cardPlayersArr;
+    
+    
+    // returnObj.cardPlayersObj = await ModelCardPlayers.findFromSchemaCardPlayers({
+      
+    //   localeObj,
+    //   users_id: loginUsers_id,
+    //   loginUsers_id,
+      
+    // });
+    
     
     // --------------------------------------------------
     //   データ取得 / Card Players
     //   プレイヤーカード情報 / 編集フォーム用
     // --------------------------------------------------
     
-    returnObj.cardPlayersForEditFormObj = await ModelCardPlayers.findOneForEdit({
+    // returnObj.cardPlayersForEditFormObj = await ModelCardPlayers.findOneForEdit({
       
-      localeObj,
-      loginUsers_id,
-      cardPlayers_id: _id,
+    //   localeObj,
+    //   loginUsers_id,
+    //   cardPlayers_id: _id,
       
-    });
+    // });
     
     
     
@@ -742,14 +585,14 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/db/card-players/upsert.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/db/card-players/upsert.js
+    `);
     
     // console.log(`
-    //   ----- bodyObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(bodyObj)), { colors: true, depth: null })}\n
+    //   ----- tempOldObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(tempOldObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -772,18 +615,11 @@ export default async (req, res) => {
     // `);
     
     
-    
-    
-    
-    // console.log(chalk`
-    //   Object.keys(nameObj).length: {green ${Object.keys(nameObj).length}}
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -803,11 +639,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'DKo69_LP9',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     
@@ -825,6 +664,10 @@ export default async (req, res) => {
 
 
 
+
+// --------------------------------------------------
+//   config
+// --------------------------------------------------
 
 export const config = {
   api: {

@@ -15,6 +15,12 @@ const util = require('util');
 // ---------------------------------------------
 
 const validator = require('validator');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 
 
@@ -22,25 +28,28 @@ const lodashGet = require('lodash/get');
 //   Model
 // ---------------------------------------------
 
-const ModelHardwares = require('../../hardwares/model');
+const ModelHardwares = require('../../hardwares/model.js');
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom.js');
+
+
+
 
 
 
 
 /**
- * 所有ハードウェア
+ * ハードウェア
  * @param {boolean} required - 必須 true / 必須でない false
  * @param {Array} valueArr - 配列
  * @return {Object} バリデーション結果
  */
-const validationCardPlayersHardwareActiveArrServer = async ({ required = false, valueArr }) => {
+const validationCardPlayersHardwareArrServer = async ({ required = false, valueArr }) => {
   
   
   // ---------------------------------------------
@@ -58,8 +67,10 @@ const validationCardPlayersHardwareActiveArrServer = async ({ required = false, 
   const hardwareIDArr = [];
   
   let resultObj = {
+    
     valueArr: [],
     messageID: 'Error',
+    
   };
   
   
@@ -96,10 +107,179 @@ const validationCardPlayersHardwareActiveArrServer = async ({ required = false, 
     //   Loop
     // ---------------------------------------------
     
-    for (let hardwareID of valueArr.values()) {
+    for (let valueObj of valueArr.values()) {
       
       
-      // const hardwareID = dataObj.hardwareID;
+      // ---------------------------------------------
+      //   hardwareID
+      // ---------------------------------------------
+      
+      const hardwareID = valueObj.hardwareID;
+      // console.log(chalk`
+      //   hardwareID: {green ${hardwareID}}
+      // `);
+      
+      // ---------------------------------------------
+      //   文字数チェック
+      // ---------------------------------------------
+      
+      if (!validator.isLength(hardwareID, { min: minLength, max: maxLength })) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'NLlPVoAFH', messageID: 'Pp_CFyt_3' }] });
+      }
+      
+      
+      // ---------------------------------------------
+      //   英数と -_ のみ
+      // ---------------------------------------------
+      
+      if (hardwareID.match(/^[\w\-]+$/) === null) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Mtpgc1ixH', messageID: 'JBkjlGQMh' }] });
+      }
+      
+      
+      hardwareIDArr.push(hardwareID);
+      
+      
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Database
+    // ---------------------------------------------
+    
+    if (hardwareIDArr.length > 0) {
+      
+      
+      // ---------------------------------------------
+      //   find
+      // ---------------------------------------------
+      
+      const docArr = await ModelHardwares.find({
+        
+        conditionObj: {
+          hardwareID: { $in: hardwareIDArr }
+        }
+        
+      });
+      
+      
+      // ---------------------------------------------
+      //   ループしてデータベースに存在している hardwareID のみ resultObj.valueArr に追加する
+      // ---------------------------------------------
+      
+      for (let value of hardwareIDArr.values()) {
+        
+        const tempObj = docArr.find((valueObj) => {
+          return valueObj.hardwareID === value;
+        });
+        
+        if (tempObj) {
+          resultObj.valueArr.push(tempObj.hardwareID);
+        }
+        
+      }
+      
+      
+    }
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   Throw Error
+    // ---------------------------------------------
+    
+    throw errorObj;
+    
+    
+  }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
+  
+  
+};
+
+
+/**
+ * 所有ハードウェア
+ * @param {boolean} required - 必須 true / 必須でない false
+ * @param {Array} valueArr - 配列
+ * @return {Object} バリデーション結果
+ */
+const validationCardPlayersHardwareActiveArrServer = async ({ required = false, valueArr }) => {
+  
+  
+  // ---------------------------------------------
+  //   Config
+  // ---------------------------------------------
+  
+  const minLength = 7;
+  const maxLength = 14;
+  
+  
+  // ---------------------------------------------
+  //   Result Object
+  // ---------------------------------------------
+  
+  const hardwareIDArr = [];
+  
+  let resultObj = {
+    
+    valueArr: [],
+    messageID: 'Error',
+    
+  };
+  
+  
+  try {
+    
+    
+    // ---------------------------------------------
+    //   配列チェック
+    // ---------------------------------------------
+    
+    if (!Array.isArray(valueArr)) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'qmbxqcNfu', messageID: 'qnWsuPcrJ' }] });
+    }
+    
+    
+    // ---------------------------------------------
+    //   空の場合、処理停止
+    // ---------------------------------------------
+    
+    if (valueArr.length === 0) {
+      
+      if (required) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'yWiqPYgmc', messageID: 'cFbXmuFVh' }] });
+      }
+      
+      return resultObj;
+      
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Loop
+    // ---------------------------------------------
+    
+    for (let valueObj of valueArr.values()) {
+      
+      
+      // ---------------------------------------------
+      //   hardwareID
+      // ---------------------------------------------
+      
+      const hardwareID = valueObj.hardwareID;
       // console.log(chalk`
       //   hardwareID: {green ${hardwareID}}
       // `);
@@ -142,9 +322,11 @@ const validationCardPlayersHardwareActiveArrServer = async ({ required = false, 
       // ---------------------------------------------
       
       const docArr = await ModelHardwares.find({
+        
         conditionObj: {
           hardwareID: { $in: hardwareIDArr }
         }
+        
       });
       
       
@@ -217,8 +399,10 @@ const validationCardPlayersHardwareInactiveArrServer = async ({ required = false
   const hardwareIDArr = [];
   
   let resultObj = {
+    
     valueArr: [],
     messageID: 'Error',
+    
   };
   
   
@@ -294,9 +478,11 @@ const validationCardPlayersHardwareInactiveArrServer = async ({ required = false
       // ---------------------------------------------
       
       const docArr = await ModelHardwares.find({
+        
         conditionObj: {
           hardwareID: { $in: hardwareIDArr }
         }
+        
       });
       
       
@@ -350,6 +536,9 @@ const validationCardPlayersHardwareInactiveArrServer = async ({ required = false
 // --------------------------------------------------
 
 module.exports = {
-  validationCardPlayersHardwareActiveArrServer,
-  validationCardPlayersHardwareInactiveArrServer
+  
+  validationCardPlayersHardwareArrServer,
+  // validationCardPlayersHardwareActiveArrServer,
+  // validationCardPlayersHardwareInactiveArrServer,
+  
 };

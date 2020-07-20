@@ -15,13 +15,8 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-// import Link from 'next/link';
-// import Router from 'next/router';
 import { useIntl } from 'react-intl';
 import { Element } from 'react-scroll';
-// import Pagination from 'rc-pagination';
-// import localeInfo from 'rc-pagination/lib/locale/ja_JP';
-// import Cookies from 'js-cookie';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -40,7 +35,6 @@ import lodashGet from 'lodash/get';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -91,18 +85,6 @@ import Form from 'app/common/card/v2/components/form-card-player.js';
 
 
 // --------------------------------------------------
-//   Emotion
-//   https://emotion.sh/docs/composition
-// --------------------------------------------------
-
-// const cssFollowButton = css`
-//   border-top: 1px dashed #A4A4A4;
-//   margin: 24px 0 0 0;
-//   padding: 24px 0 0 0;
-// `;
-
-
-// --------------------------------------------------
 //   Material UI Style Overrides
 //   https://material-ui.com/styles/basics/
 // --------------------------------------------------
@@ -146,6 +128,7 @@ const Component = (props) => {
     // showFollow,
     showEditButton = true,
     defaultExpanded = true,
+    setCardPlayersArr,
     
   } = props;
   
@@ -492,6 +475,7 @@ const Component = (props) => {
             <Form
               cardPlayers_id={cardPlayers_id}
               setShowForm={setShowForm}
+              setCardPlayersArr={setCardPlayersArr}
             />
             
           : // プレイヤーカード

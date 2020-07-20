@@ -850,459 +850,459 @@ const aggregateAndFormat = async ({
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @return {Object} 取得データ
  */
-const findFromSchemaCardPlayers = async ({ 
+// const findFromSchemaCardPlayers = async ({ 
   
-  localeObj,
-  users_id,
-  cardPlayers_id,
-  loginUsers_id,
+//   localeObj,
+//   users_id,
+//   cardPlayers_id,
+//   loginUsers_id,
   
-}) => {
+// }) => {
   
   
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Database
+//   // --------------------------------------------------
   
-  try {
+//   try {
     
     
-    // --------------------------------------------------
-    //   Language & Country
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Language & Country
+//     // --------------------------------------------------
     
-    const language = lodashGet(localeObj, ['language'], '');
-    const country = lodashGet(localeObj, ['country'], '');
-    
-    
+//     const language = lodashGet(localeObj, ['language'], '');
+//     const country = lodashGet(localeObj, ['country'], '');
     
     
-    // --------------------------------------------------
-    //   Match Condition Array
-    // --------------------------------------------------
-    
-    let matchConditionArr = [
-      {
-        $match: {
-          users_id
-        }
-      },
-    ];
-    
-    if (cardPlayers_id) {
-      
-      matchConditionArr = [
-        {
-          $match: {
-            _id: cardPlayers_id
-          }
-        },
-      ];
-      
-    }
     
     
-    // console.log(`
-    //   ----- matchConditionArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(matchConditionArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+//     // --------------------------------------------------
+//     //   Match Condition Array
+//     // --------------------------------------------------
+    
+//     let matchConditionArr = [
+//       {
+//         $match: {
+//           users_id
+//         }
+//       },
+//     ];
+    
+//     if (cardPlayers_id) {
+      
+//       matchConditionArr = [
+//         {
+//           $match: {
+//             _id: cardPlayers_id
+//           }
+//         },
+//       ];
+      
+//     }
     
     
-    // --------------------------------------------------
-    //   Card Players のデータを取得
-    // --------------------------------------------------
+//     // console.log(`
+//     //   ----- matchConditionArr -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(matchConditionArr)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
     
-    const docArr = await SchemaCardPlayers.aggregate([
+    
+//     // --------------------------------------------------
+//     //   Card Players のデータを取得
+//     // --------------------------------------------------
+    
+//     const docArr = await SchemaCardPlayers.aggregate([
       
       
-      // --------------------------------------------------
-      //   Match Condition
-      // --------------------------------------------------
+//       // --------------------------------------------------
+//       //   Match Condition
+//       // --------------------------------------------------
       
-      ...matchConditionArr,
-      
-      
-      // --------------------------------------------------
-      //   images-and-videos / メイン画像
-      // --------------------------------------------------
-      
-      {
-        $lookup:
-          {
-            from: 'images-and-videos',
-            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$_id', '$$letImagesAndVideos_id']
-                  },
-                }
-              },
-              {
-                $project: {
-                  createdDate: 0,
-                  updatedDate: 0,
-                  users_id: 0,
-                  __v: 0,
-                }
-              }
-            ],
-            as: 'imagesAndVideosObj'
-          }
-      },
-      
-      {
-        $unwind: {
-          path: '$imagesAndVideosObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
+//       ...matchConditionArr,
       
       
-      // --------------------------------------------------
-      //   images-and-videos / サムネイル用
-      // --------------------------------------------------
+//       // --------------------------------------------------
+//       //   images-and-videos / メイン画像
+//       // --------------------------------------------------
       
-      {
-        $lookup:
-          {
-            from: 'images-and-videos',
-            let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
-                  },
-                }
-              },
-              {
-                $project: {
-                  createdDate: 0,
-                  updatedDate: 0,
-                  users_id: 0,
-                  __v: 0,
-                }
-              }
-            ],
-            as: 'imagesAndVideosThumbnailObj'
-          }
-      },
+//       {
+//         $lookup:
+//           {
+//             from: 'images-and-videos',
+//             let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $eq: ['$_id', '$$letImagesAndVideos_id']
+//                   },
+//                 }
+//               },
+//               {
+//                 $project: {
+//                   createdDate: 0,
+//                   updatedDate: 0,
+//                   users_id: 0,
+//                   __v: 0,
+//                 }
+//               }
+//             ],
+//             as: 'imagesAndVideosObj'
+//           }
+//       },
       
-      {
-        $unwind: {
-          path: '$imagesAndVideosThumbnailObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
-      
-      
-      // --------------------------------------------------
-      //   users
-      // --------------------------------------------------
-      
-      {
-        $lookup:
-          {
-            from: 'users',
-            let: { letUsers_id: '$users_id' },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$_id', '$$letUsers_id']
-                  },
-                }
-              },
-              {
-                $project: {
-                  _id: 0,
-                  accessDate: 1,
-                  exp: 1,
-                  userID: 1,
-                }
-              }
-            ],
-            as: 'usersObj'
-          }
-      },
-      
-      {
-        $unwind: '$usersObj'
-      },
+//       {
+//         $unwind: {
+//           path: '$imagesAndVideosObj',
+//           preserveNullAndEmptyArrays: true,
+//         }
+//       },
       
       
-      // --------------------------------------------------
-      //   hardwares
-      // --------------------------------------------------
+//       // --------------------------------------------------
+//       //   images-and-videos / サムネイル用
+//       // --------------------------------------------------
       
-      {
-        $lookup:
-          {
-            from: 'hardwares',
-            let: {
-              letHardwareActiveArr: '$hardwareActiveArr',
-              letHardwareInactiveArr: '$hardwareInactiveArr'
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $or: [
-                      {
-                        $and: [
-                          { $eq: ['$language', language] },
-                          { $eq: ['$country', country] },
-                          { $in: ['$hardwareID', '$$letHardwareActiveArr'] }
-                        ]
-                      },
-                      {
-                        $and: [
-                          { $eq: ['$language', language] },
-                          { $eq: ['$country', country] },
-                          { $in: ['$hardwareID', '$$letHardwareInactiveArr'] }
-                        ]
-                      }
-                    ]
-                  }
-                }
-              },
-              {
-                $project: {
-                  _id: 0,
-                  hardwareID: 1,
-                  name: 1,
-                }
-              }
-            ],
-            as: 'hardwaresArr'
-          }
-      },
+//       {
+//         $lookup:
+//           {
+//             from: 'images-and-videos',
+//             let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+//                   },
+//                 }
+//               },
+//               {
+//                 $project: {
+//                   createdDate: 0,
+//                   updatedDate: 0,
+//                   users_id: 0,
+//                   __v: 0,
+//                 }
+//               }
+//             ],
+//             as: 'imagesAndVideosThumbnailObj'
+//           }
+//       },
+      
+//       {
+//         $unwind: {
+//           path: '$imagesAndVideosThumbnailObj',
+//           preserveNullAndEmptyArrays: true,
+//         }
+//       },
       
       
-      // --------------------------------------------------
-      //   follows
-      // --------------------------------------------------
+//       // --------------------------------------------------
+//       //   users
+//       // --------------------------------------------------
       
-      {
-        $lookup:
-          {
-            from: 'follows',
-            let: { letUsers_id: '$users_id' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$users_id', '$$letUsers_id'] },
-                }
-              },
-            ],
-            as: 'followsObj'
-          }
-      },
+//       {
+//         $lookup:
+//           {
+//             from: 'users',
+//             let: { letUsers_id: '$users_id' },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $eq: ['$_id', '$$letUsers_id']
+//                   },
+//                 }
+//               },
+//               {
+//                 $project: {
+//                   _id: 0,
+//                   accessDate: 1,
+//                   exp: 1,
+//                   userID: 1,
+//                 }
+//               }
+//             ],
+//             as: 'usersObj'
+//           }
+//       },
       
-      {
-        $unwind: '$followsObj'
-      },
+//       {
+//         $unwind: '$usersObj'
+//       },
       
       
-      // --------------------------------------------------
-      //   ids
-      // --------------------------------------------------
+//       // --------------------------------------------------
+//       //   hardwares
+//       // --------------------------------------------------
       
-      {
-        $lookup:
-          {
-            from: 'ids',
-            let: { cardPlayersIds_idArr: '$ids_idsArr' },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $in: ['$_id', '$$cardPlayersIds_idArr']
-                  }
-                }
-              },
+//       {
+//         $lookup:
+//           {
+//             from: 'hardwares',
+//             let: {
+//               letHardwareActiveArr: '$hardwareActiveArr',
+//               letHardwareInactiveArr: '$hardwareInactiveArr'
+//             },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $or: [
+//                       {
+//                         $and: [
+//                           { $eq: ['$language', language] },
+//                           { $eq: ['$country', country] },
+//                           { $in: ['$hardwareID', '$$letHardwareActiveArr'] }
+//                         ]
+//                       },
+//                       {
+//                         $and: [
+//                           { $eq: ['$language', language] },
+//                           { $eq: ['$country', country] },
+//                           { $in: ['$hardwareID', '$$letHardwareInactiveArr'] }
+//                         ]
+//                       }
+//                     ]
+//                   }
+//                 }
+//               },
+//               {
+//                 $project: {
+//                   _id: 0,
+//                   hardwareID: 1,
+//                   name: 1,
+//                 }
+//               }
+//             ],
+//             as: 'hardwaresArr'
+//           }
+//       },
+      
+      
+//       // --------------------------------------------------
+//       //   follows
+//       // --------------------------------------------------
+      
+//       {
+//         $lookup:
+//           {
+//             from: 'follows',
+//             let: { letUsers_id: '$users_id' },
+//             pipeline: [
+//               { $match:
+//                 { $expr:
+//                   { $eq: ['$users_id', '$$letUsers_id'] },
+//                 }
+//               },
+//             ],
+//             as: 'followsObj'
+//           }
+//       },
+      
+//       {
+//         $unwind: '$followsObj'
+//       },
+      
+      
+//       // --------------------------------------------------
+//       //   ids
+//       // --------------------------------------------------
+      
+//       {
+//         $lookup:
+//           {
+//             from: 'ids',
+//             let: { cardPlayersIds_idArr: '$ids_idsArr' },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $in: ['$_id', '$$cardPlayersIds_idArr']
+//                   }
+//                 }
+//               },
               
               
-              // --------------------------------------------------
-              //   ids / games
-              // --------------------------------------------------
+//               // --------------------------------------------------
+//               //   ids / games
+//               // --------------------------------------------------
               
-              {
-                $lookup:
-                  {
-                    from: 'games',
-                    let: { letGameCommunities_id: '$gameCommunities_id' },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $and: [
-                              { $eq: ['$language', language] },
-                              { $eq: ['$country', country] },
-                              { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
-                            ]
-                          },
-                        }
-                      },
+//               {
+//                 $lookup:
+//                   {
+//                     from: 'games',
+//                     let: { letGameCommunities_id: '$gameCommunities_id' },
+//                     pipeline: [
+//                       {
+//                         $match: {
+//                           $expr: {
+//                             $and: [
+//                               { $eq: ['$language', language] },
+//                               { $eq: ['$country', country] },
+//                               { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
+//                             ]
+//                           },
+//                         }
+//                       },
                       
                       
-                      // --------------------------------------------------
-                      //   ids / games / images-and-videos / サムネイル用
-                      // --------------------------------------------------
+//                       // --------------------------------------------------
+//                       //   ids / games / images-and-videos / サムネイル用
+//                       // --------------------------------------------------
                       
-                      {
-                        $lookup:
-                          {
-                            from: 'images-and-videos',
-                            let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-                            pipeline: [
-                              {
-                                $match: {
-                                  $expr: {
-                                    $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
-                                  },
-                                }
-                              },
-                              {
-                                $project: {
-                                  createdDate: 0,
-                                  updatedDate: 0,
-                                  users_id: 0,
-                                  __v: 0,
-                                }
-                              }
-                            ],
-                            as: 'imagesAndVideosThumbnailObj'
-                          }
-                      },
+//                       {
+//                         $lookup:
+//                           {
+//                             from: 'images-and-videos',
+//                             let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+//                             pipeline: [
+//                               {
+//                                 $match: {
+//                                   $expr: {
+//                                     $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+//                                   },
+//                                 }
+//                               },
+//                               {
+//                                 $project: {
+//                                   createdDate: 0,
+//                                   updatedDate: 0,
+//                                   users_id: 0,
+//                                   __v: 0,
+//                                 }
+//                               }
+//                             ],
+//                             as: 'imagesAndVideosThumbnailObj'
+//                           }
+//                       },
                       
-                      {
-                        $unwind: {
-                          path: '$imagesAndVideosThumbnailObj',
-                          preserveNullAndEmptyArrays: true,
-                        }
-                      },
+//                       {
+//                         $unwind: {
+//                           path: '$imagesAndVideosThumbnailObj',
+//                           preserveNullAndEmptyArrays: true,
+//                         }
+//                       },
                       
                       
-                      {
-                        $project: {
-                          _id: 1,
-                          gameCommunities_id: 1,
-                          name: 1,
-                          imagesAndVideosThumbnailObj: 1,
-                        }
-                      }
-                    ],
-                    as: 'gamesObj'
-                  }
-              },
+//                       {
+//                         $project: {
+//                           _id: 1,
+//                           gameCommunities_id: 1,
+//                           name: 1,
+//                           imagesAndVideosThumbnailObj: 1,
+//                         }
+//                       }
+//                     ],
+//                     as: 'gamesObj'
+//                   }
+//               },
               
-              {
-                $unwind: {
-                  path: '$gamesObj',
-                  preserveNullAndEmptyArrays: true
-                }
-              },
+//               {
+//                 $unwind: {
+//                   path: '$gamesObj',
+//                   preserveNullAndEmptyArrays: true
+//                 }
+//               },
               
               
-              {
-                $project: {
-                  createdDate: 0,
-                  updatedDate: 0,
-                  users_id: 0,
-                  search: 0,
-                  __v: 0,
-                }
-              }
-            ],
-            as: 'idsArr'
-          }
-      },
+//               {
+//                 $project: {
+//                   createdDate: 0,
+//                   updatedDate: 0,
+//                   users_id: 0,
+//                   search: 0,
+//                   __v: 0,
+//                 }
+//               }
+//             ],
+//             as: 'idsArr'
+//           }
+//       },
       
       
-      // --------------------------------------------------
-      //   $project
-      // --------------------------------------------------
+//       // --------------------------------------------------
+//       //   $project
+//       // --------------------------------------------------
       
-      {
-        $project: {
-          __v: 0,
-          createdDate: 0,
-          language: 0,
-          activityTimeArr: { _id: 0 },
-          linkArr: { _id: 0 },
-          search: 0,
-        }
-      },
+//       {
+//         $project: {
+//           __v: 0,
+//           createdDate: 0,
+//           language: 0,
+//           activityTimeArr: { _id: 0 },
+//           linkArr: { _id: 0 },
+//           search: 0,
+//         }
+//       },
       
       
-    ]).exec();
+//     ]).exec();
     
     
     
     
-    // --------------------------------------------------
-    //   Format
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Format
+//     // --------------------------------------------------
     
-    const returnObj = formatCardPlayersArrFromSchemaCardPlayers({
+//     const returnObj = formatCardPlayersArrFromSchemaCardPlayers({
       
-      localeObj,
-      loginUsers_id,
-      arr: docArr,
+//       localeObj,
+//       loginUsers_id,
+//       arr: docArr,
       
-    });
+//     });
     
     
     
     
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   console.log
+//     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/@database/card-players/model.js - findFromSchemaCardPlayers
-    // `);
+//     // console.log(`
+//     //   ----------------------------------------\n
+//     //   /app/@database/card-players/model.js - findFromSchemaCardPlayers
+//     // `);
     
-    // console.log(`
-    //   ----- docArr -----\n
-    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+//     // console.log(`
+//     //   ----- docArr -----\n
+//     //   ${util.inspect(docArr, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+//     // console.log(`
+//     //   ----- returnObj -----\n
+//     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
     
-    // console.log(`
-    //   ----- resultIDsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultIDsObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
+//     // console.log(`
+//     //   ----- resultIDsObj -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(resultIDsObj)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
     
     
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return returnObj;
     
     
-  } catch (err) {
+//     // --------------------------------------------------
+//     //   Return
+//     // --------------------------------------------------
     
-    throw err;
+//     return returnObj;
     
-  }
+    
+//   } catch (err) {
+    
+//     throw err;
+    
+//   }
   
-};
+// };
 
 
 
@@ -3136,6 +3136,8 @@ const transactionForUpsert = async ({
   const session = await SchemaCardPlayers.startSession();
   
   
+  
+  
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
@@ -3339,7 +3341,7 @@ module.exports = {
   deleteMany,
   
   findForCardPlayers,
-  findFromSchemaCardPlayers,
+  // findFromSchemaCardPlayers,
   findOneForEdit,
   // findOneBy_id,
   findOneBy_idForEditForm,

@@ -21,7 +21,8 @@ import { useIntl } from 'react-intl';
 import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
-// import Cookies from 'js-cookie';
+import moment from 'moment';
+import Cookies from 'js-cookie';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -60,14 +61,24 @@ import Select from '@material-ui/core/Select';
 //   States
 // ---------------------------------------------
 
-// import { ContainerStateForum } from 'app/@states/forum.js';
+import { ContainerStateUser } from 'app/@states/user.js';
+import { ContainerStateLayout } from 'app/@states/layout.js';
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { CustomError } from 'app/@modules/error/custom.js';
+import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-// import CardPlayer from '../../card/player/components/player';
+import CardPlayer from 'app/common/card/v2/components/card-player.js';
 
 // import Panel from 'app/common/layout/v2/components/panel.js';
 // import Thread from 'app/common/forum/v2/components/thread.js';
@@ -130,18 +141,13 @@ const Component = (props) => {
   
   const {
     
-    // urlID,
-    // gameCommunities_id,
-    // userCommunityID,
-    // userCommunities_id,
-    
     pageType,
     users_id,
     gameCommunities_id,
     userCommunities_id,
-    pathArr,
-    pathname,
     accessLevel,
+    // propsCardPlayersObj,
+    // propsFollowMembersObj,
     
   } = props;
   
@@ -156,6 +162,10 @@ const Component = (props) => {
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
+  const [controlType, setControlType] = useState(pageType === 'ur' ? 'follow' : 'followed');
+  const [dialogType, setDialogType] = useState('unfollow');
+  const [cardPlayersObj, setCardPlayersObj] = useState(props.cardPlayersObj);
+  const [followMembersObj, setFollowMembersObj] = useState(props.followMembersObj);
   
   useEffect(() => {
     
@@ -170,13 +180,19 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
   
-  // const stateForum = ContainerStateForum.useContainer();
+  const stateUser = ContainerStateUser.useContainer();
+  const stateLayout = ContainerStateLayout.useContainer();
   
-  // const {
+  const { login, loginUsersObj } = stateUser;
+  
+  const {
     
-  //   forumThreadsObj,
+    handleSnackbarOpen,
+    handleLoadingOpen,
+    handleLoadingClose,
+    handleScrollTo,
     
-  // } = stateForum;
+  } = stateLayout;
   
   
   
@@ -293,44 +309,154 @@ const Component = (props) => {
   
   
   
+  /**
+   * フォロワー / メンバーを読み込む
+   * @param {string} users_id - DB users _id / ユーザーID
+   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
+   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティID
+   * @param {string} changeControlType - 表示するタイプを変更する場合入力　フォロー、フォロワー、承認、ブロックのどれか
+   * @param {number} page - スレッドのページ
+   * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
+   * @param {boolean} forceReload - 強制的に再読み込みする場合は true
+   */
+  const handleControlButton = async ({
+    
+    users_id,
+    gameCommunities_id,
+    userCommunities_id,
+    changeControlType,
+    pageType,
+    page = 1,
+    changeLimit,
+    forceReload = false,
+    
+  }) => {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Property
+      // ---------------------------------------------
+      
+      let newControlType = changeControlType || controlType;
+      
+      const loadedDate = lodashGet(followMembersObj, [`${newControlType}Obj`, `page${page}Obj`, 'loadedDate'], '');
+      const arr = lodashGet(followMembersObj, [`${newControlType}Obj`, `page${page}Obj`, 'arr'], []);
+      
+      let limit = parseInt((getCookie({ key: 'followLimit' }) || process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT), 10);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Change Limit
+      // ---------------------------------------------
+      
+      if (changeLimit) {
+        
+        
+        limit = changeLimit;
+        
+        
+        // ---------------------------------------------
+        //   Set Cookie - followLimit
+        // ---------------------------------------------
+        
+        Cookies.set('followLimit', changeLimit);
+        
+        
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   再読込するかどうか
+      // ---------------------------------------------
+      
+      let reload = false;
+      
+      
+      
+      // ---------------------------------------------
+      //   controlType を変更する場合
+      // ---------------------------------------------
+      
+      if (changeControlType) {
+        
+        
+        // ---------------------------------------------
+        //   Set controlType
+        // ---------------------------------------------
+        
+        setControlType(changeControlType);
+        
+        
+        // ---------------------------------------------
+        //   再読込する
+        // ---------------------------------------------
+        
+        reload = true;
+        
+        
+      // ---------------------------------------------
+      //   1ページに表示する件数を変更した場合、再読込
+      // ---------------------------------------------
+      
+      } else if (changeLimit || forceReload) {
+        
+        
+        // ---------------------------------------------
+        //   再読込
+        // ---------------------------------------------
+        
+        reload = true;
+        
+      
+      // ---------------------------------------------
+      //   最後の読み込み以降に更新があった場合
+      //   または最後の読み込みからある程度時間（10分）が経っていた場合、再読込する
+      // ---------------------------------------------
+        
+      } else if (loadedDate) {
+        
+        const datetimeNow = moment().utcOffset(0);
+        const datetimeReloadLimit = moment(loadedDate).add(process.env.NEXT_PUBLIC_FOLLOWERS_RELOAD_MINUTES, 'm').utcOffset(0);
+        
+        if (datetimeNow.isAfter(datetimeReloadLimit)) {
+          reload = true;
+        }
+        
+      }
+      
+      
+      
+    } catch (errorObj) {}
+    
+    
+  };
+  
+  
+  
+  
   // --------------------------------------------------
-  //   Thread
+  //   Property
   // --------------------------------------------------
   
-  // const page = lodashGet(forumThreadsObj, ['page'], 1);
-  // const limit = lodashGet(forumThreadsObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT, 10));
-  // const count = lodashGet(forumThreadsObj, ['count'], 0);
-  // const arr = lodashGet(forumThreadsObj, [`page${page}Obj`, 'arr'], []);
+  const page = lodashGet(followMembersObj, [`${controlType}Obj`, 'page'], 1);
+  const limit = lodashGet(followMembersObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT, 10));
+  const count = lodashGet(followMembersObj, [`${controlType}Obj`, 'count'], 0);
+  const arr = lodashGet(followMembersObj, [`${controlType}Obj`, `page${page}Obj`, 'arr'], []);
   
+  let approvalCount = lodashGet(followMembersObj, ['approvalObj', 'count'], 0);
   
-  // // --------------------------------------------------
-  // //   Link Return Top
-  // // --------------------------------------------------
+  if (approvalCount > 99) {
+    approvalCount = '99+';
+  }
   
-  // let linkReturnTopHref = '';
-  // let linkReturnTopAs = '';
-  
-  
-  // // ---------------------------------------------
-  // //   - Game Community
-  // // ---------------------------------------------
-  
-  // if (urlID) {
-    
-  //   linkReturnTopHref = `/gc/[urlID]/index?urlID=${urlID}`;
-  //   linkReturnTopAs = `/gc/${urlID}`;
-    
-    
-  // // ---------------------------------------------
-  // //   - User Community
-  // // ---------------------------------------------
-  
-  // } else if (userCommunityID) {
-    
-  //   linkReturnTopHref = `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`;
-  //   linkReturnTopAs = `/uc/${userCommunityID}`;
-    
-  // }
+  const loginUsers_id = lodashGet(loginUsersObj, ['_id'], '');
   
   
   
@@ -341,14 +467,15 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/forum/v2/components/forum.js
+  //   /app/common/follow/v2/components/members.js
   // `);
   
   // console.log(chalk`
-  //   urlID: {green ${urlID}}
+  //   users_id: {green ${users_id}}
   //   gameCommunities_id: {green ${gameCommunities_id}}
-  //   userCommunityID: {green ${userCommunityID}}
   //   userCommunities_id: {green ${userCommunities_id}}
+    
+  //   accessLevel: {green ${accessLevel}}
     
   //   page: {green ${page}}
   //   count: {green ${count}}
@@ -365,27 +492,262 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Component - Thread
+  //   ダイアログ
+  // --------------------------------------------------
+  
+  // const dialogType = lodashGet(dataObj, [...pathArr, 'dialogObj', 'type'], 'unfollow');
+  // const showDialog = lodashGet(dataObj, [...pathArr, 'showDialog'], false);
+  
+  
+  let dialogTitle = '';
+  let dialogDescription = '';
+  
+  
+  if (pageType === 'uc') {
+    
+    if (dialogType === 'unfollow') {
+      
+      dialogTitle = 'コミュニティ退会';
+      dialogDescription = 'コミュニティから退会させますか？';
+      
+    } else if (dialogType === 'approval') {
+      
+      dialogTitle = 'コミュニティへの参加承認';
+      dialogDescription = 'コミュニティへの参加を承認しますか？';
+      
+    } else if (dialogType === 'unapproval') {
+      
+      dialogTitle = 'コミュニティへの参加拒否';
+      dialogDescription = 'コミュニティへの参加を拒否しますか？';
+      
+    }
+    
+  } else {
+    
+    if (dialogType === 'unfollow') {
+      
+      dialogTitle = 'フォロー解除';
+      dialogDescription = 'フォローを解除しますか？';
+      
+    } else if (dialogType === 'approval') {
+      
+      dialogTitle = 'フォロー承認';
+      dialogDescription = 'フォローを承認しますか？';
+      
+    } else if (dialogType === 'unapproval') {
+      
+      dialogTitle = 'フォロー拒否';
+      dialogDescription = 'フォローを拒否しますか？';
+      
+    }
+    
+  }
+  
+  
+  if (dialogType === 'block') {
+    
+    dialogTitle = 'ブロック';
+    dialogDescription = 'ブロックしますか？';
+    
+  } else if (dialogType === 'unblock') {
+    
+    dialogTitle = 'ブロック解除';
+    dialogDescription = 'ブロックを解除しますか？';
+    
+  }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Component - Card Players
   // --------------------------------------------------
   
   const componentsArr = [];
   
   
-  // for (let forumThreads_id of arr.values()) {
+  for (const [index, cardPlayers_id] of arr.entries()) {
     
-  //   componentsArr.push(
-  //     <Thread
-  //       key={forumThreads_id}
-  //       urlID={urlID}
-  //       gameCommunities_id={gameCommunities_id}
-  //       userCommunityID={userCommunityID}
-  //       userCommunities_id={userCommunities_id}
-  //       forumThreads_id={forumThreads_id}
-  //       enableAnonymity={enableAnonymity}
-  //     />
-  //   );
     
-  // }
+    // --------------------------------------------------
+    //   CardPlayersObj
+    // --------------------------------------------------
+    
+    const targetCardPlayersObj = lodashGet(cardPlayersObj, [cardPlayers_id], {});
+    
+    
+    // --------------------------------------------------
+    //   targetUsers_id - 管理する相手の users_id
+    // --------------------------------------------------
+    
+    const targetUsers_id = lodashGet(cardPlayersObj, [cardPlayers_id, 'users_id'], '');
+    
+    
+    // --------------------------------------------------
+    //   push
+    // --------------------------------------------------
+    
+    componentsArr.push(
+      <div
+        css={css`
+          ${index === 0 ? 'margin: 0' : 'margin: 16px 0 0 0'};
+        `}
+        key={index}
+      >
+        
+        
+        {/* Card Player */}
+        <CardPlayer
+          obj={targetCardPlayersObj}
+          showFollow={true}
+          showEditButton={true}
+          defaultExpanded={false}
+        />
+        
+        
+        
+        
+        {/* フォロワー管理ボタン（自分のカードには管理ボタンを表示しない） */}
+        {(accessLevel >= 50 && loginUsers_id !== targetUsers_id) &&
+          <Paper
+            css={css`
+              display: flex;
+              flex-flow: row wrap;
+              border-top: 1px dashed #A4A4A4;
+              margin: 0 0 16px 0;
+              padding: 10px 12px;
+            `}
+          >
+            
+            
+            {controlType === 'follow' &&
+              <div
+                css={css`
+                  margin: 0 16px 0 0;
+                `}
+              >
+                <Button
+                  css={cssButton}
+                  variant="contained"
+                  color="secondary"
+                  disabled={buttonDisabled}
+                  // onClick={() => handleShowDialog({
+                  //   pathArr,
+                  //   pathname,
+                  //   users_id,
+                  //   gameCommunities_id,
+                  //   userCommunities_id,
+                  //   targetUsers_id,
+                  //   type: 'unfollow',
+                  // })}
+                >
+                  {pageType === 'ur' ? 'フォロー解除' : '退会'}
+                </Button>
+              </div>
+            }
+            
+            
+            {controlType === 'approval' &&
+              <React.Fragment>
+                
+                <Button
+                  css={cssButton}
+                  variant="contained"
+                  color="secondary"
+                  disabled={buttonDisabled}
+                  // onClick={() => handleShowDialog({
+                  //   pathArr,
+                  //   pathname,
+                  //   users_id,
+                  //   gameCommunities_id,
+                  //   userCommunities_id,
+                  //   targetUsers_id,
+                  //   type: 'approval',
+                  // })}
+                >
+                  {pageType === 'ur' ? 'フォロー承認' : '参加承認'}
+                </Button>
+                
+                
+                <div
+                  css={css`
+                    margin: 0 16px 0 0;
+                  `}
+                >
+                  <Button
+                    css={cssButton}
+                    variant="contained"
+                    color="primary"
+                    disabled={buttonDisabled}
+                    // onClick={() => handleShowDialog({
+                    //   pathArr,
+                    //   pathname,
+                    //   users_id,
+                    //   gameCommunities_id,
+                    //   userCommunities_id,
+                    //   targetUsers_id,
+                    //   type: 'unapproval',
+                    // })}
+                  >
+                    {pageType === 'ur' ? 'フォロー拒否' : '参加拒否'}
+                  </Button>
+                </div>
+                
+              </React.Fragment>
+            }
+            
+            
+            {controlType !== 'block' &&
+              <Button
+                css={cssButton}
+                variant="contained"
+                color="secondary"
+                disabled={buttonDisabled}
+                // onClick={() => handleShowDialog({
+                //   pathArr,
+                //   pathname,
+                //   users_id,
+                //   gameCommunities_id,
+                //   userCommunities_id,
+                //   targetUsers_id,
+                //   type: 'block',
+                // })}
+              >
+                ブロック
+              </Button>
+            }
+            
+            
+            {controlType === 'block' &&
+              <Button
+                css={cssButton}
+                variant="contained"
+                color="primary"
+                disabled={buttonDisabled}
+                // onClick={() => handleShowDialog({
+                //   pathArr,
+                //   pathname,
+                //   users_id,
+                //   gameCommunities_id,
+                //   userCommunities_id,
+                //   targetUsers_id,
+                //   type: 'unblock',
+                // })}
+              >
+                ブロック解除
+              </Button>
+            }
+            
+            
+          </Paper>
+        }
+        
+        
+      </div>
+    );
+    
+    
+  }
   
   
   
@@ -400,7 +762,127 @@ const Component = (props) => {
     >
       
       
-      {/* Forum */}
+      {/* Control Buttons */}
+      <Paper
+        css={css`
+          display: flex;
+          flex-flow: row wrap;
+          margin: 0 0 16px 0;
+          padding: 12px;
+        `}
+      >
+      
+        <ButtonGroup
+          size="small"
+          color="primary"
+          aria-label="outlined primary button group"
+          disabled={buttonDisabled}
+        >
+          
+          
+          {/* ユーザーページの場合のみフォローしているユーザーを表示する */}
+          {pageType === 'ur' &&
+            <Button
+              onClick={() => handleControlButton({
+                users_id,
+                gameCommunities_id,
+                userCommunities_id,
+                changeControlType: 'follow',
+                pageType,
+                page: 1,
+              })}
+            >
+              <span
+                css={css`
+                  font-weight: ${controlType === 'follow' ? 'bold' : 'normal'};
+                `}
+              >
+                フォロー
+              </span>
+            </Button>
+          }
+          
+          
+          
+          
+          <Button
+            onClick={() => handleControlButton({
+              users_id,
+              gameCommunities_id,
+              userCommunities_id,
+              changeControlType: 'followed',
+              pageType,
+              page: 1,
+            })}
+          >
+            <span
+              css={css`
+                font-weight: ${controlType === 'followed' ? 'bold' : 'normal'};
+              `}
+            >
+              {pageType === 'uc' ? 'メンバー' : 'フォロワー'}
+            </span>
+          </Button>
+          
+          
+          
+          
+          {/* 管理者用 */}
+          {accessLevel >= 50 &&
+            <Button
+              onClick={() => handleControlButton({
+                users_id,
+                gameCommunities_id,
+                userCommunities_id,
+                changeControlType: 'approval',
+                pageType,
+                page: 1,
+              })}
+            >
+              <span
+                css={css`
+                  font-weight: ${controlType === 'approval' ? 'bold' : 'normal'};
+                `}
+              >
+                承認 ({approvalCount})
+              </span>
+            </Button>
+          }
+          
+          
+          
+          
+          {/* 管理者用 */}
+          {accessLevel >= 50 &&
+            <Button
+              onClick={() => handleControlButton({
+                users_id,
+                gameCommunities_id,
+                userCommunities_id,
+                changeControlType: 'block',
+                pageType,
+                page: 1,
+              })}
+            >
+              <span
+                css={css`
+                  font-weight: ${controlType === 'block' ? 'bold' : 'normal'};
+                `}
+              >
+                ブロック
+              </span>
+            </Button>
+          }
+          
+          
+        </ButtonGroup>
+      
+      </Paper>
+      
+      
+      
+      
+      {/* Card Players */}
       {componentsArr}
       
       
@@ -456,7 +938,7 @@ const Component = (props) => {
                 classes={{
                   input: classes.input
                 }}
-                name="forum-threads-pagination"
+                name="follow-members-pagination"
                 id="outlined-rows-per-page"
               />
             }

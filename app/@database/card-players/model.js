@@ -817,6 +817,12 @@ const aggregateAndFormat = async ({
     //   --------------------\n
     // `);
     
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     
     
     
@@ -2505,8 +2511,8 @@ const findForFollowers = async ({
   gameCommunities_id,
   userCommunities_id,
   controlType,
-  page,
-  limit,
+  page = 1,
+  limit = process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT,
   
 }) => {
   
@@ -2516,6 +2522,8 @@ const findForFollowers = async ({
   // --------------------------------------------------
   
   let returnObj = {};
+  
+  
   
   
   // --------------------------------------------------
@@ -2529,16 +2537,16 @@ const findForFollowers = async ({
     //   parseInt
     // --------------------------------------------------
     
-    let intPage = 1;
-    let intLimit = parseInt(process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT, 10);
+    let intPage = parseInt(page, 10);
+    let intLimit = parseInt(limit, 10);
     
-    if (page) {
-      intPage = parseInt(page, 10);
-    }
+    // if (page) {
+    //   intPage = parseInt(page, 10);
+    // }
     
-    if (limit) {
-      intLimit = parseInt(limit, 10);
-    }
+    // if (limit) {
+    //   intLimit = parseInt(limit, 10);
+    // }
     
     
     
@@ -2621,7 +2629,7 @@ const findForFollowers = async ({
     //   Match Condition Array
     // --------------------------------------------------
     
-    let matchConditionArr = [
+    const matchConditionArr = [
       {
         $match : {
           _id: { $in: users_idsArr }
@@ -2670,6 +2678,7 @@ const findForFollowers = async ({
     //   Return Object
     // --------------------------------------------------
     
+    lodashSet(returnObj, ['followMembersObj', 'limit'], intLimit);
     lodashSet(returnObj, ['followMembersObj', 'followObj', 'count'], followCount);
     lodashSet(returnObj, ['followMembersObj', 'followedObj', 'count'], followedCount);
     

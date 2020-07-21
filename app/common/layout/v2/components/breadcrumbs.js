@@ -49,6 +49,7 @@ import IconUCList from '@material-ui/icons/MenuBook';
 import IconUserCommunity from '@material-ui/icons/SupervisedUserCircle';
 import IconMembers from '@material-ui/icons/SentimentSatisfiedAlt';
 import IconUser from '@material-ui/icons/Person';
+import IconFollow from '@material-ui/icons/FilterNone';
 
 import IconForum from '@material-ui/icons/Forum';
 import IconDescription from '@material-ui/icons/Description';
@@ -180,6 +181,11 @@ const Component = (props) => {
       
       icon = <IconUser fontSize="small" />;
       anchorText = 'ユーザー';
+      
+    } else if (valueObj.type === 'ur/follow') {
+      
+      icon = <IconFollow fontSize="small" />;
+      anchorText = 'フォロー';
       
     }
     

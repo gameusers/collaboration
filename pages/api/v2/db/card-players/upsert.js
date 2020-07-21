@@ -31,7 +31,7 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import ModelCardPlayers from 'app/@database/card-players/model.js';
-import ModelImagesAndVideos from 'app/@database/images-and-videos/model.js';
+// import ModelImagesAndVideos from 'app/@database/images-and-videos/model.js';
 
 
 // ---------------------------------------------
@@ -528,7 +528,7 @@ export default async (req, res) => {
       
     // --------------------------------------------------
     //   Insert
-    //   現在、プレイヤーカードを新規追加する機能はないので、更新だけ行う
+    //   現在、プレイヤーカードを新規追加する機能はないので更新だけ
     // --------------------------------------------------
       
     } else {
@@ -585,10 +585,10 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/db/card-players/upsert.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/card-players/upsert.js
+    // `);
     
     // console.log(`
     //   ----- tempOldObj -----\n
@@ -614,12 +614,11 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

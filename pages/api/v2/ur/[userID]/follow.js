@@ -1,61 +1,69 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const moment = require('moment');
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
-const lodashHas = require('lodash/has');
+// import moment from 'moment';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUsers = require('../../../../../app/@database/users/model');
-const ModelCardPlayers = require('../../../../../app/@database/card-players/model');
+import ModelUsers from 'app/@database/users/model.js';
+import ModelCardPlayers from 'app/@database/card-players/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationInteger } = require('../../../../../app/@validations/integer');
-const { validationFollowLimit } = require('../../../../../app/@database/follows/validations/follow-limit');
+import { validationInteger } from 'app/@validations/integer.js';
+import { validationFollowLimit } from 'app/@database/follows/validations/follow-limit.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from 'app/@locales/locale.js';
 
 
 // ---------------------------------------------
 //   API
 // ---------------------------------------------
 
-const { initialProps } = require('../../../../../app/@api/v2/common');
+import { initialProps } from 'app/@api/v2/common.js';
+
+
 
 
 
@@ -75,21 +83,30 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
   const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: language
+  });
   
   
   
@@ -101,9 +118,9 @@ export default async (req, res) => {
     //   GET Data
     // --------------------------------------------------
     
-    const userID = req.query.userID;
-    const page = parseInt(req.query.page, 10);
-    const limit = parseInt(req.query.limit, 10);
+    const userID = lodashGet(req, ['query', 'userID'], '');
+    const page = parseInt(lodashGet(req, ['query', 'page'], 1), 10);
+    const limit = parseInt(lodashGet(req, ['query', 'limit'], '') || process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT, 10);
     
     lodashSet(requestParametersObj, ['userID'], userID);
     lodashSet(requestParametersObj, ['page'], page);
@@ -157,8 +174,10 @@ export default async (req, res) => {
     const users_id = lodashGet(usersObj, ['_id'], '');
     
     if (!users_id) {
+      
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: '1G6OYPg8p', messageID: 'Error' }] });
+      
     }
     
     returnObj.users_id = users_id;
@@ -237,10 +256,10 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/ur/[userID]/followers.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/ur/[userID]/followers.js
+    `);
     
     // console.log(chalk`
     //   userID: {green ${userID}}
@@ -248,47 +267,17 @@ export default async (req, res) => {
     //   limit: {green ${limit} / ${typeof limit}}
     // `);
     
-    // console.log(`
-    //   ----- followsObj -----\n
-    //   ${util.inspect(followsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- resultFollowersObj -----\n
+      ${util.inspect(resultFollowersObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- docFollowersObj -----\n
-    //   ${util.inspect(docFollowersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- localeObj -----\n
-    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- gamesImagesAndVideosObj -----\n
-    //   ${util.inspect(gamesImagesAndVideosObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- usersObj -----\n
-    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- cardPlayersObj -----\n
-    //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -308,11 +297,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'ir73GK2D_',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

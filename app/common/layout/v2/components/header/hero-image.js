@@ -33,7 +33,8 @@ import lodashGet from 'lodash/get';
 
 import DataGc from 'app/common/layout/v2/components/header/data-gc.js';
 // import DataUc from './data-uc';
-// import DataUr from './data-ur';
+import DataUr from 'app/common/layout/v2/components/header/data-ur.js';
+
 
 
 
@@ -98,9 +99,9 @@ const Component = (props) => {
     
     // componentData = <DataUc />;
     
-  } else {
+  } else if (type === 'ur') {
     
-    // componentData = <DataUr />;
+    componentData = <DataUr headerObj={headerObj} heroImage={true} />;
     
   }
   
@@ -209,8 +210,15 @@ const Component = (props) => {
   //   console.log
   // --------------------------------------------------
   
-  // console.log(chalk`
-  //   type: {green ${type}}
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /app/common/layout/v2/components/header/hero-image.js
+  // `);
+  
+  // console.log(`
+  //   ----- headerObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(headerObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
   // `);
   
   // console.log(`
@@ -219,11 +227,7 @@ const Component = (props) => {
   //   --------------------\n
   // `);
   
-  // console.log(`
-  //   ----- thumbnailArr -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(thumbnailArr)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  
   
   
   

@@ -144,7 +144,7 @@ const Component = (props) => {
   const [panelExpanded, setPanelExpanded] = useState(defaultExpanded);
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
-  const [showForm, setShowForm] = useState(true);
+  const [showForm, setShowForm] = useState(false);
   
   
   useEffect(() => {

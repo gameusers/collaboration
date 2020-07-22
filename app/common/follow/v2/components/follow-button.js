@@ -22,7 +22,7 @@ import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
-//   Node Packages
+//   Lodash
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
@@ -177,7 +177,7 @@ const Component = (props) => {
         
         const resultObj = await fetchWrapper({
           
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/upsert-follow`,
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/upsert-follow-gc-uc`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
           

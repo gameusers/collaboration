@@ -1,47 +1,56 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const moment = require('moment');
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import moment from 'moment';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelFollows = require('../../../../../app/@database/follows/model');
+import ModelFollows from 'app/@database/follows/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationUsers_idServer } = require('../../../../../app/@database/users/validations/_id-server');
-const { validationManageFollowersType } = require('../../../../../app/@database/follows/validations/manage-followers-type');
+import { validationIP } from 'app/@validations/ip.js';
+
+import { validationUsers_idServer } from 'app/@database/users/validations/_id-server.js';
+import { validationManageFollowersType } from 'app/@database/follows/validations/manage-followers-type.js';
+
+
 
 
 
@@ -69,6 +78,15 @@ export default async (req, res) => {
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
   
   
   try {
@@ -92,7 +110,6 @@ export default async (req, res) => {
     //   Log Data
     // --------------------------------------------------
     
-    lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
     lodashSet(requestParametersObj, ['targetUsers_id'], targetUsers_id);
     lodashSet(requestParametersObj, ['type'], type);
     
@@ -111,8 +128,10 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (!req.isAuthenticated()) {
+      
       statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: '19fl8iCK5', messageID: 'xLLNIpo6a' }] });
+      
     }
     
     
@@ -471,11 +490,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'F_U9YxzJx',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

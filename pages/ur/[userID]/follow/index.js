@@ -460,16 +460,16 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
   
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/ur/[userID]/index.js
-  // `);
+  console.log(`
+    ----------------------------------------\n
+    /pages/ur/[userID]/index.js
+  `);
   
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  console.log(`
+    ----- resultObj -----\n
+    ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+    --------------------\n
+  `);
   
   
   

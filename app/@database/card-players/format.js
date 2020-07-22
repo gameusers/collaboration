@@ -59,6 +59,7 @@ const formatCardPlayersArr = ({
   
   const returnObj = {};
   const returnArr = [];
+  const return_idsArr = [];
   
   
   
@@ -254,6 +255,7 @@ const formatCardPlayersArr = ({
     
     returnObj[cardPlayers_id] = clonedObj;
     returnArr.push(clonedObj);
+    return_idsArr.push(cardPlayers_id);
     
     
   }
@@ -271,6 +273,7 @@ const formatCardPlayersArr = ({
     
     obj: returnObj,
     arr: returnArr,
+    _idsArr: return_idsArr,
     
   };
   

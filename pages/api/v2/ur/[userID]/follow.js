@@ -256,10 +256,10 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/ur/[userID]/followers.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/ur/[userID]/followers.js
+    // `);
     
     // console.log(chalk`
     //   userID: {green ${userID}}
@@ -267,17 +267,17 @@ export default async (req, res) => {
     //   limit: {green ${limit} / ${typeof limit}}
     // `);
     
-    console.log(`
-      ----- resultFollowersObj -----\n
-      ${util.inspect(resultFollowersObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultFollowersObj -----\n
+    //   ${util.inspect(resultFollowersObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

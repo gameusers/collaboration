@@ -786,6 +786,7 @@ const aggregateAndFormat = async ({
     
     returnObj.cardPlayersObj = lodashGet(formattedObj, ['obj'], {});
     returnObj.cardPlayersArr = lodashGet(formattedObj, ['arr'], []);
+    returnObj.cardPlayers_idsArr = lodashGet(formattedObj, ['_idsArr'], []);
     
     
     
@@ -2660,7 +2661,7 @@ const findForFollowers = async ({
     // --------------------------------------------------
     
     returnObj.cardPlayersObj = lodashGet(formattedObj, ['cardPlayersObj'], {});
-    const cardPlayersArr = lodashGet(formattedObj, ['cardPlayersArr'], []);
+    const cardPlayers_idsArr = lodashGet(formattedObj, ['cardPlayers_idsArr'], []);
     
     
     
@@ -2703,25 +2704,25 @@ const findForFollowers = async ({
       
       lodashSet(returnObj, ['followMembersObj', 'followObj', 'page'], intPage);
       lodashSet(returnObj, ['followMembersObj', 'followObj', `page${intPage}Obj`, 'loadedDate'], ISO8601);
-      lodashSet(returnObj, ['followMembersObj', 'followObj', `page${intPage}Obj`, 'arr'], cardPlayersArr);
+      lodashSet(returnObj, ['followMembersObj', 'followObj', `page${intPage}Obj`, 'arr'], cardPlayers_idsArr);
       
     } else if (controlType === 'followed') {
       
       lodashSet(returnObj, ['followMembersObj', 'followedObj', 'page'], intPage);
       lodashSet(returnObj, ['followMembersObj', 'followedObj', `page${intPage}Obj`, 'loadedDate'], ISO8601);
-      lodashSet(returnObj, ['followMembersObj', 'followedObj', `page${intPage}Obj`, 'arr'], cardPlayersArr);
+      lodashSet(returnObj, ['followMembersObj', 'followedObj', `page${intPage}Obj`, 'arr'], cardPlayers_idsArr);
       
     } else if (controlType === 'approval') {
       
       lodashSet(returnObj, ['followMembersObj', 'approvalObj', 'page'], intPage);
       lodashSet(returnObj, ['followMembersObj', 'approvalObj', `page${intPage}Obj`, 'loadedDate'], ISO8601);
-      lodashSet(returnObj, ['followMembersObj', 'approvalObj', `page${intPage}Obj`, 'arr'], cardPlayersArr);
+      lodashSet(returnObj, ['followMembersObj', 'approvalObj', `page${intPage}Obj`, 'arr'], cardPlayers_idsArr);
       
     } else if (controlType === 'block') {
       
       lodashSet(returnObj, ['followMembersObj', 'blockObj', 'page'], intPage);
       lodashSet(returnObj, ['followMembersObj', 'blockObj', `page${intPage}Obj`, 'loadedDate'], ISO8601);
-      lodashSet(returnObj, ['followMembersObj', 'blockObj', `page${intPage}Obj`, 'arr'], cardPlayersArr);
+      lodashSet(returnObj, ['followMembersObj', 'blockObj', `page${intPage}Obj`, 'arr'], cardPlayers_idsArr);
       
     }
     

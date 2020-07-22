@@ -31,20 +31,12 @@ import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateCommunity } from 'app/@states/community.js';
-import { ContainerStateForum } from 'app/@states/forum.js';
-
-
-// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
-import { getCookie } from 'app/@modules/cookie.js';
+// import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
@@ -63,35 +55,10 @@ import Cards from 'app/ur/v2/components/cards.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/gc/***
+//   URL: https://dev-1.gameusers.org/ur/***
 // --------------------------------------------------
 
 const ContainerLayout = (props) => {
-  
-  
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-  
-  const stateCommunity = ContainerStateCommunity.useContainer();
-  const stateForum = ContainerStateForum.useContainer();
-  
-  const {
-    
-    setUserCommunityObj,
-    
-  } = stateCommunity;
-  
-  const {
-    
-    setForumThreadsForListObj,
-    setForumThreadsObj,
-    setForumCommentsObj,
-    setForumRepliesObj,
-    
-  } = stateForum;
-  
-  
   
   
   // --------------------------------------------------
@@ -99,18 +66,6 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
   
   useEffect(() => {
-    
-    
-    // --------------------------------------------------
-    //   Router.push でページを移動した際の処理
-    //   getServerSideProps でデータを取得してからデータを更新する
-    // --------------------------------------------------
-    
-    setUserCommunityObj(props.userCommunityObj);
-    setForumThreadsForListObj(props.forumThreadsForListObj);
-    setForumThreadsObj(props.forumThreadsObj);
-    setForumCommentsObj(props.forumCommentsObj);
-    setForumRepliesObj(props.forumRepliesObj);
     
     
     // ---------------------------------------------
@@ -121,28 +76,6 @@ const ContainerLayout = (props) => {
     
     
   }, [props.ISO8601]);
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   console.log
-  // --------------------------------------------------
-  
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/uc/[userCommunityID]/index.js - ContainerLayout
-  // `);
-  
-  // console.log(`
-  //   ----- props -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(props)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(chalk`
-  //   gameCommunities_id: {green ${gameCommunities_id}}
-  // `);
   
   
   
@@ -174,7 +107,7 @@ const ContainerLayout = (props) => {
       />
       
       <Cards
-        arr={props.cardPlayersArr}
+        cardPlayersArr={props.cardPlayersArr}
         showEditButton={true}
         defaultExpanded={true}
       />
@@ -210,23 +143,6 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   unstated-next - Initial State
-  // --------------------------------------------------
-  
-  const initialStateObj = {
-    
-    userCommunityObj: props.userCommunityObj,
-    forumThreadsForListObj: props.forumThreadsForListObj,
-    forumThreadsObj: props.forumThreadsObj,
-    forumCommentsObj: props.forumCommentsObj,
-    forumRepliesObj: props.forumRepliesObj,
-    
-  };
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Error
   //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
   // --------------------------------------------------
@@ -236,51 +152,11 @@ const Component = (props) => {
   }
   
   
-  
-  
-  // --------------------------------------------------
-  //   console.log
-  // --------------------------------------------------
-  
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/uc/[userCommunityID]/index.js
-  // `);
-  
-  // console.log(`
-  //   ----- headerObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(headerObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- headerNavMainArr -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(headerNavMainArr)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(chalk`
-  //   gameCommunities_id: {green ${gameCommunities_id}}
-  // `);
-  
-  
-  
-  
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
   
-  return (
-    <ContainerStateCommunity.Provider initialState={initialStateObj}>
-      
-      <ContainerStateForum.Provider initialState={initialStateObj}>
-        
-        <ContainerLayout {...props} />
-        
-      </ContainerStateForum.Provider>
-      
-    </ContainerStateCommunity.Provider>
-  );
+  return <ContainerLayout {...props} />;
   
   
 };

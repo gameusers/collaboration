@@ -11,10 +11,15 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Validation
+//   Node Packages
 // ---------------------------------------------
 
 const validator = require('validator');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
 
 const lodashGet = require('lodash/get');
 
@@ -24,6 +29,8 @@ const lodashGet = require('lodash/get');
 // ---------------------------------------------
 
 const { CustomError } = require('../../../@modules/error/custom.js');
+
+
 
 
 
@@ -45,10 +52,12 @@ const validationFollowType = ({ throwError = false, value }) => {
   const numberOfCharacters = data ? data.length : 0;
   
   const resultObj = {
+    
     value: data,
     numberOfCharacters,
     messageID: 'PH8jcw-VF',
     error: false,
+    
   };
   
   

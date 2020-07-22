@@ -30,13 +30,6 @@ import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-// import { ContainerStateForum } from 'app/@states/forum.js';
-
-
-// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
@@ -63,7 +56,7 @@ const Component = (props) => {
   
   const {
     
-    arr = [],
+    // arr = [],
     // showFollow,
     showEditButton = true,
     defaultExpanded = true,
@@ -79,14 +72,7 @@ const Component = (props) => {
   
   const intl = useIntl();
   
-  const [cardPlayersArr, setCardPlayersArr] = useState(arr);
-  
-  
-  // useEffect(() => {
-    
-  //   setButtonDisabled(false);
-    
-  // }, []);
+  const [cardPlayersArr, setCardPlayersArr] = useState(props.cardPlayersArr);
   
   
   

@@ -1,59 +1,68 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const moment = require('moment');
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import moment from 'moment';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
-const ModelUsers = require('../../../../../app/@database/users/model');
-const ModelCardPlayers = require('../../../../../app/@database/card-players/model');
-const ModelFollows = require('../../../../../app/@database/follows/model');
+import ModelUserCommunities from 'app/@database/user-communities/model.js';
+import ModelUsers from 'app/@database/users/model.js';
+import ModelCardPlayers from 'app/@database/card-players/model.js';
+import ModelFollows from 'app/@database/follows/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationInteger } = require('../../../../../app/@validations/integer');
-const { validationUsers_idServer } = require('../../../../../app/@database/users/validations/_id-server');
-const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
-const { validationFollowLimit } = require('../../../../../app/@database/follows/validations/follow-limit');
-const { validationFollowType } = require('../../../../../app/@database/follows/validations/follow-type');
+import { validationInteger } from 'app/@validations/integer.js';
+
+import { validationUsers_idServer } from 'app/@database/users/validations/_id-server.js';
+import { validationUserCommunities_idServer } from 'app/@database/user-communities/validations/_id-server.js';
+import { validationFollowLimit } from 'app/@database/follows/validations/follow-limit.js';
+import { validationFollowType } from 'app/@database/follows/validations/follow-type.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from 'app/@locales/locale.js';
+
+
 
 
 
@@ -73,21 +82,30 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
   const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: language
+  });
   
   
   
@@ -159,13 +177,26 @@ export default async (req, res) => {
     //   Validations
     // --------------------------------------------------
     
+    // ---------------------------------------------
+    //   - Game Community
+    // ---------------------------------------------
+    
     if (gameCommunities_id) {
       
       
       
+    // ---------------------------------------------
+    //   - User Community
+    // ---------------------------------------------
+      
     } else if (userCommunities_id) {
       
       await validationUserCommunities_idServer({ value: userCommunities_id });
+      
+      
+    // ---------------------------------------------
+    //   - User
+    // ---------------------------------------------
       
     } else {
       
@@ -177,8 +208,10 @@ export default async (req, res) => {
       // --------------------------------------------------
       
       if ((controlType === 'approval' || controlType === 'block') && users_id !== loginUsers_id) {
+        
         statusCode = 401;
         throw new CustomError({ level: 'warn', errorsArr: [{ code: 'AvTRjcmIi', messageID: 'DSRlEoL29' }] });
+        
       }
       
       
@@ -236,8 +269,10 @@ export default async (req, res) => {
       const member = lodashGet(userCommunityObj, ['member'], false);
       
       if (communityType === 'closed' && !member) {
+        
         statusCode = 403;
         throw new CustomError({ level: 'warn', errorsArr: [{ code: 'MN_BH-td8', messageID: 'Error' }] });
+        
       }
       
       
@@ -310,11 +345,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'X_pq2A_of',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

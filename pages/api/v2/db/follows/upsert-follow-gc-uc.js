@@ -1,49 +1,58 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const moment = require('moment');
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import moment from 'moment';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelFollows = require('../../../../../app/@database/follows/model');
-const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
+import ModelFollows from 'app/@database/follows/model.js';
+import ModelUserCommunities from 'app/@database/user-communities/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
-const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
-const { validationUsers_idServer } = require('../../../../../app/@database/users/validations/_id-server');
+import { validationIP } from 'app/@validations/ip.js';
+
+import { validationGameCommunities_idServer } from 'app/@database/game-communities/validations/_id-server.js';
+import { validationUserCommunities_idServer } from 'app/@database/user-communities/validations/_id-server.js';
+import { validationUsers_idServer } from 'app/@database/users/validations/_id-server.js';
+
+
 
 
 
@@ -71,6 +80,15 @@ export default async (req, res) => {
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
   
   
   try {
@@ -86,7 +104,7 @@ export default async (req, res) => {
       
       gameCommunities_id,
       userCommunities_id,
-      users_id,
+      // users_id,
       
     } = bodyObj;
     
@@ -95,10 +113,10 @@ export default async (req, res) => {
     //   Log Data
     // --------------------------------------------------
     
-    lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
+    // lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
-    lodashSet(requestParametersObj, ['users_id'], users_id);
+    // lodashSet(requestParametersObj, ['users_id'], users_id);
     
     
     
@@ -115,8 +133,10 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (!req.isAuthenticated()) {
+      
       statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'FE6LK-sP4', messageID: 'xLLNIpo6a' }] });
+      
     }
     
     
@@ -126,7 +146,7 @@ export default async (req, res) => {
     //   必要なデータチェック
     // --------------------------------------------------
     
-    if (!gameCommunities_id && !userCommunities_id && !users_id) {
+    if (!gameCommunities_id && !userCommunities_id) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'lK_FPWyJk', messageID: '1YJnibkmh' }] });
     }
     
@@ -204,9 +224,9 @@ export default async (req, res) => {
     //   - ユーザー
     // ---------------------------------------------
     
-    if (users_id) {
-      await validationUsers_idServer({ throwError: true, value: users_id });
-    }
+    // if (users_id) {
+    //   await validationUsers_idServer({ throwError: true, value: users_id });
+    // }
     
     
     
@@ -227,7 +247,7 @@ export default async (req, res) => {
       
     } else {
       
-      conditionObj.users_id = users_id;
+      // conditionObj.users_id = users_id;
       
     }
     
@@ -434,11 +454,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 's1HXpHkXW',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

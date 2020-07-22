@@ -115,439 +115,439 @@ class Store {
    * @param {number} newLimit - 1ページに表示する件数を変更する場合、値を入力する
    * @param {boolean} forceReload - 強制的に再読み込みする場合は true
    */
-  @action.bound
-  async handleReadFollowMembers({
+  // @action.bound
+  // async handleReadFollowMembers({
     
-    pathArr,
-    pathname,
-    users_id,
-    gameCommunities_id,
-    userCommunities_id,
-    newControlType,
-    pageType,
-    page = 1,
-    newLimit,
-    forceReload = false,
+  //   pathArr,
+  //   pathname,
+  //   users_id,
+  //   gameCommunities_id,
+  //   userCommunities_id,
+  //   newControlType,
+  //   pageType,
+  //   page = 1,
+  //   newLimit,
+  //   forceReload = false,
     
-  }) {
-    
-    
-    try {
-      
-      
-      // ---------------------------------------------
-      //   Property
-      // ---------------------------------------------
-      
-      let controlType = lodashGet(this.dataObj, [...pathArr, 'controlType'], 'followed');
-      
-      if (pageType === 'ur') {
-        controlType = lodashGet(this.dataObj, [...pathArr, 'controlType'], 'follow');
-      }
-      
-      let limit = parseInt((storeData.getCookie({ key: 'followLimit' }) || process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT), 10);
-      
-      const followMembersObj = lodashGet(this.dataObj, [...pathArr, 'followMembersObj'], {});
-      const clonedFollowMembersObj = lodashCloneDeep(followMembersObj);
-      
-      const arr = lodashGet(followMembersObj, [`${controlType}Obj`, `page${page}Obj`, 'arr'], []);
-      const loadedDate = lodashGet(followMembersObj, [`${controlType}Obj`, `page${page}Obj`, 'loadedDate'], '');
-      
-      let reload = false;
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   controlType を変更する場合
-      // ---------------------------------------------
-      
-      if (newControlType) {
-        
-        
-        // ---------------------------------------------
-        //   Set controlType
-        // ---------------------------------------------
-        
-        controlType = newControlType;
-        
-        
-        // ---------------------------------------------
-        //   再読込する
-        // ---------------------------------------------
-        
-        reload = true;
-      
-      
-      // ---------------------------------------------
-      //   1ページに表示する件数を変更した場合
-      // ---------------------------------------------
-      
-      } else if (newLimit) {
-        
-        
-        // ---------------------------------------------
-        //   Set Cookie - followLimit
-        // ---------------------------------------------
-        
-        limit = newLimit;
-        Cookies.set('followLimit', limit);
-        
-        
-        // ---------------------------------------------
-        //   再読込する
-        // ---------------------------------------------
-        
-        reload = true;
-        
-        
-      // ---------------------------------------------
-      //   最後の読み込みから指定の時間（10分）が経っていた場合、再読込する
-      // ---------------------------------------------
-        
-      } else if (loadedDate) {
-        
-        const datetimeNow = moment().utcOffset(0);
-        const datetimeReloadLimit = moment(loadedDate).add(process.env.NEXT_PUBLIC_FOLLOWERS_RELOAD_MINUTES, 'm').utcOffset(0);
-        
-        if (datetimeNow.isAfter(datetimeReloadLimit)) {
-          reload = true;
-        }
-        
-      }
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   強制再読み込み
-      // --------------------------------------------------
-      
-      if (forceReload) {
-        reload = true;
-      }
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/follow-members/stores/store.js - handleReadFollowMembers
-      // `);
-      
-      
-      // console.log(chalk`
-      //   controlType: {green ${controlType}}
-      //   users_id: {green ${users_id}}
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id}}
-      //   page: {green ${page}}
-      //   limit: {green ${limit}}
-      //   newLimit: {green ${newLimit}}
-      //   loadedDate: {green ${loadedDate}}
-      //   reload: {green ${reload}}
-      // `);
-      
-      // console.log(`
-      //   ----- pathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- arr -----\n
-      //   ${util.inspect(arr, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   すでにデータを読み込んでいる場合は、ストアのデータを表示する
-      // ---------------------------------------------
-      
-      if (!reload && arr.length > 0) {
-        
-        
-        console.log('store');
-        
-        
-        // ---------------------------------------------
-        //   更新 - ページ
-        // ---------------------------------------------
-        
-        lodashSet(this.dataObj, [...pathArr, 'followMembersObj', `${controlType}Obj`, 'page'], page);
-        
-        
-        // ---------------------------------------------
-        //   Set Temporary Data - followPage
-        // ---------------------------------------------
-        
-        storeData.setTemporaryData({ pathname, key: 'followPage', value: page });
-        
-        
-        // ---------------------------------------------
-        //   更新 - controlType
-        // ---------------------------------------------
-        
-        this.handleEdit({
-          pathArr: [...pathArr, 'controlType'],
-          value: controlType
-        });
-        
-        
-        // ---------------------------------------------
-        //   Return
-        // ---------------------------------------------
-        
-        return;
-        
-        
-      }
-      
-      console.log('fetch');
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Loading 表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingShow({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
-      
-      const formDataObj = {
-        
-        users_id,
-        gameCommunities_id,
-        userCommunities_id,
-        controlType,
-        page,
-        limit,
-        
-      };
-      
-      
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
-      
-      const resultObj = await fetchWrapper({
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/read-followers`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
-      });
-      
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-      
-      
-      
-      
-      // console.log(`
-      //   ----- storeData.cardPlayersObj 1 -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(storeData.cardPlayersObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // ---------------------------------------------
-      //   updateCardPlayersObj
-      // ---------------------------------------------
-      
-      const newCardPlayersObj = lodashGet(resultObj, ['data', 'cardPlayersObj'], {});
-      storeData.updateCardPlayersObj(newCardPlayersObj);
-      
-      
-      // console.log(`
-      //   ----- storeData.cardPlayersObj 2 -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(storeData.cardPlayersObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      
-      // ---------------------------------------------
-      //   followMembersObj
-      //   再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
-      // ---------------------------------------------
-      
-      // console.log(`
-      //   ----- clonedFollowMembersObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(clonedFollowMembersObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // // console.log(chalk`
-      // //   reload: {green ${reload}}
-      // // `);
-      
-      const newFollowMembersObj = lodashGet(resultObj, ['data', 'followMembersObj'], {});
-      const mergedFollowMembersObj = reload ? newFollowMembersObj : lodashMerge(clonedFollowMembersObj, newFollowMembersObj);
-      
-      // console.log(`
-      //   ----- newFollowMembersObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(newFollowMembersObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- mergedFollowMembersObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(mergedFollowMembersObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      //lodashSet(storeFollowMembers, ['dataObj', ...pathArr, 'followMembersObj'], propsObj.followMembersObj);
-      
-      
-      // ---------------------------------------------
-      //   更新 - followMembersObj
-      // ---------------------------------------------
-      
-      this.handleEdit({
-        pathArr: [...pathArr, 'followMembersObj'],
-        value: mergedFollowMembersObj
-      });
-      
-      
-      // ---------------------------------------------
-      //   Set Temporary Data - followPage
-      // ---------------------------------------------
-      
-      storeData.setTemporaryData({ pathname, key: 'followPage', value: page });
-      
-      
-      // ---------------------------------------------
-      //   更新 - controlType
-      // ---------------------------------------------
-      
-      this.handleEdit({
-        pathArr: [...pathArr, 'controlType'],
-        value: controlType
-      });
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   followedCount / ヘッダーのフォロワー（メンバー）数更新
-      // --------------------------------------------------
-      
-      const followCount = lodashGet(resultObj, ['data', 'followMembersObj', 'followObj', 'count'], 0);
-      lodashSet(storeData, ['headerObj', 'followsObj', 'followCount'], followCount);
-      
-      const followedCount = lodashGet(resultObj, ['data', 'followMembersObj', 'followedObj', 'count'], 0);
-      lodashSet(storeData, ['headerObj', 'followsObj', 'followedCount'], followedCount);
-      
-      // console.log(`
-      //   ----- storeData.headerObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(storeData.headerObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // if (followedCount) {
-      //   lodashSet(storeData, ['headerObj', 'followedCount'], followedCount);
-      // }
-      
-      
-      // // --------------------------------------------------
-      // //   approvalCount
-      // // --------------------------------------------------
-      
-      // if (lodashHas(resultObj, ['data', 'approvalCount'])) {
-      //   lodashSet(this.dataObj, [...pathArr, 'approvalCount'], resultObj.data.approvalCount);
-      // }
-      
-      
-      // // --------------------------------------------------
-      // //   blockCount
-      // // --------------------------------------------------
-      
-      // if (lodashHas(resultObj, ['data', 'blockCount'])) {
-      //   lodashSet(this.dataObj, [...pathArr, 'blockCount'], resultObj.data.blockCount);
-      // }
-      
-      
-    } catch (errorObj) {
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
-      
-      
-    } finally {
-      
-      
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
-      
-      
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingHide({});
-      
-      
-      // ---------------------------------------------
-      //   Scroll
-      // ---------------------------------------------
-      
-      storeLayout.handleScrollTo({
-        to: 'followMembers',
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
-      });
-      
-      
-    }
+  // }) {
     
     
-  };
+  //   try {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Property
+  //     // ---------------------------------------------
+      
+  //     let controlType = lodashGet(this.dataObj, [...pathArr, 'controlType'], 'followed');
+      
+  //     if (pageType === 'ur') {
+  //       controlType = lodashGet(this.dataObj, [...pathArr, 'controlType'], 'follow');
+  //     }
+      
+  //     let limit = parseInt((storeData.getCookie({ key: 'followLimit' }) || process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT), 10);
+      
+  //     const followMembersObj = lodashGet(this.dataObj, [...pathArr, 'followMembersObj'], {});
+  //     const clonedFollowMembersObj = lodashCloneDeep(followMembersObj);
+      
+  //     const arr = lodashGet(followMembersObj, [`${controlType}Obj`, `page${page}Obj`, 'arr'], []);
+  //     const loadedDate = lodashGet(followMembersObj, [`${controlType}Obj`, `page${page}Obj`, 'loadedDate'], '');
+      
+  //     let reload = false;
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   controlType を変更する場合
+  //     // ---------------------------------------------
+      
+  //     if (newControlType) {
+        
+        
+  //       // ---------------------------------------------
+  //       //   Set controlType
+  //       // ---------------------------------------------
+        
+  //       controlType = newControlType;
+        
+        
+  //       // ---------------------------------------------
+  //       //   再読込する
+  //       // ---------------------------------------------
+        
+  //       reload = true;
+      
+      
+  //     // ---------------------------------------------
+  //     //   1ページに表示する件数を変更した場合
+  //     // ---------------------------------------------
+      
+  //     } else if (newLimit) {
+        
+        
+  //       // ---------------------------------------------
+  //       //   Set Cookie - followLimit
+  //       // ---------------------------------------------
+        
+  //       limit = newLimit;
+  //       Cookies.set('followLimit', limit);
+        
+        
+  //       // ---------------------------------------------
+  //       //   再読込する
+  //       // ---------------------------------------------
+        
+  //       reload = true;
+        
+        
+  //     // ---------------------------------------------
+  //     //   最後の読み込みから指定の時間（10分）が経っていた場合、再読込する
+  //     // ---------------------------------------------
+        
+  //     } else if (loadedDate) {
+        
+  //       const datetimeNow = moment().utcOffset(0);
+  //       const datetimeReloadLimit = moment(loadedDate).add(process.env.NEXT_PUBLIC_FOLLOWERS_RELOAD_MINUTES, 'm').utcOffset(0);
+        
+  //       if (datetimeNow.isAfter(datetimeReloadLimit)) {
+  //         reload = true;
+  //       }
+        
+  //     }
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   強制再読み込み
+  //     // --------------------------------------------------
+      
+  //     if (forceReload) {
+  //       reload = true;
+  //     }
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
+      
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/common/follow-members/stores/store.js - handleReadFollowMembers
+  //     // `);
+      
+      
+  //     // console.log(chalk`
+  //     //   controlType: {green ${controlType}}
+  //     //   users_id: {green ${users_id}}
+  //     //   gameCommunities_id: {green ${gameCommunities_id}}
+  //     //   userCommunities_id: {green ${userCommunities_id}}
+  //     //   page: {green ${page}}
+  //     //   limit: {green ${limit}}
+  //     //   newLimit: {green ${newLimit}}
+  //     //   loadedDate: {green ${loadedDate}}
+  //     //   reload: {green ${reload}}
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- pathArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- arr -----\n
+  //     //   ${util.inspect(arr, { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   すでにデータを読み込んでいる場合は、ストアのデータを表示する
+  //     // ---------------------------------------------
+      
+  //     if (!reload && arr.length > 0) {
+        
+        
+  //       console.log('store');
+        
+        
+  //       // ---------------------------------------------
+  //       //   更新 - ページ
+  //       // ---------------------------------------------
+        
+  //       lodashSet(this.dataObj, [...pathArr, 'followMembersObj', `${controlType}Obj`, 'page'], page);
+        
+        
+  //       // ---------------------------------------------
+  //       //   Set Temporary Data - followPage
+  //       // ---------------------------------------------
+        
+  //       storeData.setTemporaryData({ pathname, key: 'followPage', value: page });
+        
+        
+  //       // ---------------------------------------------
+  //       //   更新 - controlType
+  //       // ---------------------------------------------
+        
+  //       this.handleEdit({
+  //         pathArr: [...pathArr, 'controlType'],
+  //         value: controlType
+  //       });
+        
+        
+  //       // ---------------------------------------------
+  //       //   Return
+  //       // ---------------------------------------------
+        
+  //       return;
+        
+        
+  //     }
+      
+  //     console.log('fetch');
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading 表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingShow({});
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
+      
+  //     const formDataObj = {
+        
+  //       users_id,
+  //       gameCommunities_id,
+  //       userCommunities_id,
+  //       controlType,
+  //       page,
+  //       limit,
+        
+  //     };
+      
+      
+  //     // ---------------------------------------------
+  //     //   Fetch
+  //     // ---------------------------------------------
+      
+  //     const resultObj = await fetchWrapper({
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/read-followers`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj),
+  //     });
+      
+      
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
+      
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
+      
+      
+      
+      
+  //     // console.log(`
+  //     //   ----- storeData.cardPlayersObj 1 -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(storeData.cardPlayersObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // ---------------------------------------------
+  //     //   updateCardPlayersObj
+  //     // ---------------------------------------------
+      
+  //     const newCardPlayersObj = lodashGet(resultObj, ['data', 'cardPlayersObj'], {});
+  //     storeData.updateCardPlayersObj(newCardPlayersObj);
+      
+      
+  //     // console.log(`
+  //     //   ----- storeData.cardPlayersObj 2 -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(storeData.cardPlayersObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   followMembersObj
+  //     //   再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+  //     // ---------------------------------------------
+      
+  //     // console.log(`
+  //     //   ----- clonedFollowMembersObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(clonedFollowMembersObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // // console.log(chalk`
+  //     // //   reload: {green ${reload}}
+  //     // // `);
+      
+  //     const newFollowMembersObj = lodashGet(resultObj, ['data', 'followMembersObj'], {});
+  //     const mergedFollowMembersObj = reload ? newFollowMembersObj : lodashMerge(clonedFollowMembersObj, newFollowMembersObj);
+      
+  //     // console.log(`
+  //     //   ----- newFollowMembersObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(newFollowMembersObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- mergedFollowMembersObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(mergedFollowMembersObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     //lodashSet(storeFollowMembers, ['dataObj', ...pathArr, 'followMembersObj'], propsObj.followMembersObj);
+      
+      
+  //     // ---------------------------------------------
+  //     //   更新 - followMembersObj
+  //     // ---------------------------------------------
+      
+  //     this.handleEdit({
+  //       pathArr: [...pathArr, 'followMembersObj'],
+  //       value: mergedFollowMembersObj
+  //     });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Set Temporary Data - followPage
+  //     // ---------------------------------------------
+      
+  //     storeData.setTemporaryData({ pathname, key: 'followPage', value: page });
+      
+      
+  //     // ---------------------------------------------
+  //     //   更新 - controlType
+  //     // ---------------------------------------------
+      
+  //     this.handleEdit({
+  //       pathArr: [...pathArr, 'controlType'],
+  //       value: controlType
+  //     });
+      
+      
+      
+      
+  //     // --------------------------------------------------
+  //     //   followedCount / ヘッダーのフォロワー（メンバー）数更新
+  //     // --------------------------------------------------
+      
+  //     const followCount = lodashGet(resultObj, ['data', 'followMembersObj', 'followObj', 'count'], 0);
+  //     lodashSet(storeData, ['headerObj', 'followsObj', 'followCount'], followCount);
+      
+  //     const followedCount = lodashGet(resultObj, ['data', 'followMembersObj', 'followedObj', 'count'], 0);
+  //     lodashSet(storeData, ['headerObj', 'followsObj', 'followedCount'], followedCount);
+      
+  //     // console.log(`
+  //     //   ----- storeData.headerObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(storeData.headerObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // if (followedCount) {
+  //     //   lodashSet(storeData, ['headerObj', 'followedCount'], followedCount);
+  //     // }
+      
+      
+  //     // // --------------------------------------------------
+  //     // //   approvalCount
+  //     // // --------------------------------------------------
+      
+  //     // if (lodashHas(resultObj, ['data', 'approvalCount'])) {
+  //     //   lodashSet(this.dataObj, [...pathArr, 'approvalCount'], resultObj.data.approvalCount);
+  //     // }
+      
+      
+  //     // // --------------------------------------------------
+  //     // //   blockCount
+  //     // // --------------------------------------------------
+      
+  //     // if (lodashHas(resultObj, ['data', 'blockCount'])) {
+  //     //   lodashSet(this.dataObj, [...pathArr, 'blockCount'], resultObj.data.blockCount);
+  //     // }
+      
+      
+  //   } catch (errorObj) {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
+      
+      
+  //   } finally {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading 非表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingHide({});
+      
+      
+  //     // ---------------------------------------------
+  //     //   Scroll
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleScrollTo({
+  //       to: 'followMembers',
+  //       duration: 0,
+  //       delay: 0,
+  //       smooth: 'easeInOutQuart',
+  //       offset: -50,
+  //     });
+      
+      
+  //   }
+    
+    
+  // };
   
   
   
@@ -558,59 +558,59 @@ class Store {
    * @param {string} managedUsers_id - DB users _id / ユーザーのID
    * @param {string} type - 処理のタイプ / 'unfollow', 'approval', 'unapproval', 'block', 'unblock'
    */
-  @action.bound
-  async handleShowDialog({
+  // @action.bound
+  // async handleShowDialog({
     
-    pathArr,
-    // pathname,
-    // users_id,
-    // gameCommunities_id,
-    // userCommunities_id,
-    targetUsers_id,
-    type,
-    pageType,
+  //   pathArr,
+  //   // pathname,
+  //   // users_id,
+  //   // gameCommunities_id,
+  //   // userCommunities_id,
+  //   targetUsers_id,
+  //   type,
+  //   pageType,
     
-  }) {
+  // }) {
     
     
-    try {
+  //   try {
       
       
-      // ---------------------------------------------
-      //   dialogObj
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   dialogObj
+  //     // ---------------------------------------------
       
-      const dialogObj = {
+  //     const dialogObj = {
         
-        targetUsers_id,
-        type,
+  //       targetUsers_id,
+  //       type,
         
-      };
+  //     };
       
-      this.handleEdit({
-        pathArr: [...pathArr, 'dialogObj'],
-        value: dialogObj,
-      });
-      
-      
-      // ---------------------------------------------
-      //   Show Dialog
-      // ---------------------------------------------
-      
-      this.handleEdit({
-        pathArr: [...pathArr, 'showDialog'],
-        value: true,
-      });
+  //     this.handleEdit({
+  //       pathArr: [...pathArr, 'dialogObj'],
+  //       value: dialogObj,
+  //     });
       
       
-    } catch (errorObj) {
+  //     // ---------------------------------------------
+  //     //   Show Dialog
+  //     // ---------------------------------------------
+      
+  //     this.handleEdit({
+  //       pathArr: [...pathArr, 'showDialog'],
+  //       value: true,
+  //     });
+      
+      
+  //   } catch (errorObj) {
       
       
       
-    }
+  //   }
     
     
-  };
+  // };
   
   
   
@@ -624,223 +624,223 @@ class Store {
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
    * @param {string} pageType - ページタイプ [ur / gc / uc]
    */
-  @action.bound
-  async handleManageFollowers({
+  // @action.bound
+  // async handleManageFollowers({
     
-    pathArr,
-    pathname,
-    users_id,
-    gameCommunities_id,
-    userCommunities_id,
-    pageType,
+  //   pathArr,
+  //   pathname,
+  //   users_id,
+  //   gameCommunities_id,
+  //   userCommunities_id,
+  //   pageType,
     
-  }) {
+  // }) {
     
     
-    try {
+  //   try {
       
       
-      // ---------------------------------------------
-      //   Property
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Property
+  //     // ---------------------------------------------
       
-      const targetUsers_id = lodashGet(this.dataObj, [...pathArr, 'dialogObj', 'targetUsers_id'], '');
-      const type = lodashGet(this.dataObj, [...pathArr, 'dialogObj', 'type'], '');
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Loading 表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingShow({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
+  //     const targetUsers_id = lodashGet(this.dataObj, [...pathArr, 'dialogObj', 'targetUsers_id'], '');
+  //     const type = lodashGet(this.dataObj, [...pathArr, 'dialogObj', 'type'], '');
       
       
       
       
-      // ---------------------------------------------
-      //   User
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Loading 表示
+  //     // ---------------------------------------------
       
-      let resultObj = {};
+  //     storeLayout.handleLoadingShow({});
       
       
-      if (pageType === 'uc') {
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   User
+  //     // ---------------------------------------------
+      
+  //     let resultObj = {};
+      
+      
+  //     if (pageType === 'uc') {
         
         
-        // ---------------------------------------------
-        //   FormData
-        // ---------------------------------------------
+  //       // ---------------------------------------------
+  //       //   FormData
+  //       // ---------------------------------------------
         
-        const formDataObj = {
+  //       const formDataObj = {
           
-          userCommunities_id,
-          targetUsers_id,
-          type,
+  //         userCommunities_id,
+  //         targetUsers_id,
+  //         type,
           
-        };
+  //       };
         
         
-        // ---------------------------------------------
-        //   Fetch
-        // ---------------------------------------------
+  //       // ---------------------------------------------
+  //       //   Fetch
+  //       // ---------------------------------------------
         
-        resultObj = await fetchWrapper({
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/upsert-manage-followers-uc`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-        });
+  //       resultObj = await fetchWrapper({
+  //         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/upsert-manage-followers-uc`,
+  //         methodType: 'POST',
+  //         formData: JSON.stringify(formDataObj),
+  //       });
         
       
-      } else if (pageType === 'ur') {
+  //     } else if (pageType === 'ur') {
         
         
-        // ---------------------------------------------
-        //   FormData
-        // ---------------------------------------------
+  //       // ---------------------------------------------
+  //       //   FormData
+  //       // ---------------------------------------------
         
-        const formDataObj = {
+  //       const formDataObj = {
           
-          targetUsers_id,
-          type,
+  //         targetUsers_id,
+  //         type,
           
-        };
+  //       };
         
         
-        // ---------------------------------------------
-        //   Fetch
-        // ---------------------------------------------
+  //       // ---------------------------------------------
+  //       //   Fetch
+  //       // ---------------------------------------------
         
-        resultObj = await fetchWrapper({
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/upsert-manage-followers-ur`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-        });
+  //       resultObj = await fetchWrapper({
+  //         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/upsert-manage-followers-ur`,
+  //         methodType: 'POST',
+  //         formData: JSON.stringify(formDataObj),
+  //       });
         
         
-      }
+  //     }
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
       
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-      
-      
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
       
       
-      // ---------------------------------------------
-      //   メンバー読み込み
-      // ---------------------------------------------
       
-      const page = lodashGet(this.dataObj, [...pathArr, 'followMembersObj', `${type}Obj`, 'page'], 1);
       
-      this.handleReadFollowMembers({
+  //     // ---------------------------------------------
+  //     //   メンバー読み込み
+  //     // ---------------------------------------------
+      
+  //     const page = lodashGet(this.dataObj, [...pathArr, 'followMembersObj', `${type}Obj`, 'page'], 1);
+      
+  //     this.handleReadFollowMembers({
         
-        pathArr,
-        pathname,
-        users_id,
-        gameCommunities_id,
-        userCommunities_id,
-        page,
-        forceReload: true,
+  //       pathArr,
+  //       pathname,
+  //       users_id,
+  //       gameCommunities_id,
+  //       userCommunities_id,
+  //       page,
+  //       forceReload: true,
         
-      });
+  //     });
       
       
       
       
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/follow-members/stores/store.js - handleManageFollowers
-      // `);
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/common/follow-members/stores/store.js - handleManageFollowers
+  //     // `);
       
-      // console.log(chalk`
-      //   pathname: {green ${pathname} / ${typeof pathname}}
-      //   users_id: {green ${users_id} / ${typeof users_id}}
-      //   gameCommunities_id: {green ${gameCommunities_id} / ${typeof gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id} / ${typeof userCommunities_id}}
-      //   pageType: {green ${pageType} / ${typeof pageType}}
-      //   targetUsers_id: {green ${targetUsers_id} / ${typeof targetUsers_id}}
-      //   type: {green ${type} / ${typeof type}}
-      // `);
-      
-      
-      // console.log(`
-      //   ----- pathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     // console.log(chalk`
+  //     //   pathname: {green ${pathname} / ${typeof pathname}}
+  //     //   users_id: {green ${users_id} / ${typeof users_id}}
+  //     //   gameCommunities_id: {green ${gameCommunities_id} / ${typeof gameCommunities_id}}
+  //     //   userCommunities_id: {green ${userCommunities_id} / ${typeof userCommunities_id}}
+  //     //   pageType: {green ${pageType} / ${typeof pageType}}
+  //     //   targetUsers_id: {green ${targetUsers_id} / ${typeof targetUsers_id}}
+  //     //   type: {green ${type} / ${typeof type}}
+  //     // `);
       
       
-    } catch (errorObj) {
+  //     // console.log(`
+  //     //   ----- pathArr -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
+  //   } catch (errorObj) {
       
       
-    } finally {
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
       
       
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
+  //   } finally {
       
       
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
       
-      storeLayout.handleLoadingHide({});
-      
-      
+  //     storeLayout.handleButtonEnable({ pathArr });
       
       
-      // ---------------------------------------------
-      //   Dialog Close
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Loading 非表示
+  //     // ---------------------------------------------
       
-      this.handleEdit({
-        pathArr: [...pathArr, 'showDialog'],
-        value: false,
-      });
+  //     storeLayout.handleLoadingHide({});
       
       
-    }
+      
+      
+  //     // ---------------------------------------------
+  //     //   Dialog Close
+  //     // ---------------------------------------------
+      
+  //     this.handleEdit({
+  //       pathArr: [...pathArr, 'showDialog'],
+  //       value: false,
+  //     });
+      
+      
+  //   }
     
     
-  };
+  // };
   
   
 }

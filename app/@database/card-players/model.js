@@ -2541,14 +2541,6 @@ const findForFollowers = async ({
     let intPage = parseInt(page, 10);
     let intLimit = parseInt(limit, 10);
     
-    // if (page) {
-    //   intPage = parseInt(page, 10);
-    // }
-    
-    // if (limit) {
-    //   intLimit = parseInt(limit, 10);
-    // }
-    
     
     
     
@@ -2752,34 +2744,21 @@ const findForFollowers = async ({
     
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
+      
+    //   adminUsers_id: {green ${adminUsers_id} / ${typeof adminUsers_id}}
+    //   users_id: {green ${users_id} / ${typeof users_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id} / ${typeof gameCommunities_id}}
+    //   userCommunities_id: {green ${userCommunities_id} / ${typeof userCommunities_id}}
+    //   controlType: {green ${controlType} / ${typeof controlType}}
+      
     //   page: {green ${page}}
     //   limit: {green ${limit}}
-    //   intPage: {green ${intPage} / ${typeof intPage}}
-    //   intLimit: {green ${intLimit} / ${typeof intLimit}}
-    //   process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT: {green ${process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT} / ${typeof process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT}}
+      
     // `);
     
     // console.log(`
-    //   ----- docUsersArr -----\n
-    //   ${util.inspect(docUsersArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- resultArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- ids_idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- resultIDsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultIDsObj)), { colors: true, depth: null })}\n
+    //   ----- formattedObj -----\n
+    //   ${util.inspect(formattedObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

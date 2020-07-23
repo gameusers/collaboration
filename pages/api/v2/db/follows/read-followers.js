@@ -226,13 +226,33 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   User Community
+    //   Game Community
     // --------------------------------------------------
     
     if (gameCommunities_id) {
-    
-    
-    
+      
+      
+      // --------------------------------------------------
+      //    DB find / Card Players
+      // --------------------------------------------------
+      
+      const resultFollowersObj = await ModelCardPlayers.findForFollowers({
+        
+        localeObj,
+        loginUsers_id,
+        adminUsers_id: '',
+        gameCommunities_id,
+        controlType,
+        page,
+        limit,
+        
+      });
+      
+      returnObj.cardPlayersObj = resultFollowersObj.cardPlayersObj;
+      returnObj.followMembersObj = resultFollowersObj.followMembersObj;
+      
+      
+      
     // --------------------------------------------------
     //   User Community
     // --------------------------------------------------
@@ -295,6 +315,10 @@ export default async (req, res) => {
       returnObj.cardPlayersObj = resultFollowersObj.cardPlayersObj;
       returnObj.followMembersObj = resultFollowersObj.followMembersObj;
       
+      
+    // --------------------------------------------------
+    //   User
+    // --------------------------------------------------
       
     } else {
       

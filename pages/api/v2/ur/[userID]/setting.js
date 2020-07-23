@@ -1,5 +1,5 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
@@ -49,6 +49,8 @@ import { locale } from 'app/@locales/locale.js';
 // ---------------------------------------------
 
 import { initialProps } from 'app/@api/v2/common.js';
+
+
 
 
 
@@ -128,8 +130,10 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (!req.isAuthenticated()) {
+      
       statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: '-A7OeA6CQ', messageID: 'xLLNIpo6a' }] });
+      
     }
     
     
@@ -157,8 +161,10 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (!users_id) {
+      
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'WILn3VVWP', messageID: 'Error' }] });
+      
     }
     
     
@@ -167,8 +173,10 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (users_id !== loginUsers_id) {
+      
       statusCode = 401;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'RZuemJfef', messageID: 'Error' }] });
+      
     }
     
     
@@ -288,13 +296,39 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
+    //   権限
+    //   0: ブロックしているユーザー
+    //   1: 非ログインユーザー
+    //   2: ログインユーザー（以下ログイン済みユーザー）
+    //   3: 自分のことをフォローしているユーザー
+    //   4: 自分がフォローしているユーザー
+    //   5: 相互フォロー状態のユーザー
+    //   50: 自分自身
+    //   100: サイト管理者
+    // --------------------------------------------------
+    
+    returnObj.accessLevel = 1;
+    
+    
+    // ---------------------------------------------
+    //   - 自分自身
+    // ---------------------------------------------
+    
+    if (users_id === loginUsers_id) {
+      returnObj.accessLevel = 50;
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/ur/[userID]/settings.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/ur/[userID]/setting.js
+    `);
     
     // console.log(chalk`
     //   {green ur/player/api/player / initial-props}
@@ -308,11 +342,11 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- usersObj -----\n
-    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- usersObj -----\n
+      ${util.inspect(usersObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(`
     //   ----- docUsersObj -----\n

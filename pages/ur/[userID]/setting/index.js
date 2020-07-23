@@ -36,7 +36,7 @@ import lodashGet from 'lodash/get';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
-// import { getCookie } from 'app/@modules/cookie.js';
+import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
@@ -46,8 +46,10 @@ import { createCsrfToken } from 'app/@modules/csrf.js';
 import Layout from 'app/common/layout/v2/components/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
 
-import CardPlayer from 'app/common/card/v2/components/card-player.js';
-// import Cards from 'app/ur/v2/index/cards.js';
+import FormPage from 'app/ur/v2/setting/form-page.js';
+// import FormAccount from '../../../app/ur/settings/components/form-account';
+// import FormEmail from '../../../app/ur/settings/components/form-email';
+// import FormWebPush from '../../../app/ur/settings/components/form-web-push';
 
 
 
@@ -56,7 +58,7 @@ import CardPlayer from 'app/common/card/v2/components/card-player.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/ur/***
+//   URL: https://dev-1.gameusers.org/ur/***/setting
 // --------------------------------------------------
 
 const ContainerLayout = (props) => {
@@ -65,9 +67,6 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
-  const [cardPlayersArr, setCardPlayersArr] = useState(props.cardPlayersArr);
-  
   
   useEffect(() => {
     
@@ -80,29 +79,6 @@ const ContainerLayout = (props) => {
     
     
   }, [props.ISO8601]);
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Component - Card Player
-  // --------------------------------------------------
-  
-  const componentsArr = [];
-  
-  for (let valueObj of cardPlayersArr.values()) {
-    
-    componentsArr.push(
-      <CardPlayer
-        key={valueObj._id}
-        obj={valueObj}
-        showEditButton={true}
-        defaultExpanded={true}
-        setCardPlayersArr={setCardPlayersArr}
-      />
-    );
-    
-  }
   
   
   
@@ -133,13 +109,15 @@ const ContainerLayout = (props) => {
         arr={props.breadcrumbsArr}
       />
       
-      {componentsArr}
-      
-      {/*<Cards
-        cardPlayersArr={props.cardPlayersArr}
-        showEditButton={true}
-        defaultExpanded={true}
-      />*/}
+      <FormPage
+        userID={props.userID}
+        pagesObj={props.pagesObj}
+        approval={props.approval}
+        // loginID={props.loginID}
+        // email={props.email}
+        // emailConfirmation={props.emailConfirmation}
+        // webPushPermission={props.webPushPermission}
+      />
       
     </React.Fragment>
   ;
@@ -239,16 +217,30 @@ export async function getServerSideProps({ req, res, query }) {
   
   
   
+  // ---------------------------------------------
+  //   FormData
+  // ---------------------------------------------
+  
+  const formDataObj = {
+    
+    userID,
+    
+  };
+  
+  
+  
+  
   // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
   
   const resultObj = await fetchWrapper({
     
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}`),
-    methodType: 'GET',
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}/setting`),
+    methodType: 'POST',
     reqHeadersCookie,
     reqAcceptLanguage,
+    formData: JSON.stringify(formDataObj),
     
   });
   
@@ -267,8 +259,12 @@ export async function getServerSideProps({ req, res, query }) {
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   
-  const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
-  const cardPlayersArr = lodashGet(dataObj, ['cardPlayersArr'], []);
+  const pagesObj = lodashGet(dataObj, ['pagesObj'], {});
+  const approval = lodashGet(dataObj, ['approval'], false);
+  const loginID = lodashGet(dataObj, ['loginID'], '');
+  const email = lodashGet(dataObj, ['email'], '');
+  const emailConfirmation = lodashGet(dataObj, ['emailConfirmation'], false);
+  const webPushPermission = lodashGet(dataObj, ['webPushPermission'], false);
   
   
   
@@ -277,14 +273,8 @@ export async function getServerSideProps({ req, res, query }) {
   //   Title
   // --------------------------------------------------
   
-  const topPagesObj = pagesArr.find((valueObj) => {
-    return valueObj.type === 'top';
-  });
-  
-  const topPageName = lodashGet(topPagesObj, ['name'], '');
-  
-  const userName = lodashGet(cardPlayersArr, [0, 'name'], '');
-  const title = topPageName ? topPageName : `${userName} - Game Users`;
+  const userName = lodashGet(headerObj, ['name'], '');
+  const title = `ユーザー設定 - ${userName}`;
   
   
   
@@ -299,7 +289,7 @@ export async function getServerSideProps({ req, res, query }) {
       name: 'トップ',
       href: `/ur/[userID]/index?userID=${userID}`,
       as: `/ur/${userID}`,
-      active: true,
+      active: false,
     },
     
     {
@@ -318,7 +308,7 @@ export async function getServerSideProps({ req, res, query }) {
         name: '設定',
         href: `/ur/[userID]/setting?userID=${userID}`,
         as: `/ur/${userID}/setting`,
-        active: false,
+        active: true,
       }
     );
     
@@ -336,6 +326,13 @@ export async function getServerSideProps({ req, res, query }) {
     {
       type: 'ur',
       anchorText: '',
+      href: `/ur/[userID]/index?userID=${userID}`,
+      as: `/ur/${userID}`,
+    },
+    
+    {
+      type: 'ur/setting',
+      anchorText: '',
       href: '',
       as: '',
     },
@@ -349,16 +346,16 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
   
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/ur/[userID]/index.js
-  // `);
+  console.log(`
+    ----------------------------------------\n
+    /pages/ur/[userID]/setting/index.js
+  `);
   
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  console.log(`
+    ----- resultObj -----\n
+    ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+    --------------------\n
+  `);
   
   
   
@@ -381,8 +378,14 @@ export async function getServerSideProps({ req, res, query }) {
       headerNavMainArr,
       breadcrumbsArr,
       
+      accessLevel,
       userID,
-      cardPlayersArr,
+      pagesObj,
+      approval,
+      loginID,
+      email,
+      emailConfirmation,
+      webPushPermission,
       
     }
     

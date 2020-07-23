@@ -204,6 +204,7 @@ const Component = (props) => {
   
   let scrollYOffset = 0;
   const navTopHeight = 53;
+  // const navMainHeight = 36;
   
   
   const handleScroll = useCallback(lodashThrottle(() => {
@@ -291,14 +292,6 @@ const Component = (props) => {
     
     if (scrollY === 0) {
       
-      // console.log(chalk`
-      //   return - scrollY === 0
-      // `);
-      
-      // showNavTopNew = true;
-      // lowerNavMainNew = false;
-      // lowerSidebarNew = false;
-      
       return;
       
       
@@ -308,46 +301,13 @@ const Component = (props) => {
     
     } else if (scrollToEnd) {
       
-      // setLowerSidebar(false);
-      
-      // ---------------------------------------------
-      //   
-      // ---------------------------------------------
-      
-      // if (!lowerNavMainNew) {
-      //   console.log('aaa');
-      //   setLowerSidebar(false);
-        
-      // }
-      
-      
       setScrollToEnd(false);
-      
-      
-      // console.log(chalk`
-      //   scrollY: {green ${scrollY}}
-      //   heroImageHeight: {green ${heroImageHeight}}
-      // `);
-      
-      // console.log(chalk`
-      //   return - setScrollToEnd
-      // `);
-      
-      
-      
-      // if (!lowerNavMainNew) {
-      //   setLowerSidebar(false);
-      //   // lowerSidebarNew = false;
-      // }
       
       return;
       
     }
     
     
-    // if (!lowerNavMainNew) {
-    //   lowerSidebarNew = false;
-    // }
     
     
     // ---------------------------------------------
@@ -361,7 +321,6 @@ const Component = (props) => {
     
     
     
-    
     // ---------------------------------------------
     //   console.log
     // ---------------------------------------------
@@ -369,10 +328,6 @@ const Component = (props) => {
     // console.log(`
     //   ----------------------------------------\n
     //   /app/common/layout/components/header/nav-top.js - handleScroll
-    // `);
-    
-    // console.log(chalk`
-    //   scrollY: {green ${scrollY}}
     // `);
     
     // console.log(chalk`
@@ -389,19 +344,10 @@ const Component = (props) => {
     // `);
     
     // console.log(chalk`
-    //   BBBBBBBBBBBBBBBBBBB
-    //   heroImageHeight: {green ${heroImageHeight}}
-    // `);
-    
-    
-    // console.log(chalk`
     //   scrollY: {green ${scrollY}}
     //   this.navTopHeight: {green ${this.navTopHeight}}
     //   headerHeroImageHeight: {green ${headerHeroImageHeight}}
     //   scrollUp: {green ${scrollUp}}
-    //   showNavTopNew: {green ${showNavTopNew}}
-    //   lowerNavMainNew: {green ${lowerNavMainNew}}
-    //   lowerSidebarNew: {green ${lowerSidebarNew}}
     // `);
     
     

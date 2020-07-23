@@ -360,11 +360,9 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       name: 'フォロワー',
-      href: '/',
-      as: '/',
+      href: `/gc/[urlID]/follower?urlID=${urlID}`,
+      as: `/gc/${urlID}/follower`,
       active: false,
-      // href: `/gc/[urlID]/followers?urlID=${urlID}`,
-      // as: `/gc/${urlID}/followers`,
     }
     
   ];

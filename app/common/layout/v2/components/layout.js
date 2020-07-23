@@ -134,17 +134,51 @@ const Component = (props) => {
     
     Events.scrollEvent.register('end', function(to, element) {
       
+      
       // console.log('end', arguments);
       
-      // setScrollToEnd(true);
       
-      if (window.scrollY === 0) {
+      // ---------------------------------------------
+      //   高さ
+      // ---------------------------------------------
+      
+      const navTopHeight = 53;
+      const navMainHeight = 36;
+      const headerHeight = navTopHeight + heroImageHeight + navMainHeight;
+      const contentsHeight = window.innerHeight - headerHeight;
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   コンテンツの量が少ない（コンテンツの高さがない）場合
+      // ---------------------------------------------
+      
+      if (headerHeight > contentsHeight) {
+        
+        // console.log('AAA');
+        
+        setShowNavTop(true);
+        setLowerNavMain(false);
+        setLowerSidebar(false);
+      
+      
+      // ---------------------------------------------
+      //   スクロールがトップの場合
+      // ---------------------------------------------
+      
+      } else if (window.scrollY === 0) {
         
         // console.log('end / window.scrollY === 0');
         
         setShowNavTop(true);
         setLowerNavMain(false);
         setLowerSidebar(false);
+        
+        
+      // ---------------------------------------------
+      //   それ以外
+      // ---------------------------------------------
         
       } else {
         
@@ -155,6 +189,18 @@ const Component = (props) => {
         setLowerSidebar(true);
         
       }
+      
+      
+      // console.log(chalk`
+      //   navTopHeight: {green ${navTopHeight}}
+      //   heroImageHeight: {green ${heroImageHeight}}
+      //   navMainHeight: {green ${navMainHeight}}
+        
+      //   window.innerHeight: {green ${window.innerHeight}}
+        
+      //   headerHeight: {green ${headerHeight}}
+      //   contentsHeight: {green ${contentsHeight}}
+      // `);
       
       
       setTimeout(setScrollToEnd(true), 500);

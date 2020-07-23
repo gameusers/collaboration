@@ -770,6 +770,13 @@ const Component = (props) => {
     const targetUsers_id = lodashGet(cardPlayersObj, [cardPlayers_id, 'users_id'], '');
     
     
+    // --------------------------------------------------
+    //   管理ボタンを表示するかどうか
+    // --------------------------------------------------
+    
+    const showManageButton = (accessLevel >= 50 && loginUsers_id !== targetUsers_id) ? true : false;
+    
+    
     // console.log(chalk`
     //   targetUsers_id: {green ${targetUsers_id}}
     // `);
@@ -795,18 +802,26 @@ const Component = (props) => {
         
         
         {/* Card Player */}
-        <CardPlayer
-          obj={targetCardPlayersObj}
-          showFollow={true}
-          showEditButton={true}
-          defaultExpanded={false}
-        />
+        <div
+          css={css`
+            ${showManageButton ? 'margin: 0' : 'margin: 0 0 16px 0'};
+          `}
+        >
+          
+          <CardPlayer
+            obj={targetCardPlayersObj}
+            showFollow={true}
+            showEditButton={true}
+            defaultExpanded={false}
+          />
+          
+        </div>
         
         
         
         
-        {/* フォロワー管理ボタン（自分のカードには管理ボタンを表示しない） */}
-        {(accessLevel >= 50 && loginUsers_id !== targetUsers_id) &&
+        {/* 管理ボタン（管理者でない場合と、自分のカードの場合には管理ボタンを表示しない） */}
+        {showManageButton &&
           <Paper
             css={css`
               display: flex;

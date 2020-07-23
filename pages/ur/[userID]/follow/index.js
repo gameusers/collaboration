@@ -31,14 +31,6 @@ import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateCommunity } from 'app/@states/community.js';
-import { ContainerStateForum } from 'app/@states/forum.js';
-
-
-// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -55,7 +47,6 @@ import Layout from 'app/common/layout/v2/components/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
 
 import FollowMembers from 'app/common/follow/v2/components/members.js';
-// import Cards from 'app/ur/v2/components/cards.js';
 
 
 
@@ -64,35 +55,10 @@ import FollowMembers from 'app/common/follow/v2/components/members.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/gc/***
+//   URL: https://dev-1.gameusers.org/ur/***/follow
 // --------------------------------------------------
 
 const ContainerLayout = (props) => {
-  
-  
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-  
-  const stateCommunity = ContainerStateCommunity.useContainer();
-  const stateForum = ContainerStateForum.useContainer();
-  
-  const {
-    
-    setUserCommunityObj,
-    
-  } = stateCommunity;
-  
-  const {
-    
-    setForumThreadsForListObj,
-    setForumThreadsObj,
-    setForumCommentsObj,
-    setForumRepliesObj,
-    
-  } = stateForum;
-  
-  
   
   
   // --------------------------------------------------
@@ -100,18 +66,6 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
   
   useEffect(() => {
-    
-    
-    // --------------------------------------------------
-    //   Router.push でページを移動した際の処理
-    //   getServerSideProps でデータを取得してからデータを更新する
-    // --------------------------------------------------
-    
-    setUserCommunityObj(props.userCommunityObj);
-    setForumThreadsForListObj(props.forumThreadsForListObj);
-    setForumThreadsObj(props.forumThreadsObj);
-    setForumCommentsObj(props.forumCommentsObj);
-    setForumRepliesObj(props.forumRepliesObj);
     
     
     // ---------------------------------------------
@@ -122,28 +76,6 @@ const ContainerLayout = (props) => {
     
     
   }, [props.ISO8601]);
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   console.log
-  // --------------------------------------------------
-  
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/uc/[userCommunityID]/index.js - ContainerLayout
-  // `);
-  
-  // console.log(`
-  //   ----- props -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(props)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(chalk`
-  //   gameCommunities_id: {green ${gameCommunities_id}}
-  // `);
   
   
   
@@ -213,23 +145,6 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   unstated-next - Initial State
-  // --------------------------------------------------
-  
-  const initialStateObj = {
-    
-    userCommunityObj: props.userCommunityObj,
-    forumThreadsForListObj: props.forumThreadsForListObj,
-    forumThreadsObj: props.forumThreadsObj,
-    forumCommentsObj: props.forumCommentsObj,
-    forumRepliesObj: props.forumRepliesObj,
-    
-  };
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Error
   //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
   // --------------------------------------------------
@@ -239,51 +154,11 @@ const Component = (props) => {
   }
   
   
-  
-  
-  // --------------------------------------------------
-  //   console.log
-  // --------------------------------------------------
-  
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/uc/[userCommunityID]/index.js
-  // `);
-  
-  // console.log(`
-  //   ----- headerObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(headerObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- headerNavMainArr -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(headerNavMainArr)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(chalk`
-  //   gameCommunities_id: {green ${gameCommunities_id}}
-  // `);
-  
-  
-  
-  
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
   
-  return (
-    <ContainerStateCommunity.Provider initialState={initialStateObj}>
-      
-      <ContainerStateForum.Provider initialState={initialStateObj}>
-        
-        <ContainerLayout {...props} />
-        
-      </ContainerStateForum.Provider>
-      
-    </ContainerStateCommunity.Provider>
-  );
+  return <ContainerLayout {...props} />;
   
   
 };
@@ -420,8 +295,8 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: '設定',
-        href: `/ur/[userID]/settings?userID=${userID}`,
-        as: `/ur/${userID}/settings`,
+        href: `/ur/[userID]/setting?userID=${userID}`,
+        as: `/ur/${userID}/setting`,
         active: false,
       }
     );

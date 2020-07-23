@@ -44,12 +44,14 @@ import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import IconHome from '@material-ui/icons/Home';
 import IconLogin from '@material-ui/icons/ExitToApp';
 import IconLogout from '@material-ui/icons/Eject';
+
 import IconGames from '@material-ui/icons/Games';
 import IconUCList from '@material-ui/icons/MenuBook';
 import IconUserCommunity from '@material-ui/icons/SupervisedUserCircle';
 import IconMembers from '@material-ui/icons/SentimentSatisfiedAlt';
 import IconUser from '@material-ui/icons/Person';
 import IconFollow from '@material-ui/icons/FilterNone';
+import IconSetting from '@material-ui/icons/Settings';
 
 import IconForum from '@material-ui/icons/Forum';
 import IconDescription from '@material-ui/icons/Description';
@@ -152,6 +154,11 @@ const Component = (props) => {
       icon = <IconSearch fontSize="small" />;
       anchorText = '検索';
       
+    } else if (valueObj.type === 'gc/follower') {
+      
+      icon = <IconFollow fontSize="small" />;
+      anchorText = 'フォロワー';
+      
       
     // --------------------------------------------------
     //   - User Community
@@ -186,6 +193,11 @@ const Component = (props) => {
       
       icon = <IconFollow fontSize="small" />;
       anchorText = 'フォロー';
+      
+    } else if (valueObj.type === 'ur/setting') {
+      
+      icon = <IconSetting fontSize="small" />;
+      anchorText = 'ユーザー設定';
       
     }
     

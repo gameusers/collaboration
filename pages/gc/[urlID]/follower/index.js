@@ -31,15 +31,6 @@ import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateLayout } from 'app/@states/layout.js';
-import { ContainerStateCommunity } from 'app/@states/community.js';
-import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
-
-
-// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -53,9 +44,9 @@ import { getCookie } from 'app/@modules/cookie.js';
 // ---------------------------------------------
 
 import Layout from 'app/common/layout/v2/components/layout.js';
-import RecruitmentNavigation from 'app/gc/rec/v2/components/navigation.js';
-import Recruitment from 'app/gc/rec/v2/components/recruitment.js';
 import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
+
+import FollowMembers from 'app/common/follow/v2/components/members.js';
 
 
 
@@ -64,41 +55,10 @@ import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/gc/***/rec/***
+//   URL: https://dev-1.gameusers.org/gc/***/follow
 // --------------------------------------------------
 
 const ContainerLayout = (props) => {
-  
-  
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-  
-  const stateLayout = ContainerStateLayout.useContainer();
-  const stateCommunity = ContainerStateCommunity.useContainer();
-  const stateRecruitment = ContainerStateRecruitment.useContainer();
-  
-  const {
-    
-    handleScrollTo,
-    
-  } = stateLayout;
-  
-  const {
-    
-    setGameCommunityObj,
-    
-  } = stateCommunity;
-  
-  const {
-    
-    setRecruitmentThreadsObj,
-    setRecruitmentCommentsObj,
-    setRecruitmentRepliesObj,
-    
-  } = stateRecruitment;
-  
-  
   
   
   // --------------------------------------------------
@@ -108,30 +68,11 @@ const ContainerLayout = (props) => {
   useEffect(() => {
     
     
-    // --------------------------------------------------
-    //   Router.push でページを移動した際の処理
-    //   getServerSideProps でデータを取得してからデータを更新する
-    // --------------------------------------------------
-    
-    setGameCommunityObj(props.gameCommunityObj);
-    setRecruitmentThreadsObj(props.recruitmentThreadsObj);
-    setRecruitmentCommentsObj(props.recruitmentCommentsObj);
-    setRecruitmentRepliesObj(props.recruitmentRepliesObj);
-    
-    
     // ---------------------------------------------
     //   Scroll To
     // ---------------------------------------------
     
-    handleScrollTo({
-      
-      to: 'recruitmentThreads',
-      duration: 0,
-      delay: 0,
-      smooth: 'easeInOutQuart',
-      offset: -50,
-      
-    });
+    scroll.scrollToTop({ duration: 0 });
     
     
   }, [props.ISO8601]);
@@ -144,9 +85,10 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
   
   const componentSidebar =
-    <RecruitmentNavigation
-      urlID={props.urlID}
-      gameCommunities_id={props.gameCommunities_id}
+    <img
+      src="/img/common/advertisement/300x250.jpg"
+      width="300"
+      height="250"
     />
   ;
   
@@ -157,17 +99,19 @@ const ContainerLayout = (props) => {
   //   Component - Contents
   // --------------------------------------------------
   
-  const componentContent =
+  const componentContent = 
     <React.Fragment>
       
       <Breadcrumbs
         arr={props.breadcrumbsArr}
       />
       
-      <Recruitment
-        urlID={props.urlID}
+      <FollowMembers
+        pageType="gc"
         gameCommunities_id={props.gameCommunities_id}
-        individual={props.individual}
+        accessLevel={props.accessLevel}
+        cardPlayersObj={props.cardPlayersObj}
+        followMembersObj={props.followMembersObj}
       />
       
     </React.Fragment>
@@ -201,26 +145,6 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   unstated-next - Initial State
-  // --------------------------------------------------
-  
-  const initialStateObj = {
-    
-    gameCommunityObj: props.gameCommunityObj,
-    recruitmentThreadsObj: props.recruitmentThreadsObj,
-    recruitmentCommentsObj: props.recruitmentCommentsObj,
-    recruitmentRepliesObj: props.recruitmentRepliesObj,
-    
-    hardwaresArr: props.hardwaresArr,
-    categories: props.categories,
-    keyword: props.keyword,
-    
-  };
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Error
   //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
   // --------------------------------------------------
@@ -230,23 +154,11 @@ const Component = (props) => {
   }
   
   
-  
-  
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
   
-  return (
-    <ContainerStateCommunity.Provider initialState={initialStateObj}>
-      
-      <ContainerStateRecruitment.Provider initialState={initialStateObj}>
-        
-        <ContainerLayout {...props} />
-        
-      </ContainerStateRecruitment.Provider>
-      
-    </ContainerStateCommunity.Provider>
-  );
+  return <ContainerLayout {...props} />;
   
   
 };
@@ -286,33 +198,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Query
   // --------------------------------------------------
   
-  const hardwares = lodashGet(query, ['hardwares'], '');
-  const categories = lodashGet(query, ['categories'], '');
-  const keyword = lodashGet(query, ['keyword'], '');
-  const urlID = lodashGet(query, ['urlID'], '');
-  const slugsArr = lodashGet(query, ['slug'], []);
-  
-  let threadPage = lodashGet(query, ['page'], 1);
-  let recruitmentID = '';
-  
-  let pageType = 'recruitment';
-  
-  if (Math.sign(slugsArr[0]) === 1) {
-    
-    threadPage = slugsArr[0];
-    
-  } else if (slugsArr[0] !== 'search') {
-    
-    recruitmentID = slugsArr[0];
-    pageType = 'individual';
-    
-  } else if (slugsArr[0] === 'search') {
-    
-    pageType = 'search';
-    
-  }
-  
-  let individual = false;
+  const urlID = query.urlID;
   
   
   
@@ -327,12 +213,11 @@ export async function getServerSideProps({ req, res, query }) {
   
   
   // --------------------------------------------------
-  //   Get Cookie Data
+  //   Get Cookie Data & Temporary Data for Fetch
   // --------------------------------------------------
   
-  const threadLimit = getCookie({ key: 'recruitmentThreadLimit', reqHeadersCookie });
-  const commentLimit = getCookie({ key: 'recruitmentCommentLimit', reqHeadersCookie });
-  const replyLimit = getCookie({ key: 'recruitmentReplyLimit', reqHeadersCookie });
+  const page = 1;
+  const limit = getCookie({ key: 'followLimit', reqHeadersCookie });
   
   
   
@@ -343,7 +228,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   const resultObj = await fetchWrapper({
     
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/${urlID}/rec?recruitmentID=${recruitmentID}&threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}&hardwares=${hardwares}&categories=${categories}&keyword=${keyword}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/${urlID}/follower?page=${page}&limit=${limit}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -367,12 +252,10 @@ export async function getServerSideProps({ req, res, query }) {
   const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
   const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
   
-  const gameCommunityObj = lodashGet(dataObj, ['gameCommunityObj'], {});
-  const recruitmentThreadsObj = lodashGet(dataObj, ['recruitmentThreadsObj'], {});
-  const recruitmentCommentsObj = lodashGet(dataObj, ['recruitmentCommentsObj'], {});
-  const recruitmentRepliesObj = lodashGet(dataObj, ['recruitmentRepliesObj'], {});
-  
-  const hardwaresArr = lodashGet(dataObj, ['hardwaresArr'], []);
+  // const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
+  // const users_id = lodashGet(dataObj, ['users_id'], '');
+  const cardPlayersObj = lodashGet(dataObj, ['cardPlayersObj'], {});
+  const followMembersObj = lodashGet(dataObj, ['followMembersObj'], {});
   
   
   
@@ -381,7 +264,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Title
   // --------------------------------------------------
   
-  let title = '';
+  const title = `フォロワー - ${gameName}`;
   
   
   
@@ -403,14 +286,14 @@ export async function getServerSideProps({ req, res, query }) {
       name: '募集',
       href: `/gc/[urlID]/rec?urlID=${urlID}`,
       as: `/gc/${urlID}/rec`,
-      active: true,
+      active: false,
     },
     
     {
       name: 'フォロワー',
       href: `/gc/[urlID]/follower?urlID=${urlID}`,
       as: `/gc/${urlID}/follower`,
-      active: false,
+      active: true,
     }
     
   ];
@@ -439,108 +322,19 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       type: 'gc',
-      anchorText: gameName,
+      anchorText: lodashGet(dataObj, ['headerObj', 'name'], ''),
       href: `/gc/[urlID]/index?urlID=${urlID}`,
       as: `/gc/${urlID}`,
     },
     
     {
-      type: 'gc/rec',
+      type: 'gc/follower',
       anchorText: '',
-      href: `/gc/[urlID]/rec/index?urlID=${urlID}`,
-      as: `/gc/${urlID}/rec`,
+      href: '',
+      as: '',
     },
     
   ];
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   募集
-  // --------------------------------------------------
-  
-  if (pageType === 'recruitment') {
-    
-    
-    // ---------------------------------------------
-    //   - Title
-    // ---------------------------------------------
-    
-    title = `募集: Page ${threadPage} - ${gameName}`;
-    
-    
-  // --------------------------------------------------
-  //   個別の募集
-  // --------------------------------------------------
-    
-  } else if (pageType === 'individual') {
-    
-    
-    // ---------------------------------------------
-    //   - Title
-    // ---------------------------------------------
-    
-    const recruitmentThreadsArr = lodashGet(dataObj, ['recruitmentThreadsObj', 'page1Obj', 'arr'], []);
-    const recruitmentTitle = lodashGet(dataObj, ['recruitmentThreadsObj', 'dataObj', recruitmentThreadsArr[0], 'title'], '');
-    
-    title = `${recruitmentTitle} - ${gameName}`;
-    
-    
-    // ---------------------------------------------
-    //   - パンくずリスト
-    // ---------------------------------------------
-    
-    breadcrumbsArr.push(
-      
-      {
-        type: 'gc/rec/individual',
-        anchorText: recruitmentTitle,
-        href: '',
-        as: '',
-      }
-      
-    );
-    
-    
-    // ---------------------------------------------
-    //   - Individual
-    // ---------------------------------------------
-    
-    individual = true;
-    
-    
-  // --------------------------------------------------
-  //   検索
-  // --------------------------------------------------
-    
-  } else if (pageType === 'search') {
-    
-    
-    // ---------------------------------------------
-    //   - Title
-    // ---------------------------------------------
-    
-    title = `検索 - ${gameName}`;
-    
-    
-    // ---------------------------------------------
-    //   - パンくずリスト
-    // ---------------------------------------------
-    
-    breadcrumbsArr.push(
-      
-      {
-        type: 'gc/rec/search',
-        anchorText: '',
-        href: '',
-        as: '',
-      },
-      
-    );
-    
-    
-  }
   
   
   
@@ -551,26 +345,13 @@ export async function getServerSideProps({ req, res, query }) {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/rec/[...slug].js
+  //   /pages/gc/[urlID]/follower/index.js
   // `);
   
   // console.log(`
   //   ----- resultObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
   //   --------------------\n
-  // `);
-  
-  // console.log(chalk`
-  //   threadPage: {green ${threadPage}}
-  //   threadLimit: {green ${threadLimit}}
-  //   commentLimit: {green ${commentLimit}}
-  //   replyLimit: {green ${replyLimit}}
-  // `);
-  
-  // console.log(chalk`
-  //   hardwares: {green ${hardwares}}
-  //   categories: {green ${categories}}
-  //   keyword: {green ${keyword}}
   // `);
   
   
@@ -596,15 +377,8 @@ export async function getServerSideProps({ req, res, query }) {
       
       urlID,
       gameCommunities_id,
-      gameCommunityObj,
-      recruitmentThreadsObj,
-      recruitmentCommentsObj,
-      recruitmentRepliesObj,
-      individual,
-      
-      hardwaresArr,
-      categories,
-      keyword,
+      cardPlayersObj,
+      followMembersObj,
       
     }
     

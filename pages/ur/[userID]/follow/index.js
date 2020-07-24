@@ -250,7 +250,7 @@ export async function getServerSideProps({ req, res, query }) {
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   
-  // const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
+  const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
   const users_id = lodashGet(dataObj, ['users_id'], '');
   const cardPlayersObj = lodashGet(dataObj, ['cardPlayersObj'], {});
   const followMembersObj = lodashGet(dataObj, ['followMembersObj'], {});
@@ -262,8 +262,14 @@ export async function getServerSideProps({ req, res, query }) {
   //   Title
   // --------------------------------------------------
   
+  const pagesObj = pagesArr.find((valueObj) => {
+    return valueObj.type === 'follow';
+  });
+  
+  const pageTitle = lodashGet(pagesObj, ['title'], '');
+  
   const userName = lodashGet(headerObj, ['name'], '');
-  const title = `フォロー - ${userName}`;
+  const title = pageTitle ? pageTitle : `フォロー - ${userName}`;
   
   
   

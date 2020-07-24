@@ -1,58 +1,60 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const shortid = require('shortid');
-const moment = require('moment');
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import shortid from 'shortid';
+import moment from 'moment';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUsers = require('../../../../../app/@database/users/model');
-const ModelImagesAndVideos = require('../../../../../app/@database/images-and-videos/model');
+import ModelUsers from 'app/@database/users/model.js';
+import ModelImagesAndVideos from 'app/@database/images-and-videos/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
-const { formatAndSave } = require('../../../../../app/@modules/image/save');
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
+import { formatAndSave } from 'app/@modules/image/save.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationBoolean } = require('../../../../../app/@validations/boolean');
-const { validationUsersUserIDServer } = require('../../../../../app/@database/users/validations/user-id-server');
-const { validationUsersPagesType, validationUsersPagesName, validationUsersPagesLanguage } = require('../../../../../app/@database/users/validations/pages');
+import { validationIP } from 'app/@validations/ip.js';
+import { validationBoolean } from 'app/@validations/boolean.js';
+
+import { validationUsersUserIDServer } from 'app/@database/users/validations/user-id-server.js';
+import { validationUsersPagesType, validationUsersPagesTitle, validationUsersPagesLanguage } from 'app/@database/users/validations/pages.js';
 
 
-// ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-// const { locale } = require('../../../../../app/@locales/locale');
 
 
 
@@ -89,6 +91,15 @@ export default async (req, res) => {
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
   
   
   try {
@@ -114,11 +125,10 @@ export default async (req, res) => {
     //   Log Data
     // --------------------------------------------------
     
-    // lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
-    lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
     lodashSet(requestParametersObj, ['userID'], userID);
     lodashSet(requestParametersObj, ['pagesArr'], pagesArr);
     lodashSet(requestParametersObj, ['approval'], approval);
+    lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
     
     
     
@@ -135,8 +145,10 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (!req.isAuthenticated()) {
+      
       statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'V5Ww_uLNM', messageID: 'xLLNIpo6a' }] });
+      
     }
     
     
@@ -159,18 +171,30 @@ export default async (req, res) => {
     
     for (let valueObj of pagesArr.values()) {
       
-      await validationUsersPagesType({ throwError: true, value: valueObj.type });
-      await validationUsersPagesName({ throwError: true, value: valueObj.name });
-      await validationUsersPagesLanguage({ throwError: true, value: valueObj.language });
+      if (
+        
+        !validationUsersPagesType({ value: valueObj.type }).error &&
+        !validationUsersPagesTitle({ value: valueObj.title, required: true }).error &&
+        !validationUsersPagesLanguage({ value: valueObj.language }).error
+        
+      ) {
+        
+        newPagesArr.push({
+          
+          _id: shortid.generate(),
+          type: valueObj.type,
+          title: valueObj.title,
+          language: valueObj.language,
+          
+        });
+        
+      }
       
-      newPagesArr.push({
-        
-        _id: shortid.generate(),
-        type: valueObj.type,
-        name: valueObj.name,
-        language: valueObj.language,
-        
-      });
+      // await validationUsersPagesType({ throwError: true, value: valueObj.type });
+      // await validationUsersPagesTitle({ throwError: true, value: valueObj.name });
+      // await validationUsersPagesLanguage({ throwError: true, value: valueObj.language });
+      
+      
       
     }
     
@@ -221,7 +245,7 @@ export default async (req, res) => {
     
     if (imagesAndVideosObj) {
       
-      // console.log('aaa');
+      
       // --------------------------------------------------
       //   現在の画像データを取得する
       // --------------------------------------------------
@@ -354,7 +378,7 @@ export default async (req, res) => {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/api/v2/db/users/upsert-settings-pages
+    //   /pages/api/v2/db/users/upsert-setting-pages.js
     // `);
     
     // console.log(chalk`
@@ -371,30 +395,6 @@ export default async (req, res) => {
     // console.log(`
     //   ----- pagesArr -----\n
     //   ${util.inspect(pagesArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- usersConditionObj -----\n
-    //   ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- usersSaveObj -----\n
-    //   ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- imagesAndVideosConditionObj -----\n
-    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- imagesAndVideosSaveObj -----\n
-    //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -416,11 +416,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: '0qiGkIA99',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     
@@ -438,6 +441,10 @@ export default async (req, res) => {
 
 
 
+
+// --------------------------------------------------
+//   config
+// --------------------------------------------------
 
 export const config = {
   api: {

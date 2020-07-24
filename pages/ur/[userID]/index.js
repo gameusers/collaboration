@@ -277,14 +277,14 @@ export async function getServerSideProps({ req, res, query }) {
   //   Title
   // --------------------------------------------------
   
-  const topPagesObj = pagesArr.find((valueObj) => {
+  const pagesObj = pagesArr.find((valueObj) => {
     return valueObj.type === 'top';
   });
   
-  const topPageName = lodashGet(topPagesObj, ['name'], '');
+  const pageTitle = lodashGet(pagesObj, ['title'], '');
   
   const userName = lodashGet(cardPlayersArr, [0, 'name'], '');
-  const title = topPageName ? topPageName : `${userName} - Game Users`;
+  const title = pageTitle ? pageTitle : `${userName} - Game Users`;
   
   
   

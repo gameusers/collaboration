@@ -408,7 +408,7 @@ class Store {
       
       storeLayout.handleSnackbarOpen({
         variant: 'success',
-        messageID: 'nhn2yers2',
+        messageID: 'EnStWOly-',
       });
       
       

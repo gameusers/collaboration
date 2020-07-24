@@ -183,12 +183,18 @@ router.post('/db', upload.none(), async (req, res, next) => {
         pagesObj: {
           imagesAndVideos_id: '',
           arr: [
-            {
-              _id: '51WW1NG1r',
-              type: 'top',
-              name: 'マリオのプロフィール',
-              language: 'ja',
-            },
+            // {
+            //   _id: '51WW1NG1r',
+            //   type: 'top',
+            //   title: 'マリオのプロフィール',
+            //   language: 'ja',
+            // },
+            // {
+            //   _id: 's_MGYAQea',
+            //   type: 'follow',
+            //   title: 'マリオのフォロー相手',
+            //   language: 'ja',
+            // },
           ],
         },
         loginID: '8OM0dhDak',

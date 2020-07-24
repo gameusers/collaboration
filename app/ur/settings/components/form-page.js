@@ -51,7 +51,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 // ---------------------------------------------
 
 import { validationUsersUserID } from '../../../../app/@database/users/validations/user-id';
-import { validationUsersPagesName } from '../../../../app/@database/users/validations/pages';
+import { validationUsersPagesTitle } from '../../../../app/@database/users/validations/pages';
 
 
 // ---------------------------------------------
@@ -202,7 +202,7 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const name = lodashGet(valueObj, ['name'], '');
-      const validationUsersPagesNameObj = validationUsersPagesName({ value: name });
+      const validationUsersPagesTitleObj = validationUsersPagesTitle({ value: name });
       
       
       // --------------------------------------------------
@@ -260,13 +260,13 @@ export default injectIntl(class extends React.Component {
               `}
               id="name"
               label="タイトル"
-              value={validationUsersPagesNameObj.value}
+              value={validationUsersPagesTitleObj.value}
               onChange={(eventObj) => handleEdit({
                 pathArr: [...pathArr, 'pagesObj', 'arr', 0, 'name'],
                 value: eventObj.target.value
               })}
-              error={validationUsersPagesNameObj.error}
-              helperText={intl.formatMessage({ id: validationUsersPagesNameObj.messageID }, { numberOfCharacters: validationUsersPagesNameObj.numberOfCharacters })}
+              error={validationUsersPagesTitleObj.error}
+              helperText={intl.formatMessage({ id: validationUsersPagesTitleObj.messageID }, { numberOfCharacters: validationUsersPagesTitleObj.numberOfCharacters })}
               disabled={buttonDisabled}
               margin="normal"
               inputProps={{
@@ -313,8 +313,8 @@ export default injectIntl(class extends React.Component {
       // `);
       
       // console.log(`
-      //   ----- validationUsersPagesNameObj -----\n
-      //   ${util.inspect(validationUsersPagesNameObj, { colors: true, depth: null })}\n
+      //   ----- validationUsersPagesTitleObj -----\n
+      //   ${util.inspect(validationUsersPagesTitleObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       

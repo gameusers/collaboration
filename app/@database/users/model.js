@@ -1103,7 +1103,7 @@ const transactionForUpsert = async ({
     //   Transaction / Commit
     // --------------------------------------------------
     
-    await session.commitTransaction();
+    // await session.commitTransaction();
     // console.log('--------コミット-----------');
     
     session.endSession();
@@ -1115,65 +1115,70 @@ const transactionForUpsert = async ({
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----- usersConditionObj -----\n
-    //   ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /app/@database/users/model.js
+    `);
     
-    // console.log(`
-    //   ----- usersSaveObj -----\n
-    //   ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- usersConditionObj -----\n
+      ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- cardPlayersConditionObj -----\n
-    //   ${util.inspect(cardPlayersConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- usersSaveObj -----\n
+      ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- cardPlayersSaveObj -----\n
-    //   ${util.inspect(cardPlayersSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- cardPlayersConditionObj -----\n
+      ${util.inspect(cardPlayersConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- followsConditionObj -----\n
-    //   ${util.inspect(followsConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- cardPlayersSaveObj -----\n
+      ${util.inspect(cardPlayersSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- followsSaveObj -----\n
-    //   ${util.inspect(followsSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- followsConditionObj -----\n
+      ${util.inspect(followsConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- emailConfirmationsConditionObj -----\n
-    //   ${util.inspect(emailConfirmationsConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- followsSaveObj -----\n
+      ${util.inspect(followsSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- emailConfirmationsSaveObj -----\n
-    //   ${util.inspect(emailConfirmationsSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- emailConfirmationsConditionObj -----\n
+      ${util.inspect(emailConfirmationsConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- imagesAndVideosConditionObj -----\n
-    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- emailConfirmationsSaveObj -----\n
+      ${util.inspect(emailConfirmationsSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- imagesAndVideosSaveObj -----\n
-    //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- imagesAndVideosConditionObj -----\n
+      ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- imagesAndVideosSaveObj -----\n
+      ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(`
     //   ----- returnObj -----\n

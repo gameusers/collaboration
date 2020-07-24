@@ -21,8 +21,8 @@ const schema = mongoose.Schema({
     arr: [
       {
         _id: { type: String, required: true },
-        type: { type: String, required: true },
-        name: { type: String },
+        type: { type: String, enum: ['top', 'follow'], required: true },
+        title: { type: String, required: true },
         language: { type: String, enum: ['en', 'ja'], required: true },
       },
     ],

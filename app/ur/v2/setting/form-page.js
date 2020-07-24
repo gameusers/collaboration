@@ -15,13 +15,13 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Router from 'next/router';
+// import Link from 'next/link';
+// import Router from 'next/router';
 import { useIntl } from 'react-intl';
 import { Element } from 'react-scroll';
-import Pagination from 'rc-pagination';
-import localeInfo from 'rc-pagination/lib/locale/ja_JP';
-import Cookies from 'js-cookie';
+// import Pagination from 'rc-pagination';
+// import localeInfo from 'rc-pagination/lib/locale/ja_JP';
+// import Cookies from 'js-cookie';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -32,6 +32,8 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
@@ -44,20 +46,31 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
 
 // ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
 
-import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
+// import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 
 
 // ---------------------------------------------
 //   States
 // ---------------------------------------------
 
-import { ContainerStateForum } from 'app/@states/forum.js';
+import { ContainerStateLayout } from 'app/@states/layout.js';
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
@@ -65,7 +78,7 @@ import { ContainerStateForum } from 'app/@states/forum.js';
 // ---------------------------------------------
 
 import { validationUsersUserID } from 'app/@database/users/validations/user-id.js';
-import { validationUsersPagesName } from 'app/@database/users/validations/pages.js';
+import { validationUsersPagesTitle } from 'app/@database/users/validations/pages.js';
 
 
 // ---------------------------------------------
@@ -118,11 +131,12 @@ const FormPageTitle = (props) => {
   //   props
   // --------------------------------------------------
   
-  // const {
+  const {
     
-  //   arr = [],
+    pagesArr = [],
+    setPagesArr,
     
-  // } = props;
+  } = props;
   
   
   
@@ -132,28 +146,110 @@ const FormPageTitle = (props) => {
   // --------------------------------------------------
   
   const intl = useIntl();
-  const classes = useStyles();
-  const [buttonDisabled, setButtonDisabled] = useState(true);
   
-  const [type, setType] = useState(props.type);
-  const [name, setName] = useState(props.name);
-  const [language, setLanguage] = useState(props.language);
-  
-  
-  useEffect(() => {
-    
-    setButtonDisabled(false);
-    
-  }, []);
+  const [type, setType] = useState('top');
   
   
   
   
   // --------------------------------------------------
-  //   Validation
+  //   Handler
   // --------------------------------------------------
   
-  const validationUsersPagesNameObj = validationUsersPagesName({ value: name });
+  /**
+   * タイトルを入力する
+   */
+  const handleOnChangeTitle = ({ value }) => {
+    
+    const clonedArr = lodashCloneDeep(pagesArr);
+    
+    const index = clonedArr.findIndex((valueObj) => {
+      return valueObj.type === type;
+    });
+    
+    
+    // --------------------------------------------------
+    //   index がない場合はオブジェクトを新たに追加する
+    // --------------------------------------------------
+    
+    if (index === -1) {
+      
+      const tempObj = {
+        
+        _id: '',
+        type,
+        title: value,
+        language: 'ja',
+        
+      };
+      
+      clonedArr.push(tempObj);
+      
+      
+    // --------------------------------------------------
+    //   オブジェクトが存在する場合はタイトルを更新
+    // --------------------------------------------------
+      
+    } else {
+      
+      lodashSet(clonedArr, [index, 'title'], value);
+      
+    }
+    
+    setPagesArr(clonedArr);
+    
+    
+    console.log(chalk`
+      value: {green ${value}}
+    `);
+    
+    console.log(`
+      ----- clonedArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(clonedArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    // const newArr = [
+      
+    //   {
+    //     _id: '',
+    //     type: 'top',
+    //     title: '',
+    //     language: 'ja',
+    //   },
+      
+    //   {
+    //     _id: '',
+    //     type: 'follow',
+    //     title: '',
+    //     language: 'ja',
+    //   },
+      
+    // ];
+    
+    
+  };
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const resultObj = pagesArr.find((valueObj) => {
+    return valueObj.type === type;
+  });
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Validations
+  // --------------------------------------------------
+  
+  const title = lodashGet(resultObj, ['title'], '');
+  const validationUsersPagesTitleObj = validationUsersPagesTitle({ value: title });
   
   
   
@@ -184,43 +280,38 @@ const FormPageTitle = (props) => {
     <React.Fragment>
       
       
-      {/*<FormControl
-        css={css`
-          margin: 8px 0 0 0 !important;
-        `}
-        // variant="outlined"
-        disabled={buttonDisabled}
-      >
-        
-        <InputLabel htmlFor="pageType">変更するページ</InputLabel>
-        
-        <Select
-          css={css`
-            width: 250px;
-          `}
-          value={valueObj.type}
-          onChange={(eventObj) => handleEdit({
-            pathArr: ['pagesArr', 0, 'type'],
-            value: eventObj.target.value
-          })}
-          inputProps={{
-            name: 'pageType',
-            id: 'pageType',
-          }}
-        >
-          <MenuItem value={'top'}>トップページ</MenuItem>
-        </Select>
-        
-      </FormControl>*/}
-      
-      
-      
-      
+      {/* Select Type */}
       <div
         css={css`
-          // margin: 8px 0 12px 0;
+          margin: 24px 0 12px 0;
         `}
       >
+        
+        <FormControl>
+          
+          <Select
+            value={type}
+            onChange={(eventObj) => setType(eventObj.target.value)}
+            inputProps={{
+              name: 'type',
+              id: 'type',
+            }}
+          >
+            
+            <MenuItem value="top">トップ</MenuItem>
+            <MenuItem value="follow">フォロー</MenuItem>
+            
+          </Select>
+          
+        </FormControl>
+        
+      </div>
+      
+      
+      
+      
+      {/* Title */}
+      <div>
         
         <TextField
           css={css`
@@ -229,12 +320,12 @@ const FormPageTitle = (props) => {
               max-width: 500px;
             }
           `}
-          id="createTreadName"
+          id="title"
           label="タイトル"
-          value={validationUsersPagesNameObj.value}
-          onChange={(eventObj) => setName(eventObj.target.value)}
-          error={validationUsersPagesNameObj.error}
-          helperText={intl.formatMessage({ id: validationUsersPagesNameObj.messageID }, { numberOfCharacters: validationUsersPagesNameObj.numberOfCharacters })}
+          value={validationUsersPagesTitleObj.value}
+          onChange={(eventObj) => handleOnChangeTitle({ value: eventObj.target.value })}
+          error={validationUsersPagesTitleObj.error}
+          helperText={intl.formatMessage({ id: validationUsersPagesTitleObj.messageID }, { numberOfCharacters: validationUsersPagesTitleObj.numberOfCharacters })}
           margin="normal"
           inputProps={{
             maxLength: 100,
@@ -242,32 +333,6 @@ const FormPageTitle = (props) => {
         />
         
       </div>
-      
-      
-      
-      
-      {/*<FormControl disabled={buttonDisabled}>
-        
-        <InputLabel htmlFor="pageLanguage">タイトルの言語</InputLabel>
-        
-        <Select
-          css={css`
-            width: 250px;
-          `}
-          value={valueObj.language}
-          onChange={(eventObj) => handleEdit({
-            pathArr: ['pagesArr', 0, 'language'],
-            value: eventObj.target.value
-          })}
-          inputProps={{
-            name: 'pageLanguage',
-            id: 'pageLanguage',
-          }}
-        >
-          <MenuItem value={'ja'}>日本語</MenuItem>
-        </Select>
-        
-      </FormControl>*/}
       
       
     </React.Fragment>
@@ -299,7 +364,7 @@ const Component = (props) => {
     
     _id: '',
     type: 'top',
-    name: '',
+    title: '',
     language: 'ja',
     
   }]);
@@ -344,13 +409,16 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
   
-  // const stateForum = ContainerStateForum.useContainer();
+  const stateLayout = ContainerStateLayout.useContainer();
   
-  // const {
+  const {
     
-  //   forumThreadsObj,
+    handleSnackbarOpen,
+    handleLoadingOpen,
+    handleLoadingClose,
+    handleScrollTo,
     
-  // } = stateForum;
+  } = stateLayout;
   
   
   
@@ -360,7 +428,7 @@ const Component = (props) => {
   // --------------------------------------------------
   
   /**
-   * 募集を投稿する
+   * フォームを送信する
    * @param {Object} eventObj - イベント
    */
   const handleSubmit = async ({
@@ -377,71 +445,9 @@ const Component = (props) => {
     eventObj.preventDefault();
     
     
-    // ---------------------------------------------
-    //   新規投稿時の recruitmentThreads_id
-    // ---------------------------------------------
-    
-    let newRecruitmentThreads_id = '';
-    
-    
     
     
     try {
-      
-      
-      // console.log(chalk`
-      //   platform1: {green ${platform1}}
-      //   platform2: {green ${platform2}}
-      //   platform3: {green ${platform3}}
-      // `);
-      
-      
-      // ---------------------------------------------
-      //   Temp Data
-      // ---------------------------------------------
-      
-      // setHardwaresArr([ { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },  { hardwareID: '2yKF4qXAw', name: 'メガドライブ' } ]);
-      // setCategory(1);
-      // setTitle('テストタイトル');
-      // setName('テストネーム');
-      // setComment('テストコメント');
-      // setWebPushAvailable(true);
-      // setPlatform1('Other');
-      // setPlatform2('Other');
-      // setPlatform3('Other');
-      // setID1('test-id-1');
-      // setInformationTitle1('情報タイトル1');
-      // setInformation1('情報1');
-      // setPublicSetting(1);
-      // setDeadlineDate('');
-      // setWebPushSubscriptionObj({
-        
-      //   endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
-      //   keys: {
-      //     p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
-      //     auth: 'siDbUa9DCbg-n9AMsvWA1w'
-      //   }
-        
-      // });
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Property
-      // ---------------------------------------------
-      
-      const hardwareIDsArr = [];
-      
-      for (let valueObj of hardwaresArr.values()) {
-        hardwareIDsArr.push(valueObj.hardwareID);
-      }
-      
-      const threadLimit = parseInt((getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
-      const commentLimit = parseInt((getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
-      const replyLimit = parseInt((getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
-      
-      
       
       
       // ---------------------------------------------
@@ -450,41 +456,11 @@ const Component = (props) => {
       
       if (
         
-        validationRecruitmentThreadsCategory({ value: category }).error ||
-        
-        validationRecruitmentThreadsTitle({ value: title }).error ||
-        validationHandleName({ value: name }).error ||
-        validationRecruitmentThreadsComment({ value: comment }).error ||
-        
-        validationRecruitmentThreadsPlatform({ value: platform1 }).error ||
-        validationRecruitmentThreadsPlatform({ value: platform2 }).error ||
-        validationRecruitmentThreadsPlatform({ value: platform3 }).error ||
-        
-        validationRecruitmentThreadsID({ value: id1 }).error ||
-        validationRecruitmentThreadsID({ value: id2 }).error ||
-        validationRecruitmentThreadsID({ value: id3 }).error ||
-        
-        validationRecruitmentThreadsInformationTitle({ value: informationTitle1 }).error ||
-        validationRecruitmentThreadsInformationTitle({ value: informationTitle2 }).error ||
-        validationRecruitmentThreadsInformationTitle({ value: informationTitle3 }).error ||
-        validationRecruitmentThreadsInformationTitle({ value: informationTitle4 }).error ||
-        validationRecruitmentThreadsInformationTitle({ value: informationTitle5 }).error ||
-        
-        validationRecruitmentThreadsInformation({ value: information1 }).error ||
-        validationRecruitmentThreadsInformation({ value: information2 }).error ||
-        validationRecruitmentThreadsInformation({ value: information3 }).error ||
-        validationRecruitmentThreadsInformation({ value: information4 }).error ||
-        validationRecruitmentThreadsInformation({ value: information5 }).error ||
-        
-        validationRecruitmentThreadsPublicSetting({ value: publicSetting }).error ||
-        
-        validationRecruitmentThreadsDeadlineDate({ value: deadlineDate }).error ||
-        
-        validationBoolean({ value: webPushAvailable }).error
+        validationUsersUserID({ value: userID }).error
         
       ) {
         
-        throw new CustomError({ errorsArr: [{ code: 'S0JRF6V5l', messageID: 'uwHIKBy7c' }] });
+        throw new CustomError({ errorsArr: [{ code: 'jj7ApE77f', messageID: 'uwHIKBy7c' }] });
         
       }
       
@@ -513,45 +489,14 @@ const Component = (props) => {
       
       const formDataObj = {
         
-        gameCommunities_id,
-        recruitmentThreads_id,
-        hardwareIDsArr,
-        category,
-        title,
-        name,
-        comment,
-        idsArr,
-        platform1,
-        platform2,
-        platform3,
-        id1,
-        id2,
-        id3,
-        informationTitle1,
-        informationTitle2,
-        informationTitle3,
-        informationTitle4,
-        informationTitle5,
-        information1,
-        information2,
-        information3,
-        information4,
-        information5,
-        publicSetting,
-        deadlineDate,
-        webPushAvailable,
-        threadLimit,
-        commentLimit,
-        replyLimit,
+        userID,
+        approval,
+        pagesArr,
         
       };
       
       if (imagesAndVideosObj.arr.length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
-      }
-      
-      if (webPushAvailable && Object.keys(webPushSubscriptionObj).length !== 0) {
-        formDataObj.webPushSubscriptionObj = webPushSubscriptionObj;
       }
       
       
@@ -561,7 +506,7 @@ const Component = (props) => {
       
       const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/upsert`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/upsert-setting-pages`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
         
@@ -580,90 +525,10 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Reset Form
-      // ---------------------------------------------
-      
-      setHardwaresArr([]);
-      setCategory('');
-      setTitle('');
-      setName('');
-      setComment('');
-      setImagesAndVideosObj({
-        
-        _id: '',
-        createdDate: '',
-        updatedDate: '',
-        users_id: '',
-        type: 'recruitment',
-        arr: [],
-        
-      });
-      
-      setIDsArr([]);
-      setPlatform1('Other');
-      setPlatform2('Other');
-      setPlatform3('Other');
-      setID1('');
-      setID2('');
-      setID3('');
-      setInformationTitle1('');
-      setInformationTitle2('');
-      setInformationTitle3('');
-      setInformationTitle4('');
-      setInformationTitle5('');
-      setInformation1('');
-      setInformation2('');
-      setInformation3('');
-      setInformation4('');
-      setInformation5('');
-      setPublicSetting(1);
-      setDeadlineDate('');
-      setWebPushAvailable(false);
-      setWebPushSubscriptionObj({});
-      
-      
-      
-      
-      // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
       
       setButtonDisabled(false);
-      
-      
-      // --------------------------------------------------
-      //   gameCommunityObj
-      // --------------------------------------------------
-      
-      setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
-      
-      
-      // ---------------------------------------------
-      //   forumThreadsObj
-      // ---------------------------------------------
-      
-      setRecruitmentThreadsObj(lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {}));
-      
-      
-      // ---------------------------------------------
-      //   forumCommentsObj
-      // ---------------------------------------------
-      
-      setRecruitmentCommentsObj(lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {}));
-      
-      
-      // ---------------------------------------------
-      //   forumRepliesObj
-      // ---------------------------------------------
-      
-      setRecruitmentRepliesObj(lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {}));
-      
-      
-      // ---------------------------------------------
-      //   新規投稿時の recruitmentThreads_id
-      // ---------------------------------------------
-      
-      newRecruitmentThreads_id = lodashGet(resultObj, ['data', 'recruitmentThreadsObj', 'page1Obj', 'arr', 0], '');
       
       
       
@@ -675,7 +540,7 @@ const Component = (props) => {
       handleSnackbarOpen({
         
         variant: 'success',
-        messageID: recruitmentThreads_id ? 'xM5NqhTq5' : 'B9Goe5scP',
+        messageID: 'EnStWOly-',
         
       });
       
@@ -686,27 +551,22 @@ const Component = (props) => {
       //   console.log
       // --------------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/gc/rec/v2/components/form/thread.js / handleSubmit
-      // `);
+      console.log(`
+        ----------------------------------------\n
+        /app/ur/v2/setting/form-page.js / handleSubmit
+      `);
       
-      // console.log(`
-      //   ----- formDataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- formDataObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-      //   newRecruitmentThreads_id: {green ${newRecruitmentThreads_id}}
-      // `);
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
     } catch (errorObj) {
@@ -735,21 +595,12 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Hide Form
-      // ---------------------------------------------
-      
-      if (recruitmentThreads_id) {
-        setShowForm(false);
-      }
-      
-      
-      // ---------------------------------------------
       //   Scroll
       // ---------------------------------------------
       
       handleScrollTo({
         
-        to: recruitmentThreads_id || newRecruitmentThreads_id || 'recruitmentThreads',
+        to: 'formPage',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -777,27 +628,27 @@ const Component = (props) => {
   //   Component - Page Title
   // --------------------------------------------------
   
-  const componentsArr = [];
+  // const componentsArr = [];
   
   
-  for (const [index, valueObj] of pagesArr.entries()) {
+  // for (const [index, valueObj] of pagesArr.entries()) {
     
     
-    // --------------------------------------------------
-    //   Push
-    // --------------------------------------------------
+  //   // --------------------------------------------------
+  //   //   Push
+  //   // --------------------------------------------------
     
-    componentsArr.push(
-      <FormPageTitle
-        key={index}
-        type={valueObj.type}
-        name={valueObj.name}
-        language={valueObj.language}
-      />
-    );
+  //   componentsArr.push(
+  //     <FormPageTitle
+  //       key={index}
+  //       type={valueObj.type}
+  //       name={valueObj.name}
+  //       language={valueObj.language}
+  //     />
+  //   );
     
     
-  }
+  // }
   
   
   
@@ -855,13 +706,13 @@ const Component = (props) => {
   
   return (
     <Element
-      name="forumThreads"
+      name="formPage"
     >
       
       
       <Panel
         heading="ユーザーページ設定"
-        defaultExpanded={false}
+        defaultExpanded={true}
       >
         
         
@@ -873,10 +724,15 @@ const Component = (props) => {
         
         
         {/* フォーム */}
-        <form>
+        <form
+          name="formPage"
+          onSubmit={(eventObj) => handleSubmit({
+            eventObj,
+          })}
+        >
           
           
-          {/* Image Top */}
+          {/* トップ画像 */}
           <div
             css={css`
               border-top: 1px dashed #848484;
@@ -943,7 +799,6 @@ const Component = (props) => {
             </p>
             
             
-            
             <TextField
               css={css`
                 && {
@@ -985,7 +840,6 @@ const Component = (props) => {
               ページのタイトル変更
             </h3>
             
-            
             <p
               css={css`
                 margin: 0 0 12px 0;
@@ -995,15 +849,17 @@ const Component = (props) => {
             </p>
             
             
-            {componentsArr}
-            
+            <FormPageTitle
+              pagesArr={pagesArr}
+              setPagesArr={setPagesArr}
+            />
           
           </div>
           
           
           
           
-          {/* 参加条件 */}
+          {/* フォロー承認 */}
           <div
             css={css`
               border-top: 1px dashed #848484;
@@ -1026,21 +882,19 @@ const Component = (props) => {
                 margin: 0 0 12px 0;
               `}
             >
-              以下をチェックすると、あなたをフォローするのにあなたの承認が必要になります。チェックを外すと誰でもフォローができるようになります。
+              チェックすると、あなたをフォローするのにあなたの承認が必要になります。チェックを外すと誰でもフォローができるようになります。
             </p>
             
             
-            <div>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={approval}
-                    onChange={(eventObj) => setApproval(eventObj.target.checked)}
-                  />
-                }
-                label="フォロー承認制にする"
-              />
-            </div>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={approval}
+                  onChange={(eventObj) => setApproval(eventObj.target.checked)}
+                />
+              }
+              label="フォロー承認制にする"
+            />
             
           </div>
           
@@ -1059,9 +913,9 @@ const Component = (props) => {
           >
             
             <Button
+              type="submit"
               variant="contained"
               color="primary"
-              onClick={() => handleSubmit()}
               disabled={buttonDisabled}
             >
               送信する

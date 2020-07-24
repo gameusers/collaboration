@@ -68,7 +68,7 @@ const validationUsersPagesType = ({ throwError = false, value }) => {
     //   適切な値が選択されているかチェック
     // ---------------------------------------------
     
-    if (!validator.isIn(value, ['top'])) {
+    if (!validator.isIn(value, ['top', 'follow'])) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'eNtsdF7--', messageID: 'PH8jcw-VF' }] });
     }
     
@@ -120,7 +120,7 @@ const validationUsersPagesType = ({ throwError = false, value }) => {
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationUsersPagesName = ({ throwError = false, required = false, value }) => {
+const validationUsersPagesTitle = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -300,7 +300,7 @@ const validationUsersPagesLanguage = ({ throwError = false, value }) => {
 module.exports = {
   
   validationUsersPagesType,
-  validationUsersPagesName,
+  validationUsersPagesTitle,
   validationUsersPagesLanguage,
   
 };

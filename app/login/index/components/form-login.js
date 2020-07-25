@@ -300,7 +300,7 @@ export default injectIntl(class extends React.Component {
                     <IconButton
                       aria-label="Toggle password visibility"
                       onClick={handlePasswordShow}
-                      onMouseDown={handlePasswordMouseDown}
+                      onMouseDown={(eventObj) => {eventObj.preventDefault()}}
                     >
                       {loginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
                     </IconButton>

@@ -45,7 +45,8 @@ import { createCsrfToken } from 'app/@modules/csrf.js';
 
 import Layout from 'app/common/layout/v2/components/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
-import FormLogin from 'app/login/index/v2/components/form-login.js';
+
+import FormLogin from 'app/login/index/v2/form-login.js';
 
 
 
@@ -73,34 +74,16 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   console.log
-  // --------------------------------------------------
-  
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/login/index.js
-  // `);
-  
-  // console.log(`
-  //   ----- props -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(props)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Component - Sidebar
   // --------------------------------------------------
   
-  const componentSidebar = '';
-  // const componentSidebar =
-  //   <ForumNavigation
-  //     urlID={props.urlID}
-  //     gameCommunities_id={props.gameCommunities_id}
-  //   />
-  // ;
+  const componentSidebar =
+    <img
+      src="/img/common/advertisement/300x250.jpg"
+      width="300"
+      height="250"
+    />
+  ;
   
   
   
@@ -115,7 +98,6 @@ const Component = (props) => {
       <Breadcrumbs
         arr={props.breadcrumbsArr}
       />
-      
       
       <FormLogin />
       
@@ -234,6 +216,7 @@ export async function getServerSideProps({ req, res, query }) {
       as: '/login',
       active: true,
     },
+    
     {
       name: 'アカウント作成',
       href: '/login/account',

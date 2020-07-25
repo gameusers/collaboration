@@ -100,173 +100,173 @@ class Store {
    * ユーザーページ設定フォームを送信する
    * @param {Array} pathArr - パス
    */
-  @action.bound
-  async handleSubmitPages({ pathArr }) {
+  // @action.bound
+  // async handleSubmitPages({ pathArr }) {
     
     
-    try {
+  //   try {
       
       
-      // ---------------------------------------------
-      //   Loading 表示
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Loading 表示
+  //     // ---------------------------------------------
       
-      storeLayout.handleLoadingShow({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
+  //     storeLayout.handleLoadingShow({});
       
       
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
       
-      
-      // ---------------------------------------------
-      //   Property
-      // ---------------------------------------------
-      
-      const userID = lodashGet(this.dataObj, [...pathArr, 'userID'], '');
-      const pagesArr = lodashGet(this.dataObj, [...pathArr, 'pagesObj', 'arr'], []);
-      const approval = lodashGet(this.dataObj, [...pathArr, 'approval'], false);
+  //     storeLayout.handleButtonDisable({ pathArr });
       
       
       
       
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Property
+  //     // ---------------------------------------------
       
-      const formDataObj = {
+  //     const userID = lodashGet(this.dataObj, [...pathArr, 'userID'], '');
+  //     const pagesArr = lodashGet(this.dataObj, [...pathArr, 'pagesObj', 'arr'], []);
+  //     const approval = lodashGet(this.dataObj, [...pathArr, 'approval'], false);
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
+      
+  //     const formDataObj = {
         
-        userID,
-        pagesArr,
-        approval,
+  //       userID,
+  //       pagesArr,
+  //       approval,
         
-      };
+  //     };
       
       
-      // ----------------------------------------
-      //   - メイン画像
-      //   新たにアップロードされた画像がある場合、オブジェクトに追加する
-      // ----------------------------------------
+  //     // ----------------------------------------
+  //     //   - メイン画像
+  //     //   新たにアップロードされた画像がある場合、オブジェクトに追加する
+  //     // ----------------------------------------
       
-      const imagesAndVideosObj = storeImageAndVideoForm.handleGetImagesAndVideosObj({ pathArr });
-      const imagesAndVideosArr = lodashGet(imagesAndVideosObj, ['arr'], []);
+  //     const imagesAndVideosObj = storeImageAndVideoForm.handleGetImagesAndVideosObj({ pathArr });
+  //     const imagesAndVideosArr = lodashGet(imagesAndVideosObj, ['arr'], []);
       
-      const index = imagesAndVideosArr.findIndex((valueObj) => {
-        return valueObj._id === '';
-      });
+  //     const index = imagesAndVideosArr.findIndex((valueObj) => {
+  //       return valueObj._id === '';
+  //     });
       
-      if (index !== -1) {
-        formDataObj.imagesAndVideosObj = imagesAndVideosObj;
-      }
-      
-      
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
-      
-      // console.log(chalk`
-      //   index: {green ${index}}
-      // `);
-      
-      // console.log(`
-      //   ----- imagesAndVideosObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   userID: {green ${userID}}
-      //   approval: {green ${approval}}
-      // `);
+  //     if (index !== -1) {
+  //       formDataObj.imagesAndVideosObj = imagesAndVideosObj;
+  //     }
       
       
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
       
-      const resultObj = await fetchWrapper({
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/upsert-settings-pages`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj)
-      });
+  //     // console.log(chalk`
+  //     //   index: {green ${index}}
+  //     // `);
       
-      // console.log(`\n---------- resultObj ----------\n`);
-      // console.dir(resultObj);
-      // console.log(`\n-----------------------------------\n`);
+  //     // console.log(`
+  //     //   ----- imagesAndVideosObj -----\n
+  //     //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(chalk`
+  //     //   userID: {green ${userID}}
+  //     //   approval: {green ${approval}}
+  //     // `);
       
       
+  //     // ---------------------------------------------
+  //     //   Fetch
+  //     // ---------------------------------------------
       
+  //     const resultObj = await fetchWrapper({
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/upsert-settings-pages`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj)
+  //     });
       
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
+  //     // console.log(`\n---------- resultObj ----------\n`);
+  //     // console.dir(resultObj);
+  //     // console.log(`\n-----------------------------------\n`);
       
       
       
       
-      // ---------------------------------------------
-      //   Snackbar: Success
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen({
-        variant: 'success',
-        messageID: '5o6-p-Pkz',
-      });
-      
-      
-      // ---------------------------------------------
-      //   Page Transition / URLを変更した場合にリロードする
-      // ---------------------------------------------
-      
-      const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
-      
-      if (pageTransition) {
-        window.location.href = `${process.env.NEXT_PUBLIC_URL_BASE}ur/${userID}/settings`;
-      }
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
       
       
-    } catch (errorObj) {
       
       
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Snackbar: Success
+  //     // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
-      
-      
-    } finally {
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'success',
+  //       messageID: '5o6-p-Pkz',
+  //     });
       
       
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Page Transition / URLを変更した場合にリロードする
+  //     // ---------------------------------------------
       
-      storeLayout.handleButtonEnable({ pathArr });
+  //     const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
       
-      
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingHide({});
+  //     if (pageTransition) {
+  //       window.location.href = `${process.env.NEXT_PUBLIC_URL_BASE}ur/${userID}/settings`;
+  //     }
       
       
-    }
+  //   } catch (errorObj) {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
+      
+      
+  //   } finally {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading 非表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingHide({});
+      
+      
+  //   }
     
     
-  };
+  // };
   
   
   
@@ -275,177 +275,177 @@ class Store {
    * ログインID ＆パスワード編集フォームを送信する
    * @param {Array} pathArr - パス
    */
-  @action.bound
-  async handleSubmitAccount({ pathArr }) {
+  // @action.bound
+  // async handleSubmitAccount({ pathArr }) {
     
     
-    try {
+  //   try {
       
       
-      // ---------------------------------------------
-      //   Loading 表示
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Loading 表示
+  //     // ---------------------------------------------
       
-      storeLayout.handleLoadingShow({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
+  //     storeLayout.handleLoadingShow({});
       
       
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
       
-      
-      // ---------------------------------------------
-      //   Property
-      // ---------------------------------------------
-      
-      const loginID = lodashGet(this.dataObj, [...pathArr, 'loginID'], '');
-      const loginPassword = lodashGet(this.dataObj, [...pathArr, 'loginPassword'], '');
-      const loginPasswordConfirmation = lodashGet(this.dataObj, [...pathArr, 'loginPasswordConfirmation'], '');
+  //     storeLayout.handleButtonDisable({ pathArr });
       
       
       
       
-      // ---------------------------------------------
-      //   Validations
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Property
+  //     // ---------------------------------------------
       
-      const validationUsersLoginIDObj = validationUsersLoginID({ required: true, value: loginID });
-      const validationUsersLoginPasswordObj = validationUsersLoginPassword({ required: true, value: loginPassword, loginID: loginID });
-      const validationUsersLoginPasswordConfirmationObj = validationUsersLoginPasswordConfirmation({ required: true, value: loginPasswordConfirmation, loginPassword: loginPassword });
+  //     const loginID = lodashGet(this.dataObj, [...pathArr, 'loginID'], '');
+  //     const loginPassword = lodashGet(this.dataObj, [...pathArr, 'loginPassword'], '');
+  //     const loginPasswordConfirmation = lodashGet(this.dataObj, [...pathArr, 'loginPasswordConfirmation'], '');
       
       
-      // ---------------------------------------------
-      //   Validation Error
-      // ---------------------------------------------
       
-      if (
+      
+  //     // ---------------------------------------------
+  //     //   Validations
+  //     // ---------------------------------------------
+      
+  //     const validationUsersLoginIDObj = validationUsersLoginID({ required: true, value: loginID });
+  //     const validationUsersLoginPasswordObj = validationUsersLoginPassword({ required: true, value: loginPassword, loginID: loginID });
+  //     const validationUsersLoginPasswordConfirmationObj = validationUsersLoginPasswordConfirmation({ required: true, value: loginPasswordConfirmation, loginPassword: loginPassword });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Validation Error
+  //     // ---------------------------------------------
+      
+  //     if (
         
-        validationUsersLoginIDObj.error ||
-        validationUsersLoginPasswordObj.error ||
-        validationUsersLoginPasswordConfirmationObj.error
+  //       validationUsersLoginIDObj.error ||
+  //       validationUsersLoginPasswordObj.error ||
+  //       validationUsersLoginPasswordConfirmationObj.error
         
-      ) {
+  //     ) {
         
-        throw new CustomError({ errorsArr: [{ code: 'G22F0axr0', messageID: 'uwHIKBy7c' }] });
+  //       throw new CustomError({ errorsArr: [{ code: 'G22F0axr0', messageID: 'uwHIKBy7c' }] });
         
-      }
+  //     }
       
       
       
       
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
       
-      const formDataObj = {
+  //     const formDataObj = {
         
-        loginID,
-        loginPassword,
+  //       loginID,
+  //       loginPassword,
         
-      };
+  //     };
       
       
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/ur/settings/stores/store.js - handleSubmitAccount
-      // `);
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/ur/settings/stores/store.js - handleSubmitAccount
+  //     // `);
       
-      // console.log(chalk`
-      //   loginID: {green ${loginID}}
-      //   loginPassword: {green ${loginPassword}}
-      //   loginPasswordConfirmation: {green ${loginPasswordConfirmation}}
-      // `);
-      
-      
+  //     // console.log(chalk`
+  //     //   loginID: {green ${loginID}}
+  //     //   loginPassword: {green ${loginPassword}}
+  //     //   loginPasswordConfirmation: {green ${loginPasswordConfirmation}}
+  //     // `);
       
       
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
-      
-      const resultObj = await fetchWrapper({
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/upsert-settings-account`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj)
-      });
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     // ---------------------------------------------
+  //     //   Fetch
+  //     // ---------------------------------------------
+      
+  //     const resultObj = await fetchWrapper({
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/upsert-settings-account`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj)
+  //     });
       
       
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
-      // ---------------------------------------------
-      //   Form Reset
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
       
-      lodashSet(this.dataObj, [...pathArr, 'loginPassword'], '');
-      lodashSet(this.dataObj, [...pathArr, 'loginPasswordConfirmation'], '');
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Success
-      // ---------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'success',
-        messageID: 'EnStWOly-',
-      });
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
       
       
-    } catch (errorObj) {
+  //     // ---------------------------------------------
+  //     //   Form Reset
+  //     // ---------------------------------------------
+      
+  //     lodashSet(this.dataObj, [...pathArr, 'loginPassword'], '');
+  //     lodashSet(this.dataObj, [...pathArr, 'loginPasswordConfirmation'], '');
       
       
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Snackbar: Success
+  //     // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
-      
-      
-    } finally {
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'success',
+  //       messageID: 'EnStWOly-',
+  //     });
       
       
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
+  //   } catch (errorObj) {
       
       
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
       
-      storeLayout.handleLoadingHide({});
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
       
       
-    }
+  //   } finally {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading 非表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingHide({});
+      
+      
+  //   }
     
     
-  };
+  // };
   
   
   
@@ -454,187 +454,187 @@ class Store {
    * メールアドレスを登録する
    * @param {Array} pathArr - パス
    */
-  @action.bound
-  async handleSubmitEmail({ pathArr }) {
+  // @action.bound
+  // async handleSubmitEmail({ pathArr }) {
     
     
-    try {
+  //   try {
       
       
-      // ---------------------------------------------
-      //   Loading 表示
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Loading 表示
+  //     // ---------------------------------------------
       
-      storeLayout.handleLoadingShow({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
+  //     storeLayout.handleLoadingShow({});
       
       
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
       
-      
-      // ---------------------------------------------
-      //   Property
-      // ---------------------------------------------
-      
-      const email = lodashGet(this.dataObj, [...pathArr, 'email'], '');
-      const emailSource = lodashGet(this.dataObj, [...pathArr, 'emailSource'], '');
-      const emailConfirmation = lodashGet(this.dataObj, [...pathArr, 'emailConfirmation'], false);
+  //     storeLayout.handleButtonDisable({ pathArr });
       
       
       
       
-      // ---------------------------------------------
-      //   Validations
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Property
+  //     // ---------------------------------------------
       
-      const validationUsersEmailObj = validationUsersEmail({ required: true, value: email });
-      
-      
-      // ---------------------------------------------
-      //   Validation Error
-      // ---------------------------------------------
-      
-      if (validationUsersEmailObj.error) {
-        throw new CustomError({ errorsArr: [{ code: '6cFcqgVgL', messageID: 'uwHIKBy7c' }] });
-      }
+  //     const email = lodashGet(this.dataObj, [...pathArr, 'email'], '');
+  //     const emailSource = lodashGet(this.dataObj, [...pathArr, 'emailSource'], '');
+  //     const emailConfirmation = lodashGet(this.dataObj, [...pathArr, 'emailConfirmation'], false);
       
       
       
       
-      // ---------------------------------------------
-      //   メールアドレスが確認済みの場合、送信しない
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Validations
+  //     // ---------------------------------------------
       
-      if (email && emailSource && email === emailSource && emailConfirmation) {
+  //     const validationUsersEmailObj = validationUsersEmail({ required: true, value: email });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Validation Error
+  //     // ---------------------------------------------
+      
+  //     if (validationUsersEmailObj.error) {
+  //       throw new CustomError({ errorsArr: [{ code: '6cFcqgVgL', messageID: 'uwHIKBy7c' }] });
+  //     }
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   メールアドレスが確認済みの場合、送信しない
+  //     // ---------------------------------------------
+      
+  //     if (email && emailSource && email === emailSource && emailConfirmation) {
         
-        storeLayout.handleSnackbarOpen({
-          variant: 'warning',
-          messageID: 'DQrBNlhe4',
-        });
+  //       storeLayout.handleSnackbarOpen({
+  //         variant: 'warning',
+  //         messageID: 'DQrBNlhe4',
+  //       });
         
-        return;
+  //       return;
         
-      }
+  //     }
       
       
       
       
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
       
-      const formDataObj = {
+  //     const formDataObj = {
         
-        email,
+  //       email,
         
-      };
+  //     };
       
       
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Fetch
+  //     // ---------------------------------------------
       
-      const resultObj = await fetchWrapper({
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/upsert-settings-email`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj)
-      });
-      
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     const resultObj = await fetchWrapper({
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/upsert-settings-email`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj)
+  //     });
       
       
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
       
-      
-      // --------------------------------------------------
-      //   emailSource を登録する
-      // --------------------------------------------------
-      
-      lodashSet(this.dataObj, [...pathArr, 'emailSource'], email);
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
       
       
       
       
-      // ---------------------------------------------
-      //   Snackbar: Success
-      // ---------------------------------------------
+  //     // --------------------------------------------------
+  //     //   emailSource を登録する
+  //     // --------------------------------------------------
       
-      storeLayout.handleSnackbarOpen({
-        variant: 'success',
-        messageID: 'CquCU7BtA',
-      });
+  //     lodashSet(this.dataObj, [...pathArr, 'emailSource'], email);
       
       
       
       
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Snackbar: Success
+  //     // ---------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/ur/settings/stores/store.js - handleSubmitEmail
-      // `);
-      
-      // console.log(chalk`
-      //   email: {green ${email}}
-      //   emailSource: {green ${emailSource}}
-      //   emailConfirmation: {green ${emailConfirmation}}
-      // `);
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'success',
+  //       messageID: 'CquCU7BtA',
+  //     });
       
       
-    } catch (errorObj) {
       
       
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
       
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/ur/settings/stores/store.js - handleSubmitEmail
+  //     // `);
       
-      
-    } finally {
-      
-      
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
+  //     // console.log(chalk`
+  //     //   email: {green ${email}}
+  //     //   emailSource: {green ${emailSource}}
+  //     //   emailConfirmation: {green ${emailConfirmation}}
+  //     // `);
       
       
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingHide({});
+  //   } catch (errorObj) {
       
       
-    }
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
+      
+      
+  //   } finally {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading 非表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingHide({});
+      
+      
+  //   }
     
     
-  };
+  // };
   
   
   
@@ -643,172 +643,172 @@ class Store {
    * メールアドレスを削除する
    * @param {Array} pathArr - パス
    */
-  @action.bound
-  async handleSubmitDeleteEmail({ pathArr }) {
+  // @action.bound
+  // async handleSubmitDeleteEmail({ pathArr }) {
     
     
-    try {
+  //   try {
       
       
-      // ---------------------------------------------
-      //   Loading 表示
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Loading 表示
+  //     // ---------------------------------------------
       
-      storeLayout.handleLoadingShow({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
+  //     storeLayout.handleLoadingShow({});
       
       
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
       
-      
-      // ---------------------------------------------
-      //   Property
-      // ---------------------------------------------
-      
-      const emailSource = lodashGet(this.dataObj, [...pathArr, 'emailSource'], '');
+  //     storeLayout.handleButtonDisable({ pathArr });
       
       
       
       
-      // ---------------------------------------------
-      //   メールアドレスが登録されていない場合、送信しない
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Property
+  //     // ---------------------------------------------
       
-      if (!emailSource) {
+  //     const emailSource = lodashGet(this.dataObj, [...pathArr, 'emailSource'], '');
+      
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   メールアドレスが登録されていない場合、送信しない
+  //     // ---------------------------------------------
+      
+  //     if (!emailSource) {
         
-        storeLayout.handleSnackbarOpen({
-          variant: 'warning',
-          messageID: 'a107F1Uxw',
-        });
+  //       storeLayout.handleSnackbarOpen({
+  //         variant: 'warning',
+  //         messageID: 'a107F1Uxw',
+  //       });
         
-        return;
+  //       return;
         
-      }
+  //     }
       
       
       
       
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
       
-      const formDataObj = {};
-      
-      
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
-      
-      const resultObj = await fetchWrapper({
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/delete-settings-email`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj)
-      });
+  //     const formDataObj = {};
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     // ---------------------------------------------
+  //     //   Fetch
+  //     // ---------------------------------------------
+      
+  //     const resultObj = await fetchWrapper({
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/delete-settings-email`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj)
+  //     });
       
       
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
       
-      
-      // --------------------------------------------------
-      //   フォームを空にする
-      // --------------------------------------------------
-      
-      lodashSet(this.dataObj, [...pathArr, 'email'], '');
-      lodashSet(this.dataObj, [...pathArr, 'emailSource'], '');
-      lodashSet(this.dataObj, [...pathArr, 'emailConfirmation'], false);
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
       
       
       
       
-      // ---------------------------------------------
-      //   Snackbar: Success
-      // ---------------------------------------------
+  //     // --------------------------------------------------
+  //     //   フォームを空にする
+  //     // --------------------------------------------------
       
-      storeLayout.handleSnackbarOpen({
-        variant: 'success',
-        messageID: 'hbRy4HpaP',
-      });
-      
+  //     lodashSet(this.dataObj, [...pathArr, 'email'], '');
+  //     lodashSet(this.dataObj, [...pathArr, 'emailSource'], '');
+  //     lodashSet(this.dataObj, [...pathArr, 'emailConfirmation'], false);
       
       
       
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/ur/settings/stores/store.js - handleSubmitEmail
-      // `);
+  //     // ---------------------------------------------
+  //     //   Snackbar: Success
+  //     // ---------------------------------------------
       
-      // console.log(chalk`
-      //   email: {green ${email}}
-      //   emailSource: {green ${emailSource}}
-      //   emailConfirmation: {green ${emailConfirmation}}
-      // `);
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'success',
+  //       messageID: 'hbRy4HpaP',
+  //     });
       
       
-    } catch (errorObj) {
       
       
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
       
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/ur/settings/stores/store.js - handleSubmitEmail
+  //     // `);
       
-      
-    } finally {
-      
-      
-      // --------------------------------------------------
-      //   ダイアログを非表示にする
-      // --------------------------------------------------
-      
-      lodashSet(this.dataObj, [...pathArr, 'showDialog'], false);
+  //     // console.log(chalk`
+  //     //   email: {green ${email}}
+  //     //   emailSource: {green ${emailSource}}
+  //     //   emailConfirmation: {green ${emailConfirmation}}
+  //     // `);
       
       
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
+  //   } catch (errorObj) {
       
       
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
       
-      storeLayout.handleLoadingHide({});
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
       
       
-    }
+  //   } finally {
+      
+      
+  //     // --------------------------------------------------
+  //     //   ダイアログを非表示にする
+  //     // --------------------------------------------------
+      
+  //     lodashSet(this.dataObj, [...pathArr, 'showDialog'], false);
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading 非表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingHide({});
+      
+      
+  //   }
     
     
-  };
+  // };
   
   
   

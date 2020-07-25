@@ -73,34 +73,16 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   console.log
-  // --------------------------------------------------
-  
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/forum/[...slug].js - ContainerLayout
-  // `);
-  
-  // console.log(`
-  //   ----- props -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(props)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Component - Sidebar
   // --------------------------------------------------
   
-  const componentSidebar = '';
-  // const componentSidebar =
-  //   <ForumNavigation
-  //     urlID={props.urlID}
-  //     gameCommunities_id={props.gameCommunities_id}
-  //   />
-  // ;
+  const componentSidebar =
+    <img
+      src="/img/common/advertisement/300x250.jpg"
+      width="300"
+      height="250"
+    />
+  ;
   
   
   
@@ -115,7 +97,6 @@ const Component = (props) => {
       <Breadcrumbs
         arr={props.breadcrumbsArr}
       />
-      
       
       <FormLogout />
       

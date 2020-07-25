@@ -75,6 +75,15 @@ export default async (req, res) => {
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
   
   
   try {
@@ -100,7 +109,6 @@ export default async (req, res) => {
     //   Log Data
     // --------------------------------------------------
     
-    // lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
     lodashSet(requestParametersObj, ['loginID'], loginID ? '******' : '');
     lodashSet(requestParametersObj, ['loginPassword'], loginPassword ? '******' : '');
     lodashSet(requestParametersObj, ['email'], email ? '******' : '');
@@ -120,7 +128,7 @@ export default async (req, res) => {
     //   Verify reCAPTCHA
     // ---------------------------------------------
     
-    await verifyRecaptcha({ response, remoteip: req.connection.remoteAddress });
+    await verifyRecaptcha({ response, remoteip: ip });
     
     
     
@@ -522,11 +530,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'fmVLqHFfj',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

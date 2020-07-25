@@ -44,6 +44,8 @@ import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import IconHome from '@material-ui/icons/Home';
 import IconLogin from '@material-ui/icons/ExitToApp';
 import IconLogout from '@material-ui/icons/Eject';
+import IconMail from '@material-ui/icons/MailOutline';
+import IconLock from '@material-ui/icons/Lock';
 
 import IconGames from '@material-ui/icons/Games';
 import IconUCList from '@material-ui/icons/MenuBook';
@@ -114,6 +116,12 @@ const Component = (props) => {
       icon = <IconLogin fontSize="small" />;
       anchorText = 'ログイン';
       
+      
+    } else if (valueObj.type === 'login/reset-password' || valueObj.type === 'confirm/reset-password') {
+      
+      icon = <IconLock fontSize="small" />;
+      anchorText = 'パスワード再設定';
+      
     
     // --------------------------------------------------
     //   - Logout
@@ -123,6 +131,16 @@ const Component = (props) => {
       
       icon = <IconLogout fontSize="small" />;
       anchorText = 'ログアウト';
+      
+      
+    // --------------------------------------------------
+    //   - 確認 / メールアドレス
+    // --------------------------------------------------
+    
+    } else if (valueObj.type === 'confirm/email') {
+      
+      icon = <IconMail fontSize="small" />;
+      anchorText = 'メールアドレス確認';
     
     
     // --------------------------------------------------

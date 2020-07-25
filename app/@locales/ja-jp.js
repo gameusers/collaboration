@@ -250,6 +250,10 @@ const ja_JP = {
   // /pages/api/v2/db/email-confirmations/reset-password.js
   'rhU9utPzZ': 'パスワードの再設定用メールを送信できません',
   
+  // /pages/api/v2/db/users/upsert-reset-password.js
+  'i2zOr6U2O': '制限時間を過ぎています。最初からやり直してください',
+  'tPur_2KkX': 'ログインIDが間違っています',
+  
   
   
   

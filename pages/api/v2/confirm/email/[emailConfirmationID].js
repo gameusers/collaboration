@@ -1,61 +1,69 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const moment = require('moment');
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
-const lodashHas = require('lodash/has');
+import moment from 'moment';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelEmailConfirmations = require('../../../../../app/@database/email-confirmations/model');
-const ModelUsers = require('../../../../../app/@database/users/model');
+import ModelEmailConfirmations from 'app/@database/email-confirmations/model.js';
+import ModelUsers from 'app/@database/users/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationEmailConfirmationsEmailConfirmationIDServer } = require('../../../../../app/@database/email-confirmations/validations/email-confirmation-id-server');
+import { validationIP } from 'app/@validations/ip.js';
+import { validationEmailConfirmationsEmailConfirmationIDServer } from 'app/@database/email-confirmations/validations/email-confirmation-id-server.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from 'app/@locales/locale.js';
 
 
 // ---------------------------------------------
 //   API
 // ---------------------------------------------
 
-const { initialProps } = require('../../../../../app/@api/v2/common');
+import { initialProps } from 'app/@api/v2/common.js';
+
+
 
 
 
@@ -75,23 +83,30 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const returnObj = {};
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
   //   Locale
   // --------------------------------------------------
   
   const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
+    acceptLanguage: language
   });
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const returnObj = {
-    cardsArr: [],
-  };
-  const requestParametersObj = {};
-  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
   
@@ -103,7 +118,7 @@ export default async (req, res) => {
     //   GET Data
     // --------------------------------------------------
     
-    const emailConfirmationID = req.query.emailConfirmationID;
+    const emailConfirmationID = lodashGet(req, ['query', 'emailConfirmationID'], '');
     
     lodashSet(requestParametersObj, ['emailConfirmationID'], emailConfirmationID);
     
@@ -114,7 +129,7 @@ export default async (req, res) => {
     //   Validations
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: req.ip });
+    await validationIP({ throwError: true, value: ip });
     await validationEmailConfirmationsEmailConfirmationIDServer({ value: emailConfirmationID });
     
     
@@ -141,7 +156,6 @@ export default async (req, res) => {
       
       conditionObj: {
         emailConfirmationID,
-        // isSuccess: false,
       }
       
     });
@@ -159,7 +173,6 @@ export default async (req, res) => {
     const docUsersCount = await ModelUsers.count({
       
       conditionObj: {
-        // _id: loginUsers_id,
         'emailObj.value': email,
       }
       
@@ -328,11 +341,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'YDW8_PLF3',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

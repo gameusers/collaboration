@@ -141,19 +141,6 @@ const Component = (props) => {
   // --------------------------------------------------
   
   /**
-   * ログインパスワード入力フォーム onMouseDown で呼び出される
-   * Material UI のページに解説されているとおりに入れている
-   * 参考：https://material-ui.com/demos/text-fields/#input-adornments
-   * @param {Object} eventObj - イベント
-   */
-  const handlePasswordMouseDown = (eventObj) => {
-    eventObj.preventDefault();
-  };
-  
-  
-  
-  
-  /**
    * ログインフォームを送信する
    * @param {Object} eventObj - イベント
    */
@@ -474,7 +461,7 @@ const Component = (props) => {
                   <IconButton
                     aria-label="Toggle password visibility"
                     onClick={() => setLoginPasswordShow(!loginPasswordShow)}
-                    onMouseDown={handlePasswordMouseDown}
+                    onMouseDown={(eventObj) => {eventObj.preventDefault()}}
                   >
                     {loginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
                   </IconButton>

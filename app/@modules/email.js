@@ -14,16 +14,16 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-// const { IntlProvider } = require('react-intl');
 const nodemailer = require('nodemailer');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 
 
-// ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-// const { locale } = require('../@locales/locale');
 
 
 
@@ -49,6 +49,7 @@ const sendMail = async ({ from, to, bcc, subject, text }) => {
   // --------------------------------------------------
   
   if (
+    
     !process.env.EMAIL_SMTP_HOST ||
     !process.env.EMAIL_SMTP_PORT ||
     !process.env.EMAIL_SMTP_USER ||
@@ -57,6 +58,7 @@ const sendMail = async ({ from, to, bcc, subject, text }) => {
     (!to && !bcc) ||
     !subject ||
     !text
+    
   ) {
     return;
   }
@@ -67,6 +69,7 @@ const sendMail = async ({ from, to, bcc, subject, text }) => {
   // --------------------------------------------------
   
   const smtpObj = {
+    
     host: process.env.EMAIL_SMTP_HOST,
     port: process.env.EMAIL_SMTP_PORT,
     secure: process.env.EMAIL_SMTP_PORT === 465 ? true : false, // true for 465, false for other ports
@@ -74,6 +77,7 @@ const sendMail = async ({ from, to, bcc, subject, text }) => {
       user: process.env.EMAIL_SMTP_USER,
       pass: process.env.EMAIL_SMTP_PASSWORD
     }
+    
   };
   
   const transporter = nodemailer.createTransport(smtpObj);
@@ -84,15 +88,21 @@ const sendMail = async ({ from, to, bcc, subject, text }) => {
   // --------------------------------------------------
   
   const messageObj = {
+    
     from,
     subject,
     text,
+    
   };
   
   if (to) {
+    
     messageObj.to = to;
+    
   } else {
+    
     messageObj.bcc = bcc;
+    
   }
   
   const infoObj = await transporter.sendMail(messageObj);
@@ -138,6 +148,7 @@ const sendMailConfirmation = async ({ to, emailConfirmationID }) => {
   // --------------------------------------------------
   
   sendMail({
+    
     from: process.env.EMAIL_CONFIRMATION_ADDRESS,
     to,
     subject: '[Game Users] メールアドレス確認',
@@ -159,6 +170,7 @@ ${process.env.NEXT_PUBLIC_URL_BASE}confirm/email/${emailConfirmationID}
 　URL: https://gameusers.org/
 
 ＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/`,
+    
   });
   
   
@@ -191,6 +203,7 @@ const sendMailResetPassword = async ({ to, emailConfirmationID }) => {
   // --------------------------------------------------
   
   sendMail({
+    
     from: process.env.EMAIL_CONFIRMATION_ADDRESS,
     to,
     subject: '[Game Users] パスワード再設定',
@@ -213,6 +226,7 @@ ${process.env.NEXT_PUBLIC_URL_BASE}confirm/reset-password/${emailConfirmationID}
 　URL: https://gameusers.org/
 
 ＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/`,
+    
   });
   
   
@@ -237,7 +251,9 @@ ${process.env.NEXT_PUBLIC_URL_BASE}confirm/reset-password/${emailConfirmationID}
 // --------------------------------------------------
 
 module.exports = {
+  
   sendMail,
   sendMailConfirmation,
   sendMailResetPassword,
+  
 };

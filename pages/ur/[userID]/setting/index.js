@@ -47,8 +47,8 @@ import Layout from 'app/common/layout/v2/components/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
 
 import FormPage from 'app/ur/v2/setting/form-page.js';
-// import FormAccount from '../../../app/ur/settings/components/form-account';
-// import FormEmail from '../../../app/ur/settings/components/form-email';
+import FormAccount from 'app/ur/v2/setting/form-account.js';
+import FormEmail from 'app/ur/v2/setting/form-email.js';
 // import FormWebPush from '../../../app/ur/settings/components/form-web-push';
 
 
@@ -113,10 +113,16 @@ const ContainerLayout = (props) => {
         userID={props.userID}
         pagesObj={props.pagesObj}
         approval={props.approval}
-        // loginID={props.loginID}
-        // email={props.email}
-        // emailConfirmation={props.emailConfirmation}
         // webPushPermission={props.webPushPermission}
+      />
+      
+      <FormAccount
+        loginID={props.loginID}
+      />
+      
+      <FormEmail
+        email={props.email}
+        emailConfirmation={props.emailConfirmation}
       />
       
     </React.Fragment>
@@ -346,16 +352,16 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
   
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/ur/[userID]/setting/index.js
-  // `);
+  console.log(`
+    ----------------------------------------\n
+    /pages/ur/[userID]/setting/index.js
+  `);
   
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  console.log(`
+    ----- resultObj -----\n
+    ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+    --------------------\n
+  `);
   
   
   

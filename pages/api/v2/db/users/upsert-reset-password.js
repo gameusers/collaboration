@@ -1,51 +1,60 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const moment = require('moment');
-const bcrypt = require('bcryptjs');
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import moment from 'moment';
+import bcrypt from 'bcryptjs';
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUsers = require('../../../../../app/@database/users/model');
-const ModelEmailConfirmations = require('../../../../../app/@database/email-confirmations/model');
+import ModelUsers from 'app/@database/users/model.js';
+import ModelEmailConfirmations from 'app/@database/email-confirmations/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { verifyRecaptcha } = require('../../../../../app/@modules/recaptcha');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { verifyRecaptcha } from 'app/@modules/recaptcha.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationEmailConfirmationsEmailConfirmationIDServer } = require('../../../../../app/@database/email-confirmations/validations/email-confirmation-id-server');
-const { validationUsersLoginID } = require('../../../../../app/@database/users/validations/login-id');
-const { validationUsersLoginPassword } = require('../../../../../app/@database/users/validations/login-password');
+import { validationIP } from 'app/@validations/ip.js';
+
+import { validationEmailConfirmationsEmailConfirmationIDServer } from 'app/@database/email-confirmations/validations/email-confirmation-id-server.js';
+import { validationUsersLoginID } from 'app/@database/users/validations/login-id.js';
+import { validationUsersLoginPassword } from 'app/@database/users/validations/login-password.js';
+
+
 
 
 
@@ -70,6 +79,16 @@ export default async (req, res) => {
   
   const returnObj = {};
   const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
   
   
@@ -93,10 +112,6 @@ export default async (req, res) => {
     } = bodyObj;
     
     
-    // --------------------------------------------------
-    //   Log Data
-    // --------------------------------------------------
-    
     lodashSet(requestParametersObj, ['emailConfirmationID'], emailConfirmationID);
     lodashSet(requestParametersObj, ['loginID'], loginID ? '******' : '');
     lodashSet(requestParametersObj, ['loginPassword'], loginPassword ? '******' : '');
@@ -116,7 +131,7 @@ export default async (req, res) => {
     //   Verify reCAPTCHA
     // ---------------------------------------------
     
-    await verifyRecaptcha({ response, remoteip: req.connection.remoteAddress });
+    await verifyRecaptcha({ response, remoteip: ip });
     
     
     // --------------------------------------------------
@@ -124,8 +139,10 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (req.isAuthenticated()) {
+      
       statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'AN2EYJq5E', messageID: 'V9vI1Cl1S' }] });
+      
     }
     
     
@@ -135,7 +152,8 @@ export default async (req, res) => {
     //   Validations
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: req.ip });
+    await validationIP({ throwError: true, value: ip });
+    
     await validationEmailConfirmationsEmailConfirmationIDServer({ value: emailConfirmationID });
     await validationUsersLoginID({ throwError: true, required: true, value: loginID });
     await validationUsersLoginPassword({ throwError: true, required: true, value: loginPassword, loginID });
@@ -175,7 +193,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (!docEmailConfirmationsObj) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'ZbJ3goJcP', messageID: 'Error' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: '1vh_wx7G-', messageID: 'i2zOr6U2O' }] });
     }
     
     const emailConfirmations_id = lodashGet(docEmailConfirmationsObj, ['_id'], '');
@@ -209,7 +227,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (!docUsersObj) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CALkwrSr6', messageID: 'Error' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'uxPBw_XPi', messageID: 'tPur_2KkX' }] });
     }
     
     
@@ -351,11 +369,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'eqWZBA5qi',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

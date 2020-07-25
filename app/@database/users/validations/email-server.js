@@ -28,7 +28,9 @@ const Model = require('../model');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom.js');
+
+
 
 
 
@@ -59,9 +61,11 @@ const validationUsersEmailServer = async ({ required = false, value, loginUsers_
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
+    
     value: data,
     numberOfCharacters,
+    
   };
   
   
@@ -110,11 +114,13 @@ const validationUsersEmailServer = async ({ required = false, value, loginUsers_
     
     // 現在登録している、確認済みのメールアドレスをもう一度登録しようとした場合、エラー
     const count1 = await Model.count({
+      
       conditionObj: {
         _id: loginUsers_id,
         'emailObj.value': encryptedEmail,
         'emailObj.confirmation': true,
       }
+      
     });
     
     if (count1 === 1) {
@@ -124,10 +130,12 @@ const validationUsersEmailServer = async ({ required = false, value, loginUsers_
     
     // 他のユーザーが利用しているメールアドレスを登録しようとした場合、エラー
     const count2 = await Model.count({
+      
       conditionObj: {
         _id: { '$ne': loginUsers_id },
         'emailObj.value': encryptedEmail,
       }
+      
     });
     
     if (count2 === 1) {
@@ -142,9 +150,11 @@ const validationUsersEmailServer = async ({ required = false, value, loginUsers_
   } else {
     
     const count = await Model.count({
+      
       conditionObj: {
         'emailObj.value': encryptedEmail,
       }
+      
     });
     
     if (count === 1) {
@@ -171,5 +181,7 @@ const validationUsersEmailServer = async ({ required = false, value, loginUsers_
 // --------------------------------------------------
 
 module.exports = {
-  validationUsersEmailServer
+  
+  validationUsersEmailServer,
+  
 };

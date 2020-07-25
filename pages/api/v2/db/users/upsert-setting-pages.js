@@ -190,12 +190,6 @@ export default async (req, res) => {
         
       }
       
-      // await validationUsersPagesType({ throwError: true, value: valueObj.type });
-      // await validationUsersPagesTitle({ throwError: true, value: valueObj.name });
-      // await validationUsersPagesLanguage({ throwError: true, value: valueObj.language });
-      
-      
-      
     }
     
     

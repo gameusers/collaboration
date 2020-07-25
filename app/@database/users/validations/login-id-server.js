@@ -28,7 +28,9 @@ const Model = require('../model');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom.js');
+
+
 
 
 
@@ -57,9 +59,11 @@ const validationUsersLoginIDServer = async ({ value, loginUsers_id }) => {
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
+    
     value: data,
     numberOfCharacters,
+    
   };
   
   
@@ -92,10 +96,12 @@ const validationUsersLoginIDServer = async ({ value, loginUsers_id }) => {
   if (loginUsers_id) {
     
     const count = await Model.count({
+      
       conditionObj: {
         _id: { '$ne': loginUsers_id },
         loginID: value,
       }
+      
     });
     
     if (count === 1) {
@@ -110,9 +116,11 @@ const validationUsersLoginIDServer = async ({ value, loginUsers_id }) => {
   } else {
     
     const count = await Model.count({
+      
       conditionObj: {
         loginID: value,
       }
+      
     });
     
     if (count === 1) {
@@ -139,5 +147,7 @@ const validationUsersLoginIDServer = async ({ value, loginUsers_id }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationUsersLoginIDServer
+  
+  validationUsersLoginIDServer,
+  
 };

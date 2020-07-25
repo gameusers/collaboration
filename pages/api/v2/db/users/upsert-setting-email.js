@@ -1,50 +1,59 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const moment = require('moment');
-const shortid = require('shortid');
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import moment from 'moment';
+import shortid from 'shortid';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUsers = require('../../../../../app/@database/users/model');
-const ModelEmailConfirmations = require('../../../../../app/@database/email-confirmations/model');
+import ModelUsers from 'app/@database/users/model.js';
+import ModelEmailConfirmations from 'app/@database/email-confirmations/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
-const { encrypt }  = require('../../../../../app/@modules/crypto');
-const { sendMailConfirmation } = require('../../../../../app/@modules/email');
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
+import { encrypt }  from 'app/@modules/crypto.js';
+import { sendMailConfirmation } from 'app/@modules/email.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationUsersEmailServer } = require('../../../../../app/@database/users/validations/email-server');
+import { validationIP } from 'app/@validations/ip.js';
+
+import { validationUsersEmailServer } from 'app/@database/users/validations/email-server.js';
+
+
 
 
 
@@ -72,6 +81,15 @@ export default async (req, res) => {
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
   
   
   try {
@@ -94,7 +112,6 @@ export default async (req, res) => {
     //   Log Data
     // --------------------------------------------------
     
-    // lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
     lodashSet(requestParametersObj, ['email'], email ? '******' : '');
     
     
@@ -112,8 +129,10 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (!req.isAuthenticated()) {
+      
       statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: '7dsG5-m_i', messageID: 'xLLNIpo6a' }] });
+      
     }
     
     
@@ -132,7 +151,7 @@ export default async (req, res) => {
     //   Validations
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: req.ip });
+    await validationIP({ throwError: true, value: ip });
     await validationUsersEmailServer({ value: email, loginUsers_id, encryptedEmail });
     
     
@@ -217,7 +236,7 @@ export default async (req, res) => {
         email: encryptedEmail,
         count: emailConfirmationsCount + 1,
         isSuccess: false,
-        ip: req.ip,
+        ip,
         userAgent: lodashGet(req, ['headers', 'user-agent'], ''),
       }
     };
@@ -306,11 +325,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: 'WTuGEDQ-V',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

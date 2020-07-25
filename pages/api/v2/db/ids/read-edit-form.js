@@ -128,8 +128,10 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (!req.isAuthenticated()) {
+      
       statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: '2NVUozGka', messageID: 'xLLNIpo6a' }] });
+      
     }
     
     

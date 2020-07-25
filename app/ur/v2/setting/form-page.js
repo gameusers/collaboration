@@ -15,13 +15,8 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-// import Link from 'next/link';
-// import Router from 'next/router';
 import { useIntl } from 'react-intl';
 import { Element } from 'react-scroll';
-// import Pagination from 'rc-pagination';
-// import localeInfo from 'rc-pagination/lib/locale/ja_JP';
-// import Cookies from 'js-cookie';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -40,8 +35,6 @@ import lodashCloneDeep from 'lodash/cloneDeep';
 //   Material UI
 // ---------------------------------------------
 
-import { makeStyles } from '@material-ui/core/styles';
-
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -49,13 +42,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-
-
-// ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-// import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 
 
 // ---------------------------------------------
@@ -87,30 +73,6 @@ import { validationUsersPagesTitle } from 'app/@database/users/validations/pages
 
 import Panel from 'app/common/layout/v2/components/panel.js';
 import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js';
-
-
-
-
-
-
-// --------------------------------------------------
-//   Material UI Style Overrides
-//   https://material-ui.com/styles/basics/
-// --------------------------------------------------
-
-const useStyles = makeStyles({
-  
-  expanded: {
-    marginBottom: '0 !important',
-  },
-  
-  input: {
-    fontSize: '12px',
-    color: '#666',
-    padding: '6px 26px 6px 12px',
-  },
-  
-});
 
 
 
@@ -199,15 +161,15 @@ const FormPageTitle = (props) => {
     setPagesArr(clonedArr);
     
     
-    console.log(chalk`
-      value: {green ${value}}
-    `);
+    // console.log(chalk`
+    //   value: {green ${value}}
+    // `);
     
-    console.log(`
-      ----- clonedArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(clonedArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- clonedArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(clonedArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // const newArr = [
       
@@ -377,7 +339,6 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const intl = useIntl();
-  const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [userID, setUserID] = useState(lodashGet(props, ['userID'], ''));
@@ -547,26 +508,39 @@ const Component = (props) => {
       
       
       
+      // ---------------------------------------------
+      //   Page Transition / URLを変更した場合にリロードする
+      // ---------------------------------------------
+      
+      const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
+      
+      if (pageTransition) {
+        window.location.href = `${process.env.NEXT_PUBLIC_URL_BASE}ur/${userID}/setting`;
+      }
+      
+      
+      
+      
       // --------------------------------------------------
       //   console.log
       // --------------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/ur/v2/setting/form-page.js / handleSubmit
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/ur/v2/setting/form-page.js / handleSubmit
+      // `);
       
-      console.log(`
-        ----- formDataObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- formDataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
     } catch (errorObj) {
@@ -620,35 +594,6 @@ const Component = (props) => {
     
     
   };
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Component - Page Title
-  // --------------------------------------------------
-  
-  // const componentsArr = [];
-  
-  
-  // for (const [index, valueObj] of pagesArr.entries()) {
-    
-    
-  //   // --------------------------------------------------
-  //   //   Push
-  //   // --------------------------------------------------
-    
-  //   componentsArr.push(
-  //     <FormPageTitle
-  //       key={index}
-  //       type={valueObj.type}
-  //       name={valueObj.name}
-  //       language={valueObj.language}
-  //     />
-  //   );
-    
-    
-  // }
   
   
   
@@ -712,7 +657,7 @@ const Component = (props) => {
       
       <Panel
         heading="ユーザーページ設定"
-        defaultExpanded={true}
+        defaultExpanded={false}
       >
         
         

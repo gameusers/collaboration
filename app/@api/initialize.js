@@ -181,20 +181,20 @@ router.post('/db', upload.none(), async (req, res, next) => {
         accessDate: ISO8601,
         userID: 'user1',
         pagesObj: {
-          imagesAndVideos_id: '',
+          imagesAndVideos_id: 'wLZYxmd29v',
           arr: [
-            // {
-            //   _id: '51WW1NG1r',
-            //   type: 'top',
-            //   title: 'マリオのプロフィール',
-            //   language: 'ja',
-            // },
-            // {
-            //   _id: 's_MGYAQea',
-            //   type: 'follow',
-            //   title: 'マリオのフォロー相手',
-            //   language: 'ja',
-            // },
+            {
+              _id: '51WW1NG1r',
+              type: 'top',
+              title: 'マリオのプロフィール',
+              language: 'ja',
+            },
+            {
+              _id: 's_MGYAQea',
+              type: 'follow',
+              title: 'マリオのフォロー相手',
+              language: 'ja',
+            },
           ],
         },
         loginID: '8OM0dhDak',
@@ -2476,6 +2476,61 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // ---------------------------------------------
     
     saveArr = [
+      
+      
+      // user 1 - main
+      {
+        
+        _id: 'wLZYxmd29v',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '',
+        type: 'ur',
+        images: 1,
+        videos: 0,
+        arr: [
+          
+          {
+            _id: 'tiBqEMkgbq',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'uBkS3jRqH',
+                w: '320w',
+                width: 320,
+                height: 180,
+              },
+              {
+                _id: 'NSsnd9zcE',
+                w: '480w',
+                width: 480,
+                height: 270,
+              },
+              {
+                _id: 'Pxi5lfzAK',
+                w: '640w',
+                width: 640,
+                height: 360,
+              },
+              {
+                _id: '7Y1Ojv7HFP',
+                w: '800w',
+                width: 800,
+                height: 450,
+              },
+              {
+                _id: 'PUefcK6Sf',
+                w: '1920w',
+                width: 1920,
+                height: 1080,
+              }
+            ]
+          },
+          
+        ]
+        
+      },
       
       
       // games 1

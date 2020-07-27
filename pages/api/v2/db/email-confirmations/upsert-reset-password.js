@@ -155,61 +155,25 @@ export default async (req, res) => {
     //   Validations
     // --------------------------------------------------
     
-    let docUsersObj = {};
-    
     await validationIP({ throwError: true, value: ip });
     
-    
-    if (loginID) {
-      
-      
-      // --------------------------------------------------
-      //   loginID
-      // --------------------------------------------------
-      
-      await validationUsersLoginID({ throwError: true, required: true, value: loginID });
-      
-      
-      // --------------------------------------------------
-      //   docUsersObj
-      // --------------------------------------------------
-      
-      docUsersObj = await ModelUsers.findOne({
-        
-        conditionObj: {
-          loginID
-        }
-        
-      });
-      
-      
-    } else {
-      
-      
-      // --------------------------------------------------
-      //   email
-      // --------------------------------------------------
-      
-      await validationUsersEmail({ throwError: true, required: true, value: email });
-      
-      
-      // --------------------------------------------------
-      //   docUsersObj
-      // --------------------------------------------------
-      
-      docUsersObj = await ModelUsers.findOne({
-        
-        conditionObj: {
-          'emailObj.value': encrypt(email),
-          'emailObj.confirmation': true,
-        }
-        
-      });
-      
-      
-    }
+    await validationUsersLoginID({ throwError: true, required: true, value: loginID });
+    await validationUsersEmail({ throwError: true, required: true, value: email });
     
     
+    // --------------------------------------------------
+    //   docUsersObj
+    // --------------------------------------------------
+    
+    const docUsersObj = await ModelUsers.findOne({
+      
+      conditionObj: {
+        loginID,
+        'emailObj.value': encrypt(email),
+        'emailObj.confirmation': true,
+      }
+      
+    });
     
     
     // --------------------------------------------------

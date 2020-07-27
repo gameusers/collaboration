@@ -43,10 +43,10 @@ import { createCsrfToken } from 'app/@modules/csrf.js';
 //   Components
 // ---------------------------------------------
 
-import Layout from 'app/common/layout/v2/components/layout.js';
-import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
+import Layout from 'app/common/layout/v2/layout.js';
+import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 
-import CardPlayer from 'app/common/card/v2/components/card-player.js';
+import CardPlayer from 'app/common/card/v2/card-player.js';
 // import Cards from 'app/ur/v2/index/cards.js';
 
 

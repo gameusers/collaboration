@@ -817,164 +817,164 @@ class Store {
    * 通知設定 - 購読する
    * @param {Array} pathArr - パス
    */
-  @action.bound
-  async handleSubmitWebPushSubscribe({ pathArr }) {
+  // @action.bound
+  // async handleSubmitWebPushSubscribe({ pathArr }) {
     
     
-    try {
+  //   try {
       
       
-      // ---------------------------------------------
-      //   Loading 表示
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Loading 表示
+  //     // ---------------------------------------------
       
-      storeLayout.handleLoadingShow({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
+  //     storeLayout.handleLoadingShow({});
       
       
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
       
-      
-      // ---------------------------------------------
-      //   Subscribe
-      // ---------------------------------------------
-      
-      const subscriptionObj = await storeWebPush.handleWebPushSubscribe();
+  //     storeLayout.handleButtonDisable({ pathArr });
       
       
       
       
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Subscribe
+  //     // ---------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/ur/settings/stores/store.js - handleSubmitWebPushSubscribe
-      // `);
-      
-      // console.log(`
-      //   ----- subscriptionObj -----\n
-      //   ${util.inspect(subscriptionObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     const subscriptionObj = await storeWebPush.handleWebPushSubscribe();
       
       
       
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
       
-      const formDataObj = {
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
+      
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/ur/settings/stores/store.js - handleSubmitWebPushSubscribe
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- subscriptionObj -----\n
+  //     //   ${util.inspect(subscriptionObj, { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+      
+      
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
+      
+  //     const formDataObj = {
         
-        subscriptionObj,
+  //       subscriptionObj,
         
-      };
+  //     };
       
       
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Fetch
+  //     // ---------------------------------------------
       
-      const resultObj = await fetchWrapper({
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/upsert-settings-web-push`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj)
-      });
-      
-      
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
+  //     const resultObj = await fetchWrapper({
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/upsert-settings-web-push`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj)
+  //     });
       
       
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
       
-      
-      // ---------------------------------------------
-      //   Permission true
-      // ---------------------------------------------
-      
-      lodashSet(this.dataObj, [...pathArr, 'webPushPermission'], true);
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
       
       
       
       
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Permission true
+  //     // ---------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/ur/settings/stores/store.js - handleSubmitWebPushSubscribe
-      // `);
-      
-      // console.log(chalk`
-      //   resultSubscribe: {green ${resultSubscribe}}
-      // `);
-      
-      // console.log(`
-      //   ----- subscriptionObj -----\n
-      //   ${util.inspect(subscriptionObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     lodashSet(this.dataObj, [...pathArr, 'webPushPermission'], true);
       
       
-    } catch (errorObj) {
       
       
-      // console.log(`
-      //   ----- errorObj -----\n
-      //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
+      
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/ur/settings/stores/store.js - handleSubmitWebPushSubscribe
+  //     // `);
+      
+  //     // console.log(chalk`
+  //     //   resultSubscribe: {green ${resultSubscribe}}
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- subscriptionObj -----\n
+  //     //   ${util.inspect(subscriptionObj, { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
+      
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        messageID: 'KkWs0oIKw',
-      });
+  //   } catch (errorObj) {
       
       
-    } finally {
+  //     // console.log(`
+  //     //   ----- errorObj -----\n
+  //     //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
       
-      storeLayout.handleButtonEnable({ pathArr });
-      
-      
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingHide({});
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       messageID: 'KkWs0oIKw',
+  //     });
       
       
-    }
+  //   } finally {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading 非表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingHide({});
+      
+      
+  //   }
     
     
-  };
+  // };
   
   
   
@@ -983,142 +983,142 @@ class Store {
    * 通知設定 - 購読解除する
    * @param {Array} pathArr - パス
    */
-  @action.bound
-  async handleSubmitWebPushUnsubscribe({ pathArr }) {
+  // @action.bound
+  // async handleSubmitWebPushUnsubscribe({ pathArr }) {
     
     
-    try {
+  //   try {
       
       
-      // ---------------------------------------------
-      //   Loading 表示
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Loading 表示
+  //     // ---------------------------------------------
       
-      storeLayout.handleLoadingShow({});
-      
-      
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr });
+  //     storeLayout.handleLoadingShow({});
       
       
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
       
-      
-      // ---------------------------------------------
-      //   Unsubscribe
-      // ---------------------------------------------
-      
-      const resultUnsubscribe = await storeWebPush.handleWebPushUnsubscribe();
+  //     storeLayout.handleButtonDisable({ pathArr });
       
       
       
       
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Unsubscribe
+  //     // ---------------------------------------------
       
-      const formDataObj = {};
+  //     const resultUnsubscribe = await storeWebPush.handleWebPushUnsubscribe();
       
       
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
       
-      const resultObj = await fetchWrapper({
+      
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
+      
+  //     const formDataObj = {};
+      
+      
+  //     // ---------------------------------------------
+  //     //   Fetch
+  //     // ---------------------------------------------
+      
+  //     const resultObj = await fetchWrapper({
         
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/delete-settings-web-push`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj)
+  //       urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/delete-settings-web-push`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj)
         
-      });
+  //     });
       
       
       
       
-      // ---------------------------------------------
-      //   Permission false
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Permission false
+  //     // ---------------------------------------------
       
-      lodashSet(this.dataObj, [...pathArr, 'webPushPermission'], false);
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Success
-      // ---------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'success',
-        messageID: 'lJRp1gpPT',
-      });
+  //     lodashSet(this.dataObj, [...pathArr, 'webPushPermission'], false);
       
       
       
       
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Snackbar: Success
+  //     // ---------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/ur/settings/stores/store.js - handleSubmitWebPushUnsubscribe
-      // `);
-      
-      // console.log(chalk`
-      //   resultUnsubscribe: {green ${resultUnsubscribe}}
-      // `);
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'success',
+  //       messageID: 'lJRp1gpPT',
+  //     });
       
       
-    } catch (errorObj) {
       
       
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
+  //     // --------------------------------------------------
+  //     //   console.log
+  //     // --------------------------------------------------
       
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
+  //     // console.log(`
+  //     //   ----------------------------------------\n
+  //     //   /app/ur/settings/stores/store.js - handleSubmitWebPushUnsubscribe
+  //     // `);
       
+  //     // console.log(chalk`
+  //     //   resultUnsubscribe: {green ${resultUnsubscribe}}
+  //     // `);
       
-    } finally {
-      
-      
-      // --------------------------------------------------
-      //   ダイアログを非表示にする
-      // --------------------------------------------------
-      
-      lodashSet(this.dataObj, [...pathArr, 'showDialog'], false);
-      
-      
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
+  //     // console.log(`
+  //     //   ----- resultObj -----\n
+  //     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+  //     //   --------------------\n
+  //     // `);
       
       
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingHide({});
+  //   } catch (errorObj) {
       
       
-    }
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
+      
+      
+  //   } finally {
+      
+      
+  //     // --------------------------------------------------
+  //     //   ダイアログを非表示にする
+  //     // --------------------------------------------------
+      
+  //     lodashSet(this.dataObj, [...pathArr, 'showDialog'], false);
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //     // ---------------------------------------------
+  //     //   Loading 非表示
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleLoadingHide({});
+      
+      
+  //   }
     
     
-  };
+  // };
   
   
 }

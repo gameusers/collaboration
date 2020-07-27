@@ -29,7 +29,6 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-// import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
@@ -37,19 +36,13 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
 
 
 // ---------------------------------------------
-//   Material UI / Icons
+//   States
 // ---------------------------------------------
 
-import IconID from '@material-ui/icons/Person';
-import IconPassword from '@material-ui/icons/Lock';
-import IconVisibility from '@material-ui/icons/Visibility';
-import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
+import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 // ---------------------------------------------
@@ -72,14 +65,10 @@ import { validationUsersLoginPassword } from 'app/@database/users/validations/lo
 //   Components
 // ---------------------------------------------
 
-import Panel from 'app/common/layout/v2/components/panel.js';
+import Panel from 'app/common/layout/v2/panel.js';
 
-
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateLayout } from 'app/@states/layout.js';
+import FormLoginID from 'app/common/form/v2/login-id.js';
+import FormLoginPassword from 'app/common/form/v2/login-password.js';
 
 
 
@@ -105,7 +94,7 @@ const Component = (props) => {
   
   const [loginID, setLoginID] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
-  const [loginPasswordShow, setLoginPasswordShow] = useState(false);
+  
   const [recaptchaResponse, setRecaptchaResponse] = useState('');
   
   
@@ -129,7 +118,6 @@ const Component = (props) => {
     handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
-    // handleScrollTo,
     
   } = stateLayout;
   
@@ -241,7 +229,6 @@ const Component = (props) => {
       
       setLoginID('');
       setLoginPassword('');
-      setLoginPasswordShow(false);
       
       
       
@@ -251,8 +238,10 @@ const Component = (props) => {
       // ---------------------------------------------
       
       handleSnackbarOpen({
+        
         variant: 'success',
         messageID: '5Gf730Gmz',
+        
       });
       
       
@@ -286,8 +275,10 @@ const Component = (props) => {
       // ---------------------------------------------
       
       handleSnackbarOpen({
+        
         variant: 'error',
         errorObj,
+        
       });
       
       
@@ -312,16 +303,6 @@ const Component = (props) => {
     
     
   };
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Validations
-  // --------------------------------------------------
-  
-  const validationUsersLoginIDObj = validationUsersLoginID({ value: loginID });
-  const validationUsersLoginPasswordObj = validationUsersLoginPassword({ value: loginPassword, loginID });
   
   
   
@@ -395,81 +376,20 @@ const Component = (props) => {
         
         
         {/* Login ID */}
-        <div>
-          <TextField
-            css={css`
-              width: 400px;
-              
-              @media screen and (max-width: 480px) {
-                width: 100%;
-              }
-            `}
-            id="loginID"
-            label="ID"
-            value={validationUsersLoginIDObj.value}
-            onChange={(eventObj) => setLoginID(eventObj.target.value)}
-            error={validationUsersLoginIDObj.error}
-            helperText={intl.formatMessage({ id: validationUsersLoginIDObj.messageID }, { numberOfCharacters: validationUsersLoginIDObj.numberOfCharacters })}
-            disabled={buttonDisabled}
-            margin="normal"
-            inputProps={{
-              maxLength: 32,
-            }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconID />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </div>
-        
-        
+        <FormLoginID
+          loginID={loginID}
+          setLoginID={setLoginID}
+        />
         
         
         {/* Login Password */}
-        <div>
-          <TextField
-            css={css`
-              width: 400px;
-              
-              @media screen and (max-width: 480px) {
-                width: 100%;
-              }
-            `}
-            id="loginPassword"
-            label="パスワード"
-            type={loginPasswordShow ? 'text' : 'password'}
-            value={validationUsersLoginPasswordObj.value}
-            onChange={(eventObj) => setLoginPassword(eventObj.target.value)}
-            error={validationUsersLoginPasswordObj.error}
-            helperText={intl.formatMessage({ id: validationUsersLoginPasswordObj.messageID }, { numberOfCharacters: validationUsersLoginPasswordObj.numberOfCharacters })}
-            disabled={buttonDisabled}
-            margin="normal"
-            inputProps={{
-              maxLength: 32,
-            }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconPassword />
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="Toggle password visibility"
-                    onClick={() => setLoginPasswordShow(!loginPasswordShow)}
-                    onMouseDown={(eventObj) => {eventObj.preventDefault()}}
-                  >
-                    {loginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-          />
-        </div>
+        <FormLoginPassword
+          loginPassword={loginPassword}
+          setLoginPassword={setLoginPassword}
+          loginID={loginID}
+          strength={false}
+          confirmation={false}
+        />
         
         
         <p

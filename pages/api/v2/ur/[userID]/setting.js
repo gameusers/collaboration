@@ -257,10 +257,10 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   webPushSubscriptionObj / endpoint
+    //   Web Push
     // --------------------------------------------------
     
-    returnObj.webPushPermission = false;
+    returnObj.webPushAvailable = false;
     
     const webPushes_id = lodashGet(docUsersObj, ['webPushes_id'], '');
     
@@ -275,12 +275,12 @@ export default async (req, res) => {
       });
       
       
-      const available = lodashGet(docWebPushesObj, ['available'], false);
+      const subscriptionObj = lodashGet(docWebPushesObj, ['subscriptionObj'], {});
       const errorCount = lodashGet(docWebPushesObj, ['errorCount'], 0);
       
-      if (available && errorCount < 5) {
+      if (subscriptionObj.endpoint && errorCount < 5) {
         
-        returnObj.webPushPermission = true;
+        returnObj.webPushAvailable = true;
         
       }
       

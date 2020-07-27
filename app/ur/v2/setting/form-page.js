@@ -71,8 +71,8 @@ import { validationUsersPagesTitle } from 'app/@database/users/validations/pages
 //   Components
 // ---------------------------------------------
 
-import Panel from 'app/common/layout/v2/components/panel.js';
-import FormImageAndVideo from 'app/common/image-and-video/v2/components/form.js';
+import Panel from 'app/common/layout/v2/panel.js';
+import FormImageAndVideo from 'app/common/image-and-video/v2/form.js';
 
 
 

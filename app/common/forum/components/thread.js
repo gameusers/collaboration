@@ -76,7 +76,7 @@ import FormComment from 'app/common/forum/components/form-comment.js';
 import Comment from 'app/common/forum/components/comment.js';
 import ImageAndVideo from 'app/common/image-and-video/components/image-and-video.js';
 
-import FormName from 'app/common/form/v2/components/name.js';
+import FormName from 'app/common/form/v2/name.js';
 
 
 

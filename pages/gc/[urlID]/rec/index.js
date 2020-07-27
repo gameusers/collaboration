@@ -51,10 +51,10 @@ import { getCookie } from 'app/@modules/cookie.js';
 //   Components
 // ---------------------------------------------
 
-import Layout from 'app/common/layout/v2/components/layout.js';
-import RecruitmentNavigation from 'app/gc/rec/v2/components/navigation.js';
-import Recruitment from 'app/gc/rec/v2/components/recruitment.js';
-import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
+import Layout from 'app/common/layout/v2/layout.js';
+import RecruitmentNavigation from 'app/gc/rec/v2/navigation.js';
+import Recruitment from 'app/gc/rec/v2/recruitment.js';
+import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 
 
 

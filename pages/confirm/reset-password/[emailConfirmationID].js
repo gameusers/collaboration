@@ -42,8 +42,8 @@ import { createCsrfToken } from 'app/@modules/csrf.js';
 //   Components
 // ---------------------------------------------
 
-import Layout from 'app/common/layout/v2/components/layout.js';
-import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
+import Layout from 'app/common/layout/v2/layout.js';
+import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 
 import FormResetPassword from 'app/confirm/reset-password/v2/form-reset-password.js';
 

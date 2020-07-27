@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
+import Router from 'next/router';
 import { useIntl } from 'react-intl';
 import { Element } from 'react-scroll';
 import { GoogleReCaptchaProvider, GoogleReCaptcha } from 'react-google-recaptcha-v3';
@@ -35,20 +36,6 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
-
-
-// ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconPerson from '@material-ui/icons/Person';
-import IconLock from '@material-ui/icons/Lock';
-import IconLockTwoToneOutlined from '@material-ui/icons/LockTwoTone';
-import IconVisibility from '@material-ui/icons/Visibility';
-import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
 
 
 // ---------------------------------------------
@@ -78,7 +65,10 @@ import { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation 
 //   Components
 // ---------------------------------------------
 
-import Panel from 'app/common/layout/v2/components/panel.js';
+import Panel from 'app/common/layout/v2/panel.js';
+
+import FormLoginID from 'app/common/form/v2/login-id.js';
+import FormLoginPassword from 'app/common/form/v2/login-password.js';
 
 
 
@@ -117,9 +107,7 @@ const Component = (props) => {
   
   const [loginID, setLoginID] = useState(lodashGet(props, ['loginID'], ''));
   const [loginPassword, setLoginPassword] = useState('');
-  const [loginPasswordShow, setLoginPasswordShow] = useState(false);
   const [loginPasswordConfirmation, setLoginPasswordConfirmation] = useState('');
-  const [loginPasswordConfirmationShow, setLoginPasswordConfirmationShow] = useState(false);
   const [recaptchaResponse, setRecaptchaResponse] = useState('');
   
   
@@ -306,11 +294,22 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Page Transition
+      //   Router.push = History API pushState()
       // ---------------------------------------------
       
       const userID = lodashGet(resultLoginObj, ['data', 'userID'], '');
-      window.location.href = `${process.env.NEXT_PUBLIC_URL_BASE}ur/${userID}`;
+      const url = `/ur/[userID]/index?userID=${userID}`;
+      const as = `/ur/${userID}`;
+      
+      Router.push(url, as);
+      
+      
+      // ---------------------------------------------
+      //   Page Transition
+      // ---------------------------------------------
+      
+      // const userID = lodashGet(resultLoginObj, ['data', 'userID'], '');
+      // window.location.href = `${process.env.NEXT_PUBLIC_URL_BASE}ur/${userID}`;
       
       
       
@@ -388,37 +387,6 @@ const Component = (props) => {
     
     
   };
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Validations
-  // --------------------------------------------------
-  
-  const validationUsersLoginIDObj = validationUsersLoginID({ value: loginID });
-  const validationUsersLoginPasswordObj = validationUsersLoginPassword({ value: loginPassword, loginID });
-  const validationUsersLoginPasswordConfirmationObj = validationUsersLoginPasswordConfirmation({ value: loginPasswordConfirmation, loginPassword });
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   パスワードの強度
-  // --------------------------------------------------
-  
-  const passwordColorArr = ['red', 'red', 'tomato', 'green', 'green'];
-  const passwordStrengthArr = ['とても危険', '危険', '普通', '安全', 'とても安全'];
-  
-  let passwordColor = passwordColorArr[validationUsersLoginPasswordObj.strengthScore];
-  let passwordStrength = passwordStrengthArr[validationUsersLoginPasswordObj.strengthScore];
-  
-  if (loginPassword === '') {
-    
-    passwordColor = '#848484';
-    passwordStrength = ' -';
-    
-  }
   
   
   
@@ -503,7 +471,6 @@ const Component = (props) => {
         >
           
           
-          {/* Login ID */}
           <div
             css={css`
               border-top: 1px dashed #848484;
@@ -513,121 +480,24 @@ const Component = (props) => {
           >
             
             
-            <TextField
-              css={css`
-                && {
-                  width: 100%;
-                  max-width: 500px;
-                }
-              `}
-              label="ログインID"
-              value={validationUsersLoginIDObj.value}
-              onChange={(eventObj) => setLoginID(eventObj.target.value)}
-              error={validationUsersLoginIDObj.error}
-              helperText={intl.formatMessage({ id: validationUsersLoginIDObj.messageID }, { numberOfCharacters: validationUsersLoginIDObj.numberOfCharacters })}
-              margin="normal"
-              inputProps={{
-                maxLength: 32,
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <IconPerson />
-                  </InputAdornment>
-                ),
-              }}
+            {/* Login ID */}
+            <FormLoginID
+              loginID={loginID}
+              setLoginID={setLoginID}
             />
             
             
-            
-            
-            <TextField
-              css={css`
-                && {
-                  width: 100%;
-                  max-width: 500px;
-                }
-              `}
-              label="パスワード"
-              type={loginPasswordShow ? 'text' : 'password'}
-              value={validationUsersLoginPasswordObj.value}
-              onChange={(eventObj) => setLoginPassword(eventObj.target.value)}
-              error={validationUsersLoginPasswordObj.error}
-              helperText={intl.formatMessage({ id: validationUsersLoginPasswordObj.messageID }, { numberOfCharacters: validationUsersLoginPasswordObj.numberOfCharacters })}
-              margin="normal"
-              inputProps={{
-                maxLength: 32,
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <IconLock />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="Toggle password visibility"
-                      onClick={() => setLoginPasswordShow(!loginPasswordShow)}
-                      onMouseDown={(eventObj) => {eventObj.preventDefault()}}
-                    >
-                      {loginPasswordShow ? <IconVisibility /> : <IconVisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
+            {/* Login Password */}
+            <FormLoginPassword
+              loginPassword={loginPassword}
+              setLoginPassword={setLoginPassword}
+              loginPasswordConfirmation={loginPasswordConfirmation}
+              setLoginPasswordConfirmation={setLoginPasswordConfirmation}
+              loginID={loginID}
+              strength={true}
+              confirmation={true}
             />
             
-            
-            <div
-              css={css`
-                font-size: 12px;
-                margin: 4px 0 0 0;
-                color: ${passwordColor};
-              `}
-            >
-              パスワード強度：{passwordStrength}
-            </div>
-            
-            
-            
-            
-            <TextField
-              css={css`
-                && {
-                  width: 100%;
-                  max-width: 500px;
-                }
-              `}
-              label="パスワード確認"
-              type={loginPasswordConfirmationShow ? 'text' : 'password'}
-              value={validationUsersLoginPasswordConfirmationObj.value}
-              onChange={(eventObj) => setLoginPasswordConfirmation(eventObj.target.value)}
-              error={validationUsersLoginPasswordConfirmationObj.error}
-              helperText={intl.formatMessage({ id: validationUsersLoginPasswordConfirmationObj.messageID }, { numberOfCharacters: validationUsersLoginPasswordConfirmationObj.numberOfCharacters })}
-              margin="normal"
-              inputProps={{
-                maxLength: 32,
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <IconLockTwoToneOutlined />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="Toggle password visibility"
-                      onClick={() => setLoginPasswordConfirmationShow(!loginPasswordConfirmationShow)}
-                      onMouseDown={(eventObj) => {eventObj.preventDefault()}}
-                    >
-                      {loginPasswordConfirmationShow ? <IconVisibility /> : <IconVisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
-            />
             
           </div>
           

@@ -27,27 +27,13 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-import lodashSet from 'lodash/set';
-import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
-import { makeStyles } from '@material-ui/core/styles';
-
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
-
-
-// ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconMailOutline from '@material-ui/icons/MailOutline';
 
 
 // ---------------------------------------------
@@ -76,7 +62,9 @@ import { validationUsersEmail } from 'app/@database/users/validations/email.js';
 //   Components
 // ---------------------------------------------
 
-import Panel from 'app/common/layout/v2/components/panel.js';
+import Panel from 'app/common/layout/v2/panel.js';
+
+import FormEmail from 'app/common/form/v2/email.js';
 
 
 
@@ -534,15 +522,6 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Validations
-  // --------------------------------------------------
-  
-  const validationUsersEmailObj = validationUsersEmail({ value: email });
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
@@ -663,30 +642,9 @@ const Component = (props) => {
             `}
           >
             
-            
-            <TextField
-              css={css`
-                && {
-                  width: 100%;
-                  max-width: 500px;
-                }
-              `}
-              label="メールアドレス"
-              value={validationUsersEmailObj.value}
-              onChange={(eventObj) => setEmail(eventObj.target.value)}
-              error={validationUsersEmailObj.error}
-              helperText={intl.formatMessage({ id: validationUsersEmailObj.messageID }, { numberOfCharacters: validationUsersEmailObj.numberOfCharacters })}
-              margin="normal"
-              inputProps={{
-                maxLength: 100,
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <IconMailOutline />
-                  </InputAdornment>
-                ),
-              }}
+            <FormEmail
+              email={email}
+              setEmail={setEmail}
             />
             
             

@@ -35,16 +35,6 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-
-
-// ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconPerson from '@material-ui/icons/Person';
-import IconMailOutline from '@material-ui/icons/MailOutline';
 
 
 // ---------------------------------------------
@@ -74,7 +64,10 @@ import { validationUsersEmail } from 'app/@database/users/validations/email.js';
 //   Components
 // ---------------------------------------------
 
-import Panel from 'app/common/layout/v2/components/panel.js';
+import Panel from 'app/common/layout/v2/panel.js';
+
+import FormLoginID from 'app/common/form/v2/login-id.js';
+import FormEmail from 'app/common/form/v2/email.js';
 
 
 
@@ -339,16 +332,6 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Validations
-  // --------------------------------------------------
-  
-  const validationUsersLoginIDObj = validationUsersLoginID({ value: loginID });
-  const validationUsersEmailObj = validationUsersEmail({ value: email });
-  
-  
-  
-  
-  // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
   
@@ -441,7 +424,6 @@ const Component = (props) => {
         >
           
           
-          {/* Login ID */}
           <div
             css={css`
               border-top: 1px dashed #848484;
@@ -451,58 +433,19 @@ const Component = (props) => {
           >
             
             
-            <TextField
-              css={css`
-                && {
-                  width: 100%;
-                  max-width: 500px;
-                }
-              `}
-              label="ログインID"
-              value={validationUsersLoginIDObj.value}
-              onChange={(eventObj) => setLoginID(eventObj.target.value)}
-              error={validationUsersLoginIDObj.error}
-              helperText={intl.formatMessage({ id: validationUsersLoginIDObj.messageID }, { numberOfCharacters: validationUsersLoginIDObj.numberOfCharacters })}
-              margin="normal"
-              inputProps={{
-                maxLength: 32,
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <IconPerson />
-                  </InputAdornment>
-                ),
-              }}
+            {/* Login ID */}
+            <FormLoginID
+              loginID={loginID}
+              setLoginID={setLoginID}
             />
             
             
-            
-            
-            <TextField
-              css={css`
-                && {
-                  width: 100%;
-                  max-width: 500px;
-                }
-              `}
-              label="メールアドレス"
-              value={validationUsersEmailObj.value}
-              onChange={(eventObj) => setEmail(eventObj.target.value)}
-              error={validationUsersEmailObj.error}
-              helperText={intl.formatMessage({ id: validationUsersEmailObj.messageID }, { numberOfCharacters: validationUsersEmailObj.numberOfCharacters })}
-              margin="normal"
-              inputProps={{
-                maxLength: 100,
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <IconMailOutline />
-                  </InputAdornment>
-                ),
-              }}
+            {/* Email */}
+            <FormEmail
+              email={email}
+              setEmail={setEmail}
             />
+            
             
           </div>
           

@@ -43,10 +43,10 @@ import { getCookie } from 'app/@modules/cookie.js';
 //   Components
 // ---------------------------------------------
 
-import Layout from 'app/common/layout/v2/components/layout.js';
-import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
+import Layout from 'app/common/layout/v2/layout.js';
+import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 
-import FollowMembers from 'app/common/follow/v2/components/members.js';
+import FollowMembers from 'app/common/follow/v2/members.js';
 
 
 

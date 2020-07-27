@@ -42,10 +42,10 @@ import { getCookie } from 'app/@modules/cookie.js';
 //   Components
 // ---------------------------------------------
 
-import Layout from 'app/common/layout/v2/components/layout.js';
-import ForumNavigation from 'app/common/forum/v2/components/navigation.js';
-import Forum from 'app/common/forum/v2/components/forum.js';
-import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
+import Layout from 'app/common/layout/v2/layout.js';
+import ForumNavigation from 'app/common/forum/v2/navigation.js';
+import Forum from 'app/common/forum/v2/forum.js';
+import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 
 
 // ---------------------------------------------

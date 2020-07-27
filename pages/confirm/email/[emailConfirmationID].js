@@ -42,9 +42,9 @@ import { createCsrfToken } from 'app/@modules/csrf.js';
 //   Components
 // ---------------------------------------------
 
-import Layout from 'app/common/layout/v2/components/layout.js';
-import Breadcrumbs from 'app/common/layout/v2/components/breadcrumbs.js';
-import Panel from 'app/common/layout/v2/components/panel.js';
+import Layout from 'app/common/layout/v2/layout.js';
+import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
+import Panel from 'app/common/layout/v2/panel.js';
 
 
 

@@ -16,6 +16,11 @@ const util = require('util');
 
 const moment = require('moment');
 
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');

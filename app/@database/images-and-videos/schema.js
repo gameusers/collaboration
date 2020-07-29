@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 // --------------------------------------------------
 
 const schema = mongoose.Schema({
+  
   _id: { type: String, required: true },
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
@@ -21,12 +22,12 @@ const schema = mongoose.Schema({
     {
       _id: { type: String, required: true },
       type: { type: String, enum: ['image', 'video'], required: true },
-      imageType: { type: String, enum: ['JPEG', 'PNG', 'SVG'] },
+      imageType: { type: String, enum: ['JPEG', 'PNG', 'SVG'] },// required は不要
       localesArr: {
         type: [
           {
             _id: { type: String, required: true },
-            language: { type: String, enum: ['en', 'ja'] },
+            language: { type: String, enum: ['en', 'ja'], required: true },
             caption: { type: String, required: true },
           }
         ],
@@ -43,10 +44,11 @@ const schema = mongoose.Schema({
         ],
         default: undefined,
       },
-      videoChannel: { type: String, enum: ['youtube'] },
+      videoChannel: { type: String, enum: ['youtube'] },// required は不要
       videoID: String,
     },
   ],
+  
 });
 
 

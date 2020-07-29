@@ -14,12 +14,12 @@ const schema = mongoose.Schema({
   _id: { type: String, required: true },
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
-  userCommunityID: { type: String },
-  users_id: { type: String },
+  userCommunityID: { type: String, required: true, unique: true },
+  users_id: { type: String, required: true },
   localesArr: [
     {
       _id: { type: String, required: true },
-      language: { type: String, enum: ['en', 'ja'] },
+      language: { type: String, enum: ['en', 'ja'], required: true },
       name: { type: String, required: true },
       description: { type: String, required: true },
       descriptionShort: { type: String, required: true },

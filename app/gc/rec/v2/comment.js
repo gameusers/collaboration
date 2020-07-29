@@ -505,6 +505,8 @@ const Comment = (props) => {
             border-top: 1px solid;
             border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
             border-image-slice: 1;
+            padding: 24px 0 0 0;
+            margin: 24px 0 0 0;
             `
         }
       `}

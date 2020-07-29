@@ -123,15 +123,19 @@ const ContainerLayout = (props) => {
     //   Scroll To
     // ---------------------------------------------
     
-    handleScrollTo({
+    if (props.pageType === 'page') {
       
-      to: 'recruitmentThreads',
-      duration: 0,
-      delay: 0,
-      smooth: 'easeInOutQuart',
-      offset: -50,
+      handleScrollTo({
+        
+        to: 'recruitmentThreads',
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+        
+      });
       
-    });
+    }
     
     
   }, [props.ISO8601]);
@@ -167,7 +171,7 @@ const ContainerLayout = (props) => {
       <Recruitment
         urlID={props.urlID}
         gameCommunities_id={props.gameCommunities_id}
-        individual={props.individual}
+        individual={props.pageType === 'individual'}
       />
       
     </React.Fragment>
@@ -286,25 +290,32 @@ export async function getServerSideProps({ req, res, query }) {
   //   Query
   // --------------------------------------------------
   
+  const urlID = lodashGet(query, ['urlID'], '');
   const hardwares = lodashGet(query, ['hardwares'], '');
   const categories = lodashGet(query, ['categories'], '');
   const keyword = lodashGet(query, ['keyword'], '');
-  const urlID = lodashGet(query, ['urlID'], '');
+  
   const slugsArr = lodashGet(query, ['slug'], []);
   
-  let threadPage = lodashGet(query, ['page'], 1);
+  // let threadPage = lodashGet(query, ['page'], 1);
+  let threadPage = 1;
+  
+  let pageType = '';
   let recruitmentID = '';
   
-  let pageType = 'recruitment';
-  
-  if (Math.sign(slugsArr[0]) === 1) {
+  if (slugsArr.length === 0) {
     
+    pageType = 'index';
+    
+  } else if (Math.sign(slugsArr[0]) === 1) {
+    
+    pageType = 'page';
     threadPage = slugsArr[0];
     
   } else if (slugsArr[0] !== 'search') {
     
-    recruitmentID = slugsArr[0];
     pageType = 'individual';
+    recruitmentID = slugsArr[0];
     
   } else if (slugsArr[0] === 'search') {
     
@@ -312,7 +323,7 @@ export async function getServerSideProps({ req, res, query }) {
     
   }
   
-  let individual = false;
+  // let individual = false;
   
   
   
@@ -460,7 +471,21 @@ export async function getServerSideProps({ req, res, query }) {
   //   募集
   // --------------------------------------------------
   
-  if (pageType === 'recruitment') {
+  if (pageType === 'index') {
+    
+    
+    // ---------------------------------------------
+    //   - Title
+    // ---------------------------------------------
+    
+    title = `募集 - ${gameName}`;
+    
+    
+  // --------------------------------------------------
+  //   募集
+  // --------------------------------------------------
+  
+  } else if (pageType === 'page') {
     
     
     // ---------------------------------------------
@@ -507,7 +532,7 @@ export async function getServerSideProps({ req, res, query }) {
     //   - Individual
     // ---------------------------------------------
     
-    individual = true;
+    // individual = true;
     
     
   // --------------------------------------------------
@@ -551,12 +576,18 @@ export async function getServerSideProps({ req, res, query }) {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/rec/[...slug].js
+  //   /pages/gc/[urlID]/rec/[[...slug]].js
   // `);
   
   // console.log(`
   //   ----- resultObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(`
+  //   ----- query -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(query)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
   
@@ -595,12 +626,12 @@ export async function getServerSideProps({ req, res, query }) {
       breadcrumbsArr,
       
       urlID,
+      pageType,
       gameCommunities_id,
       gameCommunityObj,
       recruitmentThreadsObj,
       recruitmentCommentsObj,
       recruitmentRepliesObj,
-      individual,
       
       hardwaresArr,
       categories,

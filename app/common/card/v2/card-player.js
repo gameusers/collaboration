@@ -50,13 +50,6 @@ import IconExpandMore from '@material-ui/icons/ExpandMore';
 
 
 // ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-// import { ContainerStateForum } from 'app/@states/forum.js';
-
-
-// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
@@ -157,133 +150,6 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-  
-  // const stateForum = ContainerStateForum.useContainer();
-  
-  // const {
-    
-  //   forumThreadsObj,
-    
-  // } = stateForum;
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Handler
-  // --------------------------------------------------
-  
-  /**
-   * スレッドを読み込む
-   * @param {number} page - スレッドのページ
-   * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
-   */
-  // const handleRead = async ({
-    
-  //   page,
-  //   changeLimit,
-    
-  // }) => {
-    
-    
-  //   try {
-      
-      
-  //     // ---------------------------------------------
-  //     //   Router.push 用
-  //     // ---------------------------------------------
-      
-  //     let url = '';
-  //     let as = '';
-      
-  //     if (gameCommunities_id) {
-        
-  //       if (page === 1) {
-          
-  //         url = `/gc/[urlID]/index?urlID=${urlID}`;
-  //         as = `/gc/${urlID}`;
-          
-  //       } else {
-          
-  //         url = `/gc/[urlID]/forum/[...slug]?urlID=${urlID}&page=${page}`;
-  //         as = `/gc/${urlID}/forum/${page}`;
-          
-  //       }
-        
-  //     } else {
-        
-  //       if (page === 1) {
-          
-  //         url = `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`;
-  //         as = `/uc/${userCommunityID}`;
-          
-  //       } else {
-          
-  //         url = `/uc/[userCommunityID]/forum/[...slug]?userCommunityID=${userCommunityID}&page=${page}`;
-  //         as = `/uc/${userCommunityID}/forum/${page}`;
-          
-  //       }
-        
-  //     }
-      
-      
-      
-      
-  //     // ---------------------------------------------
-  //     //   Change Limit / Set Cookie
-  //     // ---------------------------------------------
-      
-  //     if (changeLimit) {
-        
-  //       Cookies.set('forumThreadLimit', changeLimit);
-        
-  //     }
-      
-      
-      
-      
-  //     // ---------------------------------------------
-  //     //   console.log
-  //     // ---------------------------------------------
-      
-  //     // console.log(`
-  //     //   ----------------------------------------\n
-  //     //   /app/common/forum/v2/components/forum.js - handleRead
-  //     // `);
-      
-  //     // console.log(chalk`
-  //     //   gameCommunities_id: {green ${gameCommunities_id}}
-  //     //   userCommunities_id: {green ${userCommunities_id}}
-  //     //   page: {green ${page}}
-  //     //   changeLimit: {green ${changeLimit}}
-        
-  //     //   url: {green ${url}}
-  //     //   as: {green ${as}}
-  //     // `);
-      
-  //     // return;
-      
-      
-      
-      
-  //     // ---------------------------------------------
-  //     //   Router.push = History API pushState()
-  //     // ---------------------------------------------
-      
-  //     await Router.push(url, as);
-      
-      
-  //   } catch (errorObj) {}
-    
-    
-  // };
-  
-  
-  
-  
-  // --------------------------------------------------
   //   カードデータが存在しない場合、空のコンポーネントを返す
   // --------------------------------------------------
   
@@ -309,11 +175,10 @@ const Component = (props) => {
   const name = lodashGet(obj, ['name'], '');
   const status = lodashGet(obj, ['status'], '');
   const comment = lodashGet(obj, ['comment'], '');
+  
   const exp = lodashGet(obj, ['usersObj', 'exp'], 0);
   const accessDate = lodashGet(obj, ['usersObj', 'accessDate'], '');
   const userID = lodashGet(obj, ['usersObj', 'userID'], '');
-  // const followedCount = lodashGet(obj, ['followsObj', 'followedCount'], 0);
-  // const followed = lodashGet(obj, ['followsObj', 'followed'], false);
   
   
   

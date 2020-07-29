@@ -14,13 +14,15 @@ const schema = mongoose.Schema({
   _id: { type: String, required: true },
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
-  users_id: { type: String, required: true },
-  gameCommunities_id: String,
-  platform: { type: String, enum: ['PlayStation', 'Xbox', 'Nintendo', 'PC', 'Android', 'iOS', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line', 'Other'], required: true },
-  label: String,
-  id: { type: String, required: true },
-  publicSetting: { type: Number, min: 1, max: 5, required: true },
-  search: { type: Boolean, required: true },
+  urlID: { type: String, required: true },
+  localesArr: [
+    {
+      _id: { type: String, required: true },
+      language: { type: String, enum: ['en', 'ja'] },
+      name: { type: String, required: true },
+    }
+  ],
+  countTarget: { type: Number, required: true },
   
 });
 
@@ -31,10 +33,14 @@ const schema = mongoose.Schema({
 
 let model = '';
 
-if (mongoose.models['ids']) {
-  model = mongoose.model('ids');
+if (mongoose.models.games) {
+  
+  model = mongoose.model('achievements');
+  
 } else {
-  model = mongoose.model('ids', schema);
+  
+  model = mongoose.model('achievements', schema);
+  
 }
 
 module.exports = model;

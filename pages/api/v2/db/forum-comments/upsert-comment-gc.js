@@ -99,7 +99,7 @@ export default async (req, res) => {
   //   Language & IP & User Agent
   // --------------------------------------------------
   
-  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
@@ -109,7 +109,7 @@ export default async (req, res) => {
   // --------------------------------------------------
   
   const localeObj = locale({
-    acceptLanguage: language
+    acceptLanguage
   });
   
   
@@ -370,6 +370,7 @@ export default async (req, res) => {
     
     
     const forumCommentsSaveObj = {
+      
       createdDate: ISO8601,
       updatedDate: ISO8601,
       gameCommunities_id,
@@ -390,8 +391,10 @@ export default async (req, res) => {
       anonymity,
       goods: 0,
       replies: 0,
+      acceptLanguage,
       ip,
-      userAgent: lodashGet(req, ['headers', 'user-agent'], '')
+      userAgent: lodashGet(req, ['headers', 'user-agent'], ''),
+      
     };
     
     

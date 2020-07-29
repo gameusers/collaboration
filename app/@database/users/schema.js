@@ -27,13 +27,13 @@ const schema = mongoose.Schema({
       },
     ],
   },
-  loginID: { type: String, required: true },
+  loginID: { type: String, required: true, unique: true },
   loginPassword: { type: String, required: true },
   emailObj: {
     value: { type: String },
     confirmation: { type: Boolean, default: false, required: true },
   },
-  language: { type: String, required: true },
+  acceptLanguage: { type: String, required: true },
   countriesArr: [String],
   termsOfServiceConfirmedDate: { type: Date, required: true },
   exp: { type: Number, default: 0, required: true },
@@ -46,7 +46,6 @@ const schema = mongoose.Schema({
       count: { type: Number, default: 1, required: true },
     },
   ],
-  // webPushAvailable: { type: Boolean, required: true },
   webPushes_id: { type: String },
   role: { type: String, enum: ['user', 'administrator'], required: true },
   

@@ -21,7 +21,7 @@ const schema = mongoose.Schema({
   localesArr: [
     {
       _id: { type: String, required: true },
-      language: { type: String, enum: ['en', 'ja'] },
+      language: { type: String, enum: ['en', 'ja'], required: true },
       title: { type: String, required: true },
       name: { type: String },
       comment: { type: String, required: true },
@@ -47,14 +47,13 @@ const schema = mongoose.Schema({
   publicCommentsUsers_idsArr: [String],
   publicApprovalUsers_idsArrr: [String],
   deadlineDate: { type: Date },
-  // close: { type: Boolean, required: true },
   webPushAvailable: { type: Boolean, required: true },
   webPushes_id: { type: String },
   comments: { type: Number, default: 0, required: true },
   replies: { type: Number, default: 0, required: true },
   images: { type: Number, default: 0, required: true },
   videos: { type: Number, default: 0, required: true },
-  language: { type: String, required: true },
+  acceptLanguage: { type: String, required: true },
   ip: { type: String, required: true },
   userAgent: { type: String, required: true },
   

@@ -31,7 +31,6 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import ModelGameCommunities from 'app/@database/game-communities/model.js';
-// import ModelForumThreads from 'app/@database/forum-threads/model.js';
 import ModelForumComments from 'app/@database/forum-comments/model.js';
 
 
@@ -99,7 +98,7 @@ export default async (req, res) => {
   //   Language & IP & User Agent
   // --------------------------------------------------
   
-  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
@@ -109,7 +108,7 @@ export default async (req, res) => {
   // --------------------------------------------------
   
   const localeObj = locale({
-    acceptLanguage: language
+    acceptLanguage
   });
   
   
@@ -401,6 +400,7 @@ export default async (req, res) => {
       anonymity: anonymity ? true : false,
       goods: 0,
       replies: 0,
+      acceptLanguage,
       ip,
       userAgent,
       

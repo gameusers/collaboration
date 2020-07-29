@@ -39,6 +39,7 @@ import { returnErrorsArr } from 'app/@modules/log/log.js';
 // ---------------------------------------------
 
 import { validationInteger } from 'app/@validations/integer.js';
+
 import { validationGameCommunities_idServer } from 'app/@database/game-communities/validations/_id-server.js';
 import { validationRecruitmentCommentsLimit } from 'app/@database/recruitment-comments/validations/limit.js';
 import { validationRecruitmentRepliesLimit } from 'app/@database/recruitment-replies/validations/limit.js';
@@ -82,7 +83,7 @@ export default async (req, res) => {
   //   Language & IP & User Agent
   // --------------------------------------------------
   
-  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
@@ -92,7 +93,7 @@ export default async (req, res) => {
   // --------------------------------------------------
   
   const localeObj = locale({
-    acceptLanguage: language
+    acceptLanguage
   });
   
   

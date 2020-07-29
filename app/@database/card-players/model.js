@@ -743,6 +743,91 @@ const aggregateAndFormat = async ({
       
       
       // --------------------------------------------------
+      //   experiences
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'experiences',
+            let: { let_id: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$users_id', '$$let_id']
+                  },
+                }
+              },
+              
+              
+              // --------------------------------------------------
+              //   experiences / achievements
+              // --------------------------------------------------
+              
+              {
+                $lookup:
+                  {
+                    from: 'achievements',
+                    let: { letAchievements_id: '$achievementsArr.achievements_id' },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            // $eq: ['$_id', 'MuK2dKVpn']
+                            // $eq: ['$_id', '$$letAchievements_id']
+                            $in: ['$_id', '$$letAchievements_id'],
+                          },
+                        }
+                      },
+                      {
+                        $project: {
+                          localesArr: 1,
+                        }
+                      }
+                    ],
+                    as: 'achievementsObj'
+                  }
+              },
+              
+              {
+                $unwind: {
+                  path: '$achievementsObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+              
+              
+              // --------------------------------------------------
+              //   $project
+              // --------------------------------------------------
+              
+              // {
+              //   $project: {
+              //     __v: 0,
+              //     createdDate: 0,
+              //     language: 0,
+              //     activityTimeArr: { _id: 0 },
+              //     linkArr: { _id: 0 },
+              //     search: 0,
+              //   }
+              // },
+              
+              
+            ],
+            as: 'experiencesObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$experiencesObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // --------------------------------------------------
       //   $project
       // --------------------------------------------------
       
@@ -752,6 +837,7 @@ const aggregateAndFormat = async ({
           exp: 1,
           userID: 1,
           cardPlayerObj: 1,
+          experiencesObj: 1,
         }
       },
       
@@ -795,10 +881,10 @@ const aggregateAndFormat = async ({
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/@database/card-players/model.js - aggregateAndFormat
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /app/@database/card-players/model.js - aggregateAndFormat
+    `);
     
     // console.log(`
     //   ----- matchConditionArr -----\n
@@ -806,11 +892,11 @@ const aggregateAndFormat = async ({
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- docArr -----\n
-    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- docArr -----\n
+      ${util.inspect(docArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(`
     //   ----- formattedObj -----\n

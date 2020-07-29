@@ -15,12 +15,12 @@ const schema = mongoose.Schema({
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
   gameCommunities_id: { type: String, required: true },
-  recruitmentThreads_id: { type: String },
+  recruitmentThreads_id: { type: String, required: true },
   users_id: { type: String },
   localesArr: [
     {
       _id: { type: String, required: true },
-      language: { type: String, enum: ['en', 'ja'] },
+      language: { type: String, enum: ['en', 'ja'], required: true },
       name: { type: String },
       comment: { type: String, required: true },
     }
@@ -46,7 +46,7 @@ const schema = mongoose.Schema({
   webPushes_id: { type: String },
   goods: { type: Number, default: 0, required: true },
   replies: { type: Number, default: 0, required: true },
-  language: { type: String, required: true },
+  acceptLanguage: { type: String, required: true },
   ip: { type: String, required: true },
   userAgent: { type: String, required: true },
   

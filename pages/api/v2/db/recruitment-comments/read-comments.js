@@ -84,7 +84,7 @@ export default async (req, res) => {
   //   Language & IP & User Agent
   // --------------------------------------------------
   
-  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
@@ -94,7 +94,7 @@ export default async (req, res) => {
   // --------------------------------------------------
   
   const localeObj = locale({
-    acceptLanguage: language
+    acceptLanguage
   });
   
   

@@ -26,17 +26,12 @@ const moment = require('moment');
 
 
 // ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-const { errorCodeIntoErrorObj } = require('../@modules/error/error-obj');
-
-
-// ---------------------------------------------
 //   Schema
 // ---------------------------------------------
 
 const SchemaUsers = require('../@database/users/model');
+const SchemaExperiences = require('../@database/experiences/model');
+const SchemaAchievements = require('../@database/achievements/model');
 const SchemaGames = require('../@database/games/model');
 const SchemaIDs = require('../@database/ids/model');
 const SchemaCardPlayers = require('../@database/card-players/model');
@@ -59,23 +54,18 @@ const SchemaNotifications = require('../@database/notifications/model');
 const SchemaWebPushes = require('../@database/web-pushes/model');
 
 
-// ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-// const { addLocaleData } = require('react-intl');
-// const en = require('react-intl/locale-data/en');
-// const ja = require('react-intl/locale-data/ja');
-// addLocaleData([...en, ...ja]);
-
-const { locale } = require('../@locales/locale');
-
-
 // --------------------------------------------------
 //   Router
 // --------------------------------------------------
 
 const router = express.Router();
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { errorCodeIntoErrorObj } = require('../@modules/error/error-obj');
 
 
 
@@ -164,7 +154,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           value: '',
           confirmation: false,
         },
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
         exp: 0,
@@ -203,7 +193,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           value: '38cda58a026a9703cc8f5e8a104d8c88ab32965e4e6aba5e18ca93366c71e7db',// aaa@gameusers.org
           confirmation: true,
         },
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
         exp: 999,
@@ -237,7 +227,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           value: '0509b58e75540f35054f9b7acdbf0771ae7151614f805a61fe2556f6fe947e78',// bbb@gameusers.org
           confirmation: false,
         },
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
         exp: 10,
@@ -263,7 +253,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           value: '',
           confirmation: false,
         },
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
         exp: 0,
@@ -286,7 +276,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   DB / Achievements
+    //   DB / Experiences
     // --------------------------------------------------
     
     // ---------------------------------------------
@@ -301,25 +291,50 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         exp: 999,
-        historiesArr: [
+        historiesArr: [// アカウント開設日、goodボタン、フォーラム書き込み、募集書き込み、ゲーム登録、日記、経験値
+          {
+            _id: 'Hc-iVQxJ8',
+            updatedDate: '2018-01-01T00:00:00.000Z',
+            type: 'start',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countTotal: 1,
+          },
+          
           {
             _id: 'Xt1Jny7Hb',
-            createdDate: ISO8601,
+            updatedDate: ISO8601,
             type: 'good',
-            count: 1,
-          }
+            countDay: 1,
+            countMonth: 10,
+            countYear: 20,
+            countTotal: 30,
+          },
+          
+          {
+            _id: '-6rOeYCIj',
+            updatedDate: ISO8601,
+            type: 'forum',
+            countDay: 1,
+            countMonth: 10,
+            countYear: 20,
+            countTotal: 30,
+          },
         ],
         achievementsArr: [
           {
             _id: 'pFJEn_2MO',
             createdDate: ISO8601,
-            updatedDate: ISO8601,
-            achievementID: 'MuK2dKVpn',
-            count: 1,
+            achievements_id: 'MuK2dKVpn',
+          },
+          {
+            _id: 'YpDpJ7mmb',
+            createdDate: ISO8601,
+            achievements_id: 'IJY1y3P-M',
           }
         ],
       },
-      
       
     ];
     
@@ -328,8 +343,79 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   Upsert
     // ---------------------------------------------
     
-    // await SchemaUsers.deleteMany({ reset: true });
-    // returnObj = await SchemaUsers.insertMany({ saveArr });
+    await SchemaExperiences.deleteMany({ reset: true });
+    returnObj = await SchemaExperiences.insertMany({ saveArr });
+    
+    
+    //達成条件、翻訳、他コレクションへのurlIDの追加
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB / Achievements
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Save Object
+    // ---------------------------------------------
+    
+    saveArr = [
+      
+      {
+        _id: 'MuK2dKVpn',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        urlID: 'MuK2dKVpn',
+        localesArr: [
+          {
+            _id: 'V8iU147M5',
+            language: 'ja',
+            name: 'エデンの民',
+          },
+        ],
+        countTarget: 1,
+      },
+      
+      {
+        _id: 'IJY1y3P-M',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        urlID: 'IJY1y3P-M',
+        localesArr: [
+          {
+            _id: 'XZvEFeFYM',
+            language: 'ja',
+            name: '遊び人',
+          },
+        ],
+        countTarget: 1,
+      },
+      
+      {
+        _id: 'IJY1y3P-M',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        urlID: 'IJY1y3P-M',
+        localesArr: [
+          {
+            _id: 'XZvEFeFYM',
+            language: 'ja',
+            name: '人気者',
+          },
+        ],
+        countTarget: 30,
+      },
+      
+    ];
+    
+    
+    // ---------------------------------------------
+    //   Upsert
+    // ---------------------------------------------
+    
+    await SchemaAchievements.deleteMany({ reset: true });
+    returnObj = await SchemaAchievements.insertMany({ saveArr });
     
     
     
@@ -773,6 +859,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'en',
         country: 'US',
         genreID: 'YC3gSkK67',
+        urlID: 'Action',
         name: 'Action'
       },
       {
@@ -782,6 +869,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         genreID: 'YC3gSkK67',
+        urlID: 'Action',
         name: 'アクション'
       },
       
@@ -793,6 +881,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'en',
         country: 'US',
         genreID: 'jpPfXudBt',
+        urlID: 'Shooter',
         name: 'Shooter'
       },
       {
@@ -802,6 +891,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         genreID: 'jpPfXudBt',
+        urlID: 'Shooter',
         name: 'シューティング'
       },
       
@@ -813,6 +903,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'en',
         country: 'US',
         genreID: 'aiB1RZ0f8',
+        urlID: 'Adventure',
         name: 'Adventure'
       },
       {
@@ -822,6 +913,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         genreID: 'aiB1RZ0f8',
+        urlID: 'Adventure',
         name: 'アドベンチャー'
       },
       
@@ -833,6 +925,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'en',
         country: 'US',
         genreID: 'sU94RUPS7',
+        urlID: 'RPG',
         name: 'RPG'
       },
       {
@@ -842,6 +935,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         genreID: 'sU94RUPS7',
+        urlID: 'RPG',
         name: 'RPG'
       },
       
@@ -853,6 +947,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'en',
         country: 'US',
         genreID: 'lDdVW5ANX',
+        urlID: 'Simulation',
         name: 'Simulation'
       },
       {
@@ -862,6 +957,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         genreID: 'lDdVW5ANX',
+        urlID: 'Simulation',
         name: 'シミュレーター'
       },
       
@@ -873,6 +969,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'en',
         country: 'US',
         genreID: '-HKDHuR2v',
+        urlID: 'Strategy',
         name: 'Strategy'
       },
       {
@@ -882,6 +979,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         genreID: '-HKDHuR2v',
+        urlID: 'Strategy',
         name: 'シミュレーション（ストラテジー）'
       },
       
@@ -893,6 +991,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'en',
         country: 'US',
         genreID: 'NCt2Bb7WF',
+        urlID: 'Sports',
         name: 'Sports'
       },
       {
@@ -902,6 +1001,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         genreID: 'NCt2Bb7WF',
+        urlID: 'Sports',
         name: 'スポーツ'
       },
       
@@ -913,6 +1013,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'en',
         country: 'US',
         genreID: 'CoIMeJDxB',
+        urlID: 'Racing',
         name: 'Racing'
       },
       {
@@ -922,6 +1023,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         genreID: 'CoIMeJDxB',
+        urlID: 'Racing',
         name: 'レース'
       },
       
@@ -933,6 +1035,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'en',
         country: 'US',
         genreID: 'n2k7J_e12',
+        urlID: 'Fighting',
         name: 'Fighting'
       },
       {
@@ -942,6 +1045,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         genreID: 'n2k7J_e12',
+        urlID: 'Fighting',
         name: '格闘ゲーム'
       },
       
@@ -953,6 +1057,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'en',
         country: 'US',
         genreID: 'SV1mg4iuD',
+        urlID: 'Puzzle',
         name: 'Puzzle'
       },
       {
@@ -962,6 +1067,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         genreID: 'SV1mg4iuD',
+        urlID: 'Puzzle',
         name: 'パズル'
       },
       
@@ -973,6 +1079,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'en',
         country: 'US',
         genreID: '691Od0Wty',
+        urlID: 'BoardCard',
         name: 'Board game / Card game'
       },
       {
@@ -982,6 +1089,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         genreID: '691Od0Wty',
+        urlID: 'BoardCard',
         name: 'ボードゲーム / カードゲーム'
       },
       
@@ -993,6 +1101,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'en',
         country: 'US',
         genreID: 'rsx6C2bsy',
+        urlID: 'Music',
         name: 'Music game'
       },
       {
@@ -1002,6 +1111,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         genreID: 'rsx6C2bsy',
+        urlID: 'Music',
         name: '音ゲー'
       },
       
@@ -1013,6 +1123,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'en',
         country: 'US',
         genreID: 'HBpRRumc3',
+        urlID: 'Other',
         name: 'Other'
       },
       {
@@ -1022,6 +1133,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         genreID: 'HBpRRumc3',
+        urlID: 'Other',
         name: 'その他'
       },
     ]
@@ -1053,6 +1165,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'en',
         country: 'US',
         hardwareID: 'I-iu-WmkO',
+        urlID: 'Nintendo-Entertainment-System',
         name: 'Nintendo Entertainment System',
         searchKeywordsArr: [
           'Nintendo Entertainment System',
@@ -1066,6 +1179,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'I-iu-WmkO',
+        urlID: 'Family-Computer',
         name: 'ファミリーコンピュータ',
         searchKeywordsArr: [
           'ファミリーコンピューター',
@@ -1087,6 +1201,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'KyOSlwcLk',
+        urlID: 'PC-Engine',
         name: 'PCエンジン',
         searchKeywordsArr: [
           'PCエンジン',
@@ -1106,6 +1221,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: '2yKF4qXAw',
+        urlID: 'MEGA-DRIVE',
         name: 'メガドライブ',
         searchKeywordsArr: [
           'メガドライブ',
@@ -1124,6 +1240,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'eKmDxi8lX',
+        urlID: 'SUPER-Famicom',
         name: 'スーパーファミコン',
         searchKeywordsArr: [
           'スーパーファミコン',
@@ -1146,6 +1263,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'Z4R-SPN2-',
+        urlID: 'NEO-GEO',
         name: 'ネオジオ',
         searchKeywordsArr: [
           'ネオジオ',
@@ -1165,6 +1283,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'lBSGQeGmx',
+        urlID: 'SEGA-SATURN',
         name: 'セガサターン',
         searchKeywordsArr: [
           'セガサターン',
@@ -1183,6 +1302,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'zB4ivcsqM',
+        urlID: 'PlayStation',
         name: 'PlayStation',
         searchKeywordsArr: [
           'プレイステーション',
@@ -1205,6 +1325,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'o9bdsq5af',
+        urlID: 'VIRTUAL-BOY',
         name: 'バーチャルボーイ',
         searchKeywordsArr: [
           'バーチャルボーイ',
@@ -1223,6 +1344,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: '45syCFviA',
+        urlID: 'NINTENDO-64',
         name: 'NINTENDO64',
         searchKeywordsArr: [
           '任天堂64',
@@ -1261,6 +1383,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'Kj_Djheqt',
+        urlID: 'Dreamcast',
         name: 'ドリームキャスト',
         searchKeywordsArr: [
           'ドリームキャスト',
@@ -1280,6 +1403,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: '8RERfeQQ9',
+        urlID: 'PlayStation-2',
         name: 'PlayStation 2',
         searchKeywordsArr: [
           'プレイステーション2',
@@ -1315,6 +1439,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'XLUt628gr',
+        urlID: 'NINTENDO-GAMECUBE',
         name: 'ニンテンドーゲームキューブ',
         searchKeywordsArr: [
           '任天堂ゲームキューブ',
@@ -1339,6 +1464,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: '78lc0hPjL',
+        urlID: 'Xbox',
         name: 'Xbox',
         searchKeywordsArr: [
           'エックスボックス',
@@ -1355,6 +1481,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: '08Qp5KxPA',
+        urlID: 'Xbox-360',
         name: 'Xbox 360',
         searchKeywordsArr: [
           'エックスボックス360',
@@ -1379,6 +1506,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'YNZ6nb1Ki',
+        urlID: 'PlayStation-3',
         name: 'PlayStation 3',
         searchKeywordsArr: [
           'プレイステーション3',
@@ -1414,6 +1542,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'n3wYKZ_ao',
+        urlID: 'Wii',
         name: 'Wii',
         searchKeywordsArr: [
           'ウィー',
@@ -1433,6 +1562,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'GTxWVd0z-',
+        urlID: 'Wii-U',
         name: 'Wii U',
         searchKeywordsArr: [
           'ウィーユー',
@@ -1456,6 +1586,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'TdK3Oc-yV',
+        urlID: 'PlayStation-4',
         name: 'PlayStation 4',
         searchKeywordsArr: [
           'プレイステーション4',
@@ -1491,6 +1622,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'uPqoiXA_8',
+        urlID: 'Xbox-One',
         name: 'Xbox One',
         searchKeywordsArr: [
           'エックスボックスワン',
@@ -1513,6 +1645,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'Zd_Ia4Hwm',
+        urlID: 'Nintendo-Switch',
         name: 'Nintendo Switch',
         searchKeywordsArr: [
           '任天堂スイッチ',
@@ -1543,6 +1676,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'XBKalRRW7',
+        urlID: 'Game-Boy',
         name: 'ゲームボーイ',
         searchKeywordsArr: [
           'ゲームボーイ',
@@ -1561,6 +1695,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'sO2U2PzHl',
+        urlID: 'GAME-GEAR',
         name: 'ゲームギア',
         searchKeywordsArr: [
           'ゲームギア',
@@ -1579,6 +1714,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'qBsY8y0nO',
+        urlID: 'PC-Engine-GT',
         name: 'PCエンジンGT',
         searchKeywordsArr: [
           'PCエンジンGT',
@@ -1598,6 +1734,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'u3SQqtJ-u',
+        urlID: 'NEOGEO-POCKET',
         name: 'ネオジオポケット',
         searchKeywordsArr: [
           'ネオジオポケット',
@@ -1618,6 +1755,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'PYIE0rv_e',
+        urlID: 'Wonder-Swan',
         name: 'ワンダースワン',
         searchKeywordsArr: [
           'ワンダースワン',
@@ -1636,6 +1774,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'AIvzEgDCd',
+        urlID: 'GAMEBOY-ADVANCE',
         name: 'ゲームボーイアドバンス',
         searchKeywordsArr: [
           'ゲームボーイアドバンス',
@@ -1654,6 +1793,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'HATpnt7sl',
+        urlID: 'Nintendo-DS',
         name: 'ニンテンドーDS',
         searchKeywordsArr: [
           '任天堂DS',
@@ -1684,6 +1824,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'efIOgWs3N',
+        urlID: 'PlayStation-Portable',
         name: 'PlayStation Portable',
         searchKeywordsArr: [
           'プレイステーション・ポータブル',
@@ -1714,6 +1855,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'qk9DiUwN-',
+        urlID: 'Nintendo-3DS',
         name: 'ニンテンドー3DS',
         searchKeywordsArr: [
           '任天堂3DS',
@@ -1744,6 +1886,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'mOpBZsQBm',
+        urlID: 'PlayStation-Vita',
         name: 'PlayStation Vita',
         searchKeywordsArr: [
           'プレイステーション・ヴィータ',
@@ -1785,6 +1928,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'P0UG-LHOQ',
+        urlID: 'PC',
         name: 'PC',
         searchKeywordsArr: [
           'ピーシー',
@@ -1808,6 +1952,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'SXybALV1f',
+        urlID: 'Android',
         name: 'Android',
         searchKeywordsArr: [
           'アンドロイド',
@@ -1824,6 +1969,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'o-f3Zxd49',
+        urlID: 'iOS',
         name: 'iOS',
         searchKeywordsArr: [
           'アイオーエス',
@@ -3502,8 +3648,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         replies: 3,
         images: 7,
         videos: 2,
-        main: false,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        // main: false,
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3531,8 +3677,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         replies: 2,
         images: 0,
         videos: 0,
-        main: false,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        // main: false,
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3558,8 +3704,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         replies: 0,
         images: 0,
         videos: 0,
-        main: false,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        // main: false,
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3589,8 +3735,8 @@ Material UI にスタイルを当てる場合、Material UI がデフォルト�
         replies: 0,
         images: 0,
         videos: 0,
-        main: false,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        // main: false,
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3618,8 +3764,8 @@ emotion: https://emotion.sh/docs/introduction`,
         replies: 0,
         images: 0,
         videos: 0,
-        main: false,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        // main: false,
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3645,8 +3791,8 @@ emotion: https://emotion.sh/docs/introduction`,
         replies: 0,
         images: 0,
         videos: 0,
-        main: false,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        // main: false,
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3674,8 +3820,8 @@ emotion: https://emotion.sh/docs/introduction`,
         replies: 2,
         images: 0,
         videos: 0,
-        main: true,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        // main: true,
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3705,8 +3851,8 @@ emotion: https://emotion.sh/docs/introduction`,
         replies: 0,
         images: 0,
         videos: 0,
-        main: true,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        // main: true,
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3758,7 +3904,7 @@ emotion: https://emotion.sh/docs/introduction`,
         anonymity: false,
         goods: 100,
         replies: 2,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3787,7 +3933,7 @@ emotion: https://emotion.sh/docs/introduction`,
         anonymity: false,
         goods: 50,
         replies: 1,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3816,7 +3962,7 @@ emotion: https://emotion.sh/docs/introduction`,
         anonymity: false,
         goods: 25,
         replies: 0,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3851,7 +3997,7 @@ emotion: https://emotion.sh/docs/introduction`,
         anonymity: false,
         goods: 50,
         replies: 1,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3880,7 +4026,7 @@ emotion: https://emotion.sh/docs/introduction`,
         anonymity: false,
         goods: 25,
         replies: 0,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3911,7 +4057,7 @@ emotion: https://emotion.sh/docs/introduction`,
         anonymity: false,
         goods: 1,
         replies: 2,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3940,7 +4086,7 @@ emotion: https://emotion.sh/docs/introduction`,
         anonymity: false,
         goods: 0,
         replies: 0,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3969,7 +4115,7 @@ emotion: https://emotion.sh/docs/introduction`,
         anonymity: false,
         goods: 0,
         replies: 0,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4000,7 +4146,7 @@ emotion: https://emotion.sh/docs/introduction`,
         anonymity: false,
         goods: 2,
         replies: 0,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4031,7 +4177,7 @@ emotion: https://emotion.sh/docs/introduction`,
         anonymity: false,
         goods: 0,
         replies: 2,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4060,7 +4206,7 @@ emotion: https://emotion.sh/docs/introduction`,
         anonymity: false,
         goods: 0,
         replies: 0,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4089,7 +4235,7 @@ emotion: https://emotion.sh/docs/introduction`,
         anonymity: false,
         goods: 0,
         replies: 0,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4146,7 +4292,6 @@ emotion: https://emotion.sh/docs/introduction`,
         publicInformationsArr: [],
         publicSetting: 1,
         deadlineDate: '2020-05-31T00:00:00Z',
-        // close: false,
         webPushAvailable: true,
         webPushes_id: 'nOVilxpSk',
         publicCommentsUsers_idsArr: [],
@@ -4155,7 +4300,7 @@ emotion: https://emotion.sh/docs/introduction`,
         replies: 4,
         images: 1,
         videos: 0,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4229,7 +4374,7 @@ emotion: https://emotion.sh/docs/introduction`,
         replies: 2,
         images: 0,
         videos: 0,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4294,7 +4439,7 @@ emotion: https://emotion.sh/docs/introduction`,
         replies: 0,
         images: 0,
         videos: 0,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4347,7 +4492,7 @@ emotion: https://emotion.sh/docs/introduction`,
         webPushes_id: 'nOVilxpSk',
         goods: 0,
         replies: 3,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4387,7 +4532,7 @@ emotion: https://emotion.sh/docs/introduction`,
         webPushes_id: '',
         goods: 0,
         replies: 1,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4417,7 +4562,7 @@ emotion: https://emotion.sh/docs/introduction`,
         webPushes_id: 'L4D5QB9p4',
         goods: 0,
         replies: 2,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4459,7 +4604,7 @@ emotion: https://emotion.sh/docs/introduction`,
         webPushes_id: '',
         goods: 0,
         replies: 0,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4508,7 +4653,7 @@ emotion: https://emotion.sh/docs/introduction`,
         ],
         imagesAndVideos_id: '',
         goods: 0,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4535,7 +4680,7 @@ emotion: https://emotion.sh/docs/introduction`,
         ],
         imagesAndVideos_id: '',
         goods: 0,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4563,7 +4708,7 @@ emotion: https://emotion.sh/docs/introduction`,
         ],
         imagesAndVideos_id: '',
         goods: 0,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4588,7 +4733,7 @@ emotion: https://emotion.sh/docs/introduction`,
         ],
         imagesAndVideos_id: '',
         goods: 0,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4631,7 +4776,7 @@ emotion: https://emotion.sh/docs/introduction`,
         ],
         imagesAndVideos_id: '',
         goods: 0,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -4659,7 +4804,7 @@ emotion: https://emotion.sh/docs/introduction`,
         ],
         imagesAndVideos_id: '',
         goods: 0,
-        language: 'ja,en-US;q=0.9,en;q=0.8',
+        acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },

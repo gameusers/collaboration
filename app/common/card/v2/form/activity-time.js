@@ -132,12 +132,43 @@ const Component = (props) => {
   const handleOnChangeWeek = ({ index, value }) => {
     
     const clonedArr = lodashCloneDeep(activityTimeArr);
+    const weekArr = lodashGet(clonedArr, [index, 'weekArr'], []);
+    const arrayIndex = weekArr.indexOf(value);
     
-    const weekArr = lodashGet(activityTimeArr, [index, 'weekArr'], []);
-    weekArr.push(value);
+    if (arrayIndex === -1) {
+      
+      weekArr.push(value);
+      
+    } else {
+      
+      weekArr.splice(arrayIndex, 1);
+      
+    }
+    
+    weekArr.sort((a, b) => {
+      return a - b;
+    });
     
     lodashSet(clonedArr, [index, 'weekArr'], weekArr);
     setActivityTimeArr(clonedArr);
+    
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/card/v2/form/activity-time.js - handleOnChangeWeek
+    // `);
+    
+    // console.log(chalk`
+    //   index: {green ${index}}
+    //   value: {green ${value}}
+    //   arrayIndex: {green ${arrayIndex}}
+    // `);
+    
+    // console.log(`
+    //   ----- clonedArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(clonedArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
   };
   

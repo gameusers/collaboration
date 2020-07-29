@@ -727,7 +727,9 @@ const findOneForLoginUsersObj = async ({
           loginID: 0,
           loginPassword: 0,
           emailObj: 0,
+          webPushes_id: 0,
           country: 0,
+          acceptLanguage: 0,
           webPushSubscriptionObj: 0,
         }
       },

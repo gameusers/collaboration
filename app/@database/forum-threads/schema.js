@@ -20,7 +20,7 @@ const schema = mongoose.Schema({
   localesArr: [
     {
       _id: { type: String, required: true },
-      language: { type: String, enum: ['en', 'ja'] },
+      language: { type: String, enum: ['en', 'ja'], required: true },
       name: { type: String, required: true },
       comment: { type: String, required: true },
     }
@@ -30,8 +30,8 @@ const schema = mongoose.Schema({
   replies: { type: Number, default: 0, required: true },
   images: { type: Number, default: 0, required: true },
   videos: { type: Number, default: 0, required: true },
-  main: { type: Boolean, required: true },
-  language: { type: String, required: true },
+  // main: { type: Boolean, required: true },
+  acceptLanguage: { type: String, required: true },
   ip: { type: String, required: true },
   userAgent: { type: String, required: true },
   

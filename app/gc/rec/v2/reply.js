@@ -1014,7 +1014,7 @@ const Component = (props) => {
       if (changeLimit) {
         
         
-        commentLimit = changeLimit;
+        replyLimit = changeLimit;
         
         
         // ---------------------------------------------

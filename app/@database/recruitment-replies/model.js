@@ -1385,33 +1385,33 @@ const getPage = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----- recruitmentComments_idsArr -----\n
-      ${util.inspect(recruitmentComments_idsArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- recruitmentComments_idsArr -----\n
+    //   ${util.inspect(recruitmentComments_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(chalk`
-      recruitmentThreads_id: {green ${recruitmentThreads_id}}
-      recruitmentComments_id: {green ${recruitmentComments_id}}
-      commentIndex: {green ${commentIndex}}
-      commentPage: {green ${commentPage}}
-      commentLimit: {green ${commentLimit}}
-    `);
+    // console.log(chalk`
+    //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+    //   recruitmentComments_id: {green ${recruitmentComments_id}}
+    //   commentIndex: {green ${commentIndex}}
+    //   commentPage: {green ${commentPage}}
+    //   commentLimit: {green ${commentLimit}}
+    // `);
     
     
-    console.log(`
-      ----- recruitmentReplies_idsArr -----\n
-      ${util.inspect(recruitmentReplies_idsArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- recruitmentReplies_idsArr -----\n
+    //   ${util.inspect(recruitmentReplies_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(chalk`
-      recruitmentReplies_id: {green ${recruitmentReplies_id}}
-      replyIndex: {green ${replyIndex}}
-      replyPage: {green ${replyPage}}
-      replyLimit: {green ${replyLimit}}
-    `);
+    // console.log(chalk`
+    //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
+    //   replyIndex: {green ${replyIndex}}
+    //   replyPage: {green ${replyPage}}
+    //   replyLimit: {green ${replyLimit}}
+    // `);
     
     
     

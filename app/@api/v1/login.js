@@ -94,7 +94,7 @@ router.post('/login', upload.none(), (req, res, next) => {
   //   Language & IP & User Agent
   // --------------------------------------------------
   
-  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
@@ -145,8 +145,10 @@ router.post('/login', upload.none(), (req, res, next) => {
       // --------------------------------------------------
       
       if (req.isAuthenticated()) {
+        
         statusCode = 403;
         throw new CustomError({ level: 'warn', errorsArr: [{ code: 'yyaAiB5f-', messageID: 'V9vI1Cl1S' }] });
+        
       }
       
       
@@ -185,8 +187,10 @@ router.post('/login', upload.none(), (req, res, next) => {
       }
       
       if (!user) {
+        
         statusCode = 401;
         throw new CustomError({ level: 'warn', errorsArr: [{ code: 'H0eMuApu6', messageID: 'RIj4SCt_s' }] });
+        
       }
       
       
@@ -384,7 +388,7 @@ router.post('/logout', upload.none(), function(req, res, next) {
   //   Language & IP & User Agent
   // --------------------------------------------------
   
-  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
@@ -443,8 +447,6 @@ router.post('/logout', upload.none(), function(req, res, next) {
   
   
 });
-
-
 
 
 

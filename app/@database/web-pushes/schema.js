@@ -15,7 +15,6 @@ const schema = mongoose.Schema({
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
   sendDate: { type: Date },
-  // available: { type: Boolean, required: true },
   users_id: { type: String },
   subscriptionObj: {
     endpoint: { type: String },

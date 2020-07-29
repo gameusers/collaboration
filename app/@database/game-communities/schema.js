@@ -21,7 +21,6 @@ const schema = mongoose.Schema({
     threadCount: { type: Number, default: 0, required: true },
   },
   updatedDateObj: {
-    // notification: { type: Date, required: true },
     forum: { type: Date, required: true },
     recruitment: { type: Date, required: true },
   },

@@ -15,21 +15,21 @@ const schema = mongoose.Schema({
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
   gameCommunities_id: { type: String, required: true },
-  recruitmentThreads_id: { type: String },
-  recruitmentComments_id: { type: String },
+  recruitmentThreads_id: { type: String, required: true },
+  recruitmentComments_id: { type: String, required: true },
   replyToRecruitmentReplies_id: { type: String },
   users_id: { type: String },
   localesArr: [
     {
       _id: { type: String, required: true },
-      language: { type: String, enum: ['en', 'ja'] },
+      language: { type: String, enum: ['en', 'ja'], required: true },
       name: { type: String },
       comment: { type: String, required: true },
     }
   ],
   imagesAndVideos_id: { type: String },
   goods: { type: Number, default: 0, required: true },
-  language: { type: String, required: true },
+  acceptLanguage: { type: String, required: true },
   ip: { type: String, required: true },
   userAgent: { type: String, required: true },
   

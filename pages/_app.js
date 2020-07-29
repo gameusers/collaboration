@@ -320,6 +320,7 @@ const Component = (props) => {
       
       <Head>
         <title>Game Users</title>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
       </Head>
       
       

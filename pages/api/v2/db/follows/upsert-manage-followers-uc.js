@@ -84,7 +84,7 @@ export default async (req, res) => {
   //   Language & IP & User Agent
   // --------------------------------------------------
   
-  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
@@ -113,7 +113,6 @@ export default async (req, res) => {
     //   Log Data
     // --------------------------------------------------
     
-    // lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
     lodashSet(requestParametersObj, ['targetUsers_id'], targetUsers_id);
     lodashSet(requestParametersObj, ['type'], type);

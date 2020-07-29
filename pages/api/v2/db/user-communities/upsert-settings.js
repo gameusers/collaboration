@@ -1,62 +1,71 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const shortid = require('shortid');
-const moment = require('moment');
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import shortid from 'shortid';
+import moment from 'moment';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
+import ModelUserCommunities from 'app/@database/user-communities/model';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
-const { formatAndSave } = require('../../../../../app/@modules/image/save');
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
+import { formatAndSave } from 'app/@modules/image/save.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationBoolean } = require('../../../../../app/@validations/boolean');
-const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
-const { validationUserCommunitiesName } = require('../../../../../app/@database/user-communities/validations/name');
-const { validationUserCommunitiesDescription } = require('../../../../../app/@database/user-communities/validations/description');
-const { validationUserCommunitiesDescriptionShort } = require('../../../../../app/@database/user-communities/validations/description-short');
-const { validationUserCommunitiesUserCommunityIDServer } = require('../../../../../app/@database/user-communities/validations/user-community-id-server');
-const { validationUserCommunitiesCommunityType } = require('../../../../../app/@database/user-communities/validations/community-type');
-const { validationGameCommunities_idsArrServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
+import { validationIP } from 'app/@validations/ip.js';
+import { validationBoolean } from 'app/@validations/boolean.js';
+
+import { validationUserCommunities_idServer } from 'app/@database/user-communities/validations/_id-server.js';
+import { validationUserCommunitiesName } from 'app/@database/user-communities/validations/name.js';
+import { validationUserCommunitiesDescription } from 'app/@database/user-communities/validations/description.js';
+import { validationUserCommunitiesDescriptionShort } from 'app/@database/user-communities/validations/description-short.js';
+import { validationUserCommunitiesUserCommunityIDServer } from 'app/@database/user-communities/validations/user-community-id-server.js';
+import { validationUserCommunitiesCommunityType } from 'app/@database/user-communities/validations/community-type.js';
+import { validationGameCommunities_idsArrServer } from 'app/@database/game-communities/validations/_id-server.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from 'app/@locales/locale.js';
+
+
 
 
 
@@ -76,21 +85,30 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
   const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage
+  });
   
   
   
@@ -150,8 +168,10 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (!req.isAuthenticated()) {
+      
       statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'fG0jzFl5Y', messageID: 'xLLNIpo6a' }] });
+      
     }
     
     
@@ -161,7 +181,8 @@ export default async (req, res) => {
     //   Validation
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: req.ip });
+    await validationIP({ throwError: true, value: ip });
+    
     await validationUserCommunities_idServer({ throwError: true, value: userCommunities_id });
     await validationUserCommunitiesName({ throwError: true, value: name });
     await validationUserCommunitiesDescription({ throwError: true, value: description });
@@ -436,11 +457,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: '_3Qu8jodI',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     
@@ -454,4 +478,19 @@ export default async (req, res) => {
   }
   
   
+};
+
+
+
+
+// --------------------------------------------------
+//   config
+// --------------------------------------------------
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '25mb',
+    },
+  },
 };

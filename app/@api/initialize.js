@@ -294,16 +294,18 @@ router.post('/db', upload.none(), async (req, res, next) => {
         historiesArr: [// アカウント開設日、goodボタン、フォーラム書き込み、募集書き込み、ゲーム登録、日記、経験値
           {
             _id: 'Hc-iVQxJ8',
-            updatedDate: '2018-01-01T00:00:00.000Z',
-            type: 'start',
+            createdDate: '2018-01-01T00:00:00.000Z',
+            updatedDate: ISO8601,
+            type: 'login',
             countDay: 0,
             countMonth: 0,
             countYear: 0,
-            countTotal: 1,
+            countTotal: 10,
           },
           
           {
             _id: 'Xt1Jny7Hb',
+            createdDate: ISO8601,
             updatedDate: ISO8601,
             type: 'good',
             countDay: 1,
@@ -314,26 +316,54 @@ router.post('/db', upload.none(), async (req, res, next) => {
           
           {
             _id: '-6rOeYCIj',
+            createdDate: ISO8601,
             updatedDate: ISO8601,
             type: 'forum',
-            countDay: 1,
-            countMonth: 10,
-            countYear: 20,
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
             countTotal: 30,
+          },
+          
+          {
+            _id: 'v-UWbg-ye',
+            createdDate: ISO8601,
+            updatedDate: ISO8601,
+            type: 'recruitment',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countTotal: 10,
           },
         ],
         achievementsArr: [
           {
             _id: 'pFJEn_2MO',
             createdDate: ISO8601,
-            achievements_id: 'MuK2dKVpn',
+            achievementID: 'MuK2dKVpn',
           },
           {
             _id: 'YpDpJ7mmb',
             createdDate: ISO8601,
-            achievements_id: 'IJY1y3P-M',
-          }
+            achievementID: '7YCic-Yds',
+          },
+          {
+            _id: 'LKm8tygA7',
+            createdDate: ISO8601,
+            achievementID: '8Fbta4f9O',
+          },
+          {
+            _id: 'r_LVp4Ljj',
+            createdDate: ISO8601,
+            achievementID: 'nFJYEhwWB',
+          },
+          {
+            _id: 'GiJ6qiPfY',
+            createdDate: ISO8601,
+            achievementID: 'NwzUOqsiC',
+          },
         ],
+        selectedArr: ['MuK2dKVpn', 'NwzUOqsiC', '8Fbta4f9O'],
       },
       
     ];
@@ -363,48 +393,59 @@ router.post('/db', upload.none(), async (req, res, next) => {
     saveArr = [
       
       {
-        _id: 'MuK2dKVpn',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
+        _id: 'V8iU147M5',
+        achievementID: 'MuK2dKVpn',
         urlID: 'MuK2dKVpn',
-        localesArr: [
-          {
-            _id: 'V8iU147M5',
-            language: 'ja',
-            name: 'エデンの民',
-          },
-        ],
-        countTarget: 1,
+        language: 'ja',
+        name: 'エデンの民',
+      },
+      
+      {
+        _id: '_Ww9RaIV_',
+        achievementID: '7YCic-Yds',
+        urlID: '7YCic-Yds',
+        language: 'ja',
+        name: '遊び人',
       },
       
       {
         _id: 'IJY1y3P-M',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        urlID: 'IJY1y3P-M',
-        localesArr: [
-          {
-            _id: 'XZvEFeFYM',
-            language: 'ja',
-            name: '遊び人',
-          },
-        ],
-        countTarget: 1,
+        achievementID: '8Fbta4f9O',
+        urlID: '8Fbta4f9O',
+        language: 'ja',
+        name: '人気者',
       },
       
       {
-        _id: 'IJY1y3P-M',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        urlID: 'IJY1y3P-M',
-        localesArr: [
-          {
-            _id: 'XZvEFeFYM',
-            language: 'ja',
-            name: '人気者',
-          },
-        ],
-        countTarget: 30,
+        _id: '0ZWN4xzR3',
+        achievementID: 'nFJYEhwWB',
+        urlID: 'nFJYEhwWB',
+        language: 'ja',
+        name: 'ポエマー',
+      },
+      
+      {
+        _id: 'wmLHDwuGx',
+        achievementID: 'k4xm8yGJD',
+        urlID: 'k4xm8yGJD',
+        language: 'ja',
+        name: '作家',
+      },
+      
+      {
+        _id: '5leI0G6XY',
+        achievementID: 'NwzUOqsiC',
+        urlID: 'NwzUOqsiC',
+        language: 'ja',
+        name: '書紀',
+      },
+      
+      {
+        _id: 'v7WDbcRyM',
+        achievementID: 'K9VWK8T0D',
+        urlID: 'K9VWK8T0D',
+        language: 'ja',
+        name: 'スパイス',
       },
       
     ];

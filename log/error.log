@@ -21,3 +21,4 @@
 {"level":"error","message":""}
 {"level":"error","message":""}
 {"level":"error","message":""}
+{"logID":"spjuOJ1OZ","date":"2020-07-30T08:37:23.899Z","endpointID":"CuUwo1avA","users_id":"","ip":"133.167.108.234","userAgent":"node-fetch/1.0 (+https://github.com/bitinn/node-fetch)","requestParametersObj":{"userID":"user1"},"errorsArr":[{"code":"spjuOJ1OZ","messageID":"Error"}],"level":"error","message":"$in requires an array as a second argument, found: missing"}

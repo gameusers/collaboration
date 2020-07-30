@@ -11,7 +11,7 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Node Packages
+//   Lodash
 // ---------------------------------------------
 
 const lodashGet = require('lodash/get');
@@ -22,7 +22,7 @@ const lodashSet = require('lodash/set');
 //   Model
 // ---------------------------------------------
 
-const Schema = require('./schema.js');
+const SchemaUsers = require('./schema.js');
 const SchemaFollows = require('../follows/schema.js');
 const SchemaCardPlayers = require('../card-players/schema.js');
 const SchemaEmailConfirmations = require('../email-confirmations/schema.js');
@@ -36,6 +36,8 @@ const SchemaWebPushes = require('../web-pushes/schema.js');
 
 const { formatImagesAndVideosArr, formatImagesAndVideosObj } = require('../images-and-videos/format.js');
 const { formatFollowsObj } = require('../follows/format.js');
+
+
 
 
 
@@ -72,7 +74,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await Schema.findOne(conditionObj).exec();
+    return await SchemaUsers.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -115,7 +117,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.find(conditionObj).exec();
+    return await SchemaUsers.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -157,7 +159,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.countDocuments(conditionObj).exec();
+    return await SchemaUsers.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -204,7 +206,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await SchemaUsers.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -246,7 +248,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await Schema.insertMany(saveArr);
+    return await SchemaUsers.insertMany(saveArr);
     
     
   } catch (err) {
@@ -289,7 +291,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await Schema.deleteMany(conditionObj);
+    return await SchemaUsers.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -336,6 +338,8 @@ const findOneForUser = async ({
     const country = lodashGet(localeObj, ['country'], '');
     
     
+    
+    
     // --------------------------------------------------
     //   Match Condition Array
     // --------------------------------------------------
@@ -346,22 +350,12 @@ const findOneForUser = async ({
       },
     ];
     
-    // if (userCommunities_id) {
-      
-    //   matchConditionArr = [
-    //     {
-    //       $match : { _id: userCommunities_id, users_id: loginUsers_id }
-    //     },
-    //   ];
-      
-    // }
-    
     
     // --------------------------------------------------
     //   Aggregation
     // --------------------------------------------------
     
-    const resultArr = await Schema.aggregate([
+    const resultArr = await SchemaUsers.aggregate([
       
       
       // --------------------------------------------------
@@ -379,26 +373,22 @@ const findOneForUser = async ({
         $lookup:
           {
             from: 'card-players',
-            let: { users_id: '$_id' },
+            let: { let_id: '$_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
                       { $eq: ['$language', language] },
-                      { $eq: ['$users_id', '$$users_id'] },
+                      { $eq: ['$users_id', '$$let_id'] },
                     ]
                   },
                 }
               },
-              
-              
               {
                 $project: {
                   name: 1,
                   status: 1,
-                  // name: '$nameObj.value',
-                  // status: '$statusObj.value',
                 }
               }
             ],
@@ -422,15 +412,17 @@ const findOneForUser = async ({
         $lookup:
           {
             from: 'images-and-videos',
-            let: { usersPagesObjImagesAndVideos_id: '$pagesObj.imagesAndVideos_id' },
+            let: { letImagesAndVideos_id: '$pagesObj.imagesAndVideos_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$usersPagesObjImagesAndVideos_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideos_id']
+                  }
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -458,13 +450,15 @@ const findOneForUser = async ({
         $lookup:
           {
             from: 'follows',
-            let: { users_id: '$_id' },
+            let: { let_id: '$_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$users_id', '$$users_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$users_id', '$$let_id']
+                  }
                 }
-              },
+              }
             ],
             as: 'followsObj'
           }
@@ -478,13 +472,108 @@ const findOneForUser = async ({
       },
       
       
-      { $project:
-        {
-          exp: 1,
+      // --------------------------------------------------
+      //   experiences
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'experiences',
+            let: { let_id: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$users_id', '$$let_id']
+                  }
+                }
+              },
+              
+              
+              // --------------------------------------------------
+              //   experiences / achievements
+              // --------------------------------------------------
+              
+              {
+                $lookup:
+                  {
+                    from: 'achievements',
+                    let: { letSelectedArr: '$selectedArr' },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $and: [
+                              { $eq: ['$language', language] },
+                              { $in: ['$achievementID', '$$letSelectedArr'] }
+                            ]
+                          },
+                        }
+                      },
+                      {
+                        $project: {
+                          _id: 0,
+                          achievementID: 1,
+                          urlID: 1,
+                          name: 1,
+                        }
+                      }
+                    ],
+                    as: 'achievementsArr'
+                  }
+              },
+              
+              // {
+              //   $unwind: {
+              //     path: '$achievementsObj',
+              //     preserveNullAndEmptyArrays: true,
+              //   }
+              // },
+              
+              
+              // --------------------------------------------------
+              //   $project
+              // --------------------------------------------------
+              
+              {
+                $project: {
+                  __v: 0,
+                  _id: 0,
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  // exp: 0,
+                  historiesArr: 0,
+                }
+              },
+              
+              
+            ],
+            as: 'experiencesObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$experiencesObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+      
+      {
+        $project: {
+          // exp: 1,
           cardPlayersObj: 1,
           pagesObj: 1,
           pagesImagesAndVideosObj: 1,
           followsObj: 1,
+          experiencesObj: 1,
         }
       },
       
@@ -527,6 +616,46 @@ const findOneForUser = async ({
     headerObj.followsObj = formatFollowsObj({ followsObj, adminUsers_id, loginUsers_id });
     
     
+    // --------------------------------------------------
+    //   experiences / achievements
+    // --------------------------------------------------
+    
+    const exp = lodashGet(returnObj, ['experiencesObj', 'exp'], 0);
+    const selectedArr = lodashGet(returnObj, ['experiencesObj', 'selectedArr'], []);
+    const tempAachievementsArr = lodashGet(returnObj, ['experiencesObj', 'achievementsArr'], []);
+    const achievementsArr = [];
+    
+    for (let achievementID of selectedArr.values()) {
+      
+      // console.log(achievementID);
+      
+      const obj = tempAachievementsArr.find((valueObj) => {
+        return valueObj.achievementID === achievementID;
+      });
+      
+      // const arr = tempAachievementsArr.filter((valueObj) => {
+      //   return valueObj.achievementID === achievementID;
+      // });
+      
+      // console.log(arr);
+      
+      achievementsArr.push({
+        
+        achievementID: lodashGet(obj, ['achievementID'], ''),
+        urlID: lodashGet(obj, ['urlID'], ''),
+        name: lodashGet(obj, ['name'], ''),
+        
+      });
+      
+    }
+    
+    // console.log(`
+    //   ----- tempAachievementsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(tempAachievementsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
     
     
     // --------------------------------------------------
@@ -535,7 +664,8 @@ const findOneForUser = async ({
     
     headerObj.users_id = returnObj._id;
     headerObj.type = 'ur';
-    headerObj.exp = lodashGet(returnObj, ['exp'], 0);
+    headerObj.exp = exp;
+    headerObj.achievementsArr = achievementsArr;
     headerObj.name = lodashGet(returnObj, ['cardPlayersObj', 'name'], '');
     headerObj.status = lodashGet(returnObj, ['cardPlayersObj', 'status'], '');
     
@@ -557,10 +687,10 @@ const findOneForUser = async ({
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/@database/users/model.js - findOneForUser
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /app/@database/users/model.js - findOneForUser
+    `);
     
     // console.log(chalk`
     //   userID: {green ${userID}}
@@ -579,11 +709,11 @@ const findOneForUser = async ({
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // --------------------------------------------------
@@ -629,7 +759,7 @@ const findOneForLoginUsersObj = async ({
     //   データ取得
     // --------------------------------------------------
     
-    const docUsersArr = await Schema.aggregate([
+    const docUsersArr = await SchemaUsers.aggregate([
       
       
       {
@@ -834,7 +964,7 @@ const transactionForEditAccount = async ({ usersConditionObj, usersSaveObj, emai
   //   Transaction / Session
   // --------------------------------------------------
   
-  const session = await Schema.startSession();
+  const session = await SchemaUsers.startSession();
   
   
   // --------------------------------------------------
@@ -855,10 +985,10 @@ const transactionForEditAccount = async ({ usersConditionObj, usersSaveObj, emai
     //   DB Insert
     // --------------------------------------------------
     
-    await Schema.updateOne(usersConditionObj, usersSaveObj, { session, upsert: true });
+    await SchemaUsers.updateOne(usersConditionObj, usersSaveObj, { session, upsert: true });
     await SchemaEmailConfirmations.updateOne(emailConfirmationsConditionObj, emailConfirmationsSaveObj, { session, upsert: true });
     
-    // await Schema.create(usersSaveArr, { session });
+    // await SchemaUsers.create(usersSaveArr, { session });
     // throw new Error('Dy16VjjQL');
     // throw new Error();
     // await SchemaCardPlayers.create(cardPlayersSaveArr, { session: session });
@@ -994,7 +1124,7 @@ const transactionForUpsert = async ({
   //   Transaction / Session
   // --------------------------------------------------
   
-  const session = await Schema.startSession();
+  const session = await SchemaUsers.startSession();
   
   
   
@@ -1019,7 +1149,7 @@ const transactionForUpsert = async ({
     //   users
     // --------------------------------------------------
     
-    await Schema.updateOne(usersConditionObj, usersSaveObj, { session, upsert: true });
+    await SchemaUsers.updateOne(usersConditionObj, usersSaveObj, { session, upsert: true });
     
     
     

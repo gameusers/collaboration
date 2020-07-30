@@ -12,17 +12,10 @@ const mongoose = require('mongoose');
 const schema = mongoose.Schema({
   
   _id: { type: String, required: true },
-  createdDate: { type: Date, required: true },
-  updatedDate: { type: Date, required: true },
+  achievementID: { type: String, required: true },
   urlID: { type: String, required: true },
-  localesArr: [
-    {
-      _id: { type: String, required: true },
-      language: { type: String, enum: ['en', 'ja'] },
-      name: { type: String, required: true },
-    }
-  ],
-  countTarget: { type: Number, required: true },
+  language: { type: String, enum: ['en', 'ja'], required: true },
+  name: { type: String, required: true },
   
 });
 
@@ -34,13 +27,9 @@ const schema = mongoose.Schema({
 let model = '';
 
 if (mongoose.models.games) {
-  
   model = mongoose.model('achievements');
-  
 } else {
-  
   model = mongoose.model('achievements', schema);
-  
 }
 
 module.exports = model;

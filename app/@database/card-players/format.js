@@ -75,7 +75,7 @@ const formatCardPlayersArr = ({
     //   Property
     // --------------------------------------------------
     
-    const exp = lodashGet(valueObj, ['exp'], 0);
+    const exp = lodashGet(valueObj, ['experiencesObj', 'exp'], 0);
     const accessDate = lodashGet(valueObj, ['accessDate'], '');
     const userID = lodashGet(valueObj, ['userID'], '');
     

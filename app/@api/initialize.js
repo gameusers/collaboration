@@ -392,6 +392,24 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     saveArr = [
       
+      // {
+      //   _id: 'V8iU147M5',
+      //   achievementID: 'MuK2dKVpn',
+      //   urlID: 'MuK2dKVpn',
+        
+        
+      //   localesArr: [
+      //     {
+      //       _id: 'qFJnYnMDA',
+      //       language: 'ja',
+      //       name: 'エデンの民',
+      //     },
+      //   ],
+      //   countTarget: 1,
+      // },
+      
+      
+      
       {
         _id: 'V8iU147M5',
         achievementID: 'MuK2dKVpn',

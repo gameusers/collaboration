@@ -33,6 +33,13 @@ import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
+
+
+// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
@@ -41,20 +48,11 @@ import HeroImage from 'app/common/layout/v2/header/hero-image.js';
 import HeaderNavMain from 'app/common/layout/v2/header/nav-main.js';
 import Sidebar from 'app/common/layout/v2/sidebar.js';
 import Footer from 'app/common/layout/v2/footer.js';
-
-// import Drawer from 'app/common/layout/components/drawer.js';
-// import CardPlayerDialog from 'app/common/card/player/components/dialog.js';
 import Dialog from 'app/common/layout/v2/dialog.js';
 import VideoModal from 'app/common/image-and-video/v2/video-modal.js';
 import Snackbar from 'app/common/layout/v2/snackbar.js';
 import Loading from 'app/common/layout/v2/loading.js';
-
-
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateLayout } from 'app/@states/layout.js';
+import DialogAchievement from 'app/common/layout/v2/dialog-achievement.js';
 
 
 
@@ -114,8 +112,8 @@ const Component = (props) => {
   const [lowerNavMain, setLowerNavMain] = useState(false);
   const [lowerSidebar, setLowerSidebar] = useState(false);
   const [heroImageHeight, setHeroImageHeight] = useState(640);
-  
   const [scrollToEnd, setScrollToEnd] = useState(true);
+  const [dialogAchievementOpen, setDialogAchievementOpen] = useState(false);
   
   
   useEffect(() => {
@@ -261,7 +259,7 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/layout/v2/components/layout.js
+  //   /app/common/layout/v2/layout.js
   // `);
   
   // console.log(`
@@ -300,6 +298,7 @@ const Component = (props) => {
           heroImageHeight={heroImageHeight}
           scrollToEnd={scrollToEnd}
           setScrollToEnd={setScrollToEnd}
+          setDialogAchievementOpen={setDialogAchievementOpen}
         />
       }
       
@@ -414,6 +413,13 @@ const Component = (props) => {
       
       {/* ダイアログ */}
       <Dialog />
+      
+      
+      {/* ダイアログ - 実績 */}
+      <DialogAchievement
+        dialogAchievementOpen={dialogAchievementOpen}
+        setDialogAchievementOpen={setDialogAchievementOpen}
+      />
       
       
       {/* 動画表示用モーダル */}

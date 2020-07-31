@@ -14,8 +14,6 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import SimpleIcons from 'simple-icons-react-component';
-
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
@@ -31,15 +29,15 @@ import lodashGet from 'lodash/get';
 //   Material UI
 // ---------------------------------------------
 
-import Avatar from '@material-ui/core/Avatar';
+// import Avatar from '@material-ui/core/Avatar';
 
 
 // ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
 
-import IconGrade from '@material-ui/icons/Grade';
-import IconPC from '@material-ui/icons/LaptopMac';
+// import IconGrade from '@material-ui/icons/Grade';
+// import IconPC from '@material-ui/icons/LaptopMac';
 
 
 
@@ -117,6 +115,15 @@ const Component = (props) => {
     
     colorLine = 'background-image: linear-gradient(135deg, #704308 0%, #ffce08 40%, #e1ce08 60%, #704308 100%);';
     colorText = 'background-image: linear-gradient(135deg, #b8751e 0%, #ffce08 37%, #fefeb2 47%, #fafad6 50%, #fefeb2 53%, #e1ce08 63%, #b8751e 100%);';
+    
+    
+  // ---------------------------------------------
+  //   遊び人
+  // ---------------------------------------------
+    
+  } else if (achievementID === '7YCic-Yds') {
+    
+    colorLine = colorText = 'background-image: linear-gradient(25deg, #f80014, #ff7a4f, #ffbd8b, #fcfccb);';
     
     
   // ---------------------------------------------
@@ -245,16 +252,16 @@ const Component = (props) => {
   //   console.log
   // --------------------------------------------------
   
-  console.log(`
-    ----------------------------------------\n
-    /app/common/achievement/v2/chip.js
-  `);
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /app/common/achievement/v2/chip.js
+  // `);
   
-  console.log(chalk`
-    achievementID: {green ${achievementID}}
-    urlID: {green ${urlID}}
-    name: {green ${name}}
-  `);
+  // console.log(chalk`
+  //   achievementID: {green ${achievementID}}
+  //   urlID: {green ${urlID}}
+  //   name: {green ${name}}
+  // `);
   
   // console.log(`
   //   ----- gamesImagesAndVideosThumbnailObj -----\n

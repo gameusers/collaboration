@@ -15,7 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect, useContext } from 'react';
-import moment from 'moment';
+// import moment from 'moment';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -102,113 +102,6 @@ const cssTitleClosed = css`
 `;
 
 
-// --------------------------------------------------
-//   Gold
-//   参考：https://jajaaan.co.jp/css/css-headline/
-// --------------------------------------------------
-
-const cssLineGold = css`
-  color: #fff;
-  font-weight: bold;
-  background: #000;
-  
-  position: relative;
-  -webkit-box-shadow: 0 2px 14px rgba(0, 0, 0, .1);
-  box-shadow: 0 2px 14px rgba(0, 0, 0, .1);
-  
-  &:before {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    content: '';
-    background-image: -webkit-linear-gradient(315deg, #704308 0%, #ffce08 40%, #e1ce08 60%, #704308 100%);
-    background-image: linear-gradient(135deg, #704308 0%, #ffce08 40%, #e1ce08 60%, #704308 100%);
-  }
-  
-  &:after {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    content: '';
-    background-image: -webkit-linear-gradient(315deg, #704308 0%, #ffce08 40%, #e1ce08 60%, #704308 100%);
-    background-image: linear-gradient(135deg, #704308 0%, #ffce08 40%, #e1ce08 60%, #704308 100%);
-  }
-  
-  margin: 0 0 0 12px;
-  padding: 0 4px;
-`;
-
-const cssTextGold = css`
-  background-image: -webkit-linear-gradient(315deg, #b8751e 0%, #ffce08 37%, #fefeb2 47%, #fafad6 50%, #fefeb2 53%, #e1ce08 63%, #b8751e 100%);
-  background-image: linear-gradient(135deg, #b8751e 0%, #ffce08 37%, #fefeb2 47%, #fafad6 50%, #fefeb2 53%, #e1ce08 63%, #b8751e 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-`;
-
-
-// --------------------------------------------------
-//   Red
-// --------------------------------------------------
-
-const cssLineRed = css`
-  color: #fff;
-  font-weight: bold;
-  background: #000;
-  
-  position: relative;
-  box-shadow: 0 2px 14px rgba(0, 0, 0, .1);
-  
-  &:before {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    content: '';
-    background-image: linear-gradient(25deg, #f80014, #ff7a4f, #ffbd8b, #fcfccb);
-    // background-image: linear-gradient(25deg, #7a19fb, #705ffc, #588cfd, #00b4fd);
-    // background-image: linear-gradient(25deg, #5447ff, #5678ff, #49a4ff, #01cfff);
-    // background-image: linear-gradient(25deg, #b8421c, #d16d1c, #e89618, #ffbf0c);
-    // background-image: linear-gradient(25deg, #ff2268, #df8e6f, #abca76, #1aff7d);
-    // background-image: linear-gradient(25deg, #e36976, #eb9582, #f0bd8e, #f2e59a)
-  }
-  
-  &:after {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    content: '';
-    background-image: linear-gradient(25deg, #f80014, #ff7a4f, #ffbd8b, #fcfccb);
-    // background-image: linear-gradient(25deg, #7a19fb, #705ffc, #588cfd, #00b4fd);
-    // background-image: linear-gradient(25deg, #5447ff, #5678ff, #49a4ff, #01cfff);
-    // background-image: linear-gradient(25deg, #b8421c, #d16d1c, #e89618, #ffbf0c);
-    // background-image: linear-gradient(25deg, #ff2268, #df8e6f, #abca76, #1aff7d);
-    // background-image: linear-gradient(25deg, #e36976, #eb9582, #f0bd8e, #f2e59a)
-  }
-  
-  margin: 0 0 0 12px;
-  padding: 0 4px;
-`;
-
-const cssTextRed = css`
-  background-image: linear-gradient(25deg, #f80014, #ff7a4f, #ffbd8b, #fcfccb);
-  // background-image: linear-gradient(25deg, #7a19fb, #705ffc, #588cfd, #00b4fd);
-  // background-image: linear-gradient(25deg, #5447ff, #5678ff, #49a4ff, #01cfff);
-  // background-image: linear-gradient(25deg, #b8421c, #d16d1c, #e89618, #ffbf0c);
-  // background-image: linear-gradient(25deg, #ff2268, #df8e6f, #abca76, #1aff7d);
-  // background-image: linear-gradient(25deg, #e36976, #eb9582, #f0bd8e, #f2e59a)
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-`;
-
-
-
 
 
 
@@ -260,6 +153,7 @@ const Component = (props) => {
   const followsObj = lodashGet(headerObj, ['followsObj'], {});
   const followCount = lodashGet(headerObj, ['followsObj', 'followCount'], 0);
   const followedCount = lodashGet(headerObj, ['followsObj', 'followedCount'], 0);
+  const admin = lodashGet(followsObj, ['admin'], false);
   
   
   
@@ -429,9 +323,8 @@ const Component = (props) => {
             css={css`
               display: flex;
               flex-flow: row wrap;
-              margin: 12px 6px 0;
+              ${admin ? 'margin: 12px 6px 8px;' : 'margin: 12px 6px 0;'}
             `}
-            
           >
             
             {componentAchievementsArr}

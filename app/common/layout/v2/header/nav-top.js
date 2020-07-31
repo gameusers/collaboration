@@ -57,6 +57,7 @@ import IconNotifications from '@material-ui/icons/Notifications';
 import IconSearch from '@material-ui/icons/Search';
 import IconPerson from '@material-ui/icons/Person';
 import IconEject from '@material-ui/icons/Eject';
+import IconAchievement from '@material-ui/icons/EmojiEvents';
 
 
 // ---------------------------------------------
@@ -64,7 +65,6 @@ import IconEject from '@material-ui/icons/Eject';
 // ---------------------------------------------
 
 import { ContainerStateUser } from 'app/@states/user.js';
-// import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 
@@ -164,6 +164,7 @@ const Component = (props) => {
     heroImageHeight,
     scrollToEnd,
     setScrollToEnd,
+    setDialogAchievementOpen,
     
   } = props;
   
@@ -175,7 +176,31 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const classes = useStyles();
+  
   const [loginMenuOpen, setLoginMenuOpen] = useState(false);
+  
+  
+  useEffect(() => {
+    
+    
+    // console.log(chalk`
+    //   useEffect
+    //   scrollToEnd: {green ${scrollToEnd}}
+    // `);
+    
+    
+    // ---------------------------------------------
+    //   EventListener: scroll
+    // ---------------------------------------------
+    
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+    
+    
+  }, [heroImageHeight, scrollToEnd]);
   
   
   
@@ -189,13 +214,6 @@ const Component = (props) => {
   const { login, loginUsersObj } = stateUser;
   
   
-  // console.log(chalk`
-  //   Component
-  //   scrollToEnd: {green ${scrollToEnd}}
-  // `);
-  
-  
-  
   
   
   // --------------------------------------------------
@@ -204,7 +222,6 @@ const Component = (props) => {
   
   let scrollYOffset = 0;
   const navTopHeight = 53;
-  // const navMainHeight = 36;
   
   
   const handleScroll = useCallback(lodashThrottle(() => {
@@ -356,27 +373,12 @@ const Component = (props) => {
   
   
   
-  useEffect(() => {
+  const handleDialogOpen = () => {
     
+    setDialogAchievementOpen(true);
+    setLoginMenuOpen(false);
     
-    // console.log(chalk`
-    //   useEffect
-    //   scrollToEnd: {green ${scrollToEnd}}
-    // `);
-    
-    
-    // ---------------------------------------------
-    //   EventListener: scroll
-    // ---------------------------------------------
-    
-    window.addEventListener('scroll', handleScroll);
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-    
-    
-  }, [heroImageHeight, scrollToEnd]);
+  };
   
   
   
@@ -408,7 +410,7 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/layout/v2/components/header/nav-top.js
+  //   /app/common/layout/v2/header/nav-top.js
   // `);
   
   // console.log(chalk`
@@ -517,7 +519,7 @@ const Component = (props) => {
         
         
         
-        {/*  右寄せ（検索フォームを非表示にした場合、代わりにこのタグで右寄せにしている） */}
+        {/* 右寄せ（検索フォームを非表示にした場合、代わりにこのタグで右寄せにしている） */}
         <div
           css={css`
             display: flex;
@@ -597,14 +599,19 @@ const Component = (props) => {
         >
           
           
-          <MenuItem onClick={() => setLoginMenuOpen(false)}>
+          {/* ユーザー */}
+          <MenuItem
+            onClick={() => setLoginMenuOpen(false)}
+          >
             
             <ListItemIcon>
               <IconPerson />
             </ListItemIcon>
             
             
-            <Link href={`/ur/[userID]/index?userID=${userID}`} as={`/ur/${userID}`}>
+            <Link
+              href={`/ur/[userID]/index?userID=${userID}`} as={`/ur/${userID}`}
+            >
               <a
                 css={css`
                   color: black;
@@ -631,14 +638,43 @@ const Component = (props) => {
           
           
           
-          <MenuItem onClick={() => setLoginMenuOpen(false)}>
+          {/* 実績 */}
+          <MenuItem
+            onClick={() => handleDialogOpen()}
+          >
+            
+            <ListItemIcon>
+              <IconAchievement />
+            </ListItemIcon>
+            
+            
+            <ListItemText
+              css={css`
+                && {
+                  margin: 0 8px 0 0;
+                }
+              `}
+              primary="実績"
+            />
+            
+          </MenuItem>
+          
+          
+          
+          
+          {/* ログアウト */}
+          <MenuItem
+            onClick={() => setLoginMenuOpen(false)}
+          >
             
             <ListItemIcon>
               <IconEject />
             </ListItemIcon>
             
             
-            <Link href="/logout">
+            <Link
+              href="/logout"
+            >
               <a
                 css={css`
                   color: black;

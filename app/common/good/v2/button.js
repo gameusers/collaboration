@@ -25,7 +25,6 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-// import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
@@ -156,7 +155,7 @@ const Component = (props) => {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/common/good/v2/components/button.js - handleSubmit
+      //   /app/common/good/v2/button.js - handleSubmit
       // `);
       
       // console.log(chalk`
@@ -235,8 +234,10 @@ const Component = (props) => {
       // ---------------------------------------------
       
       handleSnackbarOpen({
+        
         variant: 'error',
         errorObj,
+        
       });
       
       
@@ -264,7 +265,7 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/good/v2/components/button.js
+  //   /app/common/good/v2/button.js
   // `);
   
   // console.log(chalk`

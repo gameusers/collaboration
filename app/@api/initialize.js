@@ -32,6 +32,7 @@ const moment = require('moment');
 const SchemaUsers = require('../@database/users/model');
 const SchemaExperiences = require('../@database/experiences/model');
 const SchemaAchievements = require('../@database/achievements/model');
+const SchemaTitles = require('../@database/titles/model');
 const SchemaGames = require('../@database/games/model');
 const SchemaIDs = require('../@database/ids/model');
 const SchemaCardPlayers = require('../@database/card-players/model');
@@ -291,12 +292,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         exp: 999,
-        historiesArr: [// アカウント開設日、goodボタン、フォーラム書き込み、募集書き込み、ゲーム登録、日記、経験値
+        achievementsArr: [// アカウント開設日、goodボタン、フォーラム書き込み、募集書き込み、ゲーム登録、日記、経験値
           {
             _id: 'Hc-iVQxJ8',
             createdDate: '2018-01-01T00:00:00.000Z',
             updatedDate: ISO8601,
-            type: 'login',
+            type: 'login-count',
             countDay: 0,
             countMonth: 0,
             countYear: 0,
@@ -307,7 +308,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
             _id: 'Xt1Jny7Hb',
             createdDate: ISO8601,
             updatedDate: ISO8601,
-            type: 'good',
+            type: 'good-count-click',
             countDay: 1,
             countMonth: 10,
             countYear: 20,
@@ -318,7 +319,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
             _id: '-6rOeYCIj',
             createdDate: ISO8601,
             updatedDate: ISO8601,
-            type: 'forum',
+            type: 'forum-count-post',
             countDay: 0,
             countMonth: 0,
             countYear: 0,
@@ -329,41 +330,41 @@ router.post('/db', upload.none(), async (req, res, next) => {
             _id: 'v-UWbg-ye',
             createdDate: ISO8601,
             updatedDate: ISO8601,
-            type: 'recruitment',
+            type: 'recruitment-count-post',
             countDay: 0,
             countMonth: 0,
             countYear: 0,
             countTotal: 10,
           },
         ],
-        achievementsArr: [
+        titlesArr: [
           {
             _id: 'pFJEn_2MO',
             createdDate: ISO8601,
-            achievementID: 'MuK2dKVpn',
+            titles_id: 'MuK2dKVpn',
           },
           {
             _id: 'YpDpJ7mmb',
             createdDate: ISO8601,
-            achievementID: '7YCic-Yds',
+            titles_id: '7YCic-Yds',
           },
           {
             _id: 'LKm8tygA7',
             createdDate: ISO8601,
-            achievementID: '8Fbta4f9O',
+            titles_id: '8Fbta4f9O',
           },
           {
             _id: 'r_LVp4Ljj',
             createdDate: ISO8601,
-            achievementID: 'nFJYEhwWB',
+            titles_id: 'nFJYEhwWB',
           },
           {
             _id: 'GiJ6qiPfY',
             createdDate: ISO8601,
-            achievementID: 'NwzUOqsiC',
+            titles_id: 'NwzUOqsiC',
           },
         ],
-        selectedArr: ['MuK2dKVpn', 'NwzUOqsiC', '8Fbta4f9O'],
+        titles_idsArr: ['MuK2dKVpn', 'NwzUOqsiC', '8Fbta4f9O'],
       },
       
     ];
@@ -375,9 +376,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     await SchemaExperiences.deleteMany({ reset: true });
     returnObj = await SchemaExperiences.insertMany({ saveArr });
-    
-    
-    //達成条件、翻訳、他コレクションへのurlIDの追加
     
     
     
@@ -392,75 +390,315 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     saveArr = [
       
-      // {
-      //   _id: 'V8iU147M5',
-      //   achievementID: 'MuK2dKVpn',
-      //   urlID: 'MuK2dKVpn',
-        
-        
-      //   localesArr: [
-      //     {
-      //       _id: 'qFJnYnMDA',
-      //       language: 'ja',
-      //       name: 'エデンの民',
-      //     },
-      //   ],
-      //   countTarget: 1,
-      // },
-      
-      
-      
       {
         _id: 'V8iU147M5',
-        achievementID: 'MuK2dKVpn',
+        type: 'good-count-click',
+        conditionsArr: [
+          {
+            _id: 'E1euCTkWl',
+            titles_id: '7YCic-Yds',
+            datetime: '',
+            count: 1,
+          },
+          {
+            _id: 'MxvcTJcnp',
+            titles_id: 'p-XWgcOtK',
+            datetime: '',
+            count: 5,
+          },
+          {
+            _id: '9yR48O2uq',
+            titles_id: '8Fbta4f9O',
+            datetime: '',
+            count: 10,
+          },
+          {
+            _id: 'rC8aaBIm3',
+            titles_id: 'g65dAP992',
+            datetime: '',
+            count: 50,
+          },
+          {
+            _id: 'aQ1RZ2-y6',
+            titles_id: 'Lcqo1Q7Up',
+            datetime: '',
+            count: 100,
+          },
+          {
+            _id: 'lCtOeCTaG',
+            titles_id: '8Z3SDtXgN',
+            datetime: '',
+            count: 200,
+          },
+          {
+            _id: 'T48vRrIDx',
+            titles_id: 'wQ-ywcRpP',
+            datetime: '',
+            count: 300,
+          },
+          {
+            _id: 'KVfmGZ6xb',
+            titles_id: 'DrgkgbsbH',
+            datetime: '',
+            count: 400,
+          },
+          {
+            _id: 'a9LQjhgWy',
+            titles_id: 'Rb-hOZVrb',
+            datetime: '',
+            count: 500,
+          },
+        ],
+        
+      },
+      
+      {
+        _id: 'ZgsxDaKaN',
+        type: 'forum-count-post',
+        conditionsArr: [
+          {
+            _id: 'L7kIcm4ny',
+            titles_id: 'nFJYEhwWB',
+            datetime: '',
+            count: 1,
+          },
+          {
+            _id: 'qvhczmNDa',
+            titles_id: 'k4xm8yGJD',
+            datetime: '',
+            count: 5,
+          },
+          {
+            _id: '5CwxDvHtR',
+            titles_id: 'ljIghwR69',
+            datetime: '',
+            count: 10,
+          },
+          {
+            _id: 'mSwdldpkC',
+            titles_id: 'WJlkVSLub',
+            datetime: '',
+            count: 20,
+          },
+          {
+            _id: 'DYqIyGTOj',
+            titles_id: '349Q_q5h8',
+            datetime: '',
+            count: 30,
+          },
+          {
+            _id: 'Qzr2FZS1u',
+            titles_id: 'rIK64YljB',
+            datetime: '',
+            count: 40,
+          },
+          {
+            _id: 'pAK_y84br',
+            titles_id: 'DQ9iH_r31',
+            datetime: '',
+            count: 50,
+          },
+          {
+            _id: 'BwgfIetVr',
+            titles_id: 'RTMuPDYkt',
+            datetime: '',
+            count: 60,
+          },
+          // {
+          //   _id: 'P7eX2W7wU',
+          //   titles_id: '',
+          //   datetime: '',
+          //   count: 70,
+          // },
+        ],
+        
+      },
+      //'2018-01-01T00:00:00.000Z'
+      
+      
+      
+      
+    ];
+    
+    
+    // ---------------------------------------------
+    //   Upsert
+    // ---------------------------------------------
+    
+    await SchemaAchievements.deleteMany({ reset: true });
+    returnObj = await SchemaAchievements.insertMany({ saveArr });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB / Titles
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Save Object
+    // ---------------------------------------------
+    
+    saveArr = [
+      
+      {
+        _id: 'MuK2dKVpn',
         urlID: 'MuK2dKVpn',
         language: 'ja',
         name: 'エデンの民',
       },
       
+      
+      // ---------------------------------------------
+      //   good-count-click
+      // ---------------------------------------------
+      
       {
-        _id: '_Ww9RaIV_',
-        achievementID: '7YCic-Yds',
+        _id: '7YCic-Yds',
         urlID: '7YCic-Yds',
         language: 'ja',
         name: '遊び人',
       },
       
       {
-        _id: 'IJY1y3P-M',
-        achievementID: '8Fbta4f9O',
+        _id: 'p-XWgcOtK',
+        urlID: 'p-XWgcOtK',
+        language: 'ja',
+        name: 'ピエロ',
+      },
+      
+      {
+        _id: '8Fbta4f9O',
         urlID: '8Fbta4f9O',
         language: 'ja',
         name: '人気者',
       },
       
       {
-        _id: '0ZWN4xzR3',
-        achievementID: 'nFJYEhwWB',
+        _id: 'g65dAP992',
+        urlID: 'g65dAP992',
+        language: 'ja',
+        name: 'アイドル',
+      },
+      
+      {
+        _id: 'Lcqo1Q7Up',
+        urlID: 'Lcqo1Q7Up',
+        language: 'ja',
+        name: 'スーパースター',
+      },
+      
+      {
+        _id: '8Z3SDtXgN',
+        urlID: '8Z3SDtXgN',
+        language: 'ja',
+        name: '教祖様',
+      },
+      
+      {
+        _id: 'wQ-ywcRpP',
+        urlID: 'wQ-ywcRpP',
+        language: 'ja',
+        name: 'カリスマ',
+      },
+      
+      {
+        _id: 'DrgkgbsbH',
+        urlID: 'DrgkgbsbH',
+        language: 'ja',
+        name: '預言者',
+      },
+      
+      {
+        _id: 'Rb-hOZVrb',
+        urlID: 'Rb-hOZVrb',
+        language: 'ja',
+        name: '救世主',
+      },
+      
+      
+      // ---------------------------------------------
+      //   forum-count-post
+      // ---------------------------------------------
+      
+      {
+        _id: 'nFJYEhwWB',
         urlID: 'nFJYEhwWB',
         language: 'ja',
         name: 'ポエマー',
       },
       
       {
-        _id: 'wmLHDwuGx',
-        achievementID: 'k4xm8yGJD',
+        _id: 'k4xm8yGJD',
         urlID: 'k4xm8yGJD',
         language: 'ja',
         name: '作家',
       },
       
       {
-        _id: '5leI0G6XY',
-        achievementID: 'NwzUOqsiC',
+        _id: 'ljIghwR69',
+        urlID: 'ljIghwR69',
+        language: 'ja',
+        name: '文豪',
+      },
+      
+      {
+        _id: 'WJlkVSLub',
+        urlID: 'WJlkVSLub',
+        language: 'ja',
+        name: '表現者',
+      },
+      
+      {
+        _id: '349Q_q5h8',
+        urlID: '349Q_q5h8',
+        language: 'ja',
+        name: 'ネゴシエイター',
+      },
+      
+      {
+        _id: 'rIK64YljB',
+        urlID: 'rIK64YljB',
+        language: 'ja',
+        name: '魔導書の書き手',
+      },
+      
+      {
+        _id: 'DQ9iH_r31',
+        urlID: 'DQ9iH_r31',
+        language: 'ja',
+        name: '悪魔の筆',
+      },
+      
+      {
+        _id: 'RTMuPDYkt',
+        urlID: 'RTMuPDYkt',
+        language: 'ja',
+        name: 'ヴォイニッチ手稿',
+      },
+      
+      
+      // {
+      //   _id: '',
+      //   urlID: '',
+      //   language: 'ja',
+      //   name: '',
+      // },
+      
+      
+      // ---------------------------------------------
+      //   recruitment-count-post
+      // ---------------------------------------------
+      
+      {
+        _id: 'NwzUOqsiC',
         urlID: 'NwzUOqsiC',
         language: 'ja',
         name: '書紀',
       },
       
       {
-        _id: 'v7WDbcRyM',
-        achievementID: 'K9VWK8T0D',
+        _id: 'K9VWK8T0D',
         urlID: 'K9VWK8T0D',
         language: 'ja',
         name: 'スパイス',
@@ -473,8 +711,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   Upsert
     // ---------------------------------------------
     
-    await SchemaAchievements.deleteMany({ reset: true });
-    returnObj = await SchemaAchievements.insertMany({ saveArr });
+    await SchemaTitles.deleteMany({ reset: true });
+    returnObj = await SchemaTitles.insertMany({ saveArr });
     
     
     

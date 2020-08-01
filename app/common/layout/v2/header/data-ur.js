@@ -14,7 +14,7 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 // import moment from 'moment';
 
 /** @jsx jsx */
@@ -48,7 +48,7 @@ import IconKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 //   Components
 // ---------------------------------------------
 
-import AchievementChip from 'app/common/achievement/v2/chip.js';
+import TitleChip from 'app/common/title/v2/chip.js';
 import FollowButton from 'app/common/follow/v2/follow-button.js';
 
 
@@ -147,7 +147,7 @@ const Component = (props) => {
   const level = Math.floor(exp / 10);
   const tnl = 10 - (exp % 10);
   
-  const achievementsArr = lodashGet(headerObj, ['achievementsArr'], []);
+  const titlesArr = lodashGet(headerObj, ['titlesArr'], []);
   
   const users_id = lodashGet(headerObj, ['users_id'], '');
   const followsObj = lodashGet(headerObj, ['followsObj'], {});
@@ -211,12 +211,12 @@ const Component = (props) => {
   
   const componentAchievementsArr = [];
   
-  for (const [index, valueObj] of achievementsArr.entries()) {
+  for (const [index, valueObj] of titlesArr.entries()) {
     
     componentAchievementsArr.push(
-      <AchievementChip
+      <TitleChip
         key={index}
-        achievementID={valueObj.achievementID}
+        _id={valueObj._id}
         urlID={valueObj.urlID}
         name={valueObj.name}
       />

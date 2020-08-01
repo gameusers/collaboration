@@ -65,6 +65,15 @@ import IconAchievement from '@material-ui/icons/EmojiEvents';
 // ---------------------------------------------
 
 import { ContainerStateUser } from 'app/@states/user.js';
+import { ContainerStateLayout } from 'app/@states/layout.js';
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 
@@ -164,7 +173,6 @@ const Component = (props) => {
     heroImageHeight,
     scrollToEnd,
     setScrollToEnd,
-    setDialogAchievementOpen,
     
   } = props;
   
@@ -181,12 +189,6 @@ const Component = (props) => {
   
   
   useEffect(() => {
-    
-    
-    // console.log(chalk`
-    //   useEffect
-    //   scrollToEnd: {green ${scrollToEnd}}
-    // `);
     
     
     // ---------------------------------------------
@@ -210,8 +212,22 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const stateUser = ContainerStateUser.useContainer();
+  const stateLayout = ContainerStateLayout.useContainer();
   
   const { login, loginUsersObj } = stateUser;
+  
+  const {
+    
+    handleSnackbarOpen,
+    handleLoadingOpen,
+    handleLoadingClose,
+    // handleScrollTo,
+    // dialogAchievementOpen,
+    setDialogAchievementOpen,
+    // dialogAchievementObj,
+    setDialogAchievementObj,
+    
+  } = stateLayout;
   
   
   
@@ -224,6 +240,9 @@ const Component = (props) => {
   const navTopHeight = 53;
   
   
+  /**
+   * スクロール時の処理
+   */
   const handleScroll = useCallback(lodashThrottle(() => {
     
     
@@ -373,10 +392,132 @@ const Component = (props) => {
   
   
   
-  const handleDialogOpen = () => {
+  /**
+   * 実績ダイアログを開く - 編集用データを読み込む
+   */
+  const handleDialogAchievementOpen = async () => {
     
-    setDialogAchievementOpen(true);
-    setLoginMenuOpen(false);
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Loading Open
+      // ---------------------------------------------
+      
+      handleLoadingOpen({});
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Scroll To
+      // ---------------------------------------------
+      
+      // handleScrollTo({
+        
+      //   to: cardPlayers_id,
+      //   duration: 0,
+      //   delay: 0,
+      //   smooth: 'easeInOutQuart',
+      //   offset: -50,
+        
+      // });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formDataObj = {};
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      const resultObj = await fetchWrapper({
+        
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/achievements/get-edit-data`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
+        
+      });
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Set Form Data
+      // ---------------------------------------------
+      
+      setDialogAchievementObj(lodashGet(resultObj, ['data'], {}));
+      
+      
+      // ---------------------------------------------
+      //   Dialog Open
+      // ---------------------------------------------
+      
+      setDialogAchievementOpen(true);
+      setLoginMenuOpen(false);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/layout/v2/header/nav-top.js - handleGetEditData
+      // `);
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      handleSnackbarOpen({
+        
+        variant: 'error',
+        errorObj,
+        
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
+      
+      handleLoadingClose();
+      
+      
+    }
+    
     
   };
   
@@ -640,7 +781,7 @@ const Component = (props) => {
           
           {/* 実績 */}
           <MenuItem
-            onClick={() => handleDialogOpen()}
+            onClick={() => handleDialogAchievementOpen()}
           >
             
             <ListItemIcon>

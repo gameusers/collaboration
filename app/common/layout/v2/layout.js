@@ -113,7 +113,6 @@ const Component = (props) => {
   const [lowerSidebar, setLowerSidebar] = useState(false);
   const [heroImageHeight, setHeroImageHeight] = useState(640);
   const [scrollToEnd, setScrollToEnd] = useState(true);
-  const [dialogAchievementOpen, setDialogAchievementOpen] = useState(false);
   
   
   useEffect(() => {
@@ -298,7 +297,6 @@ const Component = (props) => {
           heroImageHeight={heroImageHeight}
           scrollToEnd={scrollToEnd}
           setScrollToEnd={setScrollToEnd}
-          setDialogAchievementOpen={setDialogAchievementOpen}
         />
       }
       
@@ -416,10 +414,7 @@ const Component = (props) => {
       
       
       {/* ダイアログ - 実績 */}
-      <DialogAchievement
-        dialogAchievementOpen={dialogAchievementOpen}
-        setDialogAchievementOpen={setDialogAchievementOpen}
-      />
+      <DialogAchievement />
       
       
       {/* 動画表示用モーダル */}

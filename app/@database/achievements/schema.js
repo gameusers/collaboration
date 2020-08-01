@@ -12,10 +12,15 @@ const mongoose = require('mongoose');
 const schema = mongoose.Schema({
   
   _id: { type: String, required: true },
-  achievementID: { type: String, required: true },
-  urlID: { type: String, required: true },
-  language: { type: String, enum: ['en', 'ja'], required: true },
-  name: { type: String, required: true },
+  type: { type: String, enum: ['level-count', 'account-datetime', 'login-count', 'good-count-click', 'good-count-clicked', 'forum-count-post', 'recruitment-count-post', 'follow-count', 'followed-count', 'title-count', 'title-select', 'card-player-edit', 'card-player-upload-image-main', 'card-player-upload-image-thumbnail', 'user-page-upload-image-main', 'web-push-permission'], required: true },
+  conditionsArr: [
+    {
+      _id: { type: String, required: true },
+      titles_id: { type: String, required: true },
+      datetime: { type: Date },
+      count: { type: Number },
+    }
+  ],
   
 });
 

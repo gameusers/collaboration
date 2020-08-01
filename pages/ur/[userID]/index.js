@@ -36,7 +36,6 @@ import lodashGet from 'lodash/get';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
-// import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
@@ -47,7 +46,6 @@ import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 
 import CardPlayer from 'app/common/card/v2/card-player.js';
-// import Cards from 'app/ur/v2/index/cards.js';
 
 
 
@@ -134,12 +132,6 @@ const ContainerLayout = (props) => {
       />
       
       {componentsArr}
-      
-      {/*<Cards
-        cardPlayersArr={props.cardPlayersArr}
-        showEditButton={true}
-        defaultExpanded={true}
-      />*/}
       
     </React.Fragment>
   ;

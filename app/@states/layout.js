@@ -50,6 +50,8 @@ const useLayout = (initialStateObj) => {
   const [videoObj, setVideoObj] = useState({});
   const [navigationForLightbox, setNavigationForLightbox] = useState(true);
   const [cardPlayersObj, setCardPlayersObj] = useState({});
+  const [dialogAchievementOpen, setDialogAchievementOpen] = useState(false);
+  const [dialogAchievementObj, setDialogAchievementObj] = useState({});
   
   
   
@@ -367,6 +369,11 @@ const useLayout = (initialStateObj) => {
     
     cardPlayersObj,
     setCardPlayersObj,
+    
+    dialogAchievementOpen,
+    setDialogAchievementOpen,
+    dialogAchievementObj,
+    setDialogAchievementObj,
     
   };
   

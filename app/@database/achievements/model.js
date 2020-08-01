@@ -24,14 +24,9 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Model
 // ---------------------------------------------
 
-const SchemaExperiences = require('./schema');
+const SchemaAchievements = require('./schema');
 
-
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-const { formatImagesAndVideosObj } = require('../images-and-videos/format');
+const ModelExperiences = require('../experiences/model');
 
 
 
@@ -70,7 +65,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await SchemaExperiences.findOne(conditionObj).exec();
+    return await SchemaAchievements.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -113,7 +108,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await SchemaExperiences.find(conditionObj).exec();
+    return await SchemaAchievements.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -155,7 +150,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await SchemaExperiences.countDocuments(conditionObj).exec();
+    return await SchemaAchievements.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -202,7 +197,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await SchemaExperiences.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await SchemaAchievements.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -244,7 +239,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await SchemaExperiences.insertMany(saveArr);
+    return await SchemaAchievements.insertMany(saveArr);
     
     
   } catch (err) {
@@ -287,7 +282,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await SchemaExperiences.deleteMany(conditionObj);
+    return await SchemaAchievements.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -304,455 +299,201 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 
 /**
- * 取得する / ヒーローイメージ用データ
+ * 
+ * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {Array} matchConditionArr - 検索条件
+ * @param {number} threadPage - スレッドのページ
+ * @param {number} threadLimit - スレッドのリミット
  * @return {Array} 取得データ
  */
-// const findForHeroImage = async ({ localeObj }) => {
+const findForEdit = async ({
+  
+  // req,
+  localeObj,
+  loginUsers_id,
+  
+}) => {
   
   
-//   // --------------------------------------------------
-//   //   Database
-//   // --------------------------------------------------
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Language
+    // --------------------------------------------------
+    
+    const language = lodashGet(localeObj, ['language'], '');
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB findOne / experiences
+    // --------------------------------------------------
+    
+    const docExperiencesObj = await ModelExperiences.findOne({
+      
+      conditionObj: {
+        users_id: loginUsers_id
+      }
+      
+    });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Aggregation
+    // --------------------------------------------------
+    
+    const docArr = await SchemaAchievements.aggregate([
+      
+      
+      // --------------------------------------------------
+      //   titles
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'titles',
+            let: { letTitles_id: '$conditionsArr.titles_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$language', language] },
+                      { $in: ['$_id', '$$letTitles_id'] },
+                      // { $eq: ['$_id', '$$letTitles_id'] }
+                    ]
+                  },
+                }
+              },
+              // {
+              //   $group: {
+              //     _id: '$_id',
+              //     // name: '$name',
+              //   }
+              // },
+              {
+                $project: {
+                  // _id: 0,
+                  urlID: 1,
+                  name: 1,
+                }
+              }
+            ],
+            as: 'titlesArr'
+          }
+      },
+      
+      // {
+      //   $unwind: {
+      //     path: '$titlesObj',
+      //     preserveNullAndEmptyArrays: true,
+      //   }
+      // },
+      
+      
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+      
+      {
+        $project: {
+          _id: 0,
+          __v: 0,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   experiences
+    // --------------------------------------------------
+    
+    const experiencesObj = {
+      
+      achievementsArr: lodashGet(docExperiencesObj, ['achievementsArr'], []),
+      titlesArr: lodashGet(docExperiencesObj, ['titlesArr'], []),
+      titles_idsArr: lodashGet(docExperiencesObj, ['titles_idsArr'], []),
+      
+    };
+    
+    
+    // const achievementsArr = lodashGet(docExperiencesObj, ['achievementsArr'], []);
+    // const titlesArr = lodashGet(docExperiencesObj, ['titlesArr'], []);
+    // const titles_idsArr = lodashGet(docExperiencesObj, ['titles_idsArr'], []);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/achievements/model.js - findForEdit
+    // `);
+    
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   threadPage: {green ${threadPage}}
+    //   threadLimit: {green ${threadLimit}}
+    //   commentPage: {green ${commentPage}}
+    //   commentLimit: {green ${commentLimit}}
+    //   replyPage: {green ${replyPage}}
+    //   replyLimit: {green ${replyLimit}}
+    // `);
+    
+    // console.log(`
+    //   ----- docExperiencesObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docExperiencesObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return {
+      
+      experiencesObj,
+      achievementsArr: docArr,
+      
+    };
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
   
-//   try {
-    
-    
-//     // --------------------------------------------------
-//     //   Find
-//     // --------------------------------------------------
-    
-//     let resultArr = await SchemaExperiences.aggregate([
-      
-      
-//       // 画像＆動画が登録されているゲームを取得する
-//       {
-//         $match : { 'imagesAndVideos_id': { $exists: true, $ne: '' } }
-//       },
-      
-      
-//       // ランダムに1件データを取得する
-//       {
-//         $sample: { size: 1 }
-//       },
-      
-      
-//       // 画像と動画を取得
-//       {
-//         $lookup:
-//           {
-//             from: 'images-and-videos',
-//             let: { gamesImagesAndVideos_id: '$imagesAndVideos_id' },
-//             pipeline: [
-//               { $match:
-//                 { $expr:
-//                   { $eq: ['$_id', '$$gamesImagesAndVideos_id'] },
-//                 }
-//               },
-//               { $project:
-//                 {
-//                   // _id: 0,
-//                   createdDate: 0,
-//                   updatedDate: 0,
-//                   users_id: 0,
-//                   __v: 0,
-//                 }
-//               }
-//             ],
-//             as: 'imagesAndVideosObj'
-//           }
-//       },
-      
-//       {
-//         $unwind: {
-//           path: '$imagesAndVideosObj',
-//           preserveNullAndEmptyArrays: true,
-//         }
-//       },
-      
-      
-//       // ハードウェア
-//       {
-//         $lookup:
-//           {
-//             from: 'hardwares',
-//             let: { gamesHardwareID: '$hardwareArr.hardwareID' },
-//             pipeline: [
-//               { $match:
-//                 { $expr:
-//                   { $and:
-//                     [
-//                       { $eq: ['$language', localeObj.language] },
-//                       { $eq: ['$country', localeObj.country] },
-//                       { $in: ['$hardwareID', '$$gamesHardwareID'] }
-//                     ]
-//                   },
-//                 }
-//               },
-//               { $project:
-//                 {
-//                   _id: 0,
-//                   hardwareID: 1,
-//                   name: 1,
-//                 }
-//               }
-//             ],
-//             as: 'hardwaresArr'
-//           }
-//       },
-      
-      
-//       // ジャンル
-//       {
-//         $lookup:
-//           {
-//             from: 'game-genres',
-//             let: { gamesGenreArr: '$genreArr' },
-//             pipeline: [
-//               { $match:
-//                 { $expr:
-//                   { $and:
-//                     [
-//                       { $eq: ['$language', localeObj.language] },
-//                       { $eq: ['$country', localeObj.country] },
-//                       { $in: ['$genreID', '$$gamesGenreArr'] }
-//                     ]
-//                   },
-//                 }
-//               },
-//               { $project:
-//                 {
-//                   _id: 0,
-//                   genreID: 1,
-//                   name: 1,
-//                 }
-//               }
-//             ],
-//             as: 'gameGenresArr'
-//           }
-//       },
-      
-      
-//       // 開発＆パブリッシャー
-//       {
-//         $lookup:
-//           {
-//             from: 'developers-publishers',
-//             let: {
-//               gamesPublisherID: '$hardwareArr.publisherID',
-//               gamesDeveloperID: '$hardwareArr.developerID',
-//             },
-//             pipeline: [
-//               { $match:
-//                 { $expr:
-//                   { $or:
-//                     [
-//                       { $and:
-//                         [
-//                           { $eq: ['$language', localeObj.language] },
-//                           { $eq: ['$country', localeObj.country] },
-//                           { $in: ['$developerPublisherID', '$$gamesPublisherID'] }
-//                         ]
-//                       },
-//                       { $and:
-//                         [
-//                           { $eq: ['$language', localeObj.language] },
-//                           { $eq: ['$country', localeObj.country] },
-//                           { $in: ['$developerPublisherID', '$$gamesDeveloperID'] }
-//                         ]
-//                       }
-//                     ]
-//                   },
-//                 }
-//               },
-//               { $project:
-//                 {
-//                   _id: 0,
-//                   developerPublisherID: 1,
-//                   name: 1,
-//                 }
-//               }
-//             ],
-//             as: 'developersPublishersArr'
-//           }
-//       },
-      
-      
-//       {
-//         $project: {
-//           // __v: 0,
-//           gameCommunities_id: 1,
-//           urlID: 1,
-//           imagesAndVideosObj: 1,
-//           name: 1,
-//           subtitle: 1,
-//           hardwareArr: 1,
-//           genreArr: 1,
-//           linkArr: 1,
-//           hardwaresArr: 1,
-//           gameGenresArr: 1,
-//           developersPublishersArr: 1,
-//         }
-//       },
-      
-      
-//     ]).exec();
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   ヒーローイメージがランダムに表示されるように並び替える
-//     // --------------------------------------------------
-    
-//     let returnObj = lodashGet(resultArr, [0], {});
-    
-//     if (Object.keys(returnObj).length !== 0) {
-      
-//       const arr = lodashGet(returnObj, ['imagesAndVideosObj', 'arr'], []);
-      
-//       // 並び替え
-//       for (let i = arr.length - 1; i > 0; i--){
-//         const r = Math.floor(Math.random() * (i + 1));
-//         const tmp = arr[i];
-//         arr[i] = arr[r];
-//         arr[r] = tmp;
-//       }
-      
-//       lodashSet(returnObj, ['imagesAndVideosObj', 'arr'], arr);
-      
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   画像をフォーマットする
-//     // --------------------------------------------------
-    
-//     const formattedObj = formatImagesAndVideosObj({ localeObj, obj: returnObj.imagesAndVideosObj });
-    
-//     if (formattedObj) {
-      
-//       returnObj.imagesAndVideosObj = formattedObj;
-      
-//     } else {
-      
-//       delete returnObj.imagesAndVideosObj;
-      
-//     }
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   Type
-//     // --------------------------------------------------
-    
-//     returnObj.type = 'gc';
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   console.log
-//     // --------------------------------------------------
-    
-//     // console.log(`
-//     //   ----- resultArr -----\n
-//     //   ${util.inspect(resultArr, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- returnObj -----\n
-//     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   Return
-//     // --------------------------------------------------
-    
-//     return returnObj;
-    
-    
-//   } catch (err) {
-    
-//     throw err;
-    
-//   }
   
-// };
+};
 
 
-
-
-/**
- * 取得する / サジェスト用のデータ
- * @param {string} language - 言語
- * @param {string} country - 国
- * @param {string} keyword - 検索キーワード
- * @return {Array} 取得データ
- */
-// const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
-  
-  
-//   // --------------------------------------------------
-//   //   Database
-//   // --------------------------------------------------
-  
-//   try {
-    
-    
-//     // --------------------------------------------------
-//     //   Property
-//     // --------------------------------------------------
-    
-//     const pattern = new RegExp(`.*${keyword}.*`);
-//     const language = lodashGet(localeObj, ['language'], '');
-//     const country = lodashGet(localeObj, ['country'], '');
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   Aggregation
-//     // --------------------------------------------------
-    
-//     const resultArr = await SchemaExperiences.aggregate([
-      
-      
-//       {
-//         $match : { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } }
-//       },
-      
-      
-//       // 画像と動画を取得
-//       {
-//         $lookup:
-//           {
-//             from: 'images-and-videos',
-//             let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-//             pipeline: [
-//               { $match:
-//                 { $expr:
-//                   { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
-//                 }
-//               },
-//               { $project:
-//                 {
-//                   createdDate: 0,
-//                   updatedDate: 0,
-//                   users_id: 0,
-//                   __v: 0,
-//                 }
-//               }
-//             ],
-//             as: 'imagesAndVideosThumbnailObj'
-//           }
-//       },
-      
-//       {
-//         $unwind: {
-//           path: '$imagesAndVideosThumbnailObj',
-//           preserveNullAndEmptyArrays: true,
-//         }
-//       },
-      
-      
-//       { $project:
-//         {
-//           gameCommunities_id: 1,
-//           name: 1,
-//           imagesAndVideosThumbnailObj: 1,
-//         }
-//       },
-      
-      
-//     ]).exec();
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   Loop
-//     // --------------------------------------------------
-    
-//     // const returnArr = [];
-    
-//     // for (let valueObj of resultArr.values()) {
-      
-//     //   // console.log(`\n---------- valueObj ----------\n`);
-//     //   // console.dir(valueObj);
-//     //   // console.log(`\n-----------------------------------\n`);
-      
-      
-//     //   // --------------------------------------------------
-//     //   //   Deep Copy
-//     //   // --------------------------------------------------
-      
-//     //   const clonedObj = lodashCloneDeep(valueObj);
-      
-      
-//     //   // --------------------------------------------------
-//     //   //   画像と動画の処理
-//     //   // --------------------------------------------------
-      
-//     //   const formattedObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.imagesAndVideosObj });
-      
-//     //   if (formattedObj) {
-        
-//     //     clonedObj.imagesAndVideosObj = formattedObj;
-        
-//     //   } else {
-        
-//     //     delete clonedObj.imagesAndVideosObj;
-        
-//     //   }
-      
-//     //   // console.log(`\n---------- clonedObj ----------\n`);
-//     //   // console.dir(clonedObj);
-//     //   // console.log(`\n-----------------------------------\n`);
-      
-//     //   // --------------------------------------------------
-//     //   //   Push
-//     //   // --------------------------------------------------
-      
-//     //   returnArr.push(clonedObj);
-      
-      
-//     // }
-    
-    
-//     // console.log(`
-//     //   ----- resultArr -----\n
-//     //   ${util.inspect(resultArr, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- returnArr -----\n
-//     //   ${util.inspect(returnArr, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-    
-//     // --------------------------------------------------
-//     //   Return
-//     // --------------------------------------------------
-    
-//     return resultArr;
-    
-    
-//   } catch (err) {
-    
-//     throw err;
-    
-//   }
-  
-// };
 
 
 
@@ -770,7 +511,7 @@ module.exports = {
   insertMany,
   deleteMany,
   
-  // findForHeroImage,
+  findForEdit,
   // findBySearchKeywordsArrForSuggestion,
   
 };

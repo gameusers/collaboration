@@ -492,35 +492,34 @@ const findOneForUser = async ({
               
               
               // --------------------------------------------------
-              //   experiences / achievements
+              //   experiences / titles
               // --------------------------------------------------
               
               {
                 $lookup:
                   {
-                    from: 'achievements',
-                    let: { letSelectedArr: '$selectedArr' },
+                    from: 'titles',
+                    let: { letTitles_idsArr: '$titles_idsArr' },
                     pipeline: [
                       {
                         $match: {
                           $expr: {
                             $and: [
                               { $eq: ['$language', language] },
-                              { $in: ['$achievementID', '$$letSelectedArr'] }
+                              { $in: ['$_id', '$$letTitles_idsArr'] }
                             ]
                           },
                         }
                       },
                       {
                         $project: {
-                          _id: 0,
-                          achievementID: 1,
+                          // _id: 0,
                           urlID: 1,
                           name: 1,
                         }
                       }
                     ],
-                    as: 'achievementsArr'
+                    as: 'titlesArr'
                   }
               },
               
@@ -544,7 +543,8 @@ const findOneForUser = async ({
                   updatedDate: 0,
                   users_id: 0,
                   // exp: 0,
-                  historiesArr: 0,
+                  achievementsArr: 0,
+                  // titles_idsArr: 0,
                 }
               },
               
@@ -621,16 +621,16 @@ const findOneForUser = async ({
     // --------------------------------------------------
     
     const exp = lodashGet(returnObj, ['experiencesObj', 'exp'], 0);
-    const selectedArr = lodashGet(returnObj, ['experiencesObj', 'selectedArr'], []);
-    const tempAachievementsArr = lodashGet(returnObj, ['experiencesObj', 'achievementsArr'], []);
-    const achievementsArr = [];
+    const titles_idsArr = lodashGet(returnObj, ['experiencesObj', 'titles_idsArr'], []);
+    const tempTitlesArr = lodashGet(returnObj, ['experiencesObj', 'titlesArr'], []);
+    const titlesArr = [];
     
-    for (let achievementID of selectedArr.values()) {
+    for (let titles_id of titles_idsArr.values()) {
       
       // console.log(achievementID);
       
-      const obj = tempAachievementsArr.find((valueObj) => {
-        return valueObj.achievementID === achievementID;
+      const obj = tempTitlesArr.find((valueObj) => {
+        return valueObj._id === titles_id;
       });
       
       // const arr = tempAachievementsArr.filter((valueObj) => {
@@ -639,9 +639,9 @@ const findOneForUser = async ({
       
       // console.log(arr);
       
-      achievementsArr.push({
+      titlesArr.push({
         
-        achievementID: lodashGet(obj, ['achievementID'], ''),
+        _id: lodashGet(obj, ['_id'], ''),
         urlID: lodashGet(obj, ['urlID'], ''),
         name: lodashGet(obj, ['name'], ''),
         
@@ -665,7 +665,7 @@ const findOneForUser = async ({
     headerObj.users_id = returnObj._id;
     headerObj.type = 'ur';
     headerObj.exp = exp;
-    headerObj.achievementsArr = achievementsArr;
+    headerObj.titlesArr = titlesArr;
     headerObj.name = lodashGet(returnObj, ['cardPlayersObj', 'name'], '');
     headerObj.status = lodashGet(returnObj, ['cardPlayersObj', 'status'], '');
     
@@ -687,10 +687,10 @@ const findOneForUser = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/users/model.js - findOneForUser
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/users/model.js - findOneForUser
+    // `);
     
     // console.log(chalk`
     //   userID: {green ${userID}}
@@ -709,11 +709,11 @@ const findOneForUser = async ({
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------

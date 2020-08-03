@@ -25,6 +25,7 @@ const schema = mongoose.Schema({
       countDay: { type: Number, required: true },
       countMonth: { type: Number, required: true },
       countYear: { type: Number, required: true },
+      countValid: { type: Number, required: true },
       countTotal: { type: Number, required: true },
     }
   ],

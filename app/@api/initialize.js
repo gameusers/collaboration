@@ -298,9 +298,10 @@ router.post('/db', upload.none(), async (req, res, next) => {
             createdDate: '2018-01-01T00:00:00.000Z',
             updatedDate: ISO8601,
             type: 'login-count',
-            countDay: 0,
+            countDay: 1,
             countMonth: 0,
             countYear: 0,
+            countValid: 10,
             countTotal: 10,
           },
           
@@ -309,9 +310,10 @@ router.post('/db', upload.none(), async (req, res, next) => {
             createdDate: ISO8601,
             updatedDate: ISO8601,
             type: 'good-count-click',
-            countDay: 1,
-            countMonth: 10,
-            countYear: 20,
+            countDay: 5,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 25,
             countTotal: 30,
           },
           
@@ -323,6 +325,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
             countDay: 0,
             countMonth: 0,
             countYear: 0,
+            countValid: 30,
             countTotal: 30,
           },
           
@@ -334,6 +337,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
             countDay: 0,
             countMonth: 0,
             countYear: 0,
+            countValid: 10,
             countTotal: 10,
           },
         ],
@@ -393,6 +397,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
       {
         _id: 'V8iU147M5',
         type: 'good-count-click',
+        limitDay: 5,
+        limitMonth: 0,
+        limitYear: 0,
         conditionsArr: [
           {
             _id: 'E1euCTkWl',
@@ -455,6 +462,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
       {
         _id: 'ZgsxDaKaN',
         type: 'forum-count-post',
+        limitDay: 0,
+        limitMonth: 30,
+        limitYear: 0,
         conditionsArr: [
           {
             _id: 'L7kIcm4ny',

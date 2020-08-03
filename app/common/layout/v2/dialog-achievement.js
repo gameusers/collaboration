@@ -26,15 +26,18 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
-import { makeStyles } from '@material-ui/core/styles';
+// import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -42,7 +45,7 @@ import Dialog from '@material-ui/core/Dialog';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import StepContent from '@material-ui/core/StepContent';
+// import StepContent from '@material-ui/core/StepContent';
 import Paper from '@material-ui/core/Paper';
 
 
@@ -84,7 +87,7 @@ import TitleChip from 'app/common/title/v2/chip.js';
 //   https://emotion.sh/docs/composition
 // --------------------------------------------------
 
-const cssHeading = css`
+const cssHeadingBlue = css`
   color: #ffffff;
 	font-size: 16px;
 	line-height: 20px;
@@ -121,18 +124,54 @@ const cssHeading = css`
 `;
 
 
+const cssHeadingRed = css`
+  color: #ffffff;
+	font-size: 16px;
+	line-height: 20px;
+	position: relative;
+	padding: 10px;
+	background: #ff0033;
+	box-shadow: 10px 0 0 0 #ff0033, -10px 0 0 0 #ff0033, 0 3px 3px 0 rgba(0,0,0,0.1);
+  
+  &:before {
+    content: " ";
+  	position: absolute;
+  	top: 100%;
+  	left: -10px;
+  	width: 0;
+  	height: 0;
+  	border-width: 0 10px 10px 0;
+  	border-style: solid;
+  	border-color: transparent;
+  	border-right-color: #4f4f4f;
+  }
+  
+  &:after {
+    content: " ";
+  	position: absolute;
+  	top: 100%;
+  	right: -10px;
+  	width: 0;
+  	height: 0;
+  	border-width: 10px 10px 0 0;
+  	border-style: solid;
+  	border-color: transparent;
+  	border-top-color: #4f4f4f;
+  }
+`;
+
 // --------------------------------------------------
 //   Material UI Style Overrides
 //   https://material-ui.com/styles/basics/
 // --------------------------------------------------
 
-const useStyles = makeStyles({
+// const useStyles = makeStyles({
   
-  paper: {
-    backgroundColor: 'black',
-  },
+//   paper: {
+//     backgroundColor: 'black',
+//   },
   
-});
+// });
 
 
 
@@ -161,26 +200,6 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Hooks
-  // --------------------------------------------------
-  
-  const intl = useIntl();
-  const classes = useStyles();
-  const [buttonDisabled, setButtonDisabled] = useState(true);
-  
-  // const [open, setOpen] = React.useState(false);
-  
-  
-  useEffect(() => {
-    
-    setButtonDisabled(false);
-    
-  }, []);
-  
-  
-  
-  
-  // --------------------------------------------------
   //   States
   // --------------------------------------------------
   
@@ -198,6 +217,32 @@ const Component = (props) => {
     setDialogAchievementObj,
     
   } = stateLayout;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Hooks
+  // --------------------------------------------------
+  
+  const intl = useIntl();
+  // const classes = useStyles();
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+  
+  const [pageNo, setPageNo] = useState(0);
+  const [titles_idsArr, setTitles_idsArr] = useState(lodashGet(dialogAchievementObj , ['experiencesObj', 'titles_idsArr'], []));
+  
+  
+  useEffect(() => {
+    
+    setButtonDisabled(false);
+    
+  }, []);
+  
+  
+  
+  
+  
   
   
   
@@ -813,32 +858,41 @@ const Component = (props) => {
   
   
   /**
-   * フォームを閉じる
+   * 称号を追加する / 削除する
    */
-  const handleClose = async () => {
+  const handleAddRemoveTitle = ({ value }) => {
     
+    const clonedArr = lodashCloneDeep(titles_idsArr);
+    const arrayIndex = clonedArr.indexOf(value);
     
-    // ---------------------------------------------
-    //   閉じる
-    // ---------------------------------------------
-    
-    setShowForm(false);
+    if (arrayIndex === -1) {
       
+      clonedArr.push(value);
       
-    // ---------------------------------------------
-    //   Scroll To
-    // ---------------------------------------------
+    } else {
+      
+      clonedArr.splice(arrayIndex, 1);
+      
+    }
     
-    handleScrollTo({
-      
-      to: cardPlayers_id,
-      duration: 0,
-      delay: 0,
-      smooth: 'easeInOutQuart',
-      offset: -50,
-      
-    });
+    setTitles_idsArr(clonedArr);
     
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/layout/v2/dialog-achievement.js - handleAddRemoveTitle
+    // `);
+    
+    // console.log(chalk`
+    //   value: {green ${value}}
+    //   arrayIndex: {green ${arrayIndex}}
+    // `);
+    
+    // console.log(`
+    //   ----- clonedArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(clonedArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
   };
   
@@ -850,9 +904,10 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const experiencesAchievementsArr = lodashGet(dialogAchievementObj , ['experiencesObj', 'achievementsArr'], []);
-  const experiencesTitlesArr = lodashGet(dialogAchievementObj , ['experiencesObj', 'titlesArr'], []);
-  const experiencesTitles_idsArr = lodashGet(dialogAchievementObj , ['experiencesObj', 'titles_idsArr'], []);
+  // const experiencesTitlesArr = lodashGet(dialogAchievementObj , ['experiencesObj', 'titlesArr'], []);
+  // const experiencesTitles_idsArr = lodashGet(dialogAchievementObj , ['experiencesObj', 'titles_idsArr'], []);
   const achievementsArr = lodashGet(dialogAchievementObj, ['achievementsArr'], []);
+  const titlesObj = lodashGet(dialogAchievementObj, ['titlesObj'], {});
   
   
   
@@ -862,6 +917,7 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const componentAchievementsArr = [];
+  const componentTitlesArr = [];
   
   for (const [index1, value1Obj] of achievementsArr.entries()) {
     
@@ -871,38 +927,74 @@ const Component = (props) => {
     // --------------------------------------------------
     
     const type = lodashGet(value1Obj , ['type'], '');
+    const limitDay = lodashGet(value1Obj , ['limitDay'], 0);
+    const limitMonth = lodashGet(value1Obj , ['limitMonth'], 0);
+    const limitYear = lodashGet(value1Obj , ['limitYear'], 0);
     const conditionsArr = lodashGet(value1Obj , ['conditionsArr'], []);
-    const titlesArr = lodashGet(value1Obj , ['titlesArr'], []);
+    // const titlesArr = lodashGet(value1Obj , ['titlesArr'], []);
     
-    let conditionType = 'count';
+    const find1Obj = experiencesAchievementsArr.find((tempObj) => {
+      return tempObj.type === type;
+    });
+    
+    const countValid = lodashGet(find1Obj , ['countValid'], 0);
+    const countTotal = lodashGet(find1Obj , ['countTotal'], 0);
+    
+    let activeStep = 0;
+    
+    // let conditionType = 'count';
+    
+    
     
     
     // --------------------------------------------------
-    //   Heading
+    //   Heading & Explanation
     // --------------------------------------------------
     
     let heading = '';
+    let explanation = '';
     
     switch (type) {
       
       case 'good-count-click':
         
         heading = 'Goodボタンを押す';
+        explanation = 'フォーラムのGoodボタンを押すとカウントされます。';
         break;
         
       case 'forum-count-post':
         
         heading = 'フォーラムに書き込む';
+        explanation = 'ゲームコミュニティ、ユーザーコミュニティのフォーラムに書き込むとカウントされます。';
         break;
         
     }
     
     
+    
+    
     // --------------------------------------------------
-    //   Contents
+    //   Limit
+    // --------------------------------------------------
+    
+    let limit = '';
+    
+    if (limitDay) {
+      
+      limit = `1日に${limitDay}回まで`;
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Component - Step & Title
     // --------------------------------------------------
     
     const componentConditionsArr = [];
+    const componentTitleAcquisitionsArr = [];
+    
     
     for (const [index2, value2Obj] of conditionsArr.entries()) {
       
@@ -912,19 +1004,21 @@ const Component = (props) => {
       // --------------------------------------------------
       
       const titles_id = lodashGet(value2Obj , ['titles_id'], '');
-      const datetime = lodashGet(value2Obj , ['datetime'], '');
+      // const datetime = lodashGet(value2Obj , ['datetime'], '');
       const count = lodashGet(value2Obj , ['count'], 1);
       
-      const findObj = titlesArr.find((value3Obj) => {
-        return value3Obj._id === titles_id;
-      });
+      if (countValid >= count) {
+        activeStep = index2;
+      }
       
-      const urlID = lodashGet(findObj , ['urlID'], '');
-      const name = lodashGet(findObj , ['name'], '');
+      const urlID = lodashGet(titlesObj , [titles_id, 'urlID'], '');
+      const name = lodashGet(titlesObj , [titles_id, 'name'], '');
+      
+      
       
       
       // --------------------------------------------------
-      //   Component
+      //   Component - Step
       // --------------------------------------------------
       
       componentConditionsArr.push(
@@ -932,136 +1026,147 @@ const Component = (props) => {
           
           <StepLabel>
             
+            {/*countValid = {countValid}<br />
+            activeStep = {activeStep}<br />*/}
+            
             <div
               css={css`
                 display: flex;
                 flex-flow: row wrap;
-                
-                background-color: black;
-                padding: 12px;
+                align-items: center;
               `}
             >
               
               <div
                 css={css`
-                  margin: 0 0 0 0;
+                  margin: 0 12px 0 0;
                 `}
               >
                 {count} 回
               </div>
-            
-            
-              
-              {/*<div
-                css={css`
-                  font-weight: bold;
-                `}
-              >
-                達成報酬
-              </div>
               
               
               <div
                 css={css`
-                  margin: 0 0 0 16px;
+                  border-radius: 6px;
+                  background-color: black;
+                  margin: 0;
+                  padding: 4px 6px;
                 `}
               >
-                称号:
-              </div>*/}
-              
-              
-              <div
-                // css={css`
-                //   background-color: black;
-                //   padding: 4px 0;
-                // `}
-              >
-              
-              <TitleChip
-                _id={titles_id}
-                urlID={urlID}
-                name={name}
-              />
-              
+                
+                <TitleChip
+                  _id={titles_id}
+                  urlID={urlID}
+                  name={name}
+                />
+                
               </div>
-              
               
             </div>
             
           </StepLabel>
           
-          {/*<StepContent>
-            
-            <div
-              css={css`
-                display: flex;
-                flex-flow: row wrap;
-              `}
-            >
-              
-              <div
-                css={css`
-                  font-weight: bold;
-                `}
-              >
-                達成報酬
-              </div>
-              
-              
-              <div
-                css={css`
-                  margin: 0 0 0 16px;
-                `}
-              >
-                称号:
-              </div>
-              
-              
-              <TitleChip
-                _id={titles_id}
-                urlID={urlID}
-                name={name}
-              />
-              
-            </div>
-            
-          </StepContent>*/}
-          
         </Step>
       );
+      
+      
+      
+      
+      // --------------------------------------------------
+      //   Component - Title Acquisitions
+      // --------------------------------------------------
+      
+      if (countValid >= count) {
+        
+        componentTitleAcquisitionsArr.push(
+          <div
+            css={css`
+              border-radius: 6px;
+              background-color: black;
+              cursor: pointer;
+              margin: 12px 12px 0 0;
+              padding: 4px 6px;
+            `}
+            key={titles_id}
+            onClick={() => handleAddRemoveTitle({ value: titles_id })}
+          >
+            
+            <TitleChip
+              _id={titles_id}
+              urlID={urlID}
+              name={name}
+            />
+            
+          </div>
+        );
+        
+      }
       
       
     }
     
     
+    
+    
     // --------------------------------------------------
-    //   Component
+    //   Component - Achievement
     // --------------------------------------------------
     
     componentAchievementsArr.push(
       <Paper
         css={css`
           && {
-            margin: 0 24px;
-            
-            @media screen and (max-width: 480px) {
-              margin: 0;
-            }
+            margin: 24px 0 0;
           }
         `}
-        // classes={{
-        //   paper: classes.paper
-        // }}
         elevation={3}
         key={index1}
       >
         
         
-        <h3 css={cssHeading}>{heading}</h3>
+        <h3 css={cssHeadingBlue}>{heading}</h3>
+        
+        
+        <p
+          css={css`
+            margin: 14px;
+          `}
+        >
+          {explanation}
+        </p>
+        
+        
+        <p
+          css={css`
+            margin: 0 14px;
+          `}
+        >
+          
+          <span css={css` font-weight: bold; `}>有効カウント：</span>{countValid}回
+          
+          {countValid !== countTotal &&
+            <React.Fragment> / <span css={css` font-weight: bold; `}>合計カウント：</span>{countTotal}回</React.Fragment>
+          }
+          
+        </p>
+        
+        
+        {limit &&
+          <p
+            css={css`
+              margin: 0 12px;
+            `}
+          >
+            <span css={css` font-weight: bold; `}>制限：</span>{limit}
+          </p>
+        }
+        
+        
         
         
         <Stepper
-          activeStep={5}
+          activeStep={activeStep}
           orientation="vertical"
         >
           
@@ -1073,7 +1178,150 @@ const Component = (props) => {
       </Paper>
     );
     
+    
+    
+    
+    // --------------------------------------------------
+    //   Component - Title
+    // --------------------------------------------------
+    
+    componentTitlesArr.push(
+      <Paper
+        css={css`
+          && {
+            margin: 24px 0 0;
+          }
+        `}
+        elevation={3}
+        key={index1}
+      >
+        
+        
+        <h3 css={cssHeadingBlue}>{heading}</h3>
+        
+        
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            margin: 0 12px;
+            padding: 0 0 12px;
+          `}
+        >
+          {componentTitleAcquisitionsArr}
+        </div>
+        
+        
+      </Paper>
+    );
+    
+    
   }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Component - Title Selected
+  // --------------------------------------------------
+  
+  const componentTitleSelectedArr = [];
+  
+  for (let titles_id of titles_idsArr.values()) {
+    
+    const urlID = lodashGet(titlesObj , [titles_id, 'urlID'], '');
+    const name = lodashGet(titlesObj , [titles_id, 'name'], '');
+    
+    
+    componentTitleSelectedArr.push(
+      <div
+        css={css`
+          border-radius: 6px;
+          background-color: black;
+          cursor: pointer;
+          margin: 12px 12px 0 0;
+          padding: 4px 6px;
+        `}
+        key={titles_id}
+        onClick={() => handleAddRemoveTitle({ value: titles_id })}
+      >
+        
+        <TitleChip
+          _id={titles_id}
+          urlID={urlID}
+          name={name}
+        />
+        
+      </div>
+    );
+    
+    
+  }
+  
+  
+  const componentTitleSelected = 
+    <Paper
+      css={css`
+        && {
+          margin: 0 0 24px;
+          padding: 0 0 12px;
+        }
+      `}
+      elevation={3}
+    >
+      
+      
+      <h3 css={cssHeadingRed}>表示する称号</h3>
+      
+      
+      <div
+        css={css`
+          display: flex;
+          flex-flow: row wrap;
+          margin: 0 12px;
+        `}
+      >
+        {componentTitleSelectedArr}
+      </div>
+      
+      
+      
+      
+      {/* フォーム */}
+      <form
+        name="formTitleSelected"
+        onSubmit={(eventObj) => handleSubmit({
+          eventObj,
+        })}
+      >
+        
+        {/* Submit Button */}
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            border-top: 1px dashed #848484;
+            margin: 12px 0 0 0;
+            padding: 12px 12px 0;
+          `}
+        >
+          
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={buttonDisabled}
+          >
+            保存する
+          </Button>
+          
+        </div>
+        
+      </form>
+      
+      
+    </Paper>
+  ;
   
   
   
@@ -1112,6 +1360,7 @@ const Component = (props) => {
     >
       
       
+      {/* Bar */}
       <AppBar
         css={css`
           padding: 0 !important;
@@ -1155,19 +1404,131 @@ const Component = (props) => {
       
       
       
+      {/* Content */}
       <div
         css={css`
-          padding: 90px 0 24px 0;
-          // padding: 0 16px;
-          // background-color: black;
+          margin: 90px 0 24px 0;
+          padding: 0 24px;
           
           @media screen and (max-width: 480px) {
             margin: 76px 0 24px 0;
+            padding: 0;
           }
         `}
       >
         
-        {componentAchievementsArr}
+        
+        {/* Buttons */}
+        <ButtonGroup
+          css={css`
+            // margin: 0 0 0 0;
+            // padding: 0 24px;
+            
+            @media screen and (max-width: 480px) {
+              // margin: 76px 0 24px 0;
+              padding: 0 12px;
+            }
+          `}
+          color="primary"
+          aria-label="outlined primary button group"
+          disabled={buttonDisabled}
+        >
+          
+          
+          {/* 実績ボタン */}
+          <Button
+            onClick={() => setPageNo(0)}
+          >
+            <span
+              css={css`
+                font-weight: ${pageNo === 0 ? 'bold' : 'normal'};
+              `}
+            >
+              実績
+            </span>
+          </Button>
+          
+          
+          {/* 称号ボタン */}
+          <Button
+            onClick={() => setPageNo(1)}
+          >
+            <span
+              css={css`
+                font-weight: ${pageNo === 1 ? 'bold' : 'normal'};
+              `}
+            >
+              称号
+            </span>
+          </Button>
+          
+          
+        </ButtonGroup>
+        
+        
+        
+        
+        {/* Content */}
+        {pageNo === 0
+          
+          ? // 実績
+          
+            <React.Fragment>
+              
+              <p
+                css={css`
+                  margin: 14px 0 0 0;
+                  
+                  @media screen and (max-width: 480px) {
+                    padding: 0 12px;
+                  }
+                `}
+              >
+                Game Users 内で特定の行動をすると称号を獲得することができます。
+              </p>
+              
+              <p
+                css={css`
+                  color: red;
+                  margin: 14px 0 36px 0;
+                  
+                  @media screen and (max-width: 480px) {
+                    padding: 0 12px;
+                  }
+                `}
+              >
+                ※ 実績を達成するために内容のないコンテンツを作成した場合、実績機能を利用できなくなることがあります。
+              </p>
+              
+              
+              {componentAchievementsArr}
+              
+            </React.Fragment>
+            
+          : // 称号
+          
+            <React.Fragment>
+              
+              <p
+                css={css`
+                  margin: 14px 0 28px 0;
+                  
+                  @media screen and (max-width: 480px) {
+                    padding: 0 12px;
+                  }
+                `}
+              >
+                獲得した称号はユーザーページ内に表示することができます。表示したい称号を選択して「保存する」ボタンを押してください。左から3つ目までの称号が保存され、ユーザーページ内の上部に表示されます。
+              </p>
+              
+              
+              {componentTitleSelected}
+              
+              {componentTitlesArr}
+              
+            </React.Fragment>
+            
+        }
         
       </div>
       

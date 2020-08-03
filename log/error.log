@@ -27,3 +27,8 @@
 {"logID":"RgxDax28L","date":"2020-08-01T06:37:47.214Z","endpointID":"T98Fnddym","users_id":"jun-deE4J","ip":"14.10.56.161","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36","requestParametersObj":{},"errorsArr":[{"code":"RgxDax28L","messageID":"Error"}],"level":"error","message":"Aggregate has empty pipeline"}
 {"logID":"NEfmMHzLg","date":"2020-08-01T07:20:03.529Z","endpointID":"T98Fnddym","users_id":"jun-deE4J","ip":"14.10.56.161","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36","requestParametersObj":{},"errorsArr":[{"code":"NEfmMHzLg","messageID":"Error"}],"level":"error","message":"Aggregate has empty pipeline"}
 {"logID":"DYGe2jyfH","date":"2020-08-01T07:54:08.167Z","endpointID":"T98Fnddym","users_id":"jun-deE4J","ip":"14.10.56.161","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36","requestParametersObj":{},"errorsArr":[{"code":"DYGe2jyfH","messageID":"Error"}],"level":"error","message":"The field 'name' must be an accumulator object"}
+{"level":"error","message":""}
+{"level":"error","message":""}
+{"level":"error","message":""}
+{"level":"error","message":""}
+{"logID":"aZFZtmd36","date":"2020-08-03T13:02:10.330Z","endpointID":"T98Fnddym","users_id":"jun-deE4J","ip":"14.10.56.161","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36","requestParametersObj":{},"errorsArr":[{"code":"aZFZtmd36","messageID":"Error"}],"level":"error","message":""}

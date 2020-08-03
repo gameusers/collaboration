@@ -25,8 +25,10 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 // ---------------------------------------------
 
 const SchemaAchievements = require('./schema');
+const SchemaTitles = require('../titles/schema');
 
 const ModelExperiences = require('../experiences/model');
+// const ModelTitles = require('../titles/model');
 
 
 
@@ -342,75 +344,89 @@ const findForEdit = async ({
     });
     
     
+    // --------------------------------------------------
+    //   DB find / achievements
+    // --------------------------------------------------
+    
+    const docAchievementsArr = await SchemaAchievements.find().exec();
+    
+    
+    // --------------------------------------------------
+    //   DB find / titles
+    // --------------------------------------------------
+    
+    const docTitlesArr = await SchemaTitles.find().exec();
+    
+    
     
     
     // --------------------------------------------------
     //   Aggregation
     // --------------------------------------------------
     
-    const docArr = await SchemaAchievements.aggregate([
+    // const docArr = await SchemaAchievements.aggregate([
       
       
-      // --------------------------------------------------
-      //   titles
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   titles
+    //   // --------------------------------------------------
       
-      {
-        $lookup:
-          {
-            from: 'titles',
-            let: { letTitles_id: '$conditionsArr.titles_id' },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ['$language', language] },
-                      { $in: ['$_id', '$$letTitles_id'] },
-                      // { $eq: ['$_id', '$$letTitles_id'] }
-                    ]
-                  },
-                }
-              },
-              // {
-              //   $group: {
-              //     _id: '$_id',
-              //     // name: '$name',
-              //   }
-              // },
-              {
-                $project: {
-                  // _id: 0,
-                  urlID: 1,
-                  name: 1,
-                }
-              }
-            ],
-            as: 'titlesArr'
-          }
-      },
+    //   {
+    //     $lookup:
+    //       {
+    //         from: 'titles',
+    //         let: { letTitles_id: '$conditionsArr.titles_id' },
+    //         pipeline: [
+    //           {
+    //             $match: {
+    //               $expr: {
+    //                 $and: [
+    //                   { $eq: ['$language', language] },
+    //                   { $in: ['$_id', '$$letTitles_id'] },
+    //                   // { $eq: ['$_id', '$$letTitles_id'] }
+    //                 ]
+    //               },
+    //             }
+    //           },
+    //           // {
+    //           //   $group: {
+    //           //     _id: '$_id',
+    //           //     // name: '$name',
+    //           //   }
+    //           // },
+    //           {
+    //             $project: {
+    //               // _id: 0,
+    //               urlID: 1,
+    //               name: 1,
+    //             }
+    //           }
+    //         ],
+    //         as: 'titlesArr'
+    //       }
+    //   },
       
-      // {
-      //   $unwind: {
-      //     path: '$titlesObj',
-      //     preserveNullAndEmptyArrays: true,
-      //   }
-      // },
-      
-      
-      // --------------------------------------------------
-      //   $project
-      // --------------------------------------------------
-      
-      {
-        $project: {
-          _id: 0,
-          __v: 0,
-        }
-      },
+    //   // {
+    //   //   $unwind: {
+    //   //     path: '$titlesObj',
+    //   //     preserveNullAndEmptyArrays: true,
+    //   //   }
+    //   // },
       
       
-    ]).exec();
+    //   // --------------------------------------------------
+    //   //   $project
+    //   // --------------------------------------------------
+      
+    //   {
+    //     $project: {
+    //       _id: 0,
+    //       __v: 0,
+    //     }
+    //   },
+      
+      
+    // ]).exec();
     
     
     
@@ -428,9 +444,23 @@ const findForEdit = async ({
     };
     
     
-    // const achievementsArr = lodashGet(docExperiencesObj, ['achievementsArr'], []);
-    // const titlesArr = lodashGet(docExperiencesObj, ['titlesArr'], []);
-    // const titles_idsArr = lodashGet(docExperiencesObj, ['titles_idsArr'], []);
+    // --------------------------------------------------
+    //   titles
+    // --------------------------------------------------
+    
+    const titlesObj = {};
+    
+    for (let valueObj of docTitlesArr.values()) {
+      
+      titlesObj[valueObj._id] = {
+        
+        urlID: valueObj.urlID,
+        // language: valueObj.language,
+        name: valueObj.name,
+        
+      };
+      
+    }
     
     
     
@@ -462,8 +492,14 @@ const findForEdit = async ({
     // `);
     
     // console.log(`
-    //   ----- docArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
+    //   ----- docAchievementsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docAchievementsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- docTitlesArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docTitlesArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -479,7 +515,8 @@ const findForEdit = async ({
     return {
       
       experiencesObj,
-      achievementsArr: docArr,
+      achievementsArr: docAchievementsArr,
+      titlesObj,
       
     };
     

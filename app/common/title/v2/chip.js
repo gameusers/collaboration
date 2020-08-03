@@ -460,7 +460,7 @@ const Component = (props) => {
           ${colorLine}
         }
         
-        margin: 0 0 0 12px;
+        // margin: 0 0 0 12px;
         padding: 0 4px;
       
       `}

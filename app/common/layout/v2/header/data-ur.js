@@ -214,12 +214,20 @@ const Component = (props) => {
   for (const [index, valueObj] of titlesArr.entries()) {
     
     componentAchievementsArr.push(
-      <TitleChip
+      <div
+        css={css`
+          margin: 0 0 0 12px;
+        `}
         key={index}
-        _id={valueObj._id}
-        urlID={valueObj.urlID}
-        name={valueObj.name}
-      />
+      >
+        
+        <TitleChip
+          _id={valueObj._id}
+          urlID={valueObj.urlID}
+          name={valueObj.name}
+        />
+        
+      </div>
     );
     
   }

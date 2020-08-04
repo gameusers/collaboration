@@ -439,7 +439,7 @@ const findForEdit = async ({
       
       achievementsArr: lodashGet(docExperiencesObj, ['achievementsArr'], []),
       titlesArr: lodashGet(docExperiencesObj, ['titlesArr'], []),
-      titles_idsArr: lodashGet(docExperiencesObj, ['titles_idsArr'], []),
+      // titles_idsArr: lodashGet(docExperiencesObj, ['titles_idsArr'], []),
       
     };
     
@@ -515,6 +515,7 @@ const findForEdit = async ({
     return {
       
       experiencesObj,
+      titles_idsArr: lodashGet(docExperiencesObj, ['titles_idsArr'], []),
       achievementsArr: docAchievementsArr,
       titlesObj,
       

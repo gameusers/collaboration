@@ -221,11 +221,9 @@ const Component = (props) => {
     handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
-    // handleScrollTo,
-    // dialogAchievementOpen,
     setDialogAchievementOpen,
-    // dialogAchievementObj,
     setDialogAchievementObj,
+    setDialogAchievementTitles_idsArr,
     
   } = stateLayout;
   
@@ -411,23 +409,6 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Scroll To
-      // ---------------------------------------------
-      
-      // handleScrollTo({
-        
-      //   to: cardPlayers_id,
-      //   duration: 0,
-      //   delay: 0,
-      //   smooth: 'easeInOutQuart',
-      //   offset: -50,
-        
-      // });
-      
-      
-      
-      
-      // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
       
@@ -463,6 +444,7 @@ const Component = (props) => {
       // ---------------------------------------------
       
       setDialogAchievementObj(lodashGet(resultObj, ['data'], {}));
+      setDialogAchievementTitles_idsArr(lodashGet(resultObj, ['data', 'titles_idsArr'], []));
       
       
       // ---------------------------------------------

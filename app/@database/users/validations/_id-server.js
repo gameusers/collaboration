@@ -21,14 +21,16 @@ const validator = require('validator');
 //   Model
 // ---------------------------------------------
 
-const Model = require('../model');
+const Model = require('../model.js');
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom.js');
+
+
 
 
 
@@ -56,9 +58,11 @@ const validationUsers_idServer = async ({ value }) => {
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
+    
     value: data,
     numberOfCharacters,
+    
   };
   
   
@@ -85,9 +89,11 @@ const validationUsers_idServer = async ({ value }) => {
   // ---------------------------------------------
   
   const count = await Model.count({
+    
     conditionObj: {
       _id: value,
     }
+    
   });
   
   if (count === 0) {
@@ -112,5 +118,7 @@ const validationUsers_idServer = async ({ value }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationUsers_idServer
+  
+  validationUsers_idServer,
+  
 };

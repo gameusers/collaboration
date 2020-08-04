@@ -21,14 +21,16 @@ const validator = require('validator');
 //   Model
 // ---------------------------------------------
 
-const Model = require('../model');
+const Model = require('../model.js');
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom.js');
+
+
 
 
 
@@ -56,9 +58,11 @@ const validationForumThreads_idServer = async ({ value }) => {
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
+    
     value: data,
     numberOfCharacters,
+    
   };
   
   
@@ -85,9 +89,11 @@ const validationForumThreads_idServer = async ({ value }) => {
   // ---------------------------------------------
   
   const count = await Model.count({
+    
     conditionObj: {
       _id: value,
     }
+    
   });
   
   if (count !== 1) {// ここ === か !== どっちが正しいのかわからん？
@@ -131,9 +137,11 @@ const validationForumThreads_idServerGC = async ({ forumThreads_id, gameCommunit
   const data = String(forumThreads_id);
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
+    
     value: data,
     numberOfCharacters,
+    
   };
   
   
@@ -160,10 +168,12 @@ const validationForumThreads_idServerGC = async ({ forumThreads_id, gameCommunit
   // ---------------------------------------------
   
   const count = await Model.count({
+    
     conditionObj: {
       _id: forumThreads_id,
       gameCommunities_id,
     }
+    
   });
   
   if (count !== 1) {
@@ -207,9 +217,11 @@ const validationForumThreads_idServerUC = async ({ forumThreads_id, userCommunit
   const data = String(forumThreads_id);
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
+    
     value: data,
     numberOfCharacters,
+    
   };
   
   
@@ -236,10 +248,12 @@ const validationForumThreads_idServerUC = async ({ forumThreads_id, userCommunit
   // ---------------------------------------------
   
   const count = await Model.count({
+    
     conditionObj: {
       _id: forumThreads_id,
       userCommunities_id,
     }
+    
   });
   
   if (count !== 1) {

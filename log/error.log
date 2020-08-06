@@ -33,3 +33,10 @@
 {"level":"error","message":""}
 {"logID":"aZFZtmd36","date":"2020-08-03T13:02:10.330Z","endpointID":"T98Fnddym","users_id":"jun-deE4J","ip":"14.10.56.161","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36","requestParametersObj":{},"errorsArr":[{"code":"aZFZtmd36","messageID":"Error"}],"level":"error","message":""}
 {"logID":"BzkvNPfX3","date":"2020-08-04T02:39:25.397Z","endpointID":"K3yzgjQpD","users_id":"","ip":"133.167.108.234","userAgent":"node-fetch/1.0 (+https://github.com/bitinn/node-fetch)","requestParametersObj":{"userCommunityID":"community1","page":1,"limit":null},"errorsArr":[{"code":"BzkvNPfX3","messageID":"Error"}],"level":"error","message":"the limit must be positive"}
+{"logID":"JVrrCJpYT","date":"2020-08-06T04:32:45.770Z","endpointID":"CuUwo1avA","users_id":"","ip":"133.167.108.234","userAgent":"node-fetch/1.0 (+https://github.com/bitinn/node-fetch)","requestParametersObj":{"userID":"user1"},"errorsArr":[{"code":"JVrrCJpYT","messageID":"Error"}],"level":"error","message":"titlesArr is not defined"}
+{"logID":"afOyPYZJp","date":"2020-08-06T05:19:33.513Z","endpointID":"T98Fnddym","users_id":"jun-deE4J","ip":"14.10.56.161","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36","requestParametersObj":{},"errorsArr":[{"code":"afOyPYZJp","messageID":"Error"}],"level":"error","message":"docTitlesArr.values is not a function or its return value is not iterable"}
+{"level":"error","message":""}
+{"level":"error","message":""}
+{"level":"error","message":""}
+{"level":"error","message":""}
+{"level":"error","message":""}

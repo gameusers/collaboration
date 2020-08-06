@@ -292,10 +292,23 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         exp: 999,
-        achievementsArr: [// アカウント開設日、goodボタン、フォーラム書き込み、募集書き込み、ゲーム登録、日記、経験値
+        historiesArr: [// アカウント開設日、goodボタン、フォーラム書き込み、募集書き込み、ゲーム登録、日記、経験値
+          
+          {
+            _id: 'V5gmtBJC_',
+            createdDate: ISO8601,
+            updatedDate: ISO8601,
+            type: 'special',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 1,
+            countTotal: 1,
+          },
+          
           {
             _id: 'Hc-iVQxJ8',
-            createdDate: '2018-01-01T00:00:00.000Z',
+            createdDate: ISO8601,
             updatedDate: ISO8601,
             type: 'login-count',
             countDay: 1,
@@ -340,35 +353,23 @@ router.post('/db', upload.none(), async (req, res, next) => {
             countValid: 10,
             countTotal: 10,
           },
+          
+          
+          // {
+          //   _id: '',
+          //   createdDate: '',
+          //   updatedDate: ISO8601,
+          //   type: '',
+          //   countDay: 0,
+          //   countMonth: 0,
+          //   countYear: 0,
+          //   countValid: 0,
+          //   countTotal: 0,
+          // },
+          
         ],
-        titlesArr: [
-          {
-            _id: 'pFJEn_2MO',
-            createdDate: ISO8601,
-            titles_id: 'MuK2dKVpn',
-          },
-          {
-            _id: 'YpDpJ7mmb',
-            createdDate: ISO8601,
-            titles_id: '7YCic-Yds',
-          },
-          {
-            _id: 'LKm8tygA7',
-            createdDate: ISO8601,
-            titles_id: '8Fbta4f9O',
-          },
-          {
-            _id: 'r_LVp4Ljj',
-            createdDate: ISO8601,
-            titles_id: 'nFJYEhwWB',
-          },
-          {
-            _id: 'GiJ6qiPfY',
-            createdDate: ISO8601,
-            titles_id: 'NwzUOqsiC',
-          },
-        ],
-        titles_idsArr: ['MuK2dKVpn', 'NwzUOqsiC', '8Fbta4f9O'],
+        acquiredTitles_idsArr: ['MuK2dKVpn', '7YCic-Yds', '8Fbta4f9O', 'nFJYEhwWB', 'NwzUOqsiC'],
+        selectedTitles_idsArr: ['MuK2dKVpn', 'NwzUOqsiC', '8Fbta4f9O'],
       },
       
     ];
@@ -394,125 +395,878 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     saveArr = [
       
+      
+      // ---------------------------------------------
+      //   特別 / special
+      // ---------------------------------------------
+      
       {
-        _id: 'V8iU147M5',
-        type: 'good-count-click',
-        limitDay: 5,
+        _id: 'c55H3lZ5Z',
+        type: 'special',
+        exp: 0,
+        limitDay: 0,
         limitMonth: 0,
         limitYear: 0,
         conditionsArr: [
           {
-            _id: 'E1euCTkWl',
-            titles_id: '7YCic-Yds',
-            datetime: '',
-            count: 1,
-          },
-          {
-            _id: 'MxvcTJcnp',
-            titles_id: 'p-XWgcOtK',
-            datetime: '',
-            count: 5,
-          },
-          {
-            _id: '9yR48O2uq',
-            titles_id: '8Fbta4f9O',
-            datetime: '',
-            count: 10,
-          },
-          {
-            _id: 'rC8aaBIm3',
-            titles_id: 'g65dAP992',
-            datetime: '',
-            count: 50,
-          },
-          {
-            _id: 'aQ1RZ2-y6',
-            titles_id: 'Lcqo1Q7Up',
-            datetime: '',
-            count: 100,
-          },
-          {
-            _id: 'lCtOeCTaG',
-            titles_id: '8Z3SDtXgN',
-            datetime: '',
-            count: 200,
-          },
-          {
-            _id: 'T48vRrIDx',
-            titles_id: 'wQ-ywcRpP',
-            datetime: '',
-            count: 300,
-          },
-          {
-            _id: 'KVfmGZ6xb',
-            titles_id: 'DrgkgbsbH',
-            datetime: '',
-            count: 400,
-          },
-          {
-            _id: 'a9LQjhgWy',
-            titles_id: 'Rb-hOZVrb',
-            datetime: '',
-            count: 500,
+            _id: 'nPV9y7brx',
+            titles_id: 'MuK2dKVpn',
+            count: 0,
+            countDay: 0,
           },
         ],
         
       },
       
+      
+      // ---------------------------------------------
+      //   レベル / level-count
+      // ---------------------------------------------
+      
+      {
+        _id: 'ukBe6i7yQ',
+        type: 'level-count',
+        exp: 0,
+        limitDay: 0,
+        limitMonth: 0,
+        limitYear: 0,
+        conditionsArr: [
+          {
+            _id: '4JqOt5hLa',
+            titles_id: '065apjMq1',
+            count: 1,
+            countDay: 0,
+          },
+          {
+            _id: 'ya1KK2d-B',
+            titles_id: 'oZlexPqhS',
+            count: 2,
+            countDay: 0,
+          },
+          {
+            _id: 'okRG_KnV1',
+            titles_id: 'GjGPfC8e1',
+            count: 3,
+            countDay: 0,
+          },
+          {
+            _id: 'QHNzx7Hfw',
+            titles_id: 'MYLwdOLD1',
+            count: 4,
+            countDay: 0,
+          },
+          {
+            _id: 'Y6HRgbn3c',
+            titles_id: 'XdNCO6eIe',
+            count: 5,
+            countDay: 0,
+          },
+          {
+            _id: 'UsbhgG7A2',
+            titles_id: '0lmhBTKPF',
+            count: 6,
+            countDay: 0,
+          },
+          {
+            _id: 'oLPAB2LwH',
+            titles_id: 'VN3reZuRi',
+            count: 7,
+            countDay: 0,
+          },
+          {
+            _id: 'GpKQHoVFK',
+            titles_id: 'NwRla-9WG',
+            count: 8,
+            countDay: 0,
+          },
+          {
+            _id: 'CF9WNHeSj',
+            titles_id: 'C00pgN_Xn',
+            count: 9,
+            countDay: 0,
+          },
+          {
+            _id: 'jvB0I2QwX',
+            titles_id: 'FM8hGmeqv',
+            count: 10,
+            countDay: 0,
+          },
+          {
+            _id: 'jQiOMsW63',
+            titles_id: 'BWqIWFilB',
+            count: 11,
+            countDay: 0,
+          },
+          {
+            _id: 'LyvZTfB6x',
+            titles_id: 'AW2KhpcxM',
+            count: 12,
+            countDay: 0,
+          },
+          {
+            _id: 'aoPBHhKkp',
+            titles_id: 'nxZrZpuiy',
+            count: 13,
+            countDay: 0,
+          },
+          {
+            _id: 'Xr0EO7JfW',
+            titles_id: 'h5b34wdsc',
+            count: 14,
+            countDay: 0,
+          },
+          {
+            _id: 'sUEQBrkKk',
+            titles_id: 'QEd4nWllx',
+            count: 15,
+            countDay: 0,
+          },
+          {
+            _id: 'QMXGLEkvZ',
+            titles_id: 'YC0hOO6mu',
+            count: 16,
+            countDay: 0,
+          },
+          {
+            _id: 'e3Eb0D9aD',
+            titles_id: 'pRR5Qc8oO',
+            count: 17,
+            countDay: 0,
+          },
+          {
+            _id: '4bGcgFwf8',
+            titles_id: '-VG1v7kcD',
+            count: 18,
+            countDay: 0,
+          },
+          {
+            _id: '7wAs17uKC',
+            titles_id: 'kdEKzT2du',
+            count: 19,
+            countDay: 0,
+          },
+          {
+            _id: 'aQycCCdQT',
+            titles_id: 'nowtpqr6_',
+            count: 20,
+            countDay: 0,
+          },
+          {
+            _id: '9mYe35alD',
+            titles_id: 'yAGGRAkFG',
+            count: 21,
+            countDay: 0,
+          },
+          {
+            _id: 'e9i0pUMro',
+            titles_id: 'T8yCXNXn1',
+            count: 22,
+            countDay: 0,
+          },
+          {
+            _id: 'gwzKVB9fe',
+            titles_id: 'jDUBpaZs4',
+            count: 23,
+            countDay: 0,
+          },
+          {
+            _id: 'QyJE3cOPQ',
+            titles_id: '2ZvB6qs8O',
+            count: 24,
+            countDay: 0,
+          },
+          {
+            _id: 'JVHDDtQKY',
+            titles_id: 'gpABkVPwE',
+            count: 25,
+            countDay: 0,
+          },
+          {
+            _id: 'KOSvAwf9B',
+            titles_id: 'RZmgRzPkb',
+            count: 26,
+            countDay: 0,
+          },
+          {
+            _id: 'zCCnN4Osn',
+            titles_id: 'OQbA1CIGZ',
+            count: 27,
+            countDay: 0,
+          },
+          {
+            _id: '_kt4FCZOq',
+            titles_id: '0c00gASC1',
+            count: 28,
+            countDay: 0,
+          },
+          {
+            _id: 'u13iuefYg',
+            titles_id: 'N1uUsUmpP',
+            count: 29,
+            countDay: 0,
+          },
+          {
+            _id: '8extiWm-i',
+            titles_id: '9V_XbaxwZ',
+            count: 30,
+            countDay: 0,
+          },
+          {
+            _id: 'gB2EZOWAn',
+            titles_id: 'TrSEsmN7h',
+            count: 31,
+            countDay: 0,
+          },
+          {
+            _id: '16IUQIdI8',
+            titles_id: 'XkgxqdmPp',
+            count: 32,
+            countDay: 0,
+          },
+          {
+            _id: 'hDVXu9B9e',
+            titles_id: 'xVu0pGDtI',
+            count: 33,
+            countDay: 0,
+          },
+          {
+            _id: '9PS2aFrqq',
+            titles_id: '3hdye-b-T',
+            count: 34,
+            countDay: 0,
+          },
+          {
+            _id: 'Nme0u9kuJ',
+            titles_id: 'gmLjWaOPk',
+            count: 35,
+            countDay: 0,
+          },
+          {
+            _id: 'uS00EqvT5',
+            titles_id: '5WLv0C11_',
+            count: 36,
+            countDay: 0,
+          },
+          {
+            _id: 'KLF4TXL3L',
+            titles_id: '0I1ULpaSC',
+            count: 37,
+            countDay: 0,
+          },
+          {
+            _id: '7PFtWz19J',
+            titles_id: 'jl3skqUCw',
+            count: 38,
+            countDay: 0,
+          },
+          {
+            _id: 'M0v3_HrXZ',
+            titles_id: 'lMahzRskP',
+            count: 39,
+            countDay: 0,
+          },
+          {
+            _id: 'Y9O7g8eJB',
+            titles_id: 'd5wM-NjJ6',
+            count: 40,
+            countDay: 0,
+          },
+          {
+            _id: 'i7LbZ9jJt',
+            titles_id: 'tWuUZX5gC',
+            count: 41,
+            countDay: 0,
+          },
+          {
+            _id: 'mfjLoHRoZ',
+            titles_id: 'quNmsBMAv',
+            count: 42,
+            countDay: 0,
+          },
+          {
+            _id: 'Blnk80reT',
+            titles_id: 'kzPLdbzW8',
+            count: 43,
+            countDay: 0,
+          },
+          // {
+          //   _id: '',
+          //   titles_id: '',
+          //   count: ,
+          //   countDay: 0,
+          // },
+          // {
+          //   _id: '',
+          //   titles_id: '',
+          //   count: ,
+          //   countDay: 0,
+          // },
+          // {
+          //   _id: '',
+          //   titles_id: '',
+          //   count: ,
+          //   countDay: 0,
+          // },
+        ],
+        
+      },
+      
+      
+      // ---------------------------------------------
+      //   アカウント作成後 / account-count-day
+      // ---------------------------------------------
+      
+      {
+        _id: 'IYzjRslI-',
+        type: 'account-count-day',
+        exp: 1,
+        limitDay: 0,
+        limitMonth: 0,
+        limitYear: 0,
+        conditionsArr: [
+          {
+            _id: '46ZQU3vaO',
+            titles_id: 'rYAf6jFYK',
+            count: 0,
+            countDay: 7,
+          },
+          {
+            _id: '0c8ul1Z-G',
+            titles_id: '8z7LyZQ_5',
+            count: 0,
+            countDay: 30,
+          },
+          {
+            _id: 'toLR8M6aH',
+            titles_id: 'W8sbxpWTe',
+            count: 0,
+            countDay: 90,
+          },
+          {
+            _id: '2Z6L97-Py',
+            titles_id: 'QZbmznsqU',
+            count: 0,
+            countDay: 180,
+          },
+          {
+            _id: 'BgtOUenAC',
+            titles_id: 'LOUgnlj36',
+            count: 0,
+            countDay: 365,
+          },
+          {
+            _id: '2WLQKMU7U',
+            titles_id: 'L_p3lJfig',
+            count: 0,
+            countDay: 730,
+          },
+          {
+            _id: 'NIrxrmdYo',
+            titles_id: 'CBZfxt-5L',
+            count: 0,
+            countDay: 1095,
+          },
+          {
+            _id: 'yHSTXY0Uv',
+            titles_id: 'yHSTXY0Uv',
+            count: 0,
+            countDay: 1460,
+          },
+          {
+            _id: 'ZbjFIaB-F',
+            titles_id: 'DLV53cJSO',
+            count: 0,
+            countDay: 1825,
+          },
+        ],
+        
+      },
+      
+      
+      // ---------------------------------------------
+      //   ログイン回数 / login-count
+      // ---------------------------------------------
+      
+      {
+        _id: '4Q2kY-neR',
+        type: 'login-count',
+        exp: 1,
+        limitDay: 1,
+        limitMonth: 0,
+        limitYear: 0,
+        conditionsArr: [
+          {
+            _id: 'Km8qKK3Xe',
+            titles_id: 'tegNhho16',
+            count: 1,
+            countDay: 0,
+          },
+          {
+            _id: 'xkJLEvRMG',
+            titles_id: 'xvY5bY9yH',
+            count: 5,
+            countDay: 0,
+          },
+          {
+            _id: 'ynHOM2Pkv',
+            titles_id: 'GPoSK78Rj',
+            count: 10,
+            countDay: 0,
+          },
+          {
+            _id: 'eE1kCtjIN',
+            titles_id: 'TIucZj9SX',
+            count: 20,
+            countDay: 0,
+          },
+          {
+            _id: '30l-hJa0A',
+            titles_id: 'zqAxK8mRN',
+            count: 30,
+            countDay: 0,
+          },
+          {
+            _id: '-84Hxy21m',
+            titles_id: 'KIYiKgZFQ',
+            count: 40,
+            countDay: 0,
+          },
+          {
+            _id: 'j4Chqv1hH',
+            titles_id: 'gXzXHvnPG',
+            count: 50,
+            countDay: 0,
+          },
+          {
+            _id: '6r7jc3o69',
+            titles_id: 'CF-BqxD_-',
+            count: 60,
+            countDay: 0,
+          },
+          {
+            _id: 'cuuQ1jixT',
+            titles_id: '4CjPpkvKH',
+            count: 70,
+            countDay: 0,
+          },
+          {
+            _id: 'TOg8A8aaI',
+            titles_id: 'd1Yv3ixS_',
+            count: 80,
+            countDay: 0,
+          },
+          {
+            _id: 'zRRiPHIdv',
+            titles_id: 'W71yk14CX',
+            count: 90,
+            countDay: 0,
+          },
+          {
+            _id: 'MQ0nd-kJA',
+            titles_id: 'v4IWCI0K9',
+            count: 100,
+            countDay: 0,
+          },
+          {
+            _id: 'jns34DkN7',
+            titles_id: '-RbTjxeMB',
+            count: 110,
+            countDay: 0,
+          },
+          {
+            _id: 'QMG2pmnpF',
+            titles_id: 'P81q63Gax',
+            count: 120,
+            countDay: 0,
+          },
+          {
+            _id: 'Z6-aZ4tu5',
+            titles_id: 'JQ4EdkmVY',
+            count: 130,
+            countDay: 0,
+          },
+          {
+            _id: 'JYUBULQP9',
+            titles_id: 'u5khnDn8e',
+            count: 140,
+            countDay: 0,
+          },
+          {
+            _id: 'dV5u7pKbD',
+            titles_id: 'wVfpH2aLB',
+            count: 150,
+            countDay: 0,
+          },
+          {
+            _id: 'VCIiTdPva',
+            titles_id: 'jmoIcgxpY',
+            count: 160,
+            countDay: 0,
+          },
+          {
+            _id: 'L9j94Shh6',
+            titles_id: 'yfbgYncsB',
+            count: 170,
+            countDay: 0,
+          },
+          {
+            _id: 'NpgnMmMGI',
+            titles_id: 'nLvby1IsJ',
+            count: 180,
+            countDay: 0,
+          },
+          {
+            _id: 'XupODkQ9p',
+            titles_id: '_vXx7_K4G',
+            count: 190,
+            countDay: 0,
+          },
+          {
+            _id: 'wg_1helJ9',
+            titles_id: 'Jvf9Lijjm',
+            count: 200,
+            countDay: 0,
+          },
+          {
+            _id: 'Tpnu9IMhm',
+            titles_id: 'eyvU_SACO',
+            count: 210,
+            countDay: 0,
+          },
+          {
+            _id: 'A2gzCYW73',
+            titles_id: '5upcKu5zF',
+            count: 220,
+            countDay: 0,
+          },
+          {
+            _id: 'jm8UqwNkc',
+            titles_id: 'YK_KSzwsG',
+            count: 230,
+            countDay: 0,
+          },
+          {
+            _id: 'XyEw29pmx',
+            titles_id: 'i6c5Dfu-m',
+            count: 240,
+            countDay: 0,
+          },
+          {
+            _id: 'mHcEmf6Se',
+            titles_id: 'dKBIlPEoa',
+            count: 250,
+            countDay: 0,
+          },
+        ],
+        
+      },
+      
+      
+      // ---------------------------------------------
+      //   Goodボタンを押す / good-count-click
+      // ---------------------------------------------
+      
+      {
+        _id: 'lID2jlB6N',
+        type: 'good-count-click',
+        exp: 1,
+        limitDay: 5,
+        limitMonth: 0,
+        limitYear: 0,
+        conditionsArr: [
+          {
+            _id: 'bhtezFPHn',
+            titles_id: 'OvFFDioQV',
+            count: 1,
+            countDay: 0,
+          },
+          {
+            _id: 'Cv_SkmT7b',
+            titles_id: 'MBNo5yFTg',
+            count: 5,
+            countDay: 0,
+          },
+          {
+            _id: '4hUGBPmDa',
+            titles_id: 'yKAZQg45T',
+            count: 10,
+            countDay: 0,
+          },
+          {
+            _id: '7p-eDvX9B',
+            titles_id: 'krhg5hHmV',
+            count: 20,
+            countDay: 0,
+          },
+          {
+            _id: 'AuOckZP_O',
+            titles_id: 'YMqxD6ALt',
+            count: 30,
+            countDay: 0,
+          },
+          {
+            _id: 'gRsjBxW77',
+            titles_id: 'dxDtrrPc7',
+            count: 50,
+            countDay: 0,
+          },
+          {
+            _id: 'vxL9L_ak7',
+            titles_id: 'LBK1jIxgT',
+            count: 100,
+            countDay: 0,
+          },
+          {
+            _id: 'nAJ--EE_-',
+            titles_id: 'wjuY6Q2lk',
+            count: 150,
+            countDay: 0,
+          },
+          {
+            _id: 'UFwZJ7gMV',
+            titles_id: 'ywapJh2Yi',
+            count: 200,
+            countDay: 0,
+          },
+          {
+            _id: '4ergGamok',
+            titles_id: 'kecLQlRQi',
+            count: 250,
+            countDay: 0,
+          },
+          {
+            _id: 'CHA1TJI9x',
+            titles_id: 'aVcpTftl9',
+            count: 300,
+            countDay: 0,
+          },
+          {
+            _id: 'TPeO95XEq',
+            titles_id: 'o1aIdzdBF',
+            count: 350,
+            countDay: 0,
+          },
+          {
+            _id: 'QGUiUV67i',
+            titles_id: '6kHbHpzv8',
+            count: 400,
+            countDay: 0,
+          },
+          {
+            _id: 'lGFnbtWi4',
+            titles_id: 'YFMuKFuQc',
+            count: 450,
+            countDay: 0,
+          },
+          {
+            _id: '_XwctULuo',
+            titles_id: '0w9fjuWVw',
+            count: 500,
+            countDay: 0,
+          },
+          {
+            _id: 'e9mF6lhl1',
+            titles_id: 'Zu1Uq6XIE',
+            count: 550,
+            countDay: 0,
+          },
+        ],
+        
+      },
+      
+      
+      
+      // ---------------------------------------------
+      //   Goodボタンを押される / good-count-clicked
+      // ---------------------------------------------
+      
+      {
+        _id: '6LMHjIeDP',
+        type: 'good-count-clicked',
+        exp: 1,
+        limitDay: 5,
+        limitMonth: 0,
+        limitYear: 0,
+        conditionsArr: [
+          {
+            _id: 'CRjIXFcn3',
+            titles_id: '-qbom3GV8',
+            count: 1,
+            countDay: 0,
+          },
+          {
+            _id: 'dTHjCXS7n',
+            titles_id: 'jni4Si4Hn',
+            count: 5,
+            countDay: 0,
+          },
+          {
+            _id: 'hEa40CPHm',
+            titles_id: 'N46yXHfp6',
+            count: 10,
+            countDay: 0,
+          },
+          {
+            _id: 'sbUziW0WK',
+            titles_id: 've1zL3KLa',
+            count: 20,
+            countDay: 0,
+          },
+          {
+            _id: 'krDg9lqId',
+            titles_id: 'O-cemW2Yj',
+            count: 30,
+            countDay: 0,
+          },
+          {
+            _id: 'B90wZE816',
+            titles_id: 'QNGUdMEvH',
+            count: 50,
+            countDay: 0,
+          },
+          {
+            _id: '1tXkRXFvm',
+            titles_id: 'y4gno22iq',
+            count: 100,
+            countDay: 0,
+          },
+          {
+            _id: 'W07KdhsWq',
+            titles_id: '7F-dv9721',
+            count: 150,
+            countDay: 0,
+          },
+          {
+            _id: 'ySZAOAvx1',
+            titles_id: 'AYZJY5Dmk',
+            count: 200,
+            countDay: 0,
+          },
+          {
+            _id: '1mXA8c6wY',
+            titles_id: 'Q-VdNpq0A',
+            count: 250,
+            countDay: 0,
+          },
+          {
+            _id: 'qecpnNcvU',
+            titles_id: 'OHF_0sr4f',
+            count: 300,
+            countDay: 0,
+          },
+          {
+            _id: 'qMZDyLhhQ',
+            titles_id: '2lp1a9nry',
+            count: 350,
+            countDay: 0,
+          },
+          {
+            _id: 'p4Repl5A8',
+            titles_id: 'sRZIe_DIL',
+            count: 400,
+            countDay: 0,
+          },
+          {
+            _id: '96yJhLzhA',
+            titles_id: 'gwn-HZQud',
+            count: 450,
+            countDay: 0,
+          },
+          {
+            _id: 'yOWgY-WxM',
+            titles_id: 'BIA1DRFjt',
+            count: 500,
+            countDay: 0,
+          },
+          {
+            _id: 'vOJN3blU1',
+            titles_id: 'BNJ30I7Wu',
+            count: 550,
+            countDay: 0,
+          },
+        ],
+        
+      },
+      
+      
+          // {
+          //   _id: '',
+          //   titles_id: '',
+          //   count: 0,
+          //   countDay: 0,
+          // },
+          // {
+          //   _id: '',
+          //   titles_id: '',
+          //   count: 0,
+          //   countDay: 0,
+          // },
+          // {
+          //   _id: '',
+          //   titles_id: '',
+          //   count: 0,
+          //   countDay: 0,
+          // },
+      
+      // ---------------------------------------------
+      //   フォーラム書き込み / forum-count-post
+      // ---------------------------------------------
+      
       {
         _id: 'ZgsxDaKaN',
         type: 'forum-count-post',
-        limitDay: 0,
-        limitMonth: 30,
+        exp: 1,
+        limitDay: 5,
+        limitMonth: 0,
         limitYear: 0,
         conditionsArr: [
           {
             _id: 'L7kIcm4ny',
             titles_id: 'nFJYEhwWB',
-            datetime: '',
             count: 1,
+            countDay: 0,
           },
           {
             _id: 'qvhczmNDa',
             titles_id: 'k4xm8yGJD',
-            datetime: '',
             count: 5,
+            countDay: 0,
           },
           {
             _id: '5CwxDvHtR',
             titles_id: 'ljIghwR69',
-            datetime: '',
             count: 10,
+            countDay: 0,
           },
           {
             _id: 'mSwdldpkC',
             titles_id: 'WJlkVSLub',
-            datetime: '',
             count: 20,
+            countDay: 0,
           },
           {
             _id: 'DYqIyGTOj',
             titles_id: '349Q_q5h8',
-            datetime: '',
             count: 30,
+            countDay: 0,
           },
           {
             _id: 'Qzr2FZS1u',
             titles_id: 'rIK64YljB',
-            datetime: '',
             count: 40,
+            countDay: 0,
           },
           {
             _id: 'pAK_y84br',
             titles_id: 'DQ9iH_r31',
-            datetime: '',
             count: 50,
+            countDay: 0,
           },
           {
             _id: 'BwgfIetVr',
             titles_id: 'RTMuPDYkt',
-            datetime: '',
             count: 60,
+            countDay: 0,
           },
           // {
           //   _id: 'P7eX2W7wU',
@@ -525,6 +1279,76 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       //'2018-01-01T00:00:00.000Z'
       
+      
+      // ---------------------------------------------
+      //   フォローされる / followed-count
+      // ---------------------------------------------
+      
+      {
+        _id: 'V8iU147M5',
+        type: 'followed-count',
+        exp: 1,
+        limitDay: 5,
+        limitMonth: 0,
+        limitYear: 0,
+        conditionsArr: [
+          {
+            _id: 'E1euCTkWl',
+            titles_id: '7YCic-Yds',
+            count: 1,
+            countDay: 0,
+          },
+          {
+            _id: 'MxvcTJcnp',
+            titles_id: 'p-XWgcOtK',
+            count: 5,
+            countDay: 0,
+          },
+          {
+            _id: '9yR48O2uq',
+            titles_id: '8Fbta4f9O',
+            count: 10,
+            countDay: 0,
+          },
+          {
+            _id: 'rC8aaBIm3',
+            titles_id: 'g65dAP992',
+            count: 50,
+            countDay: 0,
+          },
+          {
+            _id: 'aQ1RZ2-y6',
+            titles_id: 'Lcqo1Q7Up',
+            count: 100,
+            countDay: 0,
+          },
+          {
+            _id: 'lCtOeCTaG',
+            titles_id: '8Z3SDtXgN',
+            count: 200,
+            countDay: 0,
+          },
+          {
+            _id: 'T48vRrIDx',
+            titles_id: 'wQ-ywcRpP',
+            count: 300,
+            countDay: 0,
+          },
+          {
+            _id: 'KVfmGZ6xb',
+            titles_id: 'DrgkgbsbH',
+            count: 400,
+            countDay: 0,
+          },
+          {
+            _id: 'a9LQjhgWy',
+            titles_id: 'Rb-hOZVrb',
+            count: 500,
+            countDay: 0,
+          },
+        ],
+        
+      },
       
       
       
@@ -551,6 +1375,11 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     saveArr = [
       
+      
+      // ---------------------------------------------
+      //   special
+      // ---------------------------------------------
+      
       {
         _id: 'MuK2dKVpn',
         urlID: 'MuK2dKVpn',
@@ -560,71 +1389,863 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       
       // ---------------------------------------------
+      //   level-count
+      // ---------------------------------------------
+      
+      {
+        _id: '065apjMq1',
+        urlID: '065apjMq1',
+        language: 'ja',
+        name: 'チキン',
+      },
+      
+      {
+        _id: 'oZlexPqhS',
+        urlID: 'oZlexPqhS',
+        language: 'ja',
+        name: '子犬',
+      },
+      
+      {
+        _id: 'GjGPfC8e1',
+        urlID: 'GjGPfC8e1',
+        language: 'ja',
+        name: 'うさぎ',
+      },
+      
+      {
+        _id: 'MYLwdOLD1',
+        urlID: 'MYLwdOLD1',
+        language: 'ja',
+        name: '村人',
+      },
+      
+      {
+        _id: 'XdNCO6eIe',
+        urlID: 'XdNCO6eIe',
+        language: 'ja',
+        name: 'お調子者',
+      },
+      
+      {
+        _id: '0lmhBTKPF',
+        urlID: '0lmhBTKPF',
+        language: 'ja',
+        name: 'キュート',
+      },
+      
+      {
+        _id: 'VN3reZuRi',
+        urlID: 'VN3reZuRi',
+        language: 'ja',
+        name: 'スクラップ',
+      },
+      
+      {
+        _id: 'NwRla-9WG',
+        urlID: 'NwRla-9WG',
+        language: 'ja',
+        name: '冒険者',
+      },
+      
+      {
+        _id: 'C00pgN_Xn',
+        urlID: 'C00pgN_Xn',
+        language: 'ja',
+        name: '型落ち',
+      },
+      
+      {
+        _id: 'FM8hGmeqv',
+        urlID: 'FM8hGmeqv',
+        language: 'ja',
+        name: 'ギャル',
+      },
+      
+      {
+        _id: 'BWqIWFilB',
+        urlID: 'BWqIWFilB',
+        language: 'ja',
+        name: '熱血漢',
+      },
+      
+      {
+        _id: 'AW2KhpcxM',
+        urlID: 'AW2KhpcxM',
+        language: 'ja',
+        name: 'VIP',
+      },
+      
+      {
+        _id: 'nxZrZpuiy',
+        urlID: 'nxZrZpuiy',
+        language: 'ja',
+        name: 'メンヘラ',
+      },
+      
+      {
+        _id: 'h5b34wdsc',
+        urlID: 'h5b34wdsc',
+        language: 'ja',
+        name: 'お尋ね者',
+      },
+      
+      {
+        _id: 'QEd4nWllx',
+        urlID: 'QEd4nWllx',
+        language: 'ja',
+        name: 'イエスマン',
+      },
+      
+      {
+        _id: 'YC0hOO6mu',
+        urlID: 'YC0hOO6mu',
+        language: 'ja',
+        name: '風紀委員',
+      },
+      
+      {
+        _id: 'pRR5Qc8oO',
+        urlID: 'pRR5Qc8oO',
+        language: 'ja',
+        name: 'ラブリー',
+      },
+      
+      {
+        _id: '-VG1v7kcD',
+        urlID: '-VG1v7kcD',
+        language: 'ja',
+        name: '逃亡者',
+      },
+      
+      {
+        _id: 'kdEKzT2du',
+        urlID: 'kdEKzT2du',
+        language: 'ja',
+        name: 'バトルクライ',
+      },
+      
+      {
+        _id: 'nowtpqr6_',
+        urlID: 'nowtpqr6_',
+        language: 'ja',
+        name: '秘密兵器',
+      },
+      
+      {
+        _id: 'yAGGRAkFG',
+        urlID: 'yAGGRAkFG',
+        language: 'ja',
+        name: 'もふもふ',
+      },
+      
+      {
+        _id: 'T8yCXNXn1',
+        urlID: 'T8yCXNXn1',
+        language: 'ja',
+        name: 'サイレント',
+      },
+      
+      {
+        _id: 'jDUBpaZs4',
+        urlID: 'jDUBpaZs4',
+        language: 'ja',
+        name: 'ジョーカー',
+      },
+      
+      {
+        _id: '2ZvB6qs8O',
+        urlID: '2ZvB6qs8O',
+        language: 'ja',
+        name: '天下無双',
+      },
+      
+      {
+        _id: 'gpABkVPwE',
+        urlID: 'gpABkVPwE',
+        language: 'ja',
+        name: 'サイコパス',
+      },
+      
+      {
+        _id: 'RZmgRzPkb',
+        urlID: 'RZmgRzPkb',
+        language: 'ja',
+        name: 'スカイハイ',
+      },
+      
+      {
+        _id: 'OQbA1CIGZ',
+        urlID: 'OQbA1CIGZ',
+        language: 'ja',
+        name: '海賊王',
+      },
+      
+      {
+        _id: '0c00gASC1',
+        urlID: '0c00gASC1',
+        language: 'ja',
+        name: 'エンペラー',
+      },
+      
+      {
+        _id: 'N1uUsUmpP',
+        urlID: 'N1uUsUmpP',
+        language: 'ja',
+        name: '宇宙人',
+      },
+      
+      {
+        _id: '9V_XbaxwZ',
+        urlID: '9V_XbaxwZ',
+        language: 'ja',
+        name: 'デンジャラスクイーン',
+      },
+      
+      {
+        _id: 'TrSEsmN7h',
+        urlID: 'TrSEsmN7h',
+        language: 'ja',
+        name: 'レジェンド',
+      },
+      
+      {
+        _id: 'XkgxqdmPp',
+        urlID: 'XkgxqdmPp',
+        language: 'ja',
+        name: '不死',
+      },
+      
+      {
+        _id: 'xVu0pGDtI',
+        urlID: 'xVu0pGDtI',
+        language: 'ja',
+        name: '異界の扉',
+      },
+      
+      {
+        _id: '3hdye-b-T',
+        urlID: '3hdye-b-T',
+        language: 'ja',
+        name: 'ファッションリーダー',
+      },
+      
+      {
+        _id: 'gmLjWaOPk',
+        urlID: 'gmLjWaOPk',
+        language: 'ja',
+        name: '伝説のヒーロー',
+      },
+      
+      {
+        _id: '5WLv0C11_',
+        urlID: '5WLv0C11_',
+        language: 'ja',
+        name: 'イージス',
+      },
+      
+      {
+        _id: '0I1ULpaSC',
+        urlID: '0I1ULpaSC',
+        language: 'ja',
+        name: 'お掃除ロボ',
+      },
+      
+      {
+        _id: 'jl3skqUCw',
+        urlID: 'jl3skqUCw',
+        language: 'ja',
+        name: 'クッキー',
+      },
+      
+      {
+        _id: 'lMahzRskP',
+        urlID: 'lMahzRskP',
+        language: 'ja',
+        name: '冥界の王',
+      },
+      
+      {
+        _id: 'd5wM-NjJ6',
+        urlID: 'd5wM-NjJ6',
+        language: 'ja',
+        name: '混沌の女王',
+      },
+      
+      {
+        _id: 'tWuUZX5gC',
+        urlID: 'tWuUZX5gC',
+        language: 'ja',
+        name: 'ブルーローズ',
+      },
+      
+      {
+        _id: 'quNmsBMAv',
+        urlID: 'quNmsBMAv',
+        language: 'ja',
+        name: 'ノブレス・オブリージュ',
+      },
+      
+      {
+        _id: 'kzPLdbzW8',
+        urlID: 'kzPLdbzW8',
+        language: 'ja',
+        name: '魔法少女',
+      },
+      
+      
+      // ---------------------------------------------
+      //   account-count-day
+      // ---------------------------------------------
+      
+      {
+        _id: 'rYAf6jFYK',
+        urlID: 'rYAf6jFYK',
+        language: 'ja',
+        name: 'ランナー',
+      },
+      
+      {
+        _id: '8z7LyZQ_5',
+        urlID: '8z7LyZQ_5',
+        language: 'ja',
+        name: 'ゲーマー',
+      },
+      
+      {
+        _id: 'W8sbxpWTe',
+        urlID: 'W8sbxpWTe',
+        language: 'ja',
+        name: '鉄人',
+      },
+      
+      {
+        _id: 'QZbmznsqU',
+        urlID: 'QZbmznsqU',
+        language: 'ja',
+        name: '古老',
+      },
+      
+      {
+        _id: 'LOUgnlj36',
+        urlID: 'LOUgnlj36',
+        language: 'ja',
+        name: '求道者',
+      },
+      
+      {
+        _id: 'L_p3lJfig',
+        urlID: 'L_p3lJfig',
+        language: 'ja',
+        name: 'タイムイーター',
+      },
+      
+      {
+        _id: 'CBZfxt-5L',
+        urlID: 'CBZfxt-5L',
+        language: 'ja',
+        name: '永遠の旅人',
+      },
+      
+      {
+        _id: 'yHSTXY0Uv',
+        urlID: 'yHSTXY0Uv',
+        language: 'ja',
+        name: '無限回廊',
+      },
+      
+      {
+        _id: 'DLV53cJSO',
+        urlID: 'DLV53cJSO',
+        language: 'ja',
+        name: 'タイムトラベラー',
+      },
+      
+      
+      // ---------------------------------------------
+      //   login-count
+      // ---------------------------------------------
+      
+      {
+        _id: 'tegNhho16',
+        urlID: 'tegNhho16',
+        language: 'ja',
+        name: 'スライム',
+      },
+      
+      {
+        _id: 'xvY5bY9yH',
+        urlID: 'xvY5bY9yH',
+        language: 'ja',
+        name: 'ピクシー',
+      },
+      
+      {
+        _id: 'GPoSK78Rj',
+        urlID: 'GPoSK78Rj',
+        language: 'ja',
+        name: 'マーメイド',
+      },
+      
+      {
+        _id: 'TIucZj9SX',
+        urlID: 'TIucZj9SX',
+        language: 'ja',
+        name: 'エルフ',
+      },
+      
+      {
+        _id: 'zqAxK8mRN',
+        urlID: 'zqAxK8mRN',
+        language: 'ja',
+        name: 'ドワーフ',
+      },
+      
+      {
+        _id: 'KIYiKgZFQ',
+        urlID: 'KIYiKgZFQ',
+        language: 'ja',
+        name: 'ゴースト',
+      },
+      
+      {
+        _id: 'gXzXHvnPG',
+        urlID: 'gXzXHvnPG',
+        language: 'ja',
+        name: 'トロール',
+      },
+      
+      {
+        _id: 'CF-BqxD_-',
+        urlID: 'CF-BqxD_-',
+        language: 'ja',
+        name: 'セイレーン',
+      },
+      
+      {
+        _id: '4CjPpkvKH',
+        urlID: '4CjPpkvKH',
+        language: 'ja',
+        name: 'サキュバス',
+      },
+      
+      {
+        _id: 'd1Yv3ixS_',
+        urlID: 'd1Yv3ixS_',
+        language: 'ja',
+        name: 'ヴァンパイア',
+      },
+      
+      {
+        _id: 'W71yk14CX',
+        urlID: 'W71yk14CX',
+        language: 'ja',
+        name: 'ユニコーン',
+      },
+      
+      {
+        _id: 'v4IWCI0K9',
+        urlID: 'v4IWCI0K9',
+        language: 'ja',
+        name: 'ケルベロス',
+      },
+      
+      {
+        _id: '-RbTjxeMB',
+        urlID: '-RbTjxeMB',
+        language: 'ja',
+        name: 'メデューサ',
+      },
+      
+      {
+        _id: 'P81q63Gax',
+        urlID: 'P81q63Gax',
+        language: 'ja',
+        name: 'フェニックス',
+      },
+      
+      {
+        _id: 'JQ4EdkmVY',
+        urlID: 'JQ4EdkmVY',
+        language: 'ja',
+        name: 'ドラゴン',
+      },
+      
+      {
+        _id: 'u5khnDn8e',
+        urlID: 'u5khnDn8e',
+        language: 'ja',
+        name: 'ゾンビ',
+      },
+      
+      {
+        _id: 'wVfpH2aLB',
+        urlID: 'wVfpH2aLB',
+        language: 'ja',
+        name: 'アンデッド',
+      },
+      
+      {
+        _id: 'jmoIcgxpY',
+        urlID: 'jmoIcgxpY',
+        language: 'ja',
+        name: 'デビル',
+      },
+      
+      {
+        _id: 'yfbgYncsB',
+        urlID: 'yfbgYncsB',
+        language: 'ja',
+        name: '妖精',
+      },
+      
+      {
+        _id: 'nLvby1IsJ',
+        urlID: 'nLvby1IsJ',
+        language: 'ja',
+        name: '精霊',
+      },
+      
+      {
+        _id: '_vXx7_K4G',
+        urlID: '_vXx7_K4G',
+        language: 'ja',
+        name: '天使',
+      },
+      
+      {
+        _id: 'Jvf9Lijjm',
+        urlID: 'Jvf9Lijjm',
+        language: 'ja',
+        name: '堕天使',
+      },
+      
+      {
+        _id: 'eyvU_SACO',
+        urlID: 'eyvU_SACO',
+        language: 'ja',
+        name: '魔王',
+      },
+      
+      {
+        _id: '5upcKu5zF',
+        urlID: '5upcKu5zF',
+        language: 'ja',
+        name: '死神',
+      },
+      
+      {
+        _id: 'YK_KSzwsG',
+        urlID: 'YK_KSzwsG',
+        language: 'ja',
+        name: '魔神',
+      },
+      
+      {
+        _id: 'i6c5Dfu-m',
+        urlID: 'i6c5Dfu-m',
+        language: 'ja',
+        name: '貧乏神',
+      },
+      
+      {
+        _id: 'dKBIlPEoa',
+        urlID: 'dKBIlPEoa',
+        language: 'ja',
+        name: '福の神',
+      },
+      
+      
+      // ---------------------------------------------
       //   good-count-click
       // ---------------------------------------------
       
       {
-        _id: '7YCic-Yds',
-        urlID: '7YCic-Yds',
+        _id: 'OvFFDioQV',
+        urlID: 'OvFFDioQV',
         language: 'ja',
-        name: '遊び人',
+        name: '剣士',
       },
       
       {
-        _id: 'p-XWgcOtK',
-        urlID: 'p-XWgcOtK',
+        _id: 'MBNo5yFTg',
+        urlID: 'MBNo5yFTg',
         language: 'ja',
-        name: 'ピエロ',
+        name: 'ウォーリアー',
       },
       
       {
-        _id: '8Fbta4f9O',
-        urlID: '8Fbta4f9O',
+        _id: 'yKAZQg45T',
+        urlID: 'yKAZQg45T',
         language: 'ja',
-        name: '人気者',
+        name: 'ランサー',
       },
       
       {
-        _id: 'g65dAP992',
-        urlID: 'g65dAP992',
+        _id: 'krhg5hHmV',
+        urlID: 'krhg5hHmV',
         language: 'ja',
-        name: 'アイドル',
+        name: 'アーチャー',
       },
       
       {
-        _id: 'Lcqo1Q7Up',
-        urlID: 'Lcqo1Q7Up',
+        _id: 'YMqxD6ALt',
+        urlID: 'YMqxD6ALt',
         language: 'ja',
-        name: 'スーパースター',
+        name: '騎士',
       },
       
       {
-        _id: '8Z3SDtXgN',
-        urlID: '8Z3SDtXgN',
+        _id: 'dxDtrrPc7',
+        urlID: 'dxDtrrPc7',
         language: 'ja',
-        name: '教祖様',
+        name: '盗賊',
       },
       
       {
-        _id: 'wQ-ywcRpP',
-        urlID: 'wQ-ywcRpP',
+        _id: 'LBK1jIxgT',
+        urlID: 'LBK1jIxgT',
         language: 'ja',
-        name: 'カリスマ',
+        name: '戦士',
       },
       
       {
-        _id: 'DrgkgbsbH',
-        urlID: 'DrgkgbsbH',
+        _id: 'wjuY6Q2lk',
+        urlID: 'wjuY6Q2lk',
         language: 'ja',
-        name: '預言者',
+        name: '武闘家',
       },
       
       {
-        _id: 'Rb-hOZVrb',
-        urlID: 'Rb-hOZVrb',
+        _id: 'ywapJh2Yi',
+        urlID: 'ywapJh2Yi',
         language: 'ja',
-        name: '救世主',
+        name: '勇者',
       },
+      
+      {
+        _id: 'kecLQlRQi',
+        urlID: 'kecLQlRQi',
+        language: 'ja',
+        name: '魔物使い',
+      },
+      
+      {
+        _id: 'aVcpTftl9',
+        urlID: 'aVcpTftl9',
+        language: 'ja',
+        name: 'バーサーカー',
+      },
+      
+      {
+        _id: 'o1aIdzdBF',
+        urlID: 'o1aIdzdBF',
+        language: 'ja',
+        name: '竜騎士',
+      },
+      
+      {
+        _id: '6kHbHpzv8',
+        urlID: '6kHbHpzv8',
+        language: 'ja',
+        name: 'パラディン',
+      },
+      
+      {
+        _id: 'YFMuKFuQc',
+        urlID: 'YFMuKFuQc',
+        language: 'ja',
+        name: 'アサシン',
+      },
+      
+      {
+        _id: '0w9fjuWVw',
+        urlID: '0w9fjuWVw',
+        language: 'ja',
+        name: '侍',
+      },
+      
+      {
+        _id: 'Zu1Uq6XIE',
+        urlID: 'Zu1Uq6XIE',
+        language: 'ja',
+        name: '忍者',
+      },
+      
+      
+      // ---------------------------------------------
+      //   good-count-clicked
+      // ---------------------------------------------
+      
+      {
+        _id: '-qbom3GV8',
+        urlID: '-qbom3GV8',
+        language: 'ja',
+        name: '商人',
+      },
+      
+      {
+        _id: 'jni4Si4Hn',
+        urlID: 'jni4Si4Hn',
+        language: 'ja',
+        name: '鍛冶屋',
+      },
+      
+      {
+        _id: 'N46yXHfp6',
+        urlID: 'N46yXHfp6',
+        language: 'ja',
+        name: '踊り子',
+      },
+      
+      {
+        _id: 've1zL3KLa',
+        urlID: 've1zL3KLa',
+        language: 'ja',
+        name: '吟遊詩人',
+      },
+      
+      {
+        _id: 'O-cemW2Yj',
+        urlID: 'O-cemW2Yj',
+        language: 'ja',
+        name: '魔法使い',
+      },
+      
+      {
+        _id: 'QNGUdMEvH',
+        urlID: 'QNGUdMEvH',
+        language: 'ja',
+        name: '僧侶',
+      },
+      
+      {
+        _id: 'y4gno22iq',
+        urlID: 'y4gno22iq',
+        language: 'ja',
+        name: '召喚士',
+      },
+      
+      {
+        _id: '7F-dv9721',
+        urlID: '7F-dv9721',
+        language: 'ja',
+        name: '占い師',
+      },
+      
+      {
+        _id: 'AYZJY5Dmk',
+        urlID: 'AYZJY5Dmk',
+        language: 'ja',
+        name: '巫女',
+      },
+      
+      {
+        _id: 'Q-VdNpq0A',
+        urlID: 'Q-VdNpq0A',
+        language: 'ja',
+        name: '聖職者',
+      },
+      
+      {
+        _id: 'OHF_0sr4f',
+        urlID: 'OHF_0sr4f',
+        language: 'ja',
+        name: '呪術師',
+      },
+      
+      {
+        _id: '2lp1a9nry',
+        urlID: '2lp1a9nry',
+        language: 'ja',
+        name: '錬金術師',
+      },
+      
+      {
+        _id: 'sRZIe_DIL',
+        urlID: 'sRZIe_DIL',
+        language: 'ja',
+        name: 'ビショップ',
+      },
+      
+      {
+        _id: 'gwn-HZQud',
+        urlID: 'gwn-HZQud',
+        language: 'ja',
+        name: '魔法戦士',
+      },
+      
+      {
+        _id: 'BIA1DRFjt',
+        urlID: 'BIA1DRFjt',
+        language: 'ja',
+        name: 'ネクロマンサー',
+      },
+      
+      {
+        _id: 'BNJ30I7Wu',
+        urlID: 'BNJ30I7Wu',
+        language: 'ja',
+        name: '魔女',
+      },
+      
+      
+      
+      // {
+      //   _id: '',
+      //   urlID: '',
+      //   language: 'ja',
+      //   name: '',
+      // },
+      
+      // {
+      //   _id: '',
+      //   urlID: '',
+      //   language: 'ja',
+      //   name: '',
+      // },
+      
+      // {
+      //   _id: '',
+      //   urlID: '',
+      //   language: 'ja',
+      //   name: '',
+      // },
+      
+      // {
+      //   _id: '',
+      //   urlID: '',
+      //   language: 'ja',
+      //   name: '',
+      // },
+      
+      // {
+      //   _id: '',
+      //   urlID: '',
+      //   language: 'ja',
+      //   name: '',
+      // },
+      
+      // {
+      //   _id: '',
+      //   urlID: '',
+      //   language: 'ja',
+      //   name: '',
+      // },
+      
+      // {
+      //   _id: '',
+      //   urlID: '',
+      //   language: 'ja',
+      //   name: '',
+      // },
+      
+      // {
+      //   _id: '',
+      //   urlID: '',
+      //   language: 'ja',
+      //   name: '',
+      // },
       
       
       // ---------------------------------------------
@@ -713,6 +2334,77 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         name: 'スパイス',
       },
+      
+      
+      // ---------------------------------------------
+      //   followed-count
+      // ---------------------------------------------
+      
+      {
+        _id: '7YCic-Yds',
+        urlID: '7YCic-Yds',
+        language: 'ja',
+        name: '遊び人',
+      },
+      
+      {
+        _id: 'p-XWgcOtK',
+        urlID: 'p-XWgcOtK',
+        language: 'ja',
+        name: 'ピエロ',
+      },
+      
+      {
+        _id: '8Fbta4f9O',
+        urlID: '8Fbta4f9O',
+        language: 'ja',
+        name: '人気者',
+      },
+      
+      {
+        _id: 'g65dAP992',
+        urlID: 'g65dAP992',
+        language: 'ja',
+        name: 'アイドル',
+      },
+      
+      {
+        _id: 'Lcqo1Q7Up',
+        urlID: 'Lcqo1Q7Up',
+        language: 'ja',
+        name: 'スーパースター',
+      },
+      
+      {
+        _id: '8Z3SDtXgN',
+        urlID: '8Z3SDtXgN',
+        language: 'ja',
+        name: '教祖様',
+      },
+      
+      {
+        _id: 'wQ-ywcRpP',
+        urlID: 'wQ-ywcRpP',
+        language: 'ja',
+        name: 'カリスマ',
+      },
+      
+      {
+        _id: 'DrgkgbsbH',
+        urlID: 'DrgkgbsbH',
+        language: 'ja',
+        name: '預言者',
+      },
+      
+      {
+        _id: 'Rb-hOZVrb',
+        urlID: 'Rb-hOZVrb',
+        language: 'ja',
+        name: '救世主',
+      },
+      
+      
+      
       
     ];
     

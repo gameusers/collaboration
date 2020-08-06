@@ -15,7 +15,6 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-// import moment from 'moment';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -206,7 +205,7 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Component - Achievements Chip
+  //   Component - Achievement
   // --------------------------------------------------
   
   const componentAchievementsArr = [];
@@ -229,6 +228,27 @@ const Component = (props) => {
         
       </div>
     );
+    
+  }
+  
+  
+  let componentAchievement = '';
+  
+  if (componentAchievementsArr.length > 0) {
+    
+    componentAchievement =
+      <div
+        css={css`
+          display: flex;
+          flex-flow: row wrap;
+          margin: 12px 6px 0;
+        `}
+      >
+        
+        {componentAchievementsArr}
+        
+      </div>
+    ;
     
   }
   
@@ -267,7 +287,7 @@ const Component = (props) => {
             position: absolute;
             right: 15px;
             bottom: 15px;
-            padding: 0 0 6px 0;
+            ${(admin && componentAchievement) ? 'padding: 0 0 12px 0;' : 'padding: 0 0 6px 0;'}
           `}
         >
           
@@ -327,17 +347,7 @@ const Component = (props) => {
           
           
           
-          <div
-            css={css`
-              display: flex;
-              flex-flow: row wrap;
-              ${admin ? 'margin: 12px 6px 8px;' : 'margin: 12px 6px 0;'}
-            `}
-          >
-            
-            {componentAchievementsArr}
-            
-          </div>
+          {componentAchievement}
           
           
           

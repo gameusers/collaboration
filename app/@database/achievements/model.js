@@ -28,7 +28,7 @@ const SchemaAchievements = require('./schema');
 const SchemaTitles = require('../titles/schema');
 
 const ModelExperiences = require('../experiences/model');
-// const ModelTitles = require('../titles/model');
+const ModelTitles = require('../titles/model');
 
 
 
@@ -312,7 +312,6 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  */
 const findForEdit = async ({
   
-  // req,
   localeObj,
   loginUsers_id,
   
@@ -355,78 +354,15 @@ const findForEdit = async ({
     //   DB find / titles
     // --------------------------------------------------
     
-    const docTitlesArr = await SchemaTitles.find().exec();
+    const docTitlesArr = await ModelTitles.find({
+      
+      conditionObj: {
+        language
+      }
+      
+    });
     
-    
-    
-    
-    // --------------------------------------------------
-    //   Aggregation
-    // --------------------------------------------------
-    
-    // const docArr = await SchemaAchievements.aggregate([
-      
-      
-    //   // --------------------------------------------------
-    //   //   titles
-    //   // --------------------------------------------------
-      
-    //   {
-    //     $lookup:
-    //       {
-    //         from: 'titles',
-    //         let: { letTitles_id: '$conditionsArr.titles_id' },
-    //         pipeline: [
-    //           {
-    //             $match: {
-    //               $expr: {
-    //                 $and: [
-    //                   { $eq: ['$language', language] },
-    //                   { $in: ['$_id', '$$letTitles_id'] },
-    //                   // { $eq: ['$_id', '$$letTitles_id'] }
-    //                 ]
-    //               },
-    //             }
-    //           },
-    //           // {
-    //           //   $group: {
-    //           //     _id: '$_id',
-    //           //     // name: '$name',
-    //           //   }
-    //           // },
-    //           {
-    //             $project: {
-    //               // _id: 0,
-    //               urlID: 1,
-    //               name: 1,
-    //             }
-    //           }
-    //         ],
-    //         as: 'titlesArr'
-    //       }
-    //   },
-      
-    //   // {
-    //   //   $unwind: {
-    //   //     path: '$titlesObj',
-    //   //     preserveNullAndEmptyArrays: true,
-    //   //   }
-    //   // },
-      
-      
-    //   // --------------------------------------------------
-    //   //   $project
-    //   // --------------------------------------------------
-      
-    //   {
-    //     $project: {
-    //       _id: 0,
-    //       __v: 0,
-    //     }
-    //   },
-      
-      
-    // ]).exec();
+    // const docTitlesArr = await SchemaTitles.find().exec();
     
     
     
@@ -437,8 +373,9 @@ const findForEdit = async ({
     
     const experiencesObj = {
       
-      achievementsArr: lodashGet(docExperiencesObj, ['achievementsArr'], []),
-      titlesArr: lodashGet(docExperiencesObj, ['titlesArr'], []),
+      historiesArr: lodashGet(docExperiencesObj, ['historiesArr'], []),
+      acquiredTitles_idsArr: lodashGet(docExperiencesObj, ['acquiredTitles_idsArr'], []),
+      selectedTitles_idsArr: lodashGet(docExperiencesObj, ['selectedTitles_idsArr'], []),
       // titles_idsArr: lodashGet(docExperiencesObj, ['titles_idsArr'], []),
       
     };
@@ -515,7 +452,7 @@ const findForEdit = async ({
     return {
       
       experiencesObj,
-      titles_idsArr: lodashGet(docExperiencesObj, ['titles_idsArr'], []),
+      // selectedTitles_idsArr: lodashGet(docExperiencesObj, ['selectedTitles_idsArr'], []),
       achievementsArr: docAchievementsArr,
       titlesObj,
       

@@ -34,6 +34,8 @@ import lodashCloneDeep from 'lodash/cloneDeep';
 //   Material UI
 // ---------------------------------------------
 
+import { makeStyles } from '@material-ui/core/styles';
+
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import AppBar from '@material-ui/core/AppBar';
@@ -44,6 +46,9 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Paper from '@material-ui/core/Paper';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
 
 
 // ---------------------------------------------
@@ -51,6 +56,8 @@ import Paper from '@material-ui/core/Paper';
 // ---------------------------------------------
 
 import IconClose from '@material-ui/icons/Close';
+import IconExpandLess from '@material-ui/icons/ExpandLess';
+import IconExpandMore from '@material-ui/icons/ExpandMore';
 
 
 // ---------------------------------------------
@@ -87,11 +94,10 @@ import TitleChip from 'app/common/title/v2/chip.js';
 const cssHeadingBlue = css`
   color: #ffffff;
 	font-size: 16px;
-	line-height: 20px;
 	position: relative;
-	padding: 10px;
 	background: #4169e1;
 	box-shadow: 10px 0 0 0 #4169e1, -10px 0 0 0 #4169e1, 0 3px 3px 0 rgba(0,0,0,0.1);
+	padding: 10px;
   
   &:before {
     content: " ";
@@ -124,11 +130,10 @@ const cssHeadingBlue = css`
 const cssHeadingRed = css`
   color: #ffffff;
 	font-size: 16px;
-	line-height: 20px;
 	position: relative;
-	padding: 10px;
 	background: #ff0033;
 	box-shadow: 10px 0 0 0 #ff0033, -10px 0 0 0 #ff0033, 0 3px 3px 0 rgba(0,0,0,0.1);
+	padding: 10px;
   
   &:before {
     content: " ";
@@ -158,6 +163,185 @@ const cssHeadingRed = css`
 `;
 
 
+// --------------------------------------------------
+//   Material UI Style Overrides
+//   https://material-ui.com/styles/basics/
+// --------------------------------------------------
+
+const useStyles = makeStyles({
+  
+  root: {
+    minHeight: 'inherit !important',
+    // minHeight: '64px !important',
+    // margin: '0 !important',
+  },
+  
+  content: {
+    // minHeight: 'inherit !important',
+    // minHeight: '64px !important',
+    margin: '0 !important',
+  },
+  
+  expanded: {
+    minHeight: 'inherit !important',
+    // minHeight: '32px !important',
+    // minHeight: '48px !important',
+    // margin: '0 !important',
+  },
+  
+});
+
+
+
+
+
+
+// --------------------------------------------------
+//   Components
+// --------------------------------------------------
+
+const ComponentPanel = (props) => {
+  
+  
+  // --------------------------------------------------
+  //   props
+  // --------------------------------------------------
+  
+  const {
+    
+    heading,
+    defaultExpanded = true,
+    
+  } = props;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Hooks
+  // --------------------------------------------------
+  
+  const intl = useIntl();
+  const classes = useStyles();
+  const [panelExpanded, setPanelExpanded] = useState(defaultExpanded);
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+  
+  
+  useEffect(() => {
+    
+    setButtonDisabled(false);
+    
+  }, []);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /app/common/layout/v2/dialog-achievement.js
+  // `);
+  
+  // console.log(chalk`
+  //   open: {green ${open}}
+  // `);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return (
+    <Accordion
+      css={css`
+        margin: 24px 0 0 0 !important;
+      `}
+      expanded={panelExpanded}
+    >
+      
+      
+      {/* Heading */}
+      <AccordionSummary
+        css={cssHeadingBlue}
+        classes={{
+          root: classes.root,
+          expanded: classes.expanded,
+          content: classes.content,
+        }}
+      >
+        
+        
+        <h2
+          // css={cssHeadingBlue}
+          css={css`
+            padding-top: 2px;
+          `}
+        >
+          {heading}
+        </h2>
+        
+        
+        {/* Expansion Button */}
+        <div
+          css={css`
+            margin: 0 0 0 auto;
+            padding: 0;
+          `}
+        >
+          <IconButton
+            css={css`
+              && {
+                color: white;
+                margin: 0;
+                padding: 4px;
+              }
+            `}
+            onClick={() => setPanelExpanded(!panelExpanded)}
+            aria-expanded={panelExpanded}
+            aria-label="Show more"
+            disabled={buttonDisabled}
+          >
+            {panelExpanded ? (
+              <IconExpandLess />
+            ) : (
+              <IconExpandMore />
+            )}
+          </IconButton>
+        </div>
+        
+        
+      </AccordionSummary>
+      
+      
+      
+      
+      {/* Contents */}
+      <AccordionDetails
+        css={css`
+          display: flex;
+          flex-flow: column wrap;
+          padding: 0 0 12px 12px;
+        `}
+      >
+        
+        
+        {/* Contents */}
+        {props.children}
+        
+        
+      </AccordionDetails>
+      
+      
+    </Accordion>
+  );
+  
+  
+};
 
 
 
@@ -180,13 +364,13 @@ const Component = (props) => {
     handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
-    handleScrollTo,
+    // handleScrollTo,
     dialogAchievementOpen,
     setDialogAchievementOpen,
     dialogAchievementObj,
     // setDialogAchievementObj,
-    dialogAchievementTitles_idsArr,
-    setDialogAchievementTitles_idsArr,
+    dialogAchievementSelectedTitles_idsArr,
+    setDialogAchievementSelectedTitles_idsArr,
     
   } = stateLayout;
   
@@ -261,7 +445,7 @@ const Component = (props) => {
       
       const formDataObj = {
         
-        titles_idsArr: dialogAchievementTitles_idsArr,
+        titles_idsArr: dialogAchievementSelectedTitles_idsArr,
         
       };
       
@@ -322,7 +506,7 @@ const Component = (props) => {
       //   Update
       // ---------------------------------------------
       
-      setDialogAchievementTitles_idsArr(lodashGet(resultObj, ['data'], []));
+      setDialogAchievementSelectedTitles_idsArr(lodashGet(resultObj, ['data'], []));
       
       
       // ---------------------------------------------
@@ -415,7 +599,7 @@ const Component = (props) => {
    */
   const handleAddRemoveTitle = ({ value }) => {
     
-    const clonedArr = lodashCloneDeep(dialogAchievementTitles_idsArr);
+    const clonedArr = lodashCloneDeep(dialogAchievementSelectedTitles_idsArr);
     const arrayIndex = clonedArr.indexOf(value);
     
     if (arrayIndex === -1) {
@@ -428,7 +612,7 @@ const Component = (props) => {
       
     }
     
-    setDialogAchievementTitles_idsArr(clonedArr);
+    setDialogAchievementSelectedTitles_idsArr(clonedArr);
     
     
     // console.log(`
@@ -456,7 +640,7 @@ const Component = (props) => {
   //   props
   // --------------------------------------------------
   
-  const experiencesAchievementsArr = lodashGet(dialogAchievementObj , ['experiencesObj', 'achievementsArr'], []);
+  const historiesArr = lodashGet(dialogAchievementObj , ['experiencesObj', 'historiesArr'], []);
   const achievementsArr = lodashGet(dialogAchievementObj, ['achievementsArr'], []);
   const titlesObj = lodashGet(dialogAchievementObj, ['titlesObj'], {});
   
@@ -484,7 +668,7 @@ const Component = (props) => {
     const conditionsArr = lodashGet(value1Obj , ['conditionsArr'], []);
     // const titlesArr = lodashGet(value1Obj , ['titlesArr'], []);
     
-    const find1Obj = experiencesAchievementsArr.find((tempObj) => {
+    const find1Obj = historiesArr.find((tempObj) => {
       return tempObj.type === type;
     });
     
@@ -507,16 +691,52 @@ const Component = (props) => {
     
     switch (type) {
       
+      case 'special':
+        
+        heading = 'スペシャル';
+        explanation = '旧Game Usersでアカウントを作成したユーザー。';
+        break;
+      
+      case 'level-count':
+        
+        heading = 'レベルアップ';
+        explanation = 'レベルが上がるとカウントされます。';
+        break;
+        
+      case 'account-count-day':
+        
+        heading = 'アカウント作成';
+        explanation = 'アカウントを作成してから特定の日数が経過。';
+        break;
+      
+      case 'login-count':
+        
+        heading = 'ログイン回数';
+        explanation = 'ログインするとカウントされます。ログイン状態が継続している場合は、毎日サイトにアクセスするだけでカウントされます。ログインしなおす必要はありません。';
+        break;
+        
       case 'good-count-click':
         
         heading = 'Goodボタンを押す';
         explanation = 'フォーラムのGoodボタンを押すとカウントされます。';
         break;
         
+      case 'good-count-clicked':
+        
+        heading = 'Goodボタンを押される';
+        explanation = 'フォーラムのGoodボタンを押されるとカウントされます。';
+        break;
+        
       case 'forum-count-post':
         
         heading = 'フォーラムに書き込む';
         explanation = 'ゲームコミュニティ、ユーザーコミュニティのフォーラムに書き込むとカウントされます。';
+        break;
+        
+      case 'followed-count':
+        
+        heading = 'フォローされる';
+        explanation = '他のユーザーにフォローされるとカウントされます。';
         break;
         
     }
@@ -533,6 +753,14 @@ const Component = (props) => {
     if (limitDay) {
       
       limit = `1日に${limitDay}回まで`;
+      
+    } else if (limitMonth) {
+      
+      limit = `1ヶ月に${limitMonth}回まで`;
+      
+    } else if (limitYear) {
+      
+      limit = `1年に${limitYear}回まで`;
       
     }
     
@@ -555,15 +783,44 @@ const Component = (props) => {
       // --------------------------------------------------
       
       const titles_id = lodashGet(value2Obj , ['titles_id'], '');
-      // const datetime = lodashGet(value2Obj , ['datetime'], '');
       const count = lodashGet(value2Obj , ['count'], 1);
-      
-      if (countValid >= count) {
-        activeStep = index2;
-      }
-      
+      const countDay = lodashGet(value2Obj , ['countDay'], 1);
       const urlID = lodashGet(titlesObj , [titles_id, 'urlID'], '');
       const name = lodashGet(titlesObj , [titles_id, 'name'], '');
+      
+      
+      // 何も達成していない場合
+      if (countValid === 0) {
+        
+        activeStep = -1;
+        
+      } else if (countValid >= count) {
+        
+        activeStep = index2;
+        
+        // 最後まで実績を達成した場合
+        if (conditionsArr.length - 1 === index2) {
+          activeStep = index2 + 1;
+        }
+        
+      }
+      
+      
+      let condition = '';
+      
+      if (type === 'level-count') {
+        
+        condition = `${count} レベル`;
+        
+      } else if (count) {
+        
+        condition = `${count} 回`;
+        
+      } else if (countDay) {
+        
+        condition = `${countDay} 日`;
+        
+      }
       
       
       
@@ -593,7 +850,7 @@ const Component = (props) => {
                   margin: 0 12px 0 0;
                 `}
               >
-                {count} 回
+                {condition}
               </div>
               
               
@@ -665,23 +922,15 @@ const Component = (props) => {
     // --------------------------------------------------
     
     componentAchievementsArr.push(
-      <Paper
-        css={css`
-          && {
-            margin: 24px 0 0;
-          }
-        `}
-        elevation={3}
+      <ComponentPanel
         key={index1}
+        heading={heading}
+        defaultExpanded={false}
       >
-        
-        
-        <h3 css={cssHeadingBlue}>{heading}</h3>
-        
         
         <p
           css={css`
-            margin: 14px;
+            margin: 12px 6px;
           `}
         >
           {explanation}
@@ -690,7 +939,7 @@ const Component = (props) => {
         
         <p
           css={css`
-            margin: 0 14px;
+            margin: 0 6px;
           `}
         >
           
@@ -706,7 +955,7 @@ const Component = (props) => {
         {limit &&
           <p
             css={css`
-              margin: 0 12px;
+              margin: 0 6px;
             `}
           >
             <span css={css` font-weight: bold; `}>制限：</span>{limit}
@@ -717,6 +966,9 @@ const Component = (props) => {
         
         
         <Stepper
+          css={css`
+            padding: 24px 0 6px 6px;
+          `}
           activeStep={activeStep}
           orientation="vertical"
         >
@@ -725,8 +977,7 @@ const Component = (props) => {
           
         </Stepper>
         
-        
-      </Paper>
+      </ComponentPanel>
     );
     
     
@@ -737,33 +988,23 @@ const Component = (props) => {
     // --------------------------------------------------
     
     componentTitlesArr.push(
-      <Paper
-        css={css`
-          && {
-            margin: 24px 0 0;
-          }
-        `}
-        elevation={3}
+      <ComponentPanel
         key={index1}
+        heading={heading}
       >
-        
-        
-        <h3 css={cssHeadingBlue}>{heading}</h3>
-        
         
         <div
           css={css`
             display: flex;
             flex-flow: row wrap;
-            margin: 0 12px;
-            padding: 0 0 12px;
+            // margin: 0 12px;
+            // padding: 0 0 12px;
           `}
         >
           {componentTitleAcquisitionsArr}
         </div>
         
-        
-      </Paper>
+      </ComponentPanel>
     );
     
     
@@ -778,7 +1019,7 @@ const Component = (props) => {
   
   const componentTitleSelectedArr = [];
   
-  for (let titles_id of dialogAchievementTitles_idsArr.values()) {
+  for (let titles_id of dialogAchievementSelectedTitles_idsArr.values()) {
     
     const urlID = lodashGet(titlesObj , [titles_id, 'urlID'], '');
     const name = lodashGet(titlesObj , [titles_id, 'name'], '');
@@ -891,8 +1132,8 @@ const Component = (props) => {
   // `);
   
   // console.log(`
-  //   ----- dialogAchievementTitles_idsArr -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(dialogAchievementTitles_idsArr)), { colors: true, depth: null })}\n
+  //   ----- dialogAchievementSelectedTitles_idsArr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(dialogAchievementSelectedTitles_idsArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
   

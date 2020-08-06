@@ -223,7 +223,7 @@ const Component = (props) => {
     handleLoadingClose,
     setDialogAchievementOpen,
     setDialogAchievementObj,
-    setDialogAchievementTitles_idsArr,
+    setDialogAchievementSelectedTitles_idsArr,
     
   } = stateLayout;
   
@@ -444,7 +444,7 @@ const Component = (props) => {
       // ---------------------------------------------
       
       setDialogAchievementObj(lodashGet(resultObj, ['data'], {}));
-      setDialogAchievementTitles_idsArr(lodashGet(resultObj, ['data', 'titles_idsArr'], []));
+      setDialogAchievementSelectedTitles_idsArr(lodashGet(resultObj, ['data', 'experiencesObj', 'selectedTitles_idsArr'], []));
       
       
       // ---------------------------------------------

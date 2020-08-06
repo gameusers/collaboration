@@ -355,7 +355,7 @@ const findOneForUser = async ({
     //   Aggregation
     // --------------------------------------------------
     
-    const resultArr = await SchemaUsers.aggregate([
+    const docArr = await SchemaUsers.aggregate([
       
       
       // --------------------------------------------------
@@ -499,21 +499,20 @@ const findOneForUser = async ({
                 $lookup:
                   {
                     from: 'titles',
-                    let: { letTitles_idsArr: '$titles_idsArr' },
+                    let: { letSelectedTitles_idsArr: '$selectedTitles_idsArr' },
                     pipeline: [
                       {
                         $match: {
                           $expr: {
                             $and: [
                               { $eq: ['$language', language] },
-                              { $in: ['$_id', '$$letTitles_idsArr'] }
+                              { $in: ['$_id', '$$letSelectedTitles_idsArr'] }
                             ]
                           },
                         }
                       },
                       {
                         $project: {
-                          // _id: 0,
                           urlID: 1,
                           name: 1,
                         }
@@ -587,7 +586,7 @@ const findOneForUser = async ({
     //   
     // --------------------------------------------------
     
-    const returnObj = lodashGet(resultArr, [0], {});
+    const returnObj = lodashGet(docArr, [0], {});
     const headerObj = {};
     
     
@@ -621,33 +620,35 @@ const findOneForUser = async ({
     // --------------------------------------------------
     
     const exp = lodashGet(returnObj, ['experiencesObj', 'exp'], 0);
-    const titles_idsArr = lodashGet(returnObj, ['experiencesObj', 'titles_idsArr'], []);
-    const tempTitlesArr = lodashGet(returnObj, ['experiencesObj', 'titlesArr'], []);
-    const titlesArr = [];
+    // const titlesArr = [];
+    const titlesArr = lodashGet(returnObj, ['experiencesObj', 'titlesArr'], []);
+    // const titles_idsArr = lodashGet(returnObj, ['experiencesObj', 'titles_idsArr'], []);
+    // const tempTitlesArr = lodashGet(returnObj, ['experiencesObj', 'titlesArr'], []);
+    // const titlesArr = [];
     
-    for (let titles_id of titles_idsArr.values()) {
+    // for (let titles_id of titles_idsArr.values()) {
       
-      // console.log(achievementID);
+    //   // console.log(achievementID);
       
-      const obj = tempTitlesArr.find((valueObj) => {
-        return valueObj._id === titles_id;
-      });
+    //   const obj = tempTitlesArr.find((valueObj) => {
+    //     return valueObj._id === titles_id;
+    //   });
       
-      // const arr = tempAachievementsArr.filter((valueObj) => {
-      //   return valueObj.achievementID === achievementID;
-      // });
+    //   // const arr = tempAachievementsArr.filter((valueObj) => {
+    //   //   return valueObj.achievementID === achievementID;
+    //   // });
       
-      // console.log(arr);
+    //   // console.log(arr);
       
-      titlesArr.push({
+    //   titlesArr.push({
         
-        _id: lodashGet(obj, ['_id'], ''),
-        urlID: lodashGet(obj, ['urlID'], ''),
-        name: lodashGet(obj, ['name'], ''),
+    //     _id: lodashGet(obj, ['_id'], ''),
+    //     urlID: lodashGet(obj, ['urlID'], ''),
+    //     name: lodashGet(obj, ['name'], ''),
         
-      });
+    //   });
       
-    }
+    // }
     
     // console.log(`
     //   ----- tempAachievementsArr -----\n
@@ -704,8 +705,8 @@ const findOneForUser = async ({
     // `);
     
     // console.log(`
-    //   ----- resultArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   ----- docArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

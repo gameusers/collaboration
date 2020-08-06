@@ -52,7 +52,7 @@ const useLayout = (initialStateObj) => {
   const [cardPlayersObj, setCardPlayersObj] = useState({});
   const [dialogAchievementOpen, setDialogAchievementOpen] = useState(false);
   const [dialogAchievementObj, setDialogAchievementObj] = useState({});
-  const [dialogAchievementTitles_idsArr, setDialogAchievementTitles_idsArr] = useState([]);
+  const [dialogAchievementSelectedTitles_idsArr, setDialogAchievementSelectedTitles_idsArr] = useState([]);
   
   
   
@@ -375,8 +375,8 @@ const useLayout = (initialStateObj) => {
     setDialogAchievementOpen,
     dialogAchievementObj,
     setDialogAchievementObj,
-    dialogAchievementTitles_idsArr,
-    setDialogAchievementTitles_idsArr,
+    dialogAchievementSelectedTitles_idsArr,
+    setDialogAchievementSelectedTitles_idsArr,
     
   };
   

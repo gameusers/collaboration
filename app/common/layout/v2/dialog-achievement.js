@@ -224,6 +224,7 @@ const ComponentPanel = (props) => {
   const intl = useIntl();
   const classes = useStyles();
   const [panelExpanded, setPanelExpanded] = useState(defaultExpanded);
+  // const [panelExpanded, setPanelExpanded] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   
@@ -277,7 +278,6 @@ const ComponentPanel = (props) => {
         
         
         <h2
-          // css={cssHeadingBlue}
           css={css`
             padding-top: 2px;
           `}
@@ -666,7 +666,6 @@ const Component = (props) => {
     const limitMonth = lodashGet(value1Obj , ['limitMonth'], 0);
     const limitYear = lodashGet(value1Obj , ['limitYear'], 0);
     const conditionsArr = lodashGet(value1Obj , ['conditionsArr'], []);
-    // const titlesArr = lodashGet(value1Obj , ['titlesArr'], []);
     
     const find1Obj = historiesArr.find((tempObj) => {
       return tempObj.type === type;
@@ -691,10 +690,10 @@ const Component = (props) => {
     
     switch (type) {
       
-      case 'special':
+      case 'account-ancient':
         
-        heading = 'スペシャル';
-        explanation = '旧Game Usersでアカウントを作成したユーザー。';
+        heading = '古のアカウント';
+        explanation = 'Game Users 創世記にアカウントを作成したユーザー。';
         break;
       
       case 'level-count':
@@ -733,10 +732,70 @@ const Component = (props) => {
         explanation = 'ゲームコミュニティ、ユーザーコミュニティのフォーラムに書き込むとカウントされます。';
         break;
         
+      case 'recruitment-count-post':
+        
+        heading = '募集の投稿';
+        explanation = 'ゲームコミュニティで募集を投稿するとカウントされます。募集へのコメント、返信でもカウントされます。';
+        break;
+        
+      case 'follow-count':
+        
+        heading = 'フォローする';
+        explanation = 'ゲームコミュニティや他のユーザーをフォローするとカウントされます。';
+        break;
+        
       case 'followed-count':
         
         heading = 'フォローされる';
         explanation = '他のユーザーにフォローされるとカウントされます。';
+        break;
+        
+      case 'title-count':
+        
+        heading = '称号を獲得する';
+        explanation = '称号を獲得するとカウントされます。';
+        break;
+        
+      case 'title-show':
+        
+        heading = '称号を表示する';
+        explanation = 'ユーザーページに称号を表示してください。';
+        break;
+        
+      case 'card-player-edit':
+        
+        heading = 'プレイヤーカードを編集する';
+        explanation = 'プレイヤーカードを編集してください。';
+        break;
+        
+      case 'card-player-upload-image-main':
+        
+        heading = 'プレイヤーカードのメイン画像';
+        explanation = 'プレイヤーカードにメイン画像をアップロードしてください。';
+        break;
+        
+      case 'card-player-upload-image-thumbnail':
+        
+        heading = 'プレイヤーカードのサムネイル画像';
+        explanation = 'プレイヤーカードにサムネイル画像をアップロードしてください。';
+        break;
+        
+      case 'user-page-upload-image-main':
+        
+        heading = 'ユーザーページのトップ画像';
+        explanation = 'ユーザーページにトップ画像をアップロードしてください。ユーザーページの設定で行えます。';
+        break;
+        
+      case 'user-page-change-url':
+        
+        heading = 'ユーザーページのURL';
+        explanation = 'ユーザーページのURLを変更してください。ユーザーページの設定で行えます。';
+        break;
+        
+      case 'web-push-permission':
+        
+        heading = 'プッシュ通知の許可';
+        explanation = 'プッシュ通知を許可してください。ユーザーページの設定で行えます。';
         break;
         
     }
@@ -923,7 +982,7 @@ const Component = (props) => {
     
     componentAchievementsArr.push(
       <ComponentPanel
-        key={index1}
+        key={`achievement-${index1}`}
         heading={heading}
         defaultExpanded={false}
       >
@@ -989,8 +1048,9 @@ const Component = (props) => {
     
     componentTitlesArr.push(
       <ComponentPanel
-        key={index1}
+        key={`title-${index1}`}
         heading={heading}
+        defaultExpanded={true}
       >
         
         <div

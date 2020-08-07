@@ -301,7 +301,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 
 /**
- * 
+ * 実績用
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
@@ -362,8 +362,6 @@ const findForEdit = async ({
       
     });
     
-    // const docTitlesArr = await SchemaTitles.find().exec();
-    
     
     
     
@@ -376,7 +374,6 @@ const findForEdit = async ({
       historiesArr: lodashGet(docExperiencesObj, ['historiesArr'], []),
       acquiredTitles_idsArr: lodashGet(docExperiencesObj, ['acquiredTitles_idsArr'], []),
       selectedTitles_idsArr: lodashGet(docExperiencesObj, ['selectedTitles_idsArr'], []),
-      // titles_idsArr: lodashGet(docExperiencesObj, ['titles_idsArr'], []),
       
     };
     
@@ -392,7 +389,6 @@ const findForEdit = async ({
       titlesObj[valueObj._id] = {
         
         urlID: valueObj.urlID,
-        // language: valueObj.language,
         name: valueObj.name,
         
       };
@@ -452,7 +448,6 @@ const findForEdit = async ({
     return {
       
       experiencesObj,
-      // selectedTitles_idsArr: lodashGet(docExperiencesObj, ['selectedTitles_idsArr'], []),
       achievementsArr: docAchievementsArr,
       titlesObj,
       
@@ -487,6 +482,5 @@ module.exports = {
   deleteMany,
   
   findForEdit,
-  // findBySearchKeywordsArrForSuggestion,
   
 };

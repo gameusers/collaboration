@@ -811,6 +811,11 @@ const Component = (props) => {
         
         <p>------------------------------</p>
         
+        <p>借りてるVPSのスペックが足りなくてよく落ちる。アクセスしてエラーが出ても気にせんといてや。開発者募集！</p>
+        
+        <p style={{ margin: '0 0 24px 0' }}><a href="https://gameusers.org/dev/blog/">開発ブログ</a></p>
+        
+        
         <p style={{ margin: '0 0 24px 0', fontWeight: 'bold' }}>[現在、作成中のページ]</p>
         
         <p>ログイン<br />

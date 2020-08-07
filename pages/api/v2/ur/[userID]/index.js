@@ -35,6 +35,9 @@ import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
 
 
+import { experienceCalculate } from 'app/@modules/experience.js';
+
+
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
@@ -215,6 +218,10 @@ export default async (req, res) => {
       returnObj.accessLevel = 50;
     }
     
+    
+    
+    
+    experienceCalculate({ req, res, loginUsers_id });
     
     
     

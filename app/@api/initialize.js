@@ -167,7 +167,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'jun-deE4J',
-        createdDate: ISO8601,
+        createdDate: '2015-01-01T00:00:00.000Z',
         updatedDate: ISO8601,
         accessDate: ISO8601,
         userID: 'user1',
@@ -298,7 +298,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
             _id: 'V5gmtBJC_',
             createdDate: ISO8601,
             updatedDate: ISO8601,
-            type: 'special',
+            type: 'account-ancient',
             countDay: 0,
             countMonth: 0,
             countYear: 0,
@@ -397,13 +397,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       
       // ---------------------------------------------
-      //   特別 / special
+      //   古のアカウント / account-ancient
       // ---------------------------------------------
       
       {
         _id: 'c55H3lZ5Z',
-        type: 'special',
-        exp: 0,
+        type: 'account-ancient',
+        exp: 1000,
         limitDay: 0,
         limitMonth: 0,
         limitYear: 0,
@@ -415,7 +415,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
             countDay: 0,
           },
         ],
-        
       },
       
       
@@ -689,26 +688,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
             count: 43,
             countDay: 0,
           },
-          // {
-          //   _id: '',
-          //   titles_id: '',
-          //   count: ,
-          //   countDay: 0,
-          // },
-          // {
-          //   _id: '',
-          //   titles_id: '',
-          //   count: ,
-          //   countDay: 0,
-          // },
-          // {
-          //   _id: '',
-          //   titles_id: '',
-          //   count: ,
-          //   countDay: 0,
-          // },
         ],
-        
       },
       
       
@@ -719,7 +699,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
       {
         _id: 'IYzjRslI-',
         type: 'account-count-day',
-        exp: 1,
+        exp: 300,
         limitDay: 0,
         limitMonth: 0,
         limitYear: 0,
@@ -779,7 +759,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
             countDay: 1825,
           },
         ],
-        
       },
       
       
@@ -790,7 +769,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
       {
         _id: '4Q2kY-neR',
         type: 'login-count',
-        exp: 1,
+        exp: 30,
         limitDay: 1,
         limitMonth: 0,
         limitYear: 0,
@@ -958,7 +937,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
             countDay: 0,
           },
         ],
-        
       },
       
       
@@ -1071,7 +1049,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
             countDay: 0,
           },
         ],
-        
       },
       
       
@@ -1185,28 +1162,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
             countDay: 0,
           },
         ],
-        
       },
       
-      
-          // {
-          //   _id: '',
-          //   titles_id: '',
-          //   count: 0,
-          //   countDay: 0,
-          // },
-          // {
-          //   _id: '',
-          //   titles_id: '',
-          //   count: 0,
-          //   countDay: 0,
-          // },
-          // {
-          //   _id: '',
-          //   titles_id: '',
-          //   count: 0,
-          //   countDay: 0,
-          // },
       
       // ---------------------------------------------
       //   フォーラム書き込み / forum-count-post
@@ -1215,7 +1172,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
       {
         _id: 'ZgsxDaKaN',
         type: 'forum-count-post',
-        exp: 1,
+        exp: 10,
         limitDay: 5,
         limitMonth: 0,
         limitYear: 0,
@@ -1268,16 +1225,142 @@ router.post('/db', upload.none(), async (req, res, next) => {
             count: 60,
             countDay: 0,
           },
-          // {
-          //   _id: 'P7eX2W7wU',
-          //   titles_id: '',
-          //   datetime: '',
-          //   count: 70,
-          // },
         ],
-        
       },
-      //'2018-01-01T00:00:00.000Z'
+      
+      
+      // ---------------------------------------------
+      //   募集の投稿 / recruitment-count-post
+      // ---------------------------------------------
+      
+      {
+        _id: 'XuPlS68UZ',
+        type: 'recruitment-count-post',
+        exp: 10,
+        limitDay: 3,
+        limitMonth: 0,
+        limitYear: 0,
+        conditionsArr: [
+          {
+            _id: 'ia6G_rM3O',
+            titles_id: '7K8R91Chm',
+            count: 1,
+            countDay: 0,
+          },
+          {
+            _id: 'TpGXT5Tyh',
+            titles_id: '0kh9wSxkK',
+            count: 2,
+            countDay: 0,
+          },
+          {
+            _id: 'Qd6Ck9A0r',
+            titles_id: 'ksytsAh44',
+            count: 3,
+            countDay: 0,
+          },
+          {
+            _id: 'wKAAOLxHd',
+            titles_id: '6u1Me1S13',
+            count: 4,
+            countDay: 0,
+          },
+          {
+            _id: '0EgB9eWgc',
+            titles_id: 'n-OyxEgZE',
+            count: 5,
+            countDay: 0,
+          },
+          {
+            _id: '8EPiVe16H',
+            titles_id: 'iJhdcsAnj',
+            count: 6,
+            countDay: 0,
+          },
+          {
+            _id: 'hh4_-DpCa',
+            titles_id: 'VYe67sAJI',
+            count: 7,
+            countDay: 0,
+          },
+          {
+            _id: '6sXfe7h30',
+            titles_id: 'LgqylZRLH',
+            count: 8,
+            countDay: 0,
+          },
+          {
+            _id: '-ztR4cSxg',
+            titles_id: 'cy-FSwJ6x',
+            count: 9,
+            countDay: 0,
+          },
+          {
+            _id: 'vhdLYJU_5',
+            titles_id: 'iQrrWOHai',
+            count: 10,
+            countDay: 0,
+          },
+        ],
+      },
+      
+      
+      // ---------------------------------------------
+      //   フォローする / follow-count
+      // ---------------------------------------------
+      
+      {
+        _id: 'orqlX1W0h',
+        type: 'follow-count',
+        exp: 1,
+        limitDay: 20,
+        limitMonth: 0,
+        limitYear: 0,
+        conditionsArr: [
+          {
+            _id: 'TsUL6l4sg',
+            titles_id: 'Klp5SO8K2',
+            count: 1,
+            countDay: 0,
+          },
+          {
+            _id: 'hVHAnPN0D',
+            titles_id: 'WuJd0ECX0',
+            count: 5,
+            countDay: 0,
+          },
+          {
+            _id: 'IJdLr73vH',
+            titles_id: 'LMeLQQZft',
+            count: 10,
+            countDay: 0,
+          },
+          {
+            _id: 'BxeNGC0hp',
+            titles_id: 'lMRySntAn',
+            count: 20,
+            countDay: 0,
+          },
+          {
+            _id: 'FoAsel9xG',
+            titles_id: 'i_NBtroQY',
+            count: 30,
+            countDay: 0,
+          },
+          {
+            _id: '2hoiz0nzC',
+            titles_id: 'R8XwivxCN',
+            count: 40,
+            countDay: 0,
+          },
+          {
+            _id: 'ad6nyBDK5',
+            titles_id: 'E_4zTVN8O',
+            count: 50,
+            countDay: 0,
+          },
+        ],
+      },
       
       
       // ---------------------------------------------
@@ -1288,7 +1371,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: 'V8iU147M5',
         type: 'followed-count',
         exp: 1,
-        limitDay: 5,
+        limitDay: 0,
         limitMonth: 0,
         limitYear: 0,
         conditionsArr: [
@@ -1347,9 +1430,219 @@ router.post('/db', upload.none(), async (req, res, next) => {
             countDay: 0,
           },
         ],
-        
       },
       
+      
+      // ---------------------------------------------
+      //   称号を獲得する / title-count
+      // ---------------------------------------------
+      
+      {
+        _id: 'NIbdRwvzO',
+        type: 'title-count',
+        exp: 200,
+        limitDay: 0,
+        limitMonth: 0,
+        limitYear: 0,
+        conditionsArr: [
+          {
+            _id: 'k1v4HwL1T',
+            titles_id: '0c0jL9cW-',
+            count: 20,
+            countDay: 0,
+          },
+          {
+            _id: 'LuNckKLGW',
+            titles_id: 'ZDNXA6mwh',
+            count: 40,
+            countDay: 0,
+          },
+          {
+            _id: 'enahNNVEv',
+            titles_id: 'hJgT4h1s6',
+            count: 60,
+            countDay: 0,
+          },
+          {
+            _id: 'NLdiUoLtL',
+            titles_id: 'vhTNgUcb0',
+            count: 80,
+            countDay: 0,
+          },
+          {
+            _id: 'G3prpzccY',
+            titles_id: 'PiVoTxcDG',
+            count: 100,
+            countDay: 0,
+          },
+          {
+            _id: 'uYXRrIDi8',
+            titles_id: 'xiwWB50ug',
+            count: 120,
+            countDay: 0,
+          },
+          {
+            _id: '0ZUPnIiSt',
+            titles_id: '7uqCc8K1z',
+            count: 140,
+            countDay: 0,
+          },
+        ],
+      },
+      
+      
+      // ---------------------------------------------
+      //   称号を表示する / title-show
+      // ---------------------------------------------
+      
+      {
+        _id: 'XRNtAlBCt',
+        type: 'title-show',
+        exp: 50,
+        limitDay: 0,
+        limitMonth: 0,
+        limitYear: 0,
+        conditionsArr: [
+          {
+            _id: '01VkGKbc2',
+            titles_id: 'RhpW8VDw4',
+            count: 1,
+            countDay: 0,
+          },
+        ],
+      },
+      
+      
+      // ---------------------------------------------
+      //   プレイヤーカードを編集する / card-player-edit
+      // ---------------------------------------------
+      
+      {
+        _id: 'ekm-IVyO7',
+        type: 'card-player-edit',
+        exp: 50,
+        limitDay: 0,
+        limitMonth: 0,
+        limitYear: 0,
+        conditionsArr: [
+          {
+            _id: 'OWkbdl3GY',
+            titles_id: '1FYXcjzEb',
+            count: 1,
+            countDay: 0,
+          },
+        ],
+      },
+      
+      
+      // ---------------------------------------------
+      //   プレイヤーカードにメイン画像をアップロードする / card-player-upload-image-main
+      // ---------------------------------------------
+      
+      {
+        _id: 'uOPtHulWE',
+        type: 'card-player-upload-image-main',
+        exp: 50,
+        limitDay: 0,
+        limitMonth: 0,
+        limitYear: 0,
+        conditionsArr: [
+          {
+            _id: '15FMrKPWF',
+            titles_id: 'bnOJOwQN4',
+            count: 1,
+            countDay: 0,
+          },
+        ],
+      },
+      
+      
+      // ---------------------------------------------
+      //   プレイヤーカードにサムネイル画像をアップロードする / card-player-upload-image-thumbnail
+      // ---------------------------------------------
+      
+      {
+        _id: 'qIKFIEaKL',
+        type: 'card-player-upload-image-thumbnail',
+        exp: 50,
+        limitDay: 0,
+        limitMonth: 0,
+        limitYear: 0,
+        conditionsArr: [
+          {
+            _id: 'a7fyXxFTo',
+            titles_id: '4e2otkg81',
+            count: 1,
+            countDay: 0,
+          },
+        ],
+      },
+      
+      
+      // ---------------------------------------------
+      //   ユーザーページに画像をアップロードする / user-page-upload-image-main
+      // ---------------------------------------------
+      
+      {
+        _id: 'xfnuj7MX-',
+        type: 'user-page-upload-image-main',
+        exp: 50,
+        limitDay: 0,
+        limitMonth: 0,
+        limitYear: 0,
+        conditionsArr: [
+          {
+            _id: '3h0DdsMtD',
+            titles_id: 'iPgdAE8rL',
+            count: 1,
+            countDay: 0,
+          },
+        ],
+      },
+      
+      
+      // ---------------------------------------------
+      //   ユーザーページのURLを変更する / user-page-change-url
+      // ---------------------------------------------
+      
+      {
+        _id: '02Z4nApTe',
+        type: 'user-page-change-url',
+        exp: 50,
+        limitDay: 0,
+        limitMonth: 0,
+        limitYear: 0,
+        conditionsArr: [
+          {
+            _id: 'p4j0lEFgZ',
+            titles_id: 'iDFuNdaD5',
+            count: 1,
+            countDay: 0,
+          },
+        ],
+      },
+      
+      
+      // ---------------------------------------------
+      //   プッシュ通知を許可する / web-push-permission
+      // ---------------------------------------------
+      
+      {
+        _id: 'Wz_ojWHSJ',
+        type: 'web-push-permission',
+        exp: 100,
+        limitDay: 0,
+        limitMonth: 0,
+        limitYear: 0,
+        conditionsArr: [
+          {
+            _id: 'V80pym0kP',
+            titles_id: 'oU2EDF7vI',
+            count: 1,
+            countDay: 0,
+          },
+        ],
+      },
       
       
     ];
@@ -2190,64 +2483,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       
       
-      
-      // {
-      //   _id: '',
-      //   urlID: '',
-      //   language: 'ja',
-      //   name: '',
-      // },
-      
-      // {
-      //   _id: '',
-      //   urlID: '',
-      //   language: 'ja',
-      //   name: '',
-      // },
-      
-      // {
-      //   _id: '',
-      //   urlID: '',
-      //   language: 'ja',
-      //   name: '',
-      // },
-      
-      // {
-      //   _id: '',
-      //   urlID: '',
-      //   language: 'ja',
-      //   name: '',
-      // },
-      
-      // {
-      //   _id: '',
-      //   urlID: '',
-      //   language: 'ja',
-      //   name: '',
-      // },
-      
-      // {
-      //   _id: '',
-      //   urlID: '',
-      //   language: 'ja',
-      //   name: '',
-      // },
-      
-      // {
-      //   _id: '',
-      //   urlID: '',
-      //   language: 'ja',
-      //   name: '',
-      // },
-      
-      // {
-      //   _id: '',
-      //   urlID: '',
-      //   language: 'ja',
-      //   name: '',
-      // },
-      
-      
       // ---------------------------------------------
       //   forum-count-post
       // ---------------------------------------------
@@ -2309,16 +2544,83 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       
       
-      // {
-      //   _id: '',
-      //   urlID: '',
-      //   language: 'ja',
-      //   name: '',
-      // },
+      // ---------------------------------------------
+      //   recruitment-count-post
+      // ---------------------------------------------
+      
+      {
+        _id: '7K8R91Chm',
+        urlID: '7K8R91Chm',
+        language: 'ja',
+        name: 'ぼっち',
+      },
+      
+      {
+        _id: '0kh9wSxkK',
+        urlID: '0kh9wSxkK',
+        language: 'ja',
+        name: '友達募集',
+      },
+      
+      {
+        _id: 'ksytsAh44',
+        urlID: 'ksytsAh44',
+        language: 'ja',
+        name: '招き猫',
+      },
+      
+      {
+        _id: '6u1Me1S13',
+        urlID: '6u1Me1S13',
+        language: 'ja',
+        name: 'トレーダー',
+      },
+      
+      {
+        _id: 'n-OyxEgZE',
+        urlID: 'n-OyxEgZE',
+        language: 'ja',
+        name: 'リーダー',
+      },
+      
+      {
+        _id: 'iJhdcsAnj',
+        urlID: 'iJhdcsAnj',
+        language: 'ja',
+        name: '指揮官',
+      },
+      
+      {
+        _id: 'VYe67sAJI',
+        urlID: 'VYe67sAJI',
+        language: 'ja',
+        name: 'フレンドリーファイア',
+      },
+      
+      {
+        _id: 'LgqylZRLH',
+        urlID: 'LgqylZRLH',
+        language: 'ja',
+        name: '軍師',
+      },
+      
+      {
+        _id: 'cy-FSwJ6x',
+        urlID: 'cy-FSwJ6x',
+        language: 'ja',
+        name: 'CEO',
+      },
+      
+      {
+        _id: 'iQrrWOHai',
+        urlID: 'iQrrWOHai',
+        language: 'ja',
+        name: '全てを統べる者',
+      },
       
       
       // ---------------------------------------------
-      //   recruitment-count-post
+      //   レビューする / review-count
       // ---------------------------------------------
       
       {
@@ -2333,6 +2635,109 @@ router.post('/db', upload.none(), async (req, res, next) => {
         urlID: 'K9VWK8T0D',
         language: 'ja',
         name: 'スパイス',
+      },
+      
+      {
+        _id: 'peQOpIzlB',
+        urlID: 'peQOpIzlB',
+        language: 'ja',
+        name: '評論家',
+      },
+      
+      {
+        _id: 'EmYzDKauO',
+        urlID: 'EmYzDKauO',
+        language: 'ja',
+        name: '裁定人',
+      },
+      
+      {
+        _id: 'f2rMg6LRU',
+        urlID: 'f2rMg6LRU',
+        language: 'ja',
+        name: 'ストーリーテラー',
+      },
+      
+      {
+        _id: 'weSo6n4qF',
+        urlID: 'weSo6n4qF',
+        language: 'ja',
+        name: '御目付け役',
+      },
+      
+      {
+        _id: 'BT2y8MD1d',
+        urlID: 'BT2y8MD1d',
+        language: 'ja',
+        name: 'シナリオライター',
+      },
+      
+      {
+        _id: '433U-0Jbe',
+        urlID: '433U-0Jbe',
+        language: 'ja',
+        name: '大賢者',
+      },
+      
+      {
+        _id: '8rujWb4lb',
+        urlID: '8rujWb4lb',
+        language: 'ja',
+        name: 'プロビデンスの目',
+      },
+      
+      
+      // ---------------------------------------------
+      //   follow-count
+      // ---------------------------------------------
+      
+      {
+        _id: 'Klp5SO8K2',
+        urlID: 'Klp5SO8K2',
+        language: 'ja',
+        name: 'ペット',
+      },
+      
+      {
+        _id: 'WuJd0ECX0',
+        urlID: 'WuJd0ECX0',
+        language: 'ja',
+        name: 'メイド',
+      },
+      
+      {
+        _id: 'LMeLQQZft',
+        urlID: 'LMeLQQZft',
+        language: 'ja',
+        name: '操り人形',
+      },
+      
+      {
+        _id: 'lMRySntAn',
+        urlID: 'lMRySntAn',
+        language: 'ja',
+        name: '追跡者',
+      },
+      
+      {
+        _id: 'i_NBtroQY',
+        urlID: 'i_NBtroQY',
+        language: 'ja',
+        name: 'サーヴァント',
+      },
+      
+      {
+        _id: 'R8XwivxCN',
+        urlID: 'R8XwivxCN',
+        language: 'ja',
+        name: '使徒',
+      },
+      
+      {
+        _id: 'E_4zTVN8O',
+        urlID: 'E_4zTVN8O',
+        language: 'ja',
+        name: 'みんなの友達',
       },
       
       
@@ -2404,6 +2809,142 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       
       
+      // ---------------------------------------------
+      //   title-count
+      // ---------------------------------------------
+      
+      {
+        _id: '0c0jL9cW-',
+        urlID: '0c0jL9cW-',
+        language: 'ja',
+        name: '探検家',
+      },
+      
+      {
+        _id: 'ZDNXA6mwh',
+        urlID: 'ZDNXA6mwh',
+        language: 'ja',
+        name: 'マニア',
+      },
+      
+      {
+        _id: 'hJgT4h1s6',
+        urlID: 'hJgT4h1s6',
+        language: 'ja',
+        name: 'コレクター',
+      },
+      
+      {
+        _id: 'vhTNgUcb0',
+        urlID: 'vhTNgUcb0',
+        language: 'ja',
+        name: 'トレジャーハンター',
+      },
+      
+      {
+        _id: 'PiVoTxcDG',
+        urlID: 'PiVoTxcDG',
+        language: 'ja',
+        name: 'ヒストリア',
+      },
+      
+      {
+        _id: 'xiwWB50ug',
+        urlID: 'xiwWB50ug',
+        language: 'ja',
+        name: '無限の宝物庫',
+      },
+      
+      {
+        _id: '7uqCc8K1z',
+        urlID: '7uqCc8K1z',
+        language: 'ja',
+        name: 'アカシックレコード',
+      },
+      
+      
+      // ---------------------------------------------
+      //   title-show
+      // ---------------------------------------------
+      
+      {
+        _id: 'RhpW8VDw4',
+        urlID: 'RhpW8VDw4',
+        language: 'ja',
+        name: 'ひよこ',
+      },
+      
+      
+      // ---------------------------------------------
+      //   card-player-edit
+      // ---------------------------------------------
+      
+      {
+        _id: '1FYXcjzEb',
+        urlID: '1FYXcjzEb',
+        language: 'ja',
+        name: 'クリエイター',
+      },
+      
+      
+      // ---------------------------------------------
+      //   card-player-upload-image-main
+      // ---------------------------------------------
+      
+      {
+        _id: 'bnOJOwQN4',
+        urlID: 'bnOJOwQN4',
+        language: 'ja',
+        name: 'デザイナー',
+      },
+      
+      
+      // ---------------------------------------------
+      //   card-player-upload-image-thumbnail
+      // ---------------------------------------------
+      
+      {
+        _id: '4e2otkg81',
+        urlID: '4e2otkg81',
+        language: 'ja',
+        name: '絵描き',
+      },
+      
+      
+      // ---------------------------------------------
+      //   user-page-upload-image-main
+      // ---------------------------------------------
+      
+      {
+        _id: 'iPgdAE8rL',
+        urlID: 'iPgdAE8rL',
+        language: 'ja',
+        name: 'アーティスト',
+      },
+      
+      
+      // ---------------------------------------------
+      //   user-page-change-url
+      // ---------------------------------------------
+      
+      {
+        _id: 'iDFuNdaD5',
+        urlID: 'iDFuNdaD5',
+        language: 'ja',
+        name: 'ユニーク',
+      },
+      
+      
+      // ---------------------------------------------
+      //   web-push-permission
+      // ---------------------------------------------
+      
+      {
+        _id: 'oU2EDF7vI',
+        urlID: 'oU2EDF7vI',
+        language: 'ja',
+        name: 'エスパー',
+      },
       
       
     ];

@@ -338,8 +338,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
             countDay: 0,
             countMonth: 0,
             countYear: 0,
-            countValid: 30,
-            countTotal: 30,
+            countValid: 5,
+            countTotal: 5,
           },
           
           {
@@ -699,7 +699,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
       {
         _id: 'IYzjRslI-',
         type: 'account-count-day',
-        exp: 300,
+        exp: 0,
         limitDay: 0,
         limitMonth: 0,
         limitYear: 0,

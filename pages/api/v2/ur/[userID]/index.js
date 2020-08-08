@@ -221,7 +221,24 @@ export default async (req, res) => {
     
     
     
-    experienceCalculate({ req, res, loginUsers_id });
+    experienceCalculate({ 
+      
+      req,
+      loginUsers_id,
+      type: 'forum-count-post',
+      // calculation: 'addition',
+      // calculation: 'subtraction',
+      calculation: 'recalculation',
+      
+    });
+    
+    // experienceCalculate({ 
+      
+    //   loginUsers_id,
+    //   type: '',
+    //   calculation: 'recalculation',
+      
+    // });
     
     
     

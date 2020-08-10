@@ -225,7 +225,7 @@ export default async (req, res) => {
       
       req,
       loginUsers_id,
-      type: 'forum-count-post',
+      // type: 'follow-count',
       // calculation: 'addition',
       // calculation: 'subtraction',
       calculation: 'recalculation',

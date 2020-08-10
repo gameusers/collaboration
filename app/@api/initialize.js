@@ -411,7 +411,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           {
             _id: 'nPV9y7brx',
             titles_id: 'MuK2dKVpn',
-            count: 0,
+            count: 1,
             countDay: 0,
           },
         ],

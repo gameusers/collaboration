@@ -419,7 +419,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       
       // ---------------------------------------------
-      //   レベル / level-count
+      //   レベルアップ / level-count
       // ---------------------------------------------
       
       {
@@ -769,7 +769,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
       {
         _id: '4Q2kY-neR',
         type: 'login-count',
-        exp: 30,
+        exp: 50,
         limitDay: 1,
         limitMonth: 0,
         limitYear: 0,
@@ -1440,7 +1440,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
       {
         _id: 'NIbdRwvzO',
         type: 'title-count',
-        exp: 200,
+        exp: 0,
         limitDay: 0,
         limitMonth: 0,
         limitYear: 0,

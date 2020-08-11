@@ -30,6 +30,8 @@ import lodashSet from 'lodash/set';
 //   Model
 // ---------------------------------------------
 
+import SchemaAchievements from 'app/@database/achievements/schema.js';
+
 import ModelExperiences from 'app/@database/experiences/model.js';
 import ModelAchievements from 'app/@database/achievements/model.js';
 import ModelUsers from 'app/@database/users/model.js';
@@ -38,6 +40,8 @@ import ModelRecruitmentThreads from 'app/@database/recruitment-threads/model.js'
 import ModelRecruitmentComments from 'app/@database/recruitment-comments/model.js';
 import ModelRecruitmentReplies from 'app/@database/recruitment-replies/model.js';
 import ModelFollows from 'app/@database/follows/model.js';
+import ModelCardPlayers from 'app/@database/card-players/model.js';
+import ModelWebPushes from 'app/@database/web-pushes/model.js';
 
 
 
@@ -51,16 +55,16 @@ import ModelFollows from 'app/@database/follows/model.js';
 /**
  * 古のアカウント / account-ancient
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} ISO8601 - 日時
  * @param {Array} historiesArr - 現在の達成状況を計算するためのデータが入っている配列
  * @param {Array} acquiredTitles_idsArr - 獲得した称号の _id が入っている配列
- * @param {string} ISO8601 - 日時
  */
 const calculateAccountAncient = async ({
   
   loginUsers_id,
+  ISO8601,
   historiesArr,
   acquiredTitles_idsArr,
-  ISO8601,
   
 }) => {
   
@@ -293,16 +297,16 @@ const calculateAccountAncient = async ({
 /**
  * アカウント作成後の経過日数 / account-count-day
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} ISO8601 - 日時
  * @param {Array} historiesArr - 現在の達成状況を計算するためのデータが入っている配列
  * @param {Array} acquiredTitles_idsArr - 獲得した称号の _id が入っている配列
- * @param {string} ISO8601 - 日時
  */
 const calculateAccountCountDay = async ({
   
   loginUsers_id,
+  ISO8601,
   historiesArr,
   acquiredTitles_idsArr,
-  ISO8601,
   
 }) => {
   
@@ -377,8 +381,12 @@ const calculateAccountCountDay = async ({
     
     
     // ---------------------------------------------
-    //   - Update
+    //   newHistoryObj
     // ---------------------------------------------
+    
+    // ----------------------------------------
+    //   - Update
+    // ----------------------------------------
     
     let newHistoryObj = {};
     
@@ -411,9 +419,9 @@ const calculateAccountCountDay = async ({
       newHistoryObj.updatedDate = ISO8601;
       
       
-    // ---------------------------------------------
+    // ----------------------------------------
     //   - Insert
-    // ---------------------------------------------
+    // ----------------------------------------
       
     } else {
       
@@ -593,20 +601,18 @@ const calculateAccountCountDay = async ({
 
 
 /**
- * フォーラム書き込み / forum-count-post
- * @param {string} calculation - [addition（加算）, subtraction（減算）, recalculation（再計算）]
+ * レベルアップ / level-count
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} ISO8601 - 日時
  * @param {Array} historiesArr - 現在の達成状況を計算するためのデータが入っている配列
  * @param {Array} acquiredTitles_idsArr - 獲得した称号の _id が入っている配列
- * @param {string} ISO8601 - 日時
  */
-const calculateForumCountPost = async ({
+const calculateLevelCount = async ({
   
-  calculation,
   loginUsers_id,
+  ISO8601,
   historiesArr,
   acquiredTitles_idsArr,
-  ISO8601,
   
 }) => {
   
@@ -621,513 +627,125 @@ const calculateForumCountPost = async ({
     let historyObj = {};
     
     const index = historiesArr.findIndex((valueObj) => {
-      return valueObj.type === 'forum-count-post';
+      return valueObj.type === 'level-count';
     });
     
     if (index !== -1) {
       historyObj = historiesArr[index];
     }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB achievements
+    // --------------------------------------------------
+    
+    const docAchievementsArr = await SchemaAchievements.find().exec();
+    
+    const findObj = docAchievementsArr.find((valueObj) => {
+      return valueObj.type === 'level-count';
+    });
+    
+    const conditionsArr = lodashGet(findObj, ['conditionsArr'], []);
+    
+    
+    // console.log(`
+    //   ----- docAchievementsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docAchievementsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- conditionsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(conditionsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    // ---------------------------------------------
+    //   newHistoryObj
+    // ---------------------------------------------
+    
+    // ----------------------------------------
+    //   - Update
+    // ----------------------------------------
+    
+    let newHistoryObj = {};
+    
+    if (Object.keys(historyObj).length !== 0) {
+      
+      newHistoryObj = historyObj;
+      newHistoryObj.updatedDate = ISO8601;
+      
+      
+    // ----------------------------------------
+    //   - Insert
+    // ----------------------------------------
+      
+    } else {
+      
+      newHistoryObj = {
+        
+        _id: shortid.generate(),
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        type: 'level-count',
+        countDay: 0,
+        countMonth: 0,
+        countYear: 0,
+        countValid: 0,
+        countTotal: 0,
+        
+      };
+      
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Calculate
+    // ---------------------------------------------
+    
+    let exp = 0;
+    
+    for (let valueObj of historiesArr.values()) {
+      
+      const type = lodashGet(valueObj, ['type'], '');
+      const countValid = lodashGet(valueObj, ['countValid'], 0);
+      
+      
+      const findObj = docAchievementsArr.find((valueObj) => {
+        return valueObj.type === type;
+      });
+      
+      exp += countValid * lodashGet(findObj, ['exp'], 0);
+      
+      // console.log(chalk`
+      //   type: {green ${type}}
+      //   countValid: {green ${countValid}}
+      //   lodashGet(findObj, ['exp'], 0): {green ${lodashGet(findObj, ['exp'], 0)}}
+      //   exp: {green ${countValid * lodashGet(findObj, ['exp'], 0)}}
+      // `);
+      
+    }
+    
+    
+    const level = Math.floor(exp / parseInt(process.env.NEXT_PUBLIC_LEVEL_UP_EXP, 10)) + 1;
+    
+    newHistoryObj.countValid = level;
+    newHistoryObj.countTotal = level;
+    
     
     
     // console.log(chalk`
-    //   index: {green ${index}}
-    // `);
-    
-    // console.log(`
-    //   ----- historyObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(historyObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
+    //   exp total: {green ${exp}}
+    //   level: {green ${level}}
     // `);
     
     
-    
-    
-    // ---------------------------------------------
-    //   DB achievements
-    // ---------------------------------------------
-    
-    const docAchievementsObj = await ModelAchievements.findOne({
-      
-      conditionObj: {
-        type: 'forum-count-post'
-      }
-      
-    });
-    
-    const limitDay = lodashGet(docAchievementsObj, ['limitDay'], 0);
-    const limitMonth = lodashGet(docAchievementsObj, ['limitMonth'], 0);
-    const limitYear = lodashGet(docAchievementsObj, ['limitYear'], 0);
-    
-    const conditionsArr = lodashGet(docAchievementsObj, ['conditionsArr'], []);
-    
-    
-    // obj.countDay = 5;
-    // obj.updatedDate = '2020-08-01T00:00:00.000Z';
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   - Update
-    // ---------------------------------------------
-    
-    let newHistoryObj = {};
-    
-    if (Object.keys(historyObj).length !== 0) {
-      
-      newHistoryObj = historyObj;
-      
-      const datetimeCurrent = moment(ISO8601).utc();
-      const datetimeUpdated = moment(newHistoryObj.updatedDate).utc();
-      // const datetimeCurrent = moment('2020-08-07T23:55:05.898Z').utc();
-      // const datetimeUpdated = moment('2020-08-07T00:00:00.000Z').utc();
-      
-      
-      // datetimeCurrent.isSame(datetimeUpdated, 'day'): {green ${moment(ISO8601).isSame(obj.updatedDate, 'day')}
-      
-      // console.log(chalk`
-      //   ISO8601: {green ${ISO8601}}
-      //   obj.updatedDate: {green ${obj.updatedDate}}
-      //   moment(ISO8601).isSame(obj.updatedDate, 'day'): {green ${moment(ISO8601).isSame(obj.updatedDate, 'day')}}
-        
-      //   datetimeCurrent: {green ${datetimeCurrent}}
-      //   datetimeUpdated: {green ${datetimeUpdated}}
-      //   datetimeCurrent.isSame(datetimeUpdated, 'day'): {green ${datetimeCurrent.isSame(datetimeUpdated, 'day')}}
-      // `);
-      
-      
-      // ---------------------------------------------
-      //   前回の更新から日、月、年が変わっている場合はカウントを0にする
-      // ---------------------------------------------
-      
-      if (limitDay && datetimeCurrent.isSame(datetimeUpdated, 'day') === false) {
-        
-        newHistoryObj.countDay = 0;
-        
-      } else if (limitMonth && datetimeCurrent.isSame(datetimeUpdated, 'month') === false) {
-        
-        newHistoryObj.countMonth = 0;
-        
-      } else if (limitYear && datetimeCurrent.isSame(datetimeUpdated, 'year') === false) {
-        
-        newHistoryObj.countYear = 0;
-        
-      }
-      
-      newHistoryObj.updatedDate = ISO8601;
-      
-      
-    // ---------------------------------------------
-    //   - Insert
-    // ---------------------------------------------
-      
-    } else {
-      
-      newHistoryObj = {
-        
-        _id: shortid.generate(),
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        type: 'forum-count-post',
-        countDay: 0,
-        countMonth: 0,
-        countYear: 0,
-        countValid: 0,
-        countTotal: 0,
-        
-      };
-      
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   count
-    // ---------------------------------------------
-    
-    if (calculation === 'addition') {
-      
-      if (limitDay && limitDay >= newHistoryObj.countDay + 1) {
-        
-        newHistoryObj.countDay += 1;
-        newHistoryObj.countValid += 1;
-        
-      }
-      
-      newHistoryObj.countTotal += 1;
-      
-    } else if (calculation === 'subtraction') {
-      
-      newHistoryObj.countValid -= 1;
-      newHistoryObj.countTotal -= 1;
-      
-    } else {
-      
-      
-      // ---------------------------------------------
-      //   DB find / forum-comments
-      // ---------------------------------------------
-      
-      const count = await ModelForumComments.count({
-        
-        conditionObj: {
-          users_id: loginUsers_id
-        }
-        
-      });
-      
-      newHistoryObj.countValid = count;
-      
-      if (newHistoryObj.countTotal < newHistoryObj.countValid) {
-        newHistoryObj.countTotal = newHistoryObj.countValid;
-      }
-      
-      
-    }
-    
-    
-    
-    // newHistoryObj.countValid = 10;
-    
-    
-    // ---------------------------------------------
-    //   acquiredTitles_idsArr
-    // ---------------------------------------------
-    
-    const allTitles_idsArr = [];
-    const newAcquiredTitles_idsArr = [];
-    
-    for (let valueObj of conditionsArr.values()) {
-      
-      // 獲得できるすべての titles_id を取得する
-      allTitles_idsArr.push(valueObj.titles_id);
-      
-      // 獲得した titles_id を取得する
-      if (valueObj.count <= newHistoryObj.countValid) {
-        newAcquiredTitles_idsArr.push(valueObj.titles_id);
-      }
-      
-    }
-    
-    // 一度、配列から獲得できるすべての titles_id を削除する
-    const filteredArr = acquiredTitles_idsArr.filter((titles_id) => {
-      return allTitles_idsArr.includes(titles_id) === false;
-    });
-    
-    // 獲得した titles_id を追加（結合）する
-    const updatedTitles_idsArr = filteredArr.concat(newAcquiredTitles_idsArr);
-    
-    
-    // const exp = achievementsExp * lodashGet(obj, ['countValid'], 0);
-    
-    
-    
-    // ---------------------------------------------
-    //   Return Object
-    // ---------------------------------------------
-    
-    const newHistoriesArr = historiesArr;
-    
-    if (index === -1) {
-      
-      newHistoriesArr.push(newHistoryObj);
-      
-    } else {
-      
-      newHistoriesArr[index] = newHistoryObj;
-      
-    }
-    
-    const returnObj = {
-      
-      historiesArr: newHistoriesArr,
-      acquiredTitles_idsArr: updatedTitles_idsArr,
-      
-    };
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   console.log
-    // ---------------------------------------------
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/@modules/experience.js - forumCountPost
-    // `);
-    
-    // console.log(`
-    //   ----- acquiredTitles_idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(acquiredTitles_idsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- allTitles_idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(allTitles_idsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- newAcquiredTitles_idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(newAcquiredTitles_idsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- filteredArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(filteredArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- updatedTitles_idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(updatedTitles_idsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- newHistoryObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(newHistoryObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- historiesArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(historiesArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- newHistoryObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(newHistoryObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   Return
-    // ---------------------------------------------
-    
-    return returnObj;
-    
-    
-  } catch (errorObj) {
-    
-    throw errorObj;
-    
-  }
-  
-  
-};
-
-
-
-
-/**
- * 募集投稿 / recruitment-count-post
- * @param {string} calculation - [addition（加算）, subtraction（減算）, recalculation（再計算）]
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {Array} historiesArr - 現在の達成状況を計算するためのデータが入っている配列
- * @param {Array} acquiredTitles_idsArr - 獲得した称号の _id が入っている配列
- * @param {string} ISO8601 - 日時
- */
-const calculateRecruitmentCountPost = async ({
-  
-  calculation,
-  loginUsers_id,
-  historiesArr,
-  acquiredTitles_idsArr,
-  ISO8601,
-  
-}) => {
-  
-  
-  try {
-    
-    
-    // ---------------------------------------------
-    //   historyObj
-    // ---------------------------------------------
-    
-    let historyObj = {};
-    
-    const index = historiesArr.findIndex((valueObj) => {
-      return valueObj.type === 'recruitment-count-post';
-    });
-    
-    if (index !== -1) {
-      historyObj = historiesArr[index];
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   DB achievements
-    // ---------------------------------------------
-    
-    const docAchievementsObj = await ModelAchievements.findOne({
-      
-      conditionObj: {
-        type: 'recruitment-count-post'
-      }
-      
-    });
-    
-    const limitDay = lodashGet(docAchievementsObj, ['limitDay'], 0);
-    const limitMonth = lodashGet(docAchievementsObj, ['limitMonth'], 0);
-    const limitYear = lodashGet(docAchievementsObj, ['limitYear'], 0);
-    
-    const conditionsArr = lodashGet(docAchievementsObj, ['conditionsArr'], []);
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   - Update
-    // ---------------------------------------------
-    
-    let newHistoryObj = {};
-    
-    if (Object.keys(historyObj).length !== 0) {
-      
-      newHistoryObj = historyObj;
-      
-      const datetimeCurrent = moment(ISO8601).utc();
-      const datetimeUpdated = moment(newHistoryObj.updatedDate).utc();
-      
-      
-      // ---------------------------------------------
-      //   前回の更新から日、月、年が変わっている場合はカウントを0にする
-      // ---------------------------------------------
-      
-      if (limitDay && datetimeCurrent.isSame(datetimeUpdated, 'day') === false) {
-        
-        newHistoryObj.countDay = 0;
-        
-      } else if (limitMonth && datetimeCurrent.isSame(datetimeUpdated, 'month') === false) {
-        
-        newHistoryObj.countMonth = 0;
-        
-      } else if (limitYear && datetimeCurrent.isSame(datetimeUpdated, 'year') === false) {
-        
-        newHistoryObj.countYear = 0;
-        
-      }
-      
-      newHistoryObj.updatedDate = ISO8601;
-      
-      
-    // ---------------------------------------------
-    //   - Insert
-    // ---------------------------------------------
-      
-    } else {
-      
-      newHistoryObj = {
-        
-        _id: shortid.generate(),
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        type: 'recruitment-count-post',
-        countDay: 0,
-        countMonth: 0,
-        countYear: 0,
-        countValid: 0,
-        countTotal: 0,
-        
-      };
-      
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   count
-    // ---------------------------------------------
-    
-    if (calculation === 'addition') {
-      
-      if (limitDay && limitDay >= newHistoryObj.countDay + 1) {
-        
-        newHistoryObj.countDay += 1;
-        newHistoryObj.countValid += 1;
-        
-      }
-      
-      newHistoryObj.countTotal += 1;
-      
-    } else if (calculation === 'subtraction') {
-      
-      newHistoryObj.countValid -= 1;
-      newHistoryObj.countTotal -= 1;
-      
-    } else {
-      
-      
-      // ---------------------------------------------
-      //   DB find / recruitment-threads
-      // ---------------------------------------------
-      
-      const threadsCount = await ModelRecruitmentThreads.count({
-        
-        conditionObj: {
-          users_id: loginUsers_id
-        }
-        
-      });
-      
-      
-      // ---------------------------------------------
-      //   DB find / recruitment-comments
-      // ---------------------------------------------
-      
-      const commentsCount = await ModelRecruitmentComments.count({
-        
-        conditionObj: {
-          users_id: loginUsers_id
-        }
-        
-      });
-      
-      
-      // ---------------------------------------------
-      //   DB find / recruitment-replies
-      // ---------------------------------------------
-      
-      const repliesCount = await ModelRecruitmentReplies.count({
-        
-        conditionObj: {
-          users_id: loginUsers_id
-        }
-        
-      });
-      
-      
-      newHistoryObj.countValid = threadsCount + commentsCount + repliesCount;
-      
-      if (newHistoryObj.countTotal < newHistoryObj.countValid) {
-        newHistoryObj.countTotal = newHistoryObj.countValid;
-      }
-      
-      
-    }
-    
-    
-    
-    // newHistoryObj.countValid = 10;
     
     
     // ---------------------------------------------
@@ -1180,6 +798,7 @@ const calculateRecruitmentCountPost = async ({
       
       historiesArr: newHistoriesArr,
       acquiredTitles_idsArr: updatedTitles_idsArr,
+      exp,
       
     };
     
@@ -1192,7 +811,7 @@ const calculateRecruitmentCountPost = async ({
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/@modules/experience.js - calculateRecruitmentCountPost
+    //   /app/@modules/experience.js - calculateLevelCount
     // `);
     
     // console.log(`
@@ -1266,20 +885,22 @@ const calculateRecruitmentCountPost = async ({
 
 
 /**
- * フォローする / follow-count
+ * 計算 / 加算、減算が可能
+ * @param {string} type - [forum-count-post, recruitment-count-post, follow-count, followed-count, title-count]
  * @param {string} calculation - [addition（加算）, subtraction（減算）, recalculation（再計算）]
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} ISO8601 - 日時
  * @param {Array} historiesArr - 現在の達成状況を計算するためのデータが入っている配列
  * @param {Array} acquiredTitles_idsArr - 獲得した称号の _id が入っている配列
- * @param {string} ISO8601 - 日時
  */
-const calculateFollowCount = async ({
+const calculate = async ({
   
+  type,
   calculation,
   loginUsers_id,
+  ISO8601,
   historiesArr,
   acquiredTitles_idsArr,
-  ISO8601,
   
 }) => {
   
@@ -1294,7 +915,7 @@ const calculateFollowCount = async ({
     let historyObj = {};
     
     const index = historiesArr.findIndex((valueObj) => {
-      return valueObj.type === 'follow-count';
+      return valueObj.type === type;
     });
     
     if (index !== -1) {
@@ -1311,7 +932,7 @@ const calculateFollowCount = async ({
     const docAchievementsObj = await ModelAchievements.findOne({
       
       conditionObj: {
-        type: 'follow-count'
+        type
       }
       
     });
@@ -1326,8 +947,12 @@ const calculateFollowCount = async ({
     
     
     // ---------------------------------------------
-    //   - Update
+    //   newHistoryObj
     // ---------------------------------------------
+    
+    // ----------------------------------------
+    //   - Update
+    // ----------------------------------------
     
     let newHistoryObj = {};
     
@@ -1360,9 +985,9 @@ const calculateFollowCount = async ({
       newHistoryObj.updatedDate = ISO8601;
       
       
-    // ---------------------------------------------
+    // ----------------------------------------
     //   - Insert
-    // ---------------------------------------------
+    // ----------------------------------------
       
     } else {
       
@@ -1371,7 +996,7 @@ const calculateFollowCount = async ({
         _id: shortid.generate(),
         createdDate: ISO8601,
         updatedDate: ISO8601,
-        type: 'follow-count',
+        type,
         countDay: 0,
         countMonth: 0,
         countYear: 0,
@@ -1409,324 +1034,123 @@ const calculateFollowCount = async ({
       
       
       // ---------------------------------------------
-      //   DB find / follows
+      //   フォーラム書き込み / forum-count-post
       // ---------------------------------------------
       
-      const docFollowsObj = await ModelFollows.findOne({
+      if (type === 'forum-count-post') {
         
-        conditionObj: {
-          users_id: loginUsers_id
-        }
+        newHistoryObj.countValid = await ModelForumComments.count({
+          
+          conditionObj: {
+            users_id: loginUsers_id
+          }
+          
+        });
         
-      });
+        
+      // ---------------------------------------------
+      //   募集の投稿 / recruitment-count-post
+      // ---------------------------------------------
       
-      const count = lodashGet(docFollowsObj, ['followCount'], 0);
+      } else if (type === 'recruitment-count-post') {
+        
+        
+        // ---------------------------------------------
+        //   DB find / recruitment-threads
+        // ---------------------------------------------
+        
+        const threadsCount = await ModelRecruitmentThreads.count({
+          
+          conditionObj: {
+            users_id: loginUsers_id
+          }
+          
+        });
+        
+        
+        // ---------------------------------------------
+        //   DB find / recruitment-comments
+        // ---------------------------------------------
+        
+        const commentsCount = await ModelRecruitmentComments.count({
+          
+          conditionObj: {
+            users_id: loginUsers_id
+          }
+          
+        });
+        
+        
+        // ---------------------------------------------
+        //   DB find / recruitment-replies
+        // ---------------------------------------------
+        
+        const repliesCount = await ModelRecruitmentReplies.count({
+          
+          conditionObj: {
+            users_id: loginUsers_id
+          }
+          
+        });
+        
+        
+        newHistoryObj.countValid = threadsCount + commentsCount + repliesCount;
+        
+        
+      // ---------------------------------------------
+      //   フォローする / follow-count
+      // ---------------------------------------------
+        
+      } else if (type === 'follow-count') {
+        
+        const docFollowsObj = await ModelFollows.findOne({
+          
+          conditionObj: {
+            users_id: loginUsers_id
+          }
+          
+        });
+        
+        newHistoryObj.countValid = lodashGet(docFollowsObj, ['followCount'], 0);
+        
       
-      newHistoryObj.countValid = count;
-      
-      if (newHistoryObj.countTotal < newHistoryObj.countValid) {
-        newHistoryObj.countTotal = newHistoryObj.countValid;
+      // ---------------------------------------------
+      //   フォローされる / followed-count
+      // ---------------------------------------------
+        
+      } else if (type === 'followed-count') {
+        
+        const docFollowsObj = await ModelFollows.findOne({
+          
+          conditionObj: {
+            users_id: loginUsers_id
+          }
+          
+        });
+        
+        newHistoryObj.countValid = lodashGet(docFollowsObj, ['followedCount'], 0);
+        
+        
+      // ---------------------------------------------
+      //   称号を獲得する / title-count
+      // ---------------------------------------------
+        
+      } else if (type === 'title-count') {
+        
+        newHistoryObj.countValid = acquiredTitles_idsArr.length;
+        newHistoryObj.countTotal = acquiredTitles_idsArr.length;
+        
       }
       
       
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   acquiredTitles_idsArr
-    // ---------------------------------------------
-    
-    const allTitles_idsArr = [];
-    const newAcquiredTitles_idsArr = [];
-    
-    for (let valueObj of conditionsArr.values()) {
       
-      // 獲得できるすべての titles_id を取得する
-      allTitles_idsArr.push(valueObj.titles_id);
       
-      // 獲得した titles_id を取得する
-      if (valueObj.count <= newHistoryObj.countValid) {
-        newAcquiredTitles_idsArr.push(valueObj.titles_id);
-      }
       
-    }
-    
-    // 一度、配列から獲得できるすべての titles_id を削除する
-    const filteredArr = acquiredTitles_idsArr.filter((titles_id) => {
-      return allTitles_idsArr.includes(titles_id) === false;
-    });
-    
-    // 獲得した titles_id を追加（結合）する
-    const updatedTitles_idsArr = filteredArr.concat(newAcquiredTitles_idsArr);
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   Return Object
-    // ---------------------------------------------
-    
-    const newHistoriesArr = historiesArr;
-    
-    if (index === -1) {
-      
-      newHistoriesArr.push(newHistoryObj);
-      
-    } else {
-      
-      newHistoriesArr[index] = newHistoryObj;
-      
-    }
-    
-    const returnObj = {
-      
-      historiesArr: newHistoriesArr,
-      acquiredTitles_idsArr: updatedTitles_idsArr,
-      
-    };
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   console.log
-    // ---------------------------------------------
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/@modules/experience.js - calculateFollowCount
-    // `);
-    
-    // console.log(`
-    //   ----- acquiredTitles_idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(acquiredTitles_idsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- allTitles_idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(allTitles_idsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- newAcquiredTitles_idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(newAcquiredTitles_idsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- filteredArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(filteredArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- updatedTitles_idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(updatedTitles_idsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- historiesArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(historiesArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- newHistoryObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(newHistoryObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   Return
-    // ---------------------------------------------
-    
-    return returnObj;
-    
-    
-  } catch (errorObj) {
-    
-    throw errorObj;
-    
-  }
-  
-  
-};
-
-
-
-
-/**
- * フォローされる / followed-count
- * @param {string} calculation - [addition（加算）, subtraction（減算）, recalculation（再計算）]
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {Array} historiesArr - 現在の達成状況を計算するためのデータが入っている配列
- * @param {Array} acquiredTitles_idsArr - 獲得した称号の _id が入っている配列
- * @param {string} ISO8601 - 日時
- */
-const calculateFollowedCount = async ({
-  
-  calculation,
-  loginUsers_id,
-  historiesArr,
-  acquiredTitles_idsArr,
-  ISO8601,
-  
-}) => {
-  
-  
-  try {
-    
-    
-    // ---------------------------------------------
-    //   historyObj
-    // ---------------------------------------------
-    
-    let historyObj = {};
-    
-    const index = historiesArr.findIndex((valueObj) => {
-      return valueObj.type === 'followed-count';
-    });
-    
-    if (index !== -1) {
-      historyObj = historiesArr[index];
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   DB achievements
-    // ---------------------------------------------
-    
-    const docAchievementsObj = await ModelAchievements.findOne({
-      
-      conditionObj: {
-        type: 'followed-count'
-      }
-      
-    });
-    
-    const limitDay = lodashGet(docAchievementsObj, ['limitDay'], 0);
-    const limitMonth = lodashGet(docAchievementsObj, ['limitMonth'], 0);
-    const limitYear = lodashGet(docAchievementsObj, ['limitYear'], 0);
-    
-    const conditionsArr = lodashGet(docAchievementsObj, ['conditionsArr'], []);
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   - Update
-    // ---------------------------------------------
-    
-    let newHistoryObj = {};
-    
-    if (Object.keys(historyObj).length !== 0) {
-      
-      newHistoryObj = historyObj;
-      
-      const datetimeCurrent = moment(ISO8601).utc();
-      const datetimeUpdated = moment(newHistoryObj.updatedDate).utc();
       
       
       // ---------------------------------------------
-      //   前回の更新から日、月、年が変わっている場合はカウントを0にする
+      //   合計が有効数より少ない場合は、同じ数に変更する
       // ---------------------------------------------
-      
-      if (limitDay && datetimeCurrent.isSame(datetimeUpdated, 'day') === false) {
-        
-        newHistoryObj.countDay = 0;
-        
-      } else if (limitMonth && datetimeCurrent.isSame(datetimeUpdated, 'month') === false) {
-        
-        newHistoryObj.countMonth = 0;
-        
-      } else if (limitYear && datetimeCurrent.isSame(datetimeUpdated, 'year') === false) {
-        
-        newHistoryObj.countYear = 0;
-        
-      }
-      
-      newHistoryObj.updatedDate = ISO8601;
-      
-      
-    // ---------------------------------------------
-    //   - Insert
-    // ---------------------------------------------
-      
-    } else {
-      
-      newHistoryObj = {
-        
-        _id: shortid.generate(),
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        type: 'followed-count',
-        countDay: 0,
-        countMonth: 0,
-        countYear: 0,
-        countValid: 0,
-        countTotal: 0,
-        
-      };
-      
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   count
-    // ---------------------------------------------
-    
-    if (calculation === 'addition') {
-      
-      if (limitDay && limitDay >= newHistoryObj.countDay + 1) {
-        
-        newHistoryObj.countDay += 1;
-        newHistoryObj.countValid += 1;
-        
-      }
-      
-      newHistoryObj.countTotal += 1;
-      
-    } else if (calculation === 'subtraction') {
-      
-      newHistoryObj.countValid -= 1;
-      newHistoryObj.countTotal -= 1;
-      
-    } else {
-      
-      
-      // ---------------------------------------------
-      //   DB find / follows
-      // ---------------------------------------------
-      
-      const docFollowsObj = await ModelFollows.findOne({
-        
-        conditionObj: {
-          users_id: loginUsers_id
-        }
-        
-      });
-      
-      const count = lodashGet(docFollowsObj, ['followedCount'], 0);
-      
-      newHistoryObj.countValid = count;
       
       if (newHistoryObj.countTotal < newHistoryObj.countValid) {
         newHistoryObj.countTotal = newHistoryObj.countValid;
@@ -1873,6 +1297,669 @@ const calculateFollowedCount = async ({
 
 
 
+/**
+ * 計算・加算のみ / 一度、加算すると取り消すことはできない
+ * 例えば Good ボタンを押して + 1 された値は、Good ボタンをもう一度押して取り消したとしても - 1 にはならない
+ * @param {string} type - [login-count, good-count-click, good-count-clicked, card-player-edit]
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} ISO8601 - 日時
+ * @param {Array} historiesArr - 現在の達成状況を計算するためのデータが入っている配列
+ * @param {Array} acquiredTitles_idsArr - 獲得した称号の _id が入っている配列
+ */
+const calculateAddition = async ({
+  
+  type,
+  loginUsers_id,
+  ISO8601,
+  historiesArr,
+  acquiredTitles_idsArr,
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // ---------------------------------------------
+    //   historyObj
+    // ---------------------------------------------
+    
+    let historyObj = {};
+    
+    const index = historiesArr.findIndex((valueObj) => {
+      return valueObj.type === type;
+    });
+    
+    if (index !== -1) {
+      historyObj = historiesArr[index];
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   DB achievements
+    // ---------------------------------------------
+    
+    const docAchievementsObj = await ModelAchievements.findOne({
+      
+      conditionObj: {
+        type
+      }
+      
+    });
+    
+    const limitDay = lodashGet(docAchievementsObj, ['limitDay'], 0);
+    const limitMonth = lodashGet(docAchievementsObj, ['limitMonth'], 0);
+    const limitYear = lodashGet(docAchievementsObj, ['limitYear'], 0);
+    
+    const conditionsArr = lodashGet(docAchievementsObj, ['conditionsArr'], []);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   newHistoryObj
+    // ---------------------------------------------
+    
+    // ----------------------------------------
+    //   - Update
+    // ----------------------------------------
+    
+    let newHistoryObj = {};
+    
+    if (Object.keys(historyObj).length !== 0) {
+      
+      newHistoryObj = historyObj;
+      
+      const datetimeCurrent = moment(ISO8601).utc();
+      const datetimeUpdated = moment(newHistoryObj.updatedDate).utc();
+      
+      
+      // ---------------------------------------------
+      //   前回の更新から日、月、年が変わっている場合はカウントを0にする
+      // ---------------------------------------------
+      
+      if (limitDay && datetimeCurrent.isSame(datetimeUpdated, 'day') === false) {
+        
+        newHistoryObj.countDay = 0;
+        
+      } else if (limitMonth && datetimeCurrent.isSame(datetimeUpdated, 'month') === false) {
+        
+        newHistoryObj.countMonth = 0;
+        
+      } else if (limitYear && datetimeCurrent.isSame(datetimeUpdated, 'year') === false) {
+        
+        newHistoryObj.countYear = 0;
+        
+      }
+      
+      newHistoryObj.updatedDate = ISO8601;
+      
+      
+    // ----------------------------------------
+    //   - Insert
+    // ----------------------------------------
+      
+    } else {
+      
+      newHistoryObj = {
+        
+        _id: shortid.generate(),
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        type,
+        countDay: 0,
+        countMonth: 0,
+        countYear: 0,
+        countValid: 0,
+        countTotal: 0,
+        
+      };
+      
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   count
+    // ---------------------------------------------
+    // console.log(chalk`
+    //   type: {green ${type}}
+    //   limitDay: {green ${limitDay}}
+    //   newHistoryObj.countDay：{green ${newHistoryObj.countDay}}
+    //   newHistoryObj.countValid：{green ${newHistoryObj.countValid}}
+    //   newHistoryObj.countTotal：{green ${newHistoryObj.countTotal}}
+    // `);
+    
+    if (
+      
+      (limitDay === 0 && limitMonth === 0 && limitYear === 0) ||
+      (limitDay && limitDay >= newHistoryObj.countDay + 1) ||
+      (limitMonth && limitMonth >= newHistoryObj.countMonth + 1) ||
+      (limitYear && limitYear >= newHistoryObj.countYear + 1)
+      
+    ) {
+      
+      newHistoryObj.countDay += 1;
+      newHistoryObj.countValid += 1;
+      
+    }
+    
+    newHistoryObj.countTotal += 1;
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   acquiredTitles_idsArr
+    // ---------------------------------------------
+    
+    const allTitles_idsArr = [];
+    const newAcquiredTitles_idsArr = [];
+    
+    for (let valueObj of conditionsArr.values()) {
+      
+      // 獲得できるすべての titles_id を取得する
+      allTitles_idsArr.push(valueObj.titles_id);
+      
+      // 獲得した titles_id を取得する
+      if (valueObj.count <= newHistoryObj.countValid) {
+        newAcquiredTitles_idsArr.push(valueObj.titles_id);
+      }
+      
+    }
+    
+    // 一度、配列から獲得できるすべての titles_id を削除する
+    const filteredArr = acquiredTitles_idsArr.filter((titles_id) => {
+      return allTitles_idsArr.includes(titles_id) === false;
+    });
+    
+    // 獲得した titles_id を追加（結合）する
+    const updatedTitles_idsArr = filteredArr.concat(newAcquiredTitles_idsArr);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Return Object
+    // ---------------------------------------------
+    
+    const newHistoriesArr = historiesArr;
+    
+    if (index === -1) {
+      
+      newHistoriesArr.push(newHistoryObj);
+      
+    } else {
+      
+      newHistoriesArr[index] = newHistoryObj;
+      
+    }
+    
+    const returnObj = {
+      
+      historiesArr: newHistoriesArr,
+      acquiredTitles_idsArr: updatedTitles_idsArr,
+      
+    };
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   console.log
+    // ---------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@modules/experience.js - calculateLoginCount
+    // `);
+    
+    // console.log(`
+    //   ----- acquiredTitles_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(acquiredTitles_idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- allTitles_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(allTitles_idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- newAcquiredTitles_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(newAcquiredTitles_idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- filteredArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(filteredArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- updatedTitles_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(updatedTitles_idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- historiesArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(historiesArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- newHistoryObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(newHistoryObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Return
+    // ---------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (errorObj) {
+    
+    throw errorObj;
+    
+  }
+  
+  
+};
+
+
+
+
+/**
+ * 計算する・DB / データベースの値によって 0 か 1 に変わるもの
+ * @param {string} type - [title-show, card-player-upload-image-main, card-player-upload-image-thumbnail, user-page-upload-image-main, web-push-permission]
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} ISO8601 - 日時
+ * @param {Array} historiesArr - 現在の達成状況を計算するためのデータが入っている配列
+ * @param {Array} acquiredTitles_idsArr - 獲得した称号の _id が入っている配列
+ * @param {Array} selectedTitles_idsArr - 表示する称号の _id が入っている配列
+ */
+const calculateDB = async ({
+  
+  type,
+  loginUsers_id,
+  ISO8601,
+  historiesArr,
+  acquiredTitles_idsArr,
+  selectedTitles_idsArr,
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // ---------------------------------------------
+    //   historyObj
+    // ---------------------------------------------
+    
+    let historyObj = {};
+    
+    const index = historiesArr.findIndex((valueObj) => {
+      return valueObj.type === type;
+    });
+    
+    if (index !== -1) {
+      historyObj = historiesArr[index];
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   DB achievements
+    // ---------------------------------------------
+    
+    const docAchievementsObj = await ModelAchievements.findOne({
+      
+      conditionObj: {
+        type
+      }
+      
+    });
+    
+    const conditionsArr = lodashGet(docAchievementsObj, ['conditionsArr'], []);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   newHistoryObj
+    // ---------------------------------------------
+    
+    // ----------------------------------------
+    //   - Update
+    // ----------------------------------------
+    
+    let newHistoryObj = {};
+    
+    if (Object.keys(historyObj).length !== 0) {
+      
+      newHistoryObj = historyObj;
+      newHistoryObj.updatedDate = ISO8601;
+      
+      
+    // ----------------------------------------
+    //   - Insert
+    // ----------------------------------------
+      
+    } else {
+      
+      newHistoryObj = {
+        
+        _id: shortid.generate(),
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        type,
+        countDay: 0,
+        countMonth: 0,
+        countYear: 0,
+        countValid: 0,
+        countTotal: 0,
+        
+      };
+      
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Calculate
+    // ---------------------------------------------
+    
+    let enable = false;
+    
+    
+    // ---------------------------------------------
+    //   - title-show
+    // ---------------------------------------------
+    
+    if (type === 'title-show') {
+      
+      if (selectedTitles_idsArr.length > 0) {
+        enable = true;
+      }
+      
+      
+    // ----------------------------------------
+    //   - card-player-upload-image-main
+    // ----------------------------------------
+    
+    } else if (type === 'card-player-upload-image-main') {
+      
+      const docCardPlayersObj = await ModelCardPlayers.findOne({
+        
+        conditionObj: {
+          users_id: loginUsers_id
+        }
+        
+      });
+      
+      const imagesAndVideos_id = lodashGet(docCardPlayersObj, ['imagesAndVideos_id'], '');
+      
+      if (imagesAndVideos_id) {
+        enable = true;
+      }
+      
+      
+    // ----------------------------------------
+    //   - card-player-upload-image-thumbnail
+    // ----------------------------------------
+    
+    } else if (type === 'card-player-upload-image-thumbnail') {
+      
+      const docCardPlayersObj = await ModelCardPlayers.findOne({
+        
+        conditionObj: {
+          users_id: loginUsers_id
+        }
+        
+      });
+      
+      const imagesAndVideosThumbnail_id = lodashGet(docCardPlayersObj, ['imagesAndVideosThumbnail_id'], '');
+      
+      if (imagesAndVideosThumbnail_id) {
+        enable = true;
+      }
+      
+      
+    // ----------------------------------------
+    //   - user-page-upload-image-main
+    // ----------------------------------------
+    
+    } else if (type === 'user-page-upload-image-main') {
+      
+      const docUsersObj = await ModelUsers.findOne({
+        
+        conditionObj: {
+          _id: loginUsers_id
+        }
+        
+      });
+      
+      const imagesAndVideos_id = lodashGet(docUsersObj, ['pagesObj', 'imagesAndVideos_id'], '');
+      
+      if (imagesAndVideos_id) {
+        enable = true;
+      }
+    
+    
+    // ----------------------------------------
+    //   - web-push-permission
+    // ----------------------------------------
+    
+    } else if (type === 'web-push-permission') {
+      
+      const docUsersObj = await ModelUsers.findOne({
+        
+        conditionObj: {
+          _id: loginUsers_id
+        }
+        
+      });
+      
+      const webPushes_id = lodashGet(docUsersObj, ['webPushes_id'], '');
+      
+      
+      const docWebPushesObj = await ModelWebPushes.findOne({
+        
+        conditionObj: {
+          _id: webPushes_id
+        }
+        
+      });
+      
+      const endpoint = lodashGet(docWebPushesObj, ['subscriptionObj', 'endpoint'], '');
+      
+      
+      if (endpoint) {
+        enable = true;
+      }
+      
+    }
+    
+    
+    if (enable) {
+      
+      newHistoryObj.updatedDate = ISO8601;
+      newHistoryObj.countValid = 1;
+      newHistoryObj.countTotal = 1;
+      
+    } else {
+      
+      newHistoryObj.updatedDate = ISO8601;
+      newHistoryObj.countValid = 0;
+      newHistoryObj.countTotal = 0;
+      
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   acquiredTitles_idsArr
+    // ---------------------------------------------
+    
+    const allTitles_idsArr = [];
+    const newAcquiredTitles_idsArr = [];
+    
+    for (let valueObj of conditionsArr.values()) {
+      
+      // 獲得できるすべての titles_id を取得する
+      allTitles_idsArr.push(valueObj.titles_id);
+      
+      // 獲得した titles_id を取得する
+      if (valueObj.count <= newHistoryObj.countValid) {
+        newAcquiredTitles_idsArr.push(valueObj.titles_id);
+      }
+      
+    }
+    
+    // 一度、配列から獲得できるすべての titles_id を削除する
+    const filteredArr = acquiredTitles_idsArr.filter((titles_id) => {
+      return allTitles_idsArr.includes(titles_id) === false;
+    });
+    
+    // 獲得した titles_id を追加（結合）する
+    const updatedTitles_idsArr = filteredArr.concat(newAcquiredTitles_idsArr);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Return Object
+    // ---------------------------------------------
+    
+    const newHistoriesArr = historiesArr;
+    
+    if (index === -1) {
+      
+      newHistoriesArr.push(newHistoryObj);
+      
+    } else {
+      
+      newHistoriesArr[index] = newHistoryObj;
+      
+    }
+    
+    const returnObj = {
+      
+      historiesArr: newHistoriesArr,
+      acquiredTitles_idsArr: updatedTitles_idsArr,
+      
+    };
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   console.log
+    // ---------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@modules/experience.js - calculateDB
+    // `);
+    
+    // console.log(`
+    //   ----- acquiredTitles_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(acquiredTitles_idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- allTitles_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(allTitles_idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- newAcquiredTitles_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(newAcquiredTitles_idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- filteredArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(filteredArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- updatedTitles_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(updatedTitles_idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- newHistoryObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(newHistoryObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- historiesArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(historiesArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- newHistoryObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(newHistoryObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Return
+    // ---------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (errorObj) {
+    
+    throw errorObj;
+    
+  }
+  
+  
+};
+
+
+
+
 
 
 /**
@@ -1931,29 +2018,7 @@ const experienceCalculate = async ({
     
     let historiesArr = lodashGet(docExperiencesObj, ['historiesArr'], []);
     let acquiredTitles_idsArr = lodashGet(docExperiencesObj, ['acquiredTitles_idsArr'], []);
-    
-    // console.log(`
-    //   ----- acquiredTitles_idsArr -----\n
-    //   ${util.inspect(acquiredTitles_idsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   DB find / users
-    // ---------------------------------------------
-    
-    // const docUsersObj = await ModelUsers.findOne({
-      
-    //   conditionObj: {
-    //     _id: loginUsers_id
-    //   }
-      
-    // });
-    
-    // const createdDate = lodashGet(docUsersObj, ['createdDate'], '');
+    const selectedTitles_idsArr = lodashGet(docExperiencesObj, ['selectedTitles_idsArr'], []);
     
     
     
@@ -1967,9 +2032,9 @@ const experienceCalculate = async ({
       const tempObj = await calculateAccountAncient({
         
         loginUsers_id,
+        ISO8601,
         historiesArr,
         acquiredTitles_idsArr,
-        ISO8601,
         
       });
       
@@ -1990,9 +2055,81 @@ const experienceCalculate = async ({
       const tempObj = await calculateAccountCountDay({
         
         loginUsers_id,
+        ISO8601,
         historiesArr,
         acquiredTitles_idsArr,
+        
+      });
+      
+      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
+      
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   login-count
+    // ---------------------------------------------
+    
+    if (type === 'login-count' || calculation === 'addition') {
+      
+      const tempObj = await calculateAddition({
+        
+        type: 'login-count',
+        loginUsers_id,
         ISO8601,
+        historiesArr,
+        acquiredTitles_idsArr,
+        
+      });
+      
+      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
+      
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   good-count-click
+    // ---------------------------------------------
+    
+    if (type === 'good-count-click' || calculation === 'addition') {
+      
+      const tempObj = await calculateAddition({
+        
+        type: 'good-count-click',
+        loginUsers_id,
+        ISO8601,
+        historiesArr,
+        acquiredTitles_idsArr,
+        
+      });
+      
+      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
+      
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   good-count-clicked
+    // ---------------------------------------------
+    
+    if (type === 'good-count-clicked' || calculation === 'addition') {
+      
+      const tempObj = await calculateAddition({
+        
+        type: 'good-count-clicked',
+        loginUsers_id,
+        ISO8601,
+        historiesArr,
+        acquiredTitles_idsArr,
         
       });
       
@@ -2010,13 +2147,14 @@ const experienceCalculate = async ({
     
     if (type === 'forum-count-post' || calculation === 'recalculation') {
       
-      const tempObj = await calculateForumCountPost({
+      const tempObj = await calculate({
         
+        type: 'forum-count-post',
         calculation,
+        ISO8601,
         loginUsers_id,
         historiesArr,
         acquiredTitles_idsArr,
-        ISO8601,
         
       });
       
@@ -2034,13 +2172,14 @@ const experienceCalculate = async ({
     
     if (type === 'recruitment-count-post' || calculation === 'recalculation') {
       
-      const tempObj = await calculateRecruitmentCountPost({
+      const tempObj = await calculate({
         
+        type: 'recruitment-count-post',
         calculation,
         loginUsers_id,
+        ISO8601,
         historiesArr,
         acquiredTitles_idsArr,
-        ISO8601,
         
       });
       
@@ -2050,7 +2189,6 @@ const experienceCalculate = async ({
     }
     
     
-    // ['', 'level-count', '', 'login-count', 'good-count-click', 'good-count-clicked', '', '', 'follow-count', 'followed-count', 'title-count', 'title-show', 'card-player-edit', 'card-player-upload-image-main', 'card-player-upload-image-thumbnail', 'user-page-upload-image-main', 'user-page-change-url', 'web-push-permission']
     
     
     // ---------------------------------------------
@@ -2059,13 +2197,14 @@ const experienceCalculate = async ({
     
     if (type === 'follow-count' || calculation === 'recalculation') {
       
-      const tempObj = await calculateFollowCount({
+      const tempObj = await calculate({
         
+        type: 'follow-count',
         calculation,
         loginUsers_id,
+        ISO8601,
         historiesArr,
         acquiredTitles_idsArr,
-        ISO8601,
         
       });
       
@@ -2073,6 +2212,7 @@ const experienceCalculate = async ({
       acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
       
     }
+    
     
     
     
@@ -2082,13 +2222,14 @@ const experienceCalculate = async ({
     
     if (type === 'followed-count' || calculation === 'recalculation') {
       
-      const tempObj = await calculateFollowedCount({
+      const tempObj = await calculate({
         
+        type: 'followed-count',
         calculation,
         loginUsers_id,
+        ISO8601,
         historiesArr,
         acquiredTitles_idsArr,
-        ISO8601,
         
       });
       
@@ -2104,72 +2245,208 @@ const experienceCalculate = async ({
     //   title-show
     // ---------------------------------------------
     
-    // let titleShowObj = historiesArr.find((valueObj) => {
-    //   return valueObj.type === 'title-show';
-    // });
-    
-    // if (!titleShowObj) {
+    if (type === 'title-show' || calculation === 'recalculation') {
       
-    //   titleShowObj = {
+      const tempObj = await calculateDB({
         
-    //     _id: shortid.generate(),
-    //     createdDate: ISO8601,
-    //     updatedDate: ISO8601,
-    //     type: 'title-show',
-    //     countDay: 0,
-    //     countMonth: 0,
-    //     countYear: 0,
-    //     countValid: 0,
-    //     countTotal: 0,
+        type: 'title-show',
+        loginUsers_id,
+        ISO8601,
+        historiesArr,
+        acquiredTitles_idsArr,
+        selectedTitles_idsArr,
         
-    //   };
+      });
       
-    // }
-    
-    
-    // const selectedTitles_idsArr = lodashGet(docExperiencesObj, ['selectedTitles_idsArr'], []);
-    
-    // if (selectedTitles_idsArr.length > 0) {
+      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
       
-    //   titleShowObj.updatedDate = ISO8601;
-    //   titleShowObj.countValid = 1;
-    //   titleShowObj.countTotal = 1;
-      
-    // }
+    }
     
-    // // saveHistoriesArr.push(tempObj);
+    
     
     
     // ---------------------------------------------
-    //   login-count
+    //   card-player-edit
     // ---------------------------------------------
     
-    // const loginCountObj = historiesArr.find((valueObj) => {
-    //   return valueObj.type === 'login-count';
-    // });
-    
-    
-    // // ---------------------------------------------
-    // //   good-count-click
-    // // ---------------------------------------------
-    
-    // const goodCountClickObj = historiesArr.find((valueObj) => {
-    //   return valueObj.type === 'good-count-click';
-    // });
-    
-    
-    // // ---------------------------------------------
-    // //   good-count-clicked
-    // // ---------------------------------------------
-    
-    // const goodCountClickedObj = historiesArr.find((valueObj) => {
-    //   return valueObj.type === 'good-count-clicked';
-    // });
+    if (type === 'card-player-edit' || calculation === 'addition') {
+      
+      const tempObj = await calculateAddition({
+        
+        type: 'card-player-edit',
+        loginUsers_id,
+        ISO8601,
+        historiesArr,
+        acquiredTitles_idsArr,
+        
+      });
+      
+      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
+      
+    }
     
     
     
     
-    let exp = 0;
+    // ---------------------------------------------
+    //   card-player-upload-image-main
+    // ---------------------------------------------
+    
+    if (type === 'card-player-upload-image-main' || calculation === 'recalculation') {
+      
+      const tempObj = await calculateDB({
+        
+        type: 'card-player-upload-image-main',
+        loginUsers_id,
+        ISO8601,
+        historiesArr,
+        acquiredTitles_idsArr,
+        
+      });
+      
+      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
+      
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   card-player-upload-image-thumbnail
+    // ---------------------------------------------
+    
+    if (type === 'card-player-upload-image-thumbnail' || calculation === 'recalculation') {
+      
+      const tempObj = await calculateDB({
+        
+        type: 'card-player-upload-image-thumbnail',
+        loginUsers_id,
+        ISO8601,
+        historiesArr,
+        acquiredTitles_idsArr,
+        
+      });
+      
+      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
+      
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   user-page-upload-image-main
+    // ---------------------------------------------
+    
+    if (type === 'user-page-upload-image-main' || calculation === 'recalculation') {
+      
+      const tempObj = await calculateDB({
+        
+        type: 'user-page-upload-image-main',
+        loginUsers_id,
+        ISO8601,
+        historiesArr,
+        acquiredTitles_idsArr,
+        
+      });
+      
+      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
+      
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   user-page-change-url
+    // ---------------------------------------------
+    
+    if (type === 'user-page-change-url' || calculation === 'addition') {
+      
+      const tempObj = await calculateAddition({
+        
+        type: 'user-page-change-url',
+        loginUsers_id,
+        ISO8601,
+        historiesArr,
+        acquiredTitles_idsArr,
+        
+      });
+      
+      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
+      
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   web-push-permission
+    // ---------------------------------------------
+    
+    if (type === 'web-push-permission' || calculation === 'recalculation') {
+      
+      const tempObj = await calculateDB({
+        
+        type: 'web-push-permission',
+        loginUsers_id,
+        ISO8601,
+        historiesArr,
+        acquiredTitles_idsArr,
+        
+      });
+      
+      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
+      
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   title-count
+    // ---------------------------------------------
+    
+    const titleCountObj = await calculate({
+      
+      type: 'title-count',
+      loginUsers_id,
+      ISO8601,
+      historiesArr,
+      acquiredTitles_idsArr,
+      
+    });
+    
+    historiesArr = lodashGet(titleCountObj, ['historiesArr'], []);
+    acquiredTitles_idsArr = lodashGet(titleCountObj, ['acquiredTitles_idsArr'], []);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   level-count
+    // ---------------------------------------------
+    
+    const levelCountObj = await calculateLevelCount({
+      
+      loginUsers_id,
+      ISO8601,
+      historiesArr,
+      acquiredTitles_idsArr,
+      
+    });
+    
+    historiesArr = lodashGet(levelCountObj, ['historiesArr'], []);
+    acquiredTitles_idsArr = lodashGet(levelCountObj, ['acquiredTitles_idsArr'], []);
+    const exp = lodashGet(levelCountObj, ['exp'], 0);
+    
     
     
     
@@ -2179,7 +2456,7 @@ const experienceCalculate = async ({
     
     const conditionObj = {
       
-      _id: loginUsers_id
+      users_id: loginUsers_id
       
     };
     
@@ -2187,49 +2464,6 @@ const experienceCalculate = async ({
     // --------------------------------------------------
     //   Save Object
     // --------------------------------------------------
-    
-    const newHistoriesArr = [];
-    
-    // if (accountAncientObj) {
-    //   newHistoriesArr.push(accountAncientObj);
-    // }
-    
-    // if (loginCountObj) {
-    //   newHistoriesArr.push(loginCountObj);
-    // }
-    
-    // if (accountCountDayObj) {
-    //   newHistoriesArr.push(accountCountDayObj);
-    // }
-    
-    // if (goodCountClickObj) {
-    //   newHistoriesArr.push(goodCountClickObj);
-    // }
-    
-    // if (goodCountClickedObj) {
-    //   newHistoriesArr.push(goodCountClickedObj);
-    // }
-    
-    // if (forumCountPostObj) {
-    //   newHistoriesArr.push(forumCountPostObj);
-    // }
-    
-    // if (recruitmentCountPostObj) {
-    //   newHistoriesArr.push(recruitmentCountPostObj);
-    // }
-    
-    // if (followCountObj) {
-    //   newHistoriesArr.push(followCountObj);
-    // }
-    
-    // if (followedCountObj) {
-    //   newHistoriesArr.push(followedCountObj);
-    // }
-    
-    // if (titleShowObj) {
-    //   newHistoriesArr.push(titleShowObj);
-    // }
-    
     
     const saveObj = {
       
@@ -2244,6 +2478,19 @@ const experienceCalculate = async ({
       
     };
     
+    
+    
+    
+    // ---------------------------------------------
+    //   DB experiences / upsert
+    // ---------------------------------------------
+    
+    await ModelExperiences.upsert({
+      
+      conditionObj,
+      saveObj,
+      
+    });
     
     
     
@@ -2268,24 +2515,16 @@ const experienceCalculate = async ({
     // `);
     
     // console.log(`
-    //   ----- docFollowsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(docFollowsObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- docUsersObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(docUsersObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
     //   ----- docExperiencesObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(docExperiencesObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
-    
+    console.log(`
+      ----- conditionObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(conditionObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     console.log(`
       ----- saveObj -----\n

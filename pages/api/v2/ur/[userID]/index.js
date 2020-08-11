@@ -221,21 +221,13 @@ export default async (req, res) => {
     
     
     
-    experienceCalculate({ 
-      
-      req,
-      loginUsers_id,
-      // type: 'follow-count',
-      // calculation: 'addition',
-      // calculation: 'subtraction',
-      calculation: 'recalculation',
-      
-    });
-    
     // experienceCalculate({ 
       
+    //   req,
     //   loginUsers_id,
-    //   type: '',
+    //   // type: 'title-count',
+    //   // calculation: 'addition',
+    //   // calculation: 'subtraction',
     //   calculation: 'recalculation',
       
     // });

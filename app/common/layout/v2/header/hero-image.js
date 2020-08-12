@@ -14,7 +14,7 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -25,6 +25,13 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+
+
+// ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 // ---------------------------------------------
@@ -52,24 +59,16 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   Hooks
+  //   States
   // --------------------------------------------------
   
-  // const [showNavTop, setShowNavTop] = useState(true);
-  // const [loginMenuOpen, setLoginMenuOpen] = useState(false);
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   props
-  // --------------------------------------------------
+  const stateLayout = ContainerStateLayout.useContainer();
   
   const {
     
     headerObj,
     
-  } = props;
+  } = stateLayout;
   
   
   
@@ -93,7 +92,12 @@ const Component = (props) => {
   
   if (type === 'gc') {
     
-    componentData = <DataGc headerObj={headerObj} heroImage={true} />;
+    componentData =
+      <DataGc
+        headerObj={headerObj}
+        heroImage={true}
+      />
+    ;
     
   } else if (type === 'uc') {
     
@@ -101,7 +105,12 @@ const Component = (props) => {
     
   } else if (type === 'ur') {
     
-    componentData = <DataUr headerObj={headerObj} heroImage={true} />;
+    componentData =
+      <DataUr
+        headerObj={headerObj}
+        heroImage={true}
+      />
+    ;
     
   }
   
@@ -226,8 +235,6 @@ const Component = (props) => {
   //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
   
   
   

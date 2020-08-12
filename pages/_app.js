@@ -283,10 +283,12 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const ISO8601 = lodashGet(pageProps, ['ISO8601'], moment().utc().toISOString());
+  const headerObj = lodashGet(pageProps, ['headerObj'], {});
   
   const initialStateLayoutObj = {
     
     ISO8601,
+    headerObj,
     
   };
   

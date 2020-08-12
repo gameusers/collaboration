@@ -29,6 +29,7 @@ import lodashSet from 'lodash/set';
 //   Model
 // ---------------------------------------------
 
+import ModelUsers from 'app/@database/users/model.js';
 import ModelExperiences from 'app/@database/experiences/model.js';
 
 
@@ -170,21 +171,16 @@ export default async (req, res) => {
       
     });
     
-    const titlesArr = lodashGet(docExperiencesObj, ['titlesArr'], []);
+    const acquiredTitles_idsArr = lodashGet(docExperiencesObj, ['acquiredTitles_idsArr'], []);
     const valueArr = lodashGet(validationObj, ['valueArr'], []);
     const saveTitles_idsArr = [];
     
     for (let titles_id of valueArr.values()) {
       
-      const index = titlesArr.findIndex((valueObj) => {
-        return valueObj.titles_id === titles_id;
-      });
-      
-      if (index !== -1) {
+      if (acquiredTitles_idsArr.includes(titles_id)) {
         saveTitles_idsArr.push(titles_id);
       }
       
-      // console.log(value);
     }
     
     
@@ -218,7 +214,7 @@ export default async (req, res) => {
       
       $set: {
         updatedDate: ISO8601,
-        titles_idsArr: saveTitles_idsArr,
+        selectedTitles_idsArr: saveTitles_idsArr,
       }
       
     };
@@ -239,18 +235,29 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
+    //   ヘッダーデータ取得
+    // --------------------------------------------------
+    
+    const docUsersObj = await ModelUsers.findOneForUser({
+      
+      localeObj,
+      loginUsers_id,
+      users_id: loginUsers_id,
+      
+    });
+    
+    const headerObj = lodashGet(docUsersObj, ['headerObj'], {});
+    
+    
+    
+    
+    // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/api/v2/db/card-players/upsert.js
-    // `);
-    
-    // console.log(`
-    //   ----- titles_idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(titles_idsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
+    //   /pages/api/v2/db/experiences/upsert.js
     // `);
     
     // console.log(`
@@ -266,8 +273,20 @@ export default async (req, res) => {
     // `);
     
     // console.log(`
-    //   ----- saveTitles_idsArr -----\n
-    //   ${util.inspect(saveTitles_idsArr, { colors: true, depth: null })}\n
+    //   ----- conditionObj -----\n
+    //   ${util.inspect(conditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- saveObj -----\n
+    //   ${util.inspect(saveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- docUsersObj -----\n
+    //   ${util.inspect(docUsersObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -284,7 +303,7 @@ export default async (req, res) => {
     //   Success
     // ---------------------------------------------
     
-    return res.status(200).json(saveTitles_idsArr);
+    return res.status(200).json(headerObj);
     
     
   } catch (errorObj) {

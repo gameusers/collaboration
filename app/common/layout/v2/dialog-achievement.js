@@ -224,7 +224,6 @@ const ComponentPanel = (props) => {
   const intl = useIntl();
   const classes = useStyles();
   const [panelExpanded, setPanelExpanded] = useState(defaultExpanded);
-  // const [panelExpanded, setPanelExpanded] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   
@@ -361,14 +360,13 @@ const Component = (props) => {
   
   const {
     
+    setHeaderObj,
     handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
-    // handleScrollTo,
     dialogAchievementOpen,
     setDialogAchievementOpen,
     dialogAchievementObj,
-    // setDialogAchievementObj,
     dialogAchievementSelectedTitles_idsArr,
     setDialogAchievementSelectedTitles_idsArr,
     
@@ -475,27 +473,6 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Reset Form
-      // ---------------------------------------------
-      
-      // setName('');
-      // setAnonymity(false);
-      // setComment('');
-      // setImagesAndVideosObj({
-        
-      //   _id: '',
-      //   createdDate: '',
-      //   updatedDate: '',
-      //   users_id: '',
-      //   type: 'forum',
-      //   arr: [],
-        
-      // });
-      
-      
-      
-      
-      // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
       
@@ -506,7 +483,7 @@ const Component = (props) => {
       //   Update
       // ---------------------------------------------
       
-      setDialogAchievementSelectedTitles_idsArr(lodashGet(resultObj, ['data'], []));
+      setHeaderObj(lodashGet(resultObj, ['data'], {}));
       
       
       // ---------------------------------------------
@@ -596,6 +573,7 @@ const Component = (props) => {
   
   /**
    * 称号を追加する / 削除する
+   * @param {string} value - titles_id
    */
   const handleAddRemoveTitle = ({ value }) => {
     
@@ -675,8 +653,6 @@ const Component = (props) => {
     const countTotal = lodashGet(find1Obj , ['countTotal'], 0);
     
     let activeStep = 0;
-    
-    // let conditionType = 'count';
     
     
     
@@ -893,9 +869,6 @@ const Component = (props) => {
           
           <StepLabel>
             
-            {/*countValid = {countValid}<br />
-            activeStep = {activeStep}<br />*/}
-            
             <div
               css={css`
                 display: flex;
@@ -1057,8 +1030,6 @@ const Component = (props) => {
           css={css`
             display: flex;
             flex-flow: row wrap;
-            // margin: 0 12px;
-            // padding: 0 0 12px;
           `}
         >
           {componentTitleAcquisitionsArr}
@@ -1279,11 +1250,7 @@ const Component = (props) => {
         {/* Buttons */}
         <ButtonGroup
           css={css`
-            // margin: 0 0 0 0;
-            // padding: 0 24px;
-            
             @media screen and (max-width: 480px) {
-              // margin: 76px 0 24px 0;
               padding: 0 12px;
             }
           `}

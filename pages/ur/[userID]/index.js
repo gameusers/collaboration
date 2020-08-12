@@ -28,6 +28,14 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashIsEqual from 'lodash/isEqual';
+
+
+// ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 // ---------------------------------------------
@@ -61,6 +69,22 @@ const ContainerLayout = (props) => {
   
   
   // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateLayout = ContainerStateLayout.useContainer();
+  
+  const {
+    
+    headerObj,
+    setHeaderObj,
+    
+  } = stateLayout;
+  
+  
+  
+  
+  // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
@@ -68,6 +92,15 @@ const ContainerLayout = (props) => {
   
   
   useEffect(() => {
+    
+    
+    // --------------------------------------------------
+    //   Header 更新 - データに変更があった場合のみステートを更新
+    // --------------------------------------------------
+    
+    if (lodashIsEqual(headerObj, props.headerObj) === false) {
+      setHeaderObj(props.headerObj);
+    }
     
     
     // ---------------------------------------------
@@ -289,14 +322,14 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       name: 'トップ',
-      href: `/ur/[userID]/index?userID=${userID}`,
+      href: `/ur/[userID]`,
       as: `/ur/${userID}`,
       active: true,
     },
     
     {
       name: 'フォロー',
-      href: `/ur/[userID]/follow?userID=${userID}`,
+      href: `/ur/[userID]/follow`,
       as: `/ur/${userID}/follow`,
       active: false,
     },
@@ -308,7 +341,7 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: '設定',
-        href: `/ur/[userID]/setting?userID=${userID}`,
+        href: `/ur/[userID]/setting`,
         as: `/ur/${userID}/setting`,
         active: false,
       }

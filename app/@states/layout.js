@@ -44,6 +44,7 @@ const useLayout = (initialStateObj) => {
   // --------------------------------------------------
  
   const [ISO8601, setISO8601] = useState(lodashGet(initialStateObj, ['ISO8601'], moment().utc().toISOString()));
+  const [headerObj, setHeaderObj] = useState(lodashGet(initialStateObj, ['headerObj'], {}));
   const [snackbarObj, setSnackbarObj] = useState({});
   const [dialogObj, setDialogOpen] = useState({ open: false });
   const [loadingObj, setLoadingObj] = useState({});
@@ -345,6 +346,9 @@ const useLayout = (initialStateObj) => {
     
     ISO8601,
     setISO8601,
+    
+    headerObj,
+    setHeaderObj,
     
     snackbarObj,
     handleSnackbarOpen,

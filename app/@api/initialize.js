@@ -291,84 +291,223 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        exp: 999,
+        exp: 1916,
         historiesArr: [// アカウント開設日、goodボタン、フォーラム書き込み、募集書き込み、ゲーム登録、日記、経験値
           
           {
             _id: 'V5gmtBJC_',
-            createdDate: ISO8601,
-            updatedDate: ISO8601,
+            createdDate: '2020-08-12T04:53:54.804Z',
+            updatedDate: '2020-08-12T04:53:54.804Z',
             type: 'account-ancient',
             countDay: 0,
             countMonth: 0,
             countYear: 0,
             countValid: 1,
-            countTotal: 1,
+            countTotal: 1
           },
-          
           {
             _id: 'Hc-iVQxJ8',
-            createdDate: ISO8601,
-            updatedDate: ISO8601,
+            createdDate: '2020-08-12T04:53:54.804Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
             type: 'login-count',
             countDay: 1,
             countMonth: 0,
             countYear: 0,
             countValid: 10,
-            countTotal: 10,
+            countTotal: 10
           },
-          
           {
             _id: 'Xt1Jny7Hb',
-            createdDate: ISO8601,
-            updatedDate: ISO8601,
+            createdDate: '2020-08-12T04:53:54.804Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
             type: 'good-count-click',
             countDay: 5,
             countMonth: 0,
             countYear: 0,
             countValid: 25,
-            countTotal: 30,
+            countTotal: 30
           },
-          
           {
             _id: '-6rOeYCIj',
-            createdDate: ISO8601,
-            updatedDate: ISO8601,
+            createdDate: '2020-08-12T04:53:54.804Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
             type: 'forum-count-post',
             countDay: 0,
             countMonth: 0,
             countYear: 0,
             countValid: 5,
-            countTotal: 5,
+            countTotal: 5
           },
-          
           {
             _id: 'v-UWbg-ye',
-            createdDate: ISO8601,
-            updatedDate: ISO8601,
+            createdDate: '2020-08-12T04:53:54.804Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
             type: 'recruitment-count-post',
             countDay: 0,
             countMonth: 0,
             countYear: 0,
-            countValid: 10,
-            countTotal: 10,
+            countValid: 4,
+            countTotal: 10
           },
-          
-          
-          // {
-          //   _id: '',
-          //   createdDate: '',
-          //   updatedDate: ISO8601,
-          //   type: '',
-          //   countDay: 0,
-          //   countMonth: 0,
-          //   countYear: 0,
-          //   countValid: 0,
-          //   countTotal: 0,
-          // },
+          {
+            _id: '84HXxL4z4Z',
+            createdDate: '2020-08-12T04:54:09.617Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
+            type: 'account-count-day',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 2050,
+            countTotal: 2050
+          },
+          {
+            _id: 'FUVULIosfT',
+            createdDate: '2020-08-12T04:54:09.617Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
+            type: 'follow-count',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 0,
+            countTotal: 0
+          },
+          {
+            _id: '-8rOVdTiSy',
+            createdDate: '2020-08-12T04:54:09.617Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
+            type: 'followed-count',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 1,
+            countTotal: 1
+          },
+          {
+            _id: '91jldS6hJG',
+            createdDate: '2020-08-12T04:54:09.617Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
+            type: 'title-show',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 1,
+            countTotal: 1
+          },
+          {
+            _id: 'qlR-o1nZ3Q',
+            createdDate: '2020-08-12T04:54:09.617Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
+            type: 'card-player-upload-image-main',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 1,
+            countTotal: 1
+          },
+          {
+            _id: 'Jjjj11rkl3',
+            createdDate: '2020-08-12T04:54:09.617Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
+            type: 'card-player-upload-image-thumbnail',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 1,
+            countTotal: 1
+          },
+          {
+            _id: '8BriLq5GdJ',
+            createdDate: '2020-08-12T04:54:09.617Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
+            type: 'user-page-upload-image-main',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 1,
+            countTotal: 1
+          },
+          {
+            _id: 'lEh6WpyIY_',
+            createdDate: '2020-08-12T04:54:09.617Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
+            type: 'web-push-permission',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 1,
+            countTotal: 1
+          },
+          {
+            _id: 'BLDzo4IV02',
+            createdDate: '2020-08-12T04:54:09.617Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
+            type: 'title-count',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 35,
+            countTotal: 35
+          },
+          {
+            _id: 'SHflGotqtf',
+            createdDate: '2020-08-12T04:54:09.617Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
+            type: 'level-count',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 4,
+            countTotal: 4
+          },
+          {
+            _id: 'UegggOhlpk',
+            createdDate: '2020-08-12T08:59:20.171Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
+            type: 'good-count-clicked',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 0,
+            countTotal: 0
+          },
+          {
+            _id: 'Kc2TWwfGnc',
+            createdDate: '2020-08-12T08:59:20.171Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
+            type: 'card-player-edit',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 0,
+            countTotal: 0
+          },
+          {
+            _id: '4NxenoLm6l',
+            createdDate: '2020-08-12T08:59:20.171Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
+            type: 'user-page-change-url',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 0,
+            countTotal: 0
+          }
           
         ],
-        acquiredTitles_idsArr: ['MuK2dKVpn', '7YCic-Yds', '8Fbta4f9O', 'nFJYEhwWB', 'NwzUOqsiC'],
+        acquiredTitles_idsArr: [
+          'NwzUOqsiC', 'MuK2dKVpn', 'rYAf6jFYK',
+          '8z7LyZQ_5', 'W8sbxpWTe', 'QZbmznsqU',
+          'LOUgnlj36', 'L_p3lJfig', 'CBZfxt-5L',
+          'yHSTXY0Uv', 'DLV53cJSO', 'tegNhho16',
+          'xvY5bY9yH', 'GPoSK78Rj', 'OvFFDioQV',
+          'MBNo5yFTg', 'yKAZQg45T', 'krhg5hHmV',
+          'nFJYEhwWB', 'k4xm8yGJD', '7K8R91Chm',
+          '0kh9wSxkK', 'ksytsAh44', '6u1Me1S13',
+          '7YCic-Yds', 'RhpW8VDw4', 'bnOJOwQN4',
+          '4e2otkg81', 'iPgdAE8rL', 'oU2EDF7vI',
+          '0c0jL9cW-', '065apjMq1', 'oZlexPqhS',
+          'GjGPfC8e1', 'MYLwdOLD1'
+        ],
         selectedTitles_idsArr: ['MuK2dKVpn', 'NwzUOqsiC', '8Fbta4f9O'],
       },
       

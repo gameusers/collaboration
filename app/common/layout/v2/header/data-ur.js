@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -41,6 +42,13 @@ import IconButton from '@material-ui/core/IconButton';
 import IconHealing from '@material-ui/icons/Healing';
 import IconKeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
 import IconKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { calculateLevel, calculateToNextLevel } from 'app/@modules/level.js';
 
 
 // ---------------------------------------------
@@ -143,8 +151,10 @@ const Component = (props) => {
   const status = lodashGet(headerObj, ['status'], '');
   
   const exp = lodashGet(headerObj, ['exp'], 0);
-  const level = Math.floor(exp / 10);
-  const tnl = 10 - (exp % 10);
+  const level = calculateLevel({ exp });
+  const tnl = calculateToNextLevel({ exp });
+  // const level = Math.floor(exp / 10);
+  // const tnl = 10 - (exp % 10);
   
   const titlesArr = lodashGet(headerObj, ['titlesArr'], []);
   
@@ -215,7 +225,7 @@ const Component = (props) => {
     componentAchievementsArr.push(
       <div
         css={css`
-          margin: 0 0 0 12px;
+          margin: 12px 0 0 12px;
         `}
         key={index}
       >
@@ -241,7 +251,7 @@ const Component = (props) => {
         css={css`
           display: flex;
           flex-flow: row wrap;
-          margin: 12px 6px 0;
+          margin: 0 6px 0;
         `}
       >
         

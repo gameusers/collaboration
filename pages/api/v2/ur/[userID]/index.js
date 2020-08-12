@@ -244,7 +244,6 @@ export default async (req, res) => {
     // `);
     
     // console.log(chalk`
-    //   {green ur/player/api/player / initial-props}
     //   userID: {green ${userID}}
     //   users_id：{green ${users_id}}
     // `);

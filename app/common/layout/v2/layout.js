@@ -96,7 +96,7 @@ const Component = (props) => {
     title,
     componentSidebar,
     componentContent,
-    headerObj,
+    // headerObj,
     headerNavMainArr,
     
   } = props;
@@ -309,7 +309,7 @@ const Component = (props) => {
         {({ measureRef }) => (
           <div ref={measureRef}>
             <HeroImage
-              headerObj={headerObj}
+              // headerObj={headerObj}
             />
           </div>
         )}

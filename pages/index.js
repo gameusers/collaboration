@@ -31,6 +31,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashIsEqual from 'lodash/isEqual';
 
 
 // ---------------------------------------------
@@ -51,6 +52,13 @@ import Typography from '@material-ui/core/Typography';
 
 import IconSchedule from '@material-ui/icons/Schedule';
 import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
+
+
+// ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 // ---------------------------------------------
@@ -216,20 +224,52 @@ const styledIconChatBubble = css`
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/logout
+//   URL: https://dev-1.gameusers.org/
 // --------------------------------------------------
 
-const Component = (props) => {
+const ContainerLayout = (props) => {
   
   
   // --------------------------------------------------
-  //   Error
-  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
+  //   States
   // --------------------------------------------------
   
-  if (props.statusCode !== 200) {
-    return <Error statusCode={props.statusCode} />;
-  }
+  const stateLayout = ContainerStateLayout.useContainer();
+  
+  const {
+    
+    headerObj,
+    setHeaderObj,
+    
+  } = stateLayout;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Hooks
+  // --------------------------------------------------
+  
+  useEffect(() => {
+    
+    
+    // --------------------------------------------------
+    //   Header 更新 - データに変更があった場合のみステートを更新
+    // --------------------------------------------------
+    
+    if (lodashIsEqual(headerObj, props.headerObj) === false) {
+      setHeaderObj(props.headerObj);
+    }
+    
+    
+    // ---------------------------------------------
+    //   Scroll To
+    // ---------------------------------------------
+    
+    scroll.scrollToTop({ duration: 0 });
+    
+    
+  }, [props.ISO8601]);
   
   
   
@@ -830,8 +870,15 @@ const Component = (props) => {
         <p>ユーザーコミュニティ<br />
         <a href={`/uc/community1`}>{`/uc/community1`}</a></p>
         
-        <p>ユーザー<br />
-        <a href={`/ur/user1`}>{`/ur/user1`}</a></p>
+        {/*<p>ユーザー<br />
+        <a href={'/ur/user1'}>{`/ur/user1`}</a></p>*/}
+        
+        
+        <p>ユーザー</p>
+        <Link href={'/ur/[userID]'} as={'/ur/user1'}>
+          <a>/ur/user1</a>
+        </Link>
+        
         
         <p>------------------------------</p>
         
@@ -857,6 +904,31 @@ const Component = (props) => {
       headerNavMainArr={props.headerNavMainArr}
     />
   );
+  
+  
+};
+
+
+
+
+const Component = (props) => {
+  
+  
+  // --------------------------------------------------
+  //   Error
+  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
+  // --------------------------------------------------
+  
+  if (props.statusCode !== 200) {
+    return <Error statusCode={props.statusCode} />;
+  }
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return <ContainerLayout {...props} />;
   
   
 };

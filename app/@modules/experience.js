@@ -733,7 +733,7 @@ const calculateLevelCount = async ({
     }
     
     
-    const level = Math.floor(exp / parseInt(process.env.NEXT_PUBLIC_LEVEL_UP_EXP, 10)) + 1;
+    const level = Math.floor(exp / parseInt(process.env.NEXT_PUBLIC_LEVEL_UP_REQUIRED_EXP, 10)) + 1;
     
     newHistoryObj.countValid = level;
     newHistoryObj.countTotal = level;
@@ -885,7 +885,7 @@ const calculateLevelCount = async ({
 
 
 /**
- * 計算 / 加算、減算が可能
+ * 計算 / 加算、減算、再計算が可能
  * @param {string} type - [forum-count-post, recruitment-count-post, follow-count, followed-count, title-count]
  * @param {string} calculation - [addition（加算）, subtraction（減算）, recalculation（再計算）]
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
@@ -1011,7 +1011,7 @@ const calculate = async ({
     
     
     // ---------------------------------------------
-    //   count
+    //   Calculate
     // ---------------------------------------------
     
     if (calculation === 'addition') {
@@ -1301,6 +1301,7 @@ const calculate = async ({
  * 計算・加算のみ / 一度、加算すると取り消すことはできない
  * 例えば Good ボタンを押して + 1 された値は、Good ボタンをもう一度押して取り消したとしても - 1 にはならない
  * @param {string} type - [login-count, good-count-click, good-count-clicked, card-player-edit]
+ * @param {string} calculation - [addition（加算）, recalculation（再計算）]
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} ISO8601 - 日時
  * @param {Array} historiesArr - 現在の達成状況を計算するためのデータが入っている配列
@@ -1309,6 +1310,7 @@ const calculate = async ({
 const calculateAddition = async ({
   
   type,
+  calculation,
   loginUsers_id,
   ISO8601,
   historiesArr,
@@ -1423,8 +1425,9 @@ const calculateAddition = async ({
     
     
     // ---------------------------------------------
-    //   count
+    //   Calculate
     // ---------------------------------------------
+    
     // console.log(chalk`
     //   type: {green ${type}}
     //   limitDay: {green ${limitDay}}
@@ -1433,21 +1436,25 @@ const calculateAddition = async ({
     //   newHistoryObj.countTotal：{green ${newHistoryObj.countTotal}}
     // `);
     
-    if (
+    if (calculation === 'addition') {
       
-      (limitDay === 0 && limitMonth === 0 && limitYear === 0) ||
-      (limitDay && limitDay >= newHistoryObj.countDay + 1) ||
-      (limitMonth && limitMonth >= newHistoryObj.countMonth + 1) ||
-      (limitYear && limitYear >= newHistoryObj.countYear + 1)
+      if (
+        
+        (limitDay === 0 && limitMonth === 0 && limitYear === 0) ||
+        (limitDay && limitDay >= newHistoryObj.countDay + 1) ||
+        (limitMonth && limitMonth >= newHistoryObj.countMonth + 1) ||
+        (limitYear && limitYear >= newHistoryObj.countYear + 1)
+        
+      ) {
+        
+        newHistoryObj.countDay += 1;
+        newHistoryObj.countValid += 1;
+        
+      }
       
-    ) {
-      
-      newHistoryObj.countDay += 1;
-      newHistoryObj.countValid += 1;
+      newHistoryObj.countTotal += 1;
       
     }
-    
-    newHistoryObj.countTotal += 1;
     
     
     
@@ -1992,7 +1999,6 @@ const experienceCalculate = async ({
     }
     
     
-    // ['account-ancient', 'level-count', 'account-count-day', 'login-count', 'good-count-click', 'good-count-clicked', 'forum-count-post', 'recruitment-count-post', 'follow-count', 'followed-count', 'title-count', 'title-show', 'card-player-edit', 'card-player-upload-image-main', 'card-player-upload-image-thumbnail', 'user-page-upload-image-main', 'user-page-change-url', 'web-push-permission']
     
     
     // ---------------------------------------------
@@ -2073,11 +2079,12 @@ const experienceCalculate = async ({
     //   login-count
     // ---------------------------------------------
     
-    if (type === 'login-count' || calculation === 'addition') {
+    if ((type === 'login-count' && calculation === 'addition') || calculation === 'recalculation') {
       
       const tempObj = await calculateAddition({
         
         type: 'login-count',
+        calculation,
         loginUsers_id,
         ISO8601,
         historiesArr,
@@ -2097,11 +2104,12 @@ const experienceCalculate = async ({
     //   good-count-click
     // ---------------------------------------------
     
-    if (type === 'good-count-click' || calculation === 'addition') {
+    if ((type === 'good-count-click' && calculation === 'addition') || calculation === 'recalculation') {
       
       const tempObj = await calculateAddition({
         
         type: 'good-count-click',
+        calculation,
         loginUsers_id,
         ISO8601,
         historiesArr,
@@ -2121,11 +2129,12 @@ const experienceCalculate = async ({
     //   good-count-clicked
     // ---------------------------------------------
     
-    if (type === 'good-count-clicked' || calculation === 'addition') {
+    if ((type === 'good-count-clicked' && calculation === 'addition') || calculation === 'recalculation') {
       
       const tempObj = await calculateAddition({
         
         type: 'good-count-clicked',
+        calculation,
         loginUsers_id,
         ISO8601,
         historiesArr,
@@ -2270,11 +2279,12 @@ const experienceCalculate = async ({
     //   card-player-edit
     // ---------------------------------------------
     
-    if (type === 'card-player-edit' || calculation === 'addition') {
+    if ((type === 'card-player-edit' && calculation === 'addition') || calculation === 'recalculation') {
       
       const tempObj = await calculateAddition({
         
         type: 'card-player-edit',
+        calculation,
         loginUsers_id,
         ISO8601,
         historiesArr,
@@ -2366,11 +2376,12 @@ const experienceCalculate = async ({
     //   user-page-change-url
     // ---------------------------------------------
     
-    if (type === 'user-page-change-url' || calculation === 'addition') {
+    if ((type === 'user-page-change-url' && calculation === 'addition') || calculation === 'recalculation') {
       
       const tempObj = await calculateAddition({
         
         type: 'user-page-change-url',
+        calculation,
         loginUsers_id,
         ISO8601,
         historiesArr,
@@ -2499,10 +2510,10 @@ const experienceCalculate = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@modules/experience.js - experienceCalculate
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@modules/experience.js - experienceCalculate
+    // `);
     
     // console.log(chalk`
     //   forumCommentsCount: {green ${forumCommentsCount}}
@@ -2520,17 +2531,17 @@ const experienceCalculate = async ({
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- conditionObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(conditionObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- conditionObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(conditionObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- saveObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(saveObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- saveObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(saveObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

@@ -318,6 +318,7 @@ const findOneForUser = async ({
   
   localeObj,
   loginUsers_id,
+  users_id,
   userID,
   
 }) => {
@@ -344,11 +345,21 @@ const findOneForUser = async ({
     //   Match Condition Array
     // --------------------------------------------------
     
-    let matchConditionArr = [
-      {
+    let matchConditionArr = [];
+    
+    if (users_id) {
+      
+      matchConditionArr = [{
+        $match : { _id: users_id }
+      }];
+      
+    } else if (userID) {
+      
+      matchConditionArr = [{
         $match : { userID }
-      },
-    ];
+      }];
+      
+    }
     
     
     // --------------------------------------------------
@@ -522,13 +533,6 @@ const findOneForUser = async ({
                   }
               },
               
-              // {
-              //   $unwind: {
-              //     path: '$achievementsObj',
-              //     preserveNullAndEmptyArrays: true,
-              //   }
-              // },
-              
               
               // --------------------------------------------------
               //   $project
@@ -541,9 +545,7 @@ const findOneForUser = async ({
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
-                  // exp: 0,
                   achievementsArr: 0,
-                  // titles_idsArr: 0,
                 }
               },
               
@@ -567,7 +569,6 @@ const findOneForUser = async ({
       
       {
         $project: {
-          // exp: 1,
           cardPlayersObj: 1,
           pagesObj: 1,
           pagesImagesAndVideosObj: 1,
@@ -596,11 +597,11 @@ const findOneForUser = async ({
     
     if (returnObj.pagesImagesAndVideosObj) {
       
-      lodashSet(returnObj, ['pagesObj', 'imagesAndVideosObj'], returnObj.pagesImagesAndVideosObj);
-      delete returnObj.pagesObj.imagesAndVideos_id;
-      
       const pagesImagesAndVideosObj = formatImagesAndVideosObj({ obj: returnObj.pagesImagesAndVideosObj });
       lodashSet(headerObj, ['imagesAndVideosObj'], pagesImagesAndVideosObj);
+      
+      delete returnObj.pagesObj.imagesAndVideos_id;
+      delete returnObj.pagesObj.imagesAndVideosObj;
       
     }
     
@@ -616,45 +617,23 @@ const findOneForUser = async ({
     
     
     // --------------------------------------------------
-    //   experiences / achievements
+    //   experiences / titlesArr
     // --------------------------------------------------
     
     const exp = lodashGet(returnObj, ['experiencesObj', 'exp'], 0);
-    // const titlesArr = [];
+    const selectedTitles_idsArr = lodashGet(returnObj, ['experiencesObj', 'selectedTitles_idsArr'], []);
     const titlesArr = lodashGet(returnObj, ['experiencesObj', 'titlesArr'], []);
-    // const titles_idsArr = lodashGet(returnObj, ['experiencesObj', 'titles_idsArr'], []);
-    // const tempTitlesArr = lodashGet(returnObj, ['experiencesObj', 'titlesArr'], []);
-    // const titlesArr = [];
+    const sortedTitlesArr = [];
     
-    // for (let titles_id of titles_idsArr.values()) {
+    for (let titles_id of selectedTitles_idsArr.values()) {
       
-    //   // console.log(achievementID);
+      const findObj = titlesArr.find((valueObj) => {
+        return valueObj._id === titles_id;
+      });
       
-    //   const obj = tempTitlesArr.find((valueObj) => {
-    //     return valueObj._id === titles_id;
-    //   });
+      sortedTitlesArr.push(findObj);
       
-    //   // const arr = tempAachievementsArr.filter((valueObj) => {
-    //   //   return valueObj.achievementID === achievementID;
-    //   // });
-      
-    //   // console.log(arr);
-      
-    //   titlesArr.push({
-        
-    //     _id: lodashGet(obj, ['_id'], ''),
-    //     urlID: lodashGet(obj, ['urlID'], ''),
-    //     name: lodashGet(obj, ['name'], ''),
-        
-    //   });
-      
-    // }
-    
-    // console.log(`
-    //   ----- tempAachievementsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(tempAachievementsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    }
     
     
     
@@ -666,7 +645,7 @@ const findOneForUser = async ({
     headerObj.users_id = returnObj._id;
     headerObj.type = 'ur';
     headerObj.exp = exp;
-    headerObj.titlesArr = titlesArr;
+    headerObj.titlesArr = sortedTitlesArr;
     headerObj.name = lodashGet(returnObj, ['cardPlayersObj', 'name'], '');
     headerObj.status = lodashGet(returnObj, ['cardPlayersObj', 'status'], '');
     

@@ -145,6 +145,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         accessDate: ISO8601,
         userID: 'administrator',
+        userIDInitial: 'j4l6spaP4hwK53vu7Y14lx1T8jg',
         pagesObj: {
           imagesAndVideos_id: '',
           arr: [],
@@ -158,8 +159,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
-        exp: 0,
-        achievementsArr: [],
+        // exp: 0,
+        // achievementsArr: [],
         webPushes_id: '',
         role: 'administrator'
       },
@@ -171,6 +172,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         accessDate: ISO8601,
         userID: 'user1',
+        userIDInitial: 'SuCUOYBa8lkwVqYbuVTMWLp4PhG',
         pagesObj: {
           imagesAndVideos_id: 'wLZYxmd29v',
           arr: [
@@ -197,16 +199,16 @@ router.post('/db', upload.none(), async (req, res, next) => {
         acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
-        exp: 999,
-        achievementsArr: [// 実績用
-          {
-            _id: 'pFJEn_2MO',
-            createdDate: ISO8601,
-            updatedDate: ISO8601,
-            achievementID: 'MuK2dKVpn',
-            count: 1,
-          }
-        ],
+        // exp: 999,
+        // achievementsArr: [// 実績用
+        //   {
+        //     _id: 'pFJEn_2MO',
+        //     createdDate: ISO8601,
+        //     updatedDate: ISO8601,
+        //     achievementID: 'MuK2dKVpn',
+        //     count: 1,
+        //   }
+        // ],
         webPushes_id: 'nOVilxpSk',
         role: 'user'
       },
@@ -218,6 +220,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         accessDate: ISO8601,
         userID: 'user2',
+        userIDInitial: '3ae4Mv35IRDFdGOpLabm5_iIqCX',
         pagesObj: {
           imagesAndVideos_id: '',
           arr: [],
@@ -231,8 +234,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
-        exp: 10,
-        achievementsArr: [],
+        // exp: 10,
+        // achievementsArr: [],
         webPushes_id: '',
         role: 'user'
       },
@@ -244,6 +247,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         accessDate: ISO8601,
         userID: 'user3',
+        userIDInitial: 'QbpROv3BKon8YBU6Q9VEOACcqwd',
         pagesObj: {
           imagesAndVideos_id: '',
           arr: [],
@@ -257,8 +261,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
-        exp: 0,
-        achievementsArr: [],
+        // exp: 0,
+        // achievementsArr: [],
         webPushes_id: '',
         role: 'user'
       },
@@ -494,6 +498,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           }
           
         ],
+        // acquiredTitles_idsArr: [],
         acquiredTitles_idsArr: [
           'NwzUOqsiC', 'MuK2dKVpn', 'rYAf6jFYK',
           '8z7LyZQ_5', 'W8sbxpWTe', 'QZbmznsqU',

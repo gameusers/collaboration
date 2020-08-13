@@ -96,7 +96,6 @@ const Component = (props) => {
     title,
     componentSidebar,
     componentContent,
-    // headerObj,
     headerNavMainArr,
     
   } = props;
@@ -308,9 +307,7 @@ const Component = (props) => {
       >
         {({ measureRef }) => (
           <div ref={measureRef}>
-            <HeroImage
-              // headerObj={headerObj}
-            />
+            <HeroImage />
           </div>
         )}
       </Measure>
@@ -344,8 +341,6 @@ const Component = (props) => {
           justify-content: center;
           margin: 0 auto;
           padding: 16px;
-          // height: 1600px;
-          // background-color: pink;
           
           @media screen and (max-width: 947px) {
             display: flex;

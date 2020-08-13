@@ -308,7 +308,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 
 /**
- * ユーザーページ用のデータを取得する
+ * ユーザーページ用のデータを取得する / ヘッダーの更新にも利用する
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} userID - DB users userID / ユーザーID
@@ -350,13 +350,17 @@ const findOneForUser = async ({
     if (users_id) {
       
       matchConditionArr = [{
-        $match : { _id: users_id }
+        $match : {
+          _id: users_id
+        }
       }];
       
     } else if (userID) {
       
       matchConditionArr = [{
-        $match : { userID }
+        $match : {
+          userID
+        }
       }];
       
     }
@@ -510,13 +514,17 @@ const findOneForUser = async ({
                 $lookup:
                   {
                     from: 'titles',
-                    let: { letSelectedTitles_idsArr: '$selectedTitles_idsArr' },
+                    let: {
+                      // letAcquiredTitles_idsArr: '$acquiredTitles_idsArr',
+                      letSelectedTitles_idsArr: '$selectedTitles_idsArr'
+                    },
                     pipeline: [
                       {
                         $match: {
                           $expr: {
                             $and: [
                               { $eq: ['$language', language] },
+                              // { $in: ['$_id', '$$letAcquiredTitles_idsArr'] },
                               { $in: ['$_id', '$$letSelectedTitles_idsArr'] }
                             ]
                           },
@@ -621,17 +629,32 @@ const findOneForUser = async ({
     // --------------------------------------------------
     
     const exp = lodashGet(returnObj, ['experiencesObj', 'exp'], 0);
+    const acquiredTitles_idsArr = lodashGet(returnObj, ['experiencesObj', 'acquiredTitles_idsArr'], []);
     const selectedTitles_idsArr = lodashGet(returnObj, ['experiencesObj', 'selectedTitles_idsArr'], []);
     const titlesArr = lodashGet(returnObj, ['experiencesObj', 'titlesArr'], []);
     const sortedTitlesArr = [];
     
+    
     for (let titles_id of selectedTitles_idsArr.values()) {
+      
+      
+      // ---------------------------------------------
+      //   - $in で取得したデータを元の配列の順番通りに並び替え
+      // ---------------------------------------------
       
       const findObj = titlesArr.find((valueObj) => {
         return valueObj._id === titles_id;
       });
       
-      sortedTitlesArr.push(findObj);
+      
+      // ---------------------------------------------
+      //   - 獲得した称号の中に選択した称号が存在する場合のみ、配列に追加する
+      // ---------------------------------------------
+      
+      if (acquiredTitles_idsArr.includes(titles_id)) {
+        sortedTitlesArr.push(findObj);
+      }
+      
       
     }
     
@@ -717,7 +740,7 @@ const findOneForUser = async ({
 
 /**
  * 検索してデータを取得する / ログインしているユーザーのデータ用（サムネイル・ハンドルネーム・ステータス）
- * 2020/3/4
+ * 2020/8/13
  * @param {string} users_id - DB users _id / ログイン中のユーザーID
  * @return {Object} 取得データ
  */
@@ -742,8 +765,14 @@ const findOneForLoginUsersObj = async ({
     const docUsersArr = await SchemaUsers.aggregate([
       
       
+      // --------------------------------------------------
+      //   Match Condition
+      // --------------------------------------------------
+      
       {
-        $match : { _id: users_id }
+        $match: {
+          _id: users_id
+        }
       },
       
       
@@ -755,11 +784,13 @@ const findOneForLoginUsersObj = async ({
         $lookup:
           {
             from: 'card-players',
-            let: { users_id: '$_id' },
+            let: { let_id: '$_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$users_id', '$$users_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$users_id', '$$let_id']
+                  },
                 }
               },
               
@@ -772,15 +803,17 @@ const findOneForLoginUsersObj = async ({
                 $lookup:
                   {
                     from: 'images-and-videos',
-                    let: { cardPlayersImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                    let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $eq: ['$_id', '$$cardPlayersImagesAndVideosThumbnail_id'] },
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                          },
                         }
                       },
-                      { $project:
-                        {
+                      {
+                        $project: {
                           createdDate: 0,
                           updatedDate: 0,
                           users_id: 0,
@@ -824,16 +857,20 @@ const findOneForLoginUsersObj = async ({
       },
       
       
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+      
       {
         $project: {
           __v: 0,
           createdDate: 0,
           updatedDate: 0,
           countriesArr: 0,
-          exp: 0,
+          // exp: 0,
           pagesObj: 0,
           termsOfServiceConfirmedDate: 0,
-          achievementsArr: 0,
+          // achievementsArr: 0,
           loginID: 0,
           loginPassword: 0,
           emailObj: 0,
@@ -1334,6 +1371,8 @@ const transactionForUpsert = async ({
   }
   
 };
+
+
 
 
 

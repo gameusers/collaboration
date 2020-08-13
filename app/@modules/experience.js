@@ -27,6 +27,13 @@ import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { calculateLevel } from 'app/@modules/level.js';
+
+
+// ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
@@ -733,7 +740,7 @@ const calculateLevelCount = async ({
     }
     
     
-    const level = Math.floor(exp / parseInt(process.env.NEXT_PUBLIC_LEVEL_UP_REQUIRED_EXP, 10)) + 1;
+    const level = calculateLevel({ exp });
     
     newHistoryObj.countValid = level;
     newHistoryObj.countTotal = level;
@@ -1030,6 +1037,20 @@ const calculate = async ({
       newHistoryObj.countValid -= 1;
       newHistoryObj.countTotal -= 1;
       
+      
+      // ---------------------------------------------
+      //   マイナスにしない
+      // ---------------------------------------------
+      
+      if (newHistoryObj.countValid <= 0) {
+        newHistoryObj.countValid = 0;
+      }
+      
+      if (newHistoryObj.countTotal <= 0) {
+        newHistoryObj.countTotal = 0;
+      }
+      
+      
     } else {
       
       
@@ -1311,6 +1332,8 @@ const calculateAddition = async ({
   
   type,
   calculation,
+  onlyOnce = false,
+  totalEqualValid = false,
   loginUsers_id,
   ISO8601,
   historiesArr,
@@ -1436,6 +1459,14 @@ const calculateAddition = async ({
     //   newHistoryObj.countTotal：{green ${newHistoryObj.countTotal}}
     // `);
     
+    
+    
+      
+      
+    // ----------------------------------------
+    //   追加
+    // ----------------------------------------
+      
     if (calculation === 'addition') {
       
       if (
@@ -1453,6 +1484,33 @@ const calculateAddition = async ({
       }
       
       newHistoryObj.countTotal += 1;
+      
+      
+      // ----------------------------------------
+      //   一度だけ追加が許される場合
+      // ----------------------------------------
+      
+      if (onlyOnce) {
+        
+        newHistoryObj.countDay = 0;
+        newHistoryObj.countMonth = 0;
+        newHistoryObj.countYear = 0;
+        newHistoryObj.countValid = 1;
+        newHistoryObj.countTotal = 1;
+        
+      }
+      
+      
+    }
+    
+    
+    // ----------------------------------------
+    //   - countTotal と countValid が同じでなければならない場合
+    // ----------------------------------------
+    
+    if (totalEqualValid) {
+      
+      newHistoryObj.countTotal = newHistoryObj.countValid;
       
     }
     
@@ -1974,15 +2032,16 @@ const calculateDB = async ({
  * （何度もデータベースにアクセスするので処理が重いかもしれない）
  * @param {Object} req - リクエスト
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} type - なにを処理するのか指定する / ['account-ancient', 'level-count', 'account-count-day', 'login-count', 'good-count-click', 'good-count-clicked', 'forum-count-post', 'recruitment-count-post', 'follow-count', 'followed-count', 'title-count', 'title-show', 'card-player-edit', 'card-player-upload-image-main', 'card-player-upload-image-thumbnail', 'user-page-upload-image-main', 'user-page-change-url', 'web-push-permission']
- * @param {string} calculation - [addition（加算）, subtraction（減算）, recalculation（再計算）]
+ * @param {Array} arr - { type, calculation }
+ * type - なにを処理するのか指定する / ['account-ancient', 'level-count', 'account-count-day', 'login-count', 'good-count-click', 'good-count-clicked', 'forum-count-post', 'recruitment-count-post', 'follow-count', 'followed-count', 'title-count', 'title-show', 'card-player-edit', 'card-player-upload-image-main', 'card-player-upload-image-thumbnail', 'user-page-upload-image-main', 'user-page-change-url', 'web-push-permission']
+ * calculation - [addition（加算）, subtraction（減算）, recalculation（再計算）]
  */
 const experienceCalculate = async ({
   
   req,
   loginUsers_id,
-  type,
-  calculation,
+  recalculationAll = false,
+  arr = [],
   
 }) => {
   
@@ -2030,391 +2089,382 @@ const experienceCalculate = async ({
     
     
     // ---------------------------------------------
-    //   account-ancient
+    //   Loop
     // ---------------------------------------------
     
-    if (type === 'account-ancient' || calculation === 'recalculation') {
+    for (let valueObj of arr.values()) {
       
-      const tempObj = await calculateAccountAncient({
+      
+      // ---------------------------------------------
+      //   type & calculation
+      // ---------------------------------------------
+      
+      const type = valueObj.type;
+      const calculation = recalculationAll ? 'recalculation' : valueObj.calculation;
+      
+      
+      // ---------------------------------------------
+      //   account-ancient
+      // ---------------------------------------------
+      
+      if (type === 'account-ancient' || calculation === 'recalculation') {
         
-        loginUsers_id,
-        ISO8601,
-        historiesArr,
-        acquiredTitles_idsArr,
+        const tempObj = await calculateAccountAncient({
+          
+          loginUsers_id,
+          ISO8601,
+          historiesArr,
+          acquiredTitles_idsArr,
+          
+        });
         
-      });
-      
-      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
-      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
-      
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   account-count-day
-    // ---------------------------------------------
-    
-    if (type === 'account-count-day' || calculation === 'recalculation') {
-      
-      const tempObj = await calculateAccountCountDay({
+        historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+        acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
         
-        loginUsers_id,
-        ISO8601,
-        historiesArr,
-        acquiredTitles_idsArr,
+      }
+      
+      
+      // ---------------------------------------------
+      //   account-count-day
+      // ---------------------------------------------
+      
+      if (type === 'account-count-day' || calculation === 'recalculation') {
         
-      });
-      
-      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
-      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
-      
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   login-count
-    // ---------------------------------------------
-    
-    if ((type === 'login-count' && calculation === 'addition') || calculation === 'recalculation') {
-      
-      const tempObj = await calculateAddition({
+        const tempObj = await calculateAccountCountDay({
+          
+          loginUsers_id,
+          ISO8601,
+          historiesArr,
+          acquiredTitles_idsArr,
+          
+        });
         
-        type: 'login-count',
-        calculation,
-        loginUsers_id,
-        ISO8601,
-        historiesArr,
-        acquiredTitles_idsArr,
+        historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+        acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
         
-      });
+      }
       
-      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
-      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
       
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   good-count-click
-    // ---------------------------------------------
-    
-    if ((type === 'good-count-click' && calculation === 'addition') || calculation === 'recalculation') {
+      // ---------------------------------------------
+      //   login-count
+      // ---------------------------------------------
       
-      const tempObj = await calculateAddition({
+      if ((type === 'login-count' && calculation === 'addition') || calculation === 'recalculation') {
         
-        type: 'good-count-click',
-        calculation,
-        loginUsers_id,
-        ISO8601,
-        historiesArr,
-        acquiredTitles_idsArr,
+        const tempObj = await calculateAddition({
+          
+          type: 'login-count',
+          calculation,
+          totalEqualValid: true,
+          loginUsers_id,
+          ISO8601,
+          historiesArr,
+          acquiredTitles_idsArr,
+          
+        });
         
-      });
-      
-      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
-      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
-      
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   good-count-clicked
-    // ---------------------------------------------
-    
-    if ((type === 'good-count-clicked' && calculation === 'addition') || calculation === 'recalculation') {
-      
-      const tempObj = await calculateAddition({
+        historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+        acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
         
-        type: 'good-count-clicked',
-        calculation,
-        loginUsers_id,
-        ISO8601,
-        historiesArr,
-        acquiredTitles_idsArr,
+      }
+      
+      
+      // ---------------------------------------------
+      //   good-count-click
+      // ---------------------------------------------
+      
+      if ((type === 'good-count-click' && calculation === 'addition') || calculation === 'recalculation') {
         
-      });
-      
-      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
-      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
-      
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   forum-count-post
-    // ---------------------------------------------
-    
-    if (type === 'forum-count-post' || calculation === 'recalculation') {
-      
-      const tempObj = await calculate({
+        const tempObj = await calculateAddition({
+          
+          type: 'good-count-click',
+          calculation,
+          loginUsers_id,
+          ISO8601,
+          historiesArr,
+          acquiredTitles_idsArr,
+          
+        });
         
-        type: 'forum-count-post',
-        calculation,
-        ISO8601,
-        loginUsers_id,
-        historiesArr,
-        acquiredTitles_idsArr,
+        historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+        acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
         
-      });
+      }
       
-      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
-      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
       
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   recruitment-count-post
-    // ---------------------------------------------
-    
-    if (type === 'recruitment-count-post' || calculation === 'recalculation') {
+      // ---------------------------------------------
+      //   good-count-clicked
+      // ---------------------------------------------
       
-      const tempObj = await calculate({
+      if ((type === 'good-count-clicked' && calculation === 'addition') || calculation === 'recalculation') {
         
-        type: 'recruitment-count-post',
-        calculation,
-        loginUsers_id,
-        ISO8601,
-        historiesArr,
-        acquiredTitles_idsArr,
+        const tempObj = await calculateAddition({
+          
+          type: 'good-count-clicked',
+          calculation,
+          loginUsers_id,
+          ISO8601,
+          historiesArr,
+          acquiredTitles_idsArr,
+          
+        });
         
-      });
-      
-      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
-      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
-      
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   follow-count
-    // ---------------------------------------------
-    
-    if (type === 'follow-count' || calculation === 'recalculation') {
-      
-      const tempObj = await calculate({
+        historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+        acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
         
-        type: 'follow-count',
-        calculation,
-        loginUsers_id,
-        ISO8601,
-        historiesArr,
-        acquiredTitles_idsArr,
+      }
+      
+      
+      // ---------------------------------------------
+      //   forum-count-post
+      // ---------------------------------------------
+      
+      if (type === 'forum-count-post' || calculation === 'recalculation') {
         
-      });
-      
-      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
-      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
-      
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   followed-count
-    // ---------------------------------------------
-    
-    if (type === 'followed-count' || calculation === 'recalculation') {
-      
-      const tempObj = await calculate({
+        const tempObj = await calculate({
+          
+          type: 'forum-count-post',
+          calculation,
+          ISO8601,
+          loginUsers_id,
+          historiesArr,
+          acquiredTitles_idsArr,
+          
+        });
         
-        type: 'followed-count',
-        calculation,
-        loginUsers_id,
-        ISO8601,
-        historiesArr,
-        acquiredTitles_idsArr,
+        historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+        acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
         
-      });
+      }
       
-      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
-      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
       
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   title-show
-    // ---------------------------------------------
-    
-    if (type === 'title-show' || calculation === 'recalculation') {
+      // ---------------------------------------------
+      //   recruitment-count-post
+      // ---------------------------------------------
       
-      const tempObj = await calculateDB({
+      if (type === 'recruitment-count-post' || calculation === 'recalculation') {
         
-        type: 'title-show',
-        loginUsers_id,
-        ISO8601,
-        historiesArr,
-        acquiredTitles_idsArr,
-        selectedTitles_idsArr,
+        const tempObj = await calculate({
+          
+          type: 'recruitment-count-post',
+          calculation,
+          loginUsers_id,
+          ISO8601,
+          historiesArr,
+          acquiredTitles_idsArr,
+          
+        });
         
-      });
-      
-      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
-      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
-      
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   card-player-edit
-    // ---------------------------------------------
-    
-    if ((type === 'card-player-edit' && calculation === 'addition') || calculation === 'recalculation') {
-      
-      const tempObj = await calculateAddition({
+        historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+        acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
         
-        type: 'card-player-edit',
-        calculation,
-        loginUsers_id,
-        ISO8601,
-        historiesArr,
-        acquiredTitles_idsArr,
+      }
+      
+      
+      // ---------------------------------------------
+      //   follow-count
+      // ---------------------------------------------
+      
+      if (type === 'follow-count' || calculation === 'recalculation') {
         
-      });
-      
-      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
-      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
-      
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   card-player-upload-image-main
-    // ---------------------------------------------
-    
-    if (type === 'card-player-upload-image-main' || calculation === 'recalculation') {
-      
-      const tempObj = await calculateDB({
+        const tempObj = await calculate({
+          
+          type: 'follow-count',
+          calculation,
+          loginUsers_id,
+          ISO8601,
+          historiesArr,
+          acquiredTitles_idsArr,
+          
+        });
         
-        type: 'card-player-upload-image-main',
-        loginUsers_id,
-        ISO8601,
-        historiesArr,
-        acquiredTitles_idsArr,
+        historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+        acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
         
-      });
+      }
       
-      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
-      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
       
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   card-player-upload-image-thumbnail
-    // ---------------------------------------------
-    
-    if (type === 'card-player-upload-image-thumbnail' || calculation === 'recalculation') {
+      // ---------------------------------------------
+      //   followed-count
+      // ---------------------------------------------
       
-      const tempObj = await calculateDB({
+      if (type === 'followed-count' || calculation === 'recalculation') {
         
-        type: 'card-player-upload-image-thumbnail',
-        loginUsers_id,
-        ISO8601,
-        historiesArr,
-        acquiredTitles_idsArr,
+        const tempObj = await calculate({
+          
+          type: 'followed-count',
+          calculation,
+          loginUsers_id,
+          ISO8601,
+          historiesArr,
+          acquiredTitles_idsArr,
+          
+        });
         
-      });
-      
-      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
-      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
-      
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   user-page-upload-image-main
-    // ---------------------------------------------
-    
-    if (type === 'user-page-upload-image-main' || calculation === 'recalculation') {
-      
-      const tempObj = await calculateDB({
+        historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+        acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
         
-        type: 'user-page-upload-image-main',
-        loginUsers_id,
-        ISO8601,
-        historiesArr,
-        acquiredTitles_idsArr,
+      }
+      
+      
+      // ---------------------------------------------
+      //   title-show
+      // ---------------------------------------------
+      
+      if (type === 'title-show' || calculation === 'recalculation') {
         
-      });
-      
-      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
-      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
-      
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   user-page-change-url
-    // ---------------------------------------------
-    
-    if ((type === 'user-page-change-url' && calculation === 'addition') || calculation === 'recalculation') {
-      
-      const tempObj = await calculateAddition({
+        const tempObj = await calculateDB({
+          
+          type: 'title-show',
+          loginUsers_id,
+          ISO8601,
+          historiesArr,
+          acquiredTitles_idsArr,
+          selectedTitles_idsArr,
+          
+        });
         
-        type: 'user-page-change-url',
-        calculation,
-        loginUsers_id,
-        ISO8601,
-        historiesArr,
-        acquiredTitles_idsArr,
+        historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+        acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
         
-      });
+      }
       
-      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
-      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
       
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   web-push-permission
-    // ---------------------------------------------
-    
-    if (type === 'web-push-permission' || calculation === 'recalculation') {
+      // ---------------------------------------------
+      //   card-player-edit
+      // ---------------------------------------------
       
-      const tempObj = await calculateDB({
+      if ((type === 'card-player-edit' && calculation === 'addition') || calculation === 'recalculation') {
         
-        type: 'web-push-permission',
-        loginUsers_id,
-        ISO8601,
-        historiesArr,
-        acquiredTitles_idsArr,
+        const tempObj = await calculateAddition({
+          
+          type: 'card-player-edit',
+          calculation,
+          onlyOnce: true,
+          loginUsers_id,
+          ISO8601,
+          historiesArr,
+          acquiredTitles_idsArr,
+          
+        });
         
-      });
+        historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+        acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
+        
+      }
       
-      historiesArr = lodashGet(tempObj, ['historiesArr'], []);
-      acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
+      
+      // ---------------------------------------------
+      //   card-player-upload-image-main
+      // ---------------------------------------------
+      
+      if (type === 'card-player-upload-image-main' || calculation === 'recalculation') {
+        
+        const tempObj = await calculateDB({
+          
+          type: 'card-player-upload-image-main',
+          loginUsers_id,
+          ISO8601,
+          historiesArr,
+          acquiredTitles_idsArr,
+          
+        });
+        
+        historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+        acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
+        
+      }
+      
+      
+      // ---------------------------------------------
+      //   card-player-upload-image-thumbnail
+      // ---------------------------------------------
+      
+      if (type === 'card-player-upload-image-thumbnail' || calculation === 'recalculation') {
+        
+        const tempObj = await calculateDB({
+          
+          type: 'card-player-upload-image-thumbnail',
+          loginUsers_id,
+          ISO8601,
+          historiesArr,
+          acquiredTitles_idsArr,
+          
+        });
+        
+        historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+        acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
+        
+      }
+      
+      
+      // ---------------------------------------------
+      //   user-page-upload-image-main
+      // ---------------------------------------------
+      
+      if (type === 'user-page-upload-image-main' || calculation === 'recalculation') {
+        
+        const tempObj = await calculateDB({
+          
+          type: 'user-page-upload-image-main',
+          loginUsers_id,
+          ISO8601,
+          historiesArr,
+          acquiredTitles_idsArr,
+          
+        });
+        
+        historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+        acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
+        
+      }
+      
+      
+      // ---------------------------------------------
+      //   user-page-change-url
+      // ---------------------------------------------
+      
+      if ((type === 'user-page-change-url' && calculation === 'addition') || calculation === 'recalculation') {
+        
+        const tempObj = await calculateAddition({
+          
+          type: 'user-page-change-url',
+          calculation,
+          onlyOnce: true,
+          loginUsers_id,
+          ISO8601,
+          historiesArr,
+          acquiredTitles_idsArr,
+          
+        });
+        
+        historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+        acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
+        
+      }
+      
+      
+      // ---------------------------------------------
+      //   web-push-permission
+      // ---------------------------------------------
+      
+      if (type === 'web-push-permission' || calculation === 'recalculation') {
+        
+        const tempObj = await calculateDB({
+          
+          type: 'web-push-permission',
+          loginUsers_id,
+          ISO8601,
+          historiesArr,
+          acquiredTitles_idsArr,
+          
+        });
+        
+        historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+        acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
+        
+      }
+      
       
     }
     
@@ -2516,18 +2566,12 @@ const experienceCalculate = async ({
     // `);
     
     // console.log(chalk`
-    //   forumCommentsCount: {green ${forumCommentsCount}}
-    //   recruitmentThreadsCount: {green ${recruitmentThreadsCount}}
-    //   recruitmentCommentsCount: {green ${recruitmentCommentsCount}}
-    //   recruitmentRepliesCount: {green ${recruitmentRepliesCount}}
-    //   followCount: {green ${followCount}}
-    //   followedCount: {green ${followedCount}}
-    //   exp: {green ${exp}}
+    //   recalculationAll: {green ${recalculationAll}}
     // `);
     
     // console.log(`
-    //   ----- docExperiencesObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(docExperiencesObj)), { colors: true, depth: null })}\n
+    //   ----- arr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

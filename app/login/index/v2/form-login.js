@@ -252,7 +252,7 @@ const Component = (props) => {
       // ---------------------------------------------
       
       const userID = lodashGet(resultObj, ['data', 'userID'], '');
-      const url = `/ur/[userID]/index?userID=${userID}`;
+      const url = `/ur/[userID]`;
       const as = `/ur/${userID}`;
       
       Router.push(url, as);

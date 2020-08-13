@@ -153,8 +153,6 @@ const Component = (props) => {
   const exp = lodashGet(headerObj, ['exp'], 0);
   const level = calculateLevel({ exp });
   const tnl = calculateToNextLevel({ exp });
-  // const level = Math.floor(exp / 10);
-  // const tnl = 10 - (exp % 10);
   
   const titlesArr = lodashGet(headerObj, ['titlesArr'], []);
   

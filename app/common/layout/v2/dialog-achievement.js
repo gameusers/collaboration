@@ -658,11 +658,23 @@ const Component = (props) => {
     
     
     // --------------------------------------------------
+    //   古のアカウントの条件を満たしていない場合、条件自体を表示しない
+    // --------------------------------------------------
+    
+    if (type === 'account-ancient' && countValid === 0) {
+      continue;
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
     //   Heading & Explanation
     // --------------------------------------------------
     
     let heading = '';
     let explanation = '';
+    let unit = '回';
     
     switch (type) {
       
@@ -676,12 +688,14 @@ const Component = (props) => {
         
         heading = 'レベルアップ';
         explanation = 'レベルが上がるとカウントされます。';
+        unit = 'レベル';
         break;
         
       case 'account-count-day':
         
         heading = 'アカウント作成';
         explanation = 'アカウントを作成してから特定の日数が経過。';
+        unit = '日';
         break;
       
       case 'login-count':
@@ -718,18 +732,21 @@ const Component = (props) => {
         
         heading = 'フォローする';
         explanation = 'ゲームコミュニティや他のユーザーをフォローするとカウントされます。';
+        unit = '人';
         break;
         
       case 'followed-count':
         
         heading = 'フォローされる';
         explanation = '他のユーザーにフォローされるとカウントされます。';
+        unit = '人';
         break;
         
       case 'title-count':
         
         heading = '称号を獲得する';
         explanation = '称号を獲得するとカウントされます。';
+        unit = '個';
         break;
         
       case 'title-show':
@@ -787,15 +804,15 @@ const Component = (props) => {
     
     if (limitDay) {
       
-      limit = `1日に${limitDay}回まで`;
+      limit = `1日に${limitDay}${unit}まで`;
       
     } else if (limitMonth) {
       
-      limit = `1ヶ月に${limitMonth}回まで`;
+      limit = `1ヶ月に${limitMonth}${unit}まで`;
       
     } else if (limitYear) {
       
-      limit = `1年に${limitYear}回まで`;
+      limit = `1年に${limitYear}${unit}まで`;
       
     }
     
@@ -818,11 +835,23 @@ const Component = (props) => {
       // --------------------------------------------------
       
       const titles_id = lodashGet(value2Obj , ['titles_id'], '');
-      const count = lodashGet(value2Obj , ['count'], 1);
-      const countDay = lodashGet(value2Obj , ['countDay'], 1);
+      
+      // count は達成条件の数値、countDay は達成に必要な経過日数
+      let count = lodashGet(value2Obj , ['count'], 0);
+      const countDay = lodashGet(value2Obj , ['countDay'], 0);
+      
+      if (countDay > 0) {
+        count = countDay;
+      }
+      
+      
       const urlID = lodashGet(titlesObj , [titles_id, 'urlID'], '');
       const name = lodashGet(titlesObj , [titles_id, 'name'], '');
       
+      
+      // --------------------------------------------------
+      //   達成状況
+      // --------------------------------------------------
       
       // 何も達成していない場合
       if (countValid === 0) {
@@ -841,27 +870,42 @@ const Component = (props) => {
       }
       
       
-      let condition = '';
+      // --------------------------------------------------
+      //   達成条件 + 単位
+      // --------------------------------------------------
       
-      if (type === 'level-count') {
+      // const condition = `${count} ${unit}`;
+      
+      
+      // let condition = '';
+      
+      // if (type === 'level-count') {
         
-        condition = `${count} レベル`;
+      //   condition = `${count} レベル`;
         
-      } else if (count) {
+      // } else if (type === 'account-count-day') {
         
-        condition = `${count} 回`;
+      //   condition = `${countDay} 日`;
         
-      } else if (countDay) {
+      // } else if (type === 'follow-count' || type === 'followed-count') {
         
-        condition = `${countDay} 日`;
+      //   condition = `${count} 人`;
+       
+      // } else if (type === 'title-count') {
         
-      }
+      //   condition = `${count} 個`;
+        
+      // } else {
+        
+      //   condition = `${count} 回`;
+        
+      // }
       
       
       
       
       // --------------------------------------------------
-      //   Component - Step
+      //   Component - 達成状況（獲得できる称号も表示する）
       // --------------------------------------------------
       
       componentConditionsArr.push(
@@ -882,7 +926,7 @@ const Component = (props) => {
                   margin: 0 12px 0 0;
                 `}
               >
-                {condition}
+                {count}{unit}
               </div>
               
               
@@ -914,7 +958,7 @@ const Component = (props) => {
       
       
       // --------------------------------------------------
-      //   Component - Title Acquisitions
+      //   Component - 実績を達成し獲得した称号
       // --------------------------------------------------
       
       if (countValid >= count) {
@@ -950,7 +994,7 @@ const Component = (props) => {
     
     
     // --------------------------------------------------
-    //   Component - Achievement
+    //   Component - 実績ページ（上部のボタンで切り替える）
     // --------------------------------------------------
     
     componentAchievementsArr.push(
@@ -975,10 +1019,10 @@ const Component = (props) => {
           `}
         >
           
-          <span css={css` font-weight: bold; `}>有効カウント：</span>{countValid}回
+          <span css={css` font-weight: bold; `}>有効カウント：</span>{countValid}{unit}
           
           {countValid !== countTotal &&
-            <React.Fragment> / <span css={css` font-weight: bold; `}>合計カウント：</span>{countTotal}回</React.Fragment>
+            <React.Fragment> / <span css={css` font-weight: bold; `}>合計カウント：</span>{countTotal}{unit}</React.Fragment>
           }
           
         </p>
@@ -1016,7 +1060,7 @@ const Component = (props) => {
     
     
     // --------------------------------------------------
-    //   Component - Title
+    //   Component - 称号ページ（上部のボタンで切り替える）
     // --------------------------------------------------
     
     componentTitlesArr.push(

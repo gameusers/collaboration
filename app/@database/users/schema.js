@@ -16,6 +16,7 @@ const schema = mongoose.Schema({
   updatedDate: { type: Date, required: true },
   accessDate: { type: Date, required: true },
   userID: { type: String, required: true, unique: true },
+  userIDInitial: { type: String, required: true, unique: true },
   pagesObj: {
     imagesAndVideos_id: { type: String },
     arr: [
@@ -36,16 +37,16 @@ const schema = mongoose.Schema({
   acceptLanguage: { type: String, required: true },
   countriesArr: [String],
   termsOfServiceConfirmedDate: { type: Date, required: true },
-  exp: { type: Number, default: 0, required: true },
-  achievementsArr: [
-    {
-      _id: { type: String, required: true },
-      createdDate: { type: Date, required: true },
-      updatedDate: { type: Date, required: true },
-      achievementID: { type: String, required: true },
-      count: { type: Number, default: 1, required: true },
-    },
-  ],
+  // exp: { type: Number, default: 0, required: true },
+  // achievementsArr: [
+  //   {
+  //     _id: { type: String, required: true },
+  //     createdDate: { type: Date, required: true },
+  //     updatedDate: { type: Date, required: true },
+  //     achievementID: { type: String, required: true },
+  //     count: { type: Number, default: 1, required: true },
+  //   },
+  // ],
   webPushes_id: { type: String },
   role: { type: String, enum: ['user', 'administrator'], required: true },
   

@@ -107,7 +107,7 @@ const ContainerLayout = (props) => {
     //   Scroll To
     // ---------------------------------------------
     
-    scroll.scrollToTop({ duration: 0 });
+    // scroll.scrollToTop({ duration: 0 });
     
     
   }, [props.ISO8601]);
@@ -182,7 +182,6 @@ const ContainerLayout = (props) => {
       componentSidebar={componentSidebar}
       componentContent={componentContent}
       
-      headerObj={props.headerObj}
       headerNavMainArr={props.headerNavMainArr}
     />
   );

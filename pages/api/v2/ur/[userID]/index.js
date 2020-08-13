@@ -83,7 +83,7 @@ export default async (req, res) => {
   //   Language & IP & User Agent
   // --------------------------------------------------
   
-  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
@@ -93,7 +93,7 @@ export default async (req, res) => {
   // --------------------------------------------------
   
   const localeObj = locale({
-    acceptLanguage: language
+    acceptLanguage
   });
   
   
@@ -225,6 +225,36 @@ export default async (req, res) => {
       
     //   req,
     //   loginUsers_id,
+    //   // recalculationAll: true,
+    //   arr: [
+    //     {
+    //       type: 'login-count',
+    //       calculation: 'addition',
+    //     },
+    //     {
+    //       type: 'good-count-click',
+    //       calculation: 'addition',
+    //     },
+    //     {
+    //       type: 'forum-count-post',
+    //       calculation: 'subtraction',
+    //     },
+    //     // {
+    //     //   type: 'forum-count-post',
+    //     //   calculation: 'recalculation',
+    //     // },
+    //     {
+    //       type: 'user-page-change-url',
+    //       calculation: 'addition',
+    //     },
+    //   ]
+      
+    // });
+    
+    // experienceCalculate({ 
+      
+    //   req,
+    //   loginUsers_id,
     //   // type: 'title-count',
     //   // calculation: 'addition',
     //   // calculation: 'subtraction',
@@ -238,10 +268,10 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/ur/[userID]/index.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/ur/[userID]/index.js
+    `);
     
     // console.log(chalk`
     //   userID: {green ${userID}}
@@ -266,11 +296,11 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     

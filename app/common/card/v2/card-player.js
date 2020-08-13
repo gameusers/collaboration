@@ -33,8 +33,6 @@ import lodashGet from 'lodash/get';
 //   Material UI
 // ---------------------------------------------
 
-import { makeStyles } from '@material-ui/core/styles';
-
 import IconButton from '@material-ui/core/IconButton';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -78,30 +76,6 @@ import Form from 'app/common/card/v2/form-card-player.js';
 
 
 // --------------------------------------------------
-//   Material UI Style Overrides
-//   https://material-ui.com/styles/basics/
-// --------------------------------------------------
-
-const useStyles = makeStyles({
-  
-  expanded: {
-    marginBottom: '0 !important',
-  },
-  
-  input: {
-    fontSize: '12px',
-    color: '#666',
-    padding: '6px 26px 6px 12px',
-  },
-  
-});
-
-
-
-
-
-
-// --------------------------------------------------
 //   Function Components
 // --------------------------------------------------
 
@@ -133,7 +107,6 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const intl = useIntl();
-  const classes = useStyles();
   const [panelExpanded, setPanelExpanded] = useState(defaultExpanded);
   const [buttonDisabled, setButtonDisabled] = useState(true);
   

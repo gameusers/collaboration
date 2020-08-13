@@ -733,7 +733,8 @@ const Component = (props) => {
             
             
             <Link
-              href={`/ur/[userID]/index?userID=${userID}`} as={`/ur/${userID}`}
+              href={`/ur/[userID]`}
+              as={`/ur/${userID}`}
             >
               <a
                 css={css`

@@ -28,6 +28,14 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashIsEqual from 'lodash/isEqual';
+
+
+// ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 // ---------------------------------------------
@@ -62,17 +70,42 @@ const ContainerLayout = (props) => {
   
   
   // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateLayout = ContainerStateLayout.useContainer();
+  
+  const {
+    
+    headerObj,
+    setHeaderObj,
+    
+  } = stateLayout;
+  
+  
+  
+  
+  // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
   useEffect(() => {
     
     
+    // --------------------------------------------------
+    //   Header 更新 - データに変更があった場合のみステートを更新
+    // --------------------------------------------------
+    
+    if (lodashIsEqual(headerObj, props.headerObj) === false) {
+      setHeaderObj(props.headerObj);
+    }
+    
+    
     // ---------------------------------------------
     //   Scroll To
     // ---------------------------------------------
     
-    scroll.scrollToTop({ duration: 0 });
+    // scroll.scrollToTop({ duration: 0 });
     
     
   }, [props.ISO8601]);
@@ -282,14 +315,14 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       name: 'トップ',
-      href: `/ur/[userID]/index?userID=${userID}`,
+      href: `/ur/[userID]`,
       as: `/ur/${userID}`,
       active: false,
     },
     
     {
       name: 'フォロー',
-      href: `/ur/[userID]/follow?userID=${userID}`,
+      href: `/ur/[userID]/follow`,
       as: `/ur/${userID}/follow`,
       active: true,
     },
@@ -301,7 +334,7 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: '設定',
-        href: `/ur/[userID]/setting?userID=${userID}`,
+        href: `/ur/[userID]/setting`,
         as: `/ur/${userID}/setting`,
         active: false,
       }
@@ -321,7 +354,7 @@ export async function getServerSideProps({ req, res, query }) {
     {
       type: 'ur',
       anchorText: '',
-      href: `/ur/[userID]/index?userID=${userID}`,
+      href: `/ur/[userID]`,
       as: `/ur/${userID}`,
     },
     

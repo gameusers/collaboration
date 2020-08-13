@@ -762,46 +762,6 @@ const aggregateAndFormat = async ({
               
               
               // --------------------------------------------------
-              //   experiences / achievements
-              // --------------------------------------------------
-              
-              // {
-              //   $lookup:
-              //     {
-              //       from: 'achievements',
-              //       let: { letAchievementID: '$achievementsArr.achievementID' },
-              //       pipeline: [
-              //         {
-              //           $match: {
-              //             $expr: {
-              //               $and: [
-              //                 { $eq: ['$language', language] },
-              //                 { $in: ['$achievementID', '$$letAchievementID'] }
-              //               ]
-              //             },
-              //           }
-              //         },
-              //         {
-              //           $project: {
-              //             _id: 0,
-              //             achievementID: 1,
-              //             name: 1,
-              //           }
-              //         }
-              //       ],
-              //       as: 'achievementsArr'
-              //     }
-              // },
-              
-              // {
-              //   $unwind: {
-              //     path: '$achievementsObj',
-              //     preserveNullAndEmptyArrays: true,
-              //   }
-              // },
-              
-              
-              // --------------------------------------------------
               //   $project
               // --------------------------------------------------
               
@@ -809,13 +769,6 @@ const aggregateAndFormat = async ({
                 $project: {
                   _id: 0,
                   exp: 1,
-                  // __v: 0,
-                  // _id: 0,
-                  // createdDate: 0,
-                  // updatedDate: 0,
-                  // users_id: 0,
-                  // // exp: 0,
-                  // historiesArr: 0,
                 }
               },
               
@@ -840,7 +793,6 @@ const aggregateAndFormat = async ({
       {
         $project: {
           accessDate: 1,
-          // exp: 1,
           userID: 1,
           cardPlayerObj: 1,
           experiencesObj: 1,

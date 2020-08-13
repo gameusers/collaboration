@@ -42,6 +42,7 @@ import { verifyCsrfToken } from 'app/@modules/csrf.js';
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
 import { formatAndSave } from 'app/@modules/image/save.js';
+import { experienceCalculate } from 'app/@modules/experience.js';
 
 
 // ---------------------------------------------
@@ -89,13 +90,14 @@ export default async (req, res) => {
   const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  const experienceCalculateArr = [];
   
   
   // --------------------------------------------------
   //   Language & IP & User Agent
   // --------------------------------------------------
   
-  const language = lodashGet(req, ['headers', 'accept-language'], '');
+  const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
@@ -218,6 +220,20 @@ export default async (req, res) => {
     // `);
     
     
+    // --------------------------------------------------
+    //   experiences / user-page-change-url
+    // --------------------------------------------------
+    
+    if (docUsersObj.userID !== userID) {
+      
+      experienceCalculateArr.push({
+        type: 'user-page-change-url',
+        calculation: 'addition',
+      });
+      
+    }
+    
+    
     
     
     // --------------------------------------------------
@@ -300,6 +316,19 @@ export default async (req, res) => {
       returnObj.pageTransition = true;
       
       
+      // --------------------------------------------------
+      //   experiences / user-page-upload-image-main
+      // --------------------------------------------------
+      
+      if (imagesAndVideos_id) {
+        
+        experienceCalculateArr.push({
+          type: 'user-page-upload-image-main',
+        });
+        
+      }
+      
+      
     }
     
     
@@ -363,6 +392,39 @@ export default async (req, res) => {
       
     });
     
+    
+    
+    
+    // --------------------------------------------------
+    //   experiences
+    // --------------------------------------------------
+    
+    // experienceCalculateArr.push({
+    //   type: 'user-page-change-url',
+    //   calculation: 'addition',
+    // });
+      
+    // experienceCalculateArr.push({
+    //   type: 'user-page-upload-image-main',
+    // });
+    
+    // console.log(`
+    //   ----- experienceCalculateArr -----\n
+    //   ${util.inspect(experienceCalculateArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    if (experienceCalculateArr.length > 0) {
+      
+      experienceCalculate({ 
+        
+        req,
+        loginUsers_id,
+        arr: experienceCalculateArr,
+        
+      });
+      
+    }
     
     
     

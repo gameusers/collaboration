@@ -17,6 +17,7 @@ import util from 'util';
 import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { Element } from 'react-scroll';
+import { useSnackbar } from 'notistack';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -57,6 +58,7 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -339,6 +341,7 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [userID, setUserID] = useState(lodashGet(props, ['userID'], ''));
@@ -374,6 +377,7 @@ const Component = (props) => {
   
   const {
     
+    setHeaderObj,
     handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
@@ -498,12 +502,48 @@ const Component = (props) => {
       //   Snackbar: Success
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'success',
-        messageID: 'EnStWOly-',
+        enqueueSnackbar,
+        intl,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'EnStWOly-',
+          },
+          {
+            // variant: 'info',
+            messageExp: 50,
+          },
+          {
+            // variant: 'info',
+            messageLevel: 5,
+          },
+          {
+            // variant: 'success',
+            messageTitle: 'タイムトラベラー',
+          },
+          
+        ]
         
       });
+      
+      // showSnackbar({
+        
+      //   enqueueSnackbar,
+      //   intl,
+      //   variant: 'success',
+      //   message: '称号「タイムトラベラー」を獲得しました',
+      //   // messageID: 'EnStWOly-',
+        
+      // });
+      
+      // handleSnackbarOpen({
+        
+      //   variant: 'success',
+      //   messageID: 'EnStWOly-',
+        
+      // });
       
       
       
@@ -521,14 +561,27 @@ const Component = (props) => {
       
       
       
+      // ---------------------------------------------
+      //   Update Header
+      // ---------------------------------------------
+      
+      setHeaderObj(lodashGet(resultObj, ['data', 'headerObj'], {}));
+      
+      // enqueueSnackbar();
+      
+      
+      
+      
+      
+      
       // --------------------------------------------------
       //   console.log
       // --------------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/ur/v2/setting/form-page.js / handleSubmit
-      // `);
+      console.log(`
+        ----------------------------------------\n
+        /app/ur/v2/setting/form-page.js / handleSubmit
+      `);
       
       // console.log(`
       //   ----- formDataObj -----\n
@@ -536,11 +589,11 @@ const Component = (props) => {
       //   --------------------\n
       // `);
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
     } catch (errorObj) {

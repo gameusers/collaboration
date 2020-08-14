@@ -2083,7 +2083,7 @@ const experienceCalculate = async ({
     
     let historiesArr = lodashGet(docExperiencesObj, ['historiesArr'], []);
     let acquiredTitles_idsArr = lodashGet(docExperiencesObj, ['acquiredTitles_idsArr'], []);
-    const selectedTitles_idsArr = lodashGet(docExperiencesObj, ['selectedTitles_idsArr'], []);
+    let selectedTitles_idsArr = lodashGet(docExperiencesObj, ['selectedTitles_idsArr'], []);
     
     
     
@@ -2511,6 +2511,31 @@ const experienceCalculate = async ({
     
     
     
+    // console.log(`
+    //   ----- selectedTitles_idsArr 1 -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(selectedTitles_idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // ---------------------------------------------
+    //   獲得していない称号が選択されている場合は削除する
+    // ---------------------------------------------
+    
+    selectedTitles_idsArr = selectedTitles_idsArr.filter((titles_id) => {
+      return acquiredTitles_idsArr.includes(titles_id);
+    });
+    
+    
+    // console.log(`
+    //   ----- selectedTitles_idsArr 2 -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(selectedTitles_idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    
     // --------------------------------------------------
     //   Condition Object
     // --------------------------------------------------
@@ -2534,6 +2559,7 @@ const experienceCalculate = async ({
         exp,
         historiesArr,
         acquiredTitles_idsArr,
+        selectedTitles_idsArr,
         
       }
       
@@ -2560,10 +2586,10 @@ const experienceCalculate = async ({
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/@modules/experience.js - experienceCalculate
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /app/@modules/experience.js - experienceCalculate
+    `);
     
     // console.log(chalk`
     //   recalculationAll: {green ${recalculationAll}}
@@ -2581,11 +2607,11 @@ const experienceCalculate = async ({
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- saveObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(saveObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- saveObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(saveObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     

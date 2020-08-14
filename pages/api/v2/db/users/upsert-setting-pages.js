@@ -56,6 +56,13 @@ import { validationUsersUserIDServer } from 'app/@database/users/validations/use
 import { validationUsersPagesType, validationUsersPagesTitle, validationUsersPagesLanguage } from 'app/@database/users/validations/pages.js';
 
 
+// ---------------------------------------------
+//   Locales
+// ---------------------------------------------
+
+import { locale } from 'app/@locales/locale.js';
+
+
 
 
 
@@ -75,15 +82,6 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  // const localeObj = locale({
-  //   acceptLanguage: req.headers['accept-language']
-  // });
-  
-  
-  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
@@ -100,6 +98,15 @@ export default async (req, res) => {
   const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage
+  });
   
   
   
@@ -201,7 +208,7 @@ export default async (req, res) => {
     //   Find One - userID が変更された場合はページを再読み込みする
     // --------------------------------------------------
     
-    const docUsersObj = await ModelUsers.findOne({
+    let docUsersObj = await ModelUsers.findOne({
       
       conditionObj: {
         _id: loginUsers_id
@@ -224,7 +231,7 @@ export default async (req, res) => {
     //   experiences / user-page-change-url
     // --------------------------------------------------
     
-    if (docUsersObj.userID !== userID) {
+    if (docUsersObj.userIDInitial !== userID) {
       
       experienceCalculateArr.push({
         type: 'user-page-change-url',
@@ -399,14 +406,14 @@ export default async (req, res) => {
     //   experiences
     // --------------------------------------------------
     
-    // experienceCalculateArr.push({
-    //   type: 'user-page-change-url',
-    //   calculation: 'addition',
-    // });
+    experienceCalculateArr.push({
+      type: 'user-page-change-url',
+      calculation: 'addition',
+    });
       
-    // experienceCalculateArr.push({
-    //   type: 'user-page-upload-image-main',
-    // });
+    experienceCalculateArr.push({
+      type: 'user-page-upload-image-main',
+    });
     
     // console.log(`
     //   ----- experienceCalculateArr -----\n
@@ -416,7 +423,7 @@ export default async (req, res) => {
     
     if (experienceCalculateArr.length > 0) {
       
-      experienceCalculate({ 
+      await experienceCalculate({ 
         
         req,
         loginUsers_id,
@@ -425,6 +432,24 @@ export default async (req, res) => {
       });
       
     }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   ヘッダーデータ取得
+    // --------------------------------------------------
+    
+    docUsersObj = await ModelUsers.findOneForUser({
+      
+      localeObj,
+      loginUsers_id,
+      users_id: loginUsers_id,
+      
+    });
+    
+    returnObj.headerObj = lodashGet(docUsersObj, ['headerObj'], {});
+    
     
     
     

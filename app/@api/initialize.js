@@ -474,28 +474,28 @@ router.post('/db', upload.none(), async (req, res, next) => {
             countValid: 0,
             countTotal: 0
           },
-          {
-            _id: 'Kc2TWwfGnc',
-            createdDate: '2020-08-12T08:59:20.171Z',
-            updatedDate: '2020-08-12T08:59:20.171Z',
-            type: 'card-player-edit',
-            countDay: 0,
-            countMonth: 0,
-            countYear: 0,
-            countValid: 0,
-            countTotal: 0
-          },
-          {
-            _id: '4NxenoLm6l',
-            createdDate: '2020-08-12T08:59:20.171Z',
-            updatedDate: '2020-08-12T08:59:20.171Z',
-            type: 'user-page-change-url',
-            countDay: 0,
-            countMonth: 0,
-            countYear: 0,
-            countValid: 0,
-            countTotal: 0
-          }
+          // {
+          //   _id: 'Kc2TWwfGnc',
+          //   createdDate: '2020-08-12T08:59:20.171Z',
+          //   updatedDate: '2020-08-12T08:59:20.171Z',
+          //   type: 'card-player-edit',
+          //   countDay: 0,
+          //   countMonth: 0,
+          //   countYear: 0,
+          //   countValid: 0,
+          //   countTotal: 0
+          // },
+          // {
+          //   _id: '4NxenoLm6l',
+          //   createdDate: '2020-08-12T08:59:20.171Z',
+          //   updatedDate: '2020-08-12T08:59:20.171Z',
+          //   type: 'user-page-change-url',
+          //   countDay: 0,
+          //   countMonth: 0,
+          //   countYear: 0,
+          //   countValid: 0,
+          //   countTotal: 0
+          // }
           
         ],
         // acquiredTitles_idsArr: [],

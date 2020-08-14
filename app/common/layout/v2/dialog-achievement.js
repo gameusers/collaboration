@@ -870,38 +870,6 @@ const Component = (props) => {
       }
       
       
-      // --------------------------------------------------
-      //   達成条件 + 単位
-      // --------------------------------------------------
-      
-      // const condition = `${count} ${unit}`;
-      
-      
-      // let condition = '';
-      
-      // if (type === 'level-count') {
-        
-      //   condition = `${count} レベル`;
-        
-      // } else if (type === 'account-count-day') {
-        
-      //   condition = `${countDay} 日`;
-        
-      // } else if (type === 'follow-count' || type === 'followed-count') {
-        
-      //   condition = `${count} 人`;
-       
-      // } else if (type === 'title-count') {
-        
-      //   condition = `${count} 個`;
-        
-      // } else {
-        
-      //   condition = `${count} 回`;
-        
-      // }
-      
-      
       
       
       // --------------------------------------------------

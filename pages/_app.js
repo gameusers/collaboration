@@ -27,6 +27,7 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { IntlProvider } from 'react-intl';
 import moment from 'moment';
+import { SnackbarProvider } from 'notistack';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -344,8 +345,11 @@ const Component = (props) => {
             {/* Material UI Theme Provider */}
             <ThemeProvider theme={theme}>
               
-              <ServiceWorker {...props} />
-              {/*<Component {...pageProps} />*/}
+              <SnackbarProvider maxSnack={3}>
+                
+                <ServiceWorker {...props} />
+              
+              </SnackbarProvider>
               
             </ThemeProvider>
             

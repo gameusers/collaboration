@@ -17,6 +17,12 @@ const util = require('util');
 const moment = require('moment');
 const shortid = require('shortid');
 const bcrypt = require('bcryptjs');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 

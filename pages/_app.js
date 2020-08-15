@@ -60,7 +60,7 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 //   Locales
 // ---------------------------------------------
 
-import { locale } from 'app/@locales/locale.js';
+import { locale, loadLocaleData } from 'app/@locales/locale.js';
 
 
 
@@ -297,6 +297,15 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
+  //   Load Locale Data
+  // --------------------------------------------------
+  
+  const localData = loadLocaleData({ local: localeObj.language });
+  
+  
+  
+  
+  // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
   
@@ -338,7 +347,8 @@ const Component = (props) => {
             locale={localeObj.languageArr[0]}
             // locale="en"
             // locale="ja"
-            messages={localeObj.dataObj}
+            // messages={localeObj.dataObj}
+            messages={localData}
           >
             
             

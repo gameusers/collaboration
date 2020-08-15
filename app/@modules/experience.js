@@ -41,6 +41,7 @@ import SchemaAchievements from 'app/@database/achievements/schema.js';
 
 import ModelExperiences from 'app/@database/experiences/model.js';
 import ModelAchievements from 'app/@database/achievements/model.js';
+import ModelTitles from 'app/@database/titles/model.js';
 import ModelUsers from 'app/@database/users/model.js';
 import ModelForumComments from 'app/@database/forum-comments/model.js';
 import ModelRecruitmentThreads from 'app/@database/recruitment-threads/model.js';
@@ -734,7 +735,7 @@ const calculateLevelCount = async ({
       //   type: {green ${type}}
       //   countValid: {green ${countValid}}
       //   lodashGet(findObj, ['exp'], 0): {green ${lodashGet(findObj, ['exp'], 0)}}
-      //   exp: {green ${countValid * lodashGet(findObj, ['exp'], 0)}}
+      //   exp: {green ${exp}}
       // `);
       
     }
@@ -2031,6 +2032,7 @@ const calculateDB = async ({
  * 経験値、獲得称号を計算する / 数値の加算、減算、再計算も行う
  * （何度もデータベースにアクセスするので処理が重いかもしれない）
  * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {Array} arr - { type, calculation }
  * type - なにを処理するのか指定する / ['account-ancient', 'level-count', 'account-count-day', 'login-count', 'good-count-click', 'good-count-clicked', 'forum-count-post', 'recruitment-count-post', 'follow-count', 'followed-count', 'title-count', 'title-show', 'card-player-edit', 'card-player-upload-image-main', 'card-player-upload-image-thumbnail', 'user-page-upload-image-main', 'user-page-change-url', 'web-push-permission']
@@ -2039,6 +2041,7 @@ const calculateDB = async ({
 const experienceCalculate = async ({
   
   req,
+  localeObj,
   loginUsers_id,
   recalculationAll = false,
   arr = [],
@@ -2080,6 +2083,9 @@ const experienceCalculate = async ({
       }
       
     });
+    
+    const currentExp = lodashGet(docExperiencesObj, ['exp'], 0);
+    const currentAcquiredTitles_idsArr = lodashGet(docExperiencesObj, ['acquiredTitles_idsArr'], []);
     
     let historiesArr = lodashGet(docExperiencesObj, ['historiesArr'], []);
     let acquiredTitles_idsArr = lodashGet(docExperiencesObj, ['acquiredTitles_idsArr'], []);
@@ -2582,14 +2588,69 @@ const experienceCalculate = async ({
     
     
     
+    // ---------------------------------------------
+    //   Snackbar
+    // ---------------------------------------------
+    
+    const increaseExp = exp - currentExp;
+    
+    const currentlevel = calculateLevel({ exp: currentExp });
+    const level = calculateLevel({ exp });
+    
+    const increaseLevel = level - currentlevel > 0 ? level : 0;
+    
+    const increaseAcquiredTitles_idsArr = acquiredTitles_idsArr.filter((titles_id) => {
+      return currentAcquiredTitles_idsArr.includes(titles_id) === false;
+    });
+    
+    
+    // ----------------------------------------
+    //   - DB titles
+    // ----------------------------------------
+    
+    const language = lodashGet(localeObj, ['language'], '');
+    
+    const docTitlesArr = await ModelTitles.find({
+      
+      conditionObj: {
+        _id: { $in: increaseAcquiredTitles_idsArr },
+        language,
+      }
+      
+    });
+    
+    const increaseTitlesArr = [];
+    
+    for (let valueObj of docTitlesArr.values()) {
+      increaseTitlesArr.push(valueObj.name);
+    }
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   returnObj
+    // ---------------------------------------------
+    
+    const returnObj = {
+      
+      exp: increaseExp,
+      level: increaseLevel,
+      titlesArr: increaseTitlesArr,
+      
+    };
+    
+    
+    
+    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@modules/experience.js - experienceCalculate
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@modules/experience.js - experienceCalculate
+    // `);
     
     // console.log(chalk`
     //   recalculationAll: {green ${recalculationAll}}
@@ -2607,12 +2668,44 @@ const experienceCalculate = async ({
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- saveObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(saveObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- saveObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(saveObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
+    // console.log(chalk`
+    //   currentExp: {green ${currentExp}}
+    //   exp: {green ${exp}}
+    //   increaseExp: {green ${increaseExp}}
+    // `);
+    
+    // console.log(`
+    //   ----- increaseAcquiredTitles_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(increaseAcquiredTitles_idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- docTitlesArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docTitlesArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Return
+    // ---------------------------------------------
+    
+    return returnObj;
     
     
   } catch (errorObj) {

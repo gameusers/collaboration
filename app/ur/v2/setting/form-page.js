@@ -502,48 +502,43 @@ const Component = (props) => {
       //   Snackbar: Success
       // ---------------------------------------------
       
-      showSnackbar({
+      const experienceObj = lodashGet(resultObj, ['data', 'experienceObj'], {});
+      
+      // ページをリロードする場合は短い表示にする
+      if (pageTransition) {
         
-        enqueueSnackbar,
-        intl,
-        arr: [
-          {
-            variant: 'success',
-            messageID: 'EnStWOly-',
-          },
-          {
-            // variant: 'info',
-            messageExp: 50,
-          },
-          {
-            // variant: 'info',
-            messageLevel: 5,
-          },
-          {
-            // variant: 'success',
-            messageTitle: 'タイムトラベラー',
-          },
+        showSnackbar({
           
-        ]
+          enqueueSnackbar,
+          intl,
+          arr: [
+            {
+              variant: 'success',
+              messageID: 'EnStWOly-',
+            },
+            
+          ]
+          
+        });
         
-      });
-      
-      // showSnackbar({
+      } else {
         
-      //   enqueueSnackbar,
-      //   intl,
-      //   variant: 'success',
-      //   message: '称号「タイムトラベラー」を獲得しました',
-      //   // messageID: 'EnStWOly-',
+        showSnackbar({
+          
+          enqueueSnackbar,
+          intl,
+          experienceObj,
+          arr: [
+            {
+              variant: 'success',
+              messageID: 'EnStWOly-',
+            },
+            
+          ]
+          
+        });
         
-      // });
-      
-      // handleSnackbarOpen({
-        
-      //   variant: 'success',
-      //   messageID: 'EnStWOly-',
-        
-      // });
+      }
       
       
       
@@ -578,10 +573,10 @@ const Component = (props) => {
       //   console.log
       // --------------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/ur/v2/setting/form-page.js / handleSubmit
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/ur/v2/setting/form-page.js / handleSubmit
+      // `);
       
       // console.log(`
       //   ----- formDataObj -----\n
@@ -589,11 +584,11 @@ const Component = (props) => {
       //   --------------------\n
       // `);
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
     } catch (errorObj) {

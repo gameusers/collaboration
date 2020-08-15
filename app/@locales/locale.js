@@ -21,8 +21,16 @@
 //   Locales
 // ---------------------------------------------
 
-const en_US = require('../../app/@locales/en-us');
-const ja_JP = require('../../app/@locales/ja-jp');
+const locale_en = require('../../app/@locales/en.json');
+const locale_ja = require('../../app/@locales/ja.json');
+
+// import locale_ja from 'app/@locales/ja.json';
+// import locale_en from 'app/@locales/en.json';
+
+// const en_US = require('../../app/@locales/en-us');
+// const ja_JP = require('../../app/@locales/ja-jp');
+
+
 
 
 
@@ -55,7 +63,7 @@ const locale = (argumentsObj) => {
   let country = 'JP';
   let languageArr = ['ja'];
   let countryArr = ['JP'];
-  let dataObj = ja_JP;
+  // let dataObj = ja_JP;
   
   
   // --------------------------------------------------
@@ -105,7 +113,7 @@ const locale = (argumentsObj) => {
   returnObj.country = country;
   returnObj.languageArr = languageArr;
   returnObj.countryArr = countryArr;
-  returnObj.dataObj = dataObj;
+  // returnObj.dataObj = dataObj;
   
   return returnObj;
   
@@ -114,10 +122,40 @@ const locale = (argumentsObj) => {
 
 
 
+
+/**
+ * データを取得する
+ * @param {string} locale - [ja, en]
+ * @return {Object} JSONデータ
+ */
+const loadLocaleData = ({ locale }) => {
+  
+  switch (locale) {
+    
+    case 'en':
+      
+      return locale_en;
+      
+    default:
+      
+      return locale_ja;
+      
+  }
+  
+};
+
+
+
+
+
+
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
 
 module.exports = {
-  locale
+  
+  locale,
+  loadLocaleData,
+  
 };

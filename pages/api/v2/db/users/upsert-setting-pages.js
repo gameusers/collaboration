@@ -406,14 +406,19 @@ export default async (req, res) => {
     //   experiences
     // --------------------------------------------------
     
-    experienceCalculateArr.push({
-      type: 'user-page-change-url',
-      calculation: 'addition',
-    });
+    // experienceCalculateArr.push({
+    //   type: 'user-page-change-url',
+    //   calculation: 'addition',
+    // });
       
-    experienceCalculateArr.push({
-      type: 'user-page-upload-image-main',
-    });
+    // experienceCalculateArr.push({
+    //   type: 'user-page-upload-image-main',
+    // });
+    
+    // experienceCalculateArr.push({
+    //   type: 'card-player-edit',
+    //   calculation: 'addition',
+    // });
     
     // console.log(`
     //   ----- experienceCalculateArr -----\n
@@ -423,9 +428,10 @@ export default async (req, res) => {
     
     if (experienceCalculateArr.length > 0) {
       
-      await experienceCalculate({ 
+      returnObj.experienceObj = await experienceCalculate({ 
         
         req,
+        localeObj,
         loginUsers_id,
         arr: experienceCalculateArr,
         

@@ -61,16 +61,17 @@ import { CustomError } from 'app/@modules/error/custom.js';
 
 /**
  * Snackbar を表示する
- * @param {string} message - 表示するメッセージ
- * @param {string} variant - [success, error, warning, info]
- * @param {Object} anchorOrigin - 例）vertical: 'bottom', horizontal: 'left',
- * @param {number} autoHideDuration - 消える時間をミリ秒で指定する
+ * @param {} enqueueSnackbar - 
+ * @param {} intl - 
+ * @param {Array} arr - 表示する情報が入った配列
+ * @param {Object} experienceObj - 
  */
 const showSnackbar = async ({
   
   enqueueSnackbar,
   intl,
   arr,
+  experienceObj,
   
 }) => {
   
@@ -78,11 +79,76 @@ const showSnackbar = async ({
   try {
     
     
+    // experienceObj: {
+        
+    //     exp: increaseExp,
+    //     level: increaseLevel,
+    //     titlesArr: increaseTitlesArr,
+        
+    //   }
+    
+    
+    // --------------------------------------------------
+    //   experience
+    // --------------------------------------------------
+    
+    const messageExp = lodashGet(experienceObj, ['exp'], 0);
+    const messageLevel = lodashGet(experienceObj, ['level'], 0);
+    const titlesArr = lodashGet(experienceObj, ['titlesArr'], []);
+    
+    const loopArr = arr;
+    
+    if (messageExp) {
+      
+      loopArr.push({
+        messageExp
+      });
+      
+    }
+    
+    if (messageLevel) {
+      
+      loopArr.push({
+        messageLevel
+      });
+      
+    }
+    
+    for (let messageTitle of titlesArr.values()) {
+      
+      loopArr.push({
+        messageTitle
+      });
+      
+    }
+    
+    // {
+          //   messageExp: 50,
+          // },
+          // {
+          //   messageLevel: 5,
+          // },
+          // {
+          //   messageTitle: 'タイムトラベラー',
+          // },
+    // console.log(`
+    //   ----- experienceObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(experienceObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- loopArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(loopArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
     // --------------------------------------------------
     //   Loop
     // --------------------------------------------------
     
-    for (const [index, valueObj] of arr.entries()) {
+    for (const [index, valueObj] of loopArr.entries()) {
       
       
       // --------------------------------------------------
@@ -188,6 +254,9 @@ const showSnackbar = async ({
       
       
     }
+    
+    
+    
     
     
     

@@ -11,14 +11,6 @@ import util from 'util';
 
 
 // ---------------------------------------------
-//   Node Packages
-// ---------------------------------------------
-
-// import moment from 'moment';
-// import shortid from 'shortid';
-
-
-// ---------------------------------------------
 //   Lodash
 // ---------------------------------------------
 
@@ -31,24 +23,6 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import { CustomError } from 'app/@modules/error/custom.js';
-
-
-// ---------------------------------------------
-//   Model
-// ---------------------------------------------
-
-// import SchemaAchievements from 'app/@database/achievements/schema.js';
-
-// import ModelExperiences from 'app/@database/experiences/model.js';
-// import ModelAchievements from 'app/@database/achievements/model.js';
-// import ModelUsers from 'app/@database/users/model.js';
-// import ModelForumComments from 'app/@database/forum-comments/model.js';
-// import ModelRecruitmentThreads from 'app/@database/recruitment-threads/model.js';
-// import ModelRecruitmentComments from 'app/@database/recruitment-comments/model.js';
-// import ModelRecruitmentReplies from 'app/@database/recruitment-replies/model.js';
-// import ModelFollows from 'app/@database/follows/model.js';
-// import ModelCardPlayers from 'app/@database/card-players/model.js';
-// import ModelWebPushes from 'app/@database/web-pushes/model.js';
 
 
 
@@ -70,22 +44,13 @@ const showSnackbar = async ({
   
   enqueueSnackbar,
   intl,
-  arr,
-  experienceObj,
+  arr = [],
+  experienceObj = {},
   
 }) => {
   
   
   try {
-    
-    
-    // experienceObj: {
-        
-    //     exp: increaseExp,
-    //     level: increaseLevel,
-    //     titlesArr: increaseTitlesArr,
-        
-    //   }
     
     
     // --------------------------------------------------
@@ -251,16 +216,7 @@ const showSnackbar = async ({
       }), millisecond);
       
       
-      
-      
     }
-    
-    
-    
-    
-    
-    
-    
     
     
     
@@ -279,15 +235,6 @@ const showSnackbar = async ({
     //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   Return
-    // ---------------------------------------------
-    
-    // return returnObj;
     
     
   } catch (errorObj) {

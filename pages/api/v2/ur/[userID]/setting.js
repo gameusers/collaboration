@@ -35,6 +35,7 @@ import { verifyCsrfToken } from 'app/@modules/csrf.js';
 import { decrypt }  from 'app/@modules/crypto.js';
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { updateAccessDate } from 'app/@modules/access-date.js';
 
 
 // ---------------------------------------------
@@ -140,6 +141,44 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
+    //   Common Initial Props
+    // --------------------------------------------------
+    
+    const commonInitialPropsObj = await initialProps({ req, res, localeObj });
+    
+    returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
+    returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
+    const accessDate = lodashGet(commonInitialPropsObj, ['loginUsersObj', 'accessDate'], '');
+    
+    const gamesImagesAndVideosObj = lodashGet(commonInitialPropsObj, ['headerObj', 'imagesAndVideosObj'], {});
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Update Access Date & Login Count
+    // --------------------------------------------------
+    
+    const resultUpdatedAccessDateObj = await updateAccessDate({
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      accessDate,
+      
+    });
+    
+    returnObj.experienceObj = lodashGet(resultUpdatedAccessDateObj, ['experienceObj'], {});
+    const updatedAccessDate = lodashGet(resultUpdatedAccessDateObj, ['updatedAccessDate'], '');
+    
+    if (updatedAccessDate) {
+      lodashSet(returnObj, ['loginUsersObj', 'accessDate'], updatedAccessDate);
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
     //   データ取得 / Users
     //   アクセスしたページ所有者のユーザー情報
     //   users_id を取得するために利用
@@ -178,19 +217,6 @@ export default async (req, res) => {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'RZuemJfef', messageID: 'Error' }] });
       
     }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Common Initial Props
-    // --------------------------------------------------
-    
-    const commonInitialPropsObj = await initialProps({ req, res, localeObj });
-    
-    returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
-    returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
-    const gamesImagesAndVideosObj = lodashGet(commonInitialPropsObj, ['headerObj', 'imagesAndVideosObj'], {});
     
     
     
@@ -317,6 +343,12 @@ export default async (req, res) => {
     if (users_id === loginUsers_id) {
       returnObj.accessLevel = 50;
     }
+    
+    
+    
+    
+    
+    
     
     
     

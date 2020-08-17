@@ -170,7 +170,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: 'jun-deE4J',
         createdDate: '2015-01-01T00:00:00.000Z',
         updatedDate: ISO8601,
-        accessDate: ISO8601,
+        accessDate: '2020-01-01T00:00:00.000Z',
         userID: 'user1',
         userIDInitial: 'SuCUOYBa8lkwVqYbuVTMWLp4PhG',
         pagesObj: {
@@ -295,8 +295,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        // exp: 1916,
-        exp: 1816,
+        exp: 1916,
+        // exp: 1816,
         historiesArr: [// アカウント開設日、goodボタン、フォーラム書き込み、募集書き込み、ゲーム登録、日記、経験値
           
           {
@@ -420,17 +420,17 @@ router.post('/db', upload.none(), async (req, res, next) => {
             countValid: 1,
             countTotal: 1
           },
-          // {
-          //   _id: '8BriLq5GdJ',
-          //   createdDate: '2020-08-12T04:54:09.617Z',
-          //   updatedDate: '2020-08-12T08:59:20.171Z',
-          //   type: 'user-page-upload-image-main',
-          //   countDay: 0,
-          //   countMonth: 0,
-          //   countYear: 0,
-          //   countValid: 1,
-          //   countTotal: 1
-          // },
+          {
+            _id: '8BriLq5GdJ',
+            createdDate: '2020-08-12T04:54:09.617Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
+            type: 'user-page-upload-image-main',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 1,
+            countTotal: 1
+          },
           {
             _id: 'lEh6WpyIY_',
             createdDate: '2020-08-12T04:54:09.617Z',
@@ -475,28 +475,28 @@ router.post('/db', upload.none(), async (req, res, next) => {
             countValid: 0,
             countTotal: 0
           },
-          // {
-          //   _id: 'Kc2TWwfGnc',
-          //   createdDate: '2020-08-12T08:59:20.171Z',
-          //   updatedDate: '2020-08-12T08:59:20.171Z',
-          //   type: 'card-player-edit',
-          //   countDay: 0,
-          //   countMonth: 0,
-          //   countYear: 0,
-          //   countValid: 0,
-          //   countTotal: 0
-          // },
-          // {
-          //   _id: '4NxenoLm6l',
-          //   createdDate: '2020-08-12T08:59:20.171Z',
-          //   updatedDate: '2020-08-12T08:59:20.171Z',
-          //   type: 'user-page-change-url',
-          //   countDay: 0,
-          //   countMonth: 0,
-          //   countYear: 0,
-          //   countValid: 0,
-          //   countTotal: 0
-          // }
+          {
+            _id: 'Kc2TWwfGnc',
+            createdDate: '2020-08-12T08:59:20.171Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
+            type: 'card-player-edit',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 0,
+            countTotal: 0
+          },
+          {
+            _id: '4NxenoLm6l',
+            createdDate: '2020-08-12T08:59:20.171Z',
+            updatedDate: '2020-08-12T08:59:20.171Z',
+            type: 'user-page-change-url',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 0,
+            countTotal: 0
+          }
           
         ],
         // acquiredTitles_idsArr: [],

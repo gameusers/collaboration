@@ -562,10 +562,6 @@ const Component = (props) => {
       
       setHeaderObj(lodashGet(resultObj, ['data', 'headerObj'], {}));
       
-      // enqueueSnackbar();
-      
-      
-      
       
       
       

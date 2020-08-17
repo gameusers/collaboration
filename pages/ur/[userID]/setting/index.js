@@ -18,6 +18,8 @@ import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
 import { animateScroll as scroll } from 'react-scroll';
 import moment from 'moment';
+import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -44,6 +46,7 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -75,6 +78,9 @@ const ContainerLayout = (props) => {
   //   States
   // --------------------------------------------------
   
+  const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
+  
   const stateLayout = ContainerStateLayout.useContainer();
   
   const {
@@ -102,6 +108,30 @@ const ContainerLayout = (props) => {
     }
     
     
+    // --------------------------------------------------
+    //   Snackbar
+    // --------------------------------------------------
+    
+    if (Object.keys(props.experienceObj).length !== 0) {
+      
+      showSnackbar({
+        
+        enqueueSnackbar,
+        intl,
+        experienceObj: props.experienceObj,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'LjWizvlER',
+          },
+          
+        ]
+        
+      });
+      
+    }
+    
+    
     // ---------------------------------------------
     //   Scroll To
     // ---------------------------------------------
@@ -110,6 +140,11 @@ const ContainerLayout = (props) => {
     
     
   }, [props.ISO8601]);
+  
+  
+  
+  
+  
   
   
   
@@ -298,6 +333,7 @@ export async function getServerSideProps({ req, res, query }) {
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
+  const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
   
   const pagesObj = lodashGet(dataObj, ['pagesObj'], {});
   const approval = lodashGet(dataObj, ['approval'], false);
@@ -386,16 +422,16 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
   
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /pages/ur/[userID]/setting/index.js
-  // `);
+  console.log(`
+    ----------------------------------------\n
+    /pages/ur/[userID]/setting/index.js
+  `);
   
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  console.log(`
+    ----- resultObj -----\n
+    ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+    --------------------\n
+  `);
   
   
   
@@ -417,6 +453,7 @@ export async function getServerSideProps({ req, res, query }) {
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,
+      experienceObj,
       
       accessLevel,
       userID,

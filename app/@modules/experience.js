@@ -2632,13 +2632,21 @@ const experienceCalculate = async ({
     //   returnObj
     // ---------------------------------------------
     
-    const returnObj = {
+    let returnObj = {};
+    
+    if (increaseExp || increaseLevel || increaseTitlesArr.length > 0) {
       
-      exp: increaseExp,
-      level: increaseLevel,
-      titlesArr: increaseTitlesArr,
+      returnObj = {
+        
+        exp: increaseExp,
+        level: increaseLevel,
+        titlesArr: increaseTitlesArr,
+        
+      };
       
-    };
+    }
+    
+    
     
     
     

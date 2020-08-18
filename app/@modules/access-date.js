@@ -30,6 +30,7 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import ModelUsers from 'app/@database/users/model.js';
+import ModelExperiences from 'app/@database/experiences/model.js';
 
 
 // ---------------------------------------------
@@ -74,62 +75,63 @@ const updateAccessDate = async ({
     
     
     // --------------------------------------------------
-    //   experience
+    //   ログインしている場合のみ処理する
     // --------------------------------------------------
     
     if (loginUsers_id && accessDate) {
       
       
       // --------------------------------------------------
-      //   Property
+      //   Login Count
       // --------------------------------------------------
       
-      const datetimeAccess = moment(accessDate).utc();
-      const datetimeCurrent = moment().utc();
-      const days = datetimeCurrent.diff(datetimeAccess, 'days');
-      const minutes = datetimeCurrent.diff(datetimeAccess, 'minutes');
+      // ---------------------------------------------
+      //   - DB find / experiences
+      // ---------------------------------------------
       
-      const intervalMinutes = parseInt(process.env.ACCESS_DATE_UPDATE_INTERVAL_MINUTES, 10);
+      const docExperiencesObj = await ModelExperiences.findOne({
+        
+        conditionObj: {
+          users_id: loginUsers_id
+        }
+        
+      });
       
-      const ISO8601 = moment().utc().toISOString();
+      const historiesArr = lodashGet(docExperiencesObj, ['historiesArr'], []);
+      
+      const historyObj = historiesArr.find((valueObj) => {
+        return valueObj.type === 'login-count';
+      });
+      
+      const updatedDate = lodashGet(historyObj, ['updatedDate'], '');
       
       
+      // ---------------------------------------------
+      //   - Property
+      // ---------------------------------------------
+      
+      const datetimeCurrentStartOfDay = moment().startOf('day');
+      const datetimeUpdatedStartOfDay = moment(updatedDate).startOf('day');
+      const days = datetimeCurrentStartOfDay.diff(datetimeUpdatedStartOfDay, 'days');
       
       
-      // --------------------------------------------------
-      //   前回のアクセスから1日以上経過している場合、ログイン回数 + 1
-      // --------------------------------------------------
+      // ---------------------------------------------
+      //   - 前回のアクセスから1日以上経過している場合、ログイン回数 + 1
+      // ---------------------------------------------
       
       if (days >= 1) {
         
-        const experienceCalculateArr = [];
-        
-        experienceCalculateArr.push({
-          type: 'login-count',
-          calculation: 'addition',
+        returnObj.experienceObj = await experienceCalculate({ 
+          
+          req,
+          localeObj,
+          loginUsers_id,
+          arr: [{
+            type: 'login-count',
+            calculation: 'addition',
+          }],
+          
         });
-        
-        
-        if (experienceCalculateArr.length > 0) {
-          
-          returnObj.experienceObj = await experienceCalculate({ 
-            
-            req,
-            localeObj,
-            loginUsers_id,
-            arr: experienceCalculateArr,
-            
-          });
-          
-        }
-        
-        
-        // console.log(`
-        //   ----- experienceCalculateArr -----\n
-        //   ${util.inspect(JSON.parse(JSON.stringify(experienceCalculateArr)), { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-        
         
       }
       
@@ -137,10 +139,26 @@ const updateAccessDate = async ({
       
       
       // --------------------------------------------------
-      //   前回のアクセスから規定の時間が経過している場合、アクセス日時を更新する
+      //   Update Access Date
       // --------------------------------------------------
       
+      // ---------------------------------------------
+      //   - Property
+      // ---------------------------------------------
+      
+      const datetimeCurrent = moment();
+      const datetimeAccess = moment(accessDate);
+      const minutes = datetimeCurrent.diff(datetimeAccess, 'minutes');
+      const intervalMinutes = parseInt(process.env.ACCESS_DATE_UPDATE_INTERVAL_MINUTES, 10);
+      
+      
+      // ---------------------------------------------
+      //   - 前回のアクセスから規定の時間が経過している場合、アクセス日時を更新する
+      // ---------------------------------------------
+      
       if (minutes >= intervalMinutes) {
+        
+        const ISO8601 = moment().utc().toISOString();
         
         const conditionObj = {
           _id: loginUsers_id
@@ -172,12 +190,15 @@ const updateAccessDate = async ({
       }
       
       
-      console.log(chalk`
-        days: {green ${days}}
-        minutes: {green ${minutes}}
-        process.env.ACCESS_DATE_UPDATE_INTERVAL_MINUTES: {green ${process.env.ACCESS_DATE_UPDATE_INTERVAL_MINUTES}}
-        ISO8601: {green ${ISO8601}}
-      `);
+      // console.log(chalk`
+      //   days: {green ${days}}
+      //   minutes: {green ${minutes}}
+      //   process.env.ACCESS_DATE_UPDATE_INTERVAL_MINUTES: {green ${process.env.ACCESS_DATE_UPDATE_INTERVAL_MINUTES}}
+      //   datetimeCurrentStartOfDay: {green ${datetimeCurrentStartOfDay}}
+      //   datetimeCurrent: {green ${datetimeCurrent}}
+      //   datetimeUpdatedStartOfDay: {green ${datetimeUpdatedStartOfDay}}
+      //   datetimeAccess: {green ${datetimeAccess}}
+      // `);
       
     }
     
@@ -188,20 +209,16 @@ const updateAccessDate = async ({
     //   console.log
     // ---------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@modules/access-date.js - updateAccessDate
-    `);
-    
-    // console.log(chalk`
-    //   accessDate: {green ${accessDate}}
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@modules/access-date.js - updateAccessDate
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

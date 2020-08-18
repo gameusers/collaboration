@@ -228,7 +228,7 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   experiences / user-page-change-url
+    //   experience / user-page-change-url
     // --------------------------------------------------
     
     if (docUsersObj.userIDInitial !== userID) {
@@ -324,16 +324,20 @@ export default async (req, res) => {
       
       
       // --------------------------------------------------
-      //   experiences / user-page-upload-image-main
+      //   experience / user-page-upload-image-main
       // --------------------------------------------------
       
-      if (imagesAndVideos_id) {
+      experienceCalculateArr.push({
+        type: 'user-page-upload-image-main',
+      });
+      
+      // if (imagesAndVideos_id) {
         
-        experienceCalculateArr.push({
-          type: 'user-page-upload-image-main',
-        });
+      //   experienceCalculateArr.push({
+      //     type: 'user-page-upload-image-main',
+      //   });
         
-      }
+      // }
       
       
     }
@@ -426,9 +430,11 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
+    let experienceObj = {};
+    
     if (experienceCalculateArr.length > 0) {
       
-      returnObj.experienceObj = await experienceCalculate({ 
+      experienceObj = await experienceCalculate({ 
         
         req,
         localeObj,
@@ -440,21 +446,40 @@ export default async (req, res) => {
     }
     
     
+    // ---------------------------------------------
+    //   - 経験値が増減した場合のみヘッダーを更新する
+    // ---------------------------------------------
+    
+    if (Object.keys(experienceObj).length !== 0) {
+      
+      const docUsersObj = await ModelUsers.findOneForUser({
+        
+        localeObj,
+        loginUsers_id,
+        users_id: loginUsers_id,
+        
+      });
+      
+      returnObj.experienceObj = experienceObj;
+      returnObj.headerObj = lodashGet(docUsersObj, ['headerObj'], {});
+      
+    }
+    
     
     
     // --------------------------------------------------
     //   ヘッダーデータ取得
     // --------------------------------------------------
     
-    docUsersObj = await ModelUsers.findOneForUser({
+    // docUsersObj = await ModelUsers.findOneForUser({
       
-      localeObj,
-      loginUsers_id,
-      users_id: loginUsers_id,
+    //   localeObj,
+    //   loginUsers_id,
+    //   users_id: loginUsers_id,
       
-    });
+    // });
     
-    returnObj.headerObj = lodashGet(docUsersObj, ['headerObj'], {});
+    // returnObj.headerObj = lodashGet(docUsersObj, ['headerObj'], {});
     
     
     

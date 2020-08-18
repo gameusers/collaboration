@@ -16,6 +16,7 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -73,6 +74,7 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -172,21 +174,14 @@ const useStyles = makeStyles({
   
   root: {
     minHeight: 'inherit !important',
-    // minHeight: '64px !important',
-    // margin: '0 !important',
   },
   
   content: {
-    // minHeight: 'inherit !important',
-    // minHeight: '64px !important',
     margin: '0 !important',
   },
   
   expanded: {
     minHeight: 'inherit !important',
-    // minHeight: '32px !important',
-    // minHeight: '48px !important',
-    // margin: '0 !important',
   },
   
 });
@@ -380,6 +375,7 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [pageNo, setPageNo] = useState(0);
@@ -399,7 +395,7 @@ const Component = (props) => {
   // --------------------------------------------------
   
   /**
-   * フォームを送信する
+   * フォームを送信する / 表示する称号を保存する
    * @param {Object} eventObj - イベント
    */
   const handleSubmit = async ({
@@ -480,22 +476,39 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Update
+      //   Update - Header
       // ---------------------------------------------
       
-      setHeaderObj(lodashGet(resultObj, ['data'], {}));
+      const headerObj = lodashGet(resultObj, ['data', 'headerObj'], {});
+      
+      if (Object.keys(headerObj).length !== 0) {
+        setHeaderObj(headerObj);
+      }
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Snackbar: Success
-      // ---------------------------------------------
+      // --------------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'success',
-        messageID: 'EnStWOly-',
+        enqueueSnackbar,
+        intl,
+        experienceObj: lodashGet(resultObj, ['data', 'experienceObj'], {}),
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'EnStWOly-',
+          },
+        ]
         
       });
+      
+      // console.log(`
+      //   ----- experienceObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(experienceObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       
@@ -540,14 +553,15 @@ const Component = (props) => {
       
       setButtonDisabled(false);
       
-      
+      // console.log(errorObj);
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });

@@ -16,6 +16,8 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -50,6 +52,7 @@ import IconPermIdentity from '@material-ui/icons/PermIdentity';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -92,6 +95,8 @@ const Component = (props) => {
   //   Hooks
   // --------------------------------------------------
   
+  const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   
@@ -144,9 +149,10 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   リロードするかどうか
+      //   Property
       // ---------------------------------------------
       
+      let resultObj = {};
       let pageTransition = false;
       
       
@@ -175,7 +181,7 @@ const Component = (props) => {
         //   Fetch
         // ---------------------------------------------
         
-        const resultObj = await fetchWrapper({
+        resultObj = await fetchWrapper({
           
           urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/upsert-follow-gc-uc`,
           methodType: 'POST',
@@ -266,20 +272,13 @@ const Component = (props) => {
         //   Fetch
         // ---------------------------------------------
         
-        const resultObj = await fetchWrapper({
+        resultObj = await fetchWrapper({
           
           urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/upsert-follow-ur`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
           
         });
-        
-        
-        // console.log(`
-        //   ----- resultObj -----\n
-        //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
         
         
         // ---------------------------------------------
@@ -412,12 +411,45 @@ const Component = (props) => {
       }
       
       
-      handleSnackbarOpen({
+      // handleSnackbarOpen({
         
-        variant: 'success',
-        messageID,
+      //   variant: 'success',
+      //   messageID,
+        
+      // });
+      
+      
+      showSnackbar({
+        
+        enqueueSnackbar,
+        intl,
+        experienceObj: lodashGet(resultObj, ['data', 'experienceObj'], {}),
+        arr: [
+          {
+            variant: 'success',
+            messageID,
+          },
+        ]
         
       });
+      
+      
+      
+      
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
+      
+      console.log(`
+        ----------------------------------------\n
+        /app/common/follow/v2/follow-button.js
+      `);
+      
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
       
@@ -438,9 +470,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });

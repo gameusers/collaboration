@@ -296,7 +296,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         exp: 1916,
-        // exp: 1816,
+        // exp: 1866,
         historiesArr: [// アカウント開設日、goodボタン、フォーラム書き込み、募集書き込み、ゲーム登録、日記、経験値
           
           {

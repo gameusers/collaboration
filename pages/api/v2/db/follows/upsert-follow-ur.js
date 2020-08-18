@@ -31,6 +31,7 @@ import lodashSet from 'lodash/set';
 
 import ModelFollows from 'app/@database/follows/model.js';
 import ModelCardPlayers from 'app/@database/card-players/model.js';
+import ModelUsers from 'app/@database/users/model.js';
 
 
 // ---------------------------------------------
@@ -40,6 +41,7 @@ import ModelCardPlayers from 'app/@database/card-players/model.js';
 import { verifyCsrfToken } from 'app/@modules/csrf.js';
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { experienceCalculate } from 'app/@modules/experience.js';
 
 
 // ---------------------------------------------
@@ -49,6 +51,13 @@ import { CustomError } from 'app/@modules/error/custom.js';
 import { validationIP } from 'app/@validations/ip.js';
 
 import { validationUsers_idServer } from 'app/@database/users/validations/_id-server.js';
+
+
+// ---------------------------------------------
+//   Locales
+// ---------------------------------------------
+
+import { locale } from 'app/@locales/locale.js';
 
 
 
@@ -85,6 +94,15 @@ export default async (req, res) => {
   const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage
+  });
   
   
   
@@ -379,6 +397,65 @@ export default async (req, res) => {
     for (let valueObj of docCardPlayersArr.values()) {
       
       returnObj.cardPlayers_idsArr.push(valueObj._id);
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   experience
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   - 自分のフォロー
+    // ---------------------------------------------
+    
+    const experienceObj = await experienceCalculate({ 
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      arr: [{
+        type: 'follow-count',
+      }],
+      
+    });
+    
+    
+    // ---------------------------------------------
+    //   - フォローされた相手
+    // ---------------------------------------------
+    
+    await experienceCalculate({ 
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      targetUsers_id: users_id,
+      arr: [{
+        type: 'followed-count',
+      }],
+      
+    });
+    
+    
+    // ---------------------------------------------
+    //   - 経験値が増減した場合のみヘッダーを更新する
+    // ---------------------------------------------
+    
+    if (Object.keys(experienceObj).length !== 0) {
+      
+      const docUsersObj = await ModelUsers.findOneForUser({
+        
+        localeObj,
+        loginUsers_id,
+        users_id: loginUsers_id,
+        
+      });
+      
+      returnObj.experienceObj = experienceObj;
+      returnObj.headerObj = lodashGet(docUsersObj, ['headerObj'], {});
       
     }
     

@@ -1,5 +1,5 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
@@ -31,7 +31,7 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import ModelCardPlayers from 'app/@database/card-players/model.js';
-// import ModelImagesAndVideos from 'app/@database/images-and-videos/model.js';
+import ModelUsers from 'app/@database/users/model.js';
 
 
 // ---------------------------------------------
@@ -42,6 +42,7 @@ import { verifyCsrfToken } from 'app/@modules/csrf.js';
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
 import { formatAndSave } from 'app/@modules/image/save.js';
+import { experienceCalculate } from 'app/@modules/experience.js';
 
 
 // ---------------------------------------------
@@ -51,7 +52,6 @@ import { formatAndSave } from 'app/@modules/image/save.js';
 import { validationIP } from 'app/@validations/ip.js';
 import { validationBoolean } from 'app/@validations/boolean.js';
 
-// import { validationCardPlayers_idServer } from 'app/@database/card-players/validations/_id-server.js';
 import { validationCardPlayersName } from 'app/@database/card-players/validations/name.js';
 import { validationCardPlayersStatus } from 'app/@database/card-players/validations/status.js';
 import { validationCardPlayersComment } from 'app/@database/card-players/validations/comment.js';
@@ -105,6 +105,7 @@ export default async (req, res) => {
   const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  const experienceCalculateArr = [];
   
   
   // --------------------------------------------------
@@ -239,7 +240,6 @@ export default async (req, res) => {
     
     await validationIP({ throwError: true, value: ip });
     
-    // await validationCardPlayers_idServer({ throwError: true, value: _id, loginUsers_id });
     await validationCardPlayersName({ throwError: true, value: name });
     await validationCardPlayersStatus({ throwError: true, value: status });
     await validationCardPlayersComment({ throwError: true, value: comment });
@@ -358,6 +358,23 @@ export default async (req, res) => {
       };
       
       
+      // --------------------------------------------------
+      //   experience / card-player-upload-image-main
+      // --------------------------------------------------
+      
+      experienceCalculateArr.push({
+        type: 'card-player-upload-image-main',
+      });
+      
+      // if (imagesAndVideos_id) {
+        
+      //   experienceCalculateArr.push({
+      //     type: 'card-player-upload-image-main',
+      //   });
+        
+      // }
+      
+      
     }
     
     
@@ -415,6 +432,23 @@ export default async (req, res) => {
       imagesAndVideosThumbnailConditionObj = {
         _id: lodashGet(imagesAndVideosThumbnailSaveObj, ['_id'], ''),
       };
+      
+      
+      // --------------------------------------------------
+      //   experience / card-player-upload-image-thumbnail
+      // --------------------------------------------------
+      
+      experienceCalculateArr.push({
+        type: 'card-player-upload-image-thumbnail',
+      });
+      
+      // if (imagesAndVideosThumbnail_id) {
+        
+      //   experienceCalculateArr.push({
+      //     type: 'card-player-upload-image-thumbnail',
+      //   });
+        
+      // }
       
       
     }
@@ -556,27 +590,61 @@ export default async (req, res) => {
     returnObj.cardPlayersArr = resultCardPlayersObj.cardPlayersArr;
     
     
-    // returnObj.cardPlayersObj = await ModelCardPlayers.findFromSchemaCardPlayers({
-      
-    //   localeObj,
-    //   users_id: loginUsers_id,
-    //   loginUsers_id,
-      
-    // });
     
     
     // --------------------------------------------------
-    //   データ取得 / Card Players
-    //   プレイヤーカード情報 / 編集フォーム用
+    //   experience
     // --------------------------------------------------
     
-    // returnObj.cardPlayersForEditFormObj = await ModelCardPlayers.findOneForEdit({
-      
-    //   localeObj,
-    //   loginUsers_id,
-    //   cardPlayers_id: _id,
-      
+    experienceCalculateArr.push({
+      type: 'card-player-edit',
+      calculation: 'addition',
+    });
+    
+    
+    // experienceCalculateArr.push({
+    //   type: 'card-player-upload-image-main',
     // });
+    
+    // experienceCalculateArr.push({
+    //   type: 'card-player-upload-image-thumbnail',
+    // });
+    
+    
+    let experienceObj = {};
+    
+    if (experienceCalculateArr.length > 0) {
+      
+      experienceObj = await experienceCalculate({ 
+        
+        req,
+        localeObj,
+        loginUsers_id,
+        arr: experienceCalculateArr,
+        
+      });
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   - 経験値が増減した場合のみヘッダーを更新する
+    // ---------------------------------------------
+    
+    if (Object.keys(experienceObj).length !== 0) {
+      
+      const docUsersObj = await ModelUsers.findOneForUser({
+        
+        localeObj,
+        loginUsers_id,
+        users_id: loginUsers_id,
+        
+      });
+      
+      returnObj.experienceObj = experienceObj;
+      returnObj.headerObj = lodashGet(docUsersObj, ['headerObj'], {});
+      
+    }
     
     
     

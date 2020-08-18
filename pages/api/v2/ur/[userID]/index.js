@@ -268,10 +268,10 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/ur/[userID]/index.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/ur/[userID]/index.js
+    // `);
     
     // console.log(chalk`
     //   userID: {green ${userID}}
@@ -296,11 +296,11 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

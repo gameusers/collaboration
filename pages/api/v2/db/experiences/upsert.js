@@ -40,6 +40,7 @@ import ModelExperiences from 'app/@database/experiences/model.js';
 import { verifyCsrfToken } from 'app/@modules/csrf.js';
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { experienceCalculate } from 'app/@modules/experience.js';
 
 
 // ---------------------------------------------
@@ -246,8 +247,46 @@ export default async (req, res) => {
       
     });
     
-    const headerObj = lodashGet(docUsersObj, ['headerObj'], {});
+    returnObj.headerObj = lodashGet(docUsersObj, ['headerObj'], {});
     
+    
+    
+    
+    // --------------------------------------------------
+    //   experience
+    // --------------------------------------------------
+    
+    const experienceObj = await experienceCalculate({ 
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      arr: [{
+        type: 'title-show',
+      }],
+      
+    });
+    
+    
+    // ---------------------------------------------
+    //   - 経験値が増減した場合のみヘッダーを更新する
+    // ---------------------------------------------
+    
+    if (Object.keys(experienceObj).length !== 0) {
+      
+      const docUsersObj = await ModelUsers.findOneForUser({
+        
+        localeObj,
+        loginUsers_id,
+        users_id: loginUsers_id,
+        
+      });
+      
+      returnObj.experienceObj = experienceObj;
+      returnObj.headerObj = lodashGet(docUsersObj, ['headerObj'], {});
+      
+    }
+        
     
     
     
@@ -303,7 +342,7 @@ export default async (req, res) => {
     //   Success
     // ---------------------------------------------
     
-    return res.status(200).json(headerObj);
+    return res.status(200).json(returnObj);
     
     
   } catch (errorObj) {

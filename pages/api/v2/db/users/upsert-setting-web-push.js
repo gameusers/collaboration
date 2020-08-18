@@ -41,6 +41,7 @@ import { verifyCsrfToken } from 'app/@modules/csrf.js';
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
 import { sendNotifications }  from 'app/@modules/web-push.js';
+import { experienceCalculate } from 'app/@modules/experience.js';
 
 
 // ---------------------------------------------
@@ -49,6 +50,13 @@ import { sendNotifications }  from 'app/@modules/web-push.js';
 
 import { validationIP } from 'app/@validations/ip';
 import { validationWebPushesSubscriptionObjEndpointServer, validationWebPushesSubscriptionObjKeysP256dhServer, validationWebPushesSubscriptionObjKeysAuthServer } from 'app/@database/web-pushes/validations/subscription-server.js';
+
+
+// ---------------------------------------------
+//   Locales
+// ---------------------------------------------
+
+import { locale } from 'app/@locales/locale.js';
 
 
 
@@ -85,6 +93,15 @@ export default async (req, res) => {
   const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage
+  });
   
   
   
@@ -275,6 +292,44 @@ export default async (req, res) => {
     
     sendNotifications({ arr });
     
+    
+    
+    
+    // --------------------------------------------------
+    //   experience
+    // --------------------------------------------------
+    
+    const experienceObj = await experienceCalculate({ 
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      arr: [{
+        type: 'web-push-permission',
+      }],
+      
+    });
+    
+    
+    // ---------------------------------------------
+    //   - 経験値が増減した場合のみヘッダーを更新する
+    // ---------------------------------------------
+    
+    if (Object.keys(experienceObj).length !== 0) {
+      
+      const docUsersObj = await ModelUsers.findOneForUser({
+        
+        localeObj,
+        loginUsers_id,
+        users_id: loginUsers_id,
+        
+      });
+      
+      returnObj.experienceObj = experienceObj;
+      returnObj.headerObj = lodashGet(docUsersObj, ['headerObj'], {});
+      
+    }
+      
     
     
     

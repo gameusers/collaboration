@@ -16,6 +16,7 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import shortid from 'shortid';
 import TextareaAutosize from 'react-autosize-textarea';
 
@@ -54,6 +55,7 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -152,6 +154,7 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [name, setName] = useState('');
@@ -274,6 +277,7 @@ const Component = (props) => {
   
   const {
     
+    setHeaderObj,
     handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
@@ -792,13 +796,31 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Snackbar: Success
+      //   Update - Header
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      const headerObj = lodashGet(resultObj, ['data', 'headerObj'], {});
+      
+      if (Object.keys(headerObj).length !== 0) {
+        setHeaderObj(headerObj);
+      }
+      
+      
+      // --------------------------------------------------
+      //   Snackbar: Success
+      // --------------------------------------------------
+      
+      showSnackbar({
         
-        variant: 'success',
-        messageID: 'EnStWOly-',
+        enqueueSnackbar,
+        intl,
+        experienceObj: lodashGet(resultObj, ['data', 'experienceObj'], {}),
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'EnStWOly-',
+          },
+        ]
         
       });
       
@@ -850,9 +872,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });

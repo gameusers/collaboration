@@ -502,8 +502,6 @@ const Component = (props) => {
       //   Snackbar: Success
       // ---------------------------------------------
       
-      const experienceObj = lodashGet(resultObj, ['data', 'experienceObj'], {});
-      
       // ページをリロードする場合は短い表示にする
       if (pageTransition) {
         
@@ -527,7 +525,7 @@ const Component = (props) => {
           
           enqueueSnackbar,
           intl,
-          experienceObj,
+          experienceObj: lodashGet(resultObj, ['data', 'experienceObj'], {}),
           arr: [
             {
               variant: 'success',
@@ -557,10 +555,14 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Update Header
+      //   Update - Header
       // ---------------------------------------------
       
-      setHeaderObj(lodashGet(resultObj, ['data', 'headerObj'], {}));
+      const headerObj = lodashGet(resultObj, ['data', 'headerObj'], {});
+      
+      if (Object.keys(headerObj).length !== 0) {
+        setHeaderObj(headerObj);
+      }
       
       
       

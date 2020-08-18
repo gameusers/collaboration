@@ -62,14 +62,14 @@ import ModelWebPushes from 'app/@database/web-pushes/model.js';
 
 /**
  * 古のアカウント / account-ancient
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} users_id - DB users _id / ユーザーID
  * @param {string} ISO8601 - 日時
  * @param {Array} historiesArr - 現在の達成状況を計算するためのデータが入っている配列
  * @param {Array} acquiredTitles_idsArr - 獲得した称号の _id が入っている配列
  */
 const calculateAccountAncient = async ({
   
-  loginUsers_id,
+  users_id,
   ISO8601,
   historiesArr,
   acquiredTitles_idsArr,
@@ -98,7 +98,7 @@ const calculateAccountAncient = async ({
     const docUsersObj = await ModelUsers.findOne({
       
       conditionObj: {
-        _id: loginUsers_id
+        _id: users_id
       }
       
     });
@@ -304,14 +304,14 @@ const calculateAccountAncient = async ({
 
 /**
  * アカウント作成後の経過日数 / account-count-day
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} users_id - DB users _id / ユーザーID
  * @param {string} ISO8601 - 日時
  * @param {Array} historiesArr - 現在の達成状況を計算するためのデータが入っている配列
  * @param {Array} acquiredTitles_idsArr - 獲得した称号の _id が入っている配列
  */
 const calculateAccountCountDay = async ({
   
-  loginUsers_id,
+  users_id,
   ISO8601,
   historiesArr,
   acquiredTitles_idsArr,
@@ -357,7 +357,7 @@ const calculateAccountCountDay = async ({
     const docUsersObj = await ModelUsers.findOne({
       
       conditionObj: {
-        _id: loginUsers_id
+        _id: users_id
       }
       
     });
@@ -610,14 +610,14 @@ const calculateAccountCountDay = async ({
 
 /**
  * レベルアップ / level-count
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} users_id - DB users _id / ユーザーID
  * @param {string} ISO8601 - 日時
  * @param {Array} historiesArr - 現在の達成状況を計算するためのデータが入っている配列
  * @param {Array} acquiredTitles_idsArr - 獲得した称号の _id が入っている配列
  */
 const calculateLevelCount = async ({
   
-  loginUsers_id,
+  users_id,
   ISO8601,
   historiesArr,
   acquiredTitles_idsArr,
@@ -896,7 +896,7 @@ const calculateLevelCount = async ({
  * 計算 / 加算、減算、再計算が可能
  * @param {string} type - [forum-count-post, recruitment-count-post, follow-count, followed-count, title-count]
  * @param {string} calculation - [addition（加算）, subtraction（減算）, recalculation（再計算）]
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} users_id - DB users _id / ユーザーID
  * @param {string} ISO8601 - 日時
  * @param {Array} historiesArr - 現在の達成状況を計算するためのデータが入っている配列
  * @param {Array} acquiredTitles_idsArr - 獲得した称号の _id が入っている配列
@@ -905,7 +905,7 @@ const calculate = async ({
   
   type,
   calculation,
-  loginUsers_id,
+  users_id,
   ISO8601,
   historiesArr,
   acquiredTitles_idsArr,
@@ -1064,7 +1064,7 @@ const calculate = async ({
         newHistoryObj.countValid = await ModelForumComments.count({
           
           conditionObj: {
-            users_id: loginUsers_id
+            users_id
           }
           
         });
@@ -1084,7 +1084,7 @@ const calculate = async ({
         const threadsCount = await ModelRecruitmentThreads.count({
           
           conditionObj: {
-            users_id: loginUsers_id
+            users_id
           }
           
         });
@@ -1097,7 +1097,7 @@ const calculate = async ({
         const commentsCount = await ModelRecruitmentComments.count({
           
           conditionObj: {
-            users_id: loginUsers_id
+            users_id
           }
           
         });
@@ -1110,7 +1110,7 @@ const calculate = async ({
         const repliesCount = await ModelRecruitmentReplies.count({
           
           conditionObj: {
-            users_id: loginUsers_id
+            users_id
           }
           
         });
@@ -1128,7 +1128,7 @@ const calculate = async ({
         const docFollowsObj = await ModelFollows.findOne({
           
           conditionObj: {
-            users_id: loginUsers_id
+            users_id
           }
           
         });
@@ -1145,7 +1145,7 @@ const calculate = async ({
         const docFollowsObj = await ModelFollows.findOne({
           
           conditionObj: {
-            users_id: loginUsers_id
+            users_id
           }
           
         });
@@ -1324,7 +1324,7 @@ const calculate = async ({
  * 例えば Good ボタンを押して + 1 された値は、Good ボタンをもう一度押して取り消したとしても - 1 にはならない
  * @param {string} type - [login-count, good-count-click, good-count-clicked, card-player-edit]
  * @param {string} calculation - [addition（加算）, recalculation（再計算）]
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} users_id - DB users _id / ユーザーID
  * @param {string} ISO8601 - 日時
  * @param {Array} historiesArr - 現在の達成状況を計算するためのデータが入っている配列
  * @param {Array} acquiredTitles_idsArr - 獲得した称号の _id が入っている配列
@@ -1335,7 +1335,7 @@ const calculateAddition = async ({
   calculation,
   onlyOnce = false,
   totalEqualValid = false,
-  loginUsers_id,
+  users_id,
   ISO8601,
   historiesArr,
   acquiredTitles_idsArr,
@@ -1656,7 +1656,7 @@ const calculateAddition = async ({
 /**
  * 計算する・DB / データベースの値によって 0 か 1 に変わるもの
  * @param {string} type - [title-show, card-player-upload-image-main, card-player-upload-image-thumbnail, user-page-upload-image-main, web-push-permission]
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} users_id - DB users _id / ユーザーID
  * @param {string} ISO8601 - 日時
  * @param {Array} historiesArr - 現在の達成状況を計算するためのデータが入っている配列
  * @param {Array} acquiredTitles_idsArr - 獲得した称号の _id が入っている配列
@@ -1665,7 +1665,7 @@ const calculateAddition = async ({
 const calculateDB = async ({
   
   type,
-  loginUsers_id,
+  users_id,
   ISO8601,
   historiesArr,
   acquiredTitles_idsArr,
@@ -1779,7 +1779,7 @@ const calculateDB = async ({
       const docCardPlayersObj = await ModelCardPlayers.findOne({
         
         conditionObj: {
-          users_id: loginUsers_id
+          users_id
         }
         
       });
@@ -1800,7 +1800,7 @@ const calculateDB = async ({
       const docCardPlayersObj = await ModelCardPlayers.findOne({
         
         conditionObj: {
-          users_id: loginUsers_id
+          users_id
         }
         
       });
@@ -1821,7 +1821,7 @@ const calculateDB = async ({
       const docUsersObj = await ModelUsers.findOne({
         
         conditionObj: {
-          _id: loginUsers_id
+          _id: users_id
         }
         
       });
@@ -1842,7 +1842,7 @@ const calculateDB = async ({
       const docUsersObj = await ModelUsers.findOne({
         
         conditionObj: {
-          _id: loginUsers_id
+          _id: users_id
         }
         
       });
@@ -1913,6 +1913,29 @@ const calculateDB = async ({
     const updatedTitles_idsArr = filteredArr.concat(newAcquiredTitles_idsArr);
     
     
+    // console.log(`
+    //   ----- conditionsArr -----\n
+    //   ${util.inspect(conditionsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- newAcquiredTitles_idsArr -----\n
+    //   ${util.inspect(newAcquiredTitles_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- filteredArr -----\n
+    //   ${util.inspect(filteredArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- updatedTitles_idsArr -----\n
+    //   ${util.inspect(updatedTitles_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // ---------------------------------------------
@@ -2043,6 +2066,7 @@ const experienceCalculate = async ({
   req,
   localeObj,
   loginUsers_id,
+  targetUsers_id,
   recalculationAll = false,
   arr = [],
   
@@ -2069,6 +2093,7 @@ const experienceCalculate = async ({
     
     const ISO8601 = moment().utc().toISOString();
     
+    const users_id = targetUsers_id || loginUsers_id;
     
     
     
@@ -2079,7 +2104,7 @@ const experienceCalculate = async ({
     const docExperiencesObj = await ModelExperiences.findOne({
       
       conditionObj: {
-        users_id: loginUsers_id
+        users_id
       }
       
     });
@@ -2117,7 +2142,7 @@ const experienceCalculate = async ({
         
         const tempObj = await calculateAccountAncient({
           
-          loginUsers_id,
+          users_id,
           ISO8601,
           historiesArr,
           acquiredTitles_idsArr,
@@ -2138,7 +2163,7 @@ const experienceCalculate = async ({
         
         const tempObj = await calculateAccountCountDay({
           
-          loginUsers_id,
+          users_id,
           ISO8601,
           historiesArr,
           acquiredTitles_idsArr,
@@ -2162,7 +2187,7 @@ const experienceCalculate = async ({
           type: 'login-count',
           calculation,
           totalEqualValid: true,
-          loginUsers_id,
+          users_id,
           ISO8601,
           historiesArr,
           acquiredTitles_idsArr,
@@ -2185,7 +2210,7 @@ const experienceCalculate = async ({
           
           type: 'good-count-click',
           calculation,
-          loginUsers_id,
+          users_id,
           ISO8601,
           historiesArr,
           acquiredTitles_idsArr,
@@ -2208,7 +2233,7 @@ const experienceCalculate = async ({
           
           type: 'good-count-clicked',
           calculation,
-          loginUsers_id,
+          users_id,
           ISO8601,
           historiesArr,
           acquiredTitles_idsArr,
@@ -2232,7 +2257,7 @@ const experienceCalculate = async ({
           type: 'forum-count-post',
           calculation,
           ISO8601,
-          loginUsers_id,
+          users_id,
           historiesArr,
           acquiredTitles_idsArr,
           
@@ -2254,7 +2279,7 @@ const experienceCalculate = async ({
           
           type: 'recruitment-count-post',
           calculation,
-          loginUsers_id,
+          users_id,
           ISO8601,
           historiesArr,
           acquiredTitles_idsArr,
@@ -2277,7 +2302,7 @@ const experienceCalculate = async ({
           
           type: 'follow-count',
           calculation,
-          loginUsers_id,
+          users_id,
           ISO8601,
           historiesArr,
           acquiredTitles_idsArr,
@@ -2300,7 +2325,7 @@ const experienceCalculate = async ({
           
           type: 'followed-count',
           calculation,
-          loginUsers_id,
+          users_id,
           ISO8601,
           historiesArr,
           acquiredTitles_idsArr,
@@ -2322,7 +2347,7 @@ const experienceCalculate = async ({
         const tempObj = await calculateDB({
           
           type: 'title-show',
-          loginUsers_id,
+          users_id,
           ISO8601,
           historiesArr,
           acquiredTitles_idsArr,
@@ -2347,7 +2372,7 @@ const experienceCalculate = async ({
           type: 'card-player-edit',
           calculation,
           onlyOnce: true,
-          loginUsers_id,
+          users_id,
           ISO8601,
           historiesArr,
           acquiredTitles_idsArr,
@@ -2369,7 +2394,7 @@ const experienceCalculate = async ({
         const tempObj = await calculateDB({
           
           type: 'card-player-upload-image-main',
-          loginUsers_id,
+          users_id,
           ISO8601,
           historiesArr,
           acquiredTitles_idsArr,
@@ -2391,7 +2416,7 @@ const experienceCalculate = async ({
         const tempObj = await calculateDB({
           
           type: 'card-player-upload-image-thumbnail',
-          loginUsers_id,
+          users_id,
           ISO8601,
           historiesArr,
           acquiredTitles_idsArr,
@@ -2413,7 +2438,7 @@ const experienceCalculate = async ({
         const tempObj = await calculateDB({
           
           type: 'user-page-upload-image-main',
-          loginUsers_id,
+          users_id,
           ISO8601,
           historiesArr,
           acquiredTitles_idsArr,
@@ -2437,7 +2462,7 @@ const experienceCalculate = async ({
           type: 'user-page-change-url',
           calculation,
           onlyOnce: true,
-          loginUsers_id,
+          users_id,
           ISO8601,
           historiesArr,
           acquiredTitles_idsArr,
@@ -2459,7 +2484,7 @@ const experienceCalculate = async ({
         const tempObj = await calculateDB({
           
           type: 'web-push-permission',
-          loginUsers_id,
+          users_id,
           ISO8601,
           historiesArr,
           acquiredTitles_idsArr,
@@ -2484,7 +2509,7 @@ const experienceCalculate = async ({
     const titleCountObj = await calculate({
       
       type: 'title-count',
-      loginUsers_id,
+      users_id,
       ISO8601,
       historiesArr,
       acquiredTitles_idsArr,
@@ -2503,7 +2528,7 @@ const experienceCalculate = async ({
     
     const levelCountObj = await calculateLevelCount({
       
-      loginUsers_id,
+      users_id,
       ISO8601,
       historiesArr,
       acquiredTitles_idsArr,
@@ -2548,7 +2573,7 @@ const experienceCalculate = async ({
     
     const conditionObj = {
       
-      users_id: loginUsers_id
+      users_id
       
     };
     
@@ -2589,64 +2614,72 @@ const experienceCalculate = async ({
     
     
     // ---------------------------------------------
-    //   Snackbar
-    // ---------------------------------------------
-    
-    const increaseExp = exp - currentExp;
-    
-    const currentlevel = calculateLevel({ exp: currentExp });
-    const level = calculateLevel({ exp });
-    
-    const increaseLevel = level - currentlevel > 0 ? level : 0;
-    
-    const increaseAcquiredTitles_idsArr = acquiredTitles_idsArr.filter((titles_id) => {
-      return currentAcquiredTitles_idsArr.includes(titles_id) === false;
-    });
-    
-    
-    // ----------------------------------------
-    //   - DB titles
-    // ----------------------------------------
-    
-    const language = lodashGet(localeObj, ['language'], '');
-    
-    const docTitlesArr = await ModelTitles.find({
-      
-      conditionObj: {
-        _id: { $in: increaseAcquiredTitles_idsArr },
-        language,
-      }
-      
-    });
-    
-    const increaseTitlesArr = [];
-    
-    for (let valueObj of docTitlesArr.values()) {
-      increaseTitlesArr.push(valueObj.name);
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   returnObj
+    //   本人分のみ Snackbar で通知する
     // ---------------------------------------------
     
     let returnObj = {};
     
-    if (increaseExp || increaseLevel || increaseTitlesArr.length > 0) {
+    if (loginUsers_id && !targetUsers_id) {
       
-      returnObj = {
+      
+      // ---------------------------------------------
+      //   Snackbar
+      // ---------------------------------------------
+      
+      const increaseExp = exp - currentExp;
+      
+      const currentlevel = calculateLevel({ exp: currentExp });
+      const level = calculateLevel({ exp });
+      
+      const increaseLevel = level - currentlevel > 0 ? level : 0;
+      
+      const increaseAcquiredTitles_idsArr = acquiredTitles_idsArr.filter((titles_id) => {
+        return currentAcquiredTitles_idsArr.includes(titles_id) === false;
+      });
+      
+      
+      // ----------------------------------------
+      //   - DB titles
+      // ----------------------------------------
+      
+      const language = lodashGet(localeObj, ['language'], '');
+      
+      const docTitlesArr = await ModelTitles.find({
         
-        exp: increaseExp,
-        level: increaseLevel,
-        titlesArr: increaseTitlesArr,
+        conditionObj: {
+          _id: { $in: increaseAcquiredTitles_idsArr },
+          language,
+        }
         
-      };
+      });
+      
+      const increaseTitlesArr = [];
+      
+      for (let valueObj of docTitlesArr.values()) {
+        increaseTitlesArr.push(valueObj.name);
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   returnObj
+      // ---------------------------------------------
+      
+      if (increaseExp || increaseLevel || increaseTitlesArr.length > 0) {
+        
+        returnObj = {
+          
+          exp: increaseExp,
+          level: increaseLevel,
+          titlesArr: increaseTitlesArr,
+          
+        };
+        
+      }
+      
       
     }
-    
-    
     
     
     

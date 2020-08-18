@@ -16,6 +16,7 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
 
 /** @jsx jsx */
@@ -49,6 +50,7 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -78,6 +80,7 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [webPushAvailable, setWebPushAvailable] = useState(lodashGet(props, ['webPushAvailable'], false));
@@ -101,7 +104,8 @@ const Component = (props) => {
   
   const {
     
-    handleSnackbarOpen,
+    setHeaderObj,
+    // handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
@@ -137,17 +141,41 @@ const Component = (props) => {
     
     try {
       
+      // console.log(chalk`
+      //   webPushAvailable: {green ${webPushAvailable}}
+      // `);
+      
+      // console.log(`
+      //   ----- webPushSubscriptionObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(webPushSubscriptionObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       // ---------------------------------------------
       //   すでに許可されている場合
+      //   許可をしてページをリロードした場合、この状態になる
+      //   何度もプッシュ通知を送信しないために
       // ---------------------------------------------
       
       if (webPushAvailable && Object.keys(webPushSubscriptionObj).length === 0) {
         
-        handleSnackbarOpen({
+        // handleSnackbarOpen({
           
-          variant: 'success',
-          messageID: 'etyRC_hg3',
+        //   variant: 'success',
+        //   messageID: 'etyRC_hg3',
+          
+        // });
+        
+        showSnackbar({
+          
+          enqueueSnackbar,
+          intl,
+          arr: [
+            {
+              variant: 'success',
+              messageID: 'etyRC_hg3',
+            },
+          ]
           
         });
         
@@ -226,32 +254,72 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
+      //   webPushSubscriptionObj を空にする
+      // ---------------------------------------------
+      
+      setWebPushSubscriptionObj({});
+      
+      
+      
+      
+      // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
       
       setButtonDisabled(false);
       
       
+      // ---------------------------------------------
+      //   Update - Header
+      // ---------------------------------------------
+      
+      const headerObj = lodashGet(resultObj, ['data', 'headerObj'], {});
+      
+      if (Object.keys(headerObj).length !== 0) {
+        setHeaderObj(headerObj);
+      }
+      
+      
       
       
       // ---------------------------------------------
-      //   Snackbar: Success
-      //   許可した場合、プッシュ通知で通知する
-      //   許可を取り消した場合、Snackbarで通知する
+      //   Push通知 & Snackbar
+      //   許可した場合、プッシュ通知とSnackbarで通知する
       // ---------------------------------------------
       
-      if (!webPushAvailable) {
+      if (webPushAvailable) {
         
-        handleSnackbarOpen({
+        showSnackbar({
           
-          variant: 'success',
-          messageID: 'lJRp1gpPT',
+          enqueueSnackbar,
+          intl,
+          experienceObj: lodashGet(resultObj, ['data', 'experienceObj'], {}),
+          
+        });
+        
+        
+      // ---------------------------------------------
+      //   Snackbar
+      //   許可を取り消した場合、Snackbarだけで通知する
+      // ---------------------------------------------
+      
+      } else {
+        
+        showSnackbar({
+          
+          enqueueSnackbar,
+          intl,
+          experienceObj: lodashGet(resultObj, ['data', 'experienceObj'], {}),
+          arr: [
+            {
+              variant: 'success',
+              messageID: 'lJRp1gpPT',
+            },
+          ]
           
         });
         
       }
-      
-      
       
       
       
@@ -292,9 +360,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });
@@ -418,7 +487,7 @@ const Component = (props) => {
             color: red;
           `}
         >
-          初めて設定を行う場合、チェックボックスをチェックしたときに通知の許可を求めるダイアログが出てきます。そこで許可を選択してから「送信する」ボタンを押してください。
+          初めて設定を行う場合、チェックボックスをチェックしたときに通知の許可を求めるダイアログが出てきます。まずそこで許可を選択してください。それから「送信する」ボタンを忘れずに押してください。
         </p>
         
         

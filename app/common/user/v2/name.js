@@ -41,6 +41,13 @@ import IconLayers from '@material-ui/icons/Layers';
 
 
 // ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
+
+
+// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -138,8 +145,8 @@ const Component = (props) => {
     userID,
     status,
     accessDate,
-    gameName,
-    gameUrlID,
+    // gameName,
+    // gameUrlID,
     exp,
     cardPlayers_id,
     
@@ -149,10 +156,34 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateLayout = ContainerStateLayout.useContainer();
+  
+  const {
+    
+    handleDialogCardOpen,
+    
+  } = stateLayout;
+  
+  
+  
+  
+  // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
   const intl = useIntl();
+  
+  // const [buttonDisabled, setButtonDisabled] = useState(true);
+  
+  
+  // useEffect(() => {
+    
+  //   setButtonDisabled(false);
+    
+  // }, []);
   
   
   
@@ -281,112 +312,94 @@ const Component = (props) => {
   
   let componentBottomArr = [];
   
-  if (gameName && gameUrlID) {
+  
+  // --------------------------------------------------
+  //   Component - Level
+  // --------------------------------------------------
+  
+  if (exp) {
     
-    // componentBottomArr.push(
-    //   <div
-    //     css={css`
-    //       font-size: 14px;
-    //     `}
-    //     key="gameBox"
-    //   >
-    //     <Link href={`${process.env.NEXT_PUBLIC_URL_BASE}gc/${gameUrlID}`}>
-    //       <a>{gameName}</a>
-    //     </Link>
-    //   </div>
-    // );
+    const level = calculateLevel({ exp });
+    
+    componentBottomArr.push(
+      <div css={cssLevelBox} key="levelBox">
+        <IconStars css={cssIconStars} />
+        <div css={cssLevel}>Lv.{level}</div>
+      </div>
+    );
     
   } else {
     
-    
-    // --------------------------------------------------
-    //   Component - Level
-    // --------------------------------------------------
-    
-    if (exp) {
-      
-      const level = calculateLevel({ exp });
-      
-      componentBottomArr.push(
-        <div css={cssLevelBox} key="levelBox">
-          <IconStars css={cssIconStars} />
-          <div css={cssLevel}>Lv.{level}</div>
-        </div>
-      );
-      
-    } else {
-      
-      componentBottomArr.push(
-        <div css={cssLevelBox} key="levelBox">
-          <IconStars css={cssIconStars} />
-          <div css={cssLevel}>Lv.0</div>
-        </div>
-      );
-      
-    }
-    
-    
-    // --------------------------------------------------
-    //   Component - Button / Open Card Player
-    // --------------------------------------------------
-    
-    if (cardPlayers_id) {
-      
-      componentBottomArr.push(
-        <Button
-          css={cssButton}
-          variant="outlined"
-          // onClick={() => handleCardPlayerDialogOpen({ cardPlayers_id })}
-          // disabled={buttonDisabled}
-          key="cardPlayersButton"
-        >
-          <IconLayers css={cssIconLayers} />
-          Player
-        </Button>
-      );
-      
-    }
-    
-    
-    // --------------------------------------------------
-    //   Button Card Game
-    // --------------------------------------------------
-    
-    // if (showCardGameButton && cardGames_id) {
-      
-      
-    //   // --------------------------------------------------
-    //   //   Button Disable - ロードが終わるまで使用禁止
-    //   // --------------------------------------------------
-      
-    //   let buttonDisabledCardGame = true;
-      
-    //   if (`${cardGames_id}-card-game` in buttonDisabledObj) {
-    //     buttonDisabledCardGame = buttonDisabledObj[`${cardGames_id}-card-game`];
-    //   }
-      
-      
-    //   // --------------------------------------------------
-    //   //   Component
-    //   // --------------------------------------------------
-      
-    //   componentBottomArr.push(
-    //     <Button
-    //       css={cssButton}
-    //       variant="outlined"
-    //       onClick={() => handleCardPlayerDialogOpen('game', cardGames_id)}
-    //       disabled={buttonDisabledCardGame}
-    //       key="cardGamesButton"
-    //     >
-    //       <IconLayers css={cssIconLayers} />
-    //       Game
-    //     </Button>
-    //   );
-      
-    // }
-    
+    componentBottomArr.push(
+      <div css={cssLevelBox} key="levelBox">
+        <IconStars css={cssIconStars} />
+        <div css={cssLevel}>Lv.0</div>
+      </div>
+    );
     
   }
+  
+  
+  // --------------------------------------------------
+  //   Component - Button / Open Card Player
+  // --------------------------------------------------
+  
+  if (cardPlayers_id) {
+    
+    componentBottomArr.push(
+      <Button
+        css={cssButton}
+        variant="outlined"
+        onClick={() => handleDialogCardOpen({ cardPlayers_id })}
+        // disabled={buttonDisabled}
+        key="cardPlayersButton"
+      >
+        <IconLayers css={cssIconLayers} />
+        Player
+      </Button>
+    );
+    
+  }
+  
+  
+  // --------------------------------------------------
+  //   Button Card Game
+  // --------------------------------------------------
+  
+  // if (showCardGameButton && cardGames_id) {
+    
+    
+  //   // --------------------------------------------------
+  //   //   Button Disable - ロードが終わるまで使用禁止
+  //   // --------------------------------------------------
+    
+  //   let buttonDisabledCardGame = true;
+    
+  //   if (`${cardGames_id}-card-game` in buttonDisabledObj) {
+  //     buttonDisabledCardGame = buttonDisabledObj[`${cardGames_id}-card-game`];
+  //   }
+    
+    
+  //   // --------------------------------------------------
+  //   //   Component
+  //   // --------------------------------------------------
+    
+  //   componentBottomArr.push(
+  //     <Button
+  //       css={cssButton}
+  //       variant="outlined"
+  //       onClick={() => handleCardPlayerDialogOpen('game', cardGames_id)}
+  //       disabled={buttonDisabledCardGame}
+  //       key="cardGamesButton"
+  //     >
+  //       <IconLayers css={cssIconLayers} />
+  //       Game
+  //     </Button>
+  //   );
+    
+  // }
+  
+  
   
   
   
@@ -397,13 +410,7 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/forum/v2/components/form/thread.js
-  // `);
-  
-  // console.log(`
-  //   ----- imagesAndVideosObj -----\n
-  //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
-  //   --------------------\n
+  //   /app/common/user/v2/name.js
   // `);
   
   // console.log(`

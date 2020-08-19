@@ -41,7 +41,7 @@ const schema = mongoose.Schema({
 
 let model = '';
 
-if (mongoose.models.games) {
+if (mongoose.models['experiences']) {
   model = mongoose.model('experiences');
 } else {
   model = mongoose.model('experiences', schema);

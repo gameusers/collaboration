@@ -16,6 +16,8 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
+import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { animateScroll as scroll } from 'react-scroll';
 import moment from 'moment';
 
@@ -45,6 +47,7 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
 import { getCookie } from 'app/@modules/cookie.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -89,6 +92,10 @@ const ContainerLayout = (props) => {
   //   Hooks
   // --------------------------------------------------
   
+  const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
+  
+  
   useEffect(() => {
     
     
@@ -98,6 +105,30 @@ const ContainerLayout = (props) => {
     
     if (lodashIsEqual(headerObj, props.headerObj) === false) {
       setHeaderObj(props.headerObj);
+    }
+    
+    
+    // --------------------------------------------------
+    //   Snackbar
+    // --------------------------------------------------
+    
+    if (Object.keys(props.experienceObj).length !== 0) {
+      
+      showSnackbar({
+        
+        enqueueSnackbar,
+        intl,
+        experienceObj: props.experienceObj,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'LjWizvlER',
+          },
+          
+        ]
+        
+      });
+      
     }
     
     
@@ -282,6 +313,7 @@ export async function getServerSideProps({ req, res, query }) {
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
+  const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
   
   const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
   const users_id = lodashGet(dataObj, ['users_id'], '');
@@ -374,16 +406,16 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
   
-  console.log(`
-    ----------------------------------------\n
-    /pages/ur/[userID]/index.js
-  `);
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /pages/ur/[userID]/follow/index.js
+  // `);
   
-  console.log(`
-    ----- resultObj -----\n
-    ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- resultObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   
   
@@ -405,6 +437,7 @@ export async function getServerSideProps({ req, res, query }) {
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,
+      experienceObj,
       
       accessLevel,
       userID,

@@ -16,6 +16,7 @@ const util = require('util');
 
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
+const lodashHas = require('lodash/has');
 
 
 // ---------------------------------------------
@@ -28,6 +29,8 @@ const SchemaCardPlayers = require('../card-players/schema.js');
 const SchemaEmailConfirmations = require('../email-confirmations/schema.js');
 const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
 const SchemaWebPushes = require('../web-pushes/schema.js');
+
+const ModelGames = require('../games/model.js');
 
 
 // ---------------------------------------------
@@ -739,6 +742,121 @@ const findOneForUser = async ({
 
 
 /**
+ * ヘッダーの更新用
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} users_id - DB users ユーザー固有ID
+ * @return {Array} 取得データ
+ */
+const findHeader = async ({
+  
+  localeObj,
+  loginUsers_id,
+  users_id,
+  
+}) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   DB users / ユーザー情報を取得する
+    // --------------------------------------------------
+    
+    const docUsersObj = await findOneForUser({
+      
+      localeObj,
+      loginUsers_id,
+      users_id,
+      
+    });
+    
+    const returnObj = lodashGet(docUsersObj, ['headerObj'], {});
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   対象のユーザーがユーザーページのトップ画像をアップロードしていない場合
+    //   ランダム取得のゲーム画像を代わりに利用する
+    // --------------------------------------------------
+    // 
+    if (!lodashHas(returnObj, ['imagesAndVideosObj'])) {
+      
+      
+      // --------------------------------------------------
+      //   DB games / ヘッダーヒーローイメージ用
+      // --------------------------------------------------
+      
+      const docGamesHeaderObj = await ModelGames.findForHeroImage({
+        
+        localeObj,
+        
+      });
+      
+      const imagesAndVideosObj = lodashGet(docGamesHeaderObj, ['imagesAndVideosObj'], {});
+      
+      lodashSet(returnObj, ['imagesAndVideosObj'], imagesAndVideosObj);
+      
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/users/model.js - findHeader
+    // `);
+    
+    // console.log(chalk`
+    //   userID: {green ${userID}}
+    //   language: {green ${language}}
+    //   country: {green ${country}}
+    // `);
+    
+    // console.log(`
+    //   ----- docUsersObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docUsersObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
+/**
  * 検索してデータを取得する / ログインしているユーザーのデータ用（サムネイル・ハンドルネーム・ステータス）
  * 2020/8/13
  * @param {string} users_id - DB users _id / ログイン中のユーザーID
@@ -1390,6 +1508,7 @@ module.exports = {
   deleteMany,
   
   findOneForUser,
+  findHeader,
   findOneForLoginUsersObj,
   transactionForEditAccount,
   transactionForUpsert,

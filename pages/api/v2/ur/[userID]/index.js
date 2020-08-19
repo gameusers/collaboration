@@ -33,9 +33,7 @@ import ModelCardPlayers from 'app/@database/card-players/model.js';
 
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-
-
-import { experienceCalculate } from 'app/@modules/experience.js';
+import { updateAccessDate } from 'app/@modules/access-date.js';
 
 
 // ---------------------------------------------
@@ -121,7 +119,32 @@ export default async (req, res) => {
     
     returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
     returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
+    const accessDate = lodashGet(commonInitialPropsObj, ['loginUsersObj', 'accessDate'], '');
+    
     const gamesImagesAndVideosObj = lodashGet(commonInitialPropsObj, ['headerObj', 'imagesAndVideosObj'], {});
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Update Access Date & Login Count
+    // --------------------------------------------------
+    
+    const resultUpdatedAccessDateObj = await updateAccessDate({
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      accessDate,
+      
+    });
+    
+    returnObj.experienceObj = lodashGet(resultUpdatedAccessDateObj, ['experienceObj'], {});
+    const updatedAccessDate = lodashGet(resultUpdatedAccessDateObj, ['updatedAccessDate'], '');
+    
+    if (updatedAccessDate) {
+      lodashSet(returnObj, ['loginUsersObj', 'accessDate'], updatedAccessDate);
+    }
     
     
     
@@ -218,49 +241,6 @@ export default async (req, res) => {
       returnObj.accessLevel = 50;
     }
     
-    
-    
-    
-    // experienceCalculate({ 
-      
-    //   req,
-    //   loginUsers_id,
-    //   // recalculationAll: true,
-    //   arr: [
-    //     {
-    //       type: 'login-count',
-    //       calculation: 'addition',
-    //     },
-    //     {
-    //       type: 'good-count-click',
-    //       calculation: 'addition',
-    //     },
-    //     {
-    //       type: 'forum-count-post',
-    //       calculation: 'subtraction',
-    //     },
-    //     // {
-    //     //   type: 'forum-count-post',
-    //     //   calculation: 'recalculation',
-    //     // },
-    //     {
-    //       type: 'user-page-change-url',
-    //       calculation: 'addition',
-    //     },
-    //   ]
-      
-    // });
-    
-    // experienceCalculate({ 
-      
-    //   req,
-    //   loginUsers_id,
-    //   // type: 'title-count',
-    //   // calculation: 'addition',
-    //   // calculation: 'subtraction',
-    //   calculation: 'recalculation',
-      
-    // });
     
     
     

@@ -85,6 +85,7 @@ const Component = (props) => {
     userCommunities_id,
     users_id,
     followsObj = {},
+    updateHeader = false,
     
   } = props;
   
@@ -117,7 +118,13 @@ const Component = (props) => {
   const stateLayout = ContainerStateLayout.useContainer();
   
   const { login } = stateUser;
-  const { handleSnackbarOpen, handleDialogOpen } = stateLayout;
+  
+  const {
+    
+    setHeaderObj,
+    handleDialogOpen,
+    
+  } = stateLayout;
   
   
   
@@ -190,13 +197,6 @@ const Component = (props) => {
         });
         
         
-        // console.log(`
-        //   ----- resultObj -----\n
-        //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-        
-        
         // ---------------------------------------------
         //   Error
         // ---------------------------------------------
@@ -221,6 +221,12 @@ const Component = (props) => {
         //   type: {green ${type}}
         //   gameCommunities_id: {green ${gameCommunities_id}}
         //   userCommunities_id: {green ${userCommunities_id}}
+        // `);
+        
+        // console.log(`
+        //   ----- resultObj -----\n
+        //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        //   --------------------\n
         // `);
         
         
@@ -264,6 +270,7 @@ const Component = (props) => {
         const formDataObj = {
           
           users_id,
+          updateHeader,
           
         };
         
@@ -292,58 +299,38 @@ const Component = (props) => {
         
         
         
+        // --------------------------------------------------
+        //   console.log
+        // --------------------------------------------------
+        
+        // console.log(`
+        //   ----------------------------------------\n
+        //   /app/common/follow/v2/components/follow-button.js - handleFollow
+        // `);
+        
+        // console.log(chalk`
+        //   type: {green ${type}}
+        //   gameCommunities_id: {green ${gameCommunities_id}}
+        //   userCommunities_id: {green ${userCommunities_id}}
+        // `);
+        
+        // console.log(`
+        //   ----- resultObj -----\n
+        //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        
+        
+        
         // ---------------------------------------------
-        //   結果反映：フォロー状態、フォロー数を変更
+        //   結果反映：フォロー数変更
         // ---------------------------------------------
         
-        const follow = lodashGet(resultObj, ['data', 'follow'], null);
-        const followApproval = lodashGet(resultObj, ['data', 'followApproval'], null);
         const followedCount = lodashGet(resultObj, ['data', 'followedCount'], null);
-        
-        
-        // ----------------------------------------
-        //   - Header
-        // ----------------------------------------
-        
-        if (follow !== null) {
-          lodashSet(followsObj, ['follow'], follow);
-        }
-        
-        if (followApproval !== null) {
-          lodashSet(followsObj, ['followApproval'], followApproval);
-        }
         
         if (followedCount !== null) {
           lodashSet(followsObj, ['followedCount'], followedCount);
-        }
-        
-        
-        // ----------------------------------------
-        //   - Card Players
-        // ----------------------------------------
-        
-        const cardPlayers_idsArr = lodashGet(resultObj, ['data', 'cardPlayers_idsArr'], []);
-        
-        for (let cardPlayers_id of cardPlayers_idsArr.values()) {
-          
-          // console.log(chalk`
-          //   cardPlayers_id: {green ${cardPlayers_id}}
-          // `);
-          
-          // 要修正 2020/06/09
-          
-          // if (follow !== null) {
-          //   lodashSet(storeData, ['cardPlayersObj', cardPlayers_id, 'followsObj', 'follow'], follow);
-          // }
-          
-          // if (followApproval !== null) {
-          //   lodashSet(storeData, ['cardPlayersObj', cardPlayers_id, 'followsObj', 'followApproval'], followApproval);
-          // }
-          
-          // if (followedCount !== null) {
-          //   lodashSet(storeData, ['cardPlayersObj', cardPlayers_id, 'followsObj', 'followedCount'], followedCount);
-          // }
-          
         }
         
         
@@ -357,6 +344,17 @@ const Component = (props) => {
       }
       
       
+      
+      
+      // ---------------------------------------------
+      //   Update - Header
+      // ---------------------------------------------
+      
+      const headerObj = lodashGet(resultObj, ['data', 'headerObj'], {});
+      
+      if (Object.keys(headerObj).length !== 0) {
+        setHeaderObj(headerObj);
+      }
       
       
       // ---------------------------------------------
@@ -411,14 +409,6 @@ const Component = (props) => {
       }
       
       
-      // handleSnackbarOpen({
-        
-      //   variant: 'success',
-      //   messageID,
-        
-      // });
-      
-      
       showSnackbar({
         
         enqueueSnackbar,
@@ -440,16 +430,16 @@ const Component = (props) => {
       //   console.log
       // --------------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/common/follow/v2/follow-button.js
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/follow/v2/follow-button.js
+      // `);
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       
@@ -963,7 +953,7 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/follow/v2/components/gc-button.js
+  //   /app/common/follow/v2/follow-button.js
   // `);
   
   // console.log(chalk`

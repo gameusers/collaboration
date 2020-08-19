@@ -92,7 +92,7 @@ const Component = (props) => {
   const {
     
     obj = {},
-    // showFollow,
+    showFollowButton = true,
     showEditButton = true,
     defaultExpanded = true,
     setCardPlayersArr,
@@ -511,12 +511,13 @@ const Component = (props) => {
                   
                   
                   {/* Follow Button */}
-                  <FollowButton
-                    type="cardPlayer"
-                    users_id={users_id}
-                    followsObj={followsObj}
-                    // showNumberOfPeople={true}
-                  />
+                  {showFollowButton &&
+                    <FollowButton
+                      type="cardPlayer"
+                      users_id={users_id}
+                      followsObj={followsObj}
+                    />
+                  }
                   
                   
                   

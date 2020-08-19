@@ -16,10 +16,10 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
-import { animateScroll as scroll } from 'react-scroll';
-import moment from 'moment';
 import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
+import { animateScroll as scroll } from 'react-scroll';
+import moment from 'moment';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -78,9 +78,6 @@ const ContainerLayout = (props) => {
   //   States
   // --------------------------------------------------
   
-  const intl = useIntl();
-  const { enqueueSnackbar } = useSnackbar();
-  
   const stateLayout = ContainerStateLayout.useContainer();
   
   const {
@@ -95,6 +92,10 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
+  
+  const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
+  
   
   useEffect(() => {
     
@@ -140,11 +141,6 @@ const ContainerLayout = (props) => {
     
     
   }, [props.ISO8601]);
-  
-  
-  
-  
-  
   
   
   

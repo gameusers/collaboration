@@ -1,4 +1,33 @@
 // --------------------------------------------------
+//   Import
+// --------------------------------------------------
+
+// ---------------------------------------------
+//   Console
+// ---------------------------------------------
+
+import chalk from 'chalk';
+import util from 'util';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+
+
+// ---------------------------------------------
+//   Model
+// ---------------------------------------------
+
+import ModelGames from 'app/@database/games/model.js';
+
+
+
+
+// --------------------------------------------------
 //   Require
 // --------------------------------------------------
 
@@ -6,23 +35,23 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+// const chalk = require('chalk');
+// const util = require('util');
 
 
 // ---------------------------------------------
 //   Lodash
 // ---------------------------------------------
 
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+// const lodashGet = require('lodash/get');
+// const lodashSet = require('lodash/set');
 
 
-// ---------------------------------------------
-//   Model
-// ---------------------------------------------
+// // ---------------------------------------------
+// //   Model
+// // ---------------------------------------------
 
-const ModelGames = require('../../@database/games/model');
+// const ModelGames = require('../../@database/games/model');
 
 
 

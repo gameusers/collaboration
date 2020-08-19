@@ -52,6 +52,7 @@ import Dialog from 'app/common/layout/v2/dialog.js';
 import VideoModal from 'app/common/image-and-video/v2/video-modal.js';
 import Snackbar from 'app/common/layout/v2/snackbar.js';
 import Loading from 'app/common/layout/v2/loading.js';
+import DialogCard from 'app/common/layout/v2/dialog-card.js';
 import DialogAchievement from 'app/common/layout/v2/dialog-achievement.js';
 
 
@@ -406,6 +407,10 @@ const Component = (props) => {
       
       {/* ダイアログ */}
       <Dialog />
+      
+      
+      {/* ダイアログ - カード */}
+      <DialogCard />
       
       
       {/* ダイアログ - 実績 */}

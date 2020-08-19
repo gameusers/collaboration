@@ -33,6 +33,7 @@ import ModelForumThreads from 'app/@database/forum-threads/model.js';
 
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { updateAccessDate } from 'app/@modules/access-date.js';
 
 
 // ---------------------------------------------
@@ -135,9 +136,34 @@ export default async (req, res) => {
     
     if (req.isAuthenticated() && req.user) {
       
-      returnObj.loginUsersObj = req.user;
       returnObj.login = true;
+      returnObj.loginUsersObj = req.user;
       
+    }
+    
+    const accessDate = lodashGet(returnObj, ['loginUsersObj', 'accessDate'], '');
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Update Access Date & Login Count
+    // --------------------------------------------------
+    
+    const resultUpdatedAccessDateObj = await updateAccessDate({
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      accessDate,
+      
+    });
+    
+    returnObj.experienceObj = lodashGet(resultUpdatedAccessDateObj, ['experienceObj'], {});
+    const updatedAccessDate = lodashGet(resultUpdatedAccessDateObj, ['updatedAccessDate'], '');
+    
+    if (updatedAccessDate) {
+      lodashSet(returnObj, ['loginUsersObj', 'accessDate'], updatedAccessDate);
     }
     
     
@@ -318,7 +344,7 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Recruitment by recruitmentID
+    //   DB find / Forum by forumID
     // --------------------------------------------------
     
     let forumObj = {};
@@ -371,21 +397,21 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/gc/[urlID]/index.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/gc/[urlID]/index.js
+    `);
     
     // console.log(chalk`
     //   urlID: {green ${urlID}}
     //   gameCommunities_id: {green ${gameCommunities_id}}
     // `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     

@@ -44,13 +44,17 @@ const useLayout = (initialStateObj) => {
   // --------------------------------------------------
  
   const [ISO8601, setISO8601] = useState(lodashGet(initialStateObj, ['ISO8601'], moment().utc().toISOString()));
+  
   const [headerObj, setHeaderObj] = useState(lodashGet(initialStateObj, ['headerObj'], {}));
   const [snackbarObj, setSnackbarObj] = useState({});
   const [dialogObj, setDialogOpen] = useState({ open: false });
   const [loadingObj, setLoadingObj] = useState({});
   const [videoObj, setVideoObj] = useState({});
   const [navigationForLightbox, setNavigationForLightbox] = useState(true);
+  
   const [cardPlayersObj, setCardPlayersObj] = useState({});
+  const [dialogCardOpen, setDialogCardOpen] = useState(false);
+  
   const [dialogAchievementOpen, setDialogAchievementOpen] = useState(false);
   const [dialogAchievementObj, setDialogAchievementObj] = useState({});
   const [dialogAchievementSelectedTitles_idsArr, setDialogAchievementSelectedTitles_idsArr] = useState([]);
@@ -319,6 +323,29 @@ const useLayout = (initialStateObj) => {
   
   
   
+  // ---------------------------------------------
+  //   - Dialog Card
+  // ---------------------------------------------
+  
+  const handleDialogCardOpen = ({
+    
+    cardPlayers_id,
+    
+  }) => {
+    
+    setDialogCardOpen(true);
+    
+  };
+  
+  
+  const handleDialogCardClose = () => {
+    
+    setDialogCardOpen(false);
+    
+  };
+  
+  
+  
   
   // --------------------------------------------------
   //   console.log
@@ -374,6 +401,10 @@ const useLayout = (initialStateObj) => {
     
     cardPlayersObj,
     setCardPlayersObj,
+    
+    dialogCardOpen,
+    handleDialogCardOpen,
+    handleDialogCardClose,
     
     dialogAchievementOpen,
     setDialogAchievementOpen,

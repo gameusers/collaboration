@@ -452,7 +452,9 @@ export default async (req, res) => {
     
     if (Object.keys(experienceObj).length !== 0) {
       
-      const docUsersObj = await ModelUsers.findOneForUser({
+      returnObj.experienceObj = experienceObj;
+      
+      const headerObj = await ModelUsers.findHeader({
         
         localeObj,
         loginUsers_id,
@@ -460,8 +462,7 @@ export default async (req, res) => {
         
       });
       
-      returnObj.experienceObj = experienceObj;
-      returnObj.headerObj = lodashGet(docUsersObj, ['headerObj'], {});
+      returnObj.headerObj = headerObj;
       
     }
     

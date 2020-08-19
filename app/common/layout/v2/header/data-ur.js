@@ -365,6 +365,7 @@ const Component = (props) => {
             type="header"
             users_id={users_id}
             followsObj={followsObj}
+            updateHeader={true}
           />
         
           

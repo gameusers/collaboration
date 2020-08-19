@@ -355,15 +355,18 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
   
 }) => {
   
-  // console.log(chalk`
-  //   ----- findForForumCommentsAndReplies -----
-  //   commentPage: {green ${commentPage}}
-  //   commentLimit: {green ${commentLimit}}
-  //   replyPage: {green ${replyPage}}
-  //   replyLimit: {green ${replyLimit}}
-  // `);
   
   try {
+    
+    
+    // --------------------------------------------------
+    //   Language & Country
+    // --------------------------------------------------
+    
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+    
+    
     
     
     // --------------------------------------------------
@@ -387,9 +390,9 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
         
         // --------------------------------------------------
         //   コメント
+        //   forumComments_id: '' この場合は親のコメントがないので、返信ではなくコメントということ
         // --------------------------------------------------
         
-        // forumComments_id: '' この場合は親のコメントがないので、返信ではなくコメントということ
         {
           $match: {
             $and: [
@@ -400,40 +403,47 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
         },
         
         
-        // プレイヤーカードを取得（名前＆ステータス＆サムネイル用）
+        // --------------------------------------------------
+        //   card-players
+        // --------------------------------------------------
+        
         {
           $lookup:
             {
               from: 'card-players',
-              let: { forumCommentsUsers_id: '$users_id' },
+              let: { letUsers_id: '$users_id' },
               pipeline: [
-                { $match:
-                  { $expr:
-                    { $and:
-                      [
-                        { $eq: ['$language', localeObj.language] },
-                        { $eq: ['$users_id', '$$forumCommentsUsers_id'] },
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ['$language', language] },
+                        { $eq: ['$users_id', '$$letUsers_id'] },
                       ]
                     },
                   }
                 },
                 
                 
-                // サムネイルを取得
+                // --------------------------------------------------
+                //   card-players / images-and-videos / サムネイル画像
+                // --------------------------------------------------
+                
                 {
                   $lookup:
                     {
                       from: 'images-and-videos',
-                      let: { cardPlayersImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                      let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
                       pipeline: [
-                        { $match:
-                          { $expr:
-                            { $eq: ['$_id', '$$cardPlayersImagesAndVideosThumbnail_id'] },
+                        {
+                          $match: {
+                            $expr: {
+                              $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                            },
                           }
                         },
-                        { $project:
-                          {
-                            // _id: 0,
+                        {
+                          $project: {
                             createdDate: 0,
                             updatedDate: 0,
                             users_id: 0,
@@ -455,10 +465,6 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                 
                 {
                   $project: {
-                    // _id: 0,
-                    // users_id: 1,
-                    // name: '$nameObj.value',
-                    // status: '$statusObj.value',
                     name: 1,
                     status: 1,
                     imagesAndVideosThumbnailObj: 1,
@@ -477,23 +483,27 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
         },
         
         
-        // ユーザーを取得（アクセス日時＆経験値＆プレイヤーID用）
+        // --------------------------------------------------
+        //   users
+        // --------------------------------------------------
+        
         {
           $lookup:
             {
               from: 'users',
-              let: { forumCommentsUsers_id: '$users_id' },
+              let: { letUsers_id: '$users_id' },
               pipeline: [
-                { $match:
-                  { $expr:
-                    { $eq: ['$_id', '$$forumCommentsUsers_id'] },
+                {
+                  $match: {
+                    $expr: {
+                      $eq: ['$_id', '$$letUsers_id']
+                    },
                   }
                 },
-                { $project:
-                  {
+                {
+                  $project: {
                     _id: 0,
                     accessDate: 1,
-                    exp: 1,
                     userID: 1,
                   }
                 }
@@ -510,21 +520,59 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
         },
         
         
-        // 画像と動画を取得
+        // --------------------------------------------------
+        //   experiences
+        // --------------------------------------------------
+        
+        {
+          $lookup:
+            {
+              from: 'experiences',
+              let: { letUsers_id: '$users_id' },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $eq: ['$users_id', '$$letUsers_id']
+                    }
+                  }
+                },
+                {
+                  $project: {
+                    _id: 0,
+                    exp: 1,
+                  }
+                },
+              ],
+              as: 'experiencesObj'
+            }
+        },
+        
+        {
+          $unwind: {
+            path: '$experiencesObj',
+            preserveNullAndEmptyArrays: true,
+          }
+        },
+        
+        
+        // --------------------------------------------------
+        //   images-and-videos / メイン画像
+        // --------------------------------------------------
+        
         {
           $lookup:
             {
               from: 'images-and-videos',
-              let: { forumCommentsImagesAndVideos_id: '$imagesAndVideos_id' },
+              let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
               pipeline: [
                 { $match:
                   { $expr:
-                    { $eq: ['$_id', '$$forumCommentsImagesAndVideos_id'] },
+                    { $eq: ['$_id', '$$letImagesAndVideos_id'] },
                   }
                 },
                 { $project:
                   {
-                    // _id: 0,
                     createdDate: 0,
                     updatedDate: 0,
                     users_id: 0,
@@ -550,54 +598,67 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
         //   返信（内部の処理は上記コメントと同じ）
         // --------------------------------------------------
         
+        // --------------------------------------------------
+        //   forum-comments
+        // --------------------------------------------------
+        
         {
           $lookup:
             {
               from: 'forum-comments',
-              let: { forumComments_id: '$_id' },
+              let: { let_id: '$_id' },
               pipeline: [
                 
-                { $match:
-                  { $expr:
-                    { $eq: ['$forumComments_id', '$$forumComments_id'] }
+                {
+                  $match: {
+                    $expr: {
+                      $eq: ['$forumComments_id', '$$let_id']
+                    }
                   }
                 },
                 
                 
-                // プレイヤーカードを取得（名前＆ステータス＆サムネイル用）
+                // --------------------------------------------------
+                //   forum-comments / card-players
+                // --------------------------------------------------
+                
                 {
                   $lookup:
                     {
                       from: 'card-players',
-                      let: { forumRepliesUsers_id: '$users_id' },
+                      let: { letUsers_id: '$users_id' },
                       pipeline: [
-                        { $match:
-                          { $expr:
-                            { $and:
-                              [
-                                { $eq: ['$language', localeObj.language] },
-                                { $eq: ['$users_id', '$$forumRepliesUsers_id'] },
+                        {
+                          $match: {
+                            $expr: {
+                              $and: [
+                                { $eq: ['$language', language] },
+                                { $eq: ['$users_id', '$$letUsers_id'] },
                               ]
                             },
                           }
                         },
                         
                         
-                        // サムネイルを取得
+                        // --------------------------------------------------
+                        //   forum-comments / card-players / images-and-videos / サムネイル画像
+                        // --------------------------------------------------
+                        
                         {
                           $lookup:
                             {
                               from: 'images-and-videos',
-                              let: { cardPlayersImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                              let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
                               pipeline: [
-                                { $match:
-                                  { $expr:
-                                    { $eq: ['$_id', '$$cardPlayersImagesAndVideosThumbnail_id'] },
+                                {
+                                  $match: {
+                                    $expr: {
+                                      $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                                    },
                                   }
                                 },
-                                { $project:
-                                  {
-                                    // _id: 0,
+                                {
+                                  $project: {
                                     createdDate: 0,
                                     updatedDate: 0,
                                     users_id: 0,
@@ -619,10 +680,6 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                         
                         {
                           $project: {
-                            // _id: 0,
-                            // users_id: 1,
-                            // name: '$nameObj.value',
-                            // status: '$statusObj.value',
                             name: 1,
                             status: 1,
                             imagesAndVideosThumbnailObj: 1,
@@ -641,20 +698,25 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                 },
                 
                 
-                // ユーザーを取得（アクセス日時＆経験値＆プレイヤーID用）
+                // --------------------------------------------------
+                //   forum-comments / users
+                // --------------------------------------------------
+                
                 {
                   $lookup:
                     {
                       from: 'users',
-                      let: { forumRepliesUsers_id: '$users_id' },
+                      let: { letUsers_id: '$users_id' },
                       pipeline: [
-                        { $match:
-                          { $expr:
-                            { $eq: ['$_id', '$$forumRepliesUsers_id'] },
+                        {
+                          $match: {
+                            $expr: {
+                              $eq: ['$_id', '$$letUsers_id']
+                            },
                           }
                         },
-                        { $project:
-                          {
+                        {
+                          $project: {
                             _id: 0,
                             accessDate: 1,
                             exp: 1,
@@ -674,21 +736,61 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                 },
                 
                 
-                // 画像と動画を取得
+                // --------------------------------------------------
+                //   forum-comments / experiences
+                // --------------------------------------------------
+                
+                {
+                  $lookup:
+                    {
+                      from: 'experiences',
+                      let: { letUsers_id: '$users_id' },
+                      pipeline: [
+                        {
+                          $match: {
+                            $expr: {
+                              $eq: ['$users_id', '$$letUsers_id']
+                            }
+                          }
+                        },
+                        {
+                          $project: {
+                            _id: 0,
+                            exp: 1,
+                          }
+                        },
+                      ],
+                      as: 'experiencesObj'
+                    }
+                },
+                
+                {
+                  $unwind: {
+                    path: '$experiencesObj',
+                    preserveNullAndEmptyArrays: true,
+                  }
+                },
+                
+                
+                // --------------------------------------------------
+                //   forum-comments / images-and-videos / メイン画像
+                // --------------------------------------------------
+                
                 {
                   $lookup:
                     {
                       from: 'images-and-videos',
-                      let: { forumRepliesImagesAndVideos_id: '$imagesAndVideos_id' },
+                      let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
                       pipeline: [
-                        { $match:
-                          { $expr:
-                            { $eq: ['$_id', '$$forumRepliesImagesAndVideos_id'] },
+                        {
+                          $match: {
+                            $expr: {
+                              $eq: ['$_id', '$$letImagesAndVideos_id']
+                            },
                           }
                         },
-                        { $project:
-                          {
-                            // _id: 0,
+                        {
+                          $project: {
                             createdDate: 0,
                             updatedDate: 0,
                             users_id: 0,
@@ -708,46 +810,50 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                 },
                 
                 
+                // --------------------------------------------------
+                //   forum-comments / forum-comments / replyTo 用のデータ取得
+                // --------------------------------------------------
                 
-                // replyTo 用のデータ取得
                 {
                   $lookup:
                     {
                       from: 'forum-comments',
-                      let: { forumRepliesReplyToForumComments_id: '$replyToForumComments_id' },
+                      let: { letReplyToForumComments_id: '$replyToForumComments_id' },
                       pipeline: [
                         
                         
-                        { $match:
-                          { $expr:
-                            { $eq: ['$_id', '$$forumRepliesReplyToForumComments_id'] },
+                        {
+                          $match: {
+                            $expr: {
+                              $eq: ['$_id', '$$letReplyToForumComments_id']
+                            },
                           }
                         },
                         
                         
-                        // プレイヤーカードを取得（名前＆ステータス＆サムネイル用）
+                        // --------------------------------------------------
+                        //   forum-comments / forum-comments / card-players
+                        // --------------------------------------------------
+                        
                         {
                           $lookup:
                             {
                               from: 'card-players',
-                              let: { forumRepliesReplyToUsers_id: '$users_id' },
+                              let: { letReplyToUsers_id: '$users_id' },
                               pipeline: [
-                                { $match:
-                                  { $expr:
-                                    { $and:
-                                      [
-                                        { $eq: ['$language', localeObj.language] },
-                                        { $eq: ['$users_id', '$$forumRepliesReplyToUsers_id'] },
+                                {
+                                  $match: {
+                                    $expr: {
+                                      $and: [
+                                        { $eq: ['$language', language] },
+                                        { $eq: ['$users_id', '$$letReplyToUsers_id'] },
                                       ]
                                     },
                                   }
                                 },
-                                
-                                
                                 {
                                   $project: {
                                     name: 1,
-                                    // name: '$nameObj.value',
                                   }
                                 }
                               ],
@@ -763,8 +869,8 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                         },
                         
                         
-                        { $project:
-                          {
+                        {
+                          $project: {
                             _id: 0,
                             localesArr: 1,
                             cardPlayersObj: 1,
@@ -785,18 +891,26 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                 },
                 
                 
-                { $project:
-                  {
-                    // createdDate: 0,
+                // --------------------------------------------------
+                //   $project
+                // --------------------------------------------------
+                
+                {
+                  $project: {
                     imagesAndVideos_id: 0,
+                    acceptLanguage: 0,
                     __v: 0,
                   }
                 },
                 
                 
+                // --------------------------------------------------
+                //   $sort / $skip / $limit
+                // --------------------------------------------------
+                
                 { $sort: { createdDate: 1 } },
                 { $skip: (replyPage - 1) * intReplyLimit },
-                { $limit: parseInt(intReplyLimit, 10) },
+                { $limit: intReplyLimit },
                 
                 
               ],
@@ -805,22 +919,26 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
         },
         
         
-        { $project:
-          {
-            // createdDate: 0,
+        // --------------------------------------------------
+        //   $project
+        // --------------------------------------------------
+        
+        {
+          $project: {
             imagesAndVideos_id: 0,
+            acceptLanguage: 0,
             __v: 0,
           }
         },
         
         
-        // { '$sort': { 'updatedDate': -1 } },
-        // { $skip: (commentPage - 1) * 1 },
-        // { $limit: parseInt(1, 10) },
+        // --------------------------------------------------
+        //   $sort / $skip / $limit
+        // --------------------------------------------------
         
         { '$sort': { 'updatedDate': -1 } },
         { $skip: (commentPage - 1) * intCommentLimit },
-        { $limit: parseInt(intCommentLimit, 10) },
+        { $limit: intCommentLimit },
         
         
       ]).exec();
@@ -1738,10 +1856,6 @@ const formatVer2 = ({
       
       if (valueObj.replyToObj) {
         
-        // console.log(`\n---------- valueObj ----------\n`);
-        // console.dir(valueObj);
-        // console.log(`\n-----------------------------------\n`);
-        
         clonedObj.replyToName = lodashGet(valueObj, ['replyToObj', 'cardPlayersObj', 'name'], '');
         
         if (!clonedObj.replyToName) {
@@ -1773,14 +1887,21 @@ const formatVer2 = ({
       }
       
       
-      
-      
-      
       // console.log(`
       //   ----- filteredArr -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(filteredArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
+      
+      
+      // --------------------------------------------------
+      //   exp
+      // --------------------------------------------------
+      
+      const exp = lodashGet(valueObj, ['experiencesObj', 'exp'], 0);
+      
+      lodashSet(clonedObj, ['usersObj', 'exp'], exp);
+      
       
       
       
@@ -1793,18 +1914,20 @@ const formatVer2 = ({
         delete clonedObj.cardPlayersObj;
         delete clonedObj.usersObj;
         
-      } else if (lodashHas(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'])) {
-        
-        
-        // --------------------------------------------------
-        //   サムネイル画像の処理 - Card Players
-        // --------------------------------------------------
-        
-        const thumbnailArr = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], []);
-        lodashSet(clonedObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], formatImagesAndVideosArr({ arr: thumbnailArr }));
-        
-        
       }
+        
+      // } else if (lodashHas(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'])) {
+        
+        
+      //   // --------------------------------------------------
+      //   //   サムネイル画像の処理 - Card Players
+      //   // --------------------------------------------------
+        
+      //   const thumbnailArr = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], []);
+      //   lodashSet(clonedObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], formatImagesAndVideosArr({ arr: thumbnailArr }));
+        
+        
+      // }
       
       
       
@@ -1818,6 +1941,7 @@ const formatVer2 = ({
       delete clonedObj.users_id;
       delete clonedObj.localesArr;
       delete clonedObj.anonymity;
+      delete clonedObj.experiencesObj;
       delete clonedObj.forumRepliesArr;
       delete clonedObj.replyToObj;
       delete clonedObj.ip;

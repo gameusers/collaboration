@@ -492,13 +492,10 @@ const findForThreadsList = async ({
       delete clonedObj.users_id;
       delete clonedObj.localesArr;
       delete clonedObj.imagesAndVideos_id;
+      delete clonedObj.acceptLanguage;
       delete clonedObj.ip;
       delete clonedObj.userAgent;
       delete clonedObj.__v;
-      
-      // console.log(`\n---------- clonedObj ----------\n`);
-      // console.dir(clonedObj);
-      // console.log(`\n-----------------------------------\n`);
       
       
       // --------------------------------------------------
@@ -810,6 +807,7 @@ const findForForum = async ({
       {
         $project: {
           imagesAndVideos_id: 0,
+          acceptLanguage: 0,
           __v: 0,
         }
       },
@@ -1124,6 +1122,7 @@ const findForumByforumID = async ({
       {
         $project: {
           imagesAndVideos_id: 0,
+          acceptLanguage: 0,
           __v: 0,
         }
       },

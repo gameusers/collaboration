@@ -851,14 +851,23 @@ const ContainerLayout = (props) => {
         
         <p>------------------------------</p>
         
-        <p>借りてるVPSのスペックが足りなくてよく落ちる。アクセスしてエラーが出ても気にせんといてや。開発者募集！</p>
+        <p style={{ margin: '0 0 24px 0' }}>借りてるVPSのスペックが足りなくてよく落ちる。アクセスしてエラーが出ても気にせんといてや。</p>
         
-        <p style={{ margin: '0 0 24px 0' }}><a href="https://gameusers.org/dev/blog/">開発ブログ</a></p>
+        <p>一緒にこの神サイトを作ってくれる開発者を募集しています！</p>
+        <p>開発者の取り分が可能な限り最大になるようなサイトにしたいという目標を掲げています。</p>
+        <p>利用するリソース（サーバー代など）の必要経費を除いて、それ以外はすべて開発者の取り分にしたいのです。これはサイトの主要コンテンツではない独立したコンテンツをサイト内で公開した場合の想定です。</p>
+        <p>例えば、それぞれが各自いろいろな場所に自作のアプリケーションを公開しても、陰が生まれるほどの大樹にはなりえません。</p>
+        <p>そこで最大限の収益を得られる環境を作り、様々な開発者が寄り集まることのメリットを生み出したいのです。</p>
+        <p>実現できれば面白いと思いませんか？</p>
+        
+        <p style={{ margin: '24px 0 24px 0' }}><a href="https://gameusers.org/dev/blog/">開発ブログ</a> / <a href="https://github.com/gameusers/collaboration">GitHub</a></p>
+        
+        
         
         
         <p style={{ margin: '0 0 24px 0', fontWeight: 'bold' }}>[現在、作成中のページ]</p>
         
-        <p>ログイン<br />
+        {/*<p>ログイン<br />
         <a href={`/login`}>{`/login`}</a></p>
         
         <p>ログアウト<br />
@@ -870,9 +879,28 @@ const ContainerLayout = (props) => {
         <p>ユーザーコミュニティ<br />
         <a href={`/uc/community1`}>{`/uc/community1`}</a></p>
         
-        {/*<p>ユーザー<br />
+        <p>ユーザー<br />
         <a href={'/ur/user1'}>{`/ur/user1`}</a></p>*/}
         
+        <p>ログイン</p>
+        <Link href={'/login'} as={'/login'}>
+          <a>/login</a>
+        </Link>
+        
+        <p>ログアウト</p>
+        <Link href={'/logout'} as={'/logout'}>
+          <a>/logout</a>
+        </Link>
+        
+        <p>ゲームコミュニティ</p>
+        <Link href={'/gc/[urlID]'} as={'/gc/Dead-by-Daylight'}>
+          <a>/gc/Dead-by-Daylight</a>
+        </Link>
+        
+        <p>ユーザーコミュニティ</p>
+        <Link href={'/uc/[userCommunityID]'} as={'/uc/community1'}>
+          <a>/uc/community1</a>
+        </Link>
         
         <p>ユーザー</p>
         <Link href={'/ur/[userID]'} as={'/ur/user1'}>

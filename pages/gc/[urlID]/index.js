@@ -16,6 +16,8 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
+import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { animateScroll as scroll } from 'react-scroll';
 import moment from 'moment';
 
@@ -28,6 +30,16 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashIsEqual from 'lodash/isEqual';
+
+
+// ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateForum } from 'app/@states/forum.js';
 
 
 // ---------------------------------------------
@@ -37,6 +49,7 @@ import lodashGet from 'lodash/get';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
 import { getCookie } from 'app/@modules/cookie.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -47,14 +60,6 @@ import Layout from 'app/common/layout/v2/layout.js';
 import ForumNavigation from 'app/common/forum/v2/navigation.js';
 import Forum from 'app/common/forum/v2/forum.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
-
-
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateCommunity } from 'app/@states/community.js';
-import { ContainerStateForum } from 'app/@states/forum.js';
 
 
 
@@ -73,8 +78,16 @@ const ContainerLayout = (props) => {
   //   States
   // --------------------------------------------------
   
+  const stateLayout = ContainerStateLayout.useContainer();
   const stateCommunity = ContainerStateCommunity.useContainer();
   const stateForum = ContainerStateForum.useContainer();
+  
+  const {
+    
+    headerObj,
+    setHeaderObj,
+    
+  } = stateLayout;
   
   const {
     
@@ -98,7 +111,44 @@ const ContainerLayout = (props) => {
   //   Hooks
   // --------------------------------------------------
   
+  const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
+  
+  
   useEffect(() => {
+    
+    
+    // --------------------------------------------------
+    //   Header 更新 - データに変更があった場合のみステートを更新
+    // --------------------------------------------------
+    
+    if (lodashIsEqual(headerObj, props.headerObj) === false) {
+      setHeaderObj(props.headerObj);
+    }
+    
+    
+    // --------------------------------------------------
+    //   Snackbar
+    // --------------------------------------------------
+    
+    if (Object.keys(props.experienceObj).length !== 0) {
+      
+      showSnackbar({
+        
+        enqueueSnackbar,
+        intl,
+        experienceObj: props.experienceObj,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'LjWizvlER',
+          },
+          
+        ]
+        
+      });
+      
+    }
     
     
     // --------------------------------------------------
@@ -117,7 +167,7 @@ const ContainerLayout = (props) => {
     //   Scroll To
     // ---------------------------------------------
     
-    scroll.scrollToTop({ duration: 0 });
+    // scroll.scrollToTop({ duration: 0 });
     
     
   }, [props.ISO8601]);
@@ -215,6 +265,18 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
+  //   Error
+  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
+  // --------------------------------------------------
+  
+  if (props.statusCode !== 200) {
+    return <Error statusCode={props.statusCode} />;
+  }
+  
+  
+  
+  
+  // --------------------------------------------------
   //   unstated-next - Initial State
   // --------------------------------------------------
   
@@ -227,18 +289,6 @@ const Component = (props) => {
     forumRepliesObj: props.forumRepliesObj,
     
   };
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Error
-  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
-  // --------------------------------------------------
-  
-  if (props.statusCode !== 200) {
-    return <Error statusCode={props.statusCode} />;
-  }
   
   
   
@@ -357,9 +407,10 @@ export async function getServerSideProps({ req, res, query }) {
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
+  const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
+  
   const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
   const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
-  
   const gameCommunityObj = lodashGet(dataObj, ['gameCommunityObj'], {});
   const forumThreadsForListObj = lodashGet(dataObj, ['forumThreadsForListObj'], {});
   const forumThreadsObj = lodashGet(dataObj, ['forumThreadsObj'], {});
@@ -386,21 +437,21 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       name: 'トップ',
-      href: `/gc/[urlID]/index?urlID=${urlID}`,
+      href: `/gc/[urlID]`,
       as: `/gc/${urlID}`,
       active: true,
     },
     
     {
       name: '募集',
-      href: `/gc/[urlID]/rec?urlID=${urlID}`,
+      href: `/gc/[urlID]/rec`,
       as: `/gc/${urlID}/rec`,
       active: false,
     },
     
     {
       name: 'フォロワー',
-      href: `/gc/[urlID]/follower?urlID=${urlID}`,
+      href: `/gc/[urlID]/follower`,
       as: `/gc/${urlID}/follower`,
       active: false,
     }
@@ -412,7 +463,7 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: '設定',
-        href: `/gc/[urlID]/settings?urlID=${urlID}`,
+        href: `/gc/[urlID]/settings`,
         as: `/gc/${urlID}/settings`,
         active: false,
       }
@@ -496,6 +547,7 @@ export async function getServerSideProps({ req, res, query }) {
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,
+      experienceObj,
       
       urlID,
       gameCommunities_id,

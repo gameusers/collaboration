@@ -35,7 +35,7 @@ const schema = mongoose.Schema({
 
 let model = '';
 
-if (mongoose.models.games) {
+if (mongoose.models['achievements']) {
   model = mongoose.model('achievements');
 } else {
   model = mongoose.model('achievements', schema);

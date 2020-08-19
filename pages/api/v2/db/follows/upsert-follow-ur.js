@@ -23,6 +23,7 @@ import moment from 'moment';
 
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
+// import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
@@ -32,6 +33,7 @@ import lodashSet from 'lodash/set';
 import ModelFollows from 'app/@database/follows/model.js';
 import ModelCardPlayers from 'app/@database/card-players/model.js';
 import ModelUsers from 'app/@database/users/model.js';
+// import ModelGames from 'app/@database/games/model.js';
 
 
 // ---------------------------------------------
@@ -119,6 +121,7 @@ export default async (req, res) => {
     const { 
       
       users_id,
+      updateHeader,
       
     } = bodyObj;
     
@@ -446,16 +449,26 @@ export default async (req, res) => {
     
     if (Object.keys(experienceObj).length !== 0) {
       
-      const docUsersObj = await ModelUsers.findOneForUser({
-        
-        localeObj,
-        loginUsers_id,
-        users_id: loginUsers_id,
-        
-      });
-      
       returnObj.experienceObj = experienceObj;
-      returnObj.headerObj = lodashGet(docUsersObj, ['headerObj'], {});
+      
+      
+      // ---------------------------------------------
+      //   - フォロー相手のヘッダーを取得する
+      // ---------------------------------------------
+      
+      if (updateHeader) {
+        
+        const headerObj = await ModelUsers.findHeader({
+          
+          localeObj,
+          loginUsers_id,
+          users_id,
+          
+        });
+        
+        returnObj.headerObj = headerObj;
+        
+      }
       
     }
     

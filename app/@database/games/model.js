@@ -24,7 +24,7 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Model
 // ---------------------------------------------
 
-const Schema = require('./schema');
+const SchemaGames = require('./schema');
 
 
 // ---------------------------------------------
@@ -32,6 +32,9 @@ const Schema = require('./schema');
 // ---------------------------------------------
 
 const { formatImagesAndVideosObj } = require('../images-and-videos/format');
+
+
+
 
 
 
@@ -67,7 +70,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await Schema.findOne(conditionObj).exec();
+    return await SchemaGames.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -110,7 +113,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.find(conditionObj).exec();
+    return await SchemaGames.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -152,7 +155,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Schema.countDocuments(conditionObj).exec();
+    return await SchemaGames.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -199,7 +202,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await SchemaGames.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -241,7 +244,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await Schema.insertMany(saveArr);
+    return await SchemaGames.insertMany(saveArr);
     
     
   } catch (err) {
@@ -284,7 +287,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await Schema.deleteMany(conditionObj);
+    return await SchemaGames.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -319,7 +322,7 @@ const findForHeroImage = async ({ localeObj }) => {
     //   Find
     // --------------------------------------------------
     
-    let resultArr = await Schema.aggregate([
+    let resultArr = await SchemaGames.aggregate([
       
       
       // 画像＆動画が登録されているゲームを取得する
@@ -618,7 +621,7 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
     //   Aggregation
     // --------------------------------------------------
     
-    const resultArr = await Schema.aggregate([
+    const resultArr = await SchemaGames.aggregate([
       
       
       {

@@ -57,7 +57,7 @@ const schema = mongoose.Schema({
 
 let model = '';
 
-if (mongoose.models.games) {
+if (mongoose.models['games']) {
   model = mongoose.model('games');
 } else {
   model = mongoose.model('games', schema);

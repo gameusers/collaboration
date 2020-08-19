@@ -356,7 +356,7 @@ const Component = (props) => {
   const {
     
     setHeaderObj,
-    handleSnackbarOpen,
+    // handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
     dialogAchievementOpen,

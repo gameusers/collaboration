@@ -16,6 +16,8 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
+import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { animateScroll as scroll } from 'react-scroll';
 import moment from 'moment';
 
@@ -44,6 +46,7 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -88,6 +91,9 @@ const ContainerLayout = (props) => {
   //   Hooks
   // --------------------------------------------------
   
+  const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
+  
   const [cardPlayersArr, setCardPlayersArr] = useState(props.cardPlayersArr);
   
   
@@ -100,6 +106,30 @@ const ContainerLayout = (props) => {
     
     if (lodashIsEqual(headerObj, props.headerObj) === false) {
       setHeaderObj(props.headerObj);
+    }
+    
+    
+    // --------------------------------------------------
+    //   Snackbar
+    // --------------------------------------------------
+    
+    if (Object.keys(props.experienceObj).length !== 0) {
+      
+      showSnackbar({
+        
+        enqueueSnackbar,
+        intl,
+        experienceObj: props.experienceObj,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'LjWizvlER',
+          },
+          
+        ]
+        
+      });
+      
     }
     
     
@@ -127,6 +157,7 @@ const ContainerLayout = (props) => {
       <CardPlayer
         key={valueObj._id}
         obj={valueObj}
+        showFollowButton={false}
         showEditButton={true}
         defaultExpanded={true}
         setCardPlayersArr={setCardPlayersArr}
@@ -290,6 +321,7 @@ export async function getServerSideProps({ req, res, query }) {
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
+  const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
   
   const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
   const cardPlayersArr = lodashGet(dataObj, ['cardPlayersArr'], []);
@@ -404,6 +436,7 @@ export async function getServerSideProps({ req, res, query }) {
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,
+      experienceObj,
       
       userID,
       cardPlayersArr,

@@ -356,26 +356,32 @@ const findForGameCommunity = async ({ localeObj, loginUsers_id, urlID }) => {
     const docGamesArr = await SchemaGames.aggregate([
       
       
+      // --------------------------------------------------
+      //   Match Condition Array
+      // --------------------------------------------------
+      
       ...matchConditionArr,
       
       
       // --------------------------------------------------
-      //   games / images-and-videos / トップ画像
+      //   images-and-videos / トップ画像
       // --------------------------------------------------
       
       {
         $lookup:
           {
             from: 'images-and-videos',
-            let: { gamesImagesAndVideos_id: '$imagesAndVideos_id' },
+            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$gamesImagesAndVideos_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideos_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -396,22 +402,24 @@ const findForGameCommunity = async ({ localeObj, loginUsers_id, urlID }) => {
       
       
       // --------------------------------------------------
-      //   games / images-and-videos / サムネイル用
+      //   images-and-videos / サムネイル用
       // --------------------------------------------------
       
       {
         $lookup:
           {
             from: 'images-and-videos',
-            let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+            let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -432,28 +440,28 @@ const findForGameCommunity = async ({ localeObj, loginUsers_id, urlID }) => {
       
       
       // --------------------------------------------------
-      //   games / hardwares / ハードウェア
+      //   hardwares / ハードウェア
       // --------------------------------------------------
       
       {
         $lookup:
           {
             from: 'hardwares',
-            let: { gamesHardwareID: '$hardwareArr.hardwareID' },
+            let: { letHardwareID: '$hardwareArr.hardwareID' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
                       { $eq: ['$language', language] },
                       { $eq: ['$country', country] },
-                      { $in: ['$hardwareID', '$$gamesHardwareID'] }
+                      { $in: ['$hardwareID', '$$letHardwareID'] }
                     ]
                   },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   _id: 0,
                   hardwareID: 1,
                   name: 1,
@@ -466,28 +474,28 @@ const findForGameCommunity = async ({ localeObj, loginUsers_id, urlID }) => {
       
       
       // --------------------------------------------------
-      //   games / game-genres / ジャンル
+      //   game-genres / ジャンル
       // --------------------------------------------------
       
       {
         $lookup:
           {
             from: 'game-genres',
-            let: { gamesGenreArr: '$genreArr' },
+            let: { letGenreArr: '$genreArr' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
                       { $eq: ['$language', language] },
                       { $eq: ['$country', country] },
-                      { $in: ['$genreID', '$$gamesGenreArr'] }
+                      { $in: ['$genreID', '$$letGenreArr'] }
                     ]
                   },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   _id: 0,
                   genreID: 1,
                   name: 1,
@@ -500,7 +508,7 @@ const findForGameCommunity = async ({ localeObj, loginUsers_id, urlID }) => {
       
       
       // --------------------------------------------------
-      //   games / developers-publishers / 開発＆パブリッシャー
+      //   developers-publishers / 開発＆パブリッシャー
       // --------------------------------------------------
       
       {
@@ -508,34 +516,34 @@ const findForGameCommunity = async ({ localeObj, loginUsers_id, urlID }) => {
           {
             from: 'developers-publishers',
             let: {
-              gamesPublisherID: '$hardwareArr.publisherID',
-              gamesDeveloperID: '$hardwareArr.developerID',
+              letPublisherID: '$hardwareArr.publisherID',
+              letDeveloperID: '$hardwareArr.developerID',
             },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $or:
-                    [
-                      { $and:
-                        [
+              {
+                $match: {
+                  $expr: {
+                    $or: [
+                      {
+                        $and: [
                           { $eq: ['$language', language] },
                           { $eq: ['$country', country] },
-                          { $in: ['$developerPublisherID', '$$gamesPublisherID'] }
+                          { $in: ['$developerPublisherID', '$$letPublisherID'] }
                         ]
                       },
-                      { $and:
-                        [
+                      {
+                        $and: [
                           { $eq: ['$language', language] },
                           { $eq: ['$country', country] },
-                          { $in: ['$developerPublisherID', '$$gamesDeveloperID'] }
+                          { $in: ['$developerPublisherID', '$$letDeveloperID'] }
                         ]
                       }
                     ]
                   },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   _id: 0,
                   developerPublisherID: 1,
                   name: 1,
@@ -555,15 +563,17 @@ const findForGameCommunity = async ({ localeObj, loginUsers_id, urlID }) => {
         $lookup:
           {
             from: 'follows',
-            let: { gamesGameCommunities_id: '$gameCommunities_id' },
+            let: { letGameCommunities_id: '$gameCommunities_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$gameCommunities_id', '$$gamesGameCommunities_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$gameCommunities_id', '$$letGameCommunities_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   _id: 0,
                   approval: 1,
                   followedArr: 1,
@@ -593,22 +603,20 @@ const findForGameCommunity = async ({ localeObj, loginUsers_id, urlID }) => {
         $lookup:
           {
             from: 'game-communities',
-            let: { gamesGameCommunities_id: '$gameCommunities_id' },
+            let: { letGameCommunities_id: '$gameCommunities_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$gamesGameCommunities_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letGameCommunities_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   __v: 0,
-                  // _id: 1,
-                  // forumObj: 1,
-                  // updatedDateObj: 1,
-                  // anonymity: 1,
                 }
               }
             ],
@@ -624,8 +632,12 @@ const findForGameCommunity = async ({ localeObj, loginUsers_id, urlID }) => {
       },
       
       
-      { $project:
-        {
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+      
+      {
+        $project: {
           gameCommunities_id: 1,
           urlID: 1,
           imagesAndVideosObj: 1,

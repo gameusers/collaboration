@@ -25,7 +25,7 @@ const schema = mongoose.Schema({
 
 let model = '';
 
-if (mongoose.models.games) {
+if (mongoose.models['titles']) {
   model = mongoose.model('titles');
 } else {
   model = mongoose.model('titles', schema);

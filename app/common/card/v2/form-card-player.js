@@ -761,27 +761,6 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Reset Form
-      // ---------------------------------------------
-      
-      // setName('');
-      // setAnonymity(false);
-      // setComment('');
-      // setImagesAndVideosObj({
-        
-      //   _id: '',
-      //   createdDate: '',
-      //   updatedDate: '',
-      //   users_id: '',
-      //   type: 'forum',
-      //   arr: [],
-        
-      // });
-      
-      
-      
-      
-      // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
       

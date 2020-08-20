@@ -15,6 +15,8 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
+import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -49,18 +51,12 @@ import green from '@material-ui/core/colors/green';
 
 
 // ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateLayout } from 'app/@states/layout.js';
-
-
-// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 
@@ -97,6 +93,8 @@ const Component = (props) => {
   //   Hooks
   // --------------------------------------------------
   
+  const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   
@@ -110,23 +108,12 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-  
-  const stateLayout = ContainerStateLayout.useContainer();
-  
-  const { handleSnackbarOpen } = stateLayout;
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
   
   /**
    * Good ボタンを押したときの処理
-   * @param {string} type - タイプ / forumComment / forumReply / recruitmentComment / recruitmentReply
+   * @param {string} type - タイプ [forumComment, forumReply, recruitmentComment, recruitmentReply]
    * @param {string} target_id - Goodボタンを押したコンテンツのID
    */
   const handleSubmit = async ({
@@ -226,6 +213,25 @@ const Component = (props) => {
       }
       
       
+      // --------------------------------------------------
+      //   Snackbar: Success
+      // --------------------------------------------------
+      
+      showSnackbar({
+        
+        enqueueSnackbar,
+        intl,
+        experienceObj: lodashGet(resultObj, ['data', 'experienceObj'], {}),
+        // arr: [
+        //   {
+        //     variant: 'success',
+        //     messageID: 'EnStWOly-',
+        //   },
+        // ]
+        
+      });
+      
+      
     } catch (errorObj) {
       
       
@@ -233,9 +239,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });

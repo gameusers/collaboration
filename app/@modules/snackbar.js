@@ -90,30 +90,35 @@ const showSnackbar = async ({
     
     
     // --------------------------------------------------
-    //   Message
+    //   Error
     // --------------------------------------------------
-    
-    let messageError = '';
     
     if (errorObj instanceof CustomError) {
       
-      const code = lodashGet(errorObj, ['errorsArr', 0, 'code'], '***');
-      const messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], '***');
+      const code = lodashGet(errorObj, ['errorsArr', 0, 'code'], '');
+      const messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], '');
       
-      messageError = `Code: ${code} / ID: ${messageID}`;
-      // messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+      if (messageID) {
+        
+        loopArr.push({
+          variant: 'error',
+          messageID
+        });
+        
+      } else {
+        
+        loopArr.push({
+          variant: 'error',
+          message: `Error: Code ${code}`,
+        });
+        
+      }
       
     } else if (errorObj instanceof Error) {
       
-      messageError = errorObj.message;
-      // messageID = 'Error';
-      
-    }
-      
-    if (messageError) {
-      
       loopArr.push({
-        messageError
+        variant: 'error',
+        message: `Error: ${errorObj.message}`,
       });
       
     }
@@ -157,47 +162,22 @@ const showSnackbar = async ({
       const messageExp = lodashGet(valueObj, ['messageExp'], 0);
       const messageLevel = lodashGet(valueObj, ['messageLevel'], 0);
       const messageTitle = lodashGet(valueObj, ['messageTitle'], '');
-      const messageError = lodashGet(valueObj, ['messageError'], '');
       
       let variant = lodashGet(valueObj, ['variant'], '');
       const anchorOrigin = lodashGet(valueObj, ['anchorOrigin'], { horizontal: 'left', vertical: 'bottom' });
       const autoHideDuration = lodashGet(valueObj, ['autoHideDuration'], 5000);
-      // const errorObj = lodashGet(valueObj, ['errorObj'], {});
       
       
       // --------------------------------------------------
       //   Message
       // --------------------------------------------------
       
-      // let errorMessage = '';
       let sendMessage = '';
-      
-      
-      // if (errorObj && Object.keys(errorObj).length !== 0) {
-        
-      //   if (errorObj instanceof CustomError) {
-          
-      //     errorMessage = lodashGet(errorObj, ['errorsArr', 0, 'code'], 'Error');
-      //     messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
-          
-      //   } else {
-          
-      //     errorMessage = errorObj.message;
-      //     messageID = 'Error';
-          
-      //   }
-        
-      // }
       
       
       if (messageID) {
         
         sendMessage = intl.formatMessage({ id: messageID });
-        
-      } else if (messageError) {
-        
-        variant = 'error';
-        sendMessage = `Error: ${messageError}`;
         
       } else if (messageExp) {
         

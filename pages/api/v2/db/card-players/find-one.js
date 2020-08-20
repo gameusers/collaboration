@@ -1,43 +1,45 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelCardPlayers = require('../../../../../app/@database/card-players/model');
+import ModelCardPlayers from 'app/@database/card-players/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+import { locale } from 'app/@locales/locale.js';
+
+
 
 
 
@@ -57,20 +59,29 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage
+  });
   
   
   
@@ -106,16 +117,18 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Forum Comments
+    //   DB find / card-players
     // --------------------------------------------------
     
-    const returnObj = await ModelCardPlayers.findFromSchemaCardPlayers({
+    const docCardPlayersObj = await ModelCardPlayers.findForCardPlayers({
       
       localeObj,
-      cardPlayers_id,
       loginUsers_id,
+      cardPlayers_id,
       
     });
+    
+    const cardPlayersObj = lodashGet(docCardPlayersObj, ['cardPlayersObj'], {});
     
     
     
@@ -124,19 +137,18 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/card-players/find-one.js
+    // `);
+    
     // console.log(chalk`
-    //   forumThreads_id: {green ${forumThreads_id}}
+    //   cardPlayers_id: {green ${cardPlayers_id}}
     // `);
     
     // console.log(`
-    //   ----- localeObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   ----- cardPlayersObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(cardPlayersObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -147,7 +159,7 @@ export default async (req, res) => {
     //   Success
     // ---------------------------------------------
     
-    return res.status(200).json(returnObj);
+    return res.status(200).json(cardPlayersObj);
     
     
   } catch (errorObj) {
@@ -158,11 +170,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+      
       errorObj,
       endpointID: '5oSQ-Citq',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+      
     });
     
     

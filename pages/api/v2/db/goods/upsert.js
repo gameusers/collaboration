@@ -14,6 +14,8 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
+import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import shortid from 'shortid';
 import moment from 'moment';
 
@@ -43,6 +45,7 @@ import ModelRecruitmentReplies from 'app/@database/recruitment-replies/model.js'
 import { verifyCsrfToken } from 'app/@modules/csrf.js';
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { experienceCalculate } from 'app/@modules/experience.js';
 
 
 // ---------------------------------------------
@@ -50,6 +53,13 @@ import { CustomError } from 'app/@modules/error/custom.js';
 // ---------------------------------------------
 
 import { validationIP } from 'app/@validations/ip.js';
+
+
+// ---------------------------------------------
+//   Locales
+// ---------------------------------------------
+
+import { locale } from 'app/@locales/locale.js';
 
 
 
@@ -86,6 +96,15 @@ export default async (req, res) => {
   const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage
+  });
   
   
   
@@ -222,8 +241,10 @@ export default async (req, res) => {
     const targetIP = lodashGet(docObj, ['ip'], '');
     
     if (targetUsers_id === loginUsers_id || targetIP === ip) {
+      
       statusCode = 403;
       throw new CustomError({ level: 'info', errorsArr: [{ code: 'MX3nsHgs6', messageID: 'x-g8kaDr7' }] });
+      
     }
     
     
@@ -233,24 +254,26 @@ export default async (req, res) => {
     //   すでに Good ボタンを押しているかチェックする
     // --------------------------------------------------
     
-    let docGoodsObj = {};
+    // let docGoodsObj = {};
     
-    docGoodsObj = await ModelGoods.findOne({
+    const docGoodsObj = await ModelGoods.findOne({
       
       conditionObj: {
         $and: [
           { target_id },
-          { $or: [
-            { users_id: loginUsers_id },
-            { ip }
-          ] }
+          {
+            $or: [
+              { users_id: loginUsers_id },
+              { ip }
+            ]
+          }
         ]
       }
       
     });
     
     const goods_id = lodashGet(docGoodsObj, ['_id'], '');
-    const users_id = lodashGet(docGoodsObj, ['users_id'], '');
+    // const users_id = lodashGet(docGoodsObj, ['users_id'], '');
     
     
     
@@ -276,8 +299,8 @@ export default async (req, res) => {
     let recruitmentCommentsSaveObj = {};
     let recruitmentRepliesConditionObj = {};
     let recruitmentRepliesSaveObj = {};
-    let usersConditionObj = {};
-    let usersSaveObj = {};
+    // let usersConditionObj = {};
+    // let usersSaveObj = {};
     
     returnObj.result = true;
     
@@ -353,17 +376,17 @@ export default async (req, res) => {
       //   - users
       // ---------------------------------------------
       
-      if (targetUsers_id) {
+      // if (targetUsers_id) {
         
-        usersConditionObj = {
-          _id: targetUsers_id,
-        };
+      //   usersConditionObj = {
+      //     _id: targetUsers_id,
+      //   };
         
-        usersSaveObj = {
-          $inc: { exp: - parseInt((users_id ? process.env.NEXT_PUBLIC_EXP_GOOD_BUTTON_LOGIN_USER : process.env.NEXT_PUBLIC_EXP_GOOD_BUTTON), 10) }
-        };
+      //   usersSaveObj = {
+      //     $inc: { exp: - parseInt((users_id ? process.env.NEXT_PUBLIC_EXP_GOOD_BUTTON_LOGIN_USER : process.env.NEXT_PUBLIC_EXP_GOOD_BUTTON), 10) }
+      //   };
         
-      }
+      // }
       
       
       // ---------------------------------------------
@@ -456,17 +479,17 @@ export default async (req, res) => {
       //   - users
       // ---------------------------------------------
       
-      if (targetUsers_id) {
+      // if (targetUsers_id) {
         
-        usersConditionObj = {
-          _id: targetUsers_id,
-        };
+      //   usersConditionObj = {
+      //     _id: targetUsers_id,
+      //   };
         
-        usersSaveObj = {
-          $inc: { exp: + parseInt((loginUsers_id ? process.env.NEXT_PUBLIC_EXP_GOOD_BUTTON_LOGIN_USER : process.env.NEXT_PUBLIC_EXP_GOOD_BUTTON), 10) }
-        };
+      //   usersSaveObj = {
+      //     $inc: { exp: + parseInt((loginUsers_id ? process.env.NEXT_PUBLIC_EXP_GOOD_BUTTON_LOGIN_USER : process.env.NEXT_PUBLIC_EXP_GOOD_BUTTON), 10) }
+      //   };
         
-      }
+      // }
       
       
     }
@@ -486,11 +509,67 @@ export default async (req, res) => {
       recruitmentCommentsSaveObj,
       recruitmentRepliesConditionObj,
       recruitmentRepliesSaveObj,
-      usersConditionObj,
-      usersSaveObj,
+      // usersConditionObj,
+      // usersSaveObj,
       
     });
     
+    
+    
+    
+    // --------------------------------------------------
+    //   experience
+    //   加算するときだけ通知を表示する
+    // --------------------------------------------------
+    
+    if (!docGoodsObj) {
+      
+      
+      // ---------------------------------------------
+      //   - 自分がGoodボタンを押した
+      // ---------------------------------------------
+      
+      const experienceObj = await experienceCalculate({ 
+        
+        req,
+        localeObj,
+        loginUsers_id,
+        arr: [{
+          type: 'good-count-click',
+          calculation: 'addition',
+        }],
+        
+      });
+      
+      if (Object.keys(experienceObj).length !== 0) {
+        returnObj.experienceObj = experienceObj;
+      }
+      
+      
+      // ---------------------------------------------
+      //   - Goodボタンを押された相手
+      // ---------------------------------------------
+      
+      await experienceCalculate({ 
+        
+        req,
+        localeObj,
+        loginUsers_id,
+        targetUsers_id,
+        arr: [{
+          type: 'good-count-clicked',
+          calculation: 'addition',
+        }],
+        
+      });
+      
+      
+    }
+    
+    
+    // console.log(chalk`
+    //   targetUsers_id: {green ${targetUsers_id}}
+    // `);
     
     
     
@@ -576,10 +655,10 @@ export default async (req, res) => {
 //   config
 // --------------------------------------------------
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '25mb',
-    },
-  },
-};
+// export const config = {
+//   api: {
+//     bodyParser: {
+//       sizeLimit: '25mb',
+//     },
+//   },
+// };

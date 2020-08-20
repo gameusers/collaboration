@@ -236,23 +236,23 @@ const Component = (props) => {
         //   結果反映：メンバーかどうか、メンバー数を変更
         // ---------------------------------------------
         
-        const follow = lodashGet(resultObj, ['data', 'follow'], null);
-        const followedCount = lodashGet(resultObj, ['data', 'followedCount'], null);
+        // const follow = lodashGet(resultObj, ['data', 'follow'], null);
+        // const followedCount = lodashGet(resultObj, ['data', 'followedCount'], null);
         
-        if (lodashHas(resultObj, ['data', 'follow'])) {
-          lodashSet(followsObj, ['follow'], follow);
-        }
+        // if (lodashHas(resultObj, ['data', 'follow'])) {
+        //   lodashSet(followsObj, ['follow'], follow);
+        // }
         
-        if (lodashHas(resultObj, ['data', 'followedCount'])) {
-          lodashSet(followsObj, ['followedCount'], followedCount);
-        }
+        // if (lodashHas(resultObj, ['data', 'followedCount'])) {
+        //   lodashSet(followsObj, ['followedCount'], followedCount);
+        // }
         
         
-        // ---------------------------------------------
-        //   リロードするかどうか
-        // ---------------------------------------------
+        // // ---------------------------------------------
+        // //   リロードするかどうか
+        // // ---------------------------------------------
         
-        pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
+        // pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
         
         
         
@@ -323,25 +323,45 @@ const Component = (props) => {
         
         
         
-        // ---------------------------------------------
-        //   結果反映：フォロー数変更
-        // ---------------------------------------------
+        // // ---------------------------------------------
+        // //   結果反映：フォロー数変更
+        // // ---------------------------------------------
         
-        const followedCount = lodashGet(resultObj, ['data', 'followedCount'], null);
+        // const followedCount = lodashGet(resultObj, ['data', 'followedCount'], null);
         
-        if (followedCount !== null) {
-          lodashSet(followsObj, ['followedCount'], followedCount);
-        }
+        // if (followedCount !== null) {
+        //   lodashSet(followsObj, ['followedCount'], followedCount);
+        // }
         
         
-        // ---------------------------------------------
-        //   リロードするかどうか
-        // ---------------------------------------------
+        // // ---------------------------------------------
+        // //   リロードするかどうか
+        // // ---------------------------------------------
         
-        pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
+        // pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
         
         
       }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   結果反映：フォロー数変更
+      // ---------------------------------------------
+      
+      const followedCount = lodashGet(resultObj, ['data', 'followedCount'], null);
+      
+      if (followedCount !== null) {
+        lodashSet(followsObj, ['followedCount'], followedCount);
+      }
+      
+      
+      // ---------------------------------------------
+      //   リロードするかどうか
+      // ---------------------------------------------
+      
+      pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
       
       
       

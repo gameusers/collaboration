@@ -14,8 +14,8 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React, { useState, useEffect, useContext } from 'react';
-import { Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll';
+import React, { useState } from 'react';
+import { animateScroll as scroll, scrollSpy, scroller } from 'react-scroll';
 import { createContainer } from 'unstated-next';
 import moment from 'moment';
 
@@ -25,7 +25,17 @@ import moment from 'moment';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashHas from 'lodash/has';
 import lodashCloneDeep from 'lodash/cloneDeep';
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { CustomError } from 'app/@modules/error/custom.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 
@@ -42,7 +52,7 @@ const useLayout = (initialStateObj) => {
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
- 
+  
   const [ISO8601, setISO8601] = useState(lodashGet(initialStateObj, ['ISO8601'], moment().utc().toISOString()));
   
   const [headerObj, setHeaderObj] = useState(lodashGet(initialStateObj, ['headerObj'], {}));
@@ -54,6 +64,7 @@ const useLayout = (initialStateObj) => {
   
   const [cardPlayersObj, setCardPlayersObj] = useState({});
   const [dialogCardOpen, setDialogCardOpen] = useState(false);
+  const [dialogCardObj, setDialogCardObj] = useState({});
   
   const [dialogAchievementOpen, setDialogAchievementOpen] = useState(false);
   const [dialogAchievementObj, setDialogAchievementObj] = useState({});
@@ -327,13 +338,170 @@ const useLayout = (initialStateObj) => {
   //   - Dialog Card
   // ---------------------------------------------
   
-  const handleDialogCardOpen = ({
+  /**
+   * ダイアログでカードを開く
+   * @param {string} cardPlayers_id - プレイヤーカード固有ID
+   * @param {boolena} setButtonDisabled - ロード中、ボタンを
+   */
+  const handleDialogCardOpen = async ({
     
+    enqueueSnackbar,
+    intl,
     cardPlayers_id,
+    setButtonDisabled,
     
   }) => {
     
-    setDialogCardOpen(true);
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   _id が存在しない場合エラー
+      // ---------------------------------------------
+      
+      if (!cardPlayers_id) {
+        throw new CustomError({ errorsArr: [{ code: 'GmGF8vBhi', messageID: '1YJnibkmh' }] });
+      }
+      
+      
+      // ---------------------------------------------
+      //   存在している場合
+      // ---------------------------------------------
+      
+      if (lodashHas(cardPlayersObj, [cardPlayers_id])) {
+        
+        
+        
+      } else {
+        
+        
+        // ---------------------------------------------
+        //   Loading Open
+        // ---------------------------------------------
+        
+        handleLoadingOpen({});
+        
+        
+        // ---------------------------------------------
+        //   Button Disable
+        // ---------------------------------------------
+        
+        setButtonDisabled(true);
+        
+        
+        
+        
+        // ---------------------------------------------
+        //   FormData
+        // ---------------------------------------------
+        
+        const formDataObj = {
+          
+          cardPlayers_id,
+          
+        };
+        
+        
+        // ---------------------------------------------
+        //   Fetch
+        // ---------------------------------------------
+        
+        const resultObj = await fetchWrapper({
+          
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/card-players/find-one`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj),
+          
+        });
+        
+        
+        // ---------------------------------------------
+        //   Error
+        // ---------------------------------------------
+        
+        if ('errorsArr' in resultObj) {
+          throw new CustomError({ errorsArr: resultObj.errorsArr });
+        }
+        
+        
+        
+        
+        // ---------------------------------------------
+        //   Update
+        // ---------------------------------------------
+        
+        setDialogCardObj(lodashGet(resultObj, ['data', cardPlayers_id], {}));
+        
+        
+        
+        
+        // ---------------------------------------------
+        //   Button Enable
+        // ---------------------------------------------
+        
+        setButtonDisabled(false);
+        
+        
+        // ---------------------------------------------
+        //   Loading Close
+        // ---------------------------------------------
+        
+        handleLoadingClose();
+        
+        
+        
+        
+        // ---------------------------------------------
+        //   console.log
+        // ---------------------------------------------
+        
+        // console.log(`
+        //   ----------------------------------------\n
+        //   /app/@states/layout.js - handleDialogCardOpen
+        // `);
+        
+        // console.log(chalk`
+        //   cardPlayers_id: {green ${cardPlayers_id}}
+        // `);
+        
+        // console.log(`
+        //   ----- resultObj -----\n
+        //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   ダイアログを開く
+      // ---------------------------------------------
+      
+      setDialogCardOpen(true);
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      showSnackbar({
+        
+        enqueueSnackbar,
+        intl,
+        errorObj,
+        
+      });
+      
+      
+    }
+    
     
   };
   
@@ -405,6 +573,7 @@ const useLayout = (initialStateObj) => {
     dialogCardOpen,
     handleDialogCardOpen,
     handleDialogCardClose,
+    dialogCardObj,
     
     dialogAchievementOpen,
     setDialogAchievementOpen,

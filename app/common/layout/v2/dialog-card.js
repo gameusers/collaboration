@@ -32,12 +32,8 @@ import lodashGet from 'lodash/get';
 //   Material UI
 // ---------------------------------------------
 
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 // ---------------------------------------------
@@ -45,6 +41,13 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 // ---------------------------------------------
 
 import { ContainerStateLayout } from 'app/@states/layout.js';
+
+
+// ---------------------------------------------
+//   Components
+// ---------------------------------------------
+
+import CardPlayer from 'app/common/card/v2/card-player.js';
 
 
 
@@ -75,59 +78,12 @@ const Component = (props) => {
   
   const {
     
-    cardPlayersObj,
-    setCardPlayersObj,
+    dialogCardObj,
     
     dialogCardOpen,
     handleDialogCardClose,
     
   } = stateLayout;
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   props
-  // --------------------------------------------------
-  
-  // const open = lodashGet(dialogObj, ['open'], false);
-  // const title = lodashGet(dialogObj, ['title'], '');
-  // const description = lodashGet(dialogObj, ['description'], '');
-  // const handle = lodashGet(dialogObj, ['handle'], () => {});
-  // const argumentsObj = lodashGet(dialogObj, ['argumentsObj'], {});
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Handler
-  // --------------------------------------------------
-  
-  // const handleDialogCardOpen = ({
-    
-  //   cardPlayers_id,
-    
-  // }) => {
-    
-  //   setDialogCardOpen(true);
-    
-  // };
-  
-  
-  
-  
-  // const handleClick = async ({
-    
-  //   handle,
-  //   argumentsObj,
-    
-  // }) => {
-    
-  //   await handle(argumentsObj);
-    
-  //   handleDialogClose();
-    
-  // };
   
   
   
@@ -146,8 +102,8 @@ const Component = (props) => {
   // `);
   
   // console.log(`
-  //   ----- argumentsObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(argumentsObj)), { colors: true, depth: null })}\n
+  //   ----- dialogCardObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(dialogCardObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
   
@@ -164,9 +120,6 @@ const Component = (props) => {
       maxWidth='md'
       onClose={() => handleDialogCardClose()}
       scroll='paper'
-      // classes={{
-      //   paper: classes.paper
-      // }}
     >
       
       <DialogContent
@@ -178,15 +131,12 @@ const Component = (props) => {
         `}
       >
         
-        AAA
-        {/*<CardPlayer
-          key={valueObj._id}
-          obj={valueObj}
-          showFollowButton={false}
-          showEditButton={true}
+        <CardPlayer
+          obj={dialogCardObj}
+          showFollowButton={true}
+          showEditButton={false}
           defaultExpanded={true}
-          setCardPlayersArr={setCardPlayersArr}
-        />*/}
+        />
         
       </DialogContent>
       

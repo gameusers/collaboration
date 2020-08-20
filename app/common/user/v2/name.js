@@ -17,6 +17,7 @@ import util from 'util';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -175,15 +176,16 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   
-  // const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [buttonDisabled, setButtonDisabled] = useState(true);
   
   
-  // useEffect(() => {
+  useEffect(() => {
     
-  //   setButtonDisabled(false);
+    setButtonDisabled(false);
     
-  // }, []);
+  }, []);
   
   
   
@@ -269,7 +271,19 @@ const Component = (props) => {
   if (accessDate) {
     
     const datetimeNow = moment().utcOffset(0);
-    const datetimeAccess = moment(accessDate).utcOffset(0);
+    let datetimeAccess = moment(accessDate).utcOffset(0);
+    
+    // 現在の日時がアクセス日時よりも前になってしまった場合は、同じ値にしておく
+    if (datetimeNow.isBefore(datetimeAccess)) {
+      datetimeAccess = datetimeNow;
+    }
+    
+    // console.log(chalk`
+    //   datetimeNow.isBefore(datetimeAccess): {green ${datetimeNow.isBefore(datetimeAccess)}}
+    // `);
+    
+    // datetimeAccess = datetimeNow;
+    
     const accessTime = datetimeAccess.from(datetimeNow);
     
     componentAccessTime =
@@ -350,8 +364,13 @@ const Component = (props) => {
       <Button
         css={cssButton}
         variant="outlined"
-        onClick={() => handleDialogCardOpen({ cardPlayers_id })}
-        // disabled={buttonDisabled}
+        onClick={() => handleDialogCardOpen({
+          enqueueSnackbar,
+          intl,
+          cardPlayers_id,
+          setButtonDisabled,
+        })}
+        disabled={buttonDisabled}
         key="cardPlayersButton"
       >
         <IconLayers css={cssIconLayers} />

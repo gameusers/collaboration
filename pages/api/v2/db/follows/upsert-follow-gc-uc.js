@@ -30,7 +30,9 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import ModelFollows from 'app/@database/follows/model.js';
+import ModelGameCommunities from 'app/@database/game-communities/model.js';
 import ModelUserCommunities from 'app/@database/user-communities/model.js';
+import ModelGames from 'app/@database/games/model.js';
 
 
 // ---------------------------------------------
@@ -40,6 +42,7 @@ import ModelUserCommunities from 'app/@database/user-communities/model.js';
 import { verifyCsrfToken } from 'app/@modules/csrf.js';
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { experienceCalculate } from 'app/@modules/experience.js';
 
 
 // ---------------------------------------------
@@ -50,7 +53,13 @@ import { validationIP } from 'app/@validations/ip.js';
 
 import { validationGameCommunities_idServer } from 'app/@database/game-communities/validations/_id-server.js';
 import { validationUserCommunities_idServer } from 'app/@database/user-communities/validations/_id-server.js';
-import { validationUsers_idServer } from 'app/@database/users/validations/_id-server.js';
+
+
+// ---------------------------------------------
+//   Locales
+// ---------------------------------------------
+
+import { locale } from 'app/@locales/locale.js';
 
 
 
@@ -89,6 +98,15 @@ export default async (req, res) => {
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
   
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage
+  });
+  
+  
   
   
   try {
@@ -104,19 +122,11 @@ export default async (req, res) => {
       
       gameCommunities_id,
       userCommunities_id,
-      // users_id,
       
     } = bodyObj;
     
-    
-    // --------------------------------------------------
-    //   Log Data
-    // --------------------------------------------------
-    
-    // lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
-    // lodashSet(requestParametersObj, ['users_id'], users_id);
     
     
     
@@ -140,8 +150,6 @@ export default async (req, res) => {
     }
     
     
-    
-    
     // --------------------------------------------------
     //   必要なデータチェック
     // --------------------------------------------------
@@ -154,10 +162,18 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   Validation
+    //   Validation & データ取得
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: req.ip });
+    await validationIP({ throwError: true, value: ip });
+    
+    
+    // ---------------------------------------------
+    //   - Property
+    // ---------------------------------------------
+    
+    let communityType = 'open' ;
+    const conditionObj = {};
     
     
     // ---------------------------------------------
@@ -166,38 +182,62 @@ export default async (req, res) => {
     
     if (gameCommunities_id) {
       
+      
+      // ---------------------------------------------
+      //   Validation - communities_id
+      // ---------------------------------------------
+      
       await validationGameCommunities_idServer({ value: gameCommunities_id });
       
-    }
+      
+      // ---------------------------------------------
+      //   データ取得用検索条件
+      // ---------------------------------------------
+      
+      conditionObj.gameCommunities_id = gameCommunities_id;
     
     
     // ---------------------------------------------
     //   - ユーザーコミュニティ
     // ---------------------------------------------
     
-    let communityType = 'open' ;
-    
-    if (userCommunities_id) {
+    } else if (userCommunities_id) {
+      
+      
+      // ---------------------------------------------
+      //   Validation - communities_id
+      // ---------------------------------------------
       
       await validationUserCommunities_idServer({ throwError: true, value: userCommunities_id });
       
       
-      // --------------------------------------------------
-      //   自分のコミュニティを抜けようとした場合はエラー
-      // --------------------------------------------------
+      // ---------------------------------------------
+      //   データ取得用検索条件
+      // ---------------------------------------------
       
-      const resultUserCommunitiesObj = await ModelUserCommunities.findOne({ conditionObj: {
-        _id: userCommunities_id
-      }});
+      conditionObj.userCommunities_id = userCommunities_id;
+      
+      
+      // ---------------------------------------------
+      //   自分のコミュニティを抜けようとした場合はエラー
+      // ---------------------------------------------
+      
+      const resultUserCommunitiesObj = await ModelUserCommunities.findOne({
+        
+        conditionObj: {
+          _id: userCommunities_id
+        }
+        
+      });
       
       if (resultUserCommunitiesObj.users_id === loginUsers_id) {
         throw new CustomError({ level: 'warn', errorsArr: [{ code: 'y8knFdqtD', messageID: 'qnWsuPcrJ' }] });
       }
       
       
-      // --------------------------------------------------
+      // ---------------------------------------------
       //   コミュニティの公開タイプがクローズドの場合、ページを再読み込みする
-      // --------------------------------------------------
+      // ---------------------------------------------
       
       communityType = lodashGet(resultUserCommunitiesObj, ['communityType'], 'open');
       
@@ -220,43 +260,16 @@ export default async (req, res) => {
     }
     
     
-    // ---------------------------------------------
-    //   - ユーザー
-    // ---------------------------------------------
-    
-    // if (users_id) {
-    //   await validationUsers_idServer({ throwError: true, value: users_id });
-    // }
-    
-    
-    
-    
     // --------------------------------------------------
     //   データ取得
     // --------------------------------------------------
     
-    const conditionObj = {};
-    
-    if (gameCommunities_id) {
-      
-      conditionObj.gameCommunities_id = gameCommunities_id;
-      
-    } else if (userCommunities_id) {
-      
-      conditionObj.userCommunities_id = userCommunities_id;
-      
-    } else {
-      
-      // conditionObj.users_id = users_id;
-      
-    }
-    
-    const resultObj = await ModelFollows.findOne({ conditionObj });
+    const docFollowsObj = await ModelFollows.findOne({ conditionObj });
     
     
     // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   ----- docFollowsObj -----\n
+    //   ${util.inspect(docFollowsObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -265,15 +278,13 @@ export default async (req, res) => {
     //   メンバーの追加、削除
     // --------------------------------------------------
     
-    let followedArr = lodashGet(resultObj, ['followedArr'], []);
-    let followedCount = lodashGet(resultObj, ['followedCount'], 1);
-    let approvalArr = lodashGet(resultObj, ['approvalArr'], []);
-    let approvalCount = lodashGet(resultObj, ['approvalCount'], 0);
-    let blockArr = lodashGet(resultObj, ['blockArr'], []);
+    let followedArr = lodashGet(docFollowsObj, ['followedArr'], []);
+    let followedCount = lodashGet(docFollowsObj, ['followedCount'], 1);
+    let approvalArr = lodashGet(docFollowsObj, ['approvalArr'], []);
+    let approvalCount = lodashGet(docFollowsObj, ['approvalCount'], 0);
+    let blockArr = lodashGet(docFollowsObj, ['blockArr'], []);
     
-    const approval = lodashGet(resultObj, ['approval'], false);
-    
-    
+    const approval = lodashGet(docFollowsObj, ['approval'], false);
     
     
     // ---------------------------------------------
@@ -398,6 +409,43 @@ export default async (req, res) => {
       saveObj,
       
     });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Header
+    // --------------------------------------------------
+    
+    if (gameCommunities_id) {
+      
+      const gameCommunityObj = await ModelGameCommunities.findForGameCommunity({
+        
+        localeObj,
+        loginUsers_id,
+        gameCommunities_id,
+        
+      });
+      
+      returnObj.headerObj = gameCommunityObj.headerObj;
+      
+    }
+    
+    
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   データ取得 / Games
+    //   ヘッダーヒーローイメージ用
+    // --------------------------------------------------
+    
+    // returnObj.headerObj = await ModelGames.findForHeroImage({
+      
+    //   localeObj,
+      
+    // });
     
     
     

@@ -23,7 +23,6 @@ import moment from 'moment';
 
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
-// import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
@@ -33,7 +32,6 @@ import lodashSet from 'lodash/set';
 import ModelFollows from 'app/@database/follows/model.js';
 import ModelCardPlayers from 'app/@database/card-players/model.js';
 import ModelUsers from 'app/@database/users/model.js';
-// import ModelGames from 'app/@database/games/model.js';
 
 
 // ---------------------------------------------
@@ -160,7 +158,7 @@ export default async (req, res) => {
     //   Validation
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: req.ip });
+    await validationIP({ throwError: true, value: ip });
     await validationUsers_idServer({ throwError: true, value: users_id });
     
     

@@ -310,9 +310,17 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} urlID - DB game-communities urlID
+ * @param {string} gameCommunities_id - DB game-communities ゲームコミュニティ固有ID
  * @return {Object} 取得データ
  */
-const findForGameCommunity = async ({ localeObj, loginUsers_id, urlID }) => {
+const findForGameCommunity = async ({
+  
+  localeObj,
+  loginUsers_id,
+  urlID,
+  gameCommunities_id,
+  
+}) => {
   
   
   // --------------------------------------------------
@@ -323,7 +331,7 @@ const findForGameCommunity = async ({ localeObj, loginUsers_id, urlID }) => {
     
     
     // --------------------------------------------------
-    //   Property
+    //   Language & Country
     // --------------------------------------------------
     
     const language = lodashGet(localeObj, ['language'], '');
@@ -336,17 +344,27 @@ const findForGameCommunity = async ({ localeObj, loginUsers_id, urlID }) => {
     //   Match Condition Array
     // --------------------------------------------------
     
-    let matchConditionArr = [
-      {
+    let matchConditionArr = [{
+      $match: {
+        language,
+        country,
+        urlID,
+      }
+    }];
+    
+    if (gameCommunities_id) {
+      
+      matchConditionArr = [{
         $match: {
-          
           language,
           country,
-          urlID,
-          
+          gameCommunities_id,
         }
-      },
-    ];
+      }];
+      
+    }
+    
+    
     
     
     // --------------------------------------------------

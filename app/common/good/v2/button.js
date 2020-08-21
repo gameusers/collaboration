@@ -222,12 +222,6 @@ const Component = (props) => {
         enqueueSnackbar,
         intl,
         experienceObj: lodashGet(resultObj, ['data', 'experienceObj'], {}),
-        // arr: [
-        //   {
-        //     variant: 'success',
-        //     messageID: 'EnStWOly-',
-        //   },
-        // ]
         
       });
       

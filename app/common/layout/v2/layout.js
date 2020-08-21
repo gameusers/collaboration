@@ -132,9 +132,6 @@ const Component = (props) => {
     Events.scrollEvent.register('end', function(to, element) {
       
       
-      // console.log('end', arguments);
-      
-      
       // ---------------------------------------------
       //   高さ
       // ---------------------------------------------
@@ -142,7 +139,7 @@ const Component = (props) => {
       const navTopHeight = 53;
       const navMainHeight = 36;
       const headerHeight = navTopHeight + heroImageHeight + navMainHeight;
-      const contentsHeight = window.innerHeight - headerHeight;
+      const contentsHeight = Math.max.apply(null, [document.body.clientHeight , document.body.scrollHeight, document.documentElement.scrollHeight, document.documentElement.clientHeight]) - headerHeight;
       
       
       
@@ -153,7 +150,7 @@ const Component = (props) => {
       
       if (window.scrollY === 0) {
         
-        // console.log('end / window.scrollY === 0');
+        // console.log('layout / useEffect / window.scrollY === 0');
         
         setShowNavTop(true);
         setLowerNavMain(false);
@@ -164,18 +161,13 @@ const Component = (props) => {
       //   コンテンツの量が少ない（コンテンツの高さがない）場合
       // ---------------------------------------------
       
-      // } else if (headerHeight > contentsHeight && headerHeight > window.scrollY) {
       } else if (headerHeight > contentsHeight) {
         
-        // console.log('AAA');
+        // console.log('layout / useEffect / headerHeight > contentsHeight');
         
         setShowNavTop(false);
         setLowerNavMain(false);
         setLowerSidebar(false);
-        
-        // setShowNavTop(true);
-        // setLowerNavMain(false);
-        // setLowerSidebar(false);
         
         
       // ---------------------------------------------
@@ -184,7 +176,7 @@ const Component = (props) => {
         
       } else {
         
-        // console.log('end / else');
+        // console.log('layout / useEffect / else');
         
         setShowNavTop(false);
         setLowerNavMain(false);
@@ -193,12 +185,12 @@ const Component = (props) => {
       }
       
       
+      // console.log('end', arguments);
+      
       // console.log(chalk`
       //   navTopHeight: {green ${navTopHeight}}
       //   heroImageHeight: {green ${heroImageHeight}}
       //   navMainHeight: {green ${navMainHeight}}
-        
-      //   window.innerHeight: {green ${window.innerHeight}}
         
       //   headerHeight: {green ${headerHeight}}
       //   contentsHeight: {green ${contentsHeight}}

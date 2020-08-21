@@ -379,9 +379,9 @@ const calculateAccountCountDay = async ({
       
     });
     
-    const limitDay = lodashGet(docAchievementsObj, ['limitDay'], 0);
-    const limitMonth = lodashGet(docAchievementsObj, ['limitMonth'], 0);
-    const limitYear = lodashGet(docAchievementsObj, ['limitYear'], 0);
+    // const limitDay = lodashGet(docAchievementsObj, ['limitDay'], 0);
+    // const limitMonth = lodashGet(docAchievementsObj, ['limitMonth'], 0);
+    // const limitYear = lodashGet(docAchievementsObj, ['limitYear'], 0);
     
     const conditionsArr = lodashGet(docAchievementsObj, ['conditionsArr'], []);
     
@@ -401,29 +401,6 @@ const calculateAccountCountDay = async ({
     if (Object.keys(historyObj).length !== 0) {
       
       newHistoryObj = historyObj;
-      
-      const datetimeCurrent = moment(ISO8601).utc();
-      const datetimeUpdated = moment(newHistoryObj.updatedDate).utc();
-      
-      
-      // ---------------------------------------------
-      //   前回の更新から日、月、年が変わっている場合はカウントを0にする
-      // ---------------------------------------------
-      
-      if (limitDay && datetimeCurrent.isSame(datetimeUpdated, 'day') === false) {
-        
-        newHistoryObj.countDay = 0;
-        
-      } else if (limitMonth && datetimeCurrent.isSame(datetimeUpdated, 'month') === false) {
-        
-        newHistoryObj.countMonth = 0;
-        
-      } else if (limitYear && datetimeCurrent.isSame(datetimeUpdated, 'year') === false) {
-        
-        newHistoryObj.countYear = 0;
-        
-      }
-      
       newHistoryObj.updatedDate = ISO8601;
       
       
@@ -448,6 +425,67 @@ const calculateAccountCountDay = async ({
       };
       
     }
+    
+    // ---------------------------------------------
+    //   newHistoryObj
+    // ---------------------------------------------
+    
+    // ----------------------------------------
+    //   - Update
+    // ----------------------------------------
+    
+    // let newHistoryObj = {};
+    
+    // if (Object.keys(historyObj).length !== 0) {
+      
+    //   newHistoryObj = historyObj;
+      
+    //   const datetimeCurrent = moment(ISO8601).utc();
+    //   const datetimeUpdated = moment(newHistoryObj.updatedDate).utc();
+      
+      
+    //   // ---------------------------------------------
+    //   //   前回の更新から日、月、年が変わっている場合はカウントを0にする
+    //   // ---------------------------------------------
+      
+    //   if (limitDay && datetimeCurrent.isSame(datetimeUpdated, 'day') === false) {
+        
+    //     newHistoryObj.countDay = 0;
+        
+    //   } else if (limitMonth && datetimeCurrent.isSame(datetimeUpdated, 'month') === false) {
+        
+    //     newHistoryObj.countMonth = 0;
+        
+    //   } else if (limitYear && datetimeCurrent.isSame(datetimeUpdated, 'year') === false) {
+        
+    //     newHistoryObj.countYear = 0;
+        
+    //   }
+      
+    //   newHistoryObj.updatedDate = ISO8601;
+      
+      
+    // // ----------------------------------------
+    // //   - Insert
+    // // ----------------------------------------
+      
+    // } else {
+      
+    //   newHistoryObj = {
+        
+    //     _id: shortid.generate(),
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     type: 'account-count-day',
+    //     countDay: 0,
+    //     countMonth: 0,
+    //     countYear: 0,
+    //     countValid: 0,
+    //     countTotal: 0,
+        
+    //   };
+      
+    // }
     
     
     
@@ -968,8 +1006,8 @@ const calculate = async ({
       
       newHistoryObj = historyObj;
       
-      const datetimeCurrent = moment(ISO8601).utc();
-      const datetimeUpdated = moment(newHistoryObj.updatedDate).utc();
+      const datetimeCurrent = moment(ISO8601).startOf('day');
+      const datetimeUpdated = moment(newHistoryObj.updatedDate).startOf('day');
       
       
       // ---------------------------------------------
@@ -1024,12 +1062,25 @@ const calculate = async ({
     
     if (calculation === 'addition') {
       
+      // 一日の上限がある場合
       if (limitDay && limitDay >= newHistoryObj.countDay + 1) {
         
         newHistoryObj.countDay += 1;
         newHistoryObj.countValid += 1;
         
+      // 上限がない場合
+      } else if (limitDay === 0 && limitMonth === 0 && limitYear === 0) {
+        
+        newHistoryObj.countValid += 1;
+        
       }
+      
+      // console.log(chalk`
+      //   type: {green ${type}}
+      //   users_id: {green ${users_id}}
+      //   limitDay: {green ${limitDay}}
+      //   limitDay >= newHistoryObj.countDay + 1: {green ${limitDay >= newHistoryObj.countDay + 1}}
+      // `);
       
       newHistoryObj.countTotal += 1;
       
@@ -1167,9 +1218,6 @@ const calculate = async ({
       
       
       
-      
-      
-      
       // ---------------------------------------------
       //   合計が有効数より少ない場合は、同じ数に変更する
       // ---------------------------------------------
@@ -1246,7 +1294,7 @@ const calculate = async ({
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/@modules/experience.js - calculateFollowedCount
+    //   /app/@modules/experience.js - calculate
     // `);
     
     // console.log(`
@@ -1283,6 +1331,11 @@ const calculate = async ({
     //   ----- historiesArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(historiesArr)), { colors: true, depth: null })}\n
     //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   type: {green ${type}}
+    //   users_id: {green ${users_id}}
     // `);
     
     // console.log(`
@@ -1398,8 +1451,8 @@ const calculateAddition = async ({
       
       newHistoryObj = historyObj;
       
-      const datetimeCurrent = moment(ISO8601).utc();
-      const datetimeUpdated = moment(newHistoryObj.updatedDate).utc();
+      const datetimeCurrent = moment(ISO8601).startOf('day');
+      const datetimeUpdated = moment(newHistoryObj.updatedDate).startOf('day');
       
       
       // ---------------------------------------------
@@ -1421,6 +1474,13 @@ const calculateAddition = async ({
       }
       
       newHistoryObj.updatedDate = ISO8601;
+      
+      
+      // console.log(chalk`
+      //   datetimeCurrent: {green ${datetimeCurrent}}
+      //   datetimeUpdated: {green ${datetimeUpdated}}
+      //   datetimeCurrent.isSame(datetimeUpdated, 'day')：{green ${datetimeCurrent.isSame(datetimeUpdated, 'day')}}
+      // `);
       
       
     // ----------------------------------------

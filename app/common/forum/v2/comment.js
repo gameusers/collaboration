@@ -17,6 +17,7 @@ import util from 'util';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
 import moment from 'moment';
 import Cookies from 'js-cookie';
@@ -77,6 +78,7 @@ import { ContainerStateForum } from 'app/@states/forum.js';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
 import { getCookie } from 'app/@modules/cookie.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -164,7 +166,7 @@ const Comment = (props) => {
   const {
     
     ISO8601,
-    handleSnackbarOpen,
+    // handleSnackbarOpen,
     handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
@@ -193,8 +195,8 @@ const Comment = (props) => {
   //   Hooks
   // --------------------------------------------------
   
-  // const classes = useStyles();
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [showFormComment, setShowFormComment] = useState(false);
@@ -341,16 +343,36 @@ const Comment = (props) => {
       
       
       
+      // --------------------------------------------------
+      //   Snackbar: Success
+      // --------------------------------------------------
+      
+      const experienceObj = lodashGet(resultObj, ['data', 'experienceObj'], {});
+      
+      showSnackbar({
+        
+        enqueueSnackbar,
+        intl,
+        experienceObj,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'GERzvKtUN',
+          },
+        ]
+        
+      });
+      
       // ---------------------------------------------
       //   Snackbar: Success
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      // handleSnackbarOpen({
         
-        variant: 'success',
-        messageID: 'GERzvKtUN',
+      //   variant: 'success',
+      //   messageID: 'GERzvKtUN',
         
-      });
+      // });
       
       
       
@@ -384,9 +406,10 @@ const Comment = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });
@@ -971,6 +994,8 @@ const Component = (props) => {
   //   Hooks
   // --------------------------------------------------
   
+  const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
@@ -995,7 +1020,7 @@ const Component = (props) => {
   const {
     
     ISO8601,
-    handleSnackbarOpen,
+    // handleSnackbarOpen,
     handleScrollTo,
     
   } = stateLayout;
@@ -1372,9 +1397,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });

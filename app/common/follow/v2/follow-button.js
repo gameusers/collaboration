@@ -347,8 +347,14 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   結果反映：フォロー数変更
+      //   結果反映：フォロー状態＆フォロー数変更
       // ---------------------------------------------
+      
+      const follow = lodashGet(resultObj, ['data', 'follow'], null);
+      
+      if (follow !== null) {
+        lodashSet(followsObj, ['follow'], follow);
+      }
       
       const followedCount = lodashGet(resultObj, ['data', 'followedCount'], null);
       

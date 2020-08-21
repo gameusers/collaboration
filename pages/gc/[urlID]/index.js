@@ -363,6 +363,14 @@ export async function getServerSideProps({ req, res, query }) {
   const ISO8601 = moment().utc().toISOString();
   
   
+  // const datetimeCurrent = moment('2020-08-20T14:00:00.000Z').startOf('day');
+  // const datetimeUpdated = moment('2020-08-20T16:00:00.000Z').startOf('day');
+  
+  // console.log(chalk`
+  //   datetimeCurrent: {green ${datetimeCurrent}}
+  //   datetimeUpdated: {green ${datetimeUpdated}}
+  //   datetimeCurrent.isSame(datetimeUpdated, 'day')：{green ${datetimeCurrent.isSame(datetimeUpdated, 'day')}}
+  // `);
   
   
   // --------------------------------------------------
@@ -505,6 +513,11 @@ export async function getServerSideProps({ req, res, query }) {
   //   ----- resultObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
   //   --------------------\n
+  // `);
+  
+  // console.log(chalk`
+  //   ISO8601: {green ${ISO8601}}
+  //   loginUsersObj.accessDate: {green ${loginUsersObj.accessDate}}
   // `);
   
   // console.log(chalk`

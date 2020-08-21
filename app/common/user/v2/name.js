@@ -164,6 +164,7 @@ const Component = (props) => {
   
   const {
     
+    ISO8601,
     handleDialogCardOpen,
     
   } = stateLayout;
@@ -270,8 +271,9 @@ const Component = (props) => {
   
   if (accessDate) {
     
-    const datetimeNow = moment().utcOffset(0);
-    let datetimeAccess = moment(accessDate).utcOffset(0);
+    // const datetimeNow = moment().utcOffset(0);
+    const datetimeNow = moment(ISO8601).utc();
+    let datetimeAccess = moment(accessDate).utc();
     
     // 現在の日時がアクセス日時よりも前になってしまった場合は、同じ値にしておく
     if (datetimeNow.isBefore(datetimeAccess)) {

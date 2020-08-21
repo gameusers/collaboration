@@ -16,6 +16,7 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import TextareaAutosize from 'react-autosize-textarea';
 
 /** @jsx jsx */
@@ -53,6 +54,7 @@ import { ContainerStateForum } from 'app/@states/forum.js';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
 import { getCookie } from 'app/@modules/cookie.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -106,6 +108,7 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [name, setName] = useState('');
@@ -156,7 +159,6 @@ const Component = (props) => {
   
   const {
     
-    handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
@@ -330,9 +332,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });
@@ -583,14 +586,23 @@ const Component = (props) => {
       
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Snackbar: Success
-      // ---------------------------------------------
+      // --------------------------------------------------
       
-      handleSnackbarOpen({
+      const experienceObj = lodashGet(resultObj, ['data', 'experienceObj'], {});
+      
+      showSnackbar({
         
-        variant: 'success',
-        messageID: forumThreads_id ? 'HINAkcSmJ' : 'pInPmleQh',
+        enqueueSnackbar,
+        intl,
+        experienceObj,
+        arr: [
+          {
+            variant: 'success',
+            messageID: forumThreads_id ? 'HINAkcSmJ' : 'pInPmleQh',
+          },
+        ]
         
       });
       
@@ -641,9 +653,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });

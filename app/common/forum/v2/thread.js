@@ -17,6 +17,7 @@ import util from 'util';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
 import SimpleIcons from 'simple-icons-react-component';
 
@@ -74,6 +75,7 @@ import { ContainerStateForum } from 'app/@states/forum.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -147,6 +149,8 @@ const Component = (props) => {
   //   Hooks
   // --------------------------------------------------
   
+  const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [panelExpanded, setPanelExpanded] = useState(true);
   const [buttonDisabled, setButtonDisabled] = useState(true);
@@ -174,7 +178,7 @@ const Component = (props) => {
   
   const {
     
-    handleSnackbarOpen,
+    // handleSnackbarOpen,
     handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
@@ -320,16 +324,35 @@ const Component = (props) => {
       
       
       
+      // --------------------------------------------------
+      //   Snackbar: Success
+      // --------------------------------------------------
+      
+      const experienceObj = lodashGet(resultObj, ['data', 'experienceObj'], {});
+      
+      showSnackbar({
+        
+        enqueueSnackbar,
+        intl,
+        experienceObj,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'KBPPfi4f9',
+          },
+        ]
+        
+      });
       // ---------------------------------------------
       //   Snackbar: Success
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      // handleSnackbarOpen({
         
-        variant: 'success',
-        messageID: 'KBPPfi4f9',
+      //   variant: 'success',
+      //   messageID: 'KBPPfi4f9',
         
-      });
+      // });
       
       
       
@@ -369,9 +392,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });
@@ -560,7 +584,7 @@ const Component = (props) => {
         >
           
           
-          {/* Form */}
+          {/* Form - Edit Thread */}
           {showForm &&
             <div
               css={css`
@@ -973,7 +997,7 @@ const Component = (props) => {
           >
             
             
-            {/* Form Comment */}
+            {/* Form - Post New Comment */}
             <div
               css={css`
                 border-top: 1px dashed #585858;

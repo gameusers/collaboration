@@ -176,11 +176,11 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   Datetime
+    //   Property
     // --------------------------------------------------
     
     const ISO8601 = moment().utc().toISOString();
-    
+    let calculation = '';
     
     
     
@@ -300,6 +300,9 @@ export default async (req, res) => {
         // 自分
         followSelfArr = followSelfArr.filter(value => value !== users_id);
         
+        // 経験値減算
+        calculation = 'subtraction';
+        
         
       // ---------------------------------------------
       //   フォロー
@@ -314,6 +317,9 @@ export default async (req, res) => {
         
         // 自分
         followSelfArr.push(users_id);
+        
+        // 経験値加算
+        calculation = 'addition';
         
       }
       
@@ -408,67 +414,70 @@ export default async (req, res) => {
     //   experience
     // --------------------------------------------------
     
-    // ---------------------------------------------
-    //   - 自分のフォロー
-    // ---------------------------------------------
-    
-    const experienceObj = await experienceCalculate({ 
-      
-      req,
-      localeObj,
-      loginUsers_id,
-      arr: [{
-        type: 'follow-count',
-      }],
-      
-    });
-    
-    
-    // ---------------------------------------------
-    //   - フォローされた相手
-    // ---------------------------------------------
-    
-    await experienceCalculate({ 
-      
-      req,
-      localeObj,
-      loginUsers_id,
-      targetUsers_id: users_id,
-      arr: [{
-        type: 'followed-count',
-      }],
-      
-    });
-    
-    
-    // ---------------------------------------------
-    //   - 経験値が増減した場合のみヘッダーを更新する
-    // ---------------------------------------------
-    
-    if (Object.keys(experienceObj).length !== 0) {
-      
-      returnObj.experienceObj = experienceObj;
+    if (calculation) {
       
       
       // ---------------------------------------------
-      //   - フォロー相手のヘッダーを取得する
+      //   - 自分のフォロー
       // ---------------------------------------------
       
-      if (updateHeader) {
+      const experienceObj = await experienceCalculate({ 
         
-        const headerObj = await ModelUsers.findHeader({
-          
-          localeObj,
-          loginUsers_id,
-          users_id,
-          
-        });
+        req,
+        localeObj,
+        loginUsers_id,
+        arr: [{
+          type: 'follow-count',
+          calculation,
+        }],
         
-        returnObj.headerObj = headerObj;
-        
+      });
+      
+      if (Object.keys(experienceObj).length !== 0) {
+        returnObj.experienceObj = experienceObj;
       }
       
+      
+      // ---------------------------------------------
+      //   - フォローされた相手
+      // ---------------------------------------------
+      
+      await experienceCalculate({ 
+        
+        req,
+        localeObj,
+        loginUsers_id,
+        targetUsers_id: users_id,
+        arr: [{
+          type: 'followed-count',
+          calculation,
+        }],
+        
+      });
+      
+      
     }
+    
+    
+    // ---------------------------------------------
+    //   フォロー相手のヘッダーを取得する
+    // ---------------------------------------------
+    
+    if (updateHeader) {
+      
+      const headerObj = await ModelUsers.findHeader({
+        
+        localeObj,
+        loginUsers_id,
+        users_id,
+        
+      });
+      
+      returnObj.headerObj = headerObj;
+      
+    }
+    
+    
     
     
     

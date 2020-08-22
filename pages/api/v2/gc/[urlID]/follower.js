@@ -33,6 +33,7 @@ import ModelCardPlayers from 'app/@database/card-players/model.js';
 
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { updateAccessDate } from 'app/@modules/access-date.js';
 
 
 // ---------------------------------------------
@@ -55,7 +56,7 @@ import { locale } from 'app/@locales/locale.js';
 
 
 // --------------------------------------------------
-//   endpointID: 9aMdtckoT
+//   endpointID: d3GXlJYcJ
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -127,6 +128,31 @@ export default async (req, res) => {
       returnObj.loginUsersObj = req.user;
       returnObj.login = true;
       
+    }
+    
+    const accessDate = lodashGet(returnObj, ['loginUsersObj', 'accessDate'], '');
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Update Access Date & Login Count
+    // --------------------------------------------------
+    
+    const resultUpdatedAccessDateObj = await updateAccessDate({
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      accessDate,
+      
+    });
+    
+    returnObj.experienceObj = lodashGet(resultUpdatedAccessDateObj, ['experienceObj'], {});
+    const updatedAccessDate = lodashGet(resultUpdatedAccessDateObj, ['updatedAccessDate'], '');
+    
+    if (updatedAccessDate) {
+      lodashSet(returnObj, ['loginUsersObj', 'accessDate'], updatedAccessDate);
     }
     
     
@@ -268,15 +294,6 @@ export default async (req, res) => {
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
@@ -317,7 +334,7 @@ export default async (req, res) => {
     const resultErrorObj = returnErrorsArr({
       
       errorObj,
-      endpointID: '9aMdtckoT',
+      endpointID: 'd3GXlJYcJ',
       users_id: loginUsers_id,
       ip,
       userAgent,

@@ -17,6 +17,7 @@ import util from 'util';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
 import moment from 'moment';
 import Cookies from 'js-cookie';
@@ -77,6 +78,7 @@ import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
 import { getCookie } from 'app/@modules/cookie.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -160,7 +162,6 @@ const Reply = (props) => {
   const {
     
     ISO8601,
-    handleSnackbarOpen,
     handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
@@ -190,8 +191,8 @@ const Reply = (props) => {
   //   Hooks
   // --------------------------------------------------
   
-  // const classes = useStyles();
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [showFormEdit, setShowFormEdit] = useState(false);
@@ -312,14 +313,23 @@ const Reply = (props) => {
       
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Snackbar: Success
-      // ---------------------------------------------
+      // --------------------------------------------------
       
-      handleSnackbarOpen({
+      const experienceObj = lodashGet(resultObj, ['data', 'experienceObj'], {});
+      
+      showSnackbar({
         
-        variant: 'success',
-        messageID: 'j6lSS-Zf5',
+        enqueueSnackbar,
+        intl,
+        experienceObj,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'j6lSS-Zf5',
+          },
+        ]
         
       });
       
@@ -353,9 +363,10 @@ const Reply = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });
@@ -453,7 +464,7 @@ const Reply = (props) => {
   //   Link
   // --------------------------------------------------
   
-  const linkHref = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}&recruitmentID=${recruitmentReplies_id}`;
+  const linkHref = `/gc/[urlID]/rec/[[...slug]]`;
   const linkAs = `/gc/${urlID}/rec/${recruitmentReplies_id}`;
   
   
@@ -914,6 +925,8 @@ const Component = (props) => {
   //   Hooks
   // --------------------------------------------------
   
+  const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
@@ -938,7 +951,6 @@ const Component = (props) => {
   const {
     
     ISO8601,
-    handleSnackbarOpen,
     handleScrollTo,
     
   } = stateLayout;
@@ -1252,9 +1264,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });
@@ -1415,9 +1428,6 @@ const Component = (props) => {
             disabled={buttonDisabled}
             onChange={() => {}}
             onChange={(page) => handleRead({
-              // gameCommunities_id,
-              // recruitmentThreads_id,
-              // recruitmentComments_id,
               page,
             })}
             pageSize={limit}
@@ -1442,9 +1452,6 @@ const Component = (props) => {
             value={limit}
             onChange={() => {}}
             onChange={(eventObj) => handleRead({
-              // gameCommunities_id,
-              // recruitmentThreads_id,
-              // recruitmentComments_id,
               page: 1,
               changeLimit: eventObj.target.value,
             })}

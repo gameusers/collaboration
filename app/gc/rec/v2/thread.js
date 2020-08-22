@@ -17,6 +17,7 @@ import util from 'util';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
 import SimpleIcons from 'simple-icons-react-component';
 
@@ -32,7 +33,6 @@ import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
 import lodashCloneDeep from 'lodash/cloneDeep';
-import lodashMerge from 'lodash/merge';
 
 
 // ---------------------------------------------
@@ -76,6 +76,7 @@ import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -154,6 +155,7 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [panelExpanded, setPanelExpanded] = useState(true);
   const [buttonDisabled, setButtonDisabled] = useState(true);
@@ -181,7 +183,6 @@ const Component = (props) => {
   
   const {
     
-    handleSnackbarOpen,
     handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
@@ -300,14 +301,23 @@ const Component = (props) => {
       
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Snackbar: Success
-      // ---------------------------------------------
+      // --------------------------------------------------
       
-      handleSnackbarOpen({
+      const experienceObj = lodashGet(resultObj, ['data', 'experienceObj'], {});
+      
+      showSnackbar({
         
-        variant: 'success',
-        messageID: 'j6lSS-Zf5',
+        enqueueSnackbar,
+        intl,
+        experienceObj,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'j6lSS-Zf5',
+          },
+        ]
         
       });
       
@@ -342,9 +352,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });
@@ -434,7 +445,7 @@ const Component = (props) => {
   //   Link
   // --------------------------------------------------
   
-  let linkHref = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}&recruitmentID=${recruitmentThreads_id}`;
+  let linkHref = `/gc/[urlID]/rec/[[...slug]]`;
   let linkAs = `/gc/${urlID}/rec/${recruitmentThreads_id}`;
   
   

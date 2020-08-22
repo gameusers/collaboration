@@ -16,6 +16,8 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
+import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { animateScroll as scroll } from 'react-scroll';
 import moment from 'moment';
 
@@ -28,6 +30,14 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashIsEqual from 'lodash/isEqual';
+
+
+// ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 // ---------------------------------------------
@@ -37,6 +47,7 @@ import lodashGet from 'lodash/get';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
 import { getCookie } from 'app/@modules/cookie.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -62,17 +73,70 @@ const ContainerLayout = (props) => {
   
   
   // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateLayout = ContainerStateLayout.useContainer();
+  
+  const {
+    
+    headerObj,
+    setHeaderObj,
+    
+  } = stateLayout;
+  
+  
+  
+  
+  // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
+  const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
+  
+  
   useEffect(() => {
+    
+    
+    // --------------------------------------------------
+    //   Header 更新 - データに変更があった場合のみステートを更新
+    // --------------------------------------------------
+    
+    if (lodashIsEqual(headerObj, props.headerObj) === false) {
+      setHeaderObj(props.headerObj);
+    }
+    
+    
+    // --------------------------------------------------
+    //   Snackbar
+    // --------------------------------------------------
+    
+    if (Object.keys(props.experienceObj).length !== 0) {
+      
+      showSnackbar({
+        
+        enqueueSnackbar,
+        intl,
+        experienceObj: props.experienceObj,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'LjWizvlER',
+          },
+          
+        ]
+        
+      });
+      
+    }
     
     
     // ---------------------------------------------
     //   Scroll To
     // ---------------------------------------------
     
-    scroll.scrollToTop({ duration: 0 });
+    // scroll.scrollToTop({ duration: 0 });
     
     
   }, [props.ISO8601]);
@@ -249,11 +313,10 @@ export async function getServerSideProps({ req, res, query }) {
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
+  const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
+  
   const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
   const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
-  
-  // const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
-  // const users_id = lodashGet(dataObj, ['users_id'], '');
   const cardPlayersObj = lodashGet(dataObj, ['cardPlayersObj'], {});
   const followMembersObj = lodashGet(dataObj, ['followMembersObj'], {});
   
@@ -277,21 +340,21 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       name: 'トップ',
-      href: `/gc/[urlID]/index?urlID=${urlID}`,
+      href: `/gc/[urlID]`,
       as: `/gc/${urlID}`,
       active: false,
     },
     
     {
       name: '募集',
-      href: `/gc/[urlID]/rec?urlID=${urlID}`,
+      href: `/gc/[urlID]/rec`,
       as: `/gc/${urlID}/rec`,
       active: false,
     },
     
     {
       name: 'フォロワー',
-      href: `/gc/[urlID]/follower?urlID=${urlID}`,
+      href: `/gc/[urlID]/follower`,
       as: `/gc/${urlID}/follower`,
       active: true,
     }
@@ -303,7 +366,7 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: '設定',
-        href: `/gc/[urlID]/settings?urlID=${urlID}`,
+        href: `/gc/[urlID]/settings`,
         as: `/gc/${urlID}/settings`,
         active: false,
       }
@@ -323,7 +386,7 @@ export async function getServerSideProps({ req, res, query }) {
     {
       type: 'gc',
       anchorText: lodashGet(dataObj, ['headerObj', 'name'], ''),
-      href: `/gc/[urlID]/index?urlID=${urlID}`,
+      href: `/gc/[urlID]`,
       as: `/gc/${urlID}`,
     },
     
@@ -374,6 +437,7 @@ export async function getServerSideProps({ req, res, query }) {
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,
+      experienceObj,
       
       urlID,
       gameCommunities_id,

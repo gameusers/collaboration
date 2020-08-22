@@ -16,6 +16,7 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
 import TextareaAutosize from 'react-autosize-textarea';
 
@@ -34,8 +35,6 @@ import lodashHas from 'lodash/has';
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
-
-import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -62,6 +61,7 @@ import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
 import { getCookie } from 'app/@modules/cookie.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -106,20 +106,6 @@ const cssBox = css`
 `;
 
 
-// --------------------------------------------------
-//   Material UI Style Overrides
-//   https://material-ui.com/styles/basics/
-// --------------------------------------------------
-
-const useStyles = makeStyles({
-  
-  label: {
-    fontSize: 14
-  },
-  
-});
-
-
 
 
 
@@ -155,7 +141,7 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const intl = useIntl();
-  const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [hardwaresArr, setHardwaresArr] = useState([]);
@@ -240,7 +226,6 @@ const Component = (props) => {
   
   const {
     
-    handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
@@ -456,9 +441,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });
@@ -791,14 +777,23 @@ const Component = (props) => {
       
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Snackbar: Success
-      // ---------------------------------------------
+      // --------------------------------------------------
       
-      handleSnackbarOpen({
+      const experienceObj = lodashGet(resultObj, ['data', 'experienceObj'], {});
+      
+      showSnackbar({
         
-        variant: 'success',
-        messageID: recruitmentThreads_id ? 'xM5NqhTq5' : 'B9Goe5scP',
+        enqueueSnackbar,
+        intl,
+        experienceObj,
+        arr: [
+          {
+            variant: 'success',
+            messageID: recruitmentThreads_id ? 'xM5NqhTq5' : 'B9Goe5scP',
+          },
+        ]
         
       });
       
@@ -846,9 +841,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });

@@ -41,6 +41,7 @@ import ModelRecruitmentReplies from 'app/@database/recruitment-replies/model.js'
 import { verifyCsrfToken } from 'app/@modules/csrf.js';
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { experienceCalculate } from 'app/@modules/experience.js';
 
 
 // ---------------------------------------------
@@ -336,6 +337,29 @@ export default async (req, res) => {
       gameCommunities_id,
       
     });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   experience
+    // --------------------------------------------------
+    
+    const experienceObj = await experienceCalculate({ 
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      arr: [{
+        type: 'recruitment-count-post',
+        calculation: 'subtraction',
+      }],
+      
+    });
+    
+    if (Object.keys(experienceObj).length !== 0) {
+      returnObj.experienceObj = experienceObj;
+    }
     
     
     

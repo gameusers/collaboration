@@ -30,6 +30,7 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import ModelFollows from 'app/@database/follows/model.js';
+import ModelUsers from 'app/@database/users/model.js';
 
 
 // ---------------------------------------------
@@ -39,6 +40,7 @@ import ModelFollows from 'app/@database/follows/model.js';
 import { verifyCsrfToken } from 'app/@modules/csrf.js';
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { experienceCalculate } from 'app/@modules/experience.js';
 
 
 // ---------------------------------------------
@@ -49,6 +51,13 @@ import { validationIP } from 'app/@validations/ip.js';
 
 import { validationUsers_idServer } from 'app/@database/users/validations/_id-server.js';
 import { validationManageFollowersType } from 'app/@database/follows/validations/manage-followers-type.js';
+
+
+// ---------------------------------------------
+//   Locales
+// ---------------------------------------------
+
+import { locale } from 'app/@locales/locale.js';
 
 
 
@@ -87,6 +96,15 @@ export default async (req, res) => {
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
   
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage
+  });
+  
+  
   
   
   try {
@@ -104,11 +122,6 @@ export default async (req, res) => {
       type,
       
     } = bodyObj;
-    
-    
-    // --------------------------------------------------
-    //   Log Data
-    // --------------------------------------------------
     
     lodashSet(requestParametersObj, ['targetUsers_id'], targetUsers_id);
     lodashSet(requestParametersObj, ['type'], type);
@@ -156,6 +169,15 @@ export default async (req, res) => {
     if (targetUsers_id === loginUsers_id) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'OfYk9neNl', messageID: 'qnWsuPcrJ' }] });
     }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    let calculation = '';
     
     
     
@@ -239,6 +261,13 @@ export default async (req, res) => {
         targetObj.followedCount = targetObj.followedArr.length;
         
         
+        // ---------------------------------------------
+        //   経験値減算
+        // ---------------------------------------------
+        
+        calculation = 'subtraction';
+        
+        
       }
       
       
@@ -269,6 +298,13 @@ export default async (req, res) => {
         // ---------------------------------------------
         
         targetObj.followCount = targetObj.followArr.push(loginUsers_id);
+        
+        
+        // ---------------------------------------------
+        //   経験値加算
+        // ---------------------------------------------
+        
+        calculation = 'addition';
         
         
       }
@@ -303,6 +339,22 @@ export default async (req, res) => {
       
       
       // ---------------------------------------------
+      //   経験値減算 - フォローしている相手をブロックする、またはフォローされている相手をブロックする
+      // ---------------------------------------------
+      
+      if (
+        
+        (selfObj.followArr.includes(targetUsers_id) && targetObj.followedArr.includes(loginUsers_id)) ||
+        (selfObj.followedArr.includes(targetUsers_id) && targetObj.followArr.includes(loginUsers_id))
+        
+      ) {
+        
+        calculation = 'subtraction';
+        
+      }
+      
+      
+      // ---------------------------------------------
       //   自分
       //   フォロー、フォロワー、承認配列から相手の users_id を削除する
       //   ブロックしているユーザーの配列に相手の users_id を追加する
@@ -328,7 +380,7 @@ export default async (req, res) => {
       targetObj.followedCount = targetObj.followedArr.length;
       targetObj.approvalArr = targetObj.approvalArr.filter(value => value !== loginUsers_id);
       targetObj.approvalCount = targetObj.approvalArr.length;
-    
+      
     
     // --------------------------------------------------
     //   ブロック解除
@@ -417,6 +469,74 @@ export default async (req, res) => {
       followsSave2Obj,
       
     });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   experience
+    // --------------------------------------------------
+    
+    if (calculation) {
+      
+      
+      // ---------------------------------------------
+      //   - 自分のフォロー
+      // ---------------------------------------------
+      
+      const experienceObj = await experienceCalculate({ 
+        
+        req,
+        localeObj,
+        loginUsers_id,
+        arr: [{
+          type: 'follow-count',
+          calculation,
+        }],
+        
+      });
+      
+      if (Object.keys(experienceObj).length !== 0) {
+        returnObj.experienceObj = experienceObj;
+      }
+      
+      
+      // ---------------------------------------------
+      //   - フォローされた相手
+      // ---------------------------------------------
+      
+      await experienceCalculate({ 
+        
+        req,
+        localeObj,
+        loginUsers_id,
+        targetUsers_id,
+        arr: [{
+          type: 'followed-count',
+          calculation,
+        }],
+        
+      });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   ヘッダーを取得する
+      // ---------------------------------------------
+      
+      const headerObj = await ModelUsers.findHeader({
+        
+        localeObj,
+        loginUsers_id,
+        users_id: loginUsers_id,
+        
+      });
+      
+      returnObj.headerObj = headerObj;
+      
+      
+    }
     
     
     

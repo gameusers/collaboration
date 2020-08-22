@@ -1062,13 +1062,27 @@ const calculate = async ({
     
     if (calculation === 'addition') {
       
-      // 一日の上限がある場合
-      if (limitDay && limitDay >= newHistoryObj.countDay + 1) {
+      
+      // ----------------------------------------
+      //   上限がある場合
+      // ----------------------------------------
+      
+      if (
+        
+        (limitDay && limitDay >= newHistoryObj.countDay + 1) ||
+        (limitMonth && limitMonth >= newHistoryObj.countMonth + 1) ||
+        (limitYear && limitYear >= newHistoryObj.countYear + 1)
+        
+      ) {
         
         newHistoryObj.countDay += 1;
         newHistoryObj.countValid += 1;
         
-      // 上限がない場合
+        
+      // ----------------------------------------
+      //   上限がない場合
+      // ----------------------------------------
+      
       } else if (limitDay === 0 && limitMonth === 0 && limitYear === 0) {
         
         newHistoryObj.countValid += 1;
@@ -1522,17 +1536,20 @@ const calculateAddition = async ({
     
     
     
-      
-      
+    
     // ----------------------------------------
     //   追加
     // ----------------------------------------
       
     if (calculation === 'addition') {
       
+      
+      // ----------------------------------------
+      //   上限がある場合
+      // ----------------------------------------
+      
       if (
         
-        (limitDay === 0 && limitMonth === 0 && limitYear === 0) ||
         (limitDay && limitDay >= newHistoryObj.countDay + 1) ||
         (limitMonth && limitMonth >= newHistoryObj.countMonth + 1) ||
         (limitYear && limitYear >= newHistoryObj.countYear + 1)
@@ -1540,6 +1557,15 @@ const calculateAddition = async ({
       ) {
         
         newHistoryObj.countDay += 1;
+        newHistoryObj.countValid += 1;
+        
+        
+      // ----------------------------------------
+      //   上限がない場合
+      // ----------------------------------------
+        
+      } else if (limitDay === 0 && limitMonth === 0 && limitYear === 0) {
+        
         newHistoryObj.countValid += 1;
         
       }

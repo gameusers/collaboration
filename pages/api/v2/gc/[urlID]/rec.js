@@ -34,6 +34,7 @@ import ModelRecruitmentThreads from 'app/@database/recruitment-threads/model.js'
 
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { updateAccessDate } from 'app/@modules/access-date.js';
 
 
 // ---------------------------------------------
@@ -144,6 +145,31 @@ export default async (req, res) => {
       returnObj.loginUsersObj = req.user;
       returnObj.login = true;
       
+    }
+    
+    const accessDate = lodashGet(returnObj, ['loginUsersObj', 'accessDate'], '');
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Update Access Date & Login Count
+    // --------------------------------------------------
+    
+    const resultUpdatedAccessDateObj = await updateAccessDate({
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      accessDate,
+      
+    });
+    
+    returnObj.experienceObj = lodashGet(resultUpdatedAccessDateObj, ['experienceObj'], {});
+    const updatedAccessDate = lodashGet(resultUpdatedAccessDateObj, ['updatedAccessDate'], '');
+    
+    if (updatedAccessDate) {
+      lodashSet(returnObj, ['loginUsersObj', 'accessDate'], updatedAccessDate);
     }
     
     

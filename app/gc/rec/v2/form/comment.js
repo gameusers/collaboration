@@ -16,6 +16,7 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
 import TextareaAutosize from 'react-autosize-textarea';
 
@@ -34,8 +35,6 @@ import lodashHas from 'lodash/has';
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
-
-import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 
@@ -57,6 +56,7 @@ import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
 import { getCookie } from 'app/@modules/cookie.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -97,20 +97,6 @@ const cssBox = css`
 `;
 
 
-// --------------------------------------------------
-//   Material UI Style Overrides
-//   https://material-ui.com/styles/basics/
-// --------------------------------------------------
-
-const useStyles = makeStyles({
-  
-  label: {
-    fontSize: 14
-  },
-  
-});
-
-
 
 
 
@@ -148,7 +134,7 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const intl = useIntl();
-  const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [name, setName] = useState('');
@@ -228,7 +214,6 @@ const Component = (props) => {
   
   const {
     
-    handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
@@ -258,7 +243,6 @@ const Component = (props) => {
   
   /**
    * 編集用データを読み込む
-   * @param {string} recruitmentComments_id - DB recruitment-comments _id / コメントのID
    */
   const handleGetEditData = async () => {
     
@@ -438,9 +422,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });
@@ -749,14 +734,25 @@ const Component = (props) => {
       newRecruitmentComments_id = lodashGet(resultObj, ['data', 'recruitmentCommentsObj', recruitmentThreads_id, 'page1Obj', 'arr', 0], '');
       
       
-      // ---------------------------------------------
-      //   Snackbar: Success
-      // ---------------------------------------------
       
-      handleSnackbarOpen({
+      
+      // --------------------------------------------------
+      //   Snackbar: Success
+      // --------------------------------------------------
+      
+      const experienceObj = lodashGet(resultObj, ['data', 'experienceObj'], {});
+      
+      showSnackbar({
         
-        variant: 'success',
-        messageID: recruitmentComments_id ? 'NKsMLWvkt' : 'fhi9lUaap',
+        enqueueSnackbar,
+        intl,
+        experienceObj,
+        arr: [
+          {
+            variant: 'success',
+            messageID: recruitmentComments_id ? 'NKsMLWvkt' : 'fhi9lUaap',
+          },
+        ]
         
       });
       
@@ -804,9 +800,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });

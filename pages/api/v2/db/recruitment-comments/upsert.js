@@ -46,6 +46,7 @@ import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
 import { formatAndSave } from 'app/@modules/image/save.js';
 import { setAuthority } from 'app/@modules/authority.js';
+import { experienceCalculate } from 'app/@modules/experience.js';
 
 
 // ---------------------------------------------
@@ -1039,6 +1040,33 @@ export default async (req, res) => {
       gameCommunities_id,
       
     });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   experience
+    // --------------------------------------------------
+    
+    if (!recruitmentComments_id) {
+      
+      const experienceObj = await experienceCalculate({ 
+        
+        req,
+        localeObj,
+        loginUsers_id,
+        arr: [{
+          type: 'recruitment-count-post',
+          calculation: 'addition',
+        }],
+        
+      });
+      
+      if (Object.keys(experienceObj).length !== 0) {
+        returnObj.experienceObj = experienceObj;
+      }
+      
+    }
     
     
     

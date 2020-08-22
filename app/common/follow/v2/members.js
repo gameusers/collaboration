@@ -16,6 +16,7 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
@@ -66,6 +67,7 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
 import { getCookie } from 'app/@modules/cookie.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -147,12 +149,14 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [controlType, setControlType] = useState(pageType === 'ur' ? 'follow' : 'followed');
   const [cardPlayersObj, setCardPlayersObj] = useState(props.cardPlayersObj);
   const [followMembersObj, setFollowMembersObj] = useState(props.followMembersObj);
+  
   
   useEffect(() => {
     
@@ -174,7 +178,7 @@ const Component = (props) => {
   
   const {
     
-    handleSnackbarOpen,
+    setHeaderObj,
     handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
@@ -455,9 +459,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });
@@ -618,12 +623,36 @@ const Component = (props) => {
       //   メンバー読み込み
       // ---------------------------------------------
       
-      // const page = lodashGet(this.dataObj, [...pathArr, 'followMembersObj', `${type}Obj`, 'page'], 1);
-      
       handleRead({
         
         page,
         forceReload: true,
+        
+      });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Update - Header
+      // ---------------------------------------------
+      
+      const headerObj = lodashGet(resultObj, ['data', 'headerObj'], {});
+      
+      if (Object.keys(headerObj).length !== 0) {
+        setHeaderObj(headerObj);
+      }
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      showSnackbar({
+        
+        enqueueSnackbar,
+        intl,
+        experienceObj: lodashGet(resultObj, ['data', 'experienceObj'], {}),
         
       });
       
@@ -663,9 +692,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });

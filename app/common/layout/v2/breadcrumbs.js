@@ -48,7 +48,7 @@ import IconMail from '@material-ui/icons/MailOutline';
 import IconLock from '@material-ui/icons/Lock';
 
 import IconGames from '@material-ui/icons/Games';
-import IconUCList from '@material-ui/icons/MenuBook';
+import IconCommunityList from '@material-ui/icons/Style';
 import IconUserCommunity from '@material-ui/icons/SupervisedUserCircle';
 import IconMembers from '@material-ui/icons/SentimentSatisfiedAlt';
 import IconUser from '@material-ui/icons/Person';
@@ -149,6 +149,11 @@ const Component = (props) => {
     
     } else if (valueObj.type === 'gc') {
       
+      icon = <IconCommunityList fontSize="small" />;
+      anchorText = 'ゲームコミュニティ';
+    
+    } else if (valueObj.type === 'gc/index') {
+      
       icon = <IconGames fontSize="small" />;
       anchorText = valueObj.anchorText;
       
@@ -184,7 +189,7 @@ const Component = (props) => {
       
     } else if (valueObj.type === 'uc') {
       
-      icon = <IconUCList fontSize="small" />;
+      icon = <IconCommunityList fontSize="small" />;
       anchorText = 'ユーザーコミュニティ';
       
     } else if (valueObj.type === 'uc/index') {
@@ -192,7 +197,7 @@ const Component = (props) => {
       icon = <IconUserCommunity fontSize="small" />;
       anchorText = valueObj.anchorText;
       
-    } else if (valueObj.type === 'uc/members') {
+    } else if (valueObj.type === 'uc/member') {
       
       icon = <IconMembers fontSize="small" />;
       anchorText = 'メンバー';

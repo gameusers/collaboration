@@ -29,6 +29,14 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashIsEqual from 'lodash/isEqual';
+
+
+// ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 // ---------------------------------------------
@@ -37,6 +45,7 @@ import lodashGet from 'lodash/get';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
+import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
@@ -58,17 +67,46 @@ import FormLogin from 'app/login/index/v2/form-login.js';
 //   URL: https://dev-1.gameusers.org/login
 // --------------------------------------------------
 
-const Component = (props) => {
+/**
+ * レイアウト
+ * @param {Object} props - Props
+ */
+const ContainerLayout = (props) => {
   
   
   // --------------------------------------------------
-  //   Error
-  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
+  //   States
   // --------------------------------------------------
   
-  if (props.statusCode !== 200) {
-    return <Error statusCode={props.statusCode} />;
-  }
+  const stateLayout = ContainerStateLayout.useContainer();
+  
+  const {
+    
+    headerObj,
+    setHeaderObj,
+    
+  } = stateLayout;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Hooks
+  // --------------------------------------------------
+  
+  useEffect(() => {
+    
+    
+    // --------------------------------------------------
+    //   Header 更新 - データに変更があった場合のみステートを更新
+    // --------------------------------------------------
+    
+    if (lodashIsEqual(headerObj, props.headerObj) === false) {
+      setHeaderObj(props.headerObj);
+    }
+    
+    
+  }, [props.ISO8601]);
   
   
   
@@ -99,7 +137,10 @@ const Component = (props) => {
         arr={props.breadcrumbsArr}
       />
       
-      <FormLogin />
+      <FormLogin
+        recentAccessPageHref={props.recentAccessPageHref}
+        recentAccessPageAs={props.recentAccessPageAs}
+      />
       
     </React.Fragment>
   ;
@@ -129,6 +170,35 @@ const Component = (props) => {
 
 
 /**
+ * コンポーネント / このページ独自のステートを設定する
+ * @param {Object} props - Props
+ */
+const Component = (props) => {
+  
+  
+  // --------------------------------------------------
+  //   Error
+  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
+  // --------------------------------------------------
+  
+  if (props.statusCode !== 200) {
+    return <Error statusCode={props.statusCode} />;
+  }
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return <ContainerLayout {...props} />;
+  
+  
+};
+
+
+
+
+/**
  * getServerSideProps
  * @param {Object} req - リクエスト
  * @param {Object} res - レスポンス
@@ -144,8 +214,6 @@ export async function getServerSideProps({ req, res, query }) {
   createCsrfToken(req, res);
   
   
-  
-  
   // --------------------------------------------------
   //   Cookie & Accept Language
   // --------------------------------------------------
@@ -154,13 +222,19 @@ export async function getServerSideProps({ req, res, query }) {
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   
   
-  
-  
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
   const ISO8601 = moment().utc().toISOString();
+  
+  
+  // --------------------------------------------------
+  //   Get Cookie Data
+  // --------------------------------------------------
+  
+  const recentAccessPageHref = getCookie({ key: 'recentAccessPageHref', reqHeadersCookie, decode: true });
+  const recentAccessPageAs = getCookie({ key: 'recentAccessPageAs', reqHeadersCookie, decode: true });
   
   
   
@@ -225,8 +299,6 @@ export async function getServerSideProps({ req, res, query }) {
     }
     
   ];
-  
-  
   
   
   // --------------------------------------------------
@@ -309,6 +381,9 @@ export async function getServerSideProps({ req, res, query }) {
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,
+      
+      recentAccessPageHref,
+      recentAccessPageAs,
       
     }
     

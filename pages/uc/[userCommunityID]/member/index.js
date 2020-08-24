@@ -16,6 +16,8 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
+import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -27,25 +29,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-
-
-// ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-import { fetchWrapper } from 'app/@modules/fetch.js';
-import { createCsrfToken } from 'app/@modules/csrf.js';
-import { getCookie } from 'app/@modules/cookie.js';
-
-
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
-import Layout from 'app/common/layout/v2/layout.js';
-import ForumNavigation from 'app/common/forum/v2/navigation.js';
-import Forum from 'app/common/forum/v2/forum.js';
-import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
+import lodashIsEqual from 'lodash/isEqual';
 
 
 // ---------------------------------------------
@@ -57,15 +41,41 @@ import { ContainerStateCommunity } from 'app/@states/community.js';
 import { ContainerStateForum } from 'app/@states/forum.js';
 
 
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { createCsrfToken } from 'app/@modules/csrf.js';
+import { getCookie } from 'app/@modules/cookie.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
+
+
+// ---------------------------------------------
+//   Components
+// ---------------------------------------------
+
+import Layout from 'app/common/layout/v2/layout.js';
+import ForumNavigation from 'app/common/forum/v2/navigation.js';
+import Forum from 'app/common/forum/v2/forum.js';
+import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
+
+import FollowMembers from 'app/common/follow/v2/members.js';
+
+
 
 
 
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/gc/***/forum/***
+//   URL: https://dev-1.gameusers.org/gc/***/member
 // --------------------------------------------------
 
+/**
+ * レイアウト
+ * @param {Object} props - Props
+ */
 const ContainerLayout = (props) => {
   
   
@@ -79,7 +89,9 @@ const ContainerLayout = (props) => {
   
   const {
     
-    handleScrollTo,
+    headerObj,
+    setHeaderObj,
+    // handleScrollTo,
     
   } = stateLayout;
   
@@ -105,7 +117,20 @@ const ContainerLayout = (props) => {
   //   Hooks
   // --------------------------------------------------
   
+  const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
+  
+  
   useEffect(() => {
+    
+    
+    // --------------------------------------------------
+    //   Header 更新 - データに変更があった場合のみステートを更新
+    // --------------------------------------------------
+    
+    if (lodashIsEqual(headerObj, props.headerObj) === false) {
+      setHeaderObj(props.headerObj);
+    }
     
     
     // --------------------------------------------------
@@ -120,19 +145,43 @@ const ContainerLayout = (props) => {
     setForumRepliesObj(props.forumRepliesObj);
     
     
+    // --------------------------------------------------
+    //   Snackbar - ログイン回数 + 1
+    // --------------------------------------------------
+    
+    if (Object.keys(props.experienceObj).length !== 0) {
+      
+      showSnackbar({
+        
+        enqueueSnackbar,
+        intl,
+        experienceObj: props.experienceObj,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'LjWizvlER',
+          },
+          
+        ]
+        
+      });
+      
+    }
+    
+    
     // ---------------------------------------------
     //   Scroll To
     // ---------------------------------------------
     
-    handleScrollTo({
+    // handleScrollTo({
       
-      to: 'forumThreads',
-      duration: 0,
-      delay: 0,
-      smooth: 'easeInOutQuart',
-      offset: -50,
+    //   to: 'forumThreads',
+    //   duration: 0,
+    //   delay: 0,
+    //   smooth: 'easeInOutQuart',
+    //   offset: -50,
       
-    });
+    // });
     
     
   }, [props.ISO8601]);
@@ -145,10 +194,10 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
   
   const componentSidebar =
-    <ForumNavigation
-      userCommunityID={props.userCommunityID}
-      userCommunities_id={props.userCommunities_id}
-      forumID={props.forumID}
+    <img
+      src="/img/common/advertisement/300x250.jpg"
+      width="300"
+      height="250"
     />
   ;
   
@@ -159,7 +208,6 @@ const ContainerLayout = (props) => {
   //   Component - Contents
   // --------------------------------------------------
   
-  // const componentContent = '';
   const componentContent = 
     <React.Fragment>
       
@@ -167,12 +215,13 @@ const ContainerLayout = (props) => {
         arr={props.breadcrumbsArr}
       />
       
-      <Forum
-        userCommunityID={props.userCommunityID}
-        userCommunities_id={props.userCommunities_id}
-        enableAnonymity={props.enableAnonymity}
-        individual={props.individual}
-      />
+      {/*<FollowMembers
+        pageType="uc"
+        gameCommunities_id={props.gameCommunities_id}
+        accessLevel={props.accessLevel}
+        cardPlayersObj={props.cardPlayersObj}
+        followMembersObj={props.followMembersObj}
+      />*/}
       
     </React.Fragment>
   ;
@@ -201,7 +250,21 @@ const ContainerLayout = (props) => {
 
 
 
+/**
+ * コンポーネント / このページ独自のステートを設定する
+ * @param {Object} props - Props
+ */
 const Component = (props) => {
+  
+  
+  // --------------------------------------------------
+  //   Error
+  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
+  // --------------------------------------------------
+  
+  if (props.statusCode !== 200) {
+    return <Error statusCode={props.statusCode} />;
+  }
   
   
   // --------------------------------------------------
@@ -217,20 +280,6 @@ const Component = (props) => {
     forumRepliesObj: props.forumRepliesObj,
     
   };
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Error
-  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
-  // --------------------------------------------------
-  
-  if (props.statusCode !== 200) {
-    return <Error statusCode={props.statusCode} />;
-  }
-  
-  
   
   
   // --------------------------------------------------
@@ -271,16 +320,12 @@ export async function getServerSideProps({ req, res, query }) {
   createCsrfToken(req, res);
   
   
-  
-  
   // --------------------------------------------------
   //   Cookie & Accept Language
   // --------------------------------------------------
   
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-  
-  
   
   
   // --------------------------------------------------
@@ -322,8 +367,6 @@ export async function getServerSideProps({ req, res, query }) {
   // `);
   
   
-  
-  
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
@@ -331,18 +374,12 @@ export async function getServerSideProps({ req, res, query }) {
   const ISO8601 = moment().utc().toISOString();
   
   
-  
-  
   // --------------------------------------------------
-  //   Get Cookie Data & Temporary Data for Fetch
+  //   Get Cookie Data
   // --------------------------------------------------
   
-  const threadListPage = 1;
-  const threadListLimit = getCookie({ key: 'forumThreadListLimit', reqHeadersCookie });
-  
-  const threadLimit = getCookie({ key: 'forumThreadLimit', reqHeadersCookie });
-  const commentLimit = getCookie({ key: 'forumCommentLimit', reqHeadersCookie });
-  const replyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
+  const page = 1;
+  const limit = getCookie({ key: 'followLimit', reqHeadersCookie });
   
   
   
@@ -353,7 +390,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   const resultObj = await fetchWrapper({
     
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/uc/${userCommunityID}?forumID=${forumID}&threadListPage=${threadListPage}&threadListLimit=${threadListLimit}&threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/uc/${userCommunityID}/member?page=${page}&limit=${limit}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -374,6 +411,7 @@ export async function getServerSideProps({ req, res, query }) {
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
+  const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
   
   const userCommunities_id = lodashGet(dataObj, ['userCommunityObj', '_id'], '');
   const userCommunityName = lodashGet(dataObj, ['userCommunityObj', 'name'], '');
@@ -381,10 +419,11 @@ export async function getServerSideProps({ req, res, query }) {
   const accessRightRead = lodashGet(dataObj, ['accessRightRead'], false);
   
   const userCommunityObj = lodashGet(dataObj, ['userCommunityObj'], {});
-  const forumThreadsForListObj = lodashGet(dataObj, ['forumThreadsForListObj'], {});
-  const forumThreadsObj = lodashGet(dataObj, ['forumThreadsObj'], {});
-  const forumCommentsObj = lodashGet(dataObj, ['forumCommentsObj'], {});
-  const forumRepliesObj = lodashGet(dataObj, ['forumRepliesObj'], {});
+  
+  // const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
+  // const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
+  const cardPlayersObj = lodashGet(dataObj, ['cardPlayersObj'], {});
+  const followMembersObj = lodashGet(dataObj, ['followMembersObj'], {});
   
   
   
@@ -393,7 +432,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Title
   // --------------------------------------------------
   
-  let title = `フォーラム: Page ${threadPage} - ${userCommunityName}`;
+  let title = `メンバー - ${userCommunityName}`;
   
   
   
@@ -406,7 +445,7 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       name: 'トップ',
-      href: `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`,
+      href: `/uc/[userCommunityID]`,
       as: `/uc/${userCommunityID}`,
       active: true,
     },
@@ -418,8 +457,8 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: 'メンバー',
-        href: `/uc/[userCommunityID]/members?userCommunityID=${userCommunityID}`,
-        as: `/uc/${userCommunityID}/members`,
+        href: `/uc/[userCommunityID]/member`,
+        as: `/uc/${userCommunityID}/member`,
         active: false,
       }
     );
@@ -431,8 +470,8 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: '設定',
-        href: `/uc/[userCommunityID]/settings?userCommunityID=${userCommunityID}`,
-        as: `/uc/${userCommunityID}/settings`,
+        href: `/uc/[userCommunityID]/setting`,
+        as: `/uc/${userCommunityID}/setting`,
         active: false,
       }
     );
@@ -458,8 +497,15 @@ export async function getServerSideProps({ req, res, query }) {
     {
       type: 'uc/index',
       anchorText: userCommunityName,
-      href: `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`,
+      href: `/uc/[userCommunityID]`,
       as: `/uc/${userCommunityID}`,
+    },
+    
+    {
+      type: 'uc/member',
+      anchorText: '',
+      href: '',
+      as: '',
     },
     
   ];

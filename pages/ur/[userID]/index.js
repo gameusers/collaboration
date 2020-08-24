@@ -68,6 +68,10 @@ import CardPlayer from 'app/common/card/v2/card-player.js';
 //   URL: https://dev-1.gameusers.org/ur/***
 // --------------------------------------------------
 
+/**
+ * レイアウト
+ * @param {Object} props - Props
+ */
 const ContainerLayout = (props) => {
   
   
@@ -223,6 +227,10 @@ const ContainerLayout = (props) => {
 
 
 
+/**
+ * コンポーネント / このページ独自のステートを設定する
+ * @param {Object} props - Props
+ */
 const Component = (props) => {
   
   

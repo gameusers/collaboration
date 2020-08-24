@@ -71,6 +71,10 @@ import FormWebPush from 'app/ur/v2/setting/form-web-push.js';
 //   URL: https://dev-1.gameusers.org/ur/***/setting
 // --------------------------------------------------
 
+/**
+ * レイアウト
+ * @param {Object} props - Props
+ */
 const ContainerLayout = (props) => {
   
   
@@ -217,6 +221,10 @@ const ContainerLayout = (props) => {
 
 
 
+/**
+ * コンポーネント / このページ独自のステートを設定する
+ * @param {Object} props - Props
+ */
 const Component = (props) => {
   
   

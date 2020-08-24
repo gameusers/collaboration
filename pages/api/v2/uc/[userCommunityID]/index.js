@@ -33,6 +33,7 @@ import ModelForumThreads from 'app/@database/forum-threads/model.js';
 
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { updateAccessDate } from 'app/@modules/access-date.js';
 
 
 // ---------------------------------------------
@@ -142,20 +143,30 @@ export default async (req, res) => {
     returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
     returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
     
+    const accessDate = lodashGet(returnObj, ['loginUsersObj', 'accessDate'], '');
+    
+    
     
     
     // --------------------------------------------------
-    //   ログインしているユーザー情報＆ログインチェック
+    //   Update Access Date & Login Count
     // --------------------------------------------------
     
-    // returnObj.login = false;
+    const resultUpdatedAccessDateObj = await updateAccessDate({
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      accessDate,
+      
+    });
     
-    // if (req.isAuthenticated() && req.user) {
-      
-    //   returnObj.loginUsersObj = req.user;
-    //   returnObj.login = true;
-      
-    // }
+    returnObj.experienceObj = lodashGet(resultUpdatedAccessDateObj, ['experienceObj'], {});
+    const updatedAccessDate = lodashGet(resultUpdatedAccessDateObj, ['updatedAccessDate'], '');
+    
+    if (updatedAccessDate) {
+      lodashSet(returnObj, ['loginUsersObj', 'accessDate'], updatedAccessDate);
+    }
     
     
     

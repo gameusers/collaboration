@@ -69,6 +69,10 @@ import FollowMembers from 'app/common/follow/v2/members.js';
 //   URL: https://dev-1.gameusers.org/gc/***/follow
 // --------------------------------------------------
 
+/**
+ * レイアウト
+ * @param {Object} props - Props
+ */
 const ContainerLayout = (props) => {
   
   
@@ -109,7 +113,7 @@ const ContainerLayout = (props) => {
     
     
     // --------------------------------------------------
-    //   Snackbar
+    //   Snackbar - ログイン回数 + 1
     // --------------------------------------------------
     
     if (Object.keys(props.experienceObj).length !== 0) {
@@ -205,6 +209,10 @@ const ContainerLayout = (props) => {
 
 
 
+/**
+ * コンポーネント / このページ独自のステートを設定する
+ * @param {Object} props - Props
+ */
 const Component = (props) => {
   
   
@@ -246,16 +254,12 @@ export async function getServerSideProps({ req, res, query }) {
   createCsrfToken(req, res);
   
   
-  
-  
   // --------------------------------------------------
   //   Cookie & Accept Language
   // --------------------------------------------------
   
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-  
-  
   
   
   // --------------------------------------------------
@@ -265,8 +269,6 @@ export async function getServerSideProps({ req, res, query }) {
   const urlID = query.urlID;
   
   
-  
-  
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
@@ -274,10 +276,8 @@ export async function getServerSideProps({ req, res, query }) {
   const ISO8601 = moment().utc().toISOString();
   
   
-  
-  
   // --------------------------------------------------
-  //   Get Cookie Data & Temporary Data for Fetch
+  //   Get Cookie Data
   // --------------------------------------------------
   
   const page = 1;
@@ -347,7 +347,7 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       name: '募集',
-      href: `/gc/[urlID]/rec`,
+      href: `/gc/[urlID]/rec/[[...slug]]`,
       as: `/gc/${urlID}/rec`,
       active: false,
     },
@@ -375,8 +375,6 @@ export async function getServerSideProps({ req, res, query }) {
   }
   
   
-  
-  
   // --------------------------------------------------
   //   パンくずリスト
   // --------------------------------------------------
@@ -385,7 +383,14 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       type: 'gc',
-      anchorText: lodashGet(dataObj, ['headerObj', 'name'], ''),
+      anchorText: '',
+      href: `/gc/index`,
+      as: `/gc`,
+    },
+    
+    {
+      type: 'gc/index',
+      anchorText: gameName,
       href: `/gc/[urlID]`,
       as: `/gc/${urlID}`,
     },
@@ -398,6 +403,16 @@ export async function getServerSideProps({ req, res, query }) {
     },
     
   ];
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Set Cookie - recentAccessPage
+  // ---------------------------------------------
+  
+  res.cookie('recentAccessPageHref', '/gc/[urlID]/follower');
+  res.cookie('recentAccessPageAs', `/gc/${urlID}/follower`);
   
   
   

@@ -436,7 +436,7 @@ const Component = (props) => {
                 disabled={buttonDisabled}
               >
                 <IconDoubleArrow />
-                フォーラムトップに戻る
+                トップに戻る
               </Button>
             </Link>
             

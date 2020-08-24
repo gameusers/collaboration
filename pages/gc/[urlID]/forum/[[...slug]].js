@@ -16,6 +16,8 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
+import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -27,6 +29,16 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashIsEqual from 'lodash/isEqual';
+
+
+// ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateForum } from 'app/@states/forum.js';
 
 
 // ---------------------------------------------
@@ -36,6 +48,7 @@ import lodashGet from 'lodash/get';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
 import { getCookie } from 'app/@modules/cookie.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -48,15 +61,6 @@ import Forum from 'app/common/forum/v2/forum.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 
 
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateLayout } from 'app/@states/layout.js';
-import { ContainerStateCommunity } from 'app/@states/community.js';
-import { ContainerStateForum } from 'app/@states/forum.js';
-
-
 
 
 
@@ -66,6 +70,10 @@ import { ContainerStateForum } from 'app/@states/forum.js';
 //   URL: https://dev-1.gameusers.org/gc/***/forum/***
 // --------------------------------------------------
 
+/**
+ * レイアウト
+ * @param {Object} props - Props
+ */
 const ContainerLayout = (props) => {
   
   
@@ -79,6 +87,8 @@ const ContainerLayout = (props) => {
   
   const {
     
+    headerObj,
+    setHeaderObj,
     handleScrollTo,
     
   } = stateLayout;
@@ -105,7 +115,20 @@ const ContainerLayout = (props) => {
   //   Hooks
   // --------------------------------------------------
   
+  const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
+  
+  
   useEffect(() => {
+    
+    
+    // --------------------------------------------------
+    //   Header 更新 - データに変更があった場合のみステートを更新
+    // --------------------------------------------------
+    
+    if (lodashIsEqual(headerObj, props.headerObj) === false) {
+      setHeaderObj(props.headerObj);
+    }
     
     
     // --------------------------------------------------
@@ -120,19 +143,43 @@ const ContainerLayout = (props) => {
     setForumRepliesObj(props.forumRepliesObj);
     
     
+    // --------------------------------------------------
+    //   Snackbar - ログイン回数 + 1
+    // --------------------------------------------------
+    
+    if (Object.keys(props.experienceObj).length !== 0) {
+      
+      showSnackbar({
+        
+        enqueueSnackbar,
+        intl,
+        experienceObj: props.experienceObj,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'LjWizvlER',
+          },
+          
+        ]
+        
+      });
+      
+    }
+    
+    
     // ---------------------------------------------
     //   Scroll To
     // ---------------------------------------------
     
-    handleScrollTo({
+    // handleScrollTo({
       
-      to: 'forumThreads',
-      duration: 0,
-      delay: 0,
-      smooth: 'easeInOutQuart',
-      offset: -50,
+    //   to: 'forumThreads',
+    //   duration: 0,
+    //   delay: 0,
+    //   smooth: 'easeInOutQuart',
+    //   offset: -50,
       
-    });
+    // });
     
     
   }, [props.ISO8601]);
@@ -200,7 +247,21 @@ const ContainerLayout = (props) => {
 
 
 
+/**
+ * コンポーネント / このページ独自のステートを設定する
+ * @param {Object} props - Props
+ */
 const Component = (props) => {
+  
+  
+  // --------------------------------------------------
+  //   Error
+  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
+  // --------------------------------------------------
+  
+  if (props.statusCode !== 200) {
+    return <Error statusCode={props.statusCode} />;
+  }
   
   
   // --------------------------------------------------
@@ -216,20 +277,6 @@ const Component = (props) => {
     forumRepliesObj: props.forumRepliesObj,
     
   };
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Error
-  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
-  // --------------------------------------------------
-  
-  if (props.statusCode !== 200) {
-    return <Error statusCode={props.statusCode} />;
-  }
-  
-  
   
   
   // --------------------------------------------------
@@ -270,16 +317,12 @@ export async function getServerSideProps({ req, res, query }) {
   createCsrfToken(req, res);
   
   
-  
-  
   // --------------------------------------------------
   //   Cookie & Accept Language
   // --------------------------------------------------
   
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-  
-  
   
   
   // --------------------------------------------------
@@ -321,15 +364,11 @@ export async function getServerSideProps({ req, res, query }) {
   // `);
   
   
-  
-  
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
   const ISO8601 = moment().utc().toISOString();
-  
-  
   
   
   // --------------------------------------------------
@@ -373,9 +412,10 @@ export async function getServerSideProps({ req, res, query }) {
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
+  const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
+  
   const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
   const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
-  
   const gameCommunityObj = lodashGet(dataObj, ['gameCommunityObj'], {});
   const forumThreadsForListObj = lodashGet(dataObj, ['forumThreadsForListObj'], {});
   const forumThreadsObj = lodashGet(dataObj, ['forumThreadsObj'], {});
@@ -402,21 +442,21 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       name: 'トップ',
-      href: `/gc/[urlID]/index?urlID=${urlID}`,
+      href: `/gc/[urlID]`,
       as: `/gc/${urlID}`,
       active: true,
     },
     
     {
       name: '募集',
-      href: `/gc/[urlID]/rec?urlID=${urlID}`,
+      href: `/gc/[urlID]/rec/[[...slug]]`,
       as: `/gc/${urlID}/rec`,
       active: false,
     },
     
     {
       name: 'フォロワー',
-      href: `/gc/[urlID]/follower?urlID=${urlID}`,
+      href: `/gc/[urlID]/follower`,
       as: `/gc/${urlID}/follower`,
       active: false,
     }
@@ -428,7 +468,7 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: '設定',
-        href: `/gc/[urlID]/settings?urlID=${urlID}`,
+        href: `/gc/[urlID]/settings`,
         as: `/gc/${urlID}/settings`,
         active: false,
       }
@@ -447,14 +487,29 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       type: 'gc',
+      anchorText: '',
+      href: `/gc/index`,
+      as: `/gc`,
+    },
+    
+    {
+      type: 'gc/index',
       anchorText: gameName,
-      href: `/gc/[urlID]/index?urlID=${urlID}`,
+      href: `/gc/[urlID]`,
       as: `/gc/${urlID}`,
     },
     
   ];
   
   
+  
+  
+  // --------------------------------------------------
+  //   recentAccessPage
+  // --------------------------------------------------
+  
+  let recentAccessPageHref = `/gc/[urlID]/forum/[[...slug]]`;
+  let recentAccessPageAs = `/gc/${urlID}`;
   
   
   // --------------------------------------------------
@@ -478,8 +533,17 @@ export async function getServerSideProps({ req, res, query }) {
       },
       
     );
-  
-  
+    
+    
+    // --------------------------------------------------
+    //   - recentAccessPage
+    // --------------------------------------------------
+    
+    if (threadPage > 1) {
+      recentAccessPageAs = `/gc/${urlID}/forum/${threadPage}`;
+    }
+    
+    
   // --------------------------------------------------
   //   個別のフォーラム
   // --------------------------------------------------
@@ -520,7 +584,24 @@ export async function getServerSideProps({ req, res, query }) {
     individual = true;
     
     
+    // --------------------------------------------------
+    //   - recentAccessPage
+    // --------------------------------------------------
+    
+    recentAccessPageAs = `/gc/${urlID}/forum/${forumID}`;
+    
+    
   }
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Set Cookie - recentAccessPage
+  // ---------------------------------------------
+  
+  res.cookie('recentAccessPageHref', recentAccessPageHref);
+  res.cookie('recentAccessPageAs', recentAccessPageAs);
   
   
   
@@ -580,6 +661,7 @@ export async function getServerSideProps({ req, res, query }) {
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,
+      experienceObj,
       
       urlID,
       gameCommunities_id,

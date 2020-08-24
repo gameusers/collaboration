@@ -29,18 +29,10 @@ import Cookies from 'js-cookie';
  * Cookie からデータを取得する / 2020/6/6
  * @param {String} key - 取得するキー
  * @param {String} reqHeadersCookie - サーバー側で受信したクッキーのデータ
+ * @param {Boolean} decode - デコードする場合はtrue
  */
-const getCookie = ({ key, reqHeadersCookie = '' }) => {
+const getCookie = ({ key, reqHeadersCookie = '', decode = false }) => {
   
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /app/@modules/cookie.js - getCookie
-  // `);
-  
-  // console.log(chalk`
-  //   key: {green ${key}}
-  //   reqHeadersCookie: {green ${reqHeadersCookie}}
-  // `);
   
   // --------------------------------------------------
   //   データを取得する
@@ -48,49 +40,19 @@ const getCookie = ({ key, reqHeadersCookie = '' }) => {
   
   let returnValue = Cookies.get(key) || ((reqHeadersCookie + ';').match(key + '=([^¥S;]*)')||[])[1];
   
-  // if (!returnValue) {
-    
-    // const splited1Arr = reqHeadersCookie.split(';');
-    
-    // console.log(`
-    //   ----- splited1Arr -----\n
-    //   ${util.inspect(splited1Arr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // for (let value of splited1Arr){
-        
-    //   const splited2Arr = value.split('=');
-    //   const cookieKey = splited2Arr[0].trim();
-      
-    //   // console.log(`
-    //   //   ----- splited2Arr -----\n
-    //   //   ${util.inspect(splited2Arr, { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
-      
-    //   console.log(chalk`
-    //     cookieKey: {green ${cookieKey}}
-    //     key: {green ${key}}
-    //   `);
-      
-      
-    //   if (cookieKey === key) {
-        
-    //     console.log(`
-    //       ----- 正解 -----\n
-    //       ${util.inspect(splited2Arr, { colors: true, depth: null })}\n
-    //       --------------------\n
-    //     `);
-        
-    //   }
-      
-    // }
-    
-  // }
+  
+  // --------------------------------------------------
+  //   デコード
+  // --------------------------------------------------
+  
+  if (decode) {
+    returnValue = decodeURIComponent(returnValue);
+  }
   
   
-  
+  // --------------------------------------------------
+  //   returnValue
+  // --------------------------------------------------
   
   if (!returnValue) {
     returnValue = '';
@@ -108,6 +70,11 @@ const getCookie = ({ key, reqHeadersCookie = '' }) => {
   
   // console.log(chalk`
   //   returnValue: {green ${returnValue}}
+  // `);
+  
+  // console.log(chalk`
+  //   key: {green ${key}}
+  //   reqHeadersCookie: {green ${reqHeadersCookie}}
   // `);
   
   // console.log(chalk`

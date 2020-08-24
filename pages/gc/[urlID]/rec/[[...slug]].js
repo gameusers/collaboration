@@ -18,7 +18,7 @@ import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
 import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
-import { animateScroll as scroll } from 'react-scroll';
+// import { animateScroll as scroll } from 'react-scroll';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -71,6 +71,10 @@ import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 //   URL: https://dev-1.gameusers.org/gc/***/rec/***
 // --------------------------------------------------
 
+/**
+ * レイアウト
+ * @param {Object} props - Props
+ */
 const ContainerLayout = (props) => {
   
   
@@ -119,6 +123,15 @@ const ContainerLayout = (props) => {
     
     
     // --------------------------------------------------
+    //   Header 更新 - データに変更があった場合のみステートを更新
+    // --------------------------------------------------
+    
+    if (lodashIsEqual(headerObj, props.headerObj) === false) {
+      setHeaderObj(props.headerObj);
+    }
+    
+    
+    // --------------------------------------------------
     //   Router.push でページを移動した際の処理
     //   getServerSideProps でデータを取得してからデータを更新する
     // --------------------------------------------------
@@ -130,16 +143,7 @@ const ContainerLayout = (props) => {
     
     
     // --------------------------------------------------
-    //   Header 更新 - データに変更があった場合のみステートを更新
-    // --------------------------------------------------
-    
-    if (lodashIsEqual(headerObj, props.headerObj) === false) {
-      setHeaderObj(props.headerObj);
-    }
-    
-    
-    // --------------------------------------------------
-    //   Snackbar
+    //   Snackbar - ログイン回数 + 1
     // --------------------------------------------------
     
     if (Object.keys(props.experienceObj).length !== 0) {
@@ -244,6 +248,10 @@ const ContainerLayout = (props) => {
 
 
 
+/**
+ * コンポーネント / このページ独自のステートを設定する
+ * @param {Object} props - Props
+ */
 const Component = (props) => {
   
   
@@ -265,8 +273,6 @@ const Component = (props) => {
   };
   
   
-  
-  
   // --------------------------------------------------
   //   Error
   //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
@@ -275,8 +281,6 @@ const Component = (props) => {
   if (props.statusCode !== 200) {
     return <Error statusCode={props.statusCode} />;
   }
-  
-  
   
   
   // --------------------------------------------------
@@ -317,16 +321,12 @@ export async function getServerSideProps({ req, res, query }) {
   createCsrfToken(req, res);
   
   
-  
-  
   // --------------------------------------------------
   //   Cookie & Accept Language
   // --------------------------------------------------
   
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-  
-  
   
   
   // --------------------------------------------------
@@ -337,11 +337,10 @@ export async function getServerSideProps({ req, res, query }) {
   const hardwares = lodashGet(query, ['hardwares'], '');
   const categories = lodashGet(query, ['categories'], '');
   const keyword = lodashGet(query, ['keyword'], '');
-  
+  const page = lodashGet(query, ['page'], 1);
   const slugsArr = lodashGet(query, ['slug'], []);
   
   let threadPage = 1;
-  
   let pageType = '';
   let recruitmentID = '';
   
@@ -366,15 +365,11 @@ export async function getServerSideProps({ req, res, query }) {
   }
   
   
-  
-  
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
   const ISO8601 = moment().utc().toISOString();
-  
-  
   
   
   // --------------------------------------------------
@@ -453,7 +448,7 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       name: '募集',
-      href: `/gc/[urlID]/rec`,
+      href: `/gc/[urlID]/rec/[[...slug]]`,
       as: `/gc/${urlID}/rec`,
       active: true,
     },
@@ -481,8 +476,6 @@ export async function getServerSideProps({ req, res, query }) {
   }
   
   
-  
-  
   // --------------------------------------------------
   //   パンくずリスト
   // --------------------------------------------------
@@ -491,6 +484,13 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       type: 'gc',
+      anchorText: '',
+      href: `/gc/index`,
+      as: `/gc`,
+    },
+    
+    {
+      type: 'gc/index',
       anchorText: gameName,
       href: `/gc/[urlID]`,
       as: `/gc/${urlID}`,
@@ -499,13 +499,21 @@ export async function getServerSideProps({ req, res, query }) {
     {
       type: 'gc/rec',
       anchorText: '',
-      href: `/gc/[urlID]/rec`,
+      href: `/gc/[urlID]/rec/[[...slug]]`,
       as: `/gc/${urlID}/rec`,
     },
     
   ];
   
   
+  
+  
+  // --------------------------------------------------
+  //   recentAccessPage
+  // --------------------------------------------------
+  
+  let recentAccessPageHref = `/gc/[urlID]/rec/[[...slug]]`;
+  let recentAccessPageAs = `/gc/${urlID}/rec`;
   
   
   // --------------------------------------------------
@@ -534,6 +542,13 @@ export async function getServerSideProps({ req, res, query }) {
     // ---------------------------------------------
     
     title = `募集: Page ${threadPage} - ${gameName}`;
+    
+    
+    // --------------------------------------------------
+    //   - recentAccessPage
+    // --------------------------------------------------
+    
+    recentAccessPageAs = `/gc/${urlID}/rec/${threadPage}`;
     
     
   // --------------------------------------------------
@@ -569,11 +584,11 @@ export async function getServerSideProps({ req, res, query }) {
     );
     
     
-    // ---------------------------------------------
-    //   - Individual
-    // ---------------------------------------------
+    // --------------------------------------------------
+    //   - recentAccessPage
+    // --------------------------------------------------
     
-    // individual = true;
+    recentAccessPageAs = `/gc/${urlID}/rec/${recruitmentID}`;
     
     
   // --------------------------------------------------
@@ -606,7 +621,42 @@ export async function getServerSideProps({ req, res, query }) {
     );
     
     
+    // --------------------------------------------------
+    //   - recentAccessPage
+    // --------------------------------------------------
+    
+    const urlHardwares = hardwares ? `hardwares=${hardwares}&` : '';
+    const urlCategories = categories ? `categories=${categories}&` : '';
+    const urlKeyword = keyword ? `keyword=${encodeURI(keyword)}&` : '';
+    
+    recentAccessPageAs = `/gc/${urlID}/rec/search?${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
+    
+    if (!urlHardwares && !urlCategories && !urlKeyword) {
+      
+      if (page === 1) {
+        
+        recentAccessPageAs = `/gc/${urlID}/rec`;
+        
+      } else {
+        
+        recentAccessPageAs = `/gc/${urlID}/rec/${page}`;
+        
+      }
+      
+    }
+    
+    
   }
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Set Cookie - recentAccessPage
+  // ---------------------------------------------
+  
+  res.cookie('recentAccessPageHref', recentAccessPageHref);
+  res.cookie('recentAccessPageAs', recentAccessPageAs);
   
   
   

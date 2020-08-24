@@ -112,13 +112,13 @@ const sendNotifications = async ({ arr = [] }) => {
     
     const subscriptionObj = valueObj.subscriptionObj;
     
-    let title = valueObj.title;
+    let title = lodashGet(valueObj, ['title'], '');
     
     if (title.length > 20) {
       title = title.substr(0, 19) + '…';
     }
     
-    let body = valueObj.body;
+    let body = lodashGet(valueObj, ['body'], '');
     
     if (body.length > 30) {
       body = body.substr(0, 29) + '…';

@@ -71,6 +71,10 @@ import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 //   URL: https://dev-1.gameusers.org/gc/***
 // --------------------------------------------------
 
+/**
+ * レイアウト
+ * @param {Object} props - Props
+ */
 const ContainerLayout = (props) => {
   
   
@@ -128,7 +132,19 @@ const ContainerLayout = (props) => {
     
     
     // --------------------------------------------------
-    //   Snackbar
+    //   Router.push でページを移動した際の処理
+    //   getServerSideProps でデータを取得してからデータを更新する
+    // --------------------------------------------------
+    
+    setGameCommunityObj(props.gameCommunityObj);
+    setForumThreadsForListObj(props.forumThreadsForListObj);
+    setForumThreadsObj(props.forumThreadsObj);
+    setForumCommentsObj(props.forumCommentsObj);
+    setForumRepliesObj(props.forumRepliesObj);
+    
+    
+    // --------------------------------------------------
+    //   Snackbar - ログイン回数 + 1
     // --------------------------------------------------
     
     if (Object.keys(props.experienceObj).length !== 0) {
@@ -151,18 +167,6 @@ const ContainerLayout = (props) => {
     }
     
     
-    // --------------------------------------------------
-    //   Router.push でページを移動した際の処理
-    //   getServerSideProps でデータを取得してからデータを更新する
-    // --------------------------------------------------
-    
-    setGameCommunityObj(props.gameCommunityObj);
-    setForumThreadsForListObj(props.forumThreadsForListObj);
-    setForumThreadsObj(props.forumThreadsObj);
-    setForumCommentsObj(props.forumCommentsObj);
-    setForumRepliesObj(props.forumRepliesObj);
-    
-    
     // ---------------------------------------------
     //   Scroll To
     // ---------------------------------------------
@@ -181,18 +185,12 @@ const ContainerLayout = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/forum/[...slug].js - ContainerLayout
+  //   /pages/gc/[urlID]/index.js - ContainerLayout
   // `);
   
   // console.log(`
   //   ----- props -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(props)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- forumThreadsObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
   
@@ -261,6 +259,10 @@ const ContainerLayout = (props) => {
 
 
 
+/**
+ * コンポーネント / このページ独自のステートを設定する
+ * @param {Object} props - Props
+ */
 const Component = (props) => {
   
   
@@ -272,8 +274,6 @@ const Component = (props) => {
   if (props.statusCode !== 200) {
     return <Error statusCode={props.statusCode} />;
   }
-  
-  
   
   
   // --------------------------------------------------
@@ -289,8 +289,6 @@ const Component = (props) => {
     forumRepliesObj: props.forumRepliesObj,
     
   };
-  
-  
   
   
   // --------------------------------------------------
@@ -331,8 +329,6 @@ export async function getServerSideProps({ req, res, query }) {
   createCsrfToken(req, res);
   
   
-  
-  
   // --------------------------------------------------
   //   Cookie & Accept Language
   // --------------------------------------------------
@@ -341,19 +337,11 @@ export async function getServerSideProps({ req, res, query }) {
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   
   
-  
-  
   // --------------------------------------------------
   //   Query
   // --------------------------------------------------
   
   const urlID = query.urlID;
-  
-  // console.log(`
-  //   ----- query -----\n
-  //   ${util.inspect(query, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
   
   
   // --------------------------------------------------
@@ -361,16 +349,6 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
   
   const ISO8601 = moment().utc().toISOString();
-  
-  
-  // const datetimeCurrent = moment('2020-08-20T14:00:00.000Z').startOf('day');
-  // const datetimeUpdated = moment('2020-08-20T16:00:00.000Z').startOf('day');
-  
-  // console.log(chalk`
-  //   datetimeCurrent: {green ${datetimeCurrent}}
-  //   datetimeUpdated: {green ${datetimeUpdated}}
-  //   datetimeCurrent.isSame(datetimeUpdated, 'day')：{green ${datetimeCurrent.isSame(datetimeUpdated, 'day')}}
-  // `);
   
   
   // --------------------------------------------------
@@ -452,7 +430,7 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       name: '募集',
-      href: `/gc/[urlID]/rec`,
+      href: `/gc/[urlID]/rec/[[...slug]]`,
       as: `/gc/${urlID}/rec`,
       active: false,
     },
@@ -480,8 +458,6 @@ export async function getServerSideProps({ req, res, query }) {
   }
   
   
-  
-  
   // --------------------------------------------------
   //   パンくずリスト
   // --------------------------------------------------
@@ -490,12 +466,29 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       type: 'gc',
+      anchorText: '',
+      href: `/gc/index`,
+      as: `/gc`,
+    },
+    
+    {
+      type: 'gc/index',
       anchorText: gameName,
       href: '',
       as: '',
     },
     
   ];
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Set Cookie - recentAccessPage
+  // ---------------------------------------------
+  
+  res.cookie('recentAccessPageHref', '/gc/[urlID]');
+  res.cookie('recentAccessPageAs', `/gc/${urlID}`);
   
   
   

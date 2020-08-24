@@ -18,6 +18,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Router from 'next/router';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { GoogleReCaptchaProvider, GoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 /** @jsx jsx */
@@ -51,6 +52,7 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -86,10 +88,25 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
+  //   props
+  // --------------------------------------------------
+  
+  const {
+    
+    recentAccessPageHref,
+    recentAccessPageAs,
+    
+  } = props;
+  
+  
+  
+  
+  // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
   const [loginID, setLoginID] = useState('');
@@ -115,7 +132,6 @@ const Component = (props) => {
   
   const {
     
-    handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
     
@@ -148,7 +164,10 @@ const Component = (props) => {
       
       eventObj.preventDefault();
       
-      
+      console.log(chalk`
+        recentAccessPageHref: {green ${recentAccessPageHref}}
+        recentAccessPageAs: {green ${recentAccessPageAs}}
+      `);
       
       
       // ---------------------------------------------
@@ -233,14 +252,20 @@ const Component = (props) => {
       
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Snackbar: Success
-      // ---------------------------------------------
+      // --------------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'success',
-        messageID: '5Gf730Gmz',
+        enqueueSnackbar,
+        intl,
+        arr: [
+          {
+            variant: 'success',
+            messageID: '5Gf730Gmz',
+          },
+        ]
         
       });
       
@@ -251,9 +276,16 @@ const Component = (props) => {
       //   Router.push = History API pushState()
       // ---------------------------------------------
       
-      const userID = lodashGet(resultObj, ['data', 'userID'], '');
-      const url = `/ur/[userID]`;
-      const as = `/ur/${userID}`;
+      let url = recentAccessPageHref;
+      let as = recentAccessPageAs;
+      
+      if (!url || !as) {
+        
+        const userID = lodashGet(resultObj, ['data', 'userID'], '');
+        url = `/ur/[userID]`;
+        as = `/ur/${userID}`;
+        
+      }
       
       Router.push(url, as);
       
@@ -274,9 +306,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      handleSnackbarOpen({
+      showSnackbar({
         
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
         
       });

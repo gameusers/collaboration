@@ -79,8 +79,6 @@ import FormImageAndVideo from 'app/common/image-and-video/v2/form.js';
 
 
 
-
-
 // --------------------------------------------------
 //   Function Components
 // --------------------------------------------------
@@ -103,8 +101,6 @@ const FormPageTitle = (props) => {
   } = props;
   
   
-  
-  
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
@@ -114,8 +110,8 @@ const FormPageTitle = (props) => {
   const [type, setType] = useState('top');
   
   
-  
-  
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
@@ -194,8 +190,8 @@ const FormPageTitle = (props) => {
     
   };
   
-  
-  
+
+
   
   // --------------------------------------------------
   //   Property
@@ -206,16 +202,12 @@ const FormPageTitle = (props) => {
   });
   
   
-  
-  
   // --------------------------------------------------
   //   Validations
   // --------------------------------------------------
   
   const title = lodashGet(resultObj, ['title'], '');
   const validationUsersPagesTitleObj = validationUsersPagesTitle({ value: title });
-  
-  
   
   
   // --------------------------------------------------
@@ -232,8 +224,6 @@ const FormPageTitle = (props) => {
   //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
   
   
   // --------------------------------------------------
@@ -324,6 +314,17 @@ const Component = (props) => {
     
   } = props;
   
+  const pagesImagesAndVideosObj = lodashGet(props, ['pagesImagesAndVideosObj'], [{
+    
+    _id: '',
+    createdDate: '',
+    updatedDate: '',
+    users_id: '',
+    type: 'ur',
+    arr: [],
+    
+  }]);
+
   const arr = lodashGet(pagesObj, ['arr'], [{
     
     _id: '',
@@ -332,8 +333,6 @@ const Component = (props) => {
     language: 'ja',
     
   }]);
-  
-  
   
   
   // --------------------------------------------------
@@ -348,16 +347,7 @@ const Component = (props) => {
   const [approval, setApproval] = useState(lodashGet(props, ['approval'], false));
   const [pagesArr, setPagesArr] = useState(arr);
   
-  const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
-    
-    _id: '',
-    createdDate: '',
-    updatedDate: '',
-    users_id: '',
-    type: 'ur',
-    arr: [],
-    
-  });
+  const [imagesAndVideosObj, setImagesAndVideosObj] = useState(pagesImagesAndVideosObj);
   
   
   useEffect(() => {
@@ -365,8 +355,6 @@ const Component = (props) => {
     setButtonDisabled(false);
     
   }, []);
-  
-  
   
   
   // --------------------------------------------------
@@ -410,8 +398,6 @@ const Component = (props) => {
     eventObj.preventDefault();
     
     
-    
-    
     try {
       
       
@@ -419,17 +405,9 @@ const Component = (props) => {
       //   Validations
       // ---------------------------------------------
       
-      if (
-        
-        validationUsersUserID({ value: userID }).error
-        
-      ) {
-        
+      if (validationUsersUserID({ value: userID }).error) {
         throw new CustomError({ errorsArr: [{ code: 'jj7ApE77f', messageID: 'uwHIKBy7c' }] });
-        
       }
-      
-      
       
       
       // ---------------------------------------------
@@ -446,8 +424,6 @@ const Component = (props) => {
       setButtonDisabled(true);
       
       
-      
-      
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
@@ -460,7 +436,7 @@ const Component = (props) => {
         
       };
       
-      if (imagesAndVideosObj.arr.length !== 0) {
+      if (Object.keys(imagesAndVideosObj).length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
       
@@ -487,15 +463,11 @@ const Component = (props) => {
       }
       
       
-      
-      
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
       
       setButtonDisabled(false);
-      
-      
       
       
       // ---------------------------------------------
@@ -539,8 +511,6 @@ const Component = (props) => {
       }
       
       
-      
-      
       // ---------------------------------------------
       //   Page Transition / URLを変更した場合にリロードする
       // ---------------------------------------------
@@ -552,8 +522,6 @@ const Component = (props) => {
       }
       
       
-      
-      
       // ---------------------------------------------
       //   Update - Header
       // ---------------------------------------------
@@ -563,8 +531,6 @@ const Component = (props) => {
       if (Object.keys(headerObj).length !== 0) {
         setHeaderObj(headerObj);
       }
-      
-      
       
       
       // --------------------------------------------------
@@ -651,15 +617,11 @@ const Component = (props) => {
   const limitImagesAndVideos = parseInt(process.env.NEXT_PUBLIC_USER_PAGE_IMAGES_AND_VIDEOS_LIMIT, 10);
   
   
-  
-  
   // --------------------------------------------------
   //   Validations
   // --------------------------------------------------
   
   const validationUsersUserIDObj = validationUsersUserID({ value: userID });
-  
-  
   
   
   // --------------------------------------------------
@@ -687,8 +649,6 @@ const Component = (props) => {
   //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
   
   
   // --------------------------------------------------

@@ -321,27 +321,27 @@ const Component = (props) => {
             
             {/* Image */}
             <Tooltip title={caption}>
-            
-              <img
-                css={css`
-                  // width: 108px;
-                  height: 108px;
-                  min-height: 108px;
-                  max-height: 108px;
-                  
-                  @media screen and (max-width: 480px) {
-                    // width: 68px;
-                    height: 68px;
-                    min-height: 68px;
-                    max-height: 68px;
-                  }
-                `}
-                src={src}
-                // width="108px"
-                // height="108px"
-                // alt={imageType}
-              />
-            
+              <div>
+                <img
+                  css={css`
+                    // width: 108px;
+                    height: 108px;
+                    min-height: 108px;
+                    max-height: 108px;
+                    
+                    @media screen and (max-width: 480px) {
+                      // width: 68px;
+                      height: 68px;
+                      min-height: 68px;
+                      max-height: 68px;
+                    }
+                  `}
+                  src={src}
+                  // width="108px"
+                  // height="108px"
+                  // alt={imageType}
+                />
+              </div>
             </Tooltip>
             
             

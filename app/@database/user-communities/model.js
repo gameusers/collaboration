@@ -333,7 +333,7 @@ const findForUserCommunity = async ({
     
     
     // --------------------------------------------------
-    //   Property
+    //   Language & Country
     // --------------------------------------------------
     
     const language = lodashGet(localeObj, ['language'], '');
@@ -365,7 +365,7 @@ const findForUserCommunity = async ({
     //   Aggregation
     // --------------------------------------------------
     
-    const resultArr = await SchemaUserCommunities.aggregate([
+    const docArr = await SchemaUserCommunities.aggregate([
       
       
       // --------------------------------------------------
@@ -383,16 +383,16 @@ const findForUserCommunity = async ({
         $lookup:
           {
             from: 'games',
-            let: { gameCommunities_idsArr: '$gameCommunities_idsArr' },
+            let: { letGameCommunities_idsArr: '$gameCommunities_idsArr' },
             pipeline: [
               
-              { $match:
-                { $expr:
-                  { $and:
-                    [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
                       { $eq: ['$language', language] },
                       { $eq: ['$country', country] },
-                      { $in: ['$gameCommunities_id', '$$gameCommunities_idsArr'] },
+                      { $in: ['$gameCommunities_id', '$$letGameCommunities_idsArr'] },
                     ]
                   },
                 }
@@ -407,15 +407,17 @@ const findForUserCommunity = async ({
                 $lookup:
                   {
                     from: 'images-and-videos',
-                    let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                    let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                          },
                         }
                       },
-                      { $project:
-                        {
+                      {
+                        $project: {
                           createdDate: 0,
                           updatedDate: 0,
                           users_id: 0,
@@ -457,15 +459,17 @@ const findForUserCommunity = async ({
         $lookup:
           {
             from: 'images-and-videos',
-            let: { imagesAndVideos_id: '$imagesAndVideos_id' },
+            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$imagesAndVideos_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideos_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -493,15 +497,17 @@ const findForUserCommunity = async ({
         $lookup:
           {
             from: 'follows',
-            let: { uc_id: '$_id' },
+            let: { let_id: '$_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$userCommunities_id', '$$uc_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$userCommunities_id', '$$let_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   _id: 0,
                   approval: 1,
                   followedArr: 1,
@@ -547,22 +553,18 @@ const findForUserCommunity = async ({
     
     
     // console.log(`
-    //   ----- resultArr -----\n
-    //   ${util.inspect(resultArr, { colors: true, depth: null })}\n
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
     
     
     // --------------------------------------------------
     //   Format
     // --------------------------------------------------
     
-    const returnObj = lodashGet(resultArr, [0], {});
+    const returnObj = lodashGet(docArr, [0], {});
     const headerObj = {};
-    
-    
     
     
     // --------------------------------------------------
@@ -629,8 +631,7 @@ const findForUserCommunity = async ({
     headerObj.type = 'uc';
     headerObj.createdDate = returnObj.createdDate;
     headerObj.name = returnObj.name;
-    // headerObj.approval = lodashGet(returnObj, ['followsObj', 'approval'], false);
-    // headerObj.followedCount = lodashGet(returnObj, ['followsObj', 'followedCount'], 0);
+    headerObj.communityType = returnObj.communityType;
     
     returnObj.headerObj = headerObj;
     
@@ -641,7 +642,7 @@ const findForUserCommunity = async ({
     //   不要な項目を削除する
     // --------------------------------------------------
     
-    delete returnObj.createdDate;
+    // delete returnObj.createdDate;
     delete returnObj.localesArr;
     delete returnObj.gamesArr;
     delete returnObj.imagesAndVideosObj;

@@ -30,6 +30,14 @@ import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateForum } from 'app/@states/forum.js';
+
+
+// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -48,24 +56,17 @@ import Forum from 'app/common/forum/v2/forum.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 
 
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateLayout } from 'app/@states/layout.js';
-import { ContainerStateCommunity } from 'app/@states/community.js';
-import { ContainerStateForum } from 'app/@states/forum.js';
-
-
-
-
 
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/gc/***/forum/***
+//   URL: http://localhost:8080/uc/***/forum/***
 // --------------------------------------------------
 
+/**
+ * レイアウト
+ * @param {Object} props - Props
+ */
 const ContainerLayout = (props) => {
   
   
@@ -73,32 +74,11 @@ const ContainerLayout = (props) => {
   //   States
   // --------------------------------------------------
   
-  const stateLayout = ContainerStateLayout.useContainer();
   const stateCommunity = ContainerStateCommunity.useContainer();
   const stateForum = ContainerStateForum.useContainer();
   
-  const {
-    
-    handleScrollTo,
-    
-  } = stateLayout;
-  
-  const {
-    
-    setUserCommunityObj,
-    
-  } = stateCommunity;
-  
-  const {
-    
-    setForumThreadsForListObj,
-    setForumThreadsObj,
-    setForumCommentsObj,
-    setForumRepliesObj,
-    
-  } = stateForum;
-  
-  
+  const { setUserCommunityObj } = stateCommunity;
+  const { setForumThreadsForListObj, setForumThreadsObj, setForumCommentsObj, setForumRepliesObj } = stateForum;
   
   
   // --------------------------------------------------
@@ -118,26 +98,24 @@ const ContainerLayout = (props) => {
     setForumThreadsObj(props.forumThreadsObj);
     setForumCommentsObj(props.forumCommentsObj);
     setForumRepliesObj(props.forumRepliesObj);
-    
+
     
     // ---------------------------------------------
     //   Scroll To
     // ---------------------------------------------
     
-    handleScrollTo({
+    // handleScrollTo({
       
-      to: 'forumThreads',
-      duration: 0,
-      delay: 0,
-      smooth: 'easeInOutQuart',
-      offset: -50,
+    //   to: 'forumThreads',
+    //   duration: 0,
+    //   delay: 0,
+    //   smooth: 'easeInOutQuart',
+    //   offset: -50,
       
-    });
+    // });
     
     
   }, [props.ISO8601]);
-  
-  
   
   
   // --------------------------------------------------
@@ -153,13 +131,10 @@ const ContainerLayout = (props) => {
   ;
   
   
-  
-  
   // --------------------------------------------------
   //   Component - Contents
   // --------------------------------------------------
   
-  // const componentContent = '';
   const componentContent = 
     <React.Fragment>
       
@@ -176,8 +151,6 @@ const ContainerLayout = (props) => {
       
     </React.Fragment>
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -201,9 +174,23 @@ const ContainerLayout = (props) => {
 
 
 
+/**
+ * コンポーネント / このページ独自のステートを設定する
+ * @param {Object} props - Props
+ */
 const Component = (props) => {
   
   
+  // --------------------------------------------------
+  //   Error
+  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
+  // --------------------------------------------------
+  
+  if (props.statusCode !== 200) {
+    return <Error statusCode={props.statusCode} />;
+  }
+
+
   // --------------------------------------------------
   //   unstated-next - Initial State
   // --------------------------------------------------
@@ -217,20 +204,6 @@ const Component = (props) => {
     forumRepliesObj: props.forumRepliesObj,
     
   };
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Error
-  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
-  // --------------------------------------------------
-  
-  if (props.statusCode !== 200) {
-    return <Error statusCode={props.statusCode} />;
-  }
-  
-  
   
   
   // --------------------------------------------------
@@ -271,16 +244,12 @@ export async function getServerSideProps({ req, res, query }) {
   createCsrfToken(req, res);
   
   
-  
-  
   // --------------------------------------------------
   //   Cookie & Accept Language
   // --------------------------------------------------
   
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-  
-  
   
   
   // --------------------------------------------------
@@ -322,15 +291,11 @@ export async function getServerSideProps({ req, res, query }) {
   // `);
   
   
-  
-  
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
   const ISO8601 = moment().utc().toISOString();
-  
-  
   
   
   // --------------------------------------------------
@@ -343,8 +308,6 @@ export async function getServerSideProps({ req, res, query }) {
   const threadLimit = getCookie({ key: 'forumThreadLimit', reqHeadersCookie });
   const commentLimit = getCookie({ key: 'forumCommentLimit', reqHeadersCookie });
   const replyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
-  
-  
   
   
   // --------------------------------------------------
@@ -364,8 +327,6 @@ export async function getServerSideProps({ req, res, query }) {
   const dataObj = lodashGet(resultObj, ['data'], {});
   
   
-  
-  
   // --------------------------------------------------
   //   dataObj
   // --------------------------------------------------
@@ -374,6 +335,7 @@ export async function getServerSideProps({ req, res, query }) {
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
+  const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
   
   const userCommunities_id = lodashGet(dataObj, ['userCommunityObj', '_id'], '');
   const userCommunityName = lodashGet(dataObj, ['userCommunityObj', 'name'], '');
@@ -387,15 +349,11 @@ export async function getServerSideProps({ req, res, query }) {
   const forumRepliesObj = lodashGet(dataObj, ['forumRepliesObj'], {});
   
   
-  
-  
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
   
   let title = `フォーラム: Page ${threadPage} - ${userCommunityName}`;
-  
-  
   
   
   // --------------------------------------------------
@@ -406,7 +364,7 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       name: 'トップ',
-      href: `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`,
+      href: `/uc/[userCommunityID]`,
       as: `/uc/${userCommunityID}`,
       active: true,
     },
@@ -418,8 +376,8 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: 'メンバー',
-        href: `/uc/[userCommunityID]/members?userCommunityID=${userCommunityID}`,
-        as: `/uc/${userCommunityID}/members`,
+        href: `/uc/[userCommunityID]/member}`,
+        as: `/uc/${userCommunityID}/member`,
         active: false,
       }
     );
@@ -431,15 +389,13 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: '設定',
-        href: `/uc/[userCommunityID]/settings?userCommunityID=${userCommunityID}`,
-        as: `/uc/${userCommunityID}/settings`,
+        href: `/uc/[userCommunityID]/setting`,
+        as: `/uc/${userCommunityID}/setting`,
         active: false,
       }
     );
     
   }
-  
-  
   
   
   // --------------------------------------------------
@@ -458,14 +414,20 @@ export async function getServerSideProps({ req, res, query }) {
     {
       type: 'uc/index',
       anchorText: userCommunityName,
-      href: `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`,
+      href: `/uc/[userCommunityID]`,
       as: `/uc/${userCommunityID}`,
     },
     
   ];
   
+
+  // --------------------------------------------------
+  //   recentAccessPage
+  // --------------------------------------------------
   
-  
+  let recentAccessPageHref = `/uc/[userCommunityID]/forum/[[...slug]]`;
+  let recentAccessPageAs = `/uc/${userCommunityID}`;
+
   
   // --------------------------------------------------
   //   通常のフォーラム
@@ -528,11 +490,24 @@ export async function getServerSideProps({ req, res, query }) {
     // ---------------------------------------------
     
     individual = true;
+
+
+    // --------------------------------------------------
+    //   - recentAccessPage
+    // --------------------------------------------------
+    
+    recentAccessPageAs = `/uc/${userCommunityID}/forum/${forumID}`;
     
     
   }
   
+
+  // ---------------------------------------------
+  //   Set Cookie - recentAccessPage
+  // ---------------------------------------------
   
+  res.cookie('recentAccessPageHref', recentAccessPageHref);
+  res.cookie('recentAccessPageAs', recentAccessPageAs);
   
   
   // --------------------------------------------------
@@ -571,8 +546,6 @@ export async function getServerSideProps({ req, res, query }) {
   // `);
   
   
-  
-  
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
@@ -590,6 +563,7 @@ export async function getServerSideProps({ req, res, query }) {
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,
+      experienceObj,
       
       userCommunityID,
       userCommunities_id,

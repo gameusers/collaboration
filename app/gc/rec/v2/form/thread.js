@@ -655,7 +655,7 @@ const Component = (props) => {
         
       };
       
-      if (imagesAndVideosObj.arr.length !== 0) {
+      if (Object.keys(imagesAndVideosObj).length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
       

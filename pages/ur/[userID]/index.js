@@ -16,9 +16,6 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
-import { useIntl } from 'react-intl';
-import { useSnackbar } from 'notistack';
-import { animateScroll as scroll } from 'react-scroll';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -30,15 +27,6 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-import lodashIsEqual from 'lodash/isEqual';
-
-
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateLayout } from 'app/@states/layout.js';
-
 
 // ---------------------------------------------
 //   Modules
@@ -46,7 +34,6 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
-import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -61,11 +48,9 @@ import CardPlayer from 'app/common/card/v2/card-player.js';
 
 
 
-
-
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/ur/***
+//   URL: http://localhost:8080/ur/***
 // --------------------------------------------------
 
 /**
@@ -76,77 +61,11 @@ const ContainerLayout = (props) => {
   
   
   // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-  
-  const stateLayout = ContainerStateLayout.useContainer();
-  
-  const {
-    
-    headerObj,
-    setHeaderObj,
-    
-  } = stateLayout;
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
-  const intl = useIntl();
-  const { enqueueSnackbar } = useSnackbar();
-  
-  const [cardPlayersArr, setCardPlayersArr] = useState(props.cardPlayersArr);
-  
-  
-  useEffect(() => {
-    
-    
-    // --------------------------------------------------
-    //   Header 更新 - データに変更があった場合のみステートを更新
-    // --------------------------------------------------
-    
-    if (lodashIsEqual(headerObj, props.headerObj) === false) {
-      setHeaderObj(props.headerObj);
-    }
-    
-    
-    // --------------------------------------------------
-    //   Snackbar
-    // --------------------------------------------------
-    
-    if (Object.keys(props.experienceObj).length !== 0) {
-      
-      showSnackbar({
-        
-        enqueueSnackbar,
-        intl,
-        experienceObj: props.experienceObj,
-        arr: [
-          {
-            variant: 'success',
-            messageID: 'LjWizvlER',
-          },
-          
-        ]
-        
-      });
-      
-    }
-    
-    
-    // ---------------------------------------------
-    //   Scroll To
-    // ---------------------------------------------
-    
-    // scroll.scrollToTop({ duration: 0 });
-    
-    
-  }, [props.ISO8601]);
-  
-  
+  const [cardPlayersObj, setCardPlayersObj] = useState(props.cardPlayersObj);
+  const [cardPlayers_idsArr, setCardPlayers_idsArr] = useState(props.cardPlayers_idsArr);
   
   
   // --------------------------------------------------
@@ -155,22 +74,21 @@ const ContainerLayout = (props) => {
   
   const componentsArr = [];
   
-  for (let valueObj of cardPlayersArr.values()) {
-    
+  for (let cardPlayers_id of cardPlayers_idsArr.values()) {
+
     componentsArr.push(
       <CardPlayer
-        key={valueObj._id}
-        obj={valueObj}
+        key={cardPlayers_id}
+        obj={lodashGet(cardPlayersObj, [cardPlayers_id], {})}
         showFollowButton={false}
         showEditButton={true}
         defaultExpanded={true}
-        setCardPlayersArr={setCardPlayersArr}
+        cardPlayersObj={cardPlayersObj}
+        setCardPlayersObj={setCardPlayersObj}
       />
     );
     
   }
-  
-  
   
   
   // --------------------------------------------------
@@ -184,8 +102,6 @@ const ContainerLayout = (props) => {
       height="250"
     />
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -203,8 +119,6 @@ const ContainerLayout = (props) => {
       
     </React.Fragment>
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -272,16 +186,12 @@ export async function getServerSideProps({ req, res, query }) {
   createCsrfToken(req, res);
   
   
-  
-  
   // --------------------------------------------------
   //   Cookie & Accept Language
   // --------------------------------------------------
   
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-  
-  
   
   
   // --------------------------------------------------
@@ -291,15 +201,11 @@ export async function getServerSideProps({ req, res, query }) {
   const userID = query.userID;
   
   
-  
-  
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
   const ISO8601 = moment().utc().toISOString();
-  
-  
   
   
   // --------------------------------------------------
@@ -319,8 +225,6 @@ export async function getServerSideProps({ req, res, query }) {
   const dataObj = lodashGet(resultObj, ['data'], {});
   
   
-  
-  
   // --------------------------------------------------
   //   dataObj
   // --------------------------------------------------
@@ -332,9 +236,9 @@ export async function getServerSideProps({ req, res, query }) {
   const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
   
   const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
-  const cardPlayersArr = lodashGet(dataObj, ['cardPlayersArr'], []);
-  
-  
+  const cardPlayersObj = lodashGet(dataObj, ['cardPlayersObj'], {});
+  const cardPlayers_idsArr = lodashGet(dataObj, ['cardPlayers_idsArr'], []);
+  const cardPlayers_id = cardPlayers_idsArr[0];
   
   
   // --------------------------------------------------
@@ -347,10 +251,8 @@ export async function getServerSideProps({ req, res, query }) {
   
   const pageTitle = lodashGet(pagesObj, ['title'], '');
   
-  const userName = lodashGet(cardPlayersArr, [0, 'name'], '');
+  const userName = lodashGet(cardPlayersObj, [cardPlayers_id, 'name'], '');
   const title = pageTitle ? pageTitle : `${userName} - Game Users`;
-  
-  
   
   
   // --------------------------------------------------
@@ -389,8 +291,6 @@ export async function getServerSideProps({ req, res, query }) {
   }
   
   
-  
-  
   // --------------------------------------------------
   //   パンくずリスト
   // --------------------------------------------------
@@ -407,8 +307,6 @@ export async function getServerSideProps({ req, res, query }) {
   ];
   
   
-  
-  
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -423,8 +321,6 @@ export async function getServerSideProps({ req, res, query }) {
   //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
   
   
   // --------------------------------------------------
@@ -447,7 +343,8 @@ export async function getServerSideProps({ req, res, query }) {
       experienceObj,
       
       userID,
-      cardPlayersArr,
+      cardPlayersObj,
+      cardPlayers_idsArr,
       
     }
     

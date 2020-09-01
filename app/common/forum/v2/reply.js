@@ -540,12 +540,12 @@ const Reply = (props) => {
   
   if (urlID) {
     
-    linkHref = `/gc/[urlID]/forum/[...slug]?urlID=${urlID}&forumID=${forumReplies_id}`;
+    linkHref = `/gc/[urlID]/forum/[[...slug]]`;
     linkAs = `/gc/${urlID}/forum/${forumReplies_id}`;
     
   } else if (userCommunityID) {
     
-    linkHref = `/uc/[userCommunityID]/forum/[...slug]?userCommunityID=${userCommunityID}&forumID=${forumReplies_id}`;
+    linkHref = `/uc/[userCommunityID]/forum/[[...slug]]`;
     linkAs = `/uc/${userCommunityID}/forum/${forumReplies_id}`;
     
   }

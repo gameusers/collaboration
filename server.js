@@ -144,6 +144,8 @@ app.prepare().then(() => {
   
   // console.log('process.env.NODE_ENV = ' + process.env.NODE_ENV);
   // console.log('process.env.URL_API = ' + process.env.NEXT_PUBLIC_URL_API);
+  // console.log('process.env.URL_MONGODB_DOCKER = ' + process.env.URL_MONGODB_DOCKER);
+  // console.log('process.env.URL_MONGODB = ' + process.env.URL_MONGODB);
   
   
   // --------------------------------------------------
@@ -191,9 +193,15 @@ app.prepare().then(() => {
   // --------------------------------------------------
   //   Database API
   //   参考: http://thecodebarbarian.com/building-a-nextjs-app-with-mongodb.html
+  //   ユーザー認証を行う場合はこの形式で connect する | mongodb://username:password@host:port/database?options...
+  //   参考：https://mongoosejs.com/docs/connections.html
   // --------------------------------------------------
   
-  mongoose.connect('mongodb://localhost:27017/gameusers', {
+  const urlMongoDB = `mongodb://${process.env.URL_MONGODB_DOCKER || process.env.URL_MONGODB}/gameusers`;
+  // const urlMongoDB = `mongodb://root:password@mongo1:27017`;
+
+  // mongoose.connect('mongodb://localhost:27017/gameusers', {
+  mongoose.connect(urlMongoDB, {
     useCreateIndex: true,
     useUnifiedTopology: true,
     useNewUrlParser: true,

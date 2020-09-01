@@ -104,8 +104,6 @@ moment.locale('ja');
 
 
 
-
-
 // --------------------------------------------------
 //   Material UI Style Overrides
 //   https://material-ui.com/styles/basics/
@@ -120,8 +118,6 @@ const useStyles = makeStyles({
   },
   
 });
-
-
 
 
 
@@ -153,8 +149,6 @@ const Comment = (props) => {
   } = props;
   
   
-  
-  
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
@@ -166,7 +160,6 @@ const Comment = (props) => {
   const {
     
     ISO8601,
-    // handleSnackbarOpen,
     handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
@@ -189,8 +182,6 @@ const Comment = (props) => {
   } = stateForum;
   
   
-  
-  
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
@@ -209,8 +200,6 @@ const Comment = (props) => {
     setButtonDisabled(false);
     
   }, []);
-  
-  
   
   
   // --------------------------------------------------
@@ -437,9 +426,7 @@ const Comment = (props) => {
     
   };
   
-  
-  
-  
+     
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -463,10 +450,8 @@ const Comment = (props) => {
   //   count: {green ${count}}
   //   limit: {green ${limit}}
   // `);
-  
-  
-  
-  
+    
+    
   // --------------------------------------------------
   //   dataObj
   // --------------------------------------------------
@@ -476,9 +461,7 @@ const Comment = (props) => {
   if (Object.keys(dataObj).length === 0) {
     return null;
   }
-  
-  
-  
+     
   
   // --------------------------------------------------
   //   User Data
@@ -539,12 +522,12 @@ const Comment = (props) => {
   
   if (urlID) {
     
-    linkHref = `/gc/[urlID]/forum/[...slug]?urlID=${urlID}&forumID=${forumComments_id}`;
+    linkHref = `/gc/[urlID]/forum/[[...slug]]`;
     linkAs = `/gc/${urlID}/forum/${forumComments_id}`;
     
   } else if (userCommunityID) {
     
-    linkHref = `/uc/[userCommunityID]/forum/[...slug]?userCommunityID=${userCommunityID}&forumID=${forumComments_id}`;
+    linkHref = `/uc/[userCommunityID]/forum/[[...slug]]`;
     linkAs = `/uc/${userCommunityID}/forum/${forumComments_id}`;
     
   }
@@ -988,8 +971,6 @@ const Component = (props) => {
   } = props;
   
   
-  
-  
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
@@ -1007,8 +988,6 @@ const Component = (props) => {
   }, []);
   
   
-  
-  
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
@@ -1020,7 +999,6 @@ const Component = (props) => {
   const {
     
     ISO8601,
-    // handleSnackbarOpen,
     handleScrollTo,
     
   } = stateLayout;
@@ -1047,8 +1025,6 @@ const Component = (props) => {
     setReloadForceForumComment,
     
   } = stateForum;
-  
-  
   
   
   // --------------------------------------------------
@@ -1449,8 +1425,6 @@ const Component = (props) => {
   const arr = lodashGet(forumCommentsObj, [forumThreads_id, `page${page}Obj`, 'arr'], []);
   
   
-  
-  
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -1482,8 +1456,6 @@ const Component = (props) => {
   // `);
   
   
-  
-  
   // --------------------------------------------------
   //   配列が空の場合は、空のコンポーネントを返す
   // --------------------------------------------------
@@ -1491,8 +1463,6 @@ const Component = (props) => {
   if (arr.length === 0) {
     return null;
   }
-  
-  
   
   
   // --------------------------------------------------
@@ -1517,8 +1487,6 @@ const Component = (props) => {
     );
     
   }
-  
-  
   
   
   // --------------------------------------------------

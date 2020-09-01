@@ -55,7 +55,7 @@ import FormLogout from 'app/logout/index/v2/form-logout.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/logout
+//   URL: http://localhost:8080/logout
 // --------------------------------------------------
 
 const Component = (props) => {

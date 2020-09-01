@@ -198,7 +198,7 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Data Opened
+    //   Open
     // --------------------------------------------------
     
     if (headerDataOpen) {
@@ -303,7 +303,7 @@ export default class extends React.Component {
       
       
     // --------------------------------------------------
-    //   Data Closed
+    //   Closed
     // --------------------------------------------------
       
     } else {

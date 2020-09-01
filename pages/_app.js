@@ -25,9 +25,10 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
-import { IntlProvider } from 'react-intl';
-import moment from 'moment';
+import { IntlProvider, useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { SnackbarProvider } from 'notistack';
+import moment from 'moment';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -38,6 +39,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashIsEqual from 'lodash/isEqual';
 
 
 // ---------------------------------------------
@@ -57,12 +59,17 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 // ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { showSnackbar } from 'app/@modules/snackbar.js';
+
+
+// ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
 import { locale, loadLocaleData } from 'app/@locales/locale.js';
-
-
 
 
 
@@ -81,8 +88,6 @@ import 'app/@css/style.css';
 
 
 
-
-
 // --------------------------------------------------
 //   Function Components
 // --------------------------------------------------
@@ -97,15 +102,8 @@ const ServiceWorker = (props) => {
   //   props
   // --------------------------------------------------
   
-  const {
+  const { Component, pageProps } = props;
     
-    Component,
-    pageProps,
-    
-  } = props;
-  
-  
-  
   
   // --------------------------------------------------
   //   States
@@ -114,27 +112,18 @@ const ServiceWorker = (props) => {
   const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
   
-  const {
+  const { setLogin, setLoginUsersObj, setServiceWorkerRegistrationObj } = stateUser;
+  const { setISO8601, headerObj, setHeaderObj } = stateLayout;
+   
     
-    setServiceWorkerRegistrationObj,
-    
-  } = stateUser;
-  
-  const {
-    
-    setISO8601,
-    
-  } = stateLayout;
-  
-  
-  
-  
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
   useEffect(() => {
     
+    // console.log('useEffect / ServiceWorker 1');
+
     
     // --------------------------------------------------
     //   Service Worker
@@ -180,8 +169,6 @@ const ServiceWorker = (props) => {
     }
     
     
-    
-    
     // --------------------------------------------------
     //   setInterval / Set Datetime Current
     // --------------------------------------------------
@@ -198,9 +185,71 @@ const ServiceWorker = (props) => {
     
     
   }, []);
-  
-  
-  
+
+
+  // console.log(chalk`
+  //   pageProps.ISO8601: {green ${pageProps.ISO8601}}
+  //   pageProps.login: {green ${pageProps.login}}
+  // `);
+
+
+  // --------------------------------------------------
+  //   ページ共通の処理を行うために、2つ目の useEffect を利用する
+  // --------------------------------------------------
+
+  const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
+
+
+  useEffect(() => {
+    
+    // console.log('useEffect / ServiceWorker 2');
+
+    // --------------------------------------------------
+    //   ログイン状態を更新する
+    // --------------------------------------------------
+
+    setLogin(pageProps.login);
+    setLoginUsersObj(pageProps.loginUsersObj);
+
+
+    // --------------------------------------------------
+    //   Header 更新 - データに変更があった場合のみステートを更新
+    // --------------------------------------------------
+    
+    if (lodashIsEqual(headerObj, pageProps.headerObj) === false) {
+      setHeaderObj(pageProps.headerObj);
+    }
+    
+    
+    // --------------------------------------------------
+    //   Snackbar - ログイン回数 + 1
+    // --------------------------------------------------
+    
+    const experienceObj = lodashGet(pageProps, ['experienceObj'], {});
+
+    if (Object.keys(experienceObj).length !== 0) {
+      
+      showSnackbar({
+        
+        enqueueSnackbar,
+        intl,
+        experienceObj: pageProps.experienceObj,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'LjWizvlER',
+          },
+          
+        ]
+        
+      });
+      
+    }
+
+
+  }, [pageProps.ISO8601]);
+
   
   // --------------------------------------------------
   //   Return
@@ -226,14 +275,7 @@ const Component = (props) => {
   //   props
   // --------------------------------------------------
   
-  const {
-    
-    // Component,
-    pageProps,
-    
-  } = props;
-  
-  
+  const { pageProps } = props;
   
   
   // --------------------------------------------------
@@ -242,7 +284,7 @@ const Component = (props) => {
   
   useEffect(() => {
     
-    
+    // console.log('useEffect / Component');
     // --------------------------------------------------
     //   Remove the server-side injected CSS.
     // --------------------------------------------------
@@ -255,7 +297,6 @@ const Component = (props) => {
     
     
   }, []);
-  
   
   
   // --------------------------------------------------
@@ -294,15 +335,11 @@ const Component = (props) => {
   };
   
   
-  
-  
   // --------------------------------------------------
   //   Load Locale Data
   // --------------------------------------------------
   
   const localData = loadLocaleData({ local: localeObj.language });
-  
-  
   
   
   // --------------------------------------------------
@@ -318,8 +355,6 @@ const Component = (props) => {
   //   ISO8601: {green ${ISO8601}}
   //   login: {green ${login}}
   // `);
-  
-  
   
   
   // --------------------------------------------------
@@ -341,7 +376,6 @@ const Component = (props) => {
         
         <ContainerStateLayout.Provider initialState={initialStateLayoutObj}>
           
-          
           {/* react-intl(i18n) Provider */}
           <IntlProvider 
             locale={localeObj.languageArr[0]}
@@ -351,10 +385,10 @@ const Component = (props) => {
             messages={localData}
           >
             
-            
             {/* Material UI Theme Provider */}
             <ThemeProvider theme={theme}>
               
+              {/* Snackbar */}
               <SnackbarProvider maxSnack={3}>
                 
                 <ServiceWorker {...props} />
@@ -363,9 +397,7 @@ const Component = (props) => {
               
             </ThemeProvider>
             
-            
           </IntlProvider>
-          
           
         </ContainerStateLayout.Provider>
         

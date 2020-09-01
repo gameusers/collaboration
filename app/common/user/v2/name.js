@@ -64,8 +64,6 @@ moment.locale('ja');
 
 
 
-
-
 // --------------------------------------------------
 //   Emotion
 //   https://emotion.sh/docs/composition
@@ -124,8 +122,6 @@ const cssIconLayers = css`
 
 
 
-
-
 // --------------------------------------------------
 //   Function Components
 // --------------------------------------------------
@@ -154,22 +150,13 @@ const Component = (props) => {
   } = props;
   
   
-  
-  
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
   
   const stateLayout = ContainerStateLayout.useContainer();
   
-  const {
-    
-    ISO8601,
-    handleDialogCardOpen,
-    
-  } = stateLayout;
-  
-  
+  const { ISO8601, handleDialogCardOpen } = stateLayout;
   
   
   // --------------------------------------------------

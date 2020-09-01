@@ -16,8 +16,6 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
-import { useIntl } from 'react-intl';
-import { useSnackbar } from 'notistack';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -29,14 +27,12 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-import lodashIsEqual from 'lodash/isEqual';
 
 
 // ---------------------------------------------
 //   States
 // ---------------------------------------------
 
-import { ContainerStateLayout } from 'app/@states/layout.js';
 import { ContainerStateCommunity } from 'app/@states/community.js';
 import { ContainerStateForum } from 'app/@states/forum.js';
 
@@ -48,7 +44,6 @@ import { ContainerStateForum } from 'app/@states/forum.js';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
 import { getCookie } from 'app/@modules/cookie.js';
-import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -56,8 +51,6 @@ import { showSnackbar } from 'app/@modules/snackbar.js';
 // ---------------------------------------------
 
 import Layout from 'app/common/layout/v2/layout.js';
-import ForumNavigation from 'app/common/forum/v2/navigation.js';
-import Forum from 'app/common/forum/v2/forum.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 
 import FollowMembers from 'app/common/follow/v2/members.js';
@@ -65,11 +58,9 @@ import FollowMembers from 'app/common/follow/v2/members.js';
 
 
 
-
-
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/gc/***/member
+//   URL: http://localhost:8080/uc/***/member
 // --------------------------------------------------
 
 /**
@@ -83,54 +74,18 @@ const ContainerLayout = (props) => {
   //   States
   // --------------------------------------------------
   
-  const stateLayout = ContainerStateLayout.useContainer();
   const stateCommunity = ContainerStateCommunity.useContainer();
   const stateForum = ContainerStateForum.useContainer();
   
-  const {
-    
-    headerObj,
-    setHeaderObj,
-    // handleScrollTo,
-    
-  } = stateLayout;
-  
-  const {
-    
-    setUserCommunityObj,
-    
-  } = stateCommunity;
-  
-  const {
-    
-    setForumThreadsForListObj,
-    setForumThreadsObj,
-    setForumCommentsObj,
-    setForumRepliesObj,
-    
-  } = stateForum;
-  
-  
+  const { setUserCommunityObj } = stateCommunity;
+  const { setForumThreadsForListObj, setForumThreadsObj, setForumCommentsObj, setForumRepliesObj } = stateForum;
   
   
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
-  const intl = useIntl();
-  const { enqueueSnackbar } = useSnackbar();
-  
-  
   useEffect(() => {
-    
-    
-    // --------------------------------------------------
-    //   Header 更新 - データに変更があった場合のみステートを更新
-    // --------------------------------------------------
-    
-    if (lodashIsEqual(headerObj, props.headerObj) === false) {
-      setHeaderObj(props.headerObj);
-    }
     
     
     // --------------------------------------------------
@@ -145,48 +100,7 @@ const ContainerLayout = (props) => {
     setForumRepliesObj(props.forumRepliesObj);
     
     
-    // --------------------------------------------------
-    //   Snackbar - ログイン回数 + 1
-    // --------------------------------------------------
-    
-    if (Object.keys(props.experienceObj).length !== 0) {
-      
-      showSnackbar({
-        
-        enqueueSnackbar,
-        intl,
-        experienceObj: props.experienceObj,
-        arr: [
-          {
-            variant: 'success',
-            messageID: 'LjWizvlER',
-          },
-          
-        ]
-        
-      });
-      
-    }
-    
-    
-    // ---------------------------------------------
-    //   Scroll To
-    // ---------------------------------------------
-    
-    // handleScrollTo({
-      
-    //   to: 'forumThreads',
-    //   duration: 0,
-    //   delay: 0,
-    //   smooth: 'easeInOutQuart',
-    //   offset: -50,
-      
-    // });
-    
-    
   }, [props.ISO8601]);
-  
-  
   
   
   // --------------------------------------------------
@@ -202,8 +116,6 @@ const ContainerLayout = (props) => {
   ;
   
   
-  
-  
   // --------------------------------------------------
   //   Component - Contents
   // --------------------------------------------------
@@ -215,18 +127,16 @@ const ContainerLayout = (props) => {
         arr={props.breadcrumbsArr}
       />
       
-      {/*<FollowMembers
+      <FollowMembers
         pageType="uc"
-        gameCommunities_id={props.gameCommunities_id}
+        userCommunities_id={props.userCommunities_id}
         accessLevel={props.accessLevel}
         cardPlayersObj={props.cardPlayersObj}
         followMembersObj={props.followMembersObj}
-      />*/}
+      />
       
     </React.Fragment>
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -334,38 +244,6 @@ export async function getServerSideProps({ req, res, query }) {
   
   const userCommunityID = query.userCommunityID;
   
-  const slugsArr = lodashGet(query, ['slug'], []);
-  
-  let threadPage = lodashGet(query, ['page'], 1);
-  let forumID = '';
-  let pageType = 'forum';
-  
-  if (Math.sign(slugsArr[0]) === 1) {
-    
-    threadPage = slugsArr[0];
-    
-  } else {
-    
-    forumID = slugsArr[0];
-    pageType = 'individual';
-    
-  }
-  
-  let individual = false;
-  
-  
-  // console.log(`
-  //   ----- query -----\n
-  //   ${util.inspect(query, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- slugsArr -----\n
-  //   ${util.inspect(slugsArr, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
   
   // --------------------------------------------------
   //   Property
@@ -380,8 +258,6 @@ export async function getServerSideProps({ req, res, query }) {
   
   const page = 1;
   const limit = getCookie({ key: 'followLimit', reqHeadersCookie });
-  
-  
   
   
   // --------------------------------------------------
@@ -401,8 +277,6 @@ export async function getServerSideProps({ req, res, query }) {
   const dataObj = lodashGet(resultObj, ['data'], {});
   
   
-  
-  
   // --------------------------------------------------
   //   dataObj
   // --------------------------------------------------
@@ -415,17 +289,10 @@ export async function getServerSideProps({ req, res, query }) {
   
   const userCommunities_id = lodashGet(dataObj, ['userCommunityObj', '_id'], '');
   const userCommunityName = lodashGet(dataObj, ['userCommunityObj', 'name'], '');
-  const enableAnonymity = lodashGet(dataObj, ['userCommunityObj', 'anonymity'], false);
-  const accessRightRead = lodashGet(dataObj, ['accessRightRead'], false);
   
   const userCommunityObj = lodashGet(dataObj, ['userCommunityObj'], {});
-  
-  // const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
-  // const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
   const cardPlayersObj = lodashGet(dataObj, ['cardPlayersObj'], {});
   const followMembersObj = lodashGet(dataObj, ['followMembersObj'], {});
-  
-  
   
   
   // --------------------------------------------------
@@ -433,8 +300,6 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
   
   let title = `メンバー - ${userCommunityName}`;
-  
-  
   
   
   // --------------------------------------------------
@@ -447,23 +312,17 @@ export async function getServerSideProps({ req, res, query }) {
       name: 'トップ',
       href: `/uc/[userCommunityID]`,
       as: `/uc/${userCommunityID}`,
-      active: true,
+      active: false,
     },
     
+    {
+      name: 'メンバー',
+      href: `/uc/[userCommunityID]/member`,
+      as: `/uc/${userCommunityID}/member`,
+      active: true,
+    },
+
   ];
-  
-  if (accessRightRead) {
-    
-    headerNavMainArr.push(
-      {
-        name: 'メンバー',
-        href: `/uc/[userCommunityID]/member`,
-        as: `/uc/${userCommunityID}/member`,
-        active: false,
-      }
-    );
-    
-  }
   
   if (accessLevel >= 50) {
     
@@ -477,8 +336,6 @@ export async function getServerSideProps({ req, res, query }) {
     );
     
   }
-  
-  
   
   
   // --------------------------------------------------
@@ -511,83 +368,13 @@ export async function getServerSideProps({ req, res, query }) {
   ];
   
   
-  
-  
-  // --------------------------------------------------
-  //   通常のフォーラム
-  // --------------------------------------------------
-  
-  if (pageType === 'forum') {
-    
-    
-    // ---------------------------------------------
-    //   - パンくずリスト
-    // ---------------------------------------------
-    
-    breadcrumbsArr.push(
-      
-      {
-        type: 'uc/forum',
-        anchorText: '',
-        href: '',
-        as: '',
-      },
-      
-    );
-  
-  
-  // --------------------------------------------------
-  //   個別のフォーラム
-  // --------------------------------------------------
-    
-  } else if (pageType === 'individual') {
-    
-    
-    // ---------------------------------------------
-    //   - Title
-    // ---------------------------------------------
-    
-    const forumThreadsArr = lodashGet(dataObj, ['forumThreadsObj', 'page1Obj', 'arr'], []);
-    const forumName = lodashGet(dataObj, ['forumThreadsObj', 'dataObj', forumThreadsArr[0], 'name'], '');
-    
-    title = `${forumName} - ${userCommunityName}`;
-    
-    
-    // ---------------------------------------------
-    //   - パンくずリスト
-    // ---------------------------------------------
-    
-    breadcrumbsArr.push(
-      
-      {
-        type: 'uc/forum/individual',
-        anchorText: forumName,
-        href: '',
-        as: '',
-      }
-      
-    );
-    
-    
-    // ---------------------------------------------
-    //   - Individual
-    // ---------------------------------------------
-    
-    individual = true;
-    
-    
-  }
-  
-  
-  
-  
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/forum/[...slug].js
+  //   /uc/[userCommunityID]/member/index.js
   // `);
   
   // console.log(`
@@ -617,8 +404,6 @@ export async function getServerSideProps({ req, res, query }) {
   // `);
   
   
-  
-  
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
@@ -636,17 +421,13 @@ export async function getServerSideProps({ req, res, query }) {
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,
+      experienceObj,
       
       userCommunityID,
       userCommunities_id,
       userCommunityObj,
-      forumID,
-      forumThreadsForListObj,
-      forumThreadsObj,
-      forumCommentsObj,
-      forumRepliesObj,
-      enableAnonymity,
-      individual,
+      cardPlayersObj,
+      followMembersObj,
       
     }
     

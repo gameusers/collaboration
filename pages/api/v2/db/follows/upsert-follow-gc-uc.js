@@ -171,7 +171,6 @@ export default async (req, res) => {
     //   - Property
     // ---------------------------------------------
     
-    let communityType = 'open' ;
     const conditionObj = {};
     
     
@@ -232,17 +231,7 @@ export default async (req, res) => {
       if (resultUserCommunitiesObj.users_id === loginUsers_id) {
         throw new CustomError({ level: 'warn', errorsArr: [{ code: 'y8knFdqtD', messageID: 'qnWsuPcrJ' }] });
       }
-      
-      
-      // ---------------------------------------------
-      //   コミュニティの公開タイプがクローズドの場合、ページを再読み込みする
-      // ---------------------------------------------
-      
-      communityType = lodashGet(resultUserCommunitiesObj, ['communityType'], 'open');
-      
-      // if (communityType === 'closed') {
-      //   returnObj.pageTransition = true;
-      // }
+
       
       // console.log(chalk`
       //   resultUserCommunitiesObj.users_id: {green ${resultUserCommunitiesObj.users_id}}
@@ -256,6 +245,7 @@ export default async (req, res) => {
       //   --------------------\n
       // `);
       
+
     }
     
     
@@ -362,15 +352,6 @@ export default async (req, res) => {
       returnObj.followedCount = followedCount;
       
       
-      // --------------------------------------------------
-      //   コミュニティの公開タイプがクローズドの場合、ページを再読み込みする
-      // --------------------------------------------------
-      
-      if (communityType === 'closed') {
-        returnObj.pageTransition = true;
-      }
-      
-      
     }
     
     
@@ -396,8 +377,6 @@ export default async (req, res) => {
     };
     
     
-    
-    
     // --------------------------------------------------
     //   Update
     // --------------------------------------------------
@@ -410,8 +389,8 @@ export default async (req, res) => {
     });
     
     
-    
-    
+
+
     // --------------------------------------------------
     //   Header
     // --------------------------------------------------
@@ -431,43 +410,26 @@ export default async (req, res) => {
     }
     
     
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   データ取得 / Games
-    //   ヘッダーヒーローイメージ用
-    // --------------------------------------------------
-    
-    // returnObj.headerObj = await ModelGames.findForHeroImage({
-      
-    //   localeObj,
-      
-    // });
-    
-    
-    
-    
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/api/v2/db/follows/upsert-follow.js
+    //   /pages/api/v2/db/follows/upsert-follow-gc-uc.js
     // `);
     
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
     //   gameCommunities_id: {green ${gameCommunities_id}}
     //   userCommunities_id: {green ${userCommunities_id}}
-    //   users_id: {green ${users_id}}
     // `);
     
     // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -482,8 +444,6 @@ export default async (req, res) => {
     //   ${util.inspect(saveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
     
     
     // ---------------------------------------------

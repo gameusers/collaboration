@@ -479,7 +479,7 @@ const Component = (props) => {
         formDataObj.forumComments_id = forumComments_id;
       }
       
-      if (imagesAndVideosObj.arr.length !== 0) {
+      if (Object.keys(imagesAndVideosObj).length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
       

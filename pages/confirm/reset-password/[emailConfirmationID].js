@@ -54,7 +54,7 @@ import FormResetPassword from 'app/confirm/reset-password/v2/form-reset-password
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/confirm/email/***
+//   URL: http://localhost:8080/confirm/email/***
 // --------------------------------------------------
 
 const ContainerLayout = (props) => {

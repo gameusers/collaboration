@@ -576,18 +576,18 @@ export default async (req, res) => {
     
     // --------------------------------------------------
     //   データ取得 / Card Players
-    //   アクセスしたページ所有者のプレイヤーカード情報
+    //   更新したプレイヤーカード情報
     // --------------------------------------------------
     
     const resultCardPlayersObj = await ModelCardPlayers.findForCardPlayers({
       
       localeObj,
-      users_id: loginUsers_id,
       loginUsers_id,
+      users_id: loginUsers_id,
       
     });
     
-    returnObj.cardPlayersArr = resultCardPlayersObj.cardPlayersArr;
+    returnObj.cardPlayersObj = resultCardPlayersObj.cardPlayersObj;
     
     
     
@@ -659,27 +659,10 @@ export default async (req, res) => {
     //   /pages/api/v2/db/card-players/upsert.js
     // `);
     
-    // console.log(`
-    //   ----- tempOldObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(tempOldObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     // console.log(`
-    //   ----- validatedHardwareActiveObj -----\n
-    //   ${util.inspect(validatedHardwareActiveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- validatedHardwareInactiveObj -----\n
-    //   ${util.inspect(validatedHardwareInactiveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- validatedIDsArrObj -----\n
-    //   ${util.inspect(validatedIDsArrObj, { colors: true, depth: null })}\n
+    //   ----- resultCardPlayersObj -----\n
+    //   ${util.inspect(resultCardPlayersObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

@@ -39,11 +39,8 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 // ---------------------------------------------
 
 import DataGc from 'app/common/layout/v2/header/data-gc.js';
-// import DataUc from './data-uc';
+import DataUc from 'app/common/layout/v2/header/data-uc.js';
 import DataUr from 'app/common/layout/v2/header/data-ur.js';
-
-
-
 
 
 
@@ -64,13 +61,7 @@ const Component = (props) => {
   
   const stateLayout = ContainerStateLayout.useContainer();
   
-  const {
-    
-    headerObj,
-    
-  } = stateLayout;
-  
-  
+  const { headerObj } = stateLayout;
   
   
   // --------------------------------------------------
@@ -80,8 +71,6 @@ const Component = (props) => {
   const type = lodashGet(headerObj, ['type'], 'gc');
   const imagesAndVideosObj = lodashGet(headerObj, ['imagesAndVideosObj'], {});
   const thumbnailArr = lodashGet(headerObj, ['imagesAndVideosObj', 'thumbnailArr'], []);
-  
-  
   
   
   // --------------------------------------------------
@@ -101,7 +90,12 @@ const Component = (props) => {
     
   } else if (type === 'uc') {
     
-    // componentData = <DataUc />;
+    componentData =
+      <DataUc
+        headerObj={headerObj}
+        heroImage={true}
+      />
+    ;
     
   } else if (type === 'ur') {
     
@@ -113,8 +107,6 @@ const Component = (props) => {
     ;
     
   }
-  
-  
   
   
   // --------------------------------------------------
@@ -159,8 +151,6 @@ const Component = (props) => {
         
       </div>
     ;
-    
-    
     
     
   // --------------------------------------------------
@@ -213,8 +203,6 @@ const Component = (props) => {
   }
   
   
-  
-  
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -235,8 +223,6 @@ const Component = (props) => {
   //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
   
   
   // --------------------------------------------------

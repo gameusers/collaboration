@@ -61,8 +61,6 @@ import { initialProps } from 'app/@api/v2/common.js';
 
 
 
-
-
 // --------------------------------------------------
 //   endpointID: R8-TcJ2vj
 // --------------------------------------------------
@@ -115,6 +113,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const userCommunityID = lodashGet(req, ['query', 'userCommunityID'], '');
+    const forumID = lodashGet(req, ['query', 'forumID'], '');
     const threadListPage = parseInt(lodashGet(req, ['query', 'threadListPage'], 1), 10);
     const threadListLimit = parseInt(lodashGet(req, ['query', 'threadListLimit'], ''), 10);
     const threadPage = parseInt(lodashGet(req, ['query', 'threadPage'], 1), 10);
@@ -123,14 +122,13 @@ export default async (req, res) => {
     const replyLimit = parseInt(lodashGet(req, ['query', 'replyLimit'], ''), 10);
     
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
+    lodashSet(requestParametersObj, ['forumID'], forumID);
     lodashSet(requestParametersObj, ['threadListPage'], threadListPage);
     lodashSet(requestParametersObj, ['threadListLimit'], threadListLimit);
     lodashSet(requestParametersObj, ['threadPage'], threadPage);
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
     lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
-    
-    
     
     
     // --------------------------------------------------
@@ -144,8 +142,6 @@ export default async (req, res) => {
     returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
     
     const accessDate = lodashGet(returnObj, ['loginUsersObj', 'accessDate'], '');
-    
-    
     
     
     // --------------------------------------------------
@@ -323,6 +319,8 @@ export default async (req, res) => {
     //   コンテンツを表示していい場合はフォーラムのデータを取得
     // --------------------------------------------------
     
+    let forumObj = {};
+
     if (returnObj.accessRightRead) {
       
       
@@ -350,7 +348,7 @@ export default async (req, res) => {
       
       
       // --------------------------------------------------
-      //   DB find / Forum
+      //   フォーラムのデータ取得
       // --------------------------------------------------
       
       argumentsObj = {
@@ -361,7 +359,21 @@ export default async (req, res) => {
         userCommunities_id,
         
       };
+
+
+      // ---------------------------------------------
+      //   - forumID
+      // ---------------------------------------------
       
+      if (forumID) {
+        argumentsObj.forumID = forumID;
+      }
+      
+      
+      // ---------------------------------------------
+      //   - page & limit
+      // ---------------------------------------------
+
       if (await validationInteger({ throwError: false, required: true, value: threadPage }).error === false) {
         argumentsObj.threadPage = threadPage;
       }
@@ -378,15 +390,58 @@ export default async (req, res) => {
         argumentsObj.replyLimit = replyLimit;
       }
       
-      const forumObj = await ModelForumThreads.findForForum(argumentsObj);
+
+      // --------------------------------------------------
+      //   DB find / Forum by forumID
+      // --------------------------------------------------
       
+      if (forumID) {
+        
+        forumObj = await ModelForumThreads.findForumByforumID(argumentsObj);
+        
+        
+      // --------------------------------------------------
+      //   DB find / Forum
+      // --------------------------------------------------
+        
+      } else {
+        
+        forumObj = await ModelForumThreads.findForForum(argumentsObj);
+        
+      }
+
+      // const forumObj = await ModelForumThreads.findForForum(argumentsObj);
+      
+
+      // --------------------------------------------------
+      //   returnObj
+      // --------------------------------------------------
+
       returnObj.forumThreadsObj = forumObj.forumThreadsObj;
       returnObj.forumCommentsObj = forumObj.forumCommentsObj;
       returnObj.forumRepliesObj = forumObj.forumRepliesObj;
       
       
     }
+    // console.log(`
+    //   ----- forumObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
+    // ---------------------------------------------
+    //   スレッドのデータがない場合はエラー
+    // ---------------------------------------------
+    
+    const forumThreadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
+    
+    if (Object.keys(forumThreadsDataObj).length === 0) {
+      
+      statusCode = 404;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'aDeKgfO_U', messageID: 'Error' }] });
+      
+    }
+
     
     
     

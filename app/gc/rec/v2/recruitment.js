@@ -306,7 +306,7 @@ const Component = (props) => {
   //   Link Return Top
   // --------------------------------------------------
   
-  const linkReturnTopHref = `/gc/[urlID]/rec/index?urlID=${urlID}`;
+  const linkReturnTopHref = `/gc/[urlID]/rec/[[...slug]]`;
   const linkReturnTopAs = `/gc/${urlID}/rec`;
   
   

@@ -153,16 +153,12 @@ const Component = (props) => {
       setButtonDisabled(true);
       
       
-      
-      
       // ---------------------------------------------
       //   Property
       // ---------------------------------------------
       
       let resultObj = {};
-      let pageTransition = false;
-      
-      
+      // let pageTransition = false;
       
       
       // ---------------------------------------------
@@ -206,8 +202,6 @@ const Component = (props) => {
         }
         
         
-        
-        
         // --------------------------------------------------
         //   console.log
         // --------------------------------------------------
@@ -228,32 +222,6 @@ const Component = (props) => {
         //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
         //   --------------------\n
         // `);
-        
-        
-        
-        
-        // ---------------------------------------------
-        //   結果反映：メンバーかどうか、メンバー数を変更
-        // ---------------------------------------------
-        
-        // const follow = lodashGet(resultObj, ['data', 'follow'], null);
-        // const followedCount = lodashGet(resultObj, ['data', 'followedCount'], null);
-        
-        // if (lodashHas(resultObj, ['data', 'follow'])) {
-        //   lodashSet(followsObj, ['follow'], follow);
-        // }
-        
-        // if (lodashHas(resultObj, ['data', 'followedCount'])) {
-        //   lodashSet(followsObj, ['followedCount'], followedCount);
-        // }
-        
-        
-        // // ---------------------------------------------
-        // //   リロードするかどうか
-        // // ---------------------------------------------
-        
-        // pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
-        
         
         
       // ---------------------------------------------
@@ -297,8 +265,6 @@ const Component = (props) => {
         }
         
         
-        
-        
         // --------------------------------------------------
         //   console.log
         // --------------------------------------------------
@@ -321,29 +287,7 @@ const Component = (props) => {
         // `);
         
         
-        
-        
-        // // ---------------------------------------------
-        // //   結果反映：フォロー数変更
-        // // ---------------------------------------------
-        
-        // const followedCount = lodashGet(resultObj, ['data', 'followedCount'], null);
-        
-        // if (followedCount !== null) {
-        //   lodashSet(followsObj, ['followedCount'], followedCount);
-        // }
-        
-        
-        // // ---------------------------------------------
-        // //   リロードするかどうか
-        // // ---------------------------------------------
-        
-        // pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
-        
-        
       }
-      
-      
       
       
       // ---------------------------------------------
@@ -367,7 +311,7 @@ const Component = (props) => {
       //   リロードするかどうか
       // ---------------------------------------------
       
-      pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
+      // pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
       
       
       
@@ -399,7 +343,7 @@ const Component = (props) => {
           messageID = '1z127R0YE';
           break;
           
-        
+
         case 'followUc':
           messageID = 'SY6WWDyxQ';
           break;
@@ -416,6 +360,7 @@ const Component = (props) => {
           messageID = 'HOo6u_sXD';
           break;
           
+
         case 'follow':
           messageID = 'RTsMTGw-1';
           break;
@@ -450,8 +395,6 @@ const Component = (props) => {
       });
       
       
-      
-      
       // --------------------------------------------------
       //   console.log
       // --------------------------------------------------
@@ -468,15 +411,13 @@ const Component = (props) => {
       // `);
       
       
-      
-      
       // ---------------------------------------------
       //   リロードする
       // ---------------------------------------------
       
-      if (pageTransition) {
-        window.location.reload();
-      }
+      // if (pageTransition) {
+      //   window.location.reload();
+      // }
       
       
     } catch (errorObj) {
@@ -678,7 +619,7 @@ const Component = (props) => {
             color="secondary"
             size={size}
           >
-            コミュニティに参加する
+            参加する
           </Button>
         </Link>
       ;
@@ -710,7 +651,7 @@ const Component = (props) => {
               userCommunities_id,
             })}
           >
-            コミュニティに参加申請する
+            参加申請する
           </Button>
         ;
         
@@ -732,7 +673,7 @@ const Component = (props) => {
               userCommunities_id,
             })}
           >
-            コミュニティに参加する
+            参加する
           </Button>
         ;
         
@@ -760,11 +701,11 @@ const Component = (props) => {
             handle: handleFollow,
             argumentsObj: {
               type: 'unfollowUc',
-              gameCommunities_id,
+              userCommunities_id,
             },
           })}
         >
-          コミュニティから退会する
+          退会する
         </Button>
       ;
       
@@ -789,7 +730,7 @@ const Component = (props) => {
             handle: handleFollow,
             argumentsObj: {
               type: 'unfollowApprovalUc',
-              gameCommunities_id,
+              userCommunities_id,
             },
           })}
         >

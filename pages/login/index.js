@@ -64,7 +64,7 @@ import FormLogin from 'app/login/index/v2/form-login.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/login
+//   URL: http://localhost:8080/login
 // --------------------------------------------------
 
 /**

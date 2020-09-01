@@ -652,7 +652,10 @@ export default class extends React.Component {
             </ListItemIcon>
             
             
-            <Link href={`/ur/[userID]/index?userID=${userID}`} as={`/ur/${userID}`}>
+            <Link
+              href={`/ur/[userID]`}
+              as={`/ur/${userID}`}
+            >
               <a>
                 <ListItemText
                   css={css`

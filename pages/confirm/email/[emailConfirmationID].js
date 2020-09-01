@@ -53,7 +53,7 @@ import Panel from 'app/common/layout/v2/panel.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/confirm/email/***
+//   URL: http://localhost:8080/confirm/email/***
 // --------------------------------------------------
 
 const ContainerLayout = (props) => {

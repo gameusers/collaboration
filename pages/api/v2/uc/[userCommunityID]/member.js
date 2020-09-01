@@ -11,13 +11,6 @@ import util from 'util';
 
 
 // ---------------------------------------------
-//   Node Packages
-// ---------------------------------------------
-
-// import moment from 'moment';
-
-
-// ---------------------------------------------
 //   Lodash
 // ---------------------------------------------
 
@@ -31,7 +24,6 @@ import lodashHas from 'lodash/has';
 // ---------------------------------------------
 
 import ModelUserCommunities from 'app/@database/user-communities/model.js';
-// import ModelFollows from 'app/@database/follows/model.js';
 import ModelCardPlayers from 'app/@database/card-players/model.js';
 
 
@@ -41,6 +33,7 @@ import ModelCardPlayers from 'app/@database/card-players/model.js';
 
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { updateAccessDate } from 'app/@modules/access-date.js';
 
 
 // ---------------------------------------------
@@ -122,7 +115,7 @@ export default async (req, res) => {
     
     const userCommunityID = lodashGet(req, ['query', 'userCommunityID'], '');
     const page = parseInt(lodashGet(req, ['query', 'page'], 1), 10);
-    const limit = parseInt(lodashGet(req, ['query', 'limit'], 1), 10);
+    const limit = parseInt(lodashGet(req, ['query', 'limit'], '') || process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT, 10);
     
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
     lodashSet(requestParametersObj, ['page'], page);
@@ -132,11 +125,19 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   Validations
+    //   ログインしているユーザー情報＆ログインチェック
     // --------------------------------------------------
     
-    await validationInteger({ throwError: true, value: page });
-    await validationFollowLimit({ throwError: true, value: limit });
+    returnObj.login = false;
+    
+    if (req.isAuthenticated() && req.user) {
+      
+      returnObj.loginUsersObj = req.user;
+      returnObj.login = true;
+      
+    }
+    
+    const accessDate = lodashGet(returnObj, ['loginUsersObj', 'accessDate'], '');
     
     
     
@@ -165,12 +166,6 @@ export default async (req, res) => {
       userCommunityID,
       
     });
-    
-    // console.log(`
-    //   ----- userCommunityObj -----\n
-    //   ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     // ---------------------------------------------
@@ -245,17 +240,37 @@ export default async (req, res) => {
     //    DB find / Card Players
     // --------------------------------------------------
     
-    const resultFollowersObj = await ModelCardPlayers.findForFollowers({
+    // const resultFollowersObj = await ModelCardPlayers.findForFollowers({
+      
+    //   localeObj,
+    //   loginUsers_id,
+    //   adminUsers_id,
+    //   userCommunities_id,
+    //   controlType: 'followed',
+    //   // page,
+    //   // limit,
+      
+    // });
+
+    const argumentsObj = {
       
       localeObj,
       loginUsers_id,
       adminUsers_id,
       userCommunities_id,
       controlType: 'followed',
-      page,
-      limit,
       
-    });
+    };
+
+    if (validationInteger({ throwError: false, required: true, value: page }).error === false) {
+      argumentsObj.page = page;
+    }
+    
+    if (validationFollowLimit({ throwError: false, required: true, value: limit }).error === false) {
+      argumentsObj.limit = limit;
+    }
+
+    const resultFollowersObj = await ModelCardPlayers.findForFollowers(argumentsObj);
     
     returnObj.cardPlayersObj = resultFollowersObj.cardPlayersObj;
     returnObj.followMembersObj = resultFollowersObj.followMembersObj;
@@ -323,23 +338,6 @@ export default async (req, res) => {
     }
     
     
-    
-    
-    // --------------------------------------------------
-    //   権限
-    //   0: ブロックしているユーザー
-    //   1: 非ログインユーザー
-    //   2: ログインユーザー（以下ログイン済みユーザー）
-    //   3: 自分のことをフォローしているユーザー
-    //   4: 自分がフォローしているユーザー
-    //   5: 相互フォロー状態のユーザー
-    //   50: 自分自身（コミュニティの管理者）
-    //   100: サイト管理者
-    // --------------------------------------------------
-    
-    
-    
-    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
@@ -366,10 +364,6 @@ export default async (req, res) => {
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----------------------------------------
     // `);
     
     

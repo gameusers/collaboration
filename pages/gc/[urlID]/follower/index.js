@@ -66,7 +66,7 @@ import FollowMembers from 'app/common/follow/v2/members.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/gc/***/follow
+//   URL: http://localhost:8080/gc/***/follow
 // --------------------------------------------------
 
 /**

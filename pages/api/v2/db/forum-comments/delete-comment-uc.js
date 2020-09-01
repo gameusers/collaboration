@@ -308,33 +308,6 @@ export default async (req, res) => {
     //   experience
     // --------------------------------------------------
     
-    if (!forumComments_id) {
-      
-      const experienceObj = await experienceCalculate({ 
-        
-        req,
-        localeObj,
-        loginUsers_id,
-        arr: [{
-          type: 'forum-count-post',
-          calculation: 'subtraction',
-        }],
-        
-      });
-      
-      if (Object.keys(experienceObj).length !== 0) {
-        returnObj.experienceObj = experienceObj;
-      }
-      
-    }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   experience
-    // --------------------------------------------------
-    
     const experienceObj = await experienceCalculate({ 
       
       req,

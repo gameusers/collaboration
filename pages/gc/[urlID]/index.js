@@ -68,7 +68,7 @@ import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/gc/***
+//   URL: http://localhost:8080/gc/***
 // --------------------------------------------------
 
 /**

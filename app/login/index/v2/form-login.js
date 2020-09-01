@@ -295,7 +295,18 @@ const Component = (props) => {
       //   Page Transition
       // ---------------------------------------------
       
-      // const userID = lodashGet(resultObj, ['data', 'userID'], '');
+      // let url = recentAccessPageHref;
+      // let as = recentAccessPageAs;
+      
+      // if (!url || !as) {
+        
+      //   const userID = lodashGet(resultObj, ['data', 'userID'], '');
+      //   url = `/ur/[userID]`;
+      //   as = `/ur/${userID}`;
+        
+      // }
+
+      // // const userID = lodashGet(resultObj, ['data', 'userID'], '');
       // window.location.href = `${process.env.NEXT_PUBLIC_URL_BASE}ur/${userID}`;
       
       

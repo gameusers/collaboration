@@ -16,11 +16,9 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
-import { useIntl } from 'react-intl';
-import { useSnackbar } from 'notistack';
-import { animateScroll as scroll } from 'react-scroll';
+// import { useIntl } from 'react-intl';
+// import { useSnackbar } from 'notistack';
 import moment from 'moment';
-// import Cookies from 'js-cookie';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -31,14 +29,15 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-import lodashIsEqual from 'lodash/isEqual';
+// import lodashIsEqual from 'lodash/isEqual';
 
 
 // ---------------------------------------------
 //   States
 // ---------------------------------------------
 
-import { ContainerStateLayout } from 'app/@states/layout.js';
+// import { ContainerStateUser } from 'app/@states/user.js';
+// import { ContainerStateLayout } from 'app/@states/layout.js';
 import { ContainerStateCommunity } from 'app/@states/community.js';
 import { ContainerStateForum } from 'app/@states/forum.js';
 
@@ -50,7 +49,7 @@ import { ContainerStateForum } from 'app/@states/forum.js';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
 import { getCookie } from 'app/@modules/cookie.js';
-import { showSnackbar } from 'app/@modules/snackbar.js';
+// import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -62,14 +61,14 @@ import ForumNavigation from 'app/common/forum/v2/navigation.js';
 import Forum from 'app/common/forum/v2/forum.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 
-
+import About from 'app/uc/v2/about.js';
 
 
 
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/gc/***
+//   URL: http://localhost:8080/uc/***
 // --------------------------------------------------
 
 /**
@@ -83,53 +82,18 @@ const ContainerLayout = (props) => {
   //   States
   // --------------------------------------------------
   
-  const stateLayout = ContainerStateLayout.useContainer();
   const stateCommunity = ContainerStateCommunity.useContainer();
   const stateForum = ContainerStateForum.useContainer();
   
-  const {
-    
-    headerObj,
-    setHeaderObj,
-    
-  } = stateLayout;
-  
-  const {
-    
-    setUserCommunityObj,
-    
-  } = stateCommunity;
-  
-  const {
-    
-    setForumThreadsForListObj,
-    setForumThreadsObj,
-    setForumCommentsObj,
-    setForumRepliesObj,
-    
-  } = stateForum;
-  
-  
+  const { setUserCommunityObj } = stateCommunity;
+  const { setForumThreadsForListObj, setForumThreadsObj, setForumCommentsObj, setForumRepliesObj } = stateForum;
   
   
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
-  const intl = useIntl();
-  const { enqueueSnackbar } = useSnackbar();
-  
-  
+
   useEffect(() => {
-    
-    
-    // --------------------------------------------------
-    //   Header 更新 - データに変更があった場合のみステートを更新
-    // --------------------------------------------------
-    
-    if (lodashIsEqual(headerObj, props.headerObj) === false) {
-      setHeaderObj(props.headerObj);
-    }
     
     
     // --------------------------------------------------
@@ -144,40 +108,7 @@ const ContainerLayout = (props) => {
     setForumRepliesObj(props.forumRepliesObj);
     
     
-    // --------------------------------------------------
-    //   Snackbar
-    // --------------------------------------------------
-    
-    if (Object.keys(props.experienceObj).length !== 0) {
-      
-      showSnackbar({
-        
-        enqueueSnackbar,
-        intl,
-        experienceObj: props.experienceObj,
-        arr: [
-          {
-            variant: 'success',
-            messageID: 'LjWizvlER',
-          },
-          
-        ]
-        
-      });
-      
-    }
-    
-    
-    // ---------------------------------------------
-    //   Scroll To
-    // ---------------------------------------------
-    
-    // scroll.scrollToTop({ duration: 0 });
-    
-    
   }, [props.ISO8601]);
-  
-  
   
   
   // --------------------------------------------------
@@ -205,9 +136,7 @@ const ContainerLayout = (props) => {
   //   gameCommunities_id: {green ${gameCommunities_id}}
   // `);
   
-  
-  
-  
+
   // --------------------------------------------------
   //   Component - Sidebar
   // --------------------------------------------------
@@ -218,8 +147,6 @@ const ContainerLayout = (props) => {
       userCommunities_id={props.userCommunities_id}
     />
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -238,11 +165,15 @@ const ContainerLayout = (props) => {
         userCommunities_id={props.userCommunities_id}
         enableAnonymity={props.enableAnonymity}
       />
+
+      <About
+        headerObj={props.headerObj}
+        userCommunityObj={props.userCommunityObj}
+        accessRightRead={props.accessRightRead}
+      />
       
     </React.Fragment>
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -371,8 +302,6 @@ export async function getServerSideProps({ req, res, query }) {
   const replyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
   
   
-  
-  
   // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
@@ -388,8 +317,6 @@ export async function getServerSideProps({ req, res, query }) {
   
   const statusCode = lodashGet(resultObj, ['statusCode'], 400);
   const dataObj = lodashGet(resultObj, ['data'], {});
-  
-  
   
   
   // --------------------------------------------------
@@ -414,15 +341,11 @@ export async function getServerSideProps({ req, res, query }) {
   const forumRepliesObj = lodashGet(dataObj, ['forumRepliesObj'], {});
   
   
-  
-  
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
   
   const title = `${userCommunityName}`;
-  
-  
   
   
   // --------------------------------------------------
@@ -490,16 +413,12 @@ export async function getServerSideProps({ req, res, query }) {
   ];
   
   
-  
-  
   // ---------------------------------------------
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
   
   res.cookie('recentAccessPageHref', '/uc/[userCommunityID]');
   res.cookie('recentAccessPageAs', `/uc/${userCommunityID}`);
-  
-  
   
   
   // --------------------------------------------------
@@ -528,8 +447,6 @@ export async function getServerSideProps({ req, res, query }) {
   // `);
   
   
-  
-  
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
@@ -548,7 +465,8 @@ export async function getServerSideProps({ req, res, query }) {
       headerNavMainArr,
       breadcrumbsArr,
       experienceObj,
-      
+      accessRightRead,
+
       userCommunityID,
       userCommunities_id,
       userCommunityObj,

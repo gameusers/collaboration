@@ -11,7 +11,7 @@ import util from 'util';
 
 
 // ---------------------------------------------
-//   Node Packages
+//   Lodash
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
@@ -221,15 +221,13 @@ export default async (req, res) => {
       
     };
     
-    
-    if (await validationInteger({ throwError: false, required: true, value: page }).error === false) {
+    if (validationInteger({ throwError: false, required: true, value: page }).error === false) {
       argumentsObj.page = page;
     }
     
-    if (await validationFollowLimit({ throwError: false, required: true, value: limit }).error === false) {
+    if (validationFollowLimit({ throwError: false, required: true, value: limit }).error === false) {
       argumentsObj.limit = limit;
     }
-    
     
     const resultFollowersObj = await ModelCardPlayers.findForFollowers(argumentsObj);
     

@@ -95,11 +95,10 @@ const Component = (props) => {
     showFollowButton = true,
     showEditButton = true,
     defaultExpanded = true,
-    setCardPlayersArr,
+    cardPlayersObj,
+    setCardPlayersObj,
     
   } = props;
-  
-  
   
   
   // --------------------------------------------------
@@ -118,8 +117,6 @@ const Component = (props) => {
     setButtonDisabled(false);
     
   }, []);
-  
-  
   
   
   // --------------------------------------------------
@@ -313,7 +310,8 @@ const Component = (props) => {
             <Form
               cardPlayers_id={cardPlayers_id}
               setShowForm={setShowForm}
-              setCardPlayersArr={setCardPlayersArr}
+              cardPlayersObj={cardPlayersObj}
+              setCardPlayersObj={setCardPlayersObj}
             />
             
           : // プレイヤーカード

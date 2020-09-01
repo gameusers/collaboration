@@ -16,9 +16,6 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
-import { useIntl } from 'react-intl';
-import { useSnackbar } from 'notistack';
-import { animateScroll as scroll } from 'react-scroll';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -30,14 +27,6 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-import lodashIsEqual from 'lodash/isEqual';
-
-
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 // ---------------------------------------------
@@ -47,7 +36,6 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
 import { getCookie } from 'app/@modules/cookie.js';
-import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -62,11 +50,9 @@ import FollowMembers from 'app/common/follow/v2/members.js';
 
 
 
-
-
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/ur/***/follow
+//   URL: http://localhost:8080/ur/***/follow
 // --------------------------------------------------
 
 /**
@@ -74,78 +60,6 @@ import FollowMembers from 'app/common/follow/v2/members.js';
  * @param {Object} props - Props
  */
 const ContainerLayout = (props) => {
-  
-  
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-  
-  const stateLayout = ContainerStateLayout.useContainer();
-  
-  const {
-    
-    headerObj,
-    setHeaderObj,
-    
-  } = stateLayout;
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Hooks
-  // --------------------------------------------------
-  
-  const intl = useIntl();
-  const { enqueueSnackbar } = useSnackbar();
-  
-  
-  useEffect(() => {
-    
-    
-    // --------------------------------------------------
-    //   Header 更新 - データに変更があった場合のみステートを更新
-    // --------------------------------------------------
-    
-    if (lodashIsEqual(headerObj, props.headerObj) === false) {
-      setHeaderObj(props.headerObj);
-    }
-    
-    
-    // --------------------------------------------------
-    //   Snackbar
-    // --------------------------------------------------
-    
-    if (Object.keys(props.experienceObj).length !== 0) {
-      
-      showSnackbar({
-        
-        enqueueSnackbar,
-        intl,
-        experienceObj: props.experienceObj,
-        arr: [
-          {
-            variant: 'success',
-            messageID: 'LjWizvlER',
-          },
-          
-        ]
-        
-      });
-      
-    }
-    
-    
-    // ---------------------------------------------
-    //   Scroll To
-    // ---------------------------------------------
-    
-    // scroll.scrollToTop({ duration: 0 });
-    
-    
-  }, [props.ISO8601]);
-  
-  
   
   
   // --------------------------------------------------
@@ -159,8 +73,6 @@ const ContainerLayout = (props) => {
       height="250"
     />
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -184,8 +96,6 @@ const ContainerLayout = (props) => {
       
     </React.Fragment>
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -254,16 +164,12 @@ export async function getServerSideProps({ req, res, query }) {
   createCsrfToken(req, res);
   
   
-  
-  
   // --------------------------------------------------
   //   Cookie & Accept Language
   // --------------------------------------------------
   
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-  
-  
   
   
   // --------------------------------------------------
@@ -273,15 +179,11 @@ export async function getServerSideProps({ req, res, query }) {
   const userID = query.userID;
   
   
-  
-  
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
   const ISO8601 = moment().utc().toISOString();
-  
-  
   
   
   // --------------------------------------------------
@@ -290,8 +192,6 @@ export async function getServerSideProps({ req, res, query }) {
   
   const page = 1;
   const limit = getCookie({ key: 'followLimit', reqHeadersCookie });
-  
-  
   
   
   // --------------------------------------------------
@@ -311,8 +211,6 @@ export async function getServerSideProps({ req, res, query }) {
   const dataObj = lodashGet(resultObj, ['data'], {});
   
   
-  
-  
   // --------------------------------------------------
   //   dataObj
   // --------------------------------------------------
@@ -329,8 +227,6 @@ export async function getServerSideProps({ req, res, query }) {
   const followMembersObj = lodashGet(dataObj, ['followMembersObj'], {});
   
   
-  
-  
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
@@ -343,8 +239,6 @@ export async function getServerSideProps({ req, res, query }) {
   
   const userName = lodashGet(headerObj, ['name'], '');
   const title = pageTitle ? pageTitle : `フォロー - ${userName}`;
-  
-  
   
   
   // --------------------------------------------------
@@ -383,8 +277,6 @@ export async function getServerSideProps({ req, res, query }) {
   }
   
   
-  
-  
   // --------------------------------------------------
   //   パンくずリスト
   // --------------------------------------------------
@@ -408,8 +300,6 @@ export async function getServerSideProps({ req, res, query }) {
   ];
   
   
-  
-  
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -424,8 +314,6 @@ export async function getServerSideProps({ req, res, query }) {
   //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
   
   
   // --------------------------------------------------

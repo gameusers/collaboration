@@ -111,10 +111,7 @@ export default async (req, res) => {
       
     } = bodyObj;
     
-    
     lodashSet(requestParametersObj, ['cardPlayers_id'], cardPlayers_id);
-    
-    
     
     
     // ---------------------------------------------
@@ -122,8 +119,6 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     verifyCsrfToken(req, res);
-    
-    
     
     
     // --------------------------------------------------
@@ -138,16 +133,12 @@ export default async (req, res) => {
     }
     
     
-    
-    
     // --------------------------------------------------
     //   Validations
     // --------------------------------------------------
     
     await validationIP({ throwError: true, value: ip });
     await validationCardPlayers_idServer({ throwError: true, value: cardPlayers_id, loginUsers_id });
-    
-    
     
     
     // --------------------------------------------------
@@ -162,8 +153,6 @@ export default async (req, res) => {
       cardPlayers_id,
       
     });
-    
-    
     
     
     // --------------------------------------------------
@@ -185,8 +174,6 @@ export default async (req, res) => {
     //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
     
     
     // ---------------------------------------------

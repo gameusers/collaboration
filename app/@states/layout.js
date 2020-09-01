@@ -27,6 +27,7 @@ import moment from 'moment';
 import lodashGet from 'lodash/get';
 import lodashHas from 'lodash/has';
 import lodashCloneDeep from 'lodash/cloneDeep';
+import lodashMerge from 'lodash/merge';
 
 
 // ---------------------------------------------
@@ -320,16 +321,12 @@ const useLayout = (initialStateObj) => {
   // ---------------------------------------------
   
   const handleNavigationForLightboxShow = () => {
-    
     setNavigationForLightbox(true);
-    
   };
   
   
   const handleNavigationForLightboxHide = () => {
-    
     setNavigationForLightbox(false);
-    
   };
   
   
@@ -364,15 +361,25 @@ const useLayout = (initialStateObj) => {
         throw new CustomError({ errorsArr: [{ code: 'GmGF8vBhi', messageID: '1YJnibkmh' }] });
       }
       
-      
+      // console.log(`
+      //   ----- cardPlayersObj -----\n
+      //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
       // ---------------------------------------------
-      //   存在している場合
+      //   データが存在している場合、既存のデータを表示する
       // ---------------------------------------------
       
       if (lodashHas(cardPlayersObj, [cardPlayers_id])) {
         
+        setDialogCardObj(cardPlayersObj[cardPlayers_id]);
         
-        
+
+      // ---------------------------------------------
+      //   データが存在していない場合、 fetch で取得して表示する
+      // ---------------------------------------------
+
       } else {
         
         
@@ -388,8 +395,6 @@ const useLayout = (initialStateObj) => {
         // ---------------------------------------------
         
         setButtonDisabled(true);
-        
-        
         
         
         // ---------------------------------------------
@@ -425,15 +430,14 @@ const useLayout = (initialStateObj) => {
         }
         
         
-        
-        
         // ---------------------------------------------
         //   Update
         // ---------------------------------------------
         
+        const cardPlayersMergedObj = lodashMerge(cardPlayersObj, lodashGet(resultObj, ['data'], {}));
+        setCardPlayersObj(cardPlayersMergedObj);
+
         setDialogCardObj(lodashGet(resultObj, ['data', cardPlayers_id], {}));
-        
-        
         
         
         // ---------------------------------------------
@@ -448,8 +452,6 @@ const useLayout = (initialStateObj) => {
         // ---------------------------------------------
         
         handleLoadingClose();
-        
-        
         
         
         // ---------------------------------------------
@@ -473,8 +475,6 @@ const useLayout = (initialStateObj) => {
         
         
       }
-      
-      
       
       
       // ---------------------------------------------

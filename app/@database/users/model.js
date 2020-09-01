@@ -518,7 +518,6 @@ const findOneForUser = async ({
                   {
                     from: 'titles',
                     let: {
-                      // letAcquiredTitles_idsArr: '$acquiredTitles_idsArr',
                       letSelectedTitles_idsArr: '$selectedTitles_idsArr'
                     },
                     pipeline: [
@@ -527,7 +526,6 @@ const findOneForUser = async ({
                           $expr: {
                             $and: [
                               { $eq: ['$language', language] },
-                              // { $in: ['$_id', '$$letAcquiredTitles_idsArr'] },
                               { $in: ['$_id', '$$letSelectedTitles_idsArr'] }
                             ]
                           },
@@ -742,11 +740,217 @@ const findOneForUser = async ({
 
 
 /**
- * ヘッダーの更新用
+ * ユーザーページ / 設定用のデータを取得する
+ * @param {string} users_id - DB users _id / ユーザーの固有ID
+ * @return {Object} 取得データ
+ */
+const findSetting = async ({
+  
+  users_id,
+  
+}) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    const webPushErrorLimit = parseInt(process.env.WEB_PUSH_ERROR_LIMIT, 10);
+    
+    
+    // --------------------------------------------------
+    //   Match Condition Array
+    // --------------------------------------------------
+    
+    let matchConditionArr = [{
+      $match : {
+        _id: users_id
+      }
+    }];
+    
+    
+    // --------------------------------------------------
+    //   Aggregation
+    // --------------------------------------------------
+    
+    const docArr = await SchemaUsers.aggregate([
+      
+      
+      // --------------------------------------------------
+      //   Match Condition
+      // --------------------------------------------------
+      
+      ...matchConditionArr,
+      
+      
+      // --------------------------------------------------
+      //   images-and-videos / 画像と動画を取得 - pagesObj トップ画像
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { letImagesAndVideos_id: '$pagesObj.imagesAndVideos_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideos_id']
+                  }
+                }
+              },
+              {
+                $project: {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'pagesImagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$pagesImagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+
+      // --------------------------------------------------
+      //   web-pushes
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'web-pushes',
+            let: { letWebPushes_id: '$webPushes_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$_id', '$$letWebPushes_id'] },
+                      { $lt: ['$errorCount', webPushErrorLimit] },
+                    ]
+                  },
+                }
+              },
+              {
+                $project: {
+                  _id: 1,
+                  subscriptionObj: 1,
+                  errorCount: 1,
+                }
+              }
+            ],
+            as: 'webPushesObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$webPushesObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+      
+      {
+        $project: {
+          pagesObj: 1,
+          pagesImagesAndVideosObj: 1,
+          webPushesObj: 1,
+          loginID: 1,
+          emailObj: 1,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    // --------------------------------------------------
+    //   returnObj
+    // --------------------------------------------------
+    
+    const returnObj = lodashGet(docArr, [0], {});
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/users/model.js - findSetting
+    // `);
+    
+    // console.log(chalk`
+    //   userID: {green ${userID}}
+    //   language: {green ${language}}
+    //   country: {green ${country}}
+    // `);
+    
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   userCommunityID: {green ${userCommunityID}}
+    // `);
+    
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
+/**
+ * ヘッダーの更新用  2020/9/1
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} users_id - DB users ユーザー固有ID
- * @return {Array} 取得データ
+ * @return {Object} 取得データ
  */
 const findHeader = async ({
   
@@ -779,8 +983,6 @@ const findHeader = async ({
     const returnObj = lodashGet(docUsersObj, ['headerObj'], {});
     
     
-    
-    
     // --------------------------------------------------
     //   対象のユーザーがユーザーページのトップ画像をアップロードしていない場合
     //   ランダム取得のゲーム画像を代わりに利用する
@@ -805,8 +1007,6 @@ const findHeader = async ({
       
       
     }
-    
-    
     
     
     // --------------------------------------------------
@@ -1508,6 +1708,7 @@ module.exports = {
   deleteMany,
   
   findOneForUser,
+  findSetting,
   findHeader,
   findOneForLoginUsersObj,
   transactionForEditAccount,

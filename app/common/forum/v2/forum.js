@@ -192,12 +192,12 @@ const Component = (props) => {
         
         if (page === 1) {
           
-          url = `/gc/[urlID]/index?urlID=${urlID}`;
+          url = `/gc/[urlID]`;
           as = `/gc/${urlID}`;
           
         } else {
           
-          url = `/gc/[urlID]/forum/[...slug]?urlID=${urlID}&page=${page}`;
+          url = `/gc/[urlID]/forum/[[...slug]]`;
           as = `/gc/${urlID}/forum/${page}`;
           
         }
@@ -206,12 +206,12 @@ const Component = (props) => {
         
         if (page === 1) {
           
-          url = `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`;
+          url = `/uc/[userCommunityID]`;
           as = `/uc/${userCommunityID}`;
           
         } else {
           
-          url = `/uc/[userCommunityID]/forum/[...slug]?userCommunityID=${userCommunityID}&page=${page}`;
+          url = `/uc/[userCommunityID]/forum/[[...slug]]`;
           as = `/uc/${userCommunityID}/forum/${page}`;
           
         }
@@ -297,7 +297,7 @@ const Component = (props) => {
   
   if (urlID) {
     
-    linkReturnTopHref = `/gc/[urlID]/index?urlID=${urlID}`;
+    linkReturnTopHref = `/gc/[urlID]`;
     linkReturnTopAs = `/gc/${urlID}`;
     
     
@@ -307,7 +307,7 @@ const Component = (props) => {
   
   } else if (userCommunityID) {
     
-    linkReturnTopHref = `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`;
+    linkReturnTopHref = `/uc/[userCommunityID]`;
     linkReturnTopAs = `/uc/${userCommunityID}`;
     
   }

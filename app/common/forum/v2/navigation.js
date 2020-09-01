@@ -525,7 +525,7 @@ const Component = (props) => {
       
       if (urlID) {
         
-        linkHref = `/gc/[urlID]/forum/[forumID]?urlID=${urlID}&forumID=${forumThreads_id}`;
+        linkHref = `/gc/[urlID]/forum/[[...slug]]`;
         linkAs = `/gc/${urlID}/forum/${forumThreads_id}`;
         
         
@@ -535,7 +535,7 @@ const Component = (props) => {
         
       } else if (userCommunityID) {
         
-        linkHref = `/uc/[userCommunityID]/forum/[forumID]?userCommunityID=${userCommunityID}&forumID=${forumThreads_id}`;
+        linkHref = `/uc/[userCommunityID]/forum/[[...slug]]`;
         linkAs = `/uc/${userCommunityID}/forum/${forumThreads_id}`;
         
       }

@@ -52,8 +52,6 @@ import { initialProps } from 'app/@api/v2/common.js';
 
 
 
-
-
 // --------------------------------------------------
 //   endpointID: CuUwo1avA
 // --------------------------------------------------
@@ -109,8 +107,6 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['userID'], userID);
     
     
-    
-    
     // --------------------------------------------------
     //   Common Initial Props
     // --------------------------------------------------
@@ -122,8 +118,6 @@ export default async (req, res) => {
     const accessDate = lodashGet(commonInitialPropsObj, ['loginUsersObj', 'accessDate'], '');
     
     const gamesImagesAndVideosObj = lodashGet(commonInitialPropsObj, ['headerObj', 'imagesAndVideosObj'], {});
-    
-    
     
     
     // --------------------------------------------------
@@ -145,8 +139,6 @@ export default async (req, res) => {
     if (updatedAccessDate) {
       lodashSet(returnObj, ['loginUsersObj', 'accessDate'], updatedAccessDate);
     }
-    
-    
     
     
     // --------------------------------------------------
@@ -212,8 +204,9 @@ export default async (req, res) => {
       
     });
     
-    // returnObj.cardPlayersObj = resultCardPlayersObj.cardPlayersObj;
-    returnObj.cardPlayersArr = resultCardPlayersObj.cardPlayersArr;
+    returnObj.cardPlayersObj = resultCardPlayersObj.cardPlayersObj;
+    returnObj.cardPlayers_idsArr = resultCardPlayersObj.cardPlayers_idsArr;
+    // returnObj.cardPlayersArr = resultCardPlayersObj.cardPlayersArr;
     
     
     

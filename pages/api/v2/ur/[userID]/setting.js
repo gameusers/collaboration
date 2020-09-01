@@ -54,8 +54,6 @@ import { initialProps } from 'app/@api/v2/common.js';
 
 
 
-
-
 // --------------------------------------------------
 //   endpointID: Rounc2BcR
 // --------------------------------------------------
@@ -117,8 +115,6 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['userID'], userID);
     
     
-    
-    
     // ---------------------------------------------
     //   Verify CSRF
     // ---------------------------------------------
@@ -138,8 +134,6 @@ export default async (req, res) => {
     }
     
     
-    
-    
     // --------------------------------------------------
     //   Common Initial Props
     // --------------------------------------------------
@@ -151,8 +145,6 @@ export default async (req, res) => {
     const accessDate = lodashGet(commonInitialPropsObj, ['loginUsersObj', 'accessDate'], '');
     
     const gamesImagesAndVideosObj = lodashGet(commonInitialPropsObj, ['headerObj', 'imagesAndVideosObj'], {});
-    
-    
     
     
     // --------------------------------------------------
@@ -174,8 +166,6 @@ export default async (req, res) => {
     if (updatedAccessDate) {
       lodashSet(returnObj, ['loginUsersObj', 'accessDate'], updatedAccessDate);
     }
-    
-    
     
     
     // --------------------------------------------------
@@ -219,8 +209,6 @@ export default async (req, res) => {
     }
     
     
-    
-    
     // ---------------------------------------------
     //   headerObj
     // ---------------------------------------------
@@ -231,8 +219,6 @@ export default async (req, res) => {
     if (!lodashHas(usersObj, ['headerObj', 'imagesAndVideosObj'])) {
       lodashSet(returnObj, ['headerObj', 'imagesAndVideosObj'], gamesImagesAndVideosObj);
     }
-    
-    
     
     
     // --------------------------------------------------
@@ -249,23 +235,26 @@ export default async (req, res) => {
     returnObj.approval = lodashGet(usersObj, ['followsObj', 'approval'], false);
     
     
-    
-    
     // --------------------------------------------------
     //   データ取得 / Users
     //   設定情報を取得するために、2回目のデータ取得を行っている
-    //   あまりいい書き方ではないと思う
+    //   あまりいい書き方ではないかも
     // --------------------------------------------------
     
-    const docUsersObj = await ModelUsers.findOne({
+    const docUsersObj = await ModelUsers.findSetting({
       
-      conditionObj: {
-        _id: users_id
-      }
+      users_id
       
     });
     
     
+    // --------------------------------------------------
+    //   トップ画像
+    // --------------------------------------------------
+    
+    returnObj.pagesImagesAndVideosObj = lodashGet(docUsersObj, ['pagesImagesAndVideosObj'], {});
+    
+
     // --------------------------------------------------
     //   Login ID
     // --------------------------------------------------
@@ -288,32 +277,26 @@ export default async (req, res) => {
     
     returnObj.webPushAvailable = false;
     
-    const webPushes_id = lodashGet(docUsersObj, ['webPushes_id'], '');
+    const webPushes_id = lodashGet(docUsersObj, ['webPushesObj', '_id'], '');
     
     if (webPushes_id) {
       
-      const docWebPushesObj = await ModelWebPushes.findOne({
-        
-        conditionObj: {
-          _id: webPushes_id
-        }
-        
-      });
-      
-      
-      const subscriptionObj = lodashGet(docWebPushesObj, ['subscriptionObj'], {});
-      const errorCount = lodashGet(docWebPushesObj, ['errorCount'], 0);
+      const subscriptionObj = lodashGet(docUsersObj, ['webPushesObj', 'subscriptionObj'], {});
+      const errorCount = lodashGet(docUsersObj, ['webPushesObj', 'errorCount'], 0);
       
       if (subscriptionObj.endpoint && errorCount < 5) {
-        
         returnObj.webPushAvailable = true;
-        
       }
       
       // console.log(`
-      //   ----- docWebPushesObj -----\n
-      //   ${util.inspect(docWebPushesObj, { colors: true, depth: null })}\n
+      //   ----- subscriptionObj -----\n
+      //   ${util.inspect(subscriptionObj, { colors: true, depth: null })}\n
       //   --------------------\n
+      // `);
+
+      // console.log(chalk`
+      //   errorCount: {green ${errorCount}}
+      //   returnObj.webPushAvailable: {green ${returnObj.webPushAvailable}}
       // `);
       
     }
@@ -343,8 +326,6 @@ export default async (req, res) => {
     if (users_id === loginUsers_id) {
       returnObj.accessLevel = 50;
     }
-    
-    
     
     
     // --------------------------------------------------
@@ -385,8 +366,6 @@ export default async (req, res) => {
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
     
     
     // ---------------------------------------------

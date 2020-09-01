@@ -224,7 +224,7 @@ const styledIconChatBubble = css`
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/
+//   URL: http://localhost:8080/
 // --------------------------------------------------
 
 const ContainerLayout = (props) => {

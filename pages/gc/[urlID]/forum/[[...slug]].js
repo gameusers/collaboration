@@ -36,6 +36,7 @@ import lodashIsEqual from 'lodash/isEqual';
 //   States
 // ---------------------------------------------
 
+import { ContainerStateUser } from 'app/@states/user.js';
 import { ContainerStateLayout } from 'app/@states/layout.js';
 import { ContainerStateCommunity } from 'app/@states/community.js';
 import { ContainerStateForum } from 'app/@states/forum.js';
@@ -67,7 +68,7 @@ import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/gc/***/forum/***
+//   URL: http://localhost:8080/gc/***/forum/***
 // --------------------------------------------------
 
 /**
@@ -81,34 +82,15 @@ const ContainerLayout = (props) => {
   //   States
   // --------------------------------------------------
   
+  const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
   const stateCommunity = ContainerStateCommunity.useContainer();
   const stateForum = ContainerStateForum.useContainer();
   
-  const {
-    
-    headerObj,
-    setHeaderObj,
-    handleScrollTo,
-    
-  } = stateLayout;
-  
-  const {
-    
-    setGameCommunityObj,
-    
-  } = stateCommunity;
-  
-  const {
-    
-    setForumThreadsForListObj,
-    setForumThreadsObj,
-    setForumCommentsObj,
-    setForumRepliesObj,
-    
-  } = stateForum;
-  
-  
+  const { setLogin, setLoginUsersObj } = stateUser;
+  const { headerObj, setHeaderObj } = stateLayout;
+  const { setGameCommunityObj } = stateCommunity;
+  const { setForumThreadsForListObj, setForumThreadsObj, setForumCommentsObj, setForumRepliesObj } = stateForum;
   
   
   // --------------------------------------------------
@@ -123,24 +105,26 @@ const ContainerLayout = (props) => {
     
     
     // --------------------------------------------------
+    //   Router.push でページを移動した際の処理
+    //   getServerSideProps でデータを取得してからデータを更新する
+    // --------------------------------------------------
+    
+    setLogin(props.login);
+    setLoginUsersObj(props.loginUsersObj);
+    setGameCommunityObj(props.gameCommunityObj);
+    setForumThreadsForListObj(props.forumThreadsForListObj);
+    setForumThreadsObj(props.forumThreadsObj);
+    setForumCommentsObj(props.forumCommentsObj);
+    setForumRepliesObj(props.forumRepliesObj);
+
+
+    // --------------------------------------------------
     //   Header 更新 - データに変更があった場合のみステートを更新
     // --------------------------------------------------
     
     if (lodashIsEqual(headerObj, props.headerObj) === false) {
       setHeaderObj(props.headerObj);
     }
-    
-    
-    // --------------------------------------------------
-    //   Router.push でページを移動した際の処理
-    //   getServerSideProps でデータを取得してからデータを更新する
-    // --------------------------------------------------
-    
-    setGameCommunityObj(props.gameCommunityObj);
-    setForumThreadsForListObj(props.forumThreadsForListObj);
-    setForumThreadsObj(props.forumThreadsObj);
-    setForumCommentsObj(props.forumCommentsObj);
-    setForumRepliesObj(props.forumRepliesObj);
     
     
     // --------------------------------------------------
@@ -200,8 +184,6 @@ const ContainerLayout = (props) => {
   ;
   
   
-  
-  
   // --------------------------------------------------
   //   Component - Contents
   // --------------------------------------------------
@@ -222,8 +204,6 @@ const ContainerLayout = (props) => {
       
     </React.Fragment>
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -383,8 +363,6 @@ export async function getServerSideProps({ req, res, query }) {
   const replyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
   
   
-  
-  
   // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
@@ -400,8 +378,6 @@ export async function getServerSideProps({ req, res, query }) {
   
   const statusCode = lodashGet(resultObj, ['statusCode'], 400);
   const dataObj = lodashGet(resultObj, ['data'], {});
-  
-  
   
   
   // --------------------------------------------------
@@ -423,15 +399,11 @@ export async function getServerSideProps({ req, res, query }) {
   const forumRepliesObj = lodashGet(dataObj, ['forumRepliesObj'], {});
   
   
-  
-  
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
   
   let title = `フォーラム: Page ${threadPage} - ${gameName}`;
-  
-  
   
   
   // --------------------------------------------------
@@ -468,15 +440,13 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: '設定',
-        href: `/gc/[urlID]/settings`,
-        as: `/gc/${urlID}/settings`,
+        href: `/gc/[urlID]/setting`,
+        as: `/gc/${urlID}/setting`,
         active: false,
       }
     );
     
   }
-  
-  
   
   
   // --------------------------------------------------
@@ -500,8 +470,6 @@ export async function getServerSideProps({ req, res, query }) {
     },
     
   ];
-  
-  
   
   
   // --------------------------------------------------
@@ -594,16 +562,12 @@ export async function getServerSideProps({ req, res, query }) {
   }
   
   
-  
-  
   // ---------------------------------------------
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
   
   res.cookie('recentAccessPageHref', recentAccessPageHref);
   res.cookie('recentAccessPageAs', recentAccessPageAs);
-  
-  
   
   
   // --------------------------------------------------
@@ -640,8 +604,6 @@ export async function getServerSideProps({ req, res, query }) {
   // console.log(chalk`
   //   reqAcceptLanguage: {green ${reqAcceptLanguage}}
   // `);
-  
-  
   
   
   // --------------------------------------------------

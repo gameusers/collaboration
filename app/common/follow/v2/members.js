@@ -79,8 +79,6 @@ import CardPlayer from 'app/common/card/v2/card-player.js';
 
 
 
-
-
 // --------------------------------------------------
 //   Emotion
 //   https://emotion.sh/docs/composition
@@ -115,8 +113,6 @@ const useStyles = makeStyles({
 
 
 
-
-
 // --------------------------------------------------
 //   Function Components
 // --------------------------------------------------
@@ -142,8 +138,6 @@ const Component = (props) => {
   } = props;
   
   
-  
-  
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
@@ -163,8 +157,6 @@ const Component = (props) => {
     setButtonDisabled(false);
     
   }, []);
-  
-  
   
   
   // --------------------------------------------------
@@ -843,6 +835,8 @@ const Component = (props) => {
             showFollow={true}
             showEditButton={true}
             defaultExpanded={false}
+            cardPlayersObj={cardPlayersObj}
+            setCardPlayersObj={setCardPlayersObj}
           />
           
         </div>

@@ -31,6 +31,7 @@ import { css, jsx } from '@emotion/core';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
+import lodashMerge from 'lodash/merge';
 
 
 // ---------------------------------------------
@@ -109,8 +110,6 @@ import FormLink from 'app/common/card/v2/form/link.js';
 
 
 
-
-
 // --------------------------------------------------
 //   Emotion
 //   https://emotion.sh/docs/composition
@@ -121,8 +120,6 @@ const cssBox = css`
   margin: 24px 0 0 0;
   padding: 24px 0 0 0;
 `;
-
-
 
 
 
@@ -142,12 +139,28 @@ const Component = (props) => {
     
     cardPlayers_id,
     setShowForm,
-    setCardPlayersArr,
+    cardPlayersObj,
+    setCardPlayersObj,
     
   } = props;
   
+
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
   
+  const stateLayout = ContainerStateLayout.useContainer();
   
+  const {
+    
+    setHeaderObj,
+    handleSnackbarOpen,
+    handleLoadingOpen,
+    handleLoadingClose,
+    handleScrollTo,
+    
+  } = stateLayout;
+
   
   // --------------------------------------------------
   //   Hooks
@@ -270,25 +283,6 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-  
-  const stateLayout = ContainerStateLayout.useContainer();
-  
-  const {
-    
-    setHeaderObj,
-    handleSnackbarOpen,
-    handleLoadingOpen,
-    handleLoadingClose,
-    handleScrollTo,
-    
-  } = stateLayout;
-  
-  
-  
-  
-  // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
   
@@ -310,8 +304,6 @@ const Component = (props) => {
       }
       
       
-      
-      
       // ---------------------------------------------
       //   Loading Open
       // ---------------------------------------------
@@ -324,8 +316,6 @@ const Component = (props) => {
       // ---------------------------------------------
       
       setButtonDisabled(true);
-      
-      
       
       
       // ---------------------------------------------
@@ -341,8 +331,6 @@ const Component = (props) => {
         offset: -50,
         
       });
-      
-      
       
       
       // ---------------------------------------------
@@ -376,8 +364,6 @@ const Component = (props) => {
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
-      
-      
       
       
       // ---------------------------------------------
@@ -626,8 +612,6 @@ const Component = (props) => {
       }
       
       
-       
-      
       // ---------------------------------------------
       //   Validation Error
       // ---------------------------------------------
@@ -669,8 +653,6 @@ const Component = (props) => {
       }
       
       
-      
-      
       // ---------------------------------------------
       //   Loading Open
       // ---------------------------------------------
@@ -683,8 +665,6 @@ const Component = (props) => {
       // ---------------------------------------------
       
       setButtonDisabled(true);
-      
-      
       
       
       // ---------------------------------------------
@@ -727,11 +707,11 @@ const Component = (props) => {
         
       };
       
-      if (imagesAndVideosObj.arr.length !== 0) {
+      if (Object.keys(imagesAndVideosObj).length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
       
-      if (imagesAndVideosThumbnailObj.arr.length !== 0) {
+      if (Object.keys(imagesAndVideosThumbnailObj).length !== 0) {
         formDataObj.imagesAndVideosThumbnailObj = imagesAndVideosThumbnailObj;
       }
       
@@ -757,7 +737,11 @@ const Component = (props) => {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
       
-      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
@@ -768,10 +752,11 @@ const Component = (props) => {
       
       
       // ---------------------------------------------
-      //   Update - cardPlayersArr
+      //   Update - cardPlayersObj
       // ---------------------------------------------
       
-      setCardPlayersArr(lodashGet(resultObj, ['data', 'cardPlayersArr'], []));
+      const cardPlayersMergedObj = lodashMerge(cardPlayersObj, lodashGet(resultObj, ['data', 'cardPlayersObj'], {}));
+      setCardPlayersObj(cardPlayersMergedObj);
       
       
       // ---------------------------------------------
@@ -802,8 +787,6 @@ const Component = (props) => {
         ]
         
       });
-      
-      
       
       
       // ---------------------------------------------
@@ -941,8 +924,6 @@ const Component = (props) => {
   const limitImagesAndVideosThumbnail = parseInt(process.env.NEXT_PUBLIC_CARD_PLAYER_IMAGES_AND_VIDEOS_THUMBNAIL_LIMIT, 10);
   
   
-  
-  
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -967,8 +948,6 @@ const Component = (props) => {
   //   ${util.inspect(JSON.parse(JSON.stringify(followsObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
   
   
   // --------------------------------------------------

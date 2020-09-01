@@ -16,9 +16,6 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
-import { useIntl } from 'react-intl';
-import { useSnackbar } from 'notistack';
-import { animateScroll as scroll } from 'react-scroll';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -30,14 +27,6 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-import lodashIsEqual from 'lodash/isEqual';
-
-
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 // ---------------------------------------------
@@ -46,7 +35,6 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
-import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -64,11 +52,9 @@ import FormWebPush from 'app/ur/v2/setting/form-web-push.js';
 
 
 
-
-
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org/ur/***/setting
+//   URL: http://localhost:8080/ur/***/setting
 // --------------------------------------------------
 
 /**
@@ -76,77 +62,6 @@ import FormWebPush from 'app/ur/v2/setting/form-web-push.js';
  * @param {Object} props - Props
  */
 const ContainerLayout = (props) => {
-  
-  
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-  
-  const stateLayout = ContainerStateLayout.useContainer();
-  
-  const {
-    
-    headerObj,
-    setHeaderObj,
-    
-  } = stateLayout;
-  
-  
-  
-  // --------------------------------------------------
-  //   Hooks
-  // --------------------------------------------------
-  
-  const intl = useIntl();
-  const { enqueueSnackbar } = useSnackbar();
-  
-  
-  useEffect(() => {
-    
-    
-    // --------------------------------------------------
-    //   Header 更新 - データに変更があった場合のみステートを更新
-    // --------------------------------------------------
-    
-    if (lodashIsEqual(headerObj, props.headerObj) === false) {
-      setHeaderObj(props.headerObj);
-    }
-    
-    
-    // --------------------------------------------------
-    //   Snackbar
-    // --------------------------------------------------
-    
-    if (Object.keys(props.experienceObj).length !== 0) {
-      
-      showSnackbar({
-        
-        enqueueSnackbar,
-        intl,
-        experienceObj: props.experienceObj,
-        arr: [
-          {
-            variant: 'success',
-            messageID: 'LjWizvlER',
-          },
-          
-        ]
-        
-      });
-      
-    }
-    
-    
-    // ---------------------------------------------
-    //   Scroll To
-    // ---------------------------------------------
-    
-    // scroll.scrollToTop({ duration: 0 });
-    
-    
-  }, [props.ISO8601]);
-  
-  
   
   
   // --------------------------------------------------
@@ -162,8 +77,6 @@ const ContainerLayout = (props) => {
   ;
   
   
-  
-  
   // --------------------------------------------------
   //   Component - Contents
   // --------------------------------------------------
@@ -177,6 +90,7 @@ const ContainerLayout = (props) => {
       
       <FormPage
         userID={props.userID}
+        pagesImagesAndVideosObj={props.pagesImagesAndVideosObj}
         pagesObj={props.pagesObj}
         approval={props.approval}
       />
@@ -196,8 +110,6 @@ const ContainerLayout = (props) => {
       
     </React.Fragment>
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -266,16 +178,12 @@ export async function getServerSideProps({ req, res, query }) {
   createCsrfToken(req, res);
   
   
-  
-  
   // --------------------------------------------------
   //   Cookie & Accept Language
   // --------------------------------------------------
   
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-  
-  
   
   
   // --------------------------------------------------
@@ -285,15 +193,11 @@ export async function getServerSideProps({ req, res, query }) {
   const userID = query.userID;
   
   
-  
-  
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
   const ISO8601 = moment().utc().toISOString();
-  
-  
   
   
   // ---------------------------------------------
@@ -305,8 +209,6 @@ export async function getServerSideProps({ req, res, query }) {
     userID,
     
   };
-  
-  
   
   
   // --------------------------------------------------
@@ -327,8 +229,6 @@ export async function getServerSideProps({ req, res, query }) {
   const dataObj = lodashGet(resultObj, ['data'], {});
   
   
-  
-  
   // --------------------------------------------------
   //   dataObj
   // --------------------------------------------------
@@ -339,6 +239,7 @@ export async function getServerSideProps({ req, res, query }) {
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
   
+  const pagesImagesAndVideosObj = lodashGet(dataObj, ['pagesImagesAndVideosObj'], {});
   const pagesObj = lodashGet(dataObj, ['pagesObj'], {});
   const approval = lodashGet(dataObj, ['approval'], false);
   const loginID = lodashGet(dataObj, ['loginID'], '');
@@ -347,16 +248,12 @@ export async function getServerSideProps({ req, res, query }) {
   const webPushAvailable = lodashGet(dataObj, ['webPushAvailable'], false);
   
   
-  
-  
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
   
   const userName = lodashGet(headerObj, ['name'], '');
   const title = `ユーザー設定 - ${userName}`;
-  
-  
   
   
   // --------------------------------------------------
@@ -395,8 +292,6 @@ export async function getServerSideProps({ req, res, query }) {
   }
   
   
-  
-  
   // --------------------------------------------------
   //   パンくずリスト
   // --------------------------------------------------
@@ -420,8 +315,6 @@ export async function getServerSideProps({ req, res, query }) {
   ];
   
   
-  
-  
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -436,8 +329,6 @@ export async function getServerSideProps({ req, res, query }) {
   //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
   
   
   // --------------------------------------------------
@@ -461,6 +352,7 @@ export async function getServerSideProps({ req, res, query }) {
       
       accessLevel,
       userID,
+      pagesImagesAndVideosObj,
       pagesObj,
       approval,
       loginID,

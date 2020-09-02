@@ -63,8 +63,6 @@ import IconSearch from '@material-ui/icons/Search';
 
 
 
-
-
 // --------------------------------------------------
 //   Function Components
 // --------------------------------------------------
@@ -86,8 +84,6 @@ const Component = (props) => {
   } = props;
   
   
-  
-  
   // --------------------------------------------------
   //   Component
   // --------------------------------------------------
@@ -103,8 +99,6 @@ const Component = (props) => {
     
     let icon = '';
     let anchorText = '';
-    
-    
     
     
     // --------------------------------------------------
@@ -201,6 +195,11 @@ const Component = (props) => {
       
       icon = <IconMembers fontSize="small" />;
       anchorText = 'メンバー';
+
+    } else if (valueObj.type === 'uc/setting') {
+      
+      icon = <IconSetting fontSize="small" />;
+      anchorText = 'コミュニティ設定';
     
     
     // --------------------------------------------------
@@ -223,8 +222,6 @@ const Component = (props) => {
       anchorText = 'ユーザー設定';
       
     }
-    
-    
     
     
     // --------------------------------------------------
@@ -288,8 +285,6 @@ const Component = (props) => {
   }
   
   
-  
-  
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -298,8 +293,6 @@ const Component = (props) => {
   //   ----------------------------------------\n
   //   /app/common/layout/v2/components/breadcrumbs.js
   // `);
-  
-  
   
   
   // --------------------------------------------------

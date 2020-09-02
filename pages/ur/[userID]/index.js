@@ -305,6 +305,14 @@ export async function getServerSideProps({ req, res, query }) {
     },
     
   ];
+
+
+  // ---------------------------------------------
+  //   Set Cookie - recentAccessPage
+  // ---------------------------------------------
+  
+  res.cookie('recentAccessPageHref', '/ur/[userID]');
+  res.cookie('recentAccessPageAs', `/ur/${userID}`);
   
   
   // --------------------------------------------------

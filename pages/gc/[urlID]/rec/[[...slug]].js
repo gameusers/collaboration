@@ -16,9 +16,6 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
-import { useIntl } from 'react-intl';
-import { useSnackbar } from 'notistack';
-// import { animateScroll as scroll } from 'react-scroll';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -30,7 +27,6 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-import lodashIsEqual from 'lodash/isEqual';
 
 
 // ---------------------------------------------
@@ -49,7 +45,6 @@ import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
 import { getCookie } from 'app/@modules/cookie.js';
-import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -60,8 +55,6 @@ import Layout from 'app/common/layout/v2/layout.js';
 import RecruitmentNavigation from 'app/gc/rec/v2/navigation.js';
 import Recruitment from 'app/gc/rec/v2/recruitment.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
-
-
 
 
 
@@ -86,49 +79,16 @@ const ContainerLayout = (props) => {
   const stateCommunity = ContainerStateCommunity.useContainer();
   const stateRecruitment = ContainerStateRecruitment.useContainer();
   
-  const {
-    
-    headerObj,
-    setHeaderObj,
-    handleScrollTo,
-    
-  } = stateLayout;
-  
-  const {
-    
-    setGameCommunityObj,
-    
-  } = stateCommunity;
-  
-  const {
-    
-    setRecruitmentThreadsObj,
-    setRecruitmentCommentsObj,
-    setRecruitmentRepliesObj,
-    
-  } = stateRecruitment;
-  
-  
+  const { handleScrollTo } = stateLayout;
+  const { setGameCommunityObj } = stateCommunity;
+  const { setRecruitmentThreadsObj, setRecruitmentCommentsObj, setRecruitmentRepliesObj } = stateRecruitment;
   
   
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
-  const intl = useIntl();
-  const { enqueueSnackbar } = useSnackbar();
-  
-  
   useEffect(() => {
-    
-    
-    // --------------------------------------------------
-    //   Header 更新 - データに変更があった場合のみステートを更新
-    // --------------------------------------------------
-    
-    if (lodashIsEqual(headerObj, props.headerObj) === false) {
-      setHeaderObj(props.headerObj);
-    }
     
     
     // --------------------------------------------------
@@ -140,54 +100,38 @@ const ContainerLayout = (props) => {
     setRecruitmentThreadsObj(props.recruitmentThreadsObj);
     setRecruitmentCommentsObj(props.recruitmentCommentsObj);
     setRecruitmentRepliesObj(props.recruitmentRepliesObj);
-    
-    
-    // --------------------------------------------------
-    //   Snackbar - ログイン回数 + 1
-    // --------------------------------------------------
-    
-    if (Object.keys(props.experienceObj).length !== 0) {
-      
-      showSnackbar({
-        
-        enqueueSnackbar,
-        intl,
-        experienceObj: props.experienceObj,
-        arr: [
-          {
-            variant: 'success',
-            messageID: 'LjWizvlER',
-          },
-          
-        ]
-        
-      });
-      
-    }
-    
+
     
     // ---------------------------------------------
     //   Scroll To
     // ---------------------------------------------
     
-    if (props.pageType === 'page') {
-      
-      handleScrollTo({
+    handleScrollTo({
         
-        to: 'recruitmentThreads',
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
-        
-      });
+      to: 'recruitmentThreads',
+      duration: 0,
+      delay: 0,
+      smooth: 'easeInOutQuart',
+      offset: -50,
       
-    }
+    });
+
+    // if (props.pageType === 'page') {
+      
+    //   handleScrollTo({
+        
+    //     to: 'recruitmentThreads',
+    //     duration: 0,
+    //     delay: 0,
+    //     smooth: 'easeInOutQuart',
+    //     offset: -50,
+        
+    //   });
+      
+    // }
     
     
   }, [props.ISO8601]);
-  
-  
   
   
   // --------------------------------------------------
@@ -200,8 +144,6 @@ const ContainerLayout = (props) => {
       gameCommunities_id={props.gameCommunities_id}
     />
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -223,8 +165,6 @@ const ContainerLayout = (props) => {
       
     </React.Fragment>
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -254,6 +194,16 @@ const ContainerLayout = (props) => {
  */
 const Component = (props) => {
   
+
+  // --------------------------------------------------
+  //   Error
+  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
+  // --------------------------------------------------
+  
+  if (props.statusCode !== 200) {
+    return <Error statusCode={props.statusCode} />;
+  }
+
   
   // --------------------------------------------------
   //   unstated-next - Initial State
@@ -265,22 +215,11 @@ const Component = (props) => {
     recruitmentThreadsObj: props.recruitmentThreadsObj,
     recruitmentCommentsObj: props.recruitmentCommentsObj,
     recruitmentRepliesObj: props.recruitmentRepliesObj,
-    
     hardwaresArr: props.hardwaresArr,
     categories: props.categories,
     keyword: props.keyword,
     
   };
-  
-  
-  // --------------------------------------------------
-  //   Error
-  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
-  // --------------------------------------------------
-  
-  if (props.statusCode !== 200) {
-    return <Error statusCode={props.statusCode} />;
-  }
   
   
   // --------------------------------------------------
@@ -381,8 +320,6 @@ export async function getServerSideProps({ req, res, query }) {
   const replyLimit = getCookie({ key: 'recruitmentReplyLimit', reqHeadersCookie });
   
   
-  
-  
   // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
@@ -398,8 +335,6 @@ export async function getServerSideProps({ req, res, query }) {
   
   const statusCode = lodashGet(resultObj, ['statusCode'], 400);
   const dataObj = lodashGet(resultObj, ['data'], {});
-  
-  
   
   
   // --------------------------------------------------
@@ -422,15 +357,11 @@ export async function getServerSideProps({ req, res, query }) {
   const hardwaresArr = lodashGet(dataObj, ['hardwaresArr'], []);
   
   
-  
-  
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
   
   let title = '';
-  
-  
   
   
   // --------------------------------------------------
@@ -504,8 +435,6 @@ export async function getServerSideProps({ req, res, query }) {
     },
     
   ];
-  
-  
   
   
   // --------------------------------------------------
@@ -649,16 +578,12 @@ export async function getServerSideProps({ req, res, query }) {
   }
   
   
-  
-  
   // ---------------------------------------------
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
   
   res.cookie('recentAccessPageHref', recentAccessPageHref);
   res.cookie('recentAccessPageAs', recentAccessPageAs);
-  
-  
   
   
   // --------------------------------------------------
@@ -694,8 +619,6 @@ export async function getServerSideProps({ req, res, query }) {
   //   categories: {green ${categories}}
   //   keyword: {green ${keyword}}
   // `);
-  
-  
   
   
   // --------------------------------------------------

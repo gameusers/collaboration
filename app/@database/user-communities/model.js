@@ -24,17 +24,17 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Model
 // ---------------------------------------------
 
-const SchemaUserCommunities = require('./schema');
-const SchemaImagesAndVideos = require('../images-and-videos/schema');
-const SchemaFollows = require('../follows/schema');
+const SchemaUserCommunities = require('./schema.js');
+const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
+const SchemaFollows = require('../follows/schema.js');
 
 
 // ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosArr, formatImagesAndVideosObj } = require('../images-and-videos/format');
-const { formatFollowsObj } = require('../follows/format');
+const { formatImagesAndVideosArr, formatImagesAndVideosObj } = require('../images-and-videos/format.js');
+const { formatFollowsObj } = require('../follows/format.js');
 
 
 
@@ -425,13 +425,13 @@ const findForUserCommunity = async ({
                         }
                       }
                     ],
-                    as: 'imagesAndVideosObj'
+                    as: 'imagesAndVideosThumbnailObj'
                   }
               },
               
               {
                 $unwind: {
-                  path: '$imagesAndVideosObj',
+                  path: '$imagesAndVideosThumbnailObj',
                   preserveNullAndEmptyArrays: true,
                 }
               },
@@ -442,7 +442,7 @@ const findForUserCommunity = async ({
                   gameCommunities_id: 1,
                   urlID: 1,
                   name: 1,
-                  imagesAndVideosObj: 1,
+                  imagesAndVideosThumbnailObj: 1,
                 }
               },
             ],
@@ -537,10 +537,10 @@ const findForUserCommunity = async ({
         $project: {
           users_id: 1,
           createdDate: 1,
+          updatedDateObj: 1,
           localesArr: 1,
           communityType: 1,
-          forumObj: 1,
-          updatedDateObj: 1,
+          // forumObj: 1,
           anonymity: 1,
           imagesAndVideosObj: 1,
           gamesArr: 1,
@@ -552,13 +552,8 @@ const findForUserCommunity = async ({
     ]).exec();
     
     
-    // console.log(`
-    //   ----- docArr -----\n
-    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
-    
+
     // --------------------------------------------------
     //   Format
     // --------------------------------------------------
@@ -585,8 +580,6 @@ const findForUserCommunity = async ({
     }
     
     
-    
-    
     // --------------------------------------------------
     //   Locale / name & description
     // --------------------------------------------------
@@ -609,8 +602,6 @@ const findForUserCommunity = async ({
       returnObj.description = lodashGet(localesArr, [0, 'description'], '');
       
     }
-    
-    
     
     
     // --------------------------------------------------
@@ -636,13 +627,10 @@ const findForUserCommunity = async ({
     returnObj.headerObj = headerObj;
     
     
-    
-    
     // --------------------------------------------------
     //   不要な項目を削除する
     // --------------------------------------------------
     
-    // delete returnObj.createdDate;
     delete returnObj.localesArr;
     delete returnObj.gamesArr;
     delete returnObj.imagesAndVideosObj;
@@ -664,7 +652,436 @@ const findForUserCommunity = async ({
     //   loginUsers_id: {green ${loginUsers_id}}
     //   userCommunityID: {green ${userCommunityID}}
     // `);
+
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
+/**
+ * 検索してデータを取得する / For User Community
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} userCommunities_id - DB user-communities _id
+ * @param {string} userCommunityID - DB user-communities userCommunityID / コミュニティID
+ * @return {Array} 取得データ
+ */
+const findForUserCommunitySettings = async ({
+  
+  localeObj,
+  loginUsers_id,
+  userCommunities_id,
+  userCommunityID,
+  
+}) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Language & Country
+    // --------------------------------------------------
+    
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+    
+    
+    // --------------------------------------------------
+    //   Match Condition Array
+    // --------------------------------------------------
+    
+    let matchConditionArr = [
+      {
+        $match: {
+          _id: userCommunities_id,
+          users_id: loginUsers_id
+        }
+      },
+    ];
+    
+    if (userCommunityID) {
+      
+      matchConditionArr = [
+        {
+          $match: {
+            userCommunityID,
+            users_id: loginUsers_id
+          }
+        },
+      ];
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   Aggregation
+    // --------------------------------------------------
+    
+    const docArr = await SchemaUserCommunities.aggregate([
+      
+      
+      // --------------------------------------------------
+      //   Match Condition Array
+      // --------------------------------------------------
+      
+      ...matchConditionArr,
+      
+      
+      // --------------------------------------------------
+      //   games - 関連するゲーム
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'games',
+            let: { letGameCommunities_idsArr: '$gameCommunities_idsArr' },
+            pipeline: [
+              
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$language', language] },
+                      { $eq: ['$country', country] },
+                      { $in: ['$gameCommunities_id', '$$letGameCommunities_idsArr'] },
+                    ]
+                  },
+                }
+              },
+              
+              
+              // --------------------------------------------------
+              //   games / images-and-videos / サムネイル用
+              // --------------------------------------------------
+              
+              {
+                $lookup:
+                  {
+                    from: 'images-and-videos',
+                    let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                          },
+                        }
+                      },
+                      {
+                        $project: {
+                          createdDate: 0,
+                          updatedDate: 0,
+                          users_id: 0,
+                          __v: 0,
+                        }
+                      }
+                    ],
+                    as: 'imagesAndVideosThumbnailObj'
+                  }
+              },
+              
+              {
+                $unwind: {
+                  path: '$imagesAndVideosThumbnailObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+              
+              {
+                $project: {
+                  gameCommunities_id: 1,
+                  urlID: 1,
+                  name: 1,
+                  imagesAndVideosThumbnailObj: 1,
+                }
+              },
+            ],
+            as: 'gamesArr'
+          }
+      },
+      
+      
+      // --------------------------------------------------
+      //   images-and-videos / トップ画像
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideos_id']
+                  },
+                }
+              },
+              {
+                $project: {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+
+
+      // --------------------------------------------------
+      //   images-and-videos / サムネイル用
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                  },
+                }
+              },
+              {
+                $project: {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosThumbnailObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosThumbnailObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // --------------------------------------------------
+      //   follows
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'follows',
+            let: { let_id: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$userCommunities_id', '$$let_id']
+                  },
+                }
+              },
+              {
+                $project: {
+                  _id: 0,
+                  approval: 1,
+                  followedArr: 1,
+                  approvalArr: 1,
+                  blockArr: 1,
+                  followedCount: 1,
+                }
+              }
+            ],
+            as: 'followsObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$followsObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+      
+      {
+        $project: {
+          users_id: 1,
+          createdDate: 1,
+          updatedDateObj: 1,
+          userCommunityID: 1,
+          localesArr: 1,
+          communityType: 1,
+          // forumObj: 1,
+          
+          anonymity: 1,
+          imagesAndVideosObj: 1,
+          imagesAndVideosThumbnailObj: 1,
+          gamesArr: 1,
+          followsObj: 1,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    // --------------------------------------------------
+    //   returnObj
+    // --------------------------------------------------
+    
+    const returnObj = lodashGet(docArr, [0], {});
+    const headerObj = {};
+    
+    
+    // --------------------------------------------------
+    //   画像の処理
+    // --------------------------------------------------
+    
+    if (returnObj.imagesAndVideosObj) {
+      headerObj.imagesAndVideosObj = formatImagesAndVideosObj({ obj: returnObj.imagesAndVideosObj });
+    }
+    
+    
+    // --------------------------------------------------
+    //   画像の処理 - 関連するゲーム
+    // --------------------------------------------------
+    
+    if (returnObj.gamesArr) {
+      headerObj.gamesArr = formatImagesAndVideosArr({ arr: returnObj.gamesArr });
+    }
+    
+    
+    // --------------------------------------------------
+    //   Locale / name & description
+    // --------------------------------------------------
+    
+    const localesArr = lodashGet(returnObj, ['localesArr'], []);
+    
+    const filteredArr = localesArr.filter((filterObj) => {
+      return filterObj.language === localeObj.language;
+    });
+    
+    
+    if (lodashHas(filteredArr, [0])) {
+      
+      returnObj.name = lodashGet(filteredArr, [0, 'name'], '');;
+      returnObj.description = lodashGet(filteredArr, [0, 'description'], '');
+      returnObj.descriptionShort = lodashGet(filteredArr, [0, 'descriptionShort'], '');
+      
+    } else {
+      
+      returnObj.name = lodashGet(localesArr, [0, 'name'], '');
+      returnObj.description = lodashGet(localesArr, [0, 'description'], '');
+      returnObj.descriptionShort = lodashGet(localesArr, [0, 'descriptionShort'], '');
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   follow フォーマット
+    // --------------------------------------------------
+    
+    const followsObj = lodashGet(returnObj, ['followsObj'], {});
+    const adminUsers_id = lodashGet(returnObj, ['users_id'], '');
+    
+    headerObj.followsObj = formatFollowsObj({ followsObj, adminUsers_id, loginUsers_id });
+    
+    
+    // --------------------------------------------------
+    //   headerObj
+    // --------------------------------------------------
+    
+    headerObj.userCommunities_id = returnObj._id;
+    headerObj.type = 'uc';
+    headerObj.createdDate = returnObj.createdDate;
+    headerObj.name = returnObj.name;
+    headerObj.communityType = returnObj.communityType;
+    
+    returnObj.headerObj = headerObj;
+    
+    
+    // --------------------------------------------------
+    //   不要な項目を削除する
+    // --------------------------------------------------
+    
+    // delete returnObj.createdDate;
+    delete returnObj.localesArr;
+    delete returnObj.gamesArr;
+    // delete returnObj.imagesAndVideosObj;
+    delete returnObj.followsObj;
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/user-communities/model.js - findForUserCommunity
+    // `);
+    
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   userCommunityID: {green ${userCommunityID}}
+    // `);
+    
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
@@ -699,329 +1116,343 @@ const findForUserCommunity = async ({
  * @param {string} userCommunities_id - DB user-communities _id / _id
  * @return {Array} 取得データ
  */
-const findForUserCommunitySettings = async ({
+// const findForUserCommunitySettings = async ({
   
-  localeObj,
-  loginUsers_id,
-  userCommunityID,
-  userCommunities_id,
+//   localeObj,
+//   loginUsers_id,
+//   userCommunityID,
+//   userCommunities_id,
   
-}) => {
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Property
-    // --------------------------------------------------
-    
-    const language = lodashGet(localeObj, ['language'], '');
-    const country = lodashGet(localeObj, ['country'], '');
-    
-    
-    // --------------------------------------------------
-    //   Match Condition Array
-    // --------------------------------------------------
-    
-    let matchConditionArr = [
-      {
-        $match : { userCommunityID, users_id: loginUsers_id }
-      },
-    ];
-    
-    if (userCommunities_id) {
-      
-      matchConditionArr = [
-        {
-          $match : { _id: userCommunities_id, users_id: loginUsers_id }
-        },
-      ];
-      
-    }
-    
-    
-    // --------------------------------------------------
-    //   Aggregation
-    // --------------------------------------------------
-    
-    const resultArr = await SchemaUserCommunities.aggregate([
-      
-      
-      ...matchConditionArr,
-      
-      
-      // --------------------------------------------------
-      //   games - 関連するゲーム
-      // --------------------------------------------------
-      
-      {
-        $lookup:
-          {
-            from: 'games',
-            let: { gameCommunities_idsArr: '$gameCommunities_idsArr' },
-            pipeline: [
-              
-              { $match:
-                { $expr:
-                  { $and:
-                    [
-                      { $eq: ['$language', language] },
-                      { $eq: ['$country', country] },
-                      { $in: ['$gameCommunities_id', '$$gameCommunities_idsArr'] },
-                    ]
-                  },
-                }
-              },
-              
-              
-              // --------------------------------------------------
-              //   games / images-and-videos / サムネイル用
-              // --------------------------------------------------
-              
-              {
-                $lookup:
-                  {
-                    from: 'images-and-videos',
-                    let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-                    pipeline: [
-                      { $match:
-                        { $expr:
-                          { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
-                        }
-                      },
-                      { $project:
-                        {
-                          createdDate: 0,
-                          updatedDate: 0,
-                          users_id: 0,
-                          __v: 0,
-                        }
-                      }
-                    ],
-                    as: 'imagesAndVideosThumbnailObj'
-                  }
-              },
-              
-              {
-                $unwind: {
-                  path: '$imagesAndVideosThumbnailObj',
-                  preserveNullAndEmptyArrays: true,
-                }
-              },
-              
-              
-              { $project:
-                {
-                  gameCommunities_id: 1,
-                  name: 1,
-                  imagesAndVideosThumbnailObj: 1,
-                }
-              },
-            ],
-            as: 'gamesArr'
-          }
-      },
-      
-      // {
-      //   $unwind: {
-      //     path: '$gamesArr',
-      //     preserveNullAndEmptyArrays: true,
-      //   }
-      // },
-      
-      
-      // --------------------------------------------------
-      //   images-and-videos / トップ画像
-      // --------------------------------------------------
-      
-      {
-        $lookup:
-          {
-            from: 'images-and-videos',
-            let: { imagesAndVideos_id: '$imagesAndVideos_id' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$imagesAndVideos_id'] },
-                }
-              },
-              { $project:
-                {
-                  createdDate: 0,
-                  updatedDate: 0,
-                  users_id: 0,
-                  __v: 0,
-                }
-              }
-            ],
-            as: 'imagesAndVideosObj'
-          }
-      },
-      
-      {
-        $unwind: {
-          path: '$imagesAndVideosObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
-      
-      
-      // --------------------------------------------------
-      //   images-and-videos / サムネイル画像
-      // --------------------------------------------------
-      
-      {
-        $lookup:
-          {
-            from: 'images-and-videos',
-            let: { imagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$imagesAndVideosThumbnail_id'] },
-                }
-              },
-              { $project:
-                {
-                  createdDate: 0,
-                  updatedDate: 0,
-                  users_id: 0,
-                  __v: 0,
-                }
-              }
-            ],
-            as: 'imagesAndVideosThumbnailObj'
-          }
-      },
-      
-      {
-        $unwind: {
-          path: '$imagesAndVideosThumbnailObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
-      
-      
-      // --------------------------------------------------
-      //   follows
-      // --------------------------------------------------
-      
-      {
-        $lookup:
-          {
-            from: 'follows',
-            let: { uc_id: '$_id' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$userCommunities_id', '$$uc_id'] },
-                }
-              },
-              { $project:
-                {
-                  _id: 0,
-                  approval: 1,
-                }
-              }
-            ],
-            as: 'followsObj'
-          }
-      },
-      
-      {
-        $unwind: {
-          path: '$followsObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
-      
-      
-      { $project:
-        {
-          userCommunityID: 1,
-          users_id: 1,
-          localesArr: 1,
-          communityType: 1,
-          anonymity: 1,
-          imagesAndVideosObj: 1,
-          imagesAndVideosThumbnailObj: 1,
-          gamesArr: 1,
-          followsObj: 1,
-        }
-      },
-      
-      
-    ]).exec();
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   
-    // --------------------------------------------------
-    
-    const returnObj = lodashGet(resultArr, [0], {});
-    
-    
-    // --------------------------------------------------
-    //   画像の処理 - 関連するゲーム
-    // --------------------------------------------------
-    
-    if (returnObj.gamesArr) {
-      returnObj.gamesArr = formatImagesAndVideosArr({ arr: returnObj.gamesArr });
-    }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   userCommunityID: {green ${userCommunityID}}
-    // `);
-    
-    // console.log(`
-    //   ----- resultArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- formattedUcArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(formattedUcArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- formattedGamesArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(formattedGamesArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return returnObj;
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
+// }) => {
   
   
-};
+//   // --------------------------------------------------
+//   //   Database
+//   // --------------------------------------------------
+  
+//   try {
+    
+    
+//     // --------------------------------------------------
+//     //   Property
+//     // --------------------------------------------------
+    
+//     const language = lodashGet(localeObj, ['language'], '');
+//     const country = lodashGet(localeObj, ['country'], '');
+    
+    
+//     // --------------------------------------------------
+//     //   Match Condition Array
+//     // --------------------------------------------------
+    
+//     let matchConditionArr = [
+//       {
+//         $match: {
+//           userCommunityID,
+//           users_id: loginUsers_id
+//         }
+//       },
+//     ];
+    
+//     if (userCommunities_id) {
+      
+//       matchConditionArr = [
+//         {
+//           $match: {
+//             _id: userCommunities_id,
+//             users_id: loginUsers_id
+//           }
+//         },
+//       ];
+      
+//     }
+    
+    
+//     // --------------------------------------------------
+//     //   Aggregation
+//     // --------------------------------------------------
+    
+//     const resultArr = await SchemaUserCommunities.aggregate([
+      
+      
+//       // --------------------------------------------------
+//       //   Match Condition Array
+//       // --------------------------------------------------
+
+//       ...matchConditionArr,
+      
+      
+//       // --------------------------------------------------
+//       //   games - 関連するゲーム
+//       // --------------------------------------------------
+      
+//       {
+//         $lookup:
+//           {
+//             from: 'games',
+//             let: { letGameCommunities_idsArr: '$gameCommunities_idsArr' },
+//             pipeline: [
+              
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $and: [
+//                       { $eq: ['$language', language] },
+//                       { $eq: ['$country', country] },
+//                       { $in: ['$gameCommunities_id', '$$letGameCommunities_idsArr'] },
+//                     ]
+//                   },
+//                 }
+//               },
+              
+              
+//               // --------------------------------------------------
+//               //   games / images-and-videos / サムネイル用
+//               // --------------------------------------------------
+              
+//               {
+//                 $lookup:
+//                   {
+//                     from: 'images-and-videos',
+//                     let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+//                     pipeline: [
+//                       {
+//                         $match: {
+//                           $expr: {
+//                             $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+//                           },
+//                         }
+//                       },
+//                       {
+//                         $project: {
+//                           createdDate: 0,
+//                           updatedDate: 0,
+//                           users_id: 0,
+//                           __v: 0,
+//                         }
+//                       }
+//                     ],
+//                     as: 'imagesAndVideosThumbnailObj'
+//                   }
+//               },
+              
+//               {
+//                 $unwind: {
+//                   path: '$imagesAndVideosThumbnailObj',
+//                   preserveNullAndEmptyArrays: true,
+//                 }
+//               },
+              
+              
+//               {
+//                 $project: {
+//                   gameCommunities_id: 1,
+//                   name: 1,
+//                   imagesAndVideosThumbnailObj: 1,
+//                 }
+//               },
+//             ],
+//             as: 'gamesArr'
+//           }
+//       },
+      
+//       // {
+//       //   $unwind: {
+//       //     path: '$gamesArr',
+//       //     preserveNullAndEmptyArrays: true,
+//       //   }
+//       // },
+      
+      
+//       // --------------------------------------------------
+//       //   images-and-videos / トップ画像
+//       // --------------------------------------------------
+      
+//       {
+//         $lookup:
+//           {
+//             from: 'images-and-videos',
+//             let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $eq: ['$_id', '$$letImagesAndVideos_id']
+//                   },
+//                 }
+//               },
+//               {
+//                 $project: {
+//                   createdDate: 0,
+//                   updatedDate: 0,
+//                   users_id: 0,
+//                   __v: 0,
+//                 }
+//               }
+//             ],
+//             as: 'imagesAndVideosObj'
+//           }
+//       },
+      
+//       {
+//         $unwind: {
+//           path: '$imagesAndVideosObj',
+//           preserveNullAndEmptyArrays: true,
+//         }
+//       },
+      
+      
+//       // --------------------------------------------------
+//       //   images-and-videos / サムネイル画像
+//       // --------------------------------------------------
+      
+//       {
+//         $lookup:
+//           {
+//             from: 'images-and-videos',
+//             let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+//                   },
+//                 }
+//               },
+//               {
+//                 $project: {
+//                   createdDate: 0,
+//                   updatedDate: 0,
+//                   users_id: 0,
+//                   __v: 0,
+//                 }
+//               }
+//             ],
+//             as: 'imagesAndVideosThumbnailObj'
+//           }
+//       },
+      
+//       {
+//         $unwind: {
+//           path: '$imagesAndVideosThumbnailObj',
+//           preserveNullAndEmptyArrays: true,
+//         }
+//       },
+      
+      
+//       // --------------------------------------------------
+//       //   follows
+//       // --------------------------------------------------
+      
+//       {
+//         $lookup:
+//           {
+//             from: 'follows',
+//             let: { let_id: '$_id' },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $eq: ['$userCommunities_id', '$$let_id']
+//                   },
+//                 }
+//               },
+//               {
+//                 $project: {
+//                   _id: 0,
+//                   approval: 1,
+//                 }
+//               }
+//             ],
+//             as: 'followsObj'
+//           }
+//       },
+      
+//       {
+//         $unwind: {
+//           path: '$followsObj',
+//           preserveNullAndEmptyArrays: true,
+//         }
+//       },
+      
+      
+//       {
+//         $project: {
+//           userCommunityID: 1,
+//           users_id: 1,
+//           localesArr: 1,
+//           communityType: 1,
+//           anonymity: 1,
+//           imagesAndVideosObj: 1,
+//           imagesAndVideosThumbnailObj: 1,
+//           gamesArr: 1,
+//           followsObj: 1,
+//         }
+//       },
+      
+      
+//     ]).exec();
+    
+    
+//     // --------------------------------------------------
+//     //   returnObj
+//     // --------------------------------------------------
+    
+//     const returnObj = lodashGet(resultArr, [0], {});
+    
+    
+//     // --------------------------------------------------
+//     //   画像の処理 - 関連するゲーム
+//     // --------------------------------------------------
+    
+//     if (returnObj.gamesArr) {
+//       returnObj.gamesArr = formatImagesAndVideosArr({ arr: returnObj.gamesArr });
+//     }
+    
+    
+//     // --------------------------------------------------
+//     //   console.log
+//     // --------------------------------------------------
+    
+//     // console.log(chalk`
+//     //   loginUsers_id: {green ${loginUsers_id}}
+//     //   userCommunityID: {green ${userCommunityID}}
+//     // `);
+    
+//     // console.log(`
+//     //   ----- resultArr -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+//     // console.log(`
+//     //   ----- formattedUcArr -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(formattedUcArr)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+//     // console.log(`
+//     //   ----- formattedGamesArr -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(formattedGamesArr)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+    
+//     // --------------------------------------------------
+//     //   Return
+//     // --------------------------------------------------
+    
+//     return returnObj;
+    
+    
+//   } catch (err) {
+    
+//     throw err;
+    
+//   }
+  
+  
+// };
 
 
 

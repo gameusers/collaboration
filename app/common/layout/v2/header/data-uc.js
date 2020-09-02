@@ -171,8 +171,8 @@ const Component = (props) => {
   
   for (const [index, valueObj] of gamesArr.entries()) {
     
-    const src = lodashGet(valueObj, ['imagesAndVideosObj', 'arr', 0, 'src'], '/img/common/thumbnail/none-game.jpg');
-    const srcSet = lodashGet(valueObj, ['imagesAndVideosObj', 'arr', 0, 'srcSet'], '');
+    const src = lodashGet(valueObj, ['imagesAndVideosThumbnailObj', 'arr', 0, 'src'], '/img/common/thumbnail/none-game.jpg');
+    const srcSet = lodashGet(valueObj, ['imagesAndVideosThumbnailObj', 'arr', 0, 'srcSet'], '');
     
     // console.log(`
     //   ----- valueObj -----\n

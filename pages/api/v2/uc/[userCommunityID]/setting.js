@@ -11,41 +11,43 @@ import util from 'util';
 
 
 // ---------------------------------------------
-//   Node Packages
+//   Lodash
 // ---------------------------------------------
 
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUserCommunities = require('../../../../../../app/@database/user-communities/model');
+import ModelUserCommunities from 'app/@database/user-communities/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../../app/@modules/error/custom');
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
+import { updateAccessDate } from 'app/@modules/access-date.js';
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../../app/@locales/locale');
+import { locale } from 'app/@locales/locale.js';
 
 
 // ---------------------------------------------
 //   API
 // ---------------------------------------------
 
-const { initialProps } = require('../../../../../../app/@api/v2/common');
+import { initialProps } from 'app/@api/v2/common.js';
 
 
 
@@ -56,22 +58,13 @@ const { initialProps } = require('../../../../../../app/@api/v2/common');
 
 export default async (req, res) => {
   
-  
+
   // --------------------------------------------------
   //   Status Code
   // --------------------------------------------------
   
   let statusCode = 400;
-  
-  
-  // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
+
   
   // --------------------------------------------------
   //   Property
@@ -80,6 +73,25 @@ export default async (req, res) => {
   const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  const loginUsersRole = lodashGet(req, ['user', 'role'], '');
+  
+  
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+  
+  const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage
+  });
   
   
   
@@ -102,8 +114,6 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
     
     
-    
-    
     // ---------------------------------------------
     //   Verify CSRF
     // ---------------------------------------------
@@ -116,11 +126,11 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (!req.isAuthenticated()) {
+
       statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'xWkmN-gAs', messageID: 'xLLNIpo6a' }] });
+
     }
-    
-    
     
     
     // --------------------------------------------------
@@ -132,15 +142,42 @@ export default async (req, res) => {
     returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
     returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
     returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
+
+    const accessDate = lodashGet(returnObj, ['loginUsersObj', 'accessDate'], '');
+
+
+    // --------------------------------------------------
+    //   Update Access Date & Login Count
+    // --------------------------------------------------
     
+    const resultUpdatedAccessDateObj = await updateAccessDate({
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      accessDate,
+      
+    });
     
+    returnObj.experienceObj = lodashGet(resultUpdatedAccessDateObj, ['experienceObj'], {});
+    const updatedAccessDate = lodashGet(resultUpdatedAccessDateObj, ['updatedAccessDate'], '');
+    
+    if (updatedAccessDate) {
+      lodashSet(returnObj, ['loginUsersObj', 'accessDate'], updatedAccessDate);
+    }
     
     
     // --------------------------------------------------
     //   DB find / User Community
     // --------------------------------------------------
     
-    const userCommunityObj = await ModelUserCommunities.findForUserCommunitySettings({ localeObj, loginUsers_id, userCommunityID });
+    const userCommunityObj = await ModelUserCommunities.findForUserCommunitySettings({
+
+      localeObj,
+      loginUsers_id,
+      userCommunityID,
+
+    });
     
     const userCommunities_id = lodashGet(userCommunityObj, ['_id'], '');
     const userCommunitiesUsers_id = lodashGet(userCommunityObj, ['users_id'], '');
@@ -151,11 +188,11 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (!userCommunities_id) {
+
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'fppwXm8iV', messageID: 'Error' }] });
+
     }
-    
-    returnObj.userCommunityObj = userCommunityObj;
     
     
     // --------------------------------------------------
@@ -163,21 +200,39 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (userCommunitiesUsers_id !== loginUsers_id) {
+
       statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: '5rP5wjjRU', messageID: 'Error' }] });
+
     }
     
+
+    // ---------------------------------------------
+    //   - headerObj
+    // ---------------------------------------------
     
+    if (lodashHas(userCommunityObj, ['headerObj', 'imagesAndVideosObj'])) {
+      returnObj.headerObj = userCommunityObj.headerObj;
+    }
     
+    delete userCommunityObj.headerObj;
+
+
+    // ---------------------------------------------
+    //   - userCommunityObj
+    // ---------------------------------------------
+    
+    returnObj.userCommunityObj = userCommunityObj;
+
     
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/uc/[userCommunityID]/settings/index.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/uc/[userCommunityID]/settings/index.js
+    `);
     
     // console.log(chalk`
     //   /pages/api/v2/uc/[userCommunityID]/settings/index.js
@@ -193,11 +248,11 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // ---------------------------------------------
@@ -215,11 +270,14 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const resultErrorObj = returnErrorsArr({
+
       errorObj,
       endpointID: '5GMP5E__4',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
+      userAgent,
       requestParametersObj,
+
     });
     
     

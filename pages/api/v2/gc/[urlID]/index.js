@@ -126,8 +126,6 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
     
     
-    
-    
     // --------------------------------------------------
     //   ログインしているユーザー情報＆ログインチェック
     // --------------------------------------------------
@@ -142,8 +140,6 @@ export default async (req, res) => {
     }
     
     const accessDate = lodashGet(returnObj, ['loginUsersObj', 'accessDate'], '');
-    
-    
     
     
     // --------------------------------------------------
@@ -165,8 +161,6 @@ export default async (req, res) => {
     if (updatedAccessDate) {
       lodashSet(returnObj, ['loginUsersObj', 'accessDate'], updatedAccessDate);
     }
-    
-    
     
     
     // --------------------------------------------------

@@ -16,8 +16,6 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
-import { useIntl } from 'react-intl';
-import { useSnackbar } from 'notistack';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -29,14 +27,12 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-import lodashIsEqual from 'lodash/isEqual';
 
 
 // ---------------------------------------------
 //   States
 // ---------------------------------------------
 
-import { ContainerStateUser } from 'app/@states/user.js';
 import { ContainerStateLayout } from 'app/@states/layout.js';
 import { ContainerStateCommunity } from 'app/@states/community.js';
 import { ContainerStateForum } from 'app/@states/forum.js';
@@ -49,7 +45,6 @@ import { ContainerStateForum } from 'app/@states/forum.js';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
 import { getCookie } from 'app/@modules/cookie.js';
-import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -60,8 +55,6 @@ import Layout from 'app/common/layout/v2/layout.js';
 import ForumNavigation from 'app/common/forum/v2/navigation.js';
 import Forum from 'app/common/forum/v2/forum.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
-
-
 
 
 
@@ -82,13 +75,11 @@ const ContainerLayout = (props) => {
   //   States
   // --------------------------------------------------
   
-  const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
   const stateCommunity = ContainerStateCommunity.useContainer();
   const stateForum = ContainerStateForum.useContainer();
   
-  const { setLogin, setLoginUsersObj } = stateUser;
-  const { headerObj, setHeaderObj } = stateLayout;
+  const { handleScrollTo } = stateLayout;
   const { setGameCommunityObj } = stateCommunity;
   const { setForumThreadsForListObj, setForumThreadsObj, setForumCommentsObj, setForumRepliesObj } = stateForum;
   
@@ -96,10 +87,6 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
-  const intl = useIntl();
-  const { enqueueSnackbar } = useSnackbar();
-  
   
   useEffect(() => {
     
@@ -109,66 +96,29 @@ const ContainerLayout = (props) => {
     //   getServerSideProps でデータを取得してからデータを更新する
     // --------------------------------------------------
     
-    setLogin(props.login);
-    setLoginUsersObj(props.loginUsersObj);
     setGameCommunityObj(props.gameCommunityObj);
     setForumThreadsForListObj(props.forumThreadsForListObj);
     setForumThreadsObj(props.forumThreadsObj);
     setForumCommentsObj(props.forumCommentsObj);
     setForumRepliesObj(props.forumRepliesObj);
-
-
-    // --------------------------------------------------
-    //   Header 更新 - データに変更があった場合のみステートを更新
-    // --------------------------------------------------
-    
-    if (lodashIsEqual(headerObj, props.headerObj) === false) {
-      setHeaderObj(props.headerObj);
-    }
-    
-    
-    // --------------------------------------------------
-    //   Snackbar - ログイン回数 + 1
-    // --------------------------------------------------
-    
-    if (Object.keys(props.experienceObj).length !== 0) {
-      
-      showSnackbar({
-        
-        enqueueSnackbar,
-        intl,
-        experienceObj: props.experienceObj,
-        arr: [
-          {
-            variant: 'success',
-            messageID: 'LjWizvlER',
-          },
-          
-        ]
-        
-      });
-      
-    }
     
     
     // ---------------------------------------------
     //   Scroll To
     // ---------------------------------------------
     
-    // handleScrollTo({
+    handleScrollTo({
       
-    //   to: 'forumThreads',
-    //   duration: 0,
-    //   delay: 0,
-    //   smooth: 'easeInOutQuart',
-    //   offset: -50,
+      to: 'forumThreads',
+      duration: 0,
+      delay: 0,
+      smooth: 'easeInOutQuart',
+      offset: -50,
       
-    // });
+    });
     
     
   }, [props.ISO8601]);
-  
-  
   
   
   // --------------------------------------------------

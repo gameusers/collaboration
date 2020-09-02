@@ -128,20 +128,16 @@ export default async (req, res) => {
     //   ログインしているユーザー情報＆ログインチェック
     // --------------------------------------------------
     
-    returnObj.login = false;
+    // returnObj.login = false;
     
-    if (req.isAuthenticated() && req.user) {
+    // if (req.isAuthenticated() && req.user) {
       
-      returnObj.loginUsersObj = req.user;
-      returnObj.login = true;
+    //   returnObj.loginUsersObj = req.user;
+    //   returnObj.login = true;
       
-    }
+    // }
     
-    const accessDate = lodashGet(returnObj, ['loginUsersObj', 'accessDate'], '');
-    
-    
-    
-    
+
     // --------------------------------------------------
     //   Common Initial Props
     // --------------------------------------------------
@@ -151,6 +147,29 @@ export default async (req, res) => {
     returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
     returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
     returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
+
+    const accessDate = lodashGet(returnObj, ['loginUsersObj', 'accessDate'], '');
+
+
+    // --------------------------------------------------
+    //   Update Access Date & Login Count
+    // --------------------------------------------------
+    
+    const resultUpdatedAccessDateObj = await updateAccessDate({
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      accessDate,
+      
+    });
+    
+    returnObj.experienceObj = lodashGet(resultUpdatedAccessDateObj, ['experienceObj'], {});
+    const updatedAccessDate = lodashGet(resultUpdatedAccessDateObj, ['updatedAccessDate'], '');
+    
+    if (updatedAccessDate) {
+      lodashSet(returnObj, ['loginUsersObj', 'accessDate'], updatedAccessDate);
+    }
     
     
     

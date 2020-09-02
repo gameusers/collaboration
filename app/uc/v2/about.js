@@ -89,8 +89,6 @@ const Component = (props) => {
     
     headerObj,
     userCommunityObj,
-    // followedCount,
-    // gamesArr,
     accessRightRead,
     
   } = props;
@@ -101,26 +99,13 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const intl = useIntl();
-  const [buttonDisabled, setButtonDisabled] = useState(true);
-  
-  // const [loginID, setLoginID] = useState(lodashGet(props, ['loginID'], ''));
-  // const [loginPassword, setLoginPassword] = useState('');
-  // const [loginPasswordConfirmation, setLoginPasswordConfirmation] = useState('');
-  
-  
-  useEffect(() => {
-    
-    setButtonDisabled(false);
-    
-  }, []);
-  
-  
   
   
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
+  const approval = lodashGet(headerObj, ['followsObj', 'approval'], false);
   const followedCount = lodashGet(headerObj, ['followsObj', 'followedCount'], 1);
   const gamesArr = lodashGet(headerObj, ['gamesArr'], []);
 
@@ -173,7 +158,7 @@ const Component = (props) => {
   //   参加
   // --------------------------------------------------
   
-  const codeApproval = communityType === 'open' ? intl.formatMessage({ id: 'nEtCLmbKz' }) : intl.formatMessage({ id: 'Da45qlq9l' });
+  const codeApproval = approval ? intl.formatMessage({ id: 'Da45qlq9l' }) : intl.formatMessage({ id: 'nEtCLmbKz' });
   
   
   // --------------------------------------------------
@@ -191,8 +176,8 @@ const Component = (props) => {
   
   for (const [index, valueObj] of gamesArr.entries()) {
     
-    const src = lodashGet(valueObj, ['imagesAndVideosObj', 'arr', 0, 'src'], '/img/common/thumbnail/none-game.jpg');
-    const srcSet = lodashGet(valueObj, ['imagesAndVideosObj', 'arr', 0, 'srcSet'], '');
+    const src = lodashGet(valueObj, ['imagesAndVideosThumbnailObj', 'arr', 0, 'src'], '/img/common/thumbnail/none-game.jpg');
+    const srcSet = lodashGet(valueObj, ['imagesAndVideosThumbnailObj', 'arr', 0, 'srcSet'], '');
     const urlID = lodashGet(valueObj, ['urlID'], '');
     
     const linkHref = '/gc/[urlID]';

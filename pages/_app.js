@@ -192,6 +192,8 @@ const ServiceWorker = (props) => {
   //   pageProps.login: {green ${pageProps.login}}
   // `);
 
+  
+
 
   // --------------------------------------------------
   //   ページ共通の処理を行うために、2つ目の useEffect を利用する
@@ -204,6 +206,13 @@ const ServiceWorker = (props) => {
   useEffect(() => {
     
     // console.log('useEffect / ServiceWorker 2');
+    
+    // console.log(`
+    //   ----- pageProps -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(pageProps)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
 
     // --------------------------------------------------
     //   ログイン状態を更新する

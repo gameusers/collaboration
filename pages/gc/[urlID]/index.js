@@ -16,9 +16,6 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
-import { useIntl } from 'react-intl';
-import { useSnackbar } from 'notistack';
-import { animateScroll as scroll } from 'react-scroll';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -30,14 +27,12 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-import lodashIsEqual from 'lodash/isEqual';
 
 
 // ---------------------------------------------
 //   States
 // ---------------------------------------------
 
-import { ContainerStateLayout } from 'app/@states/layout.js';
 import { ContainerStateCommunity } from 'app/@states/community.js';
 import { ContainerStateForum } from 'app/@states/forum.js';
 
@@ -49,7 +44,6 @@ import { ContainerStateForum } from 'app/@states/forum.js';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
 import { getCookie } from 'app/@modules/cookie.js';
-import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -60,8 +54,6 @@ import Layout from 'app/common/layout/v2/layout.js';
 import ForumNavigation from 'app/common/forum/v2/navigation.js';
 import Forum from 'app/common/forum/v2/forum.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
-
-
 
 
 
@@ -82,53 +74,18 @@ const ContainerLayout = (props) => {
   //   States
   // --------------------------------------------------
   
-  const stateLayout = ContainerStateLayout.useContainer();
   const stateCommunity = ContainerStateCommunity.useContainer();
   const stateForum = ContainerStateForum.useContainer();
   
-  const {
-    
-    headerObj,
-    setHeaderObj,
-    
-  } = stateLayout;
-  
-  const {
-    
-    setGameCommunityObj,
-    
-  } = stateCommunity;
-  
-  const {
-    
-    setForumThreadsForListObj,
-    setForumThreadsObj,
-    setForumCommentsObj,
-    setForumRepliesObj,
-    
-  } = stateForum;
-  
-  
+  const { setGameCommunityObj } = stateCommunity;
+  const { setForumThreadsForListObj, setForumThreadsObj, setForumCommentsObj, setForumRepliesObj } = stateForum;
   
   
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
   
-  const intl = useIntl();
-  const { enqueueSnackbar } = useSnackbar();
-  
-  
   useEffect(() => {
-    
-    
-    // --------------------------------------------------
-    //   Header 更新 - データに変更があった場合のみステートを更新
-    // --------------------------------------------------
-    
-    if (lodashIsEqual(headerObj, props.headerObj) === false) {
-      setHeaderObj(props.headerObj);
-    }
     
     
     // --------------------------------------------------
@@ -143,40 +100,7 @@ const ContainerLayout = (props) => {
     setForumRepliesObj(props.forumRepliesObj);
     
     
-    // --------------------------------------------------
-    //   Snackbar - ログイン回数 + 1
-    // --------------------------------------------------
-    
-    if (Object.keys(props.experienceObj).length !== 0) {
-      
-      showSnackbar({
-        
-        enqueueSnackbar,
-        intl,
-        experienceObj: props.experienceObj,
-        arr: [
-          {
-            variant: 'success',
-            messageID: 'LjWizvlER',
-          },
-          
-        ]
-        
-      });
-      
-    }
-    
-    
-    // ---------------------------------------------
-    //   Scroll To
-    // ---------------------------------------------
-    
-    // scroll.scrollToTop({ duration: 0 });
-    
-    
   }, [props.ISO8601]);
-  
-  
   
   
   // --------------------------------------------------
@@ -199,8 +123,6 @@ const ContainerLayout = (props) => {
   // `);
   
   
-  
-  
   // --------------------------------------------------
   //   Component - Sidebar
   // --------------------------------------------------
@@ -211,8 +133,6 @@ const ContainerLayout = (props) => {
       gameCommunities_id={props.gameCommunities_id}
     />
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -234,8 +154,6 @@ const ContainerLayout = (props) => {
       
     </React.Fragment>
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -364,8 +282,6 @@ export async function getServerSideProps({ req, res, query }) {
   const replyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
   
   
-  
-  
   // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
@@ -381,8 +297,6 @@ export async function getServerSideProps({ req, res, query }) {
   
   const statusCode = lodashGet(resultObj, ['statusCode'], 400);
   const dataObj = lodashGet(resultObj, ['data'], {});
-  
-  
   
   
   // --------------------------------------------------
@@ -404,15 +318,11 @@ export async function getServerSideProps({ req, res, query }) {
   const forumRepliesObj = lodashGet(dataObj, ['forumRepliesObj'], {});
   
   
-  
-  
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
   
   const title = `${gameName} - Game Users`;
-  
-  
   
   
   // --------------------------------------------------
@@ -481,16 +391,12 @@ export async function getServerSideProps({ req, res, query }) {
   ];
   
   
-  
-  
   // ---------------------------------------------
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
   
   res.cookie('recentAccessPageHref', '/gc/[urlID]');
   res.cookie('recentAccessPageAs', `/gc/${urlID}`);
-  
-  
   
   
   // --------------------------------------------------
@@ -532,8 +438,6 @@ export async function getServerSideProps({ req, res, query }) {
   // console.log(chalk`
   //   reqAcceptLanguage: {green ${reqAcceptLanguage}}
   // `);
-  
-  
   
   
   // --------------------------------------------------

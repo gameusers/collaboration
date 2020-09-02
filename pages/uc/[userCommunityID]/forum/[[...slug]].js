@@ -33,6 +33,7 @@ import lodashGet from 'lodash/get';
 //   States
 // ---------------------------------------------
 
+import { ContainerStateLayout } from 'app/@states/layout.js';
 import { ContainerStateCommunity } from 'app/@states/community.js';
 import { ContainerStateForum } from 'app/@states/forum.js';
 
@@ -74,9 +75,11 @@ const ContainerLayout = (props) => {
   //   States
   // --------------------------------------------------
   
+  const stateLayout = ContainerStateLayout.useContainer();
   const stateCommunity = ContainerStateCommunity.useContainer();
   const stateForum = ContainerStateForum.useContainer();
   
+  const { handleScrollTo } = stateLayout;
   const { setUserCommunityObj } = stateCommunity;
   const { setForumThreadsForListObj, setForumThreadsObj, setForumCommentsObj, setForumRepliesObj } = stateForum;
   
@@ -104,15 +107,15 @@ const ContainerLayout = (props) => {
     //   Scroll To
     // ---------------------------------------------
     
-    // handleScrollTo({
+    handleScrollTo({
       
-    //   to: 'forumThreads',
-    //   duration: 0,
-    //   delay: 0,
-    //   smooth: 'easeInOutQuart',
-    //   offset: -50,
+      to: 'forumThreads',
+      duration: 0,
+      delay: 0,
+      smooth: 'easeInOutQuart',
+      offset: -50,
       
-    // });
+    });
     
     
   }, [props.ISO8601]);

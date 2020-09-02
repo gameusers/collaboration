@@ -30,6 +30,13 @@ import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateCommunity } from 'app/@states/community.js';
+
+
+// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -45,14 +52,14 @@ import { getCookie } from 'app/@modules/cookie.js';
 import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 
-import FollowMembers from 'app/common/follow/v2/members.js';
+import FormCommunity from 'app/uc/v2/form-community.js';
 
 
 
 
 // --------------------------------------------------
 //   Function Components
-//   URL: http://localhost:8080/ur/***/follow
+//   URL: http://localhost:8080/uc/***/setting
 // --------------------------------------------------
 
 /**
@@ -60,6 +67,33 @@ import FollowMembers from 'app/common/follow/v2/members.js';
  * @param {Object} props - Props
  */
 const ContainerLayout = (props) => {
+  
+  
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateCommunity = ContainerStateCommunity.useContainer();
+  
+  const { setUserCommunityObj } = stateCommunity;
+  
+  
+  // --------------------------------------------------
+  //   Hooks
+  // --------------------------------------------------
+  
+  useEffect(() => {
+    
+    
+    // --------------------------------------------------
+    //   Router.push でページを移動した際の処理
+    //   getServerSideProps でデータを取得してからデータを更新する
+    // --------------------------------------------------
+    
+    setUserCommunityObj(props.userCommunityObj);
+    
+    
+  }, [props.ISO8601]);
   
   
   // --------------------------------------------------
@@ -86,13 +120,12 @@ const ContainerLayout = (props) => {
         arr={props.breadcrumbsArr}
       />
       
-      <FollowMembers
-        pageType="ur"
-        users_id={props.users_id}
-        accessLevel={props.accessLevel}
-        cardPlayersObj={props.cardPlayersObj}
-        followMembersObj={props.followMembersObj}
-      />
+      <FormCommunity
+        // userCommunities_id={props.userCommunities_id}
+        // accessLevel={props.accessLevel}
+        headerObj={props.headerObj}
+        userCommunityObj={props.userCommunityObj}
+      /> 
       
     </React.Fragment>
   ;
@@ -137,10 +170,27 @@ const Component = (props) => {
   
   
   // --------------------------------------------------
+  //   unstated-next - Initial State
+  // --------------------------------------------------
+  
+  const initialStateObj = {
+    
+    userCommunityObj: props.userCommunityObj,
+    
+  };
+  
+  
+  // --------------------------------------------------
   //   Return
   // --------------------------------------------------
   
-  return <ContainerLayout {...props} />;
+  return (
+    <ContainerStateCommunity.Provider initialState={initialStateObj}>
+      
+      <ContainerLayout {...props} />
+      
+    </ContainerStateCommunity.Provider>
+  );
   
   
 };
@@ -176,7 +226,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Query
   // --------------------------------------------------
   
-  const userID = query.userID;
+  const userCommunityID = query.userCommunityID;
   
   
   // --------------------------------------------------
@@ -185,14 +235,17 @@ export async function getServerSideProps({ req, res, query }) {
   
   const ISO8601 = moment().utc().toISOString();
   
+
+  // ---------------------------------------------
+  //   FormData
+  // ---------------------------------------------
   
-  // --------------------------------------------------
-  //   Get Cookie Data & Temporary Data for Fetch
-  // --------------------------------------------------
-  
-  const page = 1;
-  const limit = getCookie({ key: 'followLimit', reqHeadersCookie });
-  
+  const formDataObj = {
+    
+    userCommunityID,
+    
+  };
+
   
   // --------------------------------------------------
   //   Fetch
@@ -200,10 +253,11 @@ export async function getServerSideProps({ req, res, query }) {
   
   const resultObj = await fetchWrapper({
     
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}/follow?page=${page}&limit=${limit}`),
-    methodType: 'GET',
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/uc/${userCommunityID}/setting`),
+    methodType: 'POST',
     reqHeadersCookie,
     reqAcceptLanguage,
+    formData: JSON.stringify(formDataObj),
     
   });
   
@@ -221,8 +275,10 @@ export async function getServerSideProps({ req, res, query }) {
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
   
-  const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
-  const users_id = lodashGet(dataObj, ['users_id'], '');
+  const userCommunities_id = lodashGet(dataObj, ['userCommunityObj', '_id'], '');
+  const userCommunityName = lodashGet(dataObj, ['userCommunityObj', 'name'], '');
+  
+  const userCommunityObj = lodashGet(dataObj, ['userCommunityObj'], {});
   const cardPlayersObj = lodashGet(dataObj, ['cardPlayersObj'], {});
   const followMembersObj = lodashGet(dataObj, ['followMembersObj'], {});
   
@@ -231,14 +287,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Title
   // --------------------------------------------------
   
-  const pagesObj = pagesArr.find((valueObj) => {
-    return valueObj.type === 'follow';
-  });
-  
-  const pageTitle = lodashGet(pagesObj, ['title'], '');
-  
-  const userName = lodashGet(headerObj, ['name'], '');
-  const title = pageTitle ? pageTitle : `フォロー - ${userName}`;
+  let title = `設定 - ${userCommunityName}`;
   
   
   // --------------------------------------------------
@@ -249,32 +298,26 @@ export async function getServerSideProps({ req, res, query }) {
     
     {
       name: 'トップ',
-      href: `/ur/[userID]`,
-      as: `/ur/${userID}`,
+      href: `/uc/[userCommunityID]`,
+      as: `/uc/${userCommunityID}`,
       active: false,
     },
     
     {
-      name: 'フォロー',
-      href: `/ur/[userID]/follow`,
-      as: `/ur/${userID}/follow`,
-      active: true,
+      name: 'メンバー',
+      href: `/uc/[userCommunityID]/member`,
+      as: `/uc/${userCommunityID}/member`,
+      active: false,
     },
-    
+
+    {
+      name: '設定',
+      href: `/uc/[userCommunityID]/setting`,
+      as: `/uc/${userCommunityID}/setting`,
+      active: true,
+    }
+
   ];
-  
-  if (accessLevel >= 50) {
-    
-    headerNavMainArr.push(
-      {
-        name: '設定',
-        href: `/ur/[userID]/setting`,
-        as: `/ur/${userID}/setting`,
-        active: false,
-      }
-    );
-    
-  }
   
   
   // --------------------------------------------------
@@ -284,29 +327,36 @@ export async function getServerSideProps({ req, res, query }) {
   const breadcrumbsArr = [
     
     {
-      type: 'ur',
+      type: 'uc',
       anchorText: '',
-      href: `/ur/[userID]`,
-      as: `/ur/${userID}`,
+      href: `/uc/index`,
+      as: `/uc`,
     },
     
     {
-      type: 'ur/follow',
+      type: 'uc/index',
+      anchorText: userCommunityName,
+      href: `/uc/[userCommunityID]`,
+      as: `/uc/${userCommunityID}`,
+    },
+    
+    {
+      type: 'uc/setting',
       anchorText: '',
       href: '',
       as: '',
     },
     
   ];
-  
+
 
   // ---------------------------------------------
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
   
-  res.cookie('recentAccessPageHref', '/ur/[userID]/follow');
-  res.cookie('recentAccessPageAs', `/ur/${userID}/follow`);
-
+  // res.cookie('recentAccessPageHref', '/uc/[userCommunityID]/setting');
+  // res.cookie('recentAccessPageAs', `/uc/${userCommunityID}/setting`);
+  
   
   // --------------------------------------------------
   //   console.log
@@ -314,13 +364,33 @@ export async function getServerSideProps({ req, res, query }) {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /pages/ur/[userID]/follow/index.js
+  //   pages/uc/[userCommunityID]/setting/index.js
   // `);
   
   // console.log(`
   //   ----- resultObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
   //   --------------------\n
+  // `);
+  
+  // console.log(chalk`
+  //   threadListPage: {green ${threadListPage}}
+  //   threadPage: {green ${threadPage}}
+    
+  //   threadListLimit: {green ${threadListLimit}}
+  //   threadLimit: {green ${threadLimit}}
+  //   commentLimit: {green ${commentLimit}}
+  //   replyLimit: {green ${replyLimit}}
+  // `);
+  
+  // console.log(`
+  //   ----- reqHeadersCookie -----\n
+  //   ${util.inspect(reqHeadersCookie, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(chalk`
+  //   reqAcceptLanguage: {green ${reqAcceptLanguage}}
   // `);
   
   
@@ -343,9 +413,9 @@ export async function getServerSideProps({ req, res, query }) {
       breadcrumbsArr,
       experienceObj,
       
-      accessLevel,
-      userID,
-      users_id,
+      userCommunityID,
+      userCommunities_id,
+      userCommunityObj,
       cardPlayersObj,
       followMembersObj,
       

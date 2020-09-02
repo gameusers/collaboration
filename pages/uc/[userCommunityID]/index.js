@@ -16,8 +16,6 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Error from 'next/error';
-// import { useIntl } from 'react-intl';
-// import { useSnackbar } from 'notistack';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -29,15 +27,12 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-// import lodashIsEqual from 'lodash/isEqual';
 
 
 // ---------------------------------------------
 //   States
 // ---------------------------------------------
 
-// import { ContainerStateUser } from 'app/@states/user.js';
-// import { ContainerStateLayout } from 'app/@states/layout.js';
 import { ContainerStateCommunity } from 'app/@states/community.js';
 import { ContainerStateForum } from 'app/@states/forum.js';
 
@@ -49,7 +44,6 @@ import { ContainerStateForum } from 'app/@states/forum.js';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
 import { getCookie } from 'app/@modules/cookie.js';
-// import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------

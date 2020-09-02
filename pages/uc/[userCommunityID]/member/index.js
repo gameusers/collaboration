@@ -34,7 +34,6 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import { ContainerStateCommunity } from 'app/@states/community.js';
-import { ContainerStateForum } from 'app/@states/forum.js';
 
 
 // ---------------------------------------------
@@ -75,10 +74,8 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
   
   const stateCommunity = ContainerStateCommunity.useContainer();
-  const stateForum = ContainerStateForum.useContainer();
   
   const { setUserCommunityObj } = stateCommunity;
-  const { setForumThreadsForListObj, setForumThreadsObj, setForumCommentsObj, setForumRepliesObj } = stateForum;
   
   
   // --------------------------------------------------
@@ -94,10 +91,6 @@ const ContainerLayout = (props) => {
     // --------------------------------------------------
     
     setUserCommunityObj(props.userCommunityObj);
-    setForumThreadsForListObj(props.forumThreadsForListObj);
-    setForumThreadsObj(props.forumThreadsObj);
-    setForumCommentsObj(props.forumCommentsObj);
-    setForumRepliesObj(props.forumRepliesObj);
     
     
   }, [props.ISO8601]);
@@ -184,10 +177,6 @@ const Component = (props) => {
   const initialStateObj = {
     
     userCommunityObj: props.userCommunityObj,
-    forumThreadsForListObj: props.forumThreadsForListObj,
-    forumThreadsObj: props.forumThreadsObj,
-    forumCommentsObj: props.forumCommentsObj,
-    forumRepliesObj: props.forumRepliesObj,
     
   };
   
@@ -199,11 +188,7 @@ const Component = (props) => {
   return (
     <ContainerStateCommunity.Provider initialState={initialStateObj}>
       
-      <ContainerStateForum.Provider initialState={initialStateObj}>
-        
-        <ContainerLayout {...props} />
-        
-      </ContainerStateForum.Provider>
+      <ContainerLayout {...props} />
       
     </ContainerStateCommunity.Provider>
   );
@@ -366,6 +351,14 @@ export async function getServerSideProps({ req, res, query }) {
     },
     
   ];
+
+
+  // ---------------------------------------------
+  //   Set Cookie - recentAccessPage
+  // ---------------------------------------------
+  
+  res.cookie('recentAccessPageHref', '/uc/[userCommunityID]/member');
+  res.cookie('recentAccessPageAs', `/uc/${userCommunityID}/member`);
   
   
   // --------------------------------------------------

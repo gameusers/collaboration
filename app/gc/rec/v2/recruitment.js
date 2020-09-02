@@ -73,8 +73,6 @@ import FormThread from 'app/gc/rec/v2/form/thread.js';
 
 
 
-
-
 // --------------------------------------------------
 //   Material UI Style Overrides
 //   https://material-ui.com/styles/basics/
@@ -93,8 +91,6 @@ const useStyles = makeStyles({
   },
   
 });
-
-
 
 
 
@@ -122,8 +118,6 @@ const Component = (props) => {
   } = props;
   
   
-  
-  
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
@@ -138,8 +132,6 @@ const Component = (props) => {
     setButtonDisabled(false);
     
   }, []);
-  
-  
   
   
   // --------------------------------------------------
@@ -159,8 +151,8 @@ const Component = (props) => {
   } = stateRecruitment;
   
   
-  
-  
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
@@ -195,19 +187,19 @@ const Component = (props) => {
       const urlCategories = searchCategoriesArr.length > 0 ? `categories=${searchCategoriesArr.join(',')}&` : '';
       const urlKeyword = searchKeyword ? `keyword=${encodeURI(searchKeyword)}&` : '';
       
-      let url = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
+      let url = `/gc/[urlID]/rec/[[...slug]]`;
       let as = `/gc/${urlID}/rec/search?${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
       
       if (!urlHardwares && !urlCategories && !urlKeyword) {
         
         if (page === 1) {
           
-          url = `/gc/[urlID]/rec/index?urlID=${urlID}&page=${page}`;
+          url = `/gc/[urlID]/rec/[[...slug]]`;
           as = `/gc/${urlID}/rec`;
           
         } else {
           
-          url = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}&page=${page}`;
+          url = `/gc/[urlID]/rec/[[...slug]]`;
           as = `/gc/${urlID}/rec/${page}`;
           
         }
@@ -215,43 +207,13 @@ const Component = (props) => {
       }
       
       
-      // console.log(chalk`
-      //   /app/gc/rec/v2/components/recruitment.js - handleRead
-      //   searchHardwares: {green ${searchHardwares}}
-      //   searchCategories: {green ${searchCategories}}
-      //   searchKeyword: {green ${searchKeyword}}
-      // `);
-      
-      
-      // let url = '';
-      // let as = '';
-      
-      // if (page === 1) {
-        
-      //   url = `/gc/[urlID]/rec/index?urlID=${urlID}`;
-      //   as = `/gc/${urlID}/rec`;
-        
-      // } else {
-        
-      //   url = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}&page=${page}`;
-      //   as = `/gc/${urlID}/rec/${page}`;
-        
-      // }
-      
-      
-      
-      
       // ---------------------------------------------
       //   Change Limit / Set Cookie
       // ---------------------------------------------
       
       if (changeLimit) {
-        
         Cookies.set('recruitmentThreadLimit', changeLimit);
-        
       }
-      
-      
       
       
       // ---------------------------------------------
@@ -262,19 +224,16 @@ const Component = (props) => {
       //   ----------------------------------------\n
       //   /app/gc/rec/v2/components/recruitment.js - handleRead
       // `);
-      
+
       // console.log(chalk`
       //   gameCommunities_id: {green ${gameCommunities_id}}
       //   page: {green ${page}}
       //   changeLimit: {green ${changeLimit}}
-        
       //   url: {green ${url}}
       //   as: {green ${as}}
       // `);
       
       // return;
-      
-      
       
       
       // ---------------------------------------------
@@ -290,8 +249,8 @@ const Component = (props) => {
   };
   
   
-  
-  
+
+
   // --------------------------------------------------
   //   Thread
   // --------------------------------------------------
@@ -308,8 +267,6 @@ const Component = (props) => {
   
   const linkReturnTopHref = `/gc/[urlID]/rec/[[...slug]]`;
   const linkReturnTopAs = `/gc/${urlID}/rec`;
-  
-  
   
   
   // --------------------------------------------------
@@ -337,8 +294,6 @@ const Component = (props) => {
   // `);
   
   
-  
-  
   // --------------------------------------------------
   //   Component - Thread
   // --------------------------------------------------
@@ -358,8 +313,6 @@ const Component = (props) => {
     );
     
   }
-  
-  
   
   
   // --------------------------------------------------

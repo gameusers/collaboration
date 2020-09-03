@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -42,11 +42,13 @@ const validation_id = ({ required, value }) => {
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
+
     value: data,
     numberOfCharacters,
     error: false,
-    errorCodeArr: []
+    errorCodeArr: [],
+
   };
   
   
@@ -118,5 +120,7 @@ const validation_id = ({ required, value }) => {
 // --------------------------------------------------
 
 module.exports = {
+
   validation_id
+  
 };

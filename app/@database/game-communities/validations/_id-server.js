@@ -56,9 +56,11 @@ const validationGameCommunities_idServer = async ({ value }) => {
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
+
     value: data,
     numberOfCharacters,
+
   };
   
   
@@ -109,10 +111,11 @@ const validationGameCommunities_idServer = async ({ value }) => {
 
 /**
  * _id の配列
- * @param {string} value - 値
+ * @param {boolean} required - 必須 true / 必須でない false
+ * @param {Array} arr - 値の入った配列
  * @return {Object} バリデーション結果
  */
-const validationGameCommunities_idsArrServer = async ({ arr }) => {
+const validationGameCommunities_idsArrServer = async ({ required = false, arr = [] }) => {
   
   
   // ---------------------------------------------
@@ -121,13 +124,13 @@ const validationGameCommunities_idsArrServer = async ({ arr }) => {
   
   const minLength = 7;
   const maxLength = 14;
-  
+  // console.log(arr);
   
   // ---------------------------------------------
   //   Result Object
   // ---------------------------------------------
   
-  let resultObj = {
+  const resultObj = {
     value: arr,
   };
   // arr.push('aaa189we');
@@ -146,9 +149,15 @@ const validationGameCommunities_idsArrServer = async ({ arr }) => {
   // ---------------------------------------------
   
   const length = arr.length;
-  
+
   if (length === 0) {
+    
+    if (required) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Wgi6vjqT5', messageID: 'Error' }] });
+    }
+    
     return;
+
   }
   
   
@@ -187,9 +196,11 @@ const validationGameCommunities_idsArrServer = async ({ arr }) => {
   // ---------------------------------------------
   
   const count = await Model.count({
+
     conditionObj: {
       _id: { $in: arr },
     }
+
   });
   
   // console.log(chalk`
@@ -220,6 +231,8 @@ const validationGameCommunities_idsArrServer = async ({ arr }) => {
 // --------------------------------------------------
 
 module.exports = {
+
   validationGameCommunities_idServer,
-  validationGameCommunities_idsArrServer
+  validationGameCommunities_idsArrServer,
+
 };

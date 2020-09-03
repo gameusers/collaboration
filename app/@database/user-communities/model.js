@@ -28,6 +28,8 @@ const SchemaUserCommunities = require('./schema.js');
 const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
 const SchemaFollows = require('../follows/schema.js');
 
+const ModelGames = require('../games/model.js');
+
 
 // ---------------------------------------------
 //   Format
@@ -306,6 +308,116 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 
 
+/**
+ * ヘッダーの更新用  2020/9/3
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} userCommunities_id - DB user-communities ユーザーコミュニティID
+ * @return {Object} 取得データ
+ */
+const findHeader = async ({
+  
+  localeObj,
+  loginUsers_id,
+  userCommunities_id,
+  
+}) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   DB users / ユーザー情報を取得する
+    // --------------------------------------------------
+    
+    const docUserCommunityObj = await findForUserCommunity({
+      
+      localeObj,
+      loginUsers_id,
+      userCommunities_id,
+      
+    });
+    
+    const returnObj = lodashGet(docUserCommunityObj, ['headerObj'], {});
+    
+    
+    // --------------------------------------------------
+    //   対象のユーザーがユーザーページのトップ画像をアップロードしていない場合
+    //   ランダム取得のゲーム画像を代わりに利用する
+    // --------------------------------------------------
+    // 
+    if (!lodashHas(returnObj, ['imagesAndVideosObj'])) {
+      
+      
+      // --------------------------------------------------
+      //   DB games / ヘッダーヒーローイメージ用
+      // --------------------------------------------------
+      
+      const docGamesHeaderObj = await ModelGames.findForHeroImage({
+        
+        localeObj,
+        
+      });
+      
+      const imagesAndVideosObj = lodashGet(docGamesHeaderObj, ['imagesAndVideosObj'], {});
+      
+      lodashSet(returnObj, ['imagesAndVideosObj'], imagesAndVideosObj);
+      
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   app/@database/user-communities/model.js - findHeader
+    // `);
+    
+    // console.log(chalk`
+    //   userID: {green ${userID}}
+    //   language: {green ${language}}
+    //   country: {green ${country}}
+    // `);
+    
+    // console.log(`
+    //   ----- docUserCommunityObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docUserCommunityObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
 
 /**
  * 検索してデータを取得する / For User Community
@@ -540,11 +652,11 @@ const findForUserCommunity = async ({
           updatedDateObj: 1,
           localesArr: 1,
           communityType: 1,
-          // forumObj: 1,
           anonymity: 1,
           imagesAndVideosObj: 1,
           gamesArr: 1,
           followsObj: 1,
+          gameCommunities_idsArr: 1,
         }
       },
       
@@ -572,12 +684,60 @@ const findForUserCommunity = async ({
     
     
     // --------------------------------------------------
-    //   画像の処理 - 関連するゲーム
+    //   関連するゲーム
     // --------------------------------------------------
     
     if (returnObj.gamesArr) {
-      headerObj.gamesArr = formatImagesAndVideosArr({ arr: returnObj.gamesArr });
+
+
+      // --------------------------------------------------
+      //   gamesArr - 元の配列の順番通りに並べなおす
+      // --------------------------------------------------
+      
+      const sortedGamesArr = [];
+      const gameCommunities_idsArr = lodashGet(returnObj, ['gameCommunities_idsArr'], []);
+      const gamesArr = lodashGet(returnObj, ['gamesArr'], []);
+      
+      for (let gameCommunities_id of gameCommunities_idsArr) {
+        
+        const index = gamesArr.findIndex((valueObj) => {
+          return valueObj.gameCommunities_id === gameCommunities_id;
+        });
+        
+        if (index !== -1) {
+          sortedGamesArr.push(gamesArr[index]);
+        }
+        
+      }
+
+
+      // --------------------------------------------------
+      //   画像の処理
+      // --------------------------------------------------
+
+      headerObj.gamesArr = formatImagesAndVideosArr({ arr: sortedGamesArr });
+
+
     }
+
+
+    // console.log(`
+    //   ----- gameCommunities_idsArr -----\n
+    //   ${util.inspect(gameCommunities_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- gamesArr -----\n
+    //   ${util.inspect(gamesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- sortedGamesArr -----\n
+    //   ${util.inspect(sortedGamesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -686,7 +846,7 @@ const findForUserCommunity = async ({
 
 
 /**
- * 検索してデータを取得する / For User Community
+ * 設定用データを取得する
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} userCommunities_id - DB user-communities _id
@@ -962,13 +1122,12 @@ const findForUserCommunitySettings = async ({
           userCommunityID: 1,
           localesArr: 1,
           communityType: 1,
-          // forumObj: 1,
-          
           anonymity: 1,
           imagesAndVideosObj: 1,
           imagesAndVideosThumbnailObj: 1,
           gamesArr: 1,
           followsObj: 1,
+          gameCommunities_idsArr: 1,
         }
       },
       
@@ -976,6 +1135,8 @@ const findForUserCommunitySettings = async ({
     ]).exec();
     
     
+
+
     // --------------------------------------------------
     //   returnObj
     // --------------------------------------------------
@@ -997,8 +1158,46 @@ const findForUserCommunitySettings = async ({
     //   画像の処理 - 関連するゲーム
     // --------------------------------------------------
     
+    // if (returnObj.gamesArr) {
+    //   headerObj.gamesArr = formatImagesAndVideosArr({ arr: returnObj.gamesArr });
+    // }
+
+
+    // --------------------------------------------------
+    //   関連するゲーム
+    // --------------------------------------------------
+    
     if (returnObj.gamesArr) {
-      headerObj.gamesArr = formatImagesAndVideosArr({ arr: returnObj.gamesArr });
+
+
+      // --------------------------------------------------
+      //   gamesArr - 元の配列の順番通りに並べなおす
+      // --------------------------------------------------
+      
+      const sortedGamesArr = [];
+      const gameCommunities_idsArr = lodashGet(returnObj, ['gameCommunities_idsArr'], []);
+      const gamesArr = lodashGet(returnObj, ['gamesArr'], []);
+      
+      for (let gameCommunities_id of gameCommunities_idsArr) {
+        
+        const index = gamesArr.findIndex((valueObj) => {
+          return valueObj.gameCommunities_id === gameCommunities_id;
+        });
+        
+        if (index !== -1) {
+          sortedGamesArr.push(gamesArr[index]);
+        }
+        
+      }
+
+
+      // --------------------------------------------------
+      //   画像の処理
+      // --------------------------------------------------
+
+      headerObj.gamesArr = formatImagesAndVideosArr({ arr: sortedGamesArr });
+
+
     }
     
     
@@ -1055,13 +1254,13 @@ const findForUserCommunitySettings = async ({
     //   不要な項目を削除する
     // --------------------------------------------------
     
-    // delete returnObj.createdDate;
     delete returnObj.localesArr;
     delete returnObj.gamesArr;
-    // delete returnObj.imagesAndVideosObj;
     delete returnObj.followsObj;
+
     
-    
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
@@ -1089,6 +1288,8 @@ const findForUserCommunitySettings = async ({
     // `);
     
     
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
@@ -1104,355 +1305,6 @@ const findForUserCommunitySettings = async ({
   
   
 };
-
-
-
-
-/**
- * ユーザーコミュニティ設定用のデータを取得する
- * @param {Object} localeObj - ロケール
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} userCommunityID - DB user-communities userCommunityID / コミュニティID
- * @param {string} userCommunities_id - DB user-communities _id / _id
- * @return {Array} 取得データ
- */
-// const findForUserCommunitySettings = async ({
-  
-//   localeObj,
-//   loginUsers_id,
-//   userCommunityID,
-//   userCommunities_id,
-  
-// }) => {
-  
-  
-//   // --------------------------------------------------
-//   //   Database
-//   // --------------------------------------------------
-  
-//   try {
-    
-    
-//     // --------------------------------------------------
-//     //   Property
-//     // --------------------------------------------------
-    
-//     const language = lodashGet(localeObj, ['language'], '');
-//     const country = lodashGet(localeObj, ['country'], '');
-    
-    
-//     // --------------------------------------------------
-//     //   Match Condition Array
-//     // --------------------------------------------------
-    
-//     let matchConditionArr = [
-//       {
-//         $match: {
-//           userCommunityID,
-//           users_id: loginUsers_id
-//         }
-//       },
-//     ];
-    
-//     if (userCommunities_id) {
-      
-//       matchConditionArr = [
-//         {
-//           $match: {
-//             _id: userCommunities_id,
-//             users_id: loginUsers_id
-//           }
-//         },
-//       ];
-      
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   Aggregation
-//     // --------------------------------------------------
-    
-//     const resultArr = await SchemaUserCommunities.aggregate([
-      
-      
-//       // --------------------------------------------------
-//       //   Match Condition Array
-//       // --------------------------------------------------
-
-//       ...matchConditionArr,
-      
-      
-//       // --------------------------------------------------
-//       //   games - 関連するゲーム
-//       // --------------------------------------------------
-      
-//       {
-//         $lookup:
-//           {
-//             from: 'games',
-//             let: { letGameCommunities_idsArr: '$gameCommunities_idsArr' },
-//             pipeline: [
-              
-//               {
-//                 $match: {
-//                   $expr: {
-//                     $and: [
-//                       { $eq: ['$language', language] },
-//                       { $eq: ['$country', country] },
-//                       { $in: ['$gameCommunities_id', '$$letGameCommunities_idsArr'] },
-//                     ]
-//                   },
-//                 }
-//               },
-              
-              
-//               // --------------------------------------------------
-//               //   games / images-and-videos / サムネイル用
-//               // --------------------------------------------------
-              
-//               {
-//                 $lookup:
-//                   {
-//                     from: 'images-and-videos',
-//                     let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-//                     pipeline: [
-//                       {
-//                         $match: {
-//                           $expr: {
-//                             $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
-//                           },
-//                         }
-//                       },
-//                       {
-//                         $project: {
-//                           createdDate: 0,
-//                           updatedDate: 0,
-//                           users_id: 0,
-//                           __v: 0,
-//                         }
-//                       }
-//                     ],
-//                     as: 'imagesAndVideosThumbnailObj'
-//                   }
-//               },
-              
-//               {
-//                 $unwind: {
-//                   path: '$imagesAndVideosThumbnailObj',
-//                   preserveNullAndEmptyArrays: true,
-//                 }
-//               },
-              
-              
-//               {
-//                 $project: {
-//                   gameCommunities_id: 1,
-//                   name: 1,
-//                   imagesAndVideosThumbnailObj: 1,
-//                 }
-//               },
-//             ],
-//             as: 'gamesArr'
-//           }
-//       },
-      
-//       // {
-//       //   $unwind: {
-//       //     path: '$gamesArr',
-//       //     preserveNullAndEmptyArrays: true,
-//       //   }
-//       // },
-      
-      
-//       // --------------------------------------------------
-//       //   images-and-videos / トップ画像
-//       // --------------------------------------------------
-      
-//       {
-//         $lookup:
-//           {
-//             from: 'images-and-videos',
-//             let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
-//             pipeline: [
-//               {
-//                 $match: {
-//                   $expr: {
-//                     $eq: ['$_id', '$$letImagesAndVideos_id']
-//                   },
-//                 }
-//               },
-//               {
-//                 $project: {
-//                   createdDate: 0,
-//                   updatedDate: 0,
-//                   users_id: 0,
-//                   __v: 0,
-//                 }
-//               }
-//             ],
-//             as: 'imagesAndVideosObj'
-//           }
-//       },
-      
-//       {
-//         $unwind: {
-//           path: '$imagesAndVideosObj',
-//           preserveNullAndEmptyArrays: true,
-//         }
-//       },
-      
-      
-//       // --------------------------------------------------
-//       //   images-and-videos / サムネイル画像
-//       // --------------------------------------------------
-      
-//       {
-//         $lookup:
-//           {
-//             from: 'images-and-videos',
-//             let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-//             pipeline: [
-//               {
-//                 $match: {
-//                   $expr: {
-//                     $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
-//                   },
-//                 }
-//               },
-//               {
-//                 $project: {
-//                   createdDate: 0,
-//                   updatedDate: 0,
-//                   users_id: 0,
-//                   __v: 0,
-//                 }
-//               }
-//             ],
-//             as: 'imagesAndVideosThumbnailObj'
-//           }
-//       },
-      
-//       {
-//         $unwind: {
-//           path: '$imagesAndVideosThumbnailObj',
-//           preserveNullAndEmptyArrays: true,
-//         }
-//       },
-      
-      
-//       // --------------------------------------------------
-//       //   follows
-//       // --------------------------------------------------
-      
-//       {
-//         $lookup:
-//           {
-//             from: 'follows',
-//             let: { let_id: '$_id' },
-//             pipeline: [
-//               {
-//                 $match: {
-//                   $expr: {
-//                     $eq: ['$userCommunities_id', '$$let_id']
-//                   },
-//                 }
-//               },
-//               {
-//                 $project: {
-//                   _id: 0,
-//                   approval: 1,
-//                 }
-//               }
-//             ],
-//             as: 'followsObj'
-//           }
-//       },
-      
-//       {
-//         $unwind: {
-//           path: '$followsObj',
-//           preserveNullAndEmptyArrays: true,
-//         }
-//       },
-      
-      
-//       {
-//         $project: {
-//           userCommunityID: 1,
-//           users_id: 1,
-//           localesArr: 1,
-//           communityType: 1,
-//           anonymity: 1,
-//           imagesAndVideosObj: 1,
-//           imagesAndVideosThumbnailObj: 1,
-//           gamesArr: 1,
-//           followsObj: 1,
-//         }
-//       },
-      
-      
-//     ]).exec();
-    
-    
-//     // --------------------------------------------------
-//     //   returnObj
-//     // --------------------------------------------------
-    
-//     const returnObj = lodashGet(resultArr, [0], {});
-    
-    
-//     // --------------------------------------------------
-//     //   画像の処理 - 関連するゲーム
-//     // --------------------------------------------------
-    
-//     if (returnObj.gamesArr) {
-//       returnObj.gamesArr = formatImagesAndVideosArr({ arr: returnObj.gamesArr });
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   console.log
-//     // --------------------------------------------------
-    
-//     // console.log(chalk`
-//     //   loginUsers_id: {green ${loginUsers_id}}
-//     //   userCommunityID: {green ${userCommunityID}}
-//     // `);
-    
-//     // console.log(`
-//     //   ----- resultArr -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- formattedUcArr -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(formattedUcArr)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- formattedGamesArr -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(formattedGamesArr)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-    
-//     // --------------------------------------------------
-//     //   Return
-//     // --------------------------------------------------
-    
-//     return returnObj;
-    
-    
-//   } catch (err) {
-    
-//     throw err;
-    
-//   }
-  
-  
-// };
 
 
 
@@ -1873,6 +1725,7 @@ module.exports = {
   insertMany,
   deleteMany,
   
+  findHeader,
   findForUserCommunity,
   findForUserCommunitySettings,
   findForUserCommunityByUserCommunities_id,

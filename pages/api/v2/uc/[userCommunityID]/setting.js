@@ -114,6 +114,8 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
     
     
+
+
     // ---------------------------------------------
     //   Verify CSRF
     // ---------------------------------------------
@@ -132,6 +134,8 @@ export default async (req, res) => {
 
     }
     
+
+
     
     // --------------------------------------------------
     //   Common Initial Props
@@ -167,6 +171,8 @@ export default async (req, res) => {
     }
     
     
+
+
     // --------------------------------------------------
     //   DB find / User Community
     // --------------------------------------------------
@@ -225,14 +231,16 @@ export default async (req, res) => {
     returnObj.userCommunityObj = userCommunityObj;
 
     
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/uc/[userCommunityID]/settings/index.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/uc/[userCommunityID]/settings/index.js
+    // `);
     
     // console.log(chalk`
     //   /pages/api/v2/uc/[userCommunityID]/settings/index.js
@@ -248,11 +256,11 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // ---------------------------------------------

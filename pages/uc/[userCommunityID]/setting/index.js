@@ -121,8 +121,6 @@ const ContainerLayout = (props) => {
       />
       
       <FormCommunity
-        // userCommunities_id={props.userCommunities_id}
-        // accessLevel={props.accessLevel}
         headerObj={props.headerObj}
         userCommunityObj={props.userCommunityObj}
       /> 

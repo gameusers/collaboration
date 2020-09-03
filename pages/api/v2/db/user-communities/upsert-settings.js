@@ -68,8 +68,6 @@ import { locale } from 'app/@locales/locale.js';
 
 
 
-
-
 // --------------------------------------------------
 //   endpointID: _3Qu8jodI
 // --------------------------------------------------
@@ -134,7 +132,7 @@ export default async (req, res) => {
       anonymity,
       imagesAndVideosObj,
       imagesAndVideosThumbnailObj,
-      gameCommunities_idsArr,
+      gamesArr,
       
     } = bodyObj;
     
@@ -151,14 +149,14 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['communityType'], communityType);
     lodashSet(requestParametersObj, ['approval'], approval);
     lodashSet(requestParametersObj, ['anonymity'], anonymity);
-    lodashSet(requestParametersObj, ['gameCommunities_idsArr'], gameCommunities_idsArr);
+    lodashSet(requestParametersObj, ['gamesArr'], gamesArr);
     
     
     
     
-    // ---------------------------------------------
+    // --------------------------------------------------
     //   Verify CSRF
-    // ---------------------------------------------
+    // --------------------------------------------------
     
     verifyCsrfToken(req, res);
     
@@ -175,6 +173,19 @@ export default async (req, res) => {
     }
     
     
+
+
+    // --------------------------------------------------
+    //   gameCommunities_idsArr
+    // --------------------------------------------------
+
+    const gameCommunities_idsArr = [];
+
+    for (let valueObj of gamesArr.values()) {
+      gameCommunities_idsArr.push(valueObj.gameCommunities_id);
+      // console.log(valueObj);
+    }
+
     
     
     // --------------------------------------------------
@@ -183,21 +194,21 @@ export default async (req, res) => {
     
     await validationIP({ throwError: true, value: ip });
     
-    await validationUserCommunities_idServer({ throwError: true, value: userCommunities_id });
+    await validationUserCommunities_idServer({ value: userCommunities_id });
     await validationUserCommunitiesName({ throwError: true, value: name });
     await validationUserCommunitiesDescription({ throwError: true, value: description });
     await validationUserCommunitiesDescriptionShort({ throwError: true, value: descriptionShort });
-    await validationUserCommunitiesUserCommunityIDServer({ throwError: true, value: userCommunityID, loginUsers_id });
+    await validationUserCommunitiesUserCommunityIDServer({ value: userCommunityID, loginUsers_id });
     await validationUserCommunitiesCommunityType({ throwError: true, value: communityType });
     await validationBoolean({ throwError: true, value: approval });
     await validationBoolean({ throwError: true, value: anonymity });
-    await validationGameCommunities_idsArrServer({ throwError: true, arr: gameCommunities_idsArr });
+    await validationGameCommunities_idsArrServer({ required: true, arr: gameCommunities_idsArr });
     
     
     
     
     // --------------------------------------------------
-    //   データ取得
+    //   現在のデータ取得
     // --------------------------------------------------
     
     const userCommunityObj = await ModelUserCommunities.findForUserCommunitySettings({ localeObj, loginUsers_id, userCommunities_id });
@@ -341,8 +352,6 @@ export default async (req, res) => {
     };
     
     
-    
-    
     // --------------------------------------------------
     //   Follows
     // --------------------------------------------------
@@ -364,8 +373,6 @@ export default async (req, res) => {
     };
     
     
-    
-    
     // --------------------------------------------------
     //   Update
     // --------------------------------------------------
@@ -383,6 +390,21 @@ export default async (req, res) => {
       
     });
     
+
+
+
+    // --------------------------------------------------
+    //   ヘッダー取得
+    // --------------------------------------------------
+
+    returnObj.headerObj = await ModelUserCommunities.findHeader({
+        
+      localeObj,
+      loginUsers_id,
+      userCommunities_id,
+      
+    });
+
     
     
     
@@ -390,8 +412,12 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   pages/api/v2/db/user-communities/upsert-settings.js
+    // `);
+
     // console.log(chalk`
-    //   /pages/api/v2/db/user-communities/upsert-settings.js
     //   loginUsers_id: {green ${loginUsers_id}}
     //   userCommunities_id: {green ${userCommunities_id}}
     //   name: {green ${name}}

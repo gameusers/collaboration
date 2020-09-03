@@ -15,10 +15,11 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
+// import Link from 'next/link';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import TextareaAutosize from 'react-autosize-textarea';
-import moment from 'moment';
+// import moment from 'moment';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -55,8 +56,9 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 //   Modules
 // ---------------------------------------------
 
-// import { fetchWrapper } from 'app/@modules/fetch.js';
-// import { CustomError } from 'app/@modules/error/custom.js';
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { CustomError } from 'app/@modules/error/custom.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -72,7 +74,6 @@ import { validationUserCommunitiesUserCommunityID } from 'app/@database/user-com
 // ---------------------------------------------
 
 import Panel from 'app/common/layout/v2/panel.js';
-import Paragraph from 'app/common/layout/v2/paragraph.js';
 import FormImageAndVideo from 'app/common/image-and-video/v2/form.js';
 import FormGame from 'app/common/game/v2/form.js';
 
@@ -107,15 +108,24 @@ const Component = (props) => {
   //   props
   // --------------------------------------------------
   
-  const {
+  // const {
     
-    headerObj,
-    userCommunityObj,
-    // followedCount,
-    // gamesArr,
-    accessRightRead,
+  //   headerObj,
+  //   userCommunityObj,
+  //   // followedCount,
+  //   // gamesArr,
+  //   accessRightRead,
     
-  } = props;
+  // } = props;
+
+
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateLayout = ContainerStateLayout.useContainer();
+  
+  const { setHeaderObj, handleLoadingOpen, handleLoadingClose } = stateLayout;
 
   
   // --------------------------------------------------
@@ -123,8 +133,10 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   
+  const [userCommunities_id, setUserCommunities_id] = useState(lodashGet(props, ['userCommunityObj', '_id'], ''));
   const [name, setName] = useState(lodashGet(props, ['userCommunityObj', 'name'], ''));
   const [description, setDescription] = useState(lodashGet(props, ['userCommunityObj', 'description'], ''));
   const [descriptionShort, setDescriptionShort] = useState(lodashGet(props, ['userCommunityObj', 'descriptionShort'], ''));
@@ -164,6 +176,185 @@ const Component = (props) => {
     
   }, []);
   
+
+
+
+  // --------------------------------------------------
+  //   Handler
+  // --------------------------------------------------
+  
+  /**
+   * 送信する
+   */
+  const handleSubmit = async () => {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Loading Open
+      // ---------------------------------------------
+      
+      handleLoadingOpen({});
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      setButtonDisabled(true);
+      
+      
+
+
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formDataObj = {
+        
+        userCommunities_id,
+        name,
+        description,
+        descriptionShort,
+        userCommunityID,
+        communityType,
+        gamesArr,
+        approval,
+        anonymity,
+        
+      };
+
+      if (Object.keys(imagesAndVideosObj).length !== 0) {
+        formDataObj.imagesAndVideosObj = imagesAndVideosObj;
+      }
+      
+      if (Object.keys(imagesAndVideosThumbnailObj).length !== 0) {
+        formDataObj.imagesAndVideosThumbnailObj = imagesAndVideosThumbnailObj;
+      }
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      const resultObj = await fetchWrapper({
+        
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/user-communities/upsert-settings`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
+        
+      });
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+      
+      
+
+
+      // ---------------------------------------------
+      //   Update - Header
+      // ---------------------------------------------
+      
+      const headerObj = lodashGet(resultObj, ['data', 'headerObj'], {});
+      
+      if (Object.keys(headerObj).length !== 0) {
+        setHeaderObj(headerObj);
+      }
+      
+      
+      // --------------------------------------------------
+      //   Snackbar: Success
+      // --------------------------------------------------
+      
+      showSnackbar({
+        
+        enqueueSnackbar,
+        intl,
+        arr: [
+          {
+            variant: 'success',
+            messageID: '1DwN0BJVa',
+          },
+        ]
+        
+      });
+      
+
+
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   app/uc/v2/form-community.js - handleSubmit
+      // `);
+      
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   forumThreads_id: {green ${forumThreads_id}}
+      // `);
+      
+      // console.log(`
+      //   ----- formDataObj -----\n
+      //   ${util.inspect(formDataObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      showSnackbar({
+        
+        enqueueSnackbar,
+        intl,
+        errorObj,
+        
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      setButtonDisabled(false);
+      
+      
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
+      
+      handleLoadingClose();
+      
+      
+    }
+    
+    
+  };
+
   
   
   
@@ -184,6 +375,8 @@ const Component = (props) => {
   const gamesLimit = parseInt(process.env.NEXT_PUBLIC_COMMUNITY_ADDITIONAL_GAME_LIMIT, 10);
   
   
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -211,6 +404,8 @@ const Component = (props) => {
   // `);
   
   
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
@@ -655,7 +850,7 @@ const Component = (props) => {
           <Button
             variant="contained"
             color="primary"
-            // onClick={() => handleSubmitSettings({ pathArr: this.pathArr })}
+            onClick={() => handleSubmit({})}
             disabled={buttonDisabled}
           >
             送信する

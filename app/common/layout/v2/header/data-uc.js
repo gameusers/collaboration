@@ -157,6 +157,7 @@ const Component = (props) => {
   const userCommunities_id = lodashGet(headerObj, ['userCommunities_id'], '');
   const followsObj = lodashGet(headerObj, ['followsObj'], {});
   const followedCount = lodashGet(headerObj, ['followsObj', 'followedCount'], 0);
+  const approval = lodashGet(headerObj, ['followsObj', 'approval'], false);
   const communityType = lodashGet(headerObj, ['communityType'], 'open');
   
   
@@ -289,7 +290,8 @@ const Component = (props) => {
         
         <p css={cssInfo}>開設日 | {createdDate}</p>
         <p css={cssInfo}>メンバー | {followedCount}人</p>
-        <p css={cssInfo}>参加方法 | {communityType === 'open' ? '誰でも参加可能' : '承認制'}</p>
+        <p css={cssInfo}>公開タイプ | {communityType === 'open' ? 'オープン' : 'クローズド'}</p>
+        <p css={cssInfo}>参加方法 | {approval ? '誰でも参加可能' : '承認制'}</p>
 
         
         <div

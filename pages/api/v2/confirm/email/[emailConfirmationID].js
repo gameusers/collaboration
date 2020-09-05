@@ -66,8 +66,6 @@ import { initialProps } from 'app/@api/v2/common.js';
 
 
 
-
-
 // --------------------------------------------------
 //   endpointID: YDW8_PLF3
 // --------------------------------------------------
@@ -86,7 +84,6 @@ export default async (req, res) => {
   //   Property
   // --------------------------------------------------
   
-  const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
@@ -123,8 +120,8 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['emailConfirmationID'], emailConfirmationID);
     
     
-    
-    
+
+
     // --------------------------------------------------
     //   Validations
     // --------------------------------------------------
@@ -133,17 +130,13 @@ export default async (req, res) => {
     await validationEmailConfirmationsEmailConfirmationIDServer({ value: emailConfirmationID });
     
     
-    
-    
+
+
     // --------------------------------------------------
     //   Common Initial Props
     // --------------------------------------------------
     
-    const commonInitialPropsObj = await initialProps({ req, res, localeObj });
-    
-    returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
-    returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
-    returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
+    const returnObj = await initialProps({ req, localeObj, getHeroImage: true });
     
     
     

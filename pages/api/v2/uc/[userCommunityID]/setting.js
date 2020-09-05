@@ -33,7 +33,6 @@ import ModelUserCommunities from 'app/@database/user-communities/model.js';
 import { verifyCsrfToken } from 'app/@modules/csrf.js';
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-import { updateAccessDate } from 'app/@modules/access-date.js';
 
 
 // ---------------------------------------------
@@ -70,10 +69,8 @@ export default async (req, res) => {
   //   Property
   // --------------------------------------------------
   
-  const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
-  const loginUsersRole = lodashGet(req, ['user', 'role'], '');
   
   
   // --------------------------------------------------
@@ -141,36 +138,9 @@ export default async (req, res) => {
     //   Common Initial Props
     // --------------------------------------------------
     
-    const commonInitialPropsObj = await initialProps({ req, res, localeObj });
+    const returnObj = await initialProps({ req, localeObj, getHeroImage: true });
     
-    returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
-    returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
-    returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
 
-    const accessDate = lodashGet(returnObj, ['loginUsersObj', 'accessDate'], '');
-
-
-    // --------------------------------------------------
-    //   Update Access Date & Login Count
-    // --------------------------------------------------
-    
-    const resultUpdatedAccessDateObj = await updateAccessDate({
-      
-      req,
-      localeObj,
-      loginUsers_id,
-      accessDate,
-      
-    });
-    
-    returnObj.experienceObj = lodashGet(resultUpdatedAccessDateObj, ['experienceObj'], {});
-    const updatedAccessDate = lodashGet(resultUpdatedAccessDateObj, ['updatedAccessDate'], '');
-    
-    if (updatedAccessDate) {
-      lodashSet(returnObj, ['loginUsersObj', 'accessDate'], updatedAccessDate);
-    }
-    
-    
 
 
     // --------------------------------------------------
@@ -214,11 +184,14 @@ export default async (req, res) => {
     
 
     // ---------------------------------------------
-    //   - headerObj
+    //   headerObj
+    //   ユーザーがトップ画像をアップロードしていない場合は、ランダム取得のゲーム画像を代わりに利用する
     // ---------------------------------------------
     
-    if (lodashHas(userCommunityObj, ['headerObj', 'imagesAndVideosObj'])) {
-      returnObj.headerObj = userCommunityObj.headerObj;
+    returnObj.headerObj = userCommunityObj.headerObj;
+
+    if (!lodashHas(userCommunityObj, ['headerObj', 'imagesAndVideosObj'])) {
+      lodashSet(returnObj, ['headerObj', 'imagesAndVideosObj'], lodashGet(commonInitialPropsObj, ['headerObj', 'imagesAndVideosObj'], {}));
     }
     
     delete userCommunityObj.headerObj;

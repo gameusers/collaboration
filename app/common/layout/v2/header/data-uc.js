@@ -291,7 +291,7 @@ const Component = (props) => {
         <p css={cssInfo}>開設日 | {createdDate}</p>
         <p css={cssInfo}>メンバー | {followedCount}人</p>
         <p css={cssInfo}>公開タイプ | {communityType === 'open' ? 'オープン' : 'クローズド'}</p>
-        <p css={cssInfo}>参加方法 | {approval ? '誰でも参加可能' : '承認制'}</p>
+        <p css={cssInfo}>参加方法 | {approval ? '承認制' : '誰でも参加可能'}</p>
 
         
         <div

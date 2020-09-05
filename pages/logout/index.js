@@ -18,7 +18,6 @@ import React, { useState, useEffect } from 'react';
 import Router from 'next/router';
 import Error from 'next/error';
 import moment from 'moment';
-import { animateScroll as scroll } from 'react-scroll';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -51,27 +50,17 @@ import FormLogout from 'app/logout/index/v2/form-logout.js';
 
 
 
-
-
 // --------------------------------------------------
 //   Function Components
 //   URL: http://localhost:8080/logout
 // --------------------------------------------------
 
-const Component = (props) => {
-  
-  
-  // --------------------------------------------------
-  //   Error
-  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
-  // --------------------------------------------------
-  
-  if (props.statusCode !== 200) {
-    return <Error statusCode={props.statusCode} />;
-  }
-  
-  
-  
+/**
+ * レイアウト
+ * @param {Object} props - Props
+ */
+const ContainerLayout = (props) => {
+
   
   // --------------------------------------------------
   //   Component - Sidebar
@@ -84,8 +73,6 @@ const Component = (props) => {
       height="250"
     />
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -103,8 +90,6 @@ const Component = (props) => {
       
     </React.Fragment>
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -129,6 +114,35 @@ const Component = (props) => {
 
 
 /**
+ * コンポーネント / このページ独自のステートを設定する
+ * @param {Object} props - Props
+ */
+const Component = (props) => {
+  
+  
+  // --------------------------------------------------
+  //   Error
+  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
+  // --------------------------------------------------
+  
+  if (props.statusCode !== 200) {
+    return <Error statusCode={props.statusCode} />;
+  }
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return <ContainerLayout {...props} />;
+  
+  
+};
+
+
+
+
+/**
  * getServerSideProps
  * @param {Object} req - リクエスト
  * @param {Object} res - レスポンス
@@ -144,16 +158,12 @@ export async function getServerSideProps({ req, res, query }) {
   createCsrfToken(req, res);
   
   
-  
-  
   // --------------------------------------------------
   //   Cookie & Accept Language
   // --------------------------------------------------
   
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-  
-  
   
   
   // --------------------------------------------------
@@ -182,8 +192,6 @@ export async function getServerSideProps({ req, res, query }) {
   const dataObj = lodashGet(resultObj, ['data'], {});
   
   
-  
-  
   // --------------------------------------------------
   //   dataObj
   // --------------------------------------------------
@@ -202,8 +210,6 @@ export async function getServerSideProps({ req, res, query }) {
   const title = `ログアウト - Game Users`;
   
   
-  
-  
   // --------------------------------------------------
   //   Header Navigation Link
   // --------------------------------------------------
@@ -218,8 +224,6 @@ export async function getServerSideProps({ req, res, query }) {
     },
     
   ];
-  
-  
   
   
   // --------------------------------------------------

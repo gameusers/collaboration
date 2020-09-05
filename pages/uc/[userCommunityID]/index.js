@@ -135,13 +135,25 @@ const ContainerLayout = (props) => {
   //   Component - Sidebar
   // --------------------------------------------------
   
-  const componentSidebar =
-    <ForumNavigation
-      userCommunityID={props.userCommunityID}
-      userCommunities_id={props.userCommunities_id}
+  let componentSidebar =
+    <img
+      src="/img/common/advertisement/300x250.jpg"
+      width="300"
+      height="250"
     />
   ;
-  
+
+  if (props.accessRightRead) {
+
+    componentSidebar =
+      <ForumNavigation
+        userCommunityID={props.userCommunityID}
+        userCommunities_id={props.userCommunities_id}
+      />
+    ;
+
+  }
+
   
   // --------------------------------------------------
   //   Component - Contents
@@ -154,11 +166,13 @@ const ContainerLayout = (props) => {
         arr={props.breadcrumbsArr}
       />
       
-      <Forum
-        userCommunityID={props.userCommunityID}
-        userCommunities_id={props.userCommunities_id}
-        enableAnonymity={props.enableAnonymity}
-      />
+      {props.accessRightRead &&
+        <Forum
+          userCommunityID={props.userCommunityID}
+          userCommunities_id={props.userCommunities_id}
+          enableAnonymity={props.enableAnonymity}
+        />
+      }
 
       <About
         headerObj={props.headerObj}

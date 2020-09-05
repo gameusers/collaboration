@@ -25,35 +25,11 @@ import lodashSet from 'lodash/set';
 import ModelGames from 'app/@database/games/model.js';
 
 
-
-
-// --------------------------------------------------
-//   Require
-// --------------------------------------------------
-
 // ---------------------------------------------
-//   Console
+//   Modules
 // ---------------------------------------------
 
-// const chalk = require('chalk');
-// const util = require('util');
-
-
-// ---------------------------------------------
-//   Lodash
-// ---------------------------------------------
-
-// const lodashGet = require('lodash/get');
-// const lodashSet = require('lodash/set');
-
-
-// // ---------------------------------------------
-// //   Model
-// // ---------------------------------------------
-
-// const ModelGames = require('../../@database/games/model');
-
-
+import { updateAccessDate } from 'app/@modules/access-date.js';
 
 
 
@@ -66,8 +42,9 @@ import ModelGames from 'app/@database/games/model.js';
  * ページにアクセスしたときの共通の処理
  * @param {Object} req - リクエスト
  * @param {Object} res - レスポンス
+ * @param {Boolean} getHeroImage - ヒーローイメージを取得する場合、true
  */
-const initialProps = async ({ req, res, localeObj }) => {
+const initialProps = async ({ req, localeObj, getHeroImage = false }) => {
   
   
   // --------------------------------------------------
@@ -75,9 +52,10 @@ const initialProps = async ({ req, res, localeObj }) => {
   // --------------------------------------------------
   
   const returnObj = {
-    
+
     login: false,
-    
+    experienceObj: {},
+
   };
   
   
@@ -92,18 +70,53 @@ const initialProps = async ({ req, res, localeObj }) => {
     
   }
   
+
+  // --------------------------------------------------
+  //   Update Access Date & Login Count
+  // --------------------------------------------------
+  
+  const loginUsers_id = lodashGet(returnObj, ['loginUsersObj', '_id'], '');
+  
+  if (loginUsers_id) {
+
+    const accessDate = lodashGet(returnObj, ['loginUsersObj', 'accessDate'], '');
+
+    const resultUpdatedAccessDateObj = await updateAccessDate({
+    
+      req,
+      localeObj,
+      loginUsers_id,
+      accessDate,
+      
+    });
+    
+    returnObj.experienceObj = lodashGet(resultUpdatedAccessDateObj, ['experienceObj'], {});
+    const updatedAccessDate = lodashGet(resultUpdatedAccessDateObj, ['updatedAccessDate'], '');
+    
+    if (updatedAccessDate) {
+      lodashSet(returnObj, ['loginUsersObj', 'accessDate'], updatedAccessDate);
+    }
+
+  }
+
   
   // --------------------------------------------------
   //   データ取得 / Games
   //   ヘッダーヒーローイメージ用
   // --------------------------------------------------
   
-  returnObj.headerObj = await ModelGames.findForHeroImage({
-    
-    localeObj,
-    
-  });
+  if (getHeroImage) {
+
+    returnObj.headerObj = await ModelGames.findForHeroImage({
+      localeObj,
+    });
+
+  }
+
   
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
   
   return returnObj;
   

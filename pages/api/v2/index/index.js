@@ -23,8 +23,8 @@ import lodashHas from 'lodash/has';
 //   Model
 // ---------------------------------------------
 
-import ModelUsers from 'app/@database/users/model.js';
-import ModelCardPlayers from 'app/@database/card-players/model.js';
+import ModelGameCommunities from 'app/@database/game-communities/model.js';
+import ModelForumThreads from 'app/@database/forum-threads/model.js';
 
 
 // ---------------------------------------------
@@ -33,6 +33,15 @@ import ModelCardPlayers from 'app/@database/card-players/model.js';
 
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+import { validationInteger } from 'app/@validations/integer.js';
+import { validationForumThreadsListLimit, validationForumThreadsLimit } from 'app/@database/forum-threads/validations/limit.js';
+import { validationForumCommentsLimit, validationForumRepliesLimit } from 'app/@database/forum-comments/validations/limit.js';
 
 
 // ---------------------------------------------
@@ -52,7 +61,7 @@ import { initialProps } from 'app/@api/v2/common.js';
 
 
 // --------------------------------------------------
-//   endpointID: CuUwo1avA
+//   endpointID: KPtPfJA6f
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -100,113 +109,84 @@ export default async (req, res) => {
     //   GET Data
     // --------------------------------------------------
     
-    const userID = lodashGet(req, ['query', 'userID'], '');
+    // const urlID = lodashGet(req, ['query', 'urlID'], '');
+    // const forumID = lodashGet(req, ['query', 'forumID'], '');
+    // const threadListPage = parseInt(lodashGet(req, ['query', 'threadListPage'], 1), 10);
+    // const threadListLimit = parseInt(lodashGet(req, ['query', 'threadListLimit'], ''), 10);
+    // const threadPage = parseInt(lodashGet(req, ['query', 'threadPage'], 1), 10);
+    // const threadLimit = parseInt(lodashGet(req, ['query', 'threadLimit'], ''), 10);
+    // const commentLimit = parseInt(lodashGet(req, ['query', 'commentLimit'], ''), 10);
+    // const replyLimit = parseInt(lodashGet(req, ['query', 'replyLimit'], ''), 10);
     
-    lodashSet(requestParametersObj, ['userID'], userID);
+    // lodashSet(requestParametersObj, ['urlID'], urlID);
+    // lodashSet(requestParametersObj, ['forumID'], forumID);
+    // lodashSet(requestParametersObj, ['threadListPage'], threadListPage);
+    // lodashSet(requestParametersObj, ['threadListLimit'], threadListLimit);
+    // lodashSet(requestParametersObj, ['threadPage'], threadPage);
+    // lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
+    // lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
+    // lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
     
     
 
-    
+
     // --------------------------------------------------
     //   Common Initial Props
     // --------------------------------------------------
     
     const returnObj = await initialProps({ req, localeObj, getHeroImage: true });
     
-    
 
 
+    
     // --------------------------------------------------
-    //   データ取得 / Users
-    //   アクセスしたページ所有者のユーザー情報
-    //   users_id を取得するために利用
+    //   DB find / Feed Forum Game Community
     // --------------------------------------------------
     
-    const usersObj = await ModelUsers.findOneForUser({
+    const feedForumObj = await ModelForumThreads.findFeed({
       
+      req,
       localeObj,
       loginUsers_id,
-      userID,
+      type: 'gc',
+      // gameCommunities_id,
       
     });
     
     
-    // --------------------------------------------------
-    //   ユーザー情報が存在しない場合はエラー
-    // --------------------------------------------------
+    // // ---------------------------------------------
+    // //   - コミュニティのデータがない場合はエラー
+    // // ---------------------------------------------
     
-    const users_id = lodashGet(usersObj, ['_id'], '');
-    
-    if (!users_id) {
+    // if (Object.keys(gameCommunityObj).length === 0) {
       
-      statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '1G6OYPg8p', messageID: 'Error' }] });
+    //   statusCode = 404;
+    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'mb7-816Fu', messageID: 'Error' }] });
       
-    }
+    // }
     
     
-    // ---------------------------------------------
-    //   headerObj
-    //   ユーザーがトップ画像をアップロードしていない場合は、ランダム取得のゲーム画像を代わりに利用する
-    // ---------------------------------------------
+    // // ---------------------------------------------
+    // //   - gameCommunities_id
+    // // ---------------------------------------------
     
-    returnObj.headerObj = usersObj.headerObj;
-    
-    if (!lodashHas(usersObj, ['headerObj', 'imagesAndVideosObj'])) {
-      lodashSet(returnObj, ['headerObj', 'imagesAndVideosObj'], lodashGet(commonInitialPropsObj, ['headerObj', 'imagesAndVideosObj'], {}));
-    }
+    // const gameCommunities_id = lodashGet(gameCommunityObj, ['gameCommunitiesObj', '_id'], '');
     
     
-    // --------------------------------------------------
-    //   pagesObj - ユーザー各自が設定したページのタイトル
-    // --------------------------------------------------
+    // // ---------------------------------------------
+    // //   - headerObj
+    // // ---------------------------------------------
     
-    returnObj.pagesObj = lodashGet(usersObj, ['pagesObj'], []);
-    
-    
+    // returnObj.headerObj = gameCommunityObj.headerObj;
     
     
-    // --------------------------------------------------
-    //   データ取得 / Card Players
-    //   アクセスしたページ所有者のプレイヤーカード情報
-    // --------------------------------------------------
+    // // ---------------------------------------------
+    // //   - gameCommunityObj
+    // // ---------------------------------------------
     
-    const resultCardPlayersObj = await ModelCardPlayers.findForCardPlayers({
-      
-      localeObj,
-      users_id,
-      loginUsers_id,
-      
-    });
-    
-    returnObj.cardPlayersObj = resultCardPlayersObj.cardPlayersObj;
-    returnObj.cardPlayers_idsArr = resultCardPlayersObj.cardPlayers_idsArr;
+    // returnObj.gameCommunityObj = gameCommunityObj.gameCommunitiesObj;
     
     
-    
-    
-    // --------------------------------------------------
-    //   権限
-    //   0: ブロックしているユーザー
-    //   1: 非ログインユーザー
-    //   2: ログインユーザー（以下ログイン済みユーザー）
-    //   3: 自分のことをフォローしているユーザー
-    //   4: 自分がフォローしているユーザー
-    //   5: 相互フォロー状態のユーザー
-    //   50: 自分自身
-    //   100: サイト管理者
-    // --------------------------------------------------
-    
-    returnObj.accessLevel = 1;
-    
-    
-    // ---------------------------------------------
-    //   - 自分自身
-    // ---------------------------------------------
-    
-    if (users_id === loginUsers_id) {
-      returnObj.accessLevel = 50;
-    }
     
     
     
@@ -217,30 +197,12 @@ export default async (req, res) => {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/api/v2/ur/[userID]/index.js
+    //   pages/api/v2/index/index.js
     // `);
     
     // console.log(chalk`
-    //   userID: {green ${userID}}
-    //   users_id：{green ${users_id}}
-    // `);
-    
-    // console.log(`
-    //   ----- localeObj -----\n
-    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- usersObj -----\n
-    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- cardPlayersObj -----\n
-    //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
+    //   urlID: {green ${urlID}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
     // `);
     
     // console.log(`
@@ -269,7 +231,7 @@ export default async (req, res) => {
     const resultErrorObj = returnErrorsArr({
       
       errorObj,
-      endpointID: 'CuUwo1avA',
+      endpointID: 'KPtPfJA6f',
       users_id: loginUsers_id,
       ip,
       userAgent,

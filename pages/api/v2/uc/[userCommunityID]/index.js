@@ -79,7 +79,6 @@ export default async (req, res) => {
   //   Property
   // --------------------------------------------------
   
-  const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   const loginUsersRole = lodashGet(req, ['user', 'role'], '');
@@ -131,38 +130,13 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
     
     
+
+    
     // --------------------------------------------------
     //   Common Initial Props
     // --------------------------------------------------
     
-    const commonInitialPropsObj = await initialProps({ req, res, localeObj });
-    
-    returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
-    returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
-    returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
-    
-    const accessDate = lodashGet(returnObj, ['loginUsersObj', 'accessDate'], '');
-    
-    
-    // --------------------------------------------------
-    //   Update Access Date & Login Count
-    // --------------------------------------------------
-    
-    const resultUpdatedAccessDateObj = await updateAccessDate({
-      
-      req,
-      localeObj,
-      loginUsers_id,
-      accessDate,
-      
-    });
-    
-    returnObj.experienceObj = lodashGet(resultUpdatedAccessDateObj, ['experienceObj'], {});
-    const updatedAccessDate = lodashGet(resultUpdatedAccessDateObj, ['updatedAccessDate'], '');
-    
-    if (updatedAccessDate) {
-      lodashSet(returnObj, ['loginUsersObj', 'accessDate'], updatedAccessDate);
-    }
+    const returnObj = await initialProps({ req, localeObj, getHeroImage: true });
     
     
     
@@ -203,8 +177,10 @@ export default async (req, res) => {
     //   - headerObj
     // ---------------------------------------------
     
-    if (lodashHas(userCommunityObj, ['headerObj', 'imagesAndVideosObj'])) {
-      returnObj.headerObj = userCommunityObj.headerObj;
+    returnObj.headerObj = userCommunityObj.headerObj;
+
+    if (!lodashHas(userCommunityObj, ['headerObj', 'imagesAndVideosObj'])) {
+      lodashSet(returnObj, ['headerObj', 'imagesAndVideosObj'], commonInitialPropsObj.headerObj.imagesAndVideosObj);
     }
     
     delete userCommunityObj.headerObj;
@@ -304,6 +280,12 @@ export default async (req, res) => {
     // console.log(`
     //   ----------------------------------------\n
     //   /pages/api/v2/uc/[userCommunityID]/index.js
+    // `);
+
+    // console.log(`
+    //   ----- userCommunityObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(userCommunityObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(chalk`
@@ -409,8 +391,6 @@ export default async (req, res) => {
         forumObj = await ModelForumThreads.findForForum(argumentsObj);
         
       }
-
-      // const forumObj = await ModelForumThreads.findForForum(argumentsObj);
       
 
       // --------------------------------------------------
@@ -433,14 +413,14 @@ export default async (req, res) => {
     //   スレッドのデータがない場合はエラー
     // ---------------------------------------------
     
-    const forumThreadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
+    // const forumThreadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
     
-    if (Object.keys(forumThreadsDataObj).length === 0) {
+    // if (Object.keys(forumThreadsDataObj).length === 0) {
       
-      statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'aDeKgfO_U', messageID: 'Error' }] });
+    //   statusCode = 404;
+    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'aDeKgfO_U', messageID: 'Error' }] });
       
-    }
+    // }
 
     
     

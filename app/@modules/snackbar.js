@@ -53,6 +53,12 @@ const showSnackbar = async ({
   
   try {
     
+
+    // console.log(`
+    //   ----- errorObj -----\n
+    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // --------------------------------------------------
     //   experience
@@ -98,21 +104,26 @@ const showSnackbar = async ({
       const code = lodashGet(errorObj, ['errorsArr', 0, 'code'], '');
       const messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], '');
       
-      if (messageID) {
-        
+      if (messageID === 'Error') {
+        // console.log('AAA');
+        loopArr.push({
+          variant: 'error',
+          message: `Error Code: ${code}`,
+        });
+
+      } else if (messageID) {
+        // console.log('BBB');
         loopArr.push({
           variant: 'error',
           messageID
         });
         
-      } else {
-        
-        loopArr.push({
-          variant: 'error',
-          message: `Error: Code ${code}`,
-        });
-        
       }
+
+      // console.log(chalk`
+      //   code: {green ${code}}
+      //   messageID: {green ${messageID}}
+      // `);
       
     } else if (errorObj instanceof Error) {
       
@@ -120,7 +131,7 @@ const showSnackbar = async ({
         variant: 'error',
         message: `Error: ${errorObj.message}`,
       });
-      
+      // console.log('CCC');
     }
     
     

@@ -15,11 +15,11 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-// import Link from 'next/link';
+import Router from 'next/router';
 import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
+import { Element } from 'react-scroll';
 import TextareaAutosize from 'react-autosize-textarea';
-// import moment from 'moment';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -102,21 +102,6 @@ const cssBox = css`
  * Export Component
  */
 const Component = (props) => {
-  
-
-  // --------------------------------------------------
-  //   props
-  // --------------------------------------------------
-  
-  // const {
-    
-  //   headerObj,
-  //   userCommunityObj,
-  //   // followedCount,
-  //   // gamesArr,
-  //   accessRightRead,
-    
-  // } = props;
 
 
   // --------------------------------------------------
@@ -125,7 +110,7 @@ const Component = (props) => {
   
   const stateLayout = ContainerStateLayout.useContainer();
   
-  const { setHeaderObj, handleLoadingOpen, handleLoadingClose } = stateLayout;
+  const { setHeaderObj, handleLoadingOpen, handleLoadingClose, handleScrollTo } = stateLayout;
 
   
   // --------------------------------------------------
@@ -289,6 +274,19 @@ const Component = (props) => {
       
 
 
+
+      // ---------------------------------------------
+      //   リロードする
+      // ---------------------------------------------
+      
+      const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
+      
+      if (pageTransition) {
+        Router.push('/uc/[userCommunityID]/setting', `/uc/${userCommunityID}/setting`);
+      }
+
+
+
       
       // ---------------------------------------------
       //   console.log
@@ -348,6 +346,21 @@ const Component = (props) => {
       // ---------------------------------------------
       
       handleLoadingClose();
+
+
+      // ---------------------------------------------
+      //   Scroll To
+      // ---------------------------------------------
+      
+      handleScrollTo({
+        
+        to: 'formCommunity',
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+        
+      });
       
       
     }
@@ -383,7 +396,7 @@ const Component = (props) => {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/uc/v2/about.js
+  //   app/uc/v2/form-community.js
   // `);
   
   // console.log(chalk`
@@ -398,8 +411,8 @@ const Component = (props) => {
   // `);
   
   // console.log(`
-  //   ----- arr -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+  //   ----- lodashGet(props, ['headerObj', 'followsObj'], {}) -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(lodashGet(props, ['headerObj', 'followsObj'], {}))), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
   
@@ -411,6 +424,11 @@ const Component = (props) => {
   // --------------------------------------------------
   
   return (
+    <Element
+      name="formCommunity"
+    >
+
+
     <Panel
       heading="コミュニティ設定"
       defaultExpanded={true}
@@ -863,6 +881,9 @@ const Component = (props) => {
       
       
     </Panel>
+
+
+    </Element>
   );
   
 

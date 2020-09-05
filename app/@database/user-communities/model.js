@@ -679,7 +679,7 @@ const findForUserCommunity = async ({
     // --------------------------------------------------
     
     if (returnObj.imagesAndVideosObj) {
-      headerObj.imagesAndVideosObj = formatImagesAndVideosObj({ obj: returnObj.imagesAndVideosObj });
+      headerObj.imagesAndVideosObj = formatImagesAndVideosObj({ localeObj, obj: returnObj.imagesAndVideosObj });
     }
     
     
@@ -1150,17 +1150,8 @@ const findForUserCommunitySettings = async ({
     // --------------------------------------------------
     
     if (returnObj.imagesAndVideosObj) {
-      headerObj.imagesAndVideosObj = formatImagesAndVideosObj({ obj: returnObj.imagesAndVideosObj });
+      headerObj.imagesAndVideosObj = formatImagesAndVideosObj({ localeObj, obj: returnObj.imagesAndVideosObj });
     }
-    
-    
-    // --------------------------------------------------
-    //   画像の処理 - 関連するゲーム
-    // --------------------------------------------------
-    
-    // if (returnObj.gamesArr) {
-    //   headerObj.gamesArr = formatImagesAndVideosArr({ arr: returnObj.gamesArr });
-    // }
 
 
     // --------------------------------------------------

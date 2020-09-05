@@ -1,5 +1,5 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
@@ -33,7 +33,6 @@ import ModelForumThreads from 'app/@database/forum-threads/model.js';
 
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-import { updateAccessDate } from 'app/@modules/access-date.js';
 
 
 // ---------------------------------------------
@@ -52,6 +51,11 @@ import { validationForumCommentsLimit, validationForumRepliesLimit } from 'app/@
 import { locale } from 'app/@locales/locale.js';
 
 
+// ---------------------------------------------
+//   API
+// ---------------------------------------------
+
+import { initialProps } from 'app/@api/v2/common.js';
 
 
 
@@ -74,7 +78,6 @@ export default async (req, res) => {
   //   Property
   // --------------------------------------------------
   
-  const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   const loginUsersRole = lodashGet(req, ['user', 'role'], '');
@@ -126,42 +129,16 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
     
     
+
+
     // --------------------------------------------------
-    //   ログインしているユーザー情報＆ログインチェック
-    // --------------------------------------------------
-    
-    returnObj.login = false;
-    
-    if (req.isAuthenticated() && req.user) {
-      
-      returnObj.login = true;
-      returnObj.loginUsersObj = req.user;
-      
-    }
-    
-    const accessDate = lodashGet(returnObj, ['loginUsersObj', 'accessDate'], '');
-    
-    
-    // --------------------------------------------------
-    //   Update Access Date & Login Count
+    //   Common Initial Props
     // --------------------------------------------------
     
-    const resultUpdatedAccessDateObj = await updateAccessDate({
-      
-      req,
-      localeObj,
-      loginUsers_id,
-      accessDate,
-      
-    });
+    const returnObj = await initialProps({ req, localeObj, getHeroImage: false });
     
-    returnObj.experienceObj = lodashGet(resultUpdatedAccessDateObj, ['experienceObj'], {});
-    const updatedAccessDate = lodashGet(resultUpdatedAccessDateObj, ['updatedAccessDate'], '');
-    
-    if (updatedAccessDate) {
-      lodashSet(returnObj, ['loginUsersObj', 'accessDate'], updatedAccessDate);
-    }
-    
+
+
     
     // --------------------------------------------------
     //   DB find / Game Community
@@ -375,16 +352,14 @@ export default async (req, res) => {
     //   スレッドのデータがない場合はエラー
     // ---------------------------------------------
     
-    const forumThreadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
+    // const forumThreadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
     
-    if (Object.keys(forumThreadsDataObj).length === 0) {
+    // if (Object.keys(forumThreadsDataObj).length === 0) {
       
-      statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CwFmCVEZJ', messageID: 'Error' }] });
+    //   statusCode = 404;
+    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CwFmCVEZJ', messageID: 'Error' }] });
       
-    }
-    
-    
+    // }
     
     
     

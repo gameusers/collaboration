@@ -253,6 +253,7 @@ export default async (req, res) => {
         oldObj: oldImagesAndVideosObj,
         loginUsers_id,
         ISO8601,
+        heroImage: true,
         
       });
       

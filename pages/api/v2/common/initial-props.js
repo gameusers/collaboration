@@ -61,10 +61,6 @@ export default async (req, res) => {
   //   Property
   // --------------------------------------------------
   
-  const returnObj = {
-    login: false
-  };
-  
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
@@ -96,11 +92,7 @@ export default async (req, res) => {
     //   Common Initial Props
     // --------------------------------------------------
     
-    const commonInitialPropsObj = await initialProps({ req, res, localeObj });
-    
-    returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
-    returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
-    returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
+    const returnObj = await initialProps({ req, localeObj, getHeroImage: true });
     
     
     // ---------------------------------------------

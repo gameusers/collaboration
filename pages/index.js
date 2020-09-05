@@ -15,11 +15,10 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-import Head from 'next/head';
 import Link from 'next/link';
 import Error from 'next/error';
 import moment from 'moment';
-import { animateScroll as scroll } from 'react-scroll';
+// import { animateScroll as scroll } from 'react-scroll';
 import Swiper from 'react-id-swiper';
 
 /** @jsx jsx */
@@ -31,7 +30,6 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-import lodashIsEqual from 'lodash/isEqual';
 
 
 // ---------------------------------------------
@@ -74,9 +72,6 @@ import { createCsrfToken } from 'app/@modules/csrf.js';
 // ---------------------------------------------
 
 import Layout from 'app/common/layout/v2/layout.js';
-import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
-
-
 
 
 
@@ -220,58 +215,16 @@ const styledIconChatBubble = css`
 
 
 
-
-
 // --------------------------------------------------
 //   Function Components
 //   URL: http://localhost:8080/
 // --------------------------------------------------
 
+/**
+ * レイアウト
+ * @param {Object} props - Props
+ */
 const ContainerLayout = (props) => {
-  
-  
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-  
-  const stateLayout = ContainerStateLayout.useContainer();
-  
-  const {
-    
-    headerObj,
-    setHeaderObj,
-    
-  } = stateLayout;
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Hooks
-  // --------------------------------------------------
-  
-  useEffect(() => {
-    
-    
-    // --------------------------------------------------
-    //   Header 更新 - データに変更があった場合のみステートを更新
-    // --------------------------------------------------
-    
-    if (lodashIsEqual(headerObj, props.headerObj) === false) {
-      setHeaderObj(props.headerObj);
-    }
-    
-    
-    // ---------------------------------------------
-    //   Scroll To
-    // ---------------------------------------------
-    
-    scroll.scrollToTop({ duration: 0 });
-    
-    
-  }, [props.ISO8601]);
-  
-  
   
   
   // --------------------------------------------------
@@ -290,8 +243,6 @@ const ContainerLayout = (props) => {
   // `);
   
   
-  
-  
   // --------------------------------------------------
   //   Component - Sidebar
   // --------------------------------------------------
@@ -303,8 +254,6 @@ const ContainerLayout = (props) => {
   //     gameCommunities_id={props.gameCommunities_id}
   //   />
   // ;
-  
-  
   
   
   // --------------------------------------------------
@@ -330,10 +279,6 @@ const ContainerLayout = (props) => {
   
   const componentContent = 
     <React.Fragment>
-      
-      {/*<Breadcrumbs
-        arr={props.breadcrumbsArr}
-      />*/}
       
       
       {/* Contents */}
@@ -916,8 +861,6 @@ const ContainerLayout = (props) => {
   ;
   
   
-  
-  
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
@@ -939,6 +882,10 @@ const ContainerLayout = (props) => {
 
 
 
+/**
+ * コンポーネント / このページ独自のステートを設定する
+ * @param {Object} props - Props
+ */
 const Component = (props) => {
   
   
@@ -980,16 +927,12 @@ export async function getServerSideProps({ req, res, query }) {
   createCsrfToken(req, res);
   
   
-  
-  
   // --------------------------------------------------
   //   Cookie & Accept Language
   // --------------------------------------------------
   
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-  
-  
   
   
   // --------------------------------------------------
@@ -999,15 +942,13 @@ export async function getServerSideProps({ req, res, query }) {
   const ISO8601 = moment().utc().toISOString();
   
   
-  
-  
   // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
   
   const resultObj = await fetchWrapper({
     
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/common/initial-props`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/index`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -1016,8 +957,6 @@ export async function getServerSideProps({ req, res, query }) {
   
   const statusCode = lodashGet(resultObj, ['statusCode'], 400);
   const dataObj = lodashGet(resultObj, ['data'], {});
-  
-  
   
   
   // --------------------------------------------------
@@ -1029,15 +968,11 @@ export async function getServerSideProps({ req, res, query }) {
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   
   
-  
-  
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
   
   const title = `Game Users`;
-  
-  
   
   
   // --------------------------------------------------
@@ -1066,24 +1001,6 @@ export async function getServerSideProps({ req, res, query }) {
     // },
     
   ];
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   パンくずリスト
-  // --------------------------------------------------
-  
-  // const breadcrumbsArr = [
-    
-  //   {
-  //     type: 'logout',
-  //     anchorText: '',
-  //     href: '',
-  //     as: '',
-  //   },
-    
-  // ];
   
   
   
@@ -1122,7 +1039,6 @@ export async function getServerSideProps({ req, res, query }) {
       title,
       headerObj,
       headerNavMainArr,
-      // breadcrumbsArr,
       
     }
     

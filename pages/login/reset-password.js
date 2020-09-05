@@ -51,26 +51,16 @@ import FormResetPassword from 'app/login/reset-password/v2/form-reset-password.j
 
 
 
-
-
 // --------------------------------------------------
 //   Function Components
-//   URL: https://dev-1.gameusers.org:8080/login/reset-password
+//   URL: http://localhost:8080/login/reset-password
 // --------------------------------------------------
 
-const Component = (props) => {
-  
-  
-  // --------------------------------------------------
-  //   Error
-  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
-  // --------------------------------------------------
-  
-  if (props.statusCode !== 200) {
-    return <Error statusCode={props.statusCode} />;
-  }
-  
-  
+/**
+ * レイアウト
+ * @param {Object} props - Props
+ */
+const ContainerLayout = (props) => {
   
   
   // --------------------------------------------------
@@ -84,8 +74,6 @@ const Component = (props) => {
       height="250"
     />
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -103,8 +91,6 @@ const Component = (props) => {
       
     </React.Fragment>
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -129,6 +115,35 @@ const Component = (props) => {
 
 
 /**
+ * コンポーネント / このページ独自のステートを設定する
+ * @param {Object} props - Props
+ */
+const Component = (props) => {
+  
+  
+  // --------------------------------------------------
+  //   Error
+  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
+  // --------------------------------------------------
+  
+  if (props.statusCode !== 200) {
+    return <Error statusCode={props.statusCode} />;
+  }
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return <ContainerLayout {...props} />;
+  
+  
+};
+
+
+
+
+/**
  * getServerSideProps
  * @param {Object} req - リクエスト
  * @param {Object} res - レスポンス
@@ -144,16 +159,12 @@ export async function getServerSideProps({ req, res, query }) {
   createCsrfToken(req, res);
   
   
-  
-  
   // --------------------------------------------------
   //   Cookie & Accept Language
   // --------------------------------------------------
   
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-  
-  
   
   
   // --------------------------------------------------
@@ -182,8 +193,6 @@ export async function getServerSideProps({ req, res, query }) {
   const dataObj = lodashGet(resultObj, ['data'], {});
   
   
-  
-  
   // --------------------------------------------------
   //   dataObj
   // --------------------------------------------------
@@ -200,8 +209,6 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
   
   const title = `パスワード再設定 - Game Users`;
-  
-  
   
   
   // --------------------------------------------------
@@ -225,8 +232,6 @@ export async function getServerSideProps({ req, res, query }) {
     }
     
   ];
-  
-  
   
   
   // --------------------------------------------------

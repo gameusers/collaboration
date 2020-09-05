@@ -16,6 +16,12 @@ const util = require('util');
 
 const moment = require('moment');
 const shortid = require('shortid');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 
 
@@ -115,6 +121,7 @@ const returnErrorsArr = ({
   // ---------------------------------------------
   
   const logObj = {
+
     logID,
     date: moment().utc().toISOString(),
     endpointID,
@@ -123,6 +130,7 @@ const returnErrorsArr = ({
     userAgent,
     requestParametersObj,
     errorsArr
+
   };
   
   

@@ -141,7 +141,7 @@ const formatImagesAndVideosArr = ({ localeObj, arr }) => {
  * @param {Object} obj - imagesAndVideosObj
  * @return {Array} フォーマットされたオブジェクト
  */
-const formatImagesAndVideosObj = ({ localeObj, obj }) => {
+const formatImagesAndVideosObj = ({ localeObj = {}, obj }) => {
   
   
   // --------------------------------------------------
@@ -227,7 +227,7 @@ const formatImagesAndVideosObj = ({ localeObj, obj }) => {
       const tempObj = {
         type: 'image'
       };
-      
+      // console.log('AAAAAAAAAAAAAAAAAAA');
       
       // --------------------------------------------------
       //   Caption 表示する言語のデータを取得

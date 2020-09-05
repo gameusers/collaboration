@@ -33,7 +33,6 @@ import ModelCardPlayers from 'app/@database/card-players/model.js';
 
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-import { updateAccessDate } from 'app/@modules/access-date.js';
 
 
 // ---------------------------------------------
@@ -60,8 +59,6 @@ import { initialProps } from 'app/@api/v2/common.js';
 
 
 
-
-
 // --------------------------------------------------
 //   endpointID: ir73GK2D_
 // --------------------------------------------------
@@ -80,7 +77,6 @@ export default async (req, res) => {
   //   Property
   // --------------------------------------------------
   
-  const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
@@ -127,36 +123,7 @@ export default async (req, res) => {
     //   Common Initial Props
     // --------------------------------------------------
     
-    const commonInitialPropsObj = await initialProps({ req, res, localeObj });
-    
-    returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
-    returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
-    const accessDate = lodashGet(commonInitialPropsObj, ['loginUsersObj', 'accessDate'], '');
-    
-    const gamesImagesAndVideosObj = lodashGet(commonInitialPropsObj, ['headerObj', 'imagesAndVideosObj'], {});
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Update Access Date & Login Count
-    // --------------------------------------------------
-    
-    const resultUpdatedAccessDateObj = await updateAccessDate({
-      
-      req,
-      localeObj,
-      loginUsers_id,
-      accessDate,
-      
-    });
-    
-    returnObj.experienceObj = lodashGet(resultUpdatedAccessDateObj, ['experienceObj'], {});
-    const updatedAccessDate = lodashGet(resultUpdatedAccessDateObj, ['updatedAccessDate'], '');
-    
-    if (updatedAccessDate) {
-      lodashSet(returnObj, ['loginUsersObj', 'accessDate'], updatedAccessDate);
-    }
+    const returnObj = await initialProps({ req, localeObj, getHeroImage: true });
     
     
     
@@ -194,13 +161,13 @@ export default async (req, res) => {
     
     // ---------------------------------------------
     //   headerObj
+    //   ユーザーがトップ画像をアップロードしていない場合は、ランダム取得のゲーム画像を代わりに利用する
     // ---------------------------------------------
     
     returnObj.headerObj = usersObj.headerObj;
     
-    // ユーザーがトップ画像をアップロードしていない場合は、ランダム取得のゲーム画像を代わりに利用する
     if (!lodashHas(usersObj, ['headerObj', 'imagesAndVideosObj'])) {
-      lodashSet(returnObj, ['headerObj', 'imagesAndVideosObj'], gamesImagesAndVideosObj);
+      lodashSet(returnObj, ['headerObj', 'imagesAndVideosObj'], lodashGet(commonInitialPropsObj, ['headerObj', 'imagesAndVideosObj'], {}));
     }
     
     
@@ -275,10 +242,10 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/ur/[userID]/followers.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/ur/[userID]/followers.js
+    `);
     
     // console.log(chalk`
     //   userID: {green ${userID}}
@@ -292,11 +259,11 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     

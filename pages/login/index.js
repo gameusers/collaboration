@@ -18,7 +18,6 @@ import React, { useState, useEffect } from 'react';
 import Router from 'next/router';
 import Error from 'next/error';
 import moment from 'moment';
-import { animateScroll as scroll } from 'react-scroll';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -29,14 +28,6 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
-import lodashIsEqual from 'lodash/isEqual';
-
-
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 // ---------------------------------------------
@@ -60,8 +51,6 @@ import FormLogin from 'app/login/index/v2/form-login.js';
 
 
 
-
-
 // --------------------------------------------------
 //   Function Components
 //   URL: http://localhost:8080/login
@@ -73,44 +62,7 @@ import FormLogin from 'app/login/index/v2/form-login.js';
  */
 const ContainerLayout = (props) => {
   
-  
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-  
-  const stateLayout = ContainerStateLayout.useContainer();
-  
-  const {
-    
-    headerObj,
-    setHeaderObj,
-    
-  } = stateLayout;
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Hooks
-  // --------------------------------------------------
-  
-  useEffect(() => {
-    
-    
-    // --------------------------------------------------
-    //   Header 更新 - データに変更があった場合のみステートを更新
-    // --------------------------------------------------
-    
-    if (lodashIsEqual(headerObj, props.headerObj) === false) {
-      setHeaderObj(props.headerObj);
-    }
-    
-    
-  }, [props.ISO8601]);
-  
-  
-  
-  
+
   // --------------------------------------------------
   //   Component - Sidebar
   // --------------------------------------------------
@@ -122,8 +74,6 @@ const ContainerLayout = (props) => {
       height="250"
     />
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -144,8 +94,6 @@ const ContainerLayout = (props) => {
       
     </React.Fragment>
   ;
-  
-  
   
   
   // --------------------------------------------------
@@ -254,8 +202,6 @@ export async function getServerSideProps({ req, res, query }) {
   
   const statusCode = lodashGet(resultObj, ['statusCode'], 400);
   const dataObj = lodashGet(resultObj, ['data'], {});
-  
-  
   
   
   // --------------------------------------------------

@@ -606,7 +606,7 @@ const findOneForUser = async ({
     
     if (returnObj.pagesImagesAndVideosObj) {
       
-      const pagesImagesAndVideosObj = formatImagesAndVideosObj({ obj: returnObj.pagesImagesAndVideosObj });
+      const pagesImagesAndVideosObj = formatImagesAndVideosObj({ localeObj, obj: returnObj.pagesImagesAndVideosObj });
       lodashSet(headerObj, ['imagesAndVideosObj'], pagesImagesAndVideosObj);
       
       delete returnObj.pagesObj.imagesAndVideos_id;

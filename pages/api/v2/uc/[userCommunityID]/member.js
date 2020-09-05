@@ -33,7 +33,6 @@ import ModelCardPlayers from 'app/@database/card-players/model.js';
 
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-import { updateAccessDate } from 'app/@modules/access-date.js';
 
 
 // ---------------------------------------------
@@ -60,8 +59,6 @@ import { initialProps } from 'app/@api/v2/common.js';
 
 
 
-
-
 // --------------------------------------------------
 //   endpointID: K3yzgjQpD
 // --------------------------------------------------
@@ -80,7 +77,6 @@ export default async (req, res) => {
   //   Property
   // --------------------------------------------------
   
-  const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   const loginUsersRole = lodashGet(req, ['user', 'role'], '');
@@ -123,53 +119,12 @@ export default async (req, res) => {
     
     
     
-    
-    // --------------------------------------------------
-    //   ログインしているユーザー情報＆ログインチェック
-    // --------------------------------------------------
-    
-    // returnObj.login = false;
-    
-    // if (req.isAuthenticated() && req.user) {
-      
-    //   returnObj.loginUsersObj = req.user;
-    //   returnObj.login = true;
-      
-    // }
-    
 
     // --------------------------------------------------
     //   Common Initial Props
     // --------------------------------------------------
     
-    const commonInitialPropsObj = await initialProps({ req, res, localeObj });
-    
-    returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
-    returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
-    returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
-
-    const accessDate = lodashGet(returnObj, ['loginUsersObj', 'accessDate'], '');
-
-
-    // --------------------------------------------------
-    //   Update Access Date & Login Count
-    // --------------------------------------------------
-    
-    const resultUpdatedAccessDateObj = await updateAccessDate({
-      
-      req,
-      localeObj,
-      loginUsers_id,
-      accessDate,
-      
-    });
-    
-    returnObj.experienceObj = lodashGet(resultUpdatedAccessDateObj, ['experienceObj'], {});
-    const updatedAccessDate = lodashGet(resultUpdatedAccessDateObj, ['updatedAccessDate'], '');
-    
-    if (updatedAccessDate) {
-      lodashSet(returnObj, ['loginUsersObj', 'accessDate'], updatedAccessDate);
-    }
+    const returnObj = await initialProps({ req, localeObj, getHeroImage: true });
     
     
     
@@ -208,11 +163,14 @@ export default async (req, res) => {
     
     
     // ---------------------------------------------
-    //   - headerObj
+    //   headerObj
+    //   ユーザーがトップ画像をアップロードしていない場合は、ランダム取得のゲーム画像を代わりに利用する
     // ---------------------------------------------
     
-    if (lodashHas(userCommunityObj, ['headerObj', 'imagesAndVideosObj'])) {
-      returnObj.headerObj = userCommunityObj.headerObj;
+    returnObj.headerObj = userCommunityObj.headerObj;
+
+    if (!lodashHas(userCommunityObj, ['headerObj', 'imagesAndVideosObj'])) {
+      lodashSet(returnObj, ['headerObj', 'imagesAndVideosObj'], lodashGet(commonInitialPropsObj, ['headerObj', 'imagesAndVideosObj'], {}));
     }
     
     delete userCommunityObj.headerObj;
@@ -242,34 +200,11 @@ export default async (req, res) => {
     }
     
     
-    // console.log(`
-    //   ----- returnObj.headerObj -----\n
-    //   ${util.inspect(returnObj.headerObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   followsAdmin: {green ${followsAdmin}}
-    //   followsFollow: {green ${followsFollow}}
-    //   followsBlocked: {green ${followsBlocked}}
-    // `);
     
     
     // --------------------------------------------------
     //    DB find / Card Players
     // --------------------------------------------------
-    
-    // const resultFollowersObj = await ModelCardPlayers.findForFollowers({
-      
-    //   localeObj,
-    //   loginUsers_id,
-    //   adminUsers_id,
-    //   userCommunities_id,
-    //   controlType: 'followed',
-    //   // page,
-    //   // limit,
-      
-    // });
 
     const argumentsObj = {
       

@@ -139,9 +139,10 @@ const formatImagesAndVideosArr = ({ localeObj, arr }) => {
  * 
  * @param {Object} localeObj - ロケール
  * @param {Object} obj - imagesAndVideosObj
+ * @param {number} maxWidth - フォーマットする最大の横幅を指定する　それ以上のサイズの画像はフォーマットしない
  * @return {Array} フォーマットされたオブジェクト
  */
-const formatImagesAndVideosObj = ({ localeObj = {}, obj }) => {
+const formatImagesAndVideosObj = ({ localeObj = {}, obj, maxWidth = 1920 }) => {
   
   
   // --------------------------------------------------
@@ -267,67 +268,76 @@ const formatImagesAndVideosObj = ({ localeObj = {}, obj }) => {
         //   ${util.inspect(JSON.parse(JSON.stringify(value2Obj)), { colors: true, depth: null })}\n
         //   --------------------\n
         // `);
-        
-        
+
+
         // --------------------------------------------------
-        //   Upload 画像の場合
+        //   フォーマットする画像の最大横幅　この値以上の横幅の画像はフォーマットしない
         // --------------------------------------------------
-        
-        if (value2Obj.src) {
-          
-          tempObj.src = value2Obj.src;
-          
-          
-        // --------------------------------------------------
-        //   通常の画像の場合
-        // --------------------------------------------------
-          
-        } else {
+
+        if (value2Obj.width <= maxWidth) {
           
           
           // --------------------------------------------------
-          //   extension
+          //   Upload 画像の場合
           // --------------------------------------------------
           
-          let extension = '.jpg';
-          
-          if (imageType === 'PNG') {
+          if (value2Obj.src) {
             
-            extension = '.png';
+            tempObj.src = value2Obj.src;
             
-          } else if (imageType === 'SVG') {
             
-            extension = '.svg';
+          // --------------------------------------------------
+          //   通常の画像の場合
+          // --------------------------------------------------
+            
+          } else {
+            
+            
+            // --------------------------------------------------
+            //   extension
+            // --------------------------------------------------
+            
+            let extension = '.jpg';
+            
+            if (imageType === 'PNG') {
+              
+              extension = '.png';
+              
+            } else if (imageType === 'SVG') {
+              
+              extension = '.svg';
+              
+            }
+            
+            
+            // --------------------------------------------------
+            //   src
+            // --------------------------------------------------
+            
+            tempObj.src = `/img/${type}/${_id}/${_id2}/${value2Obj.w}${extension}`;
+            
             
           }
           
           
           // --------------------------------------------------
-          //   src
+          //   width & height
           // --------------------------------------------------
           
-          tempObj.src = `/img/${type}/${_id}/${_id2}/${value2Obj.w}${extension}`;
+          tempObj.width = value2Obj.width;
+          tempObj.height = value2Obj.height;
           
           
+          // --------------------------------------------------
+          //   srcset
+          // --------------------------------------------------
+          
+          srcSet2Arr.push(
+            `${tempObj.src} ${value2Obj.w}`
+          );
+          
+
         }
-        
-        
-        // --------------------------------------------------
-        //   width & height
-        // --------------------------------------------------
-        
-        tempObj.width = value2Obj.width;
-        tempObj.height = value2Obj.height;
-        
-        
-        // --------------------------------------------------
-        //   srcset
-        // --------------------------------------------------
-        
-        srcSet2Arr.push(
-          `${tempObj.src} ${value2Obj.w}`
-        );
-        
         
       }
       

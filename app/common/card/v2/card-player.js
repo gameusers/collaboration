@@ -375,7 +375,7 @@ const Component = (props) => {
                 {/* Big Image */}
                 <ImageAndVideo
                   imagesAndVideosObj={imagesAndVideosObj}
-                  setMaxHeight={false}
+                  // setMaxHeight={false}
                 />
                 
                 

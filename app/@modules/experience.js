@@ -2167,7 +2167,8 @@ const experienceCalculate = async ({
     // --------------------------------------------------
     
     if (!req.isAuthenticated()) {
-      throw new Error();
+      return {};
+      // throw new Error();
     }
     
     

@@ -24,7 +24,7 @@ import lodashHas from 'lodash/has';
 // ---------------------------------------------
 
 import ModelGameCommunities from 'app/@database/game-communities/model.js';
-import ModelForumThreads from 'app/@database/forum-threads/model.js';
+import ModelFeeds from 'app/@database/feeds/model.js';
 
 
 // ---------------------------------------------
@@ -143,7 +143,7 @@ export default async (req, res) => {
     //   DB find / Feed Forum Game Community
     // --------------------------------------------------
     
-    const feedForumObj = await ModelForumThreads.findFeed({
+    returnObj.feedObj = await ModelFeeds.findFeed({
       
       req,
       localeObj,

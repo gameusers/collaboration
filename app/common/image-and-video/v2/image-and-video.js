@@ -17,7 +17,6 @@ import util from 'util';
 import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
-import shortid from 'shortid';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -47,8 +46,6 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 
-
-
 // --------------------------------------------------
 //   Emotion
 //   https://emotion.sh/docs/composition
@@ -58,8 +55,6 @@ const cssPreviewBox = css`
   position: relative;
   margin: 0 4px 4px 0;
 `;
-
-
 
 
 
@@ -81,11 +76,11 @@ const Component = (props) => {
   const {
     
     imagesAndVideosObj,
-    setMaxHeight = true
+    lightbox = true,// true - 画像をクリックするとLightboxで表示される
+    maxHeight,// 画像の最大の高さを指定する、フィードでゲームのサムネイルを表示する場合などに利用
+    // setMaxHeight = true
     
   } = props;
-  
-  
   
   
   // --------------------------------------------------
@@ -101,8 +96,6 @@ const Component = (props) => {
     handleNavigationForLightboxHide,
     
   } = stateLayout;
-  
-  
   
   
   // --------------------------------------------------
@@ -171,7 +164,7 @@ const Component = (props) => {
             <img
               css={css`
                 max-width: 100%;
-                max-height: ${setMaxHeight ? '400px' : 'none'};
+                max-height: ${maxHeight ? `${maxHeight}px` : 'none'};
                 object-fit: contain;
                 margin: 0 auto;
               `}
@@ -473,36 +466,6 @@ const Component = (props) => {
   }
   
   
-  // バグでスレッド、コメント、返信の画像がごちゃまぜで表示されるので、サムネイルを削除して、画像をひとつずつ表示することにしている
-  // const optionsObj = {
-    
-  //   // settings: {
-      
-  //   //   disableWheelControls: true,
-  //   //   disablePanzoom: true,
-      
-  //   // },
-    
-  //   // buttons: {
-      
-  //   //   showAutoplayButton: false,
-  //   //   showNextButton: false,
-  //   //   showPrevButton: false,
-  //   //   showThumbnailsButton: false,
-      
-  //   // },
-    
-  //   // thumbnails: {
-      
-  //   //   showThumbnails: false,
-      
-  //   // },
-    
-  // };
-  
-  
-  
-  
   // --------------------------------------------------
   //   Callbacks
   // --------------------------------------------------
@@ -512,21 +475,44 @@ const Component = (props) => {
     onLightboxOpened: (object) => handleNavigationForLightboxHide(),
     onLightboxClosed: (object) => handleNavigationForLightboxShow(),
     
-    // onCountSlides: (total) => {
-    //   console.log(total);
-    // },
-    
   };
   
-  
-  
-  
+
+
+
   // --------------------------------------------------
-  //   key
+  //   Component - Return 
   // --------------------------------------------------
-  
-  const key = shortid.generate();
-  
+
+  let componentReturn = componentBigImage;
+
+  // Linghtbox あり
+  if (lightbox) {
+
+    componentReturn =
+      <SimpleReactLightbox>
+            
+        <SRLWrapper
+          options={optionsObj}
+          callbacks={callbacksObj}
+          // key={key}// ページ遷移を行っても最初に表示した画像が表示され続ける状態（バグ？）を防ぐため、key を入れている
+        >
+          
+          
+          {/* Big Image */}
+          {componentBigImage}
+          
+          
+          {/* Small Images */}
+          {componentSmallImages}
+          
+          
+        </SRLWrapper>
+        
+      </SimpleReactLightbox>
+    ;
+
+  }
   
   
   
@@ -562,28 +548,7 @@ const Component = (props) => {
   //   Return
   // --------------------------------------------------
   
-  return (
-    <SimpleReactLightbox>
-      
-      <SRLWrapper
-        options={optionsObj}
-        callbacks={callbacksObj}
-        // key={key}// ページ遷移を行っても最初に表示した画像が表示され続ける状態（バグ？）を防ぐため、key を入れている
-      >
-        
-        
-        {/* Big Image */}
-        {componentBigImage}
-        
-        
-        {/* Small Images */}
-        {componentSmallImages}
-        
-        
-      </SRLWrapper>
-      
-    </SimpleReactLightbox>
-  );
+  return componentReturn;
   
   
 };

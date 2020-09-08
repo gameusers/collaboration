@@ -19,7 +19,9 @@ import Link from 'next/link';
 import Error from 'next/error';
 import moment from 'moment';
 // import { animateScroll as scroll } from 'react-scroll';
-import Swiper from 'react-id-swiper';
+// import Swiper from 'react-id-swiper';
+import SwiperCore, { Pagination } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -72,6 +74,14 @@ import { createCsrfToken } from 'app/@modules/csrf.js';
 // ---------------------------------------------
 
 import Layout from 'app/common/layout/v2/layout.js';
+import FeedCard from 'app/common/feed/card.js';
+
+
+// ---------------------------------------------
+//   install Swiper components
+// ---------------------------------------------
+
+SwiperCore.use([Pagination]);
 
 
 
@@ -83,7 +93,7 @@ import Layout from 'app/common/layout/v2/layout.js';
 
 const cardBox = css`
   position: relative;
-  margin: 10px 0 0 0;
+  margin: 0 0 10px 0;
 `;
 
 const cardCategory = css`
@@ -226,6 +236,17 @@ const styledIconChatBubble = css`
  */
 const ContainerLayout = (props) => {
   
+
+  // --------------------------------------------------
+  //   props
+  // --------------------------------------------------
+  
+  const {
+    
+    feedObj = {},
+    
+  } = props;
+
   
   // --------------------------------------------------
   //   console.log
@@ -244,16 +265,91 @@ const ContainerLayout = (props) => {
   
   
   // --------------------------------------------------
-  //   Component - Sidebar
+  //   Component - Forum
   // --------------------------------------------------
   
-  const componentSidebar = '';
-  // const componentSidebar =
-  //   <ForumNavigation
-  //     urlID={props.urlID}
-  //     gameCommunities_id={props.gameCommunities_id}
-  //   />
-  // ;
+  let dataObj = lodashGet(feedObj, ['forumThreadsGcObj', 'dataObj'], {});
+  let arr = lodashGet(feedObj, ['forumThreadsGcObj', 'page1Obj', 'arr'], []);
+
+  // console.log(`
+  //   ----- dataObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  // console.log(`
+  //   ----- arr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+
+  const componentForumArr = [];
+  
+  for (const [index, _id] of arr.entries()) {
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    const obj = dataObj[_id];
+    
+    
+    // --------------------------------------------------
+    //   Push
+    // --------------------------------------------------
+    
+    componentForumArr.push(
+      <SwiperSlide
+        key={index}
+      >
+        <FeedCard
+          obj={obj}
+        />
+      </SwiperSlide>
+    );
+    
+    
+  }
+
+
+
+
+  // --------------------------------------------------
+  //   Component - Recruitment
+  // --------------------------------------------------
+  
+  dataObj = lodashGet(feedObj, ['forumRecruitmentsObj', 'dataObj'], {});
+  arr = lodashGet(feedObj, ['forumRecruitmentsObj', 'page1Obj', 'arr'], []);
+
+
+  const componentRecruitmentArr = [];
+  
+  for (const [index, _id] of arr.entries()) {
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    const obj = dataObj[_id];
+    
+    
+    // --------------------------------------------------
+    //   Push
+    // --------------------------------------------------
+    
+    componentRecruitmentArr.push(
+      <SwiperSlide
+        key={index}
+      >
+        <FeedCard
+          obj={obj}
+        />
+      </SwiperSlide>
+    );
+    
+    
+  }
   
   
   // --------------------------------------------------
@@ -264,17 +360,17 @@ const ContainerLayout = (props) => {
   //   Swiper Setting
   // --------------------------------------------------
   
-  const swiperSettingObj = {
+  // const swiperSettingObj = {
     
-    slidesPerView: 'auto',
-    spaceBetween: 0,
-    freeMode: true,
-    pagination: {
-      el: '.swiper-pagination',
-      clickable: false,
-    }
+  //   slidesPerView: 'auto',
+  //   spaceBetween: 0,
+  //   freeMode: true,
+  //   pagination: {
+  //     el: '.swiper-pagination',
+  //     clickable: false,
+  //   }
     
-  };
+  // };
   
   
   const componentContent = 
@@ -289,231 +385,52 @@ const ContainerLayout = (props) => {
       >
         
         
-        <div
-          css={cardBox}
-        >
+        <div css={cardBox}>
           
-          <h2
-            css={cardCategory}
+          <h2 css={cardCategory}>フォーラム</h2>
+          
+          <Swiper
+            spaceBetween={14}
+            slidesPerView={'auto'}
+            // centeredSlides={true}
+            // slidesPerView={'auto'}
+            // slidesPerView={3}
+            // autoHeight={true}
+            freeMode={true}
+            // initialSlide={2}
+            // width={300}
+            // navigation
+            pagination={{ clickable: false }}
+            // onSlideChange={() => console.log('slide change')}
+            // onSwiper={(swiper) => console.log(swiper)}
           >
-            フォーラム
-          </h2>
+            {componentForumArr}
+
+          </Swiper>
           
+        </div>
+        
+
+
+
+        <div css={cardBox}>
           
-          <Swiper {...swiperSettingObj} style={{ margin: '0 0 10px 0' }}>
-            
-            <Card css={styledCard}>
-              
-              <div
-                css={cardMediaBox}
-                // onClick={() => stores.layout.handleModalImageOpen('/img/sample/0r8294vpatkc9nl1.jpg')}
-              >
-                <CardMedia
-                  image="/img/sample/0r8294vpatkc9nl1.jpg"
-                  title="Grand Theft Auto V"
-                  style={{ height: 0, paddingTop: '56.25%' }}
-                />
-              </div>
-              
-              
-              <Link href="/test">
-                <CardContent css={styledCardContent}>
-                  <h3 css={cardTitle}>GTA5について語ろう！</h3>
-                  <Typography component="p">
-                    5は面白かった！ストーリーで遊べるイベントも2種類用意されてたので、2週目も楽しめた。売れてるだけのことはある！出荷数7500万。本課金の純利益は2億4000万ドル。GTA5すげーな。
-                  </Typography>
-                  <div css={cardInfoBox}>
-                    
-                    <div>
-                      <div css={cardInfoDateTimeBox}>
-                        <IconSchedule css={styledIconSchedule} />
-                        <div css={cardInfoText}>30 分前</div>
-                      </div>
-                    </div>
-                    
-                    <div css={cardInfoRight}>
-                      <div css={cardInfoCommentsTotalBox}>
-                        <div css={styledIconChatBubble} />
-                        <div css={cardInfoText}>250</div>
-                      </div>
-                    </div>
-                    
-                  </div>
-                </CardContent>
-              </Link>
-              
-              
-              <Link href="/test">
-                <CardActions>
-                  <Button size="small" color="primary">
-                    Grand Theft Auto V
-                  </Button>
-                </CardActions>
-              </Link>
-              
-            </Card>
-            
-            
-            
-            
-            <Card css={styledCard}>
-              
-              <div
-                css={cardMediaBox}
-              >
-                <CardMedia
-                  image="/img/sample/thumbnail-1.jpg"
-                  title="Contemplative Reptile"
-                  style={{ width: 128, height: 128, margin: '0 auto 0 auto' }}
-                />
-              </div>
-              
-              <CardContent css={styledCardContent}>
-                <h3 css={cardTitle}>ダウンタウン熱血行進曲 それゆけ大運動会について語ろう！</h3>
-                <Typography component="p">
-                  1990年に発売されたアクションゲーム、「ダウンタウン熱血行進曲 それゆけ大運動会」。当時は4種目の競技で競い合う、一見普通の運動会ながら「あらゆる場面で殴る、蹴るの妨害行為が可能」というハチャメチャ仕様のアクションパーティゲームとして話題に。
-                </Typography>
-                <div css={cardInfoBox}>
-                  
-                  <div>
-                    <div css={cardInfoDateTimeBox}>
-                      <IconSchedule css={styledIconSchedule} />
-                      <div css={cardInfoText}>2 日前</div>
-                    </div>
-                  </div>
-                  
-                  <div css={cardInfoRight}>
-                    <div css={cardInfoCommentsTotalBox}>
-                      <div css={styledIconChatBubble} />
-                      <div css={cardInfoText}>3</div>
-                    </div>
-                  </div>
-                  
-                </div>
-              </CardContent>
-              
-              <CardActions>
-                <Button size="small" color="primary">
-                  ダウンタウン熱血行進曲 それゆけ大運動会
-                </Button>
-              </CardActions>
-              
-            </Card>
-            
-            
-            
-            <Card css={styledCard}>
-              
-              <div
-                css={cardMediaBox}
-                //onClick={() => stores.layout.handleModalImageOpen('/img/sample/g0dzjmsmuu32drqb.jpg')}
-              >
-                <CardMedia
-                  image="/img/sample/g0dzjmsmuu32drqb.jpg"
-                  title="Metal Gear Solid V: The Phantom Pain"
-                  style={{ height: 0, paddingTop: '56.25%' }}
-                />
-              </div>
-              
-              
-              <Link href="/test">
-                <CardContent css={styledCardContent}>
-                  <h3 css={cardTitle}>Metal Gear Solid Vについて語ろう！</h3>
-                  <Typography component="p">
-                    ソ連のアフガニスタン侵攻以来、冷戦は新たな局面に移行していた。1984年、隻眼に義手の男がそのアフガニスタンに現れる。スネークと呼ばれるその男は、過去に米国の非政府諜報機関サイファーにより、歴史の表舞台から消された伝説の傭兵だった。
-                  </Typography>
-                  <div css={cardInfoBox}>
-                    
-                    <div>
-                      <div css={cardInfoDateTimeBox}>
-                        <IconSchedule css={styledIconSchedule} />
-                        <div css={cardInfoText}>5 日前</div>
-                      </div>
-                    </div>
-                    
-                    <div css={cardInfoRight}>
-                      <div css={cardInfoCommentsTotalBox}>
-                        <div css={styledIconChatBubble} />
-                        <div css={cardInfoText}>34</div>
-                      </div>
-                    </div>
-                    
-                  </div>
-                </CardContent>
-              </Link>
-              
-              
-              <Link href="/test">
-                <CardActions>
-                  <Button size="small" color="primary">
-                    Metal Gear Solid V: The Phantom Pain
-                  </Button>
-                </CardActions>
-              </Link>
-              
-            </Card>
-            
-            
-            
-            <Card css={styledCard}>
-              
-              <div
-                css={cardMediaBox}
-                //onClick={() => stores.layout.handleModalVideoOpen('youtube', '1yIHLQJNvDw')}
-              >
-                <CardMedia
-                  image="https://img.youtube.com/vi/1yIHLQJNvDw/mqdefault.jpg"
-                  title="ゼルダの伝説 ブレス オブ ザ ワイルド 3rd トレーラー"
-                  style={{ height: 0, paddingTop: '56.25%' }}
-                />
-                <img css={cardMediaMoviePlayButton} src="/img/common/video-play-button.png" width="100%" />
-              </div>
-              
-              
-              <Link href="/test">
-                <CardContent css={styledCardContent}>
-                  <h3 css={cardTitle}>ゼルダの伝説 ブレス オブ ザ ワイルドについて語ろう！</h3>
-                  <Typography component="p">
-                    Nintendo Switch / Wii U　ゼルダの伝説 ブレス オブ ザ ワイルド 3rd トレーラー
-                  </Typography>
-                  <div css={cardInfoBox}>
-                    
-                    <div>
-                      <div css={cardInfoDateTimeBox}>
-                        <IconSchedule css={styledIconSchedule} />
-                        <div css={cardInfoText}>6 日前</div>
-                      </div>
-                    </div>
-                    
-                    <div css={cardInfoRight}>
-                      <div css={cardInfoCommentsTotalBox}>
-                        <div css={styledIconChatBubble} />
-                        <div css={cardInfoText}>100</div>
-                      </div>
-                    </div>
-                    
-                  </div>
-                </CardContent>
-              </Link>
-              
-              
-              <Link href="/test">
-                <CardActions>
-                  <Button size="small" color="primary">
-                    ゼルダの伝説 ブレス オブ ザ ワイルド
-                  </Button>
-                </CardActions>
-              </Link>
-              
-            </Card>
+          <h2 css={cardCategory}>募集</h2>
           
+          <Swiper
+            spaceBetween={14}
+            slidesPerView={'auto'}
+            freeMode={true}
+            pagination={{ clickable: false }}
+          >
+            {componentRecruitmentArr}
+
           </Swiper>
           
         </div>
         
         
-        
-        <div
+        {/* <div
           css={cardBox}
         >
           
@@ -784,7 +701,7 @@ const ContainerLayout = (props) => {
             
           </Swiper>
           
-        </div>
+        </div> */}
         
         
       </div>
@@ -868,7 +785,7 @@ const ContainerLayout = (props) => {
   return (
     <Layout
       title={props.title}
-      componentSidebar={componentSidebar}
+      // componentSidebar={}
       componentContent={componentContent}
       
       headerObj={props.headerObj}
@@ -966,6 +883,7 @@ export async function getServerSideProps({ req, res, query }) {
   const login = lodashGet(dataObj, ['login'], false);
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
+  const feedObj = lodashGet(dataObj, ['feedObj'], {});
   
   
   // --------------------------------------------------
@@ -1039,6 +957,8 @@ export async function getServerSideProps({ req, res, query }) {
       title,
       headerObj,
       headerNavMainArr,
+
+      feedObj,
       
     }
     

@@ -442,7 +442,7 @@ export default class extends React.Component {
               <ImageAndVideo
                 pathArr={[cardPlayers_id, 'imagesAndVideosObj']}
                 imagesAndVideosObj={imagesAndVideosObj}
-                setMaxHeight={false}
+                // setMaxHeight={false}
               />
               
               

@@ -24,6 +24,11 @@ a:hover {
 
 
 /* Swiper 上書き */
+.swiper-slide {
+    width: 300px
+}
+
+/* pagination の判定を無くして、下のリンクを有効にするために必要 */
 .swiper-pagination {
   pointer-events: none;
 }

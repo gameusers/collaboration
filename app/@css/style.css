@@ -25,7 +25,12 @@ a:hover {
 
 /* Swiper 上書き */
 .swiper-slide {
-    width: 300px
+  width: 300px;
+  /* height: auto; */
+  /* background-color: pink; */
+  /* height: 100vh; */
+  /* height: 100%; */
+  /* align-items: stretch; */
 }
 
 /* pagination の判定を無くして、下のリンクを有効にするために必要 */

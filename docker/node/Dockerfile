@@ -9,6 +9,9 @@ COPY package*.json ./
 # パッケージインストール
 RUN npm install
 
+# npm-check-updates インストール
+RUN npm install -g npm-check-updates
+
 # ソースコードをコピーする
 COPY . .
 

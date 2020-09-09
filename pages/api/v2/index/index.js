@@ -36,15 +36,6 @@ import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-import { validationInteger } from 'app/@validations/integer.js';
-import { validationForumThreadsListLimit, validationForumThreadsLimit } from 'app/@database/forum-threads/validations/limit.js';
-import { validationForumCommentsLimit, validationForumRepliesLimit } from 'app/@database/forum-comments/validations/limit.js';
-
-
-// ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
@@ -56,6 +47,8 @@ import { locale } from 'app/@locales/locale.js';
 // ---------------------------------------------
 
 import { initialProps } from 'app/@api/v2/common.js';
+
+
 
 
 
@@ -140,53 +133,15 @@ export default async (req, res) => {
 
     
     // --------------------------------------------------
-    //   DB find / Feed Forum Game Community
+    //   DB find / Feed
     // --------------------------------------------------
     
     returnObj.feedObj = await ModelFeeds.findFeed({
       
-      req,
       localeObj,
-      loginUsers_id,
-      type: 'gc',
-      // gameCommunities_id,
+      arr: ['forumGc', 'recruitment', 'forumUc'],
       
     });
-    
-    
-    // // ---------------------------------------------
-    // //   - コミュニティのデータがない場合はエラー
-    // // ---------------------------------------------
-    
-    // if (Object.keys(gameCommunityObj).length === 0) {
-      
-    //   statusCode = 404;
-    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'mb7-816Fu', messageID: 'Error' }] });
-      
-    // }
-    
-    
-    // // ---------------------------------------------
-    // //   - gameCommunities_id
-    // // ---------------------------------------------
-    
-    // const gameCommunities_id = lodashGet(gameCommunityObj, ['gameCommunitiesObj', '_id'], '');
-    
-    
-    // // ---------------------------------------------
-    // //   - headerObj
-    // // ---------------------------------------------
-    
-    // returnObj.headerObj = gameCommunityObj.headerObj;
-    
-    
-    // // ---------------------------------------------
-    // //   - gameCommunityObj
-    // // ---------------------------------------------
-    
-    // returnObj.gameCommunityObj = gameCommunityObj.gameCommunitiesObj;
-    
-    
     
     
     

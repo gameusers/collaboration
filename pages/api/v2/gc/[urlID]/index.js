@@ -25,6 +25,7 @@ import lodashHas from 'lodash/has';
 
 import ModelGameCommunities from 'app/@database/game-communities/model.js';
 import ModelForumThreads from 'app/@database/forum-threads/model.js';
+import ModelFeeds from 'app/@database/feeds/model.js';
 
 
 // ---------------------------------------------
@@ -184,6 +185,20 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     returnObj.gameCommunityObj = gameCommunityObj.gameCommunitiesObj;
+
+
+
+
+    // --------------------------------------------------
+    //   DB find / Feed
+    // --------------------------------------------------
+    
+    returnObj.feedObj = await ModelFeeds.findFeed({
+      
+      localeObj,
+      arr: ['all'],
+      
+    });
     
     
     
@@ -378,11 +393,11 @@ export default async (req, res) => {
     //   gameCommunities_id: {green ${gameCommunities_id}}
     // `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     

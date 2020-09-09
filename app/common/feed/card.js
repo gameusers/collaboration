@@ -16,8 +16,8 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useIntl } from 'react-intl';
-import { Element } from 'react-scroll';
+// import { useIntl } from 'react-intl';
+// import { Element } from 'react-scroll';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -36,9 +36,9 @@ import lodashHas from 'lodash/has';
 // ---------------------------------------------
 
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
+// import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
+// import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
@@ -55,7 +55,7 @@ import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
 //   Components
 // ---------------------------------------------
 
-import Paragraph from 'app/common/layout/v2/paragraph.js';
+// import Paragraph from 'app/common/layout/v2/paragraph.js';
 import ImageAndVideo from 'app/common/image-and-video/v2/image-and-video.js';
 
 
@@ -88,18 +88,18 @@ const Component = (props) => {
   //   Hooks
   // --------------------------------------------------
   
-  const intl = useIntl();
+  // const intl = useIntl();
   // const [panelExpanded, setPanelExpanded] = useState(defaultExpanded);
-  const [buttonDisabled, setButtonDisabled] = useState(true);
+  // const [buttonDisabled, setButtonDisabled] = useState(true);
   
   // const [showForm, setShowForm] = useState(false);
   
   
-  useEffect(() => {
+  // useEffect(() => {
     
-    setButtonDisabled(false);
+  //   setButtonDisabled(false);
     
-  }, []);
+  // }, []);
   
   
   // --------------------------------------------------
@@ -119,41 +119,44 @@ const Component = (props) => {
   
   const type = lodashGet(obj, ['type'], '');
   const _id = lodashGet(obj, ['_id'], '');
-  const name = lodashGet(obj, ['name'], '');
+  const title = lodashGet(obj, ['title'], '');
   const comment = lodashGet(obj, ['comment'], '');
   const datetimeFrom = lodashGet(obj, ['datetimeFrom'], '');
   const commentsAndReplies = lodashGet(obj, ['commentsAndReplies'], 0);
 
 
   // --------------------------------------------------
-  //   games
+  //   Game
   // --------------------------------------------------
   
   const gameUrlID = lodashGet(obj, ['gamesObj', 'urlID'], '');
   const gameName = lodashGet(obj, ['gamesObj', 'name'], '');
   const gameImagesAndVideosObj = lodashGet(obj, ['gamesObj', 'imagesAndVideosObj'], {});
   const gameImagesAndVideosThumbnailObj = lodashGet(obj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
+
+
+  // --------------------------------------------------
+  //   User Community
+  // --------------------------------------------------
+  
+  const userCommunityID = lodashGet(obj, ['userCommunitiesObj', 'userCommunityID'], '');
+  const ucName = lodashGet(obj, ['userCommunitiesObj', 'name'], '');
+  const ucImagesAndVideosObj = lodashGet(obj, ['userCommunitiesObj', 'imagesAndVideosObj'], {});
+  const ucImagesAndVideosThumbnailObj = lodashGet(obj, ['userCommunitiesObj', 'imagesAndVideosThumbnailObj'], {});
   
   
-  
+
+
   // --------------------------------------------------
   //   Images and Videos
   // --------------------------------------------------
-  
-  // let src = lodashGet(obj, ['gamesObj', 'imagesAndVideosObj', 'arr', 0, 'src'], '');
-  
-  // if (lodashHas(obj, ['imagesAndVideosObj', 'arr', 0, 'src'])) {
-  //   src = lodashGet(obj, ['imagesAndVideosObj', 'arr', 0, 'src'], '');
-  // }
-
-  // 
 
   // ---------------------------------------------
   //   - ゲームのサムネイルを表示する
   // ---------------------------------------------
   
-  let imagesAndVideosObj = gameImagesAndVideosThumbnailObj;
-  let maxHeight = '128';
+  let imagesAndVideosObj = {};
+  let maxHeight = '';
   let imageOrVideo = 'image';
 
 
@@ -174,7 +177,7 @@ const Component = (props) => {
 
 
   // ---------------------------------------------
-  //   - ゲームのヒーローイメージがある場合、そちらを表示
+  //   - ゲームのヒーローイメージ
   // ---------------------------------------------
 
   } else if (Object.keys(gameImagesAndVideosObj).length !== 0) {
@@ -182,17 +185,52 @@ const Component = (props) => {
     imagesAndVideosObj = gameImagesAndVideosObj;
     maxHeight = '';
 
+
+  // ---------------------------------------------
+  //   - ゲームのサムネイル
+  // ---------------------------------------------
+
+  } else if (Object.keys(gameImagesAndVideosThumbnailObj).length !== 0) {
+
+    imagesAndVideosObj = gameImagesAndVideosThumbnailObj;
+    maxHeight = '128';
+
+
+  // ---------------------------------------------
+  //   - ユーザーコミュニティのヒーローイメージ
+  // ---------------------------------------------
+
+  } else if (Object.keys(ucImagesAndVideosObj).length !== 0) {
+
+    imagesAndVideosObj = ucImagesAndVideosObj;
+    maxHeight = '';
+
+
+  // ---------------------------------------------
+  //   - ユーザーコミュニティのサムネイル
+  // ---------------------------------------------
+
+  } else if (Object.keys(ucImagesAndVideosThumbnailObj).length !== 0) {
+
+    imagesAndVideosObj = ucImagesAndVideosThumbnailObj;
+    maxHeight = '128';
+
   }
 
+
   
+
   // ---------------------------------------------
   //   Link
   // ---------------------------------------------
   
   let linkHref = '';
   let linkAs = '';
+  let communityName = gameName;
+  let communityLinkHref = `/gc/[urlID]`;
+  let communityLinkAs = `/gc/${gameUrlID}`;
 
-  if (type === 'forumThreadGc' || type === 'forumCommentOrReplyGc') {
+  if (type === 'forumThreadsGc' || type === 'forumCommentsAndRepliesGc') {
 
     linkHref = `/gc/[urlID]/forum/[[...slug]]`;
     linkAs = `/gc/${gameUrlID}/forum/${_id}`;
@@ -202,11 +240,16 @@ const Component = (props) => {
     linkHref = `/gc/[urlID]/rec/[[...slug]]`;
     linkAs = `/gc/${gameUrlID}/rec/${_id}`;
 
+  } else if (type === 'forumThreadsUc' || type === 'forumCommentsAndRepliesUc') {
+
+    linkHref = `/uc/[userCommunityID]/forum/[[...slug]]`;
+    linkAs = `/uc/${userCommunityID}/forum/${_id}`;
+    communityName = ucName;
+    communityLinkHref = `/uc/[userCommunityID]`;
+    communityLinkAs = `/uc/${userCommunityID}`;
+
   }
 
-  const gameLinkHref = `/gc/[urlID]`;
-  const gameLinkAs = `/gc/${gameUrlID}`;
-  
   
   
   
@@ -241,36 +284,40 @@ const Component = (props) => {
     <Card
       css={css`
         && {
-          margin: 0 0 4px 0;
-          // width: 300px;
-          // min-width: 300px;
+          display: flex;
+          flex-flow: column nowrap;
+          height: 100%;
           cursor: pointer;
+          margin: 0 0 4px 0;
         }
       `}
     >
       
 
       {imageOrVideo === 'image' ? (
+
         <Link
           href={linkHref}
           as={linkAs}
         >
-        <div
-          css={css`
-            background-color: black;
-            position: relative;
-          `}
-        >
+          <div
+            css={css`
+              background-color: black;
+              position: relative;
+            `}
+          >
 
-          <ImageAndVideo
-            imagesAndVideosObj={imagesAndVideosObj}
-            lightbox={false}
-            maxHeight={maxHeight}
-          />
+            <ImageAndVideo
+              imagesAndVideosObj={imagesAndVideosObj}
+              lightbox={false}
+              maxHeight={maxHeight}
+            />
 
-        </div>
+          </div>
         </Link>
+
       ) : (
+
         <div
           css={css`
             background-color: black;
@@ -285,10 +332,12 @@ const Component = (props) => {
           />
 
         </div>
+
       )}
 
       
       
+
       <Link
         href={linkHref}
         as={linkAs}
@@ -302,13 +351,12 @@ const Component = (props) => {
           `}
         >
 
-
           <h3
             css={css`
               margin: 0 0 10px 0;
             `}
           >
-            {name}
+            {title}
           </h3>
 
 
@@ -316,26 +364,66 @@ const Component = (props) => {
             {comment}
           </Typography>
 
+        </CardContent>
+
+      </Link>
+      
+      
+
+      
+      <div
+        css={css`
+          margin-top: auto;
+        `}
+      >
 
 
-
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            font-size: 12px;
+            padding: 10px 18px 0 18px;
+          `}
+        >
+          
           <div
             css={css`
               display: flex;
               flex-flow: row nowrap;
-              // justify-content: space-around;
-              font-size: 12px;
-              margin: 10px 0 0 0;
             `}
           >
-            
+            <IconSchedule
+              css={css`
+                && {
+                  font-size: 20px;
+                  margin: 0 0 0 0;
+                }
+              `}
+            />
+            <div
+              css={css`
+                font-size: 12px;
+                margin: 0 0 0 4px;
+              `}
+            >
+              {datetimeFrom}
+            </div>
+          </div>
+          
+
+          <div
+            css={css`
+              margin: 0 0 0 20px;
+            `}
+          >
             <div
               css={css`
                 display: flex;
                 flex-flow: row nowrap;
               `}
             >
-              <IconSchedule
+              <IconChatBubble
                 css={css`
                   && {
                     font-size: 20px;
@@ -349,71 +437,40 @@ const Component = (props) => {
                   margin: 0 0 0 4px;
                 `}
               >
-                {datetimeFrom}
+                {commentsAndReplies}
               </div>
             </div>
-            
-
-            <div
-              css={css`
-                margin: 0 0 0 20px;
-              `}
-            >
-              <div
-                css={css`
-                  display: flex;
-                  flex-flow: row nowrap;
-                `}
-              >
-                <IconChatBubble
-                  css={css`
-                    && {
-                      font-size: 20px;
-                      margin: 0 0 0 0;
-                    }
-                  `}
-                />
-                <div
-                  css={css`
-                    font-size: 12px;
-                    margin: 0 0 0 4px;
-                  `}
-                >
-                  {commentsAndReplies}
-                </div>
-              </div>
-            </div>
-            
           </div>
-
-        </CardContent>
-
-      </Link>
-      
-      
-      <Link
-        href={gameLinkHref}
-        as={gameLinkAs}
-      >
-        
-        <div
-          css={css`
-            padding: 6px 10px 6px 10px;
-          `}
-        >
-          <Button
-            css={css`
-              text-transform: none !important
-            `}
-            // size="small"
-            color="primary"
-          >
-            {gameName}
-          </Button>
+          
         </div>
-        
-      </Link>
+
+
+        <Link
+          href={communityLinkHref}
+          as={communityLinkAs}
+        >
+          
+          <div
+            css={css`
+              padding: 6px 10px 6px 10px;
+            `}
+          >
+            <Button
+              css={css`
+                text-transform: none !important
+              `}
+              // size="small"
+              color="primary"
+            >
+              {communityName}
+            </Button>
+          </div>
+          
+        </Link>
+
+      </div>
       
+
     </Card>
   );
   

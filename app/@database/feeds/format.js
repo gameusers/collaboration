@@ -28,18 +28,10 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 
 
 // ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-const { verifyAuthority } = require('../../@modules/authority.js');
-
-
-// ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
 const { formatImagesAndVideosObj } = require('../images-and-videos/format.js');
-const { formatRecruitmentRepliesArr } = require('../recruitment-replies/format.js');
 
 
 
@@ -52,22 +44,16 @@ const { formatRecruitmentRepliesArr } = require('../recruitment-replies/format.j
 
 /**
  * DB から取得したデータをフォーマットする
- * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {Array} arr - 配列
- * @param {Object} recruitmentThreadsObj - スレッドのデータ / コメントの総数と締切日を取得するために利用
- * @param {number} commentPage - コメントのページ
- * @param {number} replyPage - 返信のページ
- * @return {Array} フォーマット後のデータ
+ * @param {number} page - コページ
+ * @param {number} limit - リミット
+ * @return {Object} フォーマット後のデータ
  */
 const formatFeedsArr = ({
   
-  // req,
   localeObj,
-  // loginUsers_id,
-  arr,
-  // obj,
+  arr = [],
   page,
   limit,
   
@@ -75,11 +61,10 @@ const formatFeedsArr = ({
   
 
   // --------------------------------------------------
-  //   Language & Country & Parse
+  //   Language & Parse
   // --------------------------------------------------
 
   const language = lodashGet(localeObj, ['language'], '');
-  const country = lodashGet(localeObj, ['country'], '');
   const intLimit = parseInt(limit, 10);
 
 
@@ -100,7 +85,6 @@ const formatFeedsArr = ({
   
   const ISO8601 = moment().utc().toISOString();
   
-
 
   // --------------------------------------------------
   //   必要なデータを抽出するための番号
@@ -123,7 +107,6 @@ const formatFeedsArr = ({
   // ---------------------------------------------
 
   for (const [index, valueObj] of arr.entries()) {
-  // for (let valueObj of forumsGcArr.values()) {
   
   
     // console.log(`
@@ -151,19 +134,20 @@ const formatFeedsArr = ({
     // console.log('採用', index);
     
 
-    
+
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+
+    let localesArr = [];
+    let filteredArr = [];
+
+
     // --------------------------------------------------
     //   Deep Copy
     // --------------------------------------------------
     
     const clonedObj = lodashCloneDeep(valueObj);
-
-
-    // --------------------------------------------------
-    //   Type
-    // --------------------------------------------------
-    
-    // clonedObj.type = 'forumThreadGc';
     
     
     // --------------------------------------------------
@@ -197,72 +181,157 @@ const formatFeedsArr = ({
     }
 
 
+
+
     // --------------------------------------------------
-    //   画像と動画の処理 - ゲーム / メイン画像
+    //   画像と動画の処理
     // --------------------------------------------------
+
+    // ---------------------------------------------
+    //   - ゲームコミュニティ
+    // ---------------------------------------------
     
-    const gamesImagesAndVideosObj = formatImagesAndVideosObj({ localeObj, obj: lodashGet(valueObj, ['gamesObj', 'imagesAndVideosObj'], {}), maxWidth: 800 });
+    if (valueObj.type === 'forumThreadsGc' || valueObj.type === 'forumCommentsAndRepliesGc' || valueObj.type === 'recruitmentThreads' || valueObj.type === 'recruitmentComments' || valueObj.type === 'recruitmentReplies') {
 
-    if (gamesImagesAndVideosObj) {
 
-      // 画像をランダムに抽出
-      const gamesImagesAndVideosArr = lodashGet(gamesImagesAndVideosObj, ['arr'], []);
-      gamesImagesAndVideosObj.arr = [gamesImagesAndVideosArr[Math.floor(Math.random() * gamesImagesAndVideosArr.length)]];
+      // --------------------------------------------------
+      //   ゲーム / メイン画像
+      // --------------------------------------------------
 
-      // console.log(`
-      //   ----- gamesImagesAndVideosObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(gamesImagesAndVideosObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      const imagesAndVideosObj = formatImagesAndVideosObj({ localeObj, obj: lodashGet(valueObj, ['gamesObj', 'imagesAndVideosObj'], {}), maxWidth: 800 });
 
-      lodashSet(clonedObj, ['gamesObj', 'imagesAndVideosObj'], gamesImagesAndVideosObj);
+      if (imagesAndVideosObj) {
+  
+        // 画像をランダムに抽出
+        const randomArr = lodashGet(imagesAndVideosObj, ['arr'], []);
+        imagesAndVideosObj.arr = [randomArr[Math.floor(Math.random() * randomArr.length)]];
+  
+        lodashSet(clonedObj, ['gamesObj', 'imagesAndVideosObj'], imagesAndVideosObj);
+        
+      }
+  
+  
+      // --------------------------------------------------
+      //   ゲーム / サムネイル画像
+      // --------------------------------------------------
       
-    } else {
+      const imagesAndVideosThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: lodashGet(valueObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {}) });
+  
+      if (imagesAndVideosThumbnailObj) {
+        
+        lodashSet(clonedObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], imagesAndVideosThumbnailObj);
+        
+      }
+
+
+    // ---------------------------------------------
+    //   - ユーザーコミュニティ
+    // ---------------------------------------------
+    
+    } else if (valueObj.type === 'forumThreadsUc' || valueObj.type === 'forumCommentsAndRepliesUc') {
+
+
+      // --------------------------------------------------
+      //   ユーザーコミュニティ / メイン画像
+      // --------------------------------------------------
+
+      const imagesAndVideosObj = formatImagesAndVideosObj({ localeObj, obj: lodashGet(valueObj, ['userCommunitiesObj', 'imagesAndVideosObj'], {}), maxWidth: 800 });
+
+      if (imagesAndVideosObj) {
+  
+        // 画像をランダムに抽出
+        const randomArr = lodashGet(imagesAndVideosObj, ['arr'], []);
+        imagesAndVideosObj.arr = [randomArr[Math.floor(Math.random() * randomArr.length)]];
+  
+        lodashSet(clonedObj, ['userCommunitiesObj', 'imagesAndVideosObj'], imagesAndVideosObj);
+        
+      }
+  
+  
+      // --------------------------------------------------
+      //   ユーザーコミュニティ / サムネイル画像
+      // --------------------------------------------------
       
-      delete clonedObj.gamesObj.imagesAndVideosObj;
+      const imagesAndVideosThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: lodashGet(valueObj, ['userCommunitiesObj', 'imagesAndVideosThumbnailObj'], {}) });
+  
+      if (imagesAndVideosThumbnailObj) {
+        
+        lodashSet(clonedObj, ['userCommunitiesObj', 'imagesAndVideosThumbnailObj'], imagesAndVideosThumbnailObj);
+        
+      }
+
+
+      // --------------------------------------------------
+      //   ユーザーコミュニティの名前
+      // --------------------------------------------------
+
+      localesArr = lodashGet(valueObj, ['userCommunitiesObj', 'localesArr'], []);
+
+      filteredArr = localesArr.filter((filterObj) => {
+        return filterObj.language === language;
+      });
+
+      lodashSet(clonedObj, ['userCommunitiesObj', 'name'], lodashGet(localesArr, [0, 'name'], ''));
+
+      if (lodashHas(filteredArr, [0])) {
+        
+        lodashSet(clonedObj, ['userCommunitiesObj', 'name'], lodashGet(filteredArr, [0, 'name'], ''));
+        
+      }
+
+      delete clonedObj.userCommunitiesObj.localesArr;
+
       
     }
 
-
-    // --------------------------------------------------
-    //   画像と動画の処理 - ゲーム / サムネイル画像
-    // --------------------------------------------------
     
-    const gamesImagesAndVideosThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: lodashGet(valueObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {}) });
-
-    if (gamesImagesAndVideosThumbnailObj) {
-      
-      lodashSet(clonedObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], gamesImagesAndVideosThumbnailObj);
-      
-    } else {
-      
-      delete clonedObj.gamesObj.imagesAndVideosThumbnailObj;
-      
-    }
-    
-    
-
+    // console.log(`
+    //   ----- clonedObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(clonedObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // --------------------------------------------------
-    //   Name & Description
+    //   タイトルとコメント
     // --------------------------------------------------
-    
-    let localesArr = lodashGet(valueObj, ['localesArr'], []);
 
-    let filteredArr = localesArr.filter((filterObj) => {
-      return filterObj.language === localeObj.language;
+    localesArr = lodashGet(valueObj, ['localesArr'], []);
+
+    filteredArr = localesArr.filter((filterObj) => {
+      return filterObj.language === language;
     });
-    
-    if (lodashHas(filteredArr, [0])) {
+
+    clonedObj.title = lodashGet(localesArr, [0, 'name'], '');
+    clonedObj.comment = lodashGet(localesArr, [0, 'comment'], '');
+
+
+    // ---------------------------------------------
+    //   - フォーラム
+    // ---------------------------------------------
+
+    if (valueObj.type === 'forumThreadsGc' || valueObj.type === 'forumCommentsAndRepliesGc' || valueObj.type === 'forumThreadsUc' || valueObj.type === 'forumCommentsAndRepliesUc') {
       
-      clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');
-      clonedObj.comment = lodashGet(filteredArr, [0, 'comment'], '');
+      if (lodashHas(filteredArr, [0])) {
+        
+        clonedObj.title = lodashGet(filteredArr, [0, 'name'], '');
+        clonedObj.comment = lodashGet(filteredArr, [0, 'comment'], '');
+        
+      }
+
+
+    // ---------------------------------------------
+    //   - 募集
+    // ---------------------------------------------
+
+    } else if (valueObj.type === 'recruitmentThreads' || valueObj.type === 'recruitmentComments' || valueObj.type === 'recruitmentReplies') {
       
-    } else {
-      
-      clonedObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
-      clonedObj.comment = lodashGet(valueObj, ['localesArr', 0, 'comment'], '');
-      
+      if (lodashHas(filteredArr, [0])) {
+        
+        clonedObj.title = lodashGet(filteredArr, [0, 'title'], '');
+        clonedObj.comment = lodashGet(filteredArr, [0, 'comment'], '');
+        
+      }
+
     }
 
 
@@ -274,24 +343,15 @@ const formatFeedsArr = ({
     let replies = lodashGet(valueObj, ['replies'], 0);
 
     clonedObj.commentsAndReplies = comments + replies;
-    
 
 
-
-    
-
-    // let threadsObj = lodashGet(valueObj, ['forumThreadsObj'], {});
-
-    // if (lodashHas(valueObj, ['recruitmentThreadsObj'])) {
-    //   threadsObj = lodashGet(valueObj, ['recruitmentThreadsObj'], {});
-    // }
 
 
     // --------------------------------------------------
-    //   フォーラム / コメント、返信の場合
+    //   フォーラム / コメント、返信
     // --------------------------------------------------
 
-    if (lodashHas(valueObj, ['forumThreadsObj', 'localesArr'])) {
+    if (valueObj.type === 'forumCommentsAndRepliesGc' || valueObj.type === 'forumCommentsAndRepliesUc') {
       
 
       // --------------------------------------------------
@@ -301,16 +361,16 @@ const formatFeedsArr = ({
       localesArr = lodashGet(valueObj, ['forumThreadsObj', 'localesArr'], []);
 
       filteredArr = localesArr.filter((filterObj) => {
-        return filterObj.language === localeObj.language;
+        return filterObj.language === language;
       });
 
       if (lodashHas(filteredArr, [0])) {
       
-        clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');
+        clonedObj.title = lodashGet(filteredArr, [0, 'name'], '');
         
       } else {
         
-        clonedObj.name = lodashGet(localesArr, [0, 'name'], '');
+        clonedObj.title = lodashGet(localesArr, [0, 'name'], '');
         
       }
 
@@ -325,16 +385,11 @@ const formatFeedsArr = ({
       clonedObj.commentsAndReplies = comments + replies;
 
 
-    }
-
-
-
-
     // --------------------------------------------------
     //   募集 / コメント、返信の場合
     // --------------------------------------------------
 
-    if (lodashHas(valueObj, ['recruitmentThreadsObj', 'localesArr'])) {
+    } else if (valueObj.type === 'recruitmentComments' || valueObj.type === 'recruitmentReplies') {
       
 
       // --------------------------------------------------
@@ -344,16 +399,16 @@ const formatFeedsArr = ({
       localesArr = lodashGet(valueObj, ['recruitmentThreadsObj', 'localesArr'], []);
 
       filteredArr = localesArr.filter((filterObj) => {
-        return filterObj.language === localeObj.language;
+        return filterObj.language === language;
       });
 
       if (lodashHas(filteredArr, [0])) {
       
-        clonedObj.name = lodashGet(filteredArr, [0, 'title'], '');
+        clonedObj.title = lodashGet(filteredArr, [0, 'title'], '');
         
       } else {
         
-        clonedObj.name = lodashGet(localesArr, [0, 'title'], '');
+        clonedObj.title = lodashGet(localesArr, [0, 'title'], '');
         
       }
 
@@ -374,23 +429,30 @@ const formatFeedsArr = ({
 
 
     // --------------------------------------------------
-    //   改行コードを削除
+    //   改行コードを削除 ＆ 余分な文字をカット
     // --------------------------------------------------
+    
+    if (clonedObj.title) {
 
-    clonedObj.comment = clonedObj.comment.replace(/\r?\n/g, '');
+      clonedObj.title = clonedObj.title.replace(/\r?\n/g, '');
+      
+      if (clonedObj.title.length > 40) {
+        clonedObj.title = clonedObj.title.substr(0, 39) + '…';
+      }
 
+    }
 
-    // --------------------------------------------------
-    //   余分な文字をカット
-    // --------------------------------------------------
+    if (clonedObj.comment) {
 
-    if (clonedObj.comment.length > 120) {
-      clonedObj.comment = clonedObj.comment.substr(0, 119) + '…';
+      clonedObj.comment = clonedObj.comment.replace(/\r?\n/g, '');
+      
+      if (clonedObj.comment.length > 80) {
+        clonedObj.comment = clonedObj.comment.substr(0, 79) + '…';
+      }
+
     }
 
 
-    
-    
     // --------------------------------------------------
     //   不要な項目を削除する
     // --------------------------------------------------
@@ -401,6 +463,7 @@ const formatFeedsArr = ({
     delete clonedObj.comments;
     delete clonedObj.replies;
     delete clonedObj.forumThreadsObj;
+    delete clonedObj.recruitmentThreadsObj;
     
     
 
@@ -444,30 +507,6 @@ const formatFeedsArr = ({
   // console.log(`
   //   ----- commentsArr -----\n
   //   ${util.inspect(commentsArr, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- repliesArr -----\n
-  //   ${util.inspect(repliesArr, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- recruitmentThreadsObj -----\n
-  //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- recruitmentCommentsObj -----\n
-  //   ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- recruitmentRepliesObj -----\n
-  //   ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
   

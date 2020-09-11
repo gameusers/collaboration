@@ -183,13 +183,15 @@ export default class extends React.Component {
       
       component = 
         <Link href="/login">
-          <Button
-            variant="contained"
-            color="secondary"
-            size="small"
-          >
-            フォローする
-          </Button>
+          <a className="link">
+            <Button
+              variant="contained"
+              color="secondary"
+              size="small"
+            >
+              フォローする
+            </Button>
+          </a>
         </Link>
       ;
       

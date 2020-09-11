@@ -135,14 +135,14 @@ const ContainerLayout = (props) => {
   //   Component - Forum Game Community
   // --------------------------------------------------
   
-  let dataObj = lodashGet(feedObj, ['forumsGcObj', 'dataObj'], {});
-  let arr = lodashGet(feedObj, ['forumsGcObj', 'page1Obj', 'arr'], []);
+  let feedDataObj = lodashGet(feedObj, ['forumsGcObj', 'dataObj'], {});
+  let feedArr = lodashGet(feedObj, ['forumsGcObj', 'page1Obj', 'arr'], []);
 
   const componentForumGcArr = [];
   
-  for (const [index, _id] of arr.entries()) {
+  for (const [index, _id] of feedArr.entries()) {
     
-    const obj = dataObj[_id];
+    const obj = feedDataObj[_id];
     
     componentForumGcArr.push(
       <SwiperSlide
@@ -161,14 +161,14 @@ const ContainerLayout = (props) => {
   //   Component - Recruitment
   // --------------------------------------------------
   
-  dataObj = lodashGet(feedObj, ['recruitmentsObj', 'dataObj'], {});
-  arr = lodashGet(feedObj, ['recruitmentsObj', 'page1Obj', 'arr'], []);
+  feedDataObj = lodashGet(feedObj, ['recruitmentsObj', 'dataObj'], {});
+  feedArr = lodashGet(feedObj, ['recruitmentsObj', 'page1Obj', 'arr'], []);
 
   const componentRecruitmentArr = [];
   
-  for (const [index, _id] of arr.entries()) {
+  for (const [index, _id] of feedArr.entries()) {
     
-    const obj = dataObj[_id];
+    const obj = feedDataObj[_id];
     
     componentRecruitmentArr.push(
       <SwiperSlide
@@ -187,14 +187,14 @@ const ContainerLayout = (props) => {
   //   Component - Forum User Community
   // --------------------------------------------------
   
-  dataObj = lodashGet(feedObj, ['forumsUcObj', 'dataObj'], {});
-  arr = lodashGet(feedObj, ['forumsUcObj', 'page1Obj', 'arr'], []);
+  feedDataObj = lodashGet(feedObj, ['forumsUcObj', 'dataObj'], {});
+  feedArr = lodashGet(feedObj, ['forumsUcObj', 'page1Obj', 'arr'], []);
 
   const componentForumUcArr = [];
   
-  for (const [index, _id] of arr.entries()) {
+  for (const [index, _id] of feedArr.entries()) {
     
-    const obj = dataObj[_id];
+    const obj = feedDataObj[_id];
     
     componentForumUcArr.push(
       <SwiperSlide

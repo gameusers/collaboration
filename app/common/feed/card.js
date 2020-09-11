@@ -16,8 +16,6 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-// import { useIntl } from 'react-intl';
-// import { Element } from 'react-scroll';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -36,9 +34,6 @@ import lodashHas from 'lodash/has';
 // ---------------------------------------------
 
 import Card from '@material-ui/core/Card';
-// import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-// import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
@@ -55,7 +50,6 @@ import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
 //   Components
 // ---------------------------------------------
 
-// import Paragraph from 'app/common/layout/v2/paragraph.js';
 import ImageAndVideo from 'app/common/image-and-video/v2/image-and-video.js';
 
 
@@ -82,24 +76,6 @@ const Component = (props) => {
     obj = {},
     
   } = props;
-  
-  
-  // --------------------------------------------------
-  //   Hooks
-  // --------------------------------------------------
-  
-  // const intl = useIntl();
-  // const [panelExpanded, setPanelExpanded] = useState(defaultExpanded);
-  // const [buttonDisabled, setButtonDisabled] = useState(true);
-  
-  // const [showForm, setShowForm] = useState(false);
-  
-  
-  // useEffect(() => {
-    
-  //   setButtonDisabled(false);
-    
-  // }, []);
   
   
   // --------------------------------------------------
@@ -300,20 +276,22 @@ const Component = (props) => {
           href={linkHref}
           as={linkAs}
         >
-          <div
-            css={css`
-              background-color: black;
-              position: relative;
-            `}
-          >
+          <a className="link">
+            <div
+              css={css`
+                background-color: black;
+                position: relative;
+              `}
+            >
 
-            <ImageAndVideo
-              imagesAndVideosObj={imagesAndVideosObj}
-              lightbox={false}
-              maxHeight={maxHeight}
-            />
+              <ImageAndVideo
+                imagesAndVideosObj={imagesAndVideosObj}
+                lightbox={false}
+                maxHeight={maxHeight}
+              />
 
-          </div>
+            </div>
+          </a>
         </Link>
 
       ) : (
@@ -342,30 +320,30 @@ const Component = (props) => {
         href={linkHref}
         as={linkAs}
       >
-        
-        <CardContent
-          css={css`
-            && {
-              padding: 12px 20px 0 20px;
-            }
-          `}
-        >
-
-          <h3
+        <a className="link">
+          <div
             css={css`
-              margin: 0 0 10px 0;
+              && {
+                padding: 12px 20px 12px 20px;
+              }
             `}
           >
-            {title}
-          </h3>
+
+            <h3
+              css={css`
+                margin: 0 0 10px 0;
+              `}
+            >
+              {title}
+            </h3>
 
 
-          <Typography component="p">
-            {comment}
-          </Typography>
+            <Typography component="p">
+              {comment}
+            </Typography>
 
-        </CardContent>
-
+          </div>
+        </a>
       </Link>
       
       
@@ -383,7 +361,7 @@ const Component = (props) => {
             display: flex;
             flex-flow: row nowrap;
             font-size: 12px;
-            padding: 10px 18px 0 18px;
+            padding: 0 18px 0 18px;
           `}
         >
           
@@ -449,23 +427,23 @@ const Component = (props) => {
           href={communityLinkHref}
           as={communityLinkAs}
         >
-          
-          <div
-            css={css`
-              padding: 6px 10px 6px 10px;
-            `}
-          >
-            <Button
+          <a>
+            <div
               css={css`
-                text-transform: none !important
+                padding: 6px 10px 8px 10px;
               `}
-              // size="small"
-              color="primary"
             >
-              {communityName}
-            </Button>
-          </div>
-          
+              <Button
+                css={css`
+                  text-transform: none !important
+                `}
+                // size="small"
+                color="primary"
+              >
+                {communityName}
+              </Button>
+            </div>
+          </a>
         </Link>
 
       </div>

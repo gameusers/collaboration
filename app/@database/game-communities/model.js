@@ -678,7 +678,11 @@ const findForGameCommunity = async ({
     
     
     
-    
+    // console.log(`
+    //   ----- docGamesArr -----\n
+    //   ${util.inspect(docGamesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     // --------------------------------------------------
     //   docGamesObj
     // --------------------------------------------------
@@ -719,7 +723,6 @@ const findForGameCommunity = async ({
       hardwaresArr: docGamesObj.hardwaresArr,
       gameGenresArr: docGamesObj.gameGenresArr,
       developersPublishersArr: docGamesObj.developersPublishersArr,
-      // followedCount: lodashGet(docGamesObj, ['followsObj', 'followedCount'], 0),
       imagesAndVideosObj: formatImagesAndVideosObj({ localeObj, obj: docGamesObj.imagesAndVideosObj }),
       imagesAndVideosThumbnailObj: formatImagesAndVideosObj({ localeObj, obj: docGamesObj.imagesAndVideosThumbnailObj }),
       followsObj,
@@ -731,7 +734,15 @@ const findForGameCommunity = async ({
     //   ヒーローイメージがランダムに表示されるように並び替える
     // --------------------------------------------------
     
-    if (Object.keys(headerObj.imagesAndVideosObj).length !== 0) {
+    // const imagesAndVideosObj = lodashGet(headerObj, ['imagesAndVideosObj'], {});
+
+    // console.log(`
+    //   ----- imagesAndVideosObj -----\n
+    //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    if (headerObj.imagesAndVideosObj) {
       
       const arr = lodashGet(headerObj, ['imagesAndVideosObj', 'arr'], []);
       
@@ -751,22 +762,12 @@ const findForGameCommunity = async ({
     
     
     // --------------------------------------------------
-    //   不要な項目を削除する
-    // --------------------------------------------------
-    
-    // delete docGamesObj.followsObj;
-    
-    
-    
-    
-    // --------------------------------------------------
     //   returnObj
     // --------------------------------------------------
     
     const returnObj = {
       
       gameCommunitiesObj: docGamesObj.gameCommunitiesObj,
-      // followsObj,
       headerObj,
       
     };

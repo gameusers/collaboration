@@ -236,13 +236,11 @@ const Component = (props) => {
   /**
    * 募集を検索する
    * @param {string} urlID - ゲームのURLになるID　例）Dead-by-Daylight
-   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
    * @param {number} page - スレッドのページ
    */
   const handleSearch = ({
     
     urlID,
-    gameCommunities_id,
     page,
     
   }) => {
@@ -354,8 +352,6 @@ const Component = (props) => {
   // --------------------------------------------------
   
   const limitHardwares = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_SEARCH_HARDWARES_LIMIT, 10);
-  
-  
   
   
   // --------------------------------------------------

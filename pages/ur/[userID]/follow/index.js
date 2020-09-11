@@ -44,8 +44,12 @@ import { getCookie } from 'app/@modules/cookie.js';
 
 import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
+import FeedSidebar from 'app/common/feed/sidebar.js';
+import FeedHorizontal from 'app/common/feed/horizontal.js';
 
 import FollowMembers from 'app/common/follow/v2/members.js';
+
+
 
 
 
@@ -67,11 +71,14 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
   
   const componentSidebar =
-    <img
-      src="/img/common/advertisement/300x250.jpg"
-      width="300"
-      height="250"
-    />
+    <React.Fragment>
+
+      <FeedSidebar
+        feedObj={props.feedObj}
+        top={true}
+      />
+
+    </React.Fragment>
   ;
   
   
@@ -92,6 +99,10 @@ const ContainerLayout = (props) => {
         accessLevel={props.accessLevel}
         cardPlayersObj={props.cardPlayersObj}
         followMembersObj={props.followMembersObj}
+      />
+
+      <FeedHorizontal
+        feedObj={props.feedObj}
       />
       
     </React.Fragment>
@@ -220,6 +231,7 @@ export async function getServerSideProps({ req, res, query }) {
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
+  const feedObj = lodashGet(dataObj, ['feedObj'], {});
   
   const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
   const users_id = lodashGet(dataObj, ['users_id'], '');
@@ -308,6 +320,8 @@ export async function getServerSideProps({ req, res, query }) {
   res.cookie('recentAccessPageAs', `/ur/${userID}/follow`);
 
   
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -323,6 +337,8 @@ export async function getServerSideProps({ req, res, query }) {
   //   --------------------\n
   // `);
   
+
+
   
   // --------------------------------------------------
   //   Return
@@ -342,6 +358,7 @@ export async function getServerSideProps({ req, res, query }) {
       headerNavMainArr,
       breadcrumbsArr,
       experienceObj,
+      feedObj,
       
       accessLevel,
       userID,

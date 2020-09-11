@@ -25,6 +25,7 @@ import lodashHas from 'lodash/has';
 
 import ModelUsers from 'app/@database/users/model.js';
 import ModelCardPlayers from 'app/@database/card-players/model.js';
+import ModelFeeds from 'app/@database/feeds/model.js';
 
 
 // ---------------------------------------------
@@ -55,6 +56,8 @@ import { locale } from 'app/@locales/locale.js';
 // ---------------------------------------------
 
 import { initialProps } from 'app/@api/v2/common.js';
+
+
 
 
 
@@ -208,6 +211,20 @@ export default async (req, res) => {
     
     returnObj.cardPlayersObj = resultFollowersObj.cardPlayersObj;
     returnObj.followMembersObj = resultFollowersObj.followMembersObj;
+
+
+
+
+    // --------------------------------------------------
+    //   DB find / Feed
+    // --------------------------------------------------
+    
+    returnObj.feedObj = await ModelFeeds.findFeed({
+      
+      localeObj,
+      arr: ['all'],
+      
+    });
     
     
     
@@ -242,10 +259,10 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/ur/[userID]/followers.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/ur/[userID]/followers.js
+    // `);
     
     // console.log(chalk`
     //   userID: {green ${userID}}
@@ -259,11 +276,11 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

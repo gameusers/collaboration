@@ -55,6 +55,10 @@ import Layout from 'app/common/layout/v2/layout.js';
 import ForumNavigation from 'app/common/forum/v2/navigation.js';
 import Forum from 'app/common/forum/v2/forum.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
+import FeedSidebar from 'app/common/feed/sidebar.js';
+import FeedHorizontal from 'app/common/feed/horizontal.js';
+
+
 
 
 
@@ -121,16 +125,26 @@ const ContainerLayout = (props) => {
   }, [props.ISO8601]);
   
   
+
+
   // --------------------------------------------------
   //   Component - Sidebar
   // --------------------------------------------------
   
   const componentSidebar =
-    <ForumNavigation
-      userCommunityID={props.userCommunityID}
-      userCommunities_id={props.userCommunities_id}
-      forumID={props.forumID}
-    />
+    <React.Fragment>
+
+      <ForumNavigation
+        userCommunityID={props.userCommunityID}
+        userCommunities_id={props.userCommunities_id}
+        forumID={props.forumID}
+      />
+
+      <FeedSidebar
+        feedObj={props.feedObj}
+      />
+
+    </React.Fragment>
   ;
   
   
@@ -150,6 +164,10 @@ const ContainerLayout = (props) => {
         userCommunities_id={props.userCommunities_id}
         enableAnonymity={props.enableAnonymity}
         individual={props.individual}
+      />
+
+      <FeedHorizontal
+        feedObj={props.feedObj}
       />
       
     </React.Fragment>
@@ -339,6 +357,7 @@ export async function getServerSideProps({ req, res, query }) {
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
+  const feedObj = lodashGet(dataObj, ['feedObj'], {});
   
   const userCommunities_id = lodashGet(dataObj, ['userCommunityObj', '_id'], '');
   const userCommunityName = lodashGet(dataObj, ['userCommunityObj', 'name'], '');
@@ -512,6 +531,8 @@ export async function getServerSideProps({ req, res, query }) {
   res.cookie('recentAccessPageHref', recentAccessPageHref);
   res.cookie('recentAccessPageAs', recentAccessPageAs);
   
+
+
   
   // --------------------------------------------------
   //   console.log
@@ -519,13 +540,17 @@ export async function getServerSideProps({ req, res, query }) {
   
   // console.log(`
   //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/forum/[...slug].js
+  //   pages/uc/[userCommunityID]/forum/[[...slug]].js
   // `);
   
   // console.log(`
   //   ----- resultObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
   //   --------------------\n
+  // `);
+
+  // console.log(chalk`
+  //   accessLevel: {green ${accessLevel}}
   // `);
   
   // console.log(chalk`
@@ -548,6 +573,8 @@ export async function getServerSideProps({ req, res, query }) {
   //   reqAcceptLanguage: {green ${reqAcceptLanguage}}
   // `);
   
+
+
   
   // --------------------------------------------------
   //   Return
@@ -567,6 +594,7 @@ export async function getServerSideProps({ req, res, query }) {
       headerNavMainArr,
       breadcrumbsArr,
       experienceObj,
+      feedObj,
       
       userCommunityID,
       userCommunities_id,

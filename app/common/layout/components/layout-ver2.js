@@ -293,11 +293,6 @@ export default class Layout extends React.Component {
         <CardPlayerDialog />
         
         
-        
-        {/*<ImagesAndVideos />*/}
-        
-        
-        
         {/* 動画表示用モーダル */}
         <VideoModal />
         

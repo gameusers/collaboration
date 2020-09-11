@@ -25,6 +25,7 @@ import lodashHas from 'lodash/has';
 
 import ModelGameCommunities from 'app/@database/game-communities/model.js';
 import ModelCardPlayers from 'app/@database/card-players/model.js';
+import ModelFeeds from 'app/@database/feeds/model.js';
 
 
 // ---------------------------------------------
@@ -55,6 +56,8 @@ import { locale } from 'app/@locales/locale.js';
 // ---------------------------------------------
 
 import { initialProps } from 'app/@api/v2/common.js';
+
+
 
 
 
@@ -146,7 +149,7 @@ export default async (req, res) => {
     //   - コミュニティのデータがない場合はエラー
     // ---------------------------------------------
     
-    if (Object.keys(gameCommunityObj).length === 0) {
+    if (!lodashHas(gameCommunityObj, ['gameCommunitiesObj', '_id'])) {
       
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'mb7-816Fu', messageID: 'Error' }] });
@@ -204,6 +207,20 @@ export default async (req, res) => {
     
     returnObj.cardPlayersObj = resultFollowersObj.cardPlayersObj;
     returnObj.followMembersObj = resultFollowersObj.followMembersObj;
+
+
+
+
+    // --------------------------------------------------
+    //   DB find / Feed
+    // --------------------------------------------------
+    
+    returnObj.feedObj = await ModelFeeds.findFeed({
+      
+      localeObj,
+      arr: ['all'],
+      
+    });
     
     
     

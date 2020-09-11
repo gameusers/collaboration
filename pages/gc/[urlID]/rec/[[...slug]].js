@@ -55,6 +55,10 @@ import Layout from 'app/common/layout/v2/layout.js';
 import RecruitmentNavigation from 'app/gc/rec/v2/navigation.js';
 import Recruitment from 'app/gc/rec/v2/recruitment.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
+import FeedSidebar from 'app/common/feed/sidebar.js';
+import FeedHorizontal from 'app/common/feed/horizontal.js';
+
+
 
 
 
@@ -70,7 +74,7 @@ import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
  */
 const ContainerLayout = (props) => {
   
-  
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
@@ -133,16 +137,26 @@ const ContainerLayout = (props) => {
     
   }, [props.ISO8601]);
   
+
+
   
   // --------------------------------------------------
   //   Component - Sidebar
   // --------------------------------------------------
   
   const componentSidebar =
-    <RecruitmentNavigation
-      urlID={props.urlID}
-      gameCommunities_id={props.gameCommunities_id}
-    />
+    <React.Fragment>
+
+      <RecruitmentNavigation
+        urlID={props.urlID}
+        gameCommunities_id={props.gameCommunities_id}
+      />
+
+      <FeedSidebar
+        feedObj={props.feedObj}
+      />
+
+    </React.Fragment>
   ;
   
   
@@ -161,6 +175,10 @@ const ContainerLayout = (props) => {
         urlID={props.urlID}
         gameCommunities_id={props.gameCommunities_id}
         individual={props.pageType === 'individual'}
+      />
+
+      <FeedHorizontal
+        feedObj={props.feedObj}
       />
       
     </React.Fragment>
@@ -346,6 +364,7 @@ export async function getServerSideProps({ req, res, query }) {
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
+  const feedObj = lodashGet(dataObj, ['feedObj'], {});
   
   const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
   const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
@@ -639,6 +658,7 @@ export async function getServerSideProps({ req, res, query }) {
       headerNavMainArr,
       breadcrumbsArr,
       experienceObj,
+      feedObj,
       
       urlID,
       pageType,

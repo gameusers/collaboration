@@ -61,6 +61,8 @@ import { initialProps } from 'app/@api/v2/common.js';
 
 
 
+
+
 // --------------------------------------------------
 //   endpointID: 9aMdtckoT
 // --------------------------------------------------
@@ -153,12 +155,17 @@ export default async (req, res) => {
       
     });
     
+    // console.log(`
+    //   ----- gameCommunityObj -----\n
+    //   ${util.inspect(gameCommunityObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // ---------------------------------------------
     //   - コミュニティのデータがない場合はエラー
     // ---------------------------------------------
     
-    if (Object.keys(gameCommunityObj).length === 0) {
+    if (!lodashHas(gameCommunityObj, ['gameCommunitiesObj', '_id'])) {
       
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'mb7-816Fu', messageID: 'Error' }] });
@@ -367,14 +374,20 @@ export default async (req, res) => {
     //   スレッドのデータがない場合はエラー
     // ---------------------------------------------
     
-    // const forumThreadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
+    const threadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
     
-    // if (Object.keys(forumThreadsDataObj).length === 0) {
+    // console.log(`
+    //   ----- forumThreadsDataObj -----\n
+    //   ${util.inspect(forumThreadsDataObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    if ((threadPage !== 1 || forumID) && Object.keys(threadsDataObj).length === 0) {
       
-    //   statusCode = 404;
-    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CwFmCVEZJ', messageID: 'Error' }] });
+      statusCode = 404;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CwFmCVEZJ', messageID: 'Error' }] });
       
-    // }
+    }
     
     
     
@@ -393,11 +406,11 @@ export default async (req, res) => {
     //   gameCommunities_id: {green ${gameCommunities_id}}
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

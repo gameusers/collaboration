@@ -533,13 +533,15 @@ const Component = (props) => {
       
       component = 
         <Link href="/login">
-          <Button
-            variant="contained"
-            color="secondary"
-            size={size}
-          >
-            フォローする
-          </Button>
+          <a className="link">
+            <Button
+              variant="contained"
+              color="secondary"
+              size={size}
+            >
+              フォローする
+            </Button>
+          </a>
         </Link>
       ;
       
@@ -614,13 +616,15 @@ const Component = (props) => {
       
       component = 
         <Link href="/login">
-          <Button
-            variant="contained"
-            color="secondary"
-            size={size}
-          >
-            参加する
-          </Button>
+          <a className="link">
+            <Button
+              variant="contained"
+              color="secondary"
+              size={size}
+            >
+              参加する
+            </Button>
+          </a>
         </Link>
       ;
       
@@ -756,13 +760,15 @@ const Component = (props) => {
       
       component = 
         <Link href="/login">
-          <Button
-            variant="contained"
-            color="secondary"
-            size={size}
-          >
-            フォローする
-          </Button>
+          <a className="link">
+            <Button
+              variant="contained"
+              color="secondary"
+              size={size}
+            >
+              フォローする
+            </Button>
+          </a>
         </Link>
       ;
       

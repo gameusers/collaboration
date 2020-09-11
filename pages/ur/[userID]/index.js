@@ -42,8 +42,12 @@ import { createCsrfToken } from 'app/@modules/csrf.js';
 
 import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
+import FeedSidebar from 'app/common/feed/sidebar.js';
+import FeedHorizontal from 'app/common/feed/horizontal.js';
 
 import CardPlayer from 'app/common/card/v2/card-player.js';
+
+
 
 
 
@@ -96,11 +100,14 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
   
   const componentSidebar =
-    <img
-      src="/img/common/advertisement/300x250.jpg"
-      width="300"
-      height="250"
-    />
+    <React.Fragment>
+
+      <FeedSidebar
+        feedObj={props.feedObj}
+        top={true}
+      />
+
+    </React.Fragment>
   ;
   
   
@@ -116,6 +123,10 @@ const ContainerLayout = (props) => {
       />
       
       {componentsArr}
+
+      <FeedHorizontal
+        feedObj={props.feedObj}
+      />
       
     </React.Fragment>
   ;
@@ -234,6 +245,7 @@ export async function getServerSideProps({ req, res, query }) {
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
+  const feedObj = lodashGet(dataObj, ['feedObj'], {});
   
   const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
   const cardPlayersObj = lodashGet(dataObj, ['cardPlayersObj'], {});
@@ -315,6 +327,8 @@ export async function getServerSideProps({ req, res, query }) {
   res.cookie('recentAccessPageAs', `/ur/${userID}`);
   
   
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -330,6 +344,8 @@ export async function getServerSideProps({ req, res, query }) {
   //   --------------------\n
   // `);
   
+
+
   
   // --------------------------------------------------
   //   Return
@@ -349,6 +365,7 @@ export async function getServerSideProps({ req, res, query }) {
       headerNavMainArr,
       breadcrumbsArr,
       experienceObj,
+      feedObj,
       
       userID,
       cardPlayersObj,

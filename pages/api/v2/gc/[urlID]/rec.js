@@ -26,6 +26,7 @@ import lodashHas from 'lodash/has';
 import ModelGameCommunities from 'app/@database/game-communities/model.js';
 import ModelHardwares from 'app/@database/hardwares/model.js';
 import ModelRecruitmentThreads from 'app/@database/recruitment-threads/model.js';
+import ModelFeeds from 'app/@database/feeds/model.js';
 
 
 // ---------------------------------------------
@@ -60,6 +61,8 @@ import { locale } from 'app/@locales/locale.js';
 // ---------------------------------------------
 
 import { initialProps } from 'app/@api/v2/common.js';
+
+
 
 
 
@@ -163,7 +166,7 @@ export default async (req, res) => {
     //   - コミュニティのデータがない場合はエラー
     // ---------------------------------------------
     
-    if (Object.keys(gameCommunityObj).length === 0) {
+    if (!lodashHas(gameCommunityObj, ['gameCommunitiesObj', '_id'])) {
       
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'cHpRTr4cy', messageID: 'Error' }] });
@@ -191,6 +194,20 @@ export default async (req, res) => {
     
     returnObj.gameCommunityObj = gameCommunityObj.gameCommunitiesObj;
     
+
+
+
+    // --------------------------------------------------
+    //   DB find / Feed
+    // --------------------------------------------------
+    
+    returnObj.feedObj = await ModelFeeds.findFeed({
+      
+      localeObj,
+      arr: ['all'],
+      
+    });
+
     
     
     
@@ -378,6 +395,28 @@ export default async (req, res) => {
     returnObj.recruitmentCommentsObj = recruitmentObj.recruitmentCommentsObj;
     returnObj.recruitmentRepliesObj = recruitmentObj.recruitmentRepliesObj;
     
+
+
+
+    // ---------------------------------------------
+    //   スレッドのデータがない場合はエラー
+    // ---------------------------------------------
+    
+    const threadsDataObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj', 'dataObj'], {});
+    
+    // console.log(`
+    //   ----- threadsDataObj -----\n
+    //   ${util.inspect(threadsDataObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    if ((threadPage !== 1 || recruitmentID) && Object.keys(threadsDataObj).length === 0) {
+      
+      statusCode = 404;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'RbKO6Ym7L', messageID: 'Error' }] });
+      
+    }
+
     
     
     

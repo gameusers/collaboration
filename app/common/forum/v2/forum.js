@@ -405,15 +405,17 @@ const Component = (props) => {
           >
             
             <Link href={linkReturnTopHref} as={linkReturnTopAs}>
-              <Button
-                type="submit"
-                variant="outlined"
-                size="small"
-                disabled={buttonDisabled}
-              >
-                <IconDoubleArrow />
-                トップに戻る
-              </Button>
+              <a className="link">
+                <Button
+                  type="submit"
+                  variant="outlined"
+                  size="small"
+                  disabled={buttonDisabled}
+                >
+                  <IconDoubleArrow />
+                  トップに戻る
+                </Button>
+              </a>
             </Link>
             
           </Paper>

@@ -54,8 +54,12 @@ import Layout from 'app/common/layout/v2/layout.js';
 import ForumNavigation from 'app/common/forum/v2/navigation.js';
 import Forum from 'app/common/forum/v2/forum.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
+import FeedSidebar from 'app/common/feed/sidebar.js';
+import FeedHorizontal from 'app/common/feed/horizontal.js';
 
 import About from 'app/uc/v2/about.js';
+
+
 
 
 
@@ -105,6 +109,8 @@ const ContainerLayout = (props) => {
   }, [props.ISO8601]);
   
   
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -131,25 +137,38 @@ const ContainerLayout = (props) => {
   // `);
   
 
+
+
   // --------------------------------------------------
   //   Component - Sidebar
   // --------------------------------------------------
   
   let componentSidebar =
-    <img
-      src="/img/common/advertisement/300x250.jpg"
-      width="300"
-      height="250"
-    />
+    <React.Fragment>
+
+      <FeedSidebar
+        feedObj={props.feedObj}
+        top={true}
+      />
+
+    </React.Fragment>
   ;
 
   if (props.accessRightRead) {
 
     componentSidebar =
-      <ForumNavigation
-        userCommunityID={props.userCommunityID}
-        userCommunities_id={props.userCommunities_id}
-      />
+      <React.Fragment>
+
+        <ForumNavigation
+          userCommunityID={props.userCommunityID}
+          userCommunities_id={props.userCommunities_id}
+        />
+
+        <FeedSidebar
+          feedObj={props.feedObj}
+        />
+
+      </React.Fragment>
     ;
 
   }
@@ -178,6 +197,10 @@ const ContainerLayout = (props) => {
         headerObj={props.headerObj}
         userCommunityObj={props.userCommunityObj}
         accessRightRead={props.accessRightRead}
+      />
+
+      <FeedHorizontal
+        feedObj={props.feedObj}
       />
       
     </React.Fragment>
@@ -336,6 +359,7 @@ export async function getServerSideProps({ req, res, query }) {
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
+  const feedObj = lodashGet(dataObj, ['feedObj'], {});
   
   const userCommunities_id = lodashGet(dataObj, ['userCommunityObj', '_id'], '');
   const userCommunityName = lodashGet(dataObj, ['userCommunityObj', 'name'], '');
@@ -429,6 +453,8 @@ export async function getServerSideProps({ req, res, query }) {
   res.cookie('recentAccessPageAs', `/uc/${userCommunityID}`);
   
   
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -454,6 +480,8 @@ export async function getServerSideProps({ req, res, query }) {
   //   replyLimit: {green ${replyLimit}}
   // `);
   
+
+
   
   // --------------------------------------------------
   //   Return
@@ -473,6 +501,7 @@ export async function getServerSideProps({ req, res, query }) {
       headerNavMainArr,
       breadcrumbsArr,
       experienceObj,
+      feedObj,
       accessRightRead,
 
       userCommunityID,

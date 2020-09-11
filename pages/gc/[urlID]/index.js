@@ -55,6 +55,7 @@ import ForumNavigation from 'app/common/forum/v2/navigation.js';
 import Forum from 'app/common/forum/v2/forum.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 import FeedSidebar from 'app/common/feed/sidebar.js';
+import FeedHorizontal from 'app/common/feed/horizontal.js';
 
 
 
@@ -71,17 +72,6 @@ import FeedSidebar from 'app/common/feed/sidebar.js';
  * @param {Object} props - Props
  */
 const ContainerLayout = (props) => {
-  
-
-  // --------------------------------------------------
-  //   props
-  // --------------------------------------------------
-  
-  const {
-    
-    feedObj = {},
-    
-  } = props;
 
   
   // --------------------------------------------------
@@ -154,7 +144,7 @@ const ContainerLayout = (props) => {
       />
 
       <FeedSidebar
-        feedObj={feedObj}
+        feedObj={props.feedObj}
       />
 
     </React.Fragment>
@@ -176,6 +166,10 @@ const ContainerLayout = (props) => {
         urlID={props.urlID}
         gameCommunities_id={props.gameCommunities_id}
         enableAnonymity={true}
+      />
+
+      <FeedHorizontal
+        feedObj={props.feedObj}
       />
       
     </React.Fragment>
@@ -426,6 +420,8 @@ export async function getServerSideProps({ req, res, query }) {
   res.cookie('recentAccessPageAs', `/gc/${urlID}`);
   
   
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -466,6 +462,8 @@ export async function getServerSideProps({ req, res, query }) {
   //   reqAcceptLanguage: {green ${reqAcceptLanguage}}
   // `);
   
+  
+
   
   // --------------------------------------------------
   //   Return

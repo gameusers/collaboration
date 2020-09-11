@@ -25,6 +25,7 @@ import lodashHas from 'lodash/has';
 
 import ModelUserCommunities from 'app/@database/user-communities/model.js';
 import ModelForumThreads from 'app/@database/forum-threads/model.js';
+import ModelFeeds from 'app/@database/feeds/model.js';
 
 
 // ---------------------------------------------
@@ -33,7 +34,6 @@ import ModelForumThreads from 'app/@database/forum-threads/model.js';
 
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-import { updateAccessDate } from 'app/@modules/access-date.js';
 
 
 // ---------------------------------------------
@@ -57,6 +57,8 @@ import { locale } from 'app/@locales/locale.js';
 // ---------------------------------------------
 
 import { initialProps } from 'app/@api/v2/common.js';
+
+
 
 
 
@@ -158,7 +160,8 @@ export default async (req, res) => {
     //   - コミュニティのデータがない場合はエラー
     // ---------------------------------------------
     
-    if (Object.keys(userCommunityObj).length === 0) {
+    // if (Object.keys(userCommunityObj).length === 0) {
+    if (userCommunityObj.name === '') {
       
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'retRq6eFo', messageID: 'Error' }] });
@@ -207,6 +210,34 @@ export default async (req, res) => {
     if (communityType === 'open' || (communityType === 'closed' && followsFollow)) {
       returnObj.accessRightRead = true;
     }
+
+
+
+
+    // --------------------------------------------------
+    //   フォーラムの2ページ以降、または個別のフォーラムを表示する際に、コンテンツの表示権限がない場合はエラー
+    // --------------------------------------------------
+
+    if ((threadPage !== 1 || forumID) && !returnObj.accessRightRead) {
+
+      statusCode = 403;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'RNzXSgP2P', messageID: 'Error' }] });
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   DB find / Feed
+    // --------------------------------------------------
+    
+    returnObj.feedObj = await ModelFeeds.findFeed({
+      
+      localeObj,
+      arr: ['all'],
+      
+    });
     
     
     

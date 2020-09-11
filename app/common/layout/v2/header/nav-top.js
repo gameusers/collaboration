@@ -561,23 +561,25 @@ const Component = (props) => {
       
       {/* ロゴ */}
       <Link href="/">
-        <div
-          css={css`
-            width: 138px;
-            height: 43px;
-            background-image: url('/img/common/header/logo.png');
-            cursor: pointer;
-            margin: 0 0 0 6px;
-            
-            @media screen and (max-width: 480px) {
-              width: 30px;
-              min-width: 30px;
+        <a className="link">
+          <div
+            css={css`
+              width: 138px;
               height: 43px;
-              background-image: url('/img/common/header/logo-mobile.png');
-              margin: 0 0 0 10px;
-            }
-          `}
-        />
+              background-image: url('/img/common/header/logo.png');
+              cursor: pointer;
+              margin: 0 0 0 6px;
+              
+              @media screen and (max-width: 480px) {
+                width: 30px;
+                min-width: 30px;
+                height: 43px;
+                background-image: url('/img/common/header/logo-mobile.png');
+                margin: 0 0 0 10px;
+              }
+            `}
+          />
+        </a>
       </Link>
       
       
@@ -736,16 +738,7 @@ const Component = (props) => {
               href={`/ur/[userID]`}
               as={`/ur/${userID}`}
             >
-              <a
-                css={css`
-                  color: black;
-                  text-decoration: none;
-                  
-                  &:hover {
-                    text-decoration: none;
-                  }
-                `}
-              >
+              <a className="link">
                 <ListItemText
                   css={css`
                     && {
@@ -799,16 +792,7 @@ const Component = (props) => {
             <Link
               href="/logout"
             >
-              <a
-                css={css`
-                  color: black;
-                  text-decoration: none;
-                  
-                  &:hover {
-                    text-decoration: none;
-                  }
-                `}
-              >
+              <a className="link">
                 <ListItemText
                   css={css`
                     && {

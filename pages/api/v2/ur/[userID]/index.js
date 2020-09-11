@@ -25,6 +25,7 @@ import lodashHas from 'lodash/has';
 
 import ModelUsers from 'app/@database/users/model.js';
 import ModelCardPlayers from 'app/@database/card-players/model.js';
+import ModelFeeds from 'app/@database/feeds/model.js';
 
 
 // ---------------------------------------------
@@ -47,6 +48,8 @@ import { locale } from 'app/@locales/locale.js';
 // ---------------------------------------------
 
 import { initialProps } from 'app/@api/v2/common.js';
+
+
 
 
 
@@ -181,6 +184,20 @@ export default async (req, res) => {
     
     returnObj.cardPlayersObj = resultCardPlayersObj.cardPlayersObj;
     returnObj.cardPlayers_idsArr = resultCardPlayersObj.cardPlayers_idsArr;
+
+
+
+
+    // --------------------------------------------------
+    //   DB find / Feed
+    // --------------------------------------------------
+    
+    returnObj.feedObj = await ModelFeeds.findFeed({
+      
+      localeObj,
+      arr: ['all'],
+      
+    });
     
     
     

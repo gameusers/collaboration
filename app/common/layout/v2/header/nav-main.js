@@ -157,18 +157,20 @@ const Component = (props) => {
             as={valueObj.as}
             key={index}
           >
-            <Button
-              css={css`
-                && {
-                  height: 36px;
-                  color: #BDBDBD;
-                  border-bottom: solid 2px #25283D;
-                  margin: 0 10px 0 0;
-                }
-              `}
-            >
-              {valueObj.name}
-            </Button>
+            <a className="link">
+              <Button
+                css={css`
+                  && {
+                    height: 36px;
+                    color: #BDBDBD;
+                    border-bottom: solid 2px #25283D;
+                    margin: 0 10px 0 0;
+                  }
+                `}
+              >
+                {valueObj.name}
+              </Button>
+            </a>
           </Link>
         );
         

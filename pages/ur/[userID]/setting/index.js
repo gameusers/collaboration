@@ -43,11 +43,15 @@ import { createCsrfToken } from 'app/@modules/csrf.js';
 
 import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
+import FeedSidebar from 'app/common/feed/sidebar.js';
+import FeedHorizontal from 'app/common/feed/horizontal.js';
 
 import FormPage from 'app/ur/v2/setting/form-page.js';
 import FormAccount from 'app/ur/v2/setting/form-account.js';
 import FormEmail from 'app/ur/v2/setting/form-email.js';
 import FormWebPush from 'app/ur/v2/setting/form-web-push.js';
+
+
 
 
 
@@ -69,11 +73,14 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
   
   const componentSidebar =
-    <img
-      src="/img/common/advertisement/300x250.jpg"
-      width="300"
-      height="250"
-    />
+    <React.Fragment>
+
+      <FeedSidebar
+        feedObj={props.feedObj}
+        top={true}
+      />
+
+    </React.Fragment>
   ;
   
   
@@ -106,6 +113,10 @@ const ContainerLayout = (props) => {
       
       <FormWebPush
         webPushAvailable={props.webPushAvailable}
+      />
+
+      <FeedHorizontal
+        feedObj={props.feedObj}
       />
       
     </React.Fragment>
@@ -238,6 +249,7 @@ export async function getServerSideProps({ req, res, query }) {
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
+  const feedObj = lodashGet(dataObj, ['feedObj'], {});
   
   const pagesImagesAndVideosObj = lodashGet(dataObj, ['pagesImagesAndVideosObj'], {});
   const pagesObj = lodashGet(dataObj, ['pagesObj'], {});
@@ -314,6 +326,8 @@ export async function getServerSideProps({ req, res, query }) {
     
   ];
   
+
+
   
   // --------------------------------------------------
   //   console.log
@@ -330,6 +344,8 @@ export async function getServerSideProps({ req, res, query }) {
   //   --------------------\n
   // `);
   
+
+
   
   // --------------------------------------------------
   //   Return
@@ -349,6 +365,7 @@ export async function getServerSideProps({ req, res, query }) {
       headerNavMainArr,
       breadcrumbsArr,
       experienceObj,
+      feedObj,
       
       accessLevel,
       userID,

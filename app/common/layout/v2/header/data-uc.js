@@ -189,41 +189,45 @@ const Component = (props) => {
         key={index}
       >
         
-        <Tooltip
-          classes={classes}
-          title={valueObj.name}
-          arrow
-        >
+        <a className="link">
 
-          {/* よくわからないが Tooltip の内部は div で囲まないとエラーが出る */}
-          <div>
+          <Tooltip
+            classes={classes}
+            title={valueObj.name}
+            arrow
+          >
 
-            <IconButton
-              css={css`
-                && {
-                  margin: 0;
-                  padding: 0;
-                }
-              `}
-            >
-              <Avatar
+            {/* よくわからないが Tooltip の内部は div で囲まないとエラーが出る */}
+            <div>
+
+              <IconButton
                 css={css`
                   && {
-                    width: 24px;
-                    height: 24px;
-                    margin: 0 4px;
-                    cursor: pointer;
+                    margin: 0;
+                    padding: 0;
                   }
                 `}
-                alt={valueObj.name}
-                src={src}
-                srcSet={srcSet}
-              />
-            </IconButton>
+              >
+                <Avatar
+                  css={css`
+                    && {
+                      width: 24px;
+                      height: 24px;
+                      margin: 0 4px;
+                      cursor: pointer;
+                    }
+                  `}
+                  alt={valueObj.name}
+                  src={src}
+                  srcSet={srcSet}
+                />
+              </IconButton>
 
-          </div>
+            </div>
 
-        </Tooltip>
+          </Tooltip>
+
+        </a>
         
       </Link>
         

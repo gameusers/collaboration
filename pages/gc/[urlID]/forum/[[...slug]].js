@@ -55,6 +55,10 @@ import Layout from 'app/common/layout/v2/layout.js';
 import ForumNavigation from 'app/common/forum/v2/navigation.js';
 import Forum from 'app/common/forum/v2/forum.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
+import FeedSidebar from 'app/common/feed/sidebar.js';
+import FeedHorizontal from 'app/common/feed/horizontal.js';
+
+
 
 
 
@@ -69,7 +73,7 @@ import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
  * @param {Object} props - Props
  */
 const ContainerLayout = (props) => {
-  
+
   
   // --------------------------------------------------
   //   States
@@ -121,16 +125,26 @@ const ContainerLayout = (props) => {
   }, [props.ISO8601]);
   
   
+
+
   // --------------------------------------------------
   //   Component - Sidebar
   // --------------------------------------------------
   
   const componentSidebar =
-    <ForumNavigation
-      urlID={props.urlID}
-      forumID={props.forumID}
-      gameCommunities_id={props.gameCommunities_id}
-    />
+    <React.Fragment>
+
+      <ForumNavigation
+        urlID={props.urlID}
+        forumID={props.forumID}
+        gameCommunities_id={props.gameCommunities_id}
+      />
+
+      <FeedSidebar
+        feedObj={props.feedObj}
+      />
+
+    </React.Fragment>
   ;
   
   
@@ -150,6 +164,10 @@ const ContainerLayout = (props) => {
         gameCommunities_id={props.gameCommunities_id}
         enableAnonymity={true}
         individual={props.individual}
+      />
+
+      <FeedHorizontal
+        feedObj={props.feedObj}
       />
       
     </React.Fragment>
@@ -339,6 +357,7 @@ export async function getServerSideProps({ req, res, query }) {
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
+  const feedObj = lodashGet(dataObj, ['feedObj'], {});
   
   const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
   const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
@@ -574,6 +593,7 @@ export async function getServerSideProps({ req, res, query }) {
       headerNavMainArr,
       breadcrumbsArr,
       experienceObj,
+      feedObj,
       
       urlID,
       gameCommunities_id,

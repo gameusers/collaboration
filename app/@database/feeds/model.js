@@ -2118,7 +2118,7 @@ const findForumUc = async ({
       {
         $unwind: {
           path: '$userCommunitiesObj',
-          preserveNullAndEmptyArrays: true,
+          // preserveNullAndEmptyArrays: true,
         }
       },
       
@@ -2357,7 +2357,7 @@ const findForumUc = async ({
       {
         $unwind: {
           path: '$userCommunitiesObj',
-          preserveNullAndEmptyArrays: true,
+          // preserveNullAndEmptyArrays: true,
         }
       },
 

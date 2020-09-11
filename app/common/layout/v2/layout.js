@@ -102,6 +102,13 @@ const Component = (props) => {
   } = props;
   
   
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+  
+  const stateLayout = ContainerStateLayout.useContainer();
+  
+  const { navigationForLightbox } = stateLayout;
   
   
   // --------------------------------------------------
@@ -205,17 +212,6 @@ const Component = (props) => {
     
     
   }, []);
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-  
-  const stateLayout = ContainerStateLayout.useContainer();
-  
-  const { navigationForLightbox } = stateLayout;
   
   
   
@@ -364,11 +360,9 @@ const Component = (props) => {
             >
               {componentSidebar}
             </Sidebar>
-            
+
           </div>
         }
-        
-        
         
         
         {/* Content */}

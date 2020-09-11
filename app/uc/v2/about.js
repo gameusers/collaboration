@@ -257,7 +257,7 @@ const Component = (props) => {
   return (
     <div
       css={css`
-        ${accessRightRead ? 'margin: 28px 0 0 0' : 'margin: 0'};
+        ${accessRightRead ? 'margin: 24px 0 0 0' : 'margin: 0'};
       `}
     >
 

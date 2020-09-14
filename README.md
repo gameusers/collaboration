@@ -3,47 +3,135 @@
 
 
 [![node](https://img.shields.io/badge/node-v12.18.3-lightgrey.svg)](https://nodejs.org/ja/)
-[![npm](https://img.shields.io/badge/npm-v6.14.7-blue.svg)](https://www.npmjs.com/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-v4.2.9-green.svg)](https://www.mongodb.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-v4.4.0-green.svg)](https://www.mongodb.com/)
+[![Docker](https://img.shields.io/badge/Docker-v19.03.12-blue.svg)](https://www.npmjs.com/)
+[![Docker Compose](https://img.shields.io/badge/Docker%20Compose-v1.26.2-blue.svg)](https://www.npmjs.com/)
 [![David](https://img.shields.io/david/expressjs/express.svg)]()
 [![license](https://img.shields.io/badge/license-Game%20Users%20Project-blue.svg)](https://github.com/gameusers/web/blob/master/LICENSE.txt)
 
 Game Users を Node.js に書き換えたい！
 
-Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、みんなで開発できる環境を作ってみました。
-<br><br>
+[開発中のウェブサイト（サンプル）](https://dev-1.gameusers.org/)
+<br /><br /><br />
 
-[開発中のウェブサイト（リアルタイムでコードが反映されます）](https://dev-1.gameusers.org/)
-<br><br>
-
-**ゲストアカウント**
-
-- アカウントID：956477059000
-- ユーザー名（どちらか）：guest-1, guest-2
-- パスワード：Password12345
-<br><br>
-
-ゲストアカウントでログインすると以下のページが見れるようになります。管理者がいないときは、ゲストアカウントは Read Only になっています。
-<br><br>
-
-- [Cloud9 IDE](https://us-west-2.console.aws.amazon.com/cloud9/ide/7e3fb917694e4ae5b1570f0b0e887090)
-- [Mongo Express（Basic認証が表示されますが空欄で入れます）](https://7e3fb917694e4ae5b1570f0b0e887090.vfs.cloud9.us-west-2.amazonaws.com:8081/)
-<br><br>
-
-※ ログアウトするときはブラウザを閉じるだけでOKです。ゴミ箱マークは押さないようにしてください。
-<br><br>
+# 開発環境の作り方
+2つの方法を用意しています。1番の Docker を利用する方法が簡単でおすすめです。2番は、お使いの環境で Docker を利用できない場合、またはすでに Node.js と MongoDBのレプリカセットが利用できる環境である場合などに利用してください。
+1. Docker を利用する方法
+2. 個別にインストールする方法
+<br /><br /><br />
 
 
-**マスターアカウント**
-
-プログラマーやデザイナーの方、または HTML ＆ CSS が理解できる方にはマスターアカウントのログイン情報を、IDE のチャット欄で提供しています。マスターアカウントを利用したい方はいつでも言ってください。
-
-マスターアカウント（master-1～5）でログインできる方は、以下の Cloud9 環境も利用できます。
-<br><br>
+# Docker を利用する方法
+Docker と Docker Compose がインストールされていて、簡単な使い方を理解している前提で話を進めていきます。それぞれのバージョンは上記に記述されていますが、指定のバージョンより新しいもの（最新版）を入れてもらえれば問題なく動作すると思います。
+<br /><br />
 
 
 ## 1. インストール
-まずこちらのリポジトリから任意の場所にファイルを Clone（ダウンロード） してください。
+まずインストールする場所を決めて、そちらに cd コマンドで移動してください。そして gameusers ディレクトリを作成し、その中に移動してください。
+
+
+    mkdir gameusers
+    cd gameusers
+<br />
+
+次にこちらのリポジトリからディレクトリ gameusers 内にファイルを Clone（ダウンロード後配置でも可） してください。collaboration というディレクトリが新たに作成され、その中にリポジトリのデータが配置されます。
+
+    git clone git@github.com:gameusers/collaboration.git
+<br />
+
+ディレクトリ collaboration 内に移動。
+
+    cd collaboration
+<br />
+
+Docker を利用します。起動していない場合は、以下のコマンドなどで起動してください。
+
+    sudo service docker start
+<br />
+
+ディレクトリのルートに [docker.sh](https://github.com/gameusers/collaboration/blob/master/docker.sh) というファイルが用意されます。これは起動の処理をまとめたシェルスクリプトです。コンテナの起動、npm パッケージのインストール、MongoDB のレプリカセットの設定、MongoDB のユーザー追加、サーバーの起動までを行います。以下は例です。配置した場所に合わせてパスを変更して実行してください。
+
+    bash /home/（ユーザー名）/gameusers/collaboration/docker.sh
+シェルスクリプトが問題なく実行されればサーバーが起動します。
+<br /><br />
+
+
+
+## 2. データベースに初期データを挿入する
+データベースの中身は容量の関係上、GitHub 上には掲載されておらず、空のディレクトリと設定ファイルのみになっていますが、以下のページにアクセスすることで簡単に初期データが挿入できるようになっています。<br />
+
+
+    http://localhost:8080/initialize
+    
+
+「データベース - データ挿入」と書かれたボタンがありますので、押してください。gameusers というデータベースに初期コレクションが挿入されます。<br />
+
+上記ページには、開発している主要なページのリンクも貼られています。
+<br /><br />
+
+
+## 3. mongo-express
+データベースの中身を視覚的に把握できる GUI ツールも入っています。下記アドレスにアクセスすると利用できます。
+
+
+    http://localhost:8081/
+    
+
+データベースの構成などを確認する場合に利用すると便利です。<br />
+
+詳しくは [mongo-express](https://github.com/mongo-express/mongo-express) を確認してください。
+<br /><br />
+
+
+## 4. サーバーがエラーで停止した場合
+開発を進めているとエラーでサーバーが停止することがあります（設定が悪いせいかもしれません）その場合は Cntl + C で一度停止して、以下のコマンドを入力してください。コンテナに入って npm run dev を実行するコマンドです。
+
+    docker exec -it gameusers-node npm run dev
+<br />
+
+
+## 5. その他のコマンド
+よく使う Docker のコマンドを掲載しておきます。コピペして利用してください。
+
+    # Node.js のコンテナで bash を実行する際に入力
+    docker exec -it gameusers-node /bin/bash
+
+    # Nginx のコンテナで bash を実行する際に入力
+    docker exec -it gameusers-nginx /bin/bash
+
+    # MongoDB のコンテナで bash を実行する際に入力
+    docker exec -it gameusers-mongo1 /bin/bash
+    docker exec -it gameusers-mongo2 /bin/bash
+    docker exec -it gameusers-mongo3 /bin/bash
+
+
+    # コンテナ起動
+    docker-compose up -d
+
+    # コンテナ停止
+    docker-compose down
+
+    # コンテナ確認
+    docker-compose ps
+
+    # イメージ作成
+    docker-compose build
+
+    # イメージを作成してコンテナを起動
+    docker-compose up -d --build
+
+
+<br /><br />
+
+---
+
+<br /><br />
+
+
+# 個別にインストールする方法
+
+## 1. インストール
+Node.js が利用できない場合はインストールを行い、利用できる状態にしてください。そしてこちらのリポジトリから任意の場所にファイルを Clone（ダウンロード） してください。
 そしてターミナルを開き、cd コマンドでファイルが置かれている場所に移動してから、npm を利用してパッケージをインストールしてください。
 
 
@@ -52,15 +140,7 @@ Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、み�
 
 
 ## 2. 環境変数の設定
-パッケージのインストールが終わったら、.env（環境変数を設定する） ファイルを開いて、NEXT_PUBLIC_URL_BASE と NEXT_PUBLIC_URL_API と書かれている部分を、開発環境でアクセスする URL に書き換えて保存してください。
-
-
-    # URL
-    NEXT_PUBLIC_URL_BASE=https://dev-1.gameusers.org/
-    NEXT_PUBLIC_URL_API=https://dev-1.gameusers.org/api
-
-デフォルトでは上記の値に設定されていますが、例えば localhost でアクセスする場合は、以下のように変更してください（ポート番号は 8080 です）
-
+パッケージのインストールが終わったら、.env（環境変数を設定する） ファイルを開いて、NEXT_PUBLIC_URL_BASE と NEXT_PUBLIC_URL_API と書かれている部分を、開発環境でアクセスする URL に書き換えて保存してください。トップページのアドレスになります。デフォルトでは以下の値に設定されています（ポート番号は 8080）。特に問題がなければこのままの設定で利用してください。
 
     # URL
     NEXT_PUBLIC_URL_BASE=http://localhost:8080/
@@ -69,7 +149,7 @@ Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、み�
 
 
 ## 3. データベース
-次にデータベースの設定を行います。こちらの開発では MongoDB Ver.4  を利用しています。開発環境にインストールされていない場合、まずインストールを行ってください。MongoDB のトランザクション機能を利用するため、レプリカセット（複数のデータベースを立ち上げて繋げることで安定性を確保する機能）を構築しています。<br /><br />
+次にデータベースの設定を行います。こちらの開発では MongoDB Ver.4  を利用しています。開発環境にインストールされていない場合、インストールを行ってください。MongoDB のトランザクション機能を利用するため、レプリカセット（複数のデータベースを立ち上げて繋げることで安定性を確保する機能）を構築しています。<br /><br />
 **参考サイト**<br />
 - [MongoDB で 3台構成 の レプリカセット を 構築する 方法](https://garafu.blogspot.com/2018/02/mongodb-3instance-replicaset.html)
 - [Deploy a Replica Set for Testing and Development](https://docs.mongodb.com/manual/tutorial/deploy-replica-set-for-testing/)<br /><br />
@@ -83,14 +163,14 @@ Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、み�
 1: ターミナルを3つ開き、各行のコマンドで MongoDB を3つ起動します。これは db/server 内に設置してあるコンフィグファイルを読み込んで、データベースを起動する方法です。
 
 
-    ターミナル 1
-    mongod --config "db/server1/mongod.server1.cfg"
+    # ターミナル 1
+    mongod --config "db/server1/mongod.conf"
     
-    ターミナル 2
-    mongod --config "db/server2/mongod.server2.cfg"
+    # ターミナル 2
+    mongod --config "db/server2/mongod.conf"
     
-    ターミナル 3
-    mongod --config "db/server3/mongod.server3.cfg"
+    # ターミナル 3
+    mongod --config "db/server3/mongod.conf"
 
 
 2: 4つ目のターミナルを開き、Server1 にログインします。
@@ -132,7 +212,7 @@ Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、み�
 データベースの中身は容量の関係上、GitHub 上には掲載されておらず、空のディレクトリと設定ファイルのみになっていますが、以下のページにアクセスすることで簡単に初期データが挿入できるようになっています。<br />
 
 
-    http://（.env で設定したトップページのアドレス）/initialize
+    http://localhost:8080/initialize
     
 
 「データベース - データ挿入」と書かれたボタンがありますので、押してください。gameusers というデータベースに初期コレクションが挿入されます。<br />
@@ -147,25 +227,36 @@ Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、み�
     npm run mongo-express:start
 
 
-次に下記アドレスにアクセスすると、Basic 認証が起動します。トップページのアドレスでポート番号だけを8081に変更してください。
+次に下記アドレスにアクセスすると、Basic 認証が起動します。.env を編集した方はトップページのアドレスでポート番号だけを8081に変更してください。
 
 
-    http://（.env で設定したトップページのアドレス）:8081/
+    http://localhost:8081/
     
 
 「ユーザー名：admin」「パスワード：pass」でログインしてください。データベースの構成などを確認する場合に利用すると便利です。<br />
 
 詳しくは [mongo-express](https://github.com/mongo-express/mongo-express) を確認してください。
+
+
+<br /><br /><br />
+
+---
+
 <br /><br />
 
 
-## 7. ログイン情報
-データベースにデータを挿入すると、ログインできるユーザーが追加されます。ログインが必要なページにアクセスしたい場合は、以下の情報をログインページで入力してください。<br /><br />
+# その他
 
-1. ログインID：8OM0dhDak　パスワード：8OM0dhDak0
-2. ログインID：enPLLYBBEg3y　パスワード：enPLLYBBEg3y0
-3. ログインID：nzPR7R9GO　パスワード：nzPR7R9GO0
-<br /><br />
+## 本番環境のモードで実行する
+開発環境で利用する npm run dev でサーバーを起動すると動作がもっさりになりますが、本番環境のモードでサーバーを起動すると本来のスピードを試すことができます。以下のコマンドを順番に入力してください。
+
+
+    # Docker の場合は、まず以下の1行で Node.js のコンテナ内に入ってから、下の2行を実行してください。
+    docker exec -it gameusers-node /bin/bash
+
+    npm run build
+    npm start
+<br />
 
 
 ## ライセンス

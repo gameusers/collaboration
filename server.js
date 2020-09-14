@@ -15,7 +15,7 @@ const util = require('util');
 // ---------------------------------------------
 
 const express = require('express');
-const helmet = require('helmet');
+// const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
@@ -30,7 +30,7 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-const mobxReact = require('mobx-react');
+// const mobxReact = require('mobx-react');
 const mongoose = require('mongoose');
 
 const cron = require('node-cron');
@@ -52,6 +52,8 @@ const ModelWebPushes = require('./app/@database/web-pushes/model.js');
 // ---------------------------------------------
 
 const routerApi = require('./app/@api/v1/');
+
+
 
 
 
@@ -124,7 +126,7 @@ const routerApi = require('./app/@api/v1/');
 //   https://github.com/mobxjs/mobx-react#server-side-rendering-with-usestaticrendering
 // --------------------------------------------------
 
-mobxReact.useStaticRendering(true);
+// mobxReact.useStaticRendering(true);
 
 
 
@@ -152,7 +154,7 @@ app.prepare().then(() => {
   //   Middleware Settings
   // --------------------------------------------------
   
-  server.use(helmet());
+  // server.use(helmet());
   
   // server.use(bodyParser.json({
   //   limit: '50mb'

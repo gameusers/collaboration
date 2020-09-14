@@ -10,7 +10,8 @@ docker-compose exec mongo1 mongo --host localhost /src/docker/mongo/init-replica
 echo "Wait 20 seconds!"
 sleep 20s
 
-# ユーザーを追加する
+# ユーザーを追加する　この部分でまれにエラーが出るので、その場合は何度かこのシェルスクリプトを実行してください
+# もしそれでもダメな場合は以下の1行をコメントアウトしてください
 docker-compose exec mongo1 mongo --host localhost /src/docker/mongo/init-user.js
 
 # Node.js スタート

@@ -48,38 +48,38 @@ const { formatImagesAndVideosObj } = require('../images-and-videos/format');
  * @return {Object} 取得データ
  */
 const findOne = async ({ conditionObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   FindOne
     // --------------------------------------------------
-    
+
     return await SchemaGames.findOne(conditionObj).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -91,37 +91,37 @@ const findOne = async ({ conditionObj }) => {
  * @return {Array} 取得データ
  */
 const find = async ({ conditionObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Find
     // --------------------------------------------------
-    
+
     return await SchemaGames.find(conditionObj).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -133,37 +133,37 @@ const find = async ({ conditionObj }) => {
  * @return {number} カウント数
  */
 const count = async ({ conditionObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Find
     // --------------------------------------------------
-    
+
     return await SchemaGames.countDocuments(conditionObj).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -176,41 +176,41 @@ const count = async ({ conditionObj }) => {
  * @return {Array}
  */
 const upsert = async ({ conditionObj, saveObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
+
     if (!saveObj || !Object.keys(saveObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Upsert
     // --------------------------------------------------
-    
+
     return await SchemaGames.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -222,37 +222,37 @@ const upsert = async ({ conditionObj, saveObj }) => {
  * @return {Array}
  */
 const insertMany = async ({ saveArr }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!saveArr || !saveArr.length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   insertMany
     // --------------------------------------------------
-    
+
     return await SchemaGames.insertMany(saveArr);
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -262,40 +262,40 @@ const insertMany = async ({ saveArr }) => {
  * 削除する
  * @param {Object} conditionObj - 検索条件
  * @param {boolean} reset - trueでデータをすべて削除する
- * @return {Array} 
+ * @return {Array}
  */
 const deleteMany = async ({ conditionObj, reset = false }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!reset && (!conditionObj || !Object.keys(conditionObj).length)) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Delete
     // --------------------------------------------------
-    
+
     return await SchemaGames.deleteMany(conditionObj);
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -309,34 +309,34 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * @return {Array} 取得データ
  */
 const findForHeroImage = async ({ localeObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Find
     // --------------------------------------------------
-    
+
     let resultArr = await SchemaGames.aggregate([
-      
-      
+
+
       // 画像＆動画が登録されているゲームを取得する
       {
         $match : { 'imagesAndVideos_id': { $exists: true, $ne: '' } }
       },
-      
-      
+
+
       // ランダムに1件データを取得する
       {
         $sample: { size: 1 }
       },
-      
-      
+
+
       // 画像と動画を取得
       {
         $lookup:
@@ -362,15 +362,15 @@ const findForHeroImage = async ({ localeObj }) => {
             as: 'imagesAndVideosObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // ハードウェア
       {
         $lookup:
@@ -400,8 +400,8 @@ const findForHeroImage = async ({ localeObj }) => {
             as: 'hardwaresArr'
           }
       },
-      
-      
+
+
       // ジャンル
       {
         $lookup:
@@ -431,8 +431,8 @@ const findForHeroImage = async ({ localeObj }) => {
             as: 'gameGenresArr'
           }
       },
-      
-      
+
+
       // 開発＆パブリッシャー
       {
         $lookup:
@@ -476,8 +476,8 @@ const findForHeroImage = async ({ localeObj }) => {
             as: 'developersPublishersArr'
           }
       },
-      
-      
+
+
       {
         $project: {
           // __v: 0,
@@ -494,23 +494,23 @@ const findForHeroImage = async ({ localeObj }) => {
           developersPublishersArr: 1,
         }
       },
-      
-      
+
+
     ]).exec();
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   ヒーローイメージがランダムに表示されるように並び替える
     // --------------------------------------------------
-    
+
     let returnObj = lodashGet(resultArr, [0], {});
-    
+
     if (Object.keys(returnObj).length !== 0) {
-      
+
       const arr = lodashGet(returnObj, ['imagesAndVideosObj', 'arr'], []);
-      
+
       // 並び替え
       for (let i = arr.length - 1; i > 0; i--){
         const r = Math.floor(Math.random() * (i + 1));
@@ -518,72 +518,72 @@ const findForHeroImage = async ({ localeObj }) => {
         arr[i] = arr[r];
         arr[r] = tmp;
       }
-      
+
       lodashSet(returnObj, ['imagesAndVideosObj', 'arr'], arr);
-      
+
     }
-    
-    
+
+
     // --------------------------------------------------
     //   画像をフォーマットする
     // --------------------------------------------------
-    
+
     const formattedObj = formatImagesAndVideosObj({ localeObj, obj: returnObj.imagesAndVideosObj });
-    
-    if (formattedObj) {
-      
+
+    if (Object.keys(formattedObj).length !== 0) {
+
       returnObj.imagesAndVideosObj = formattedObj;
-      
+
     } else {
-      
+
       delete returnObj.imagesAndVideosObj;
-      
+
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Type
     // --------------------------------------------------
-    
+
     returnObj.type = 'gc';
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----- resultArr -----\n
     //   ${util.inspect(resultArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return returnObj;
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -597,38 +597,38 @@ const findForHeroImage = async ({ localeObj }) => {
  * @return {Array} 取得データ
  */
 const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Property
     // --------------------------------------------------
-    
+
     const pattern = new RegExp(`.*${keyword}.*`);
     const language = lodashGet(localeObj, ['language'], '');
     const country = lodashGet(localeObj, ['country'], '');
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Aggregation
     // --------------------------------------------------
-    
+
     const resultArr = await SchemaGames.aggregate([
-      
-      
+
+
       {
         $match : { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } }
       },
-      
-      
+
+
       // 画像と動画を取得
       {
         $lookup:
@@ -653,15 +653,15 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
             as: 'imagesAndVideosThumbnailObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosThumbnailObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       { $project:
         {
           gameCommunities_id: 1,
@@ -669,89 +669,89 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
           imagesAndVideosThumbnailObj: 1,
         }
       },
-      
-      
+
+
     ]).exec();
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Loop
     // --------------------------------------------------
-    
+
     // const returnArr = [];
-    
+
     // for (let valueObj of resultArr.values()) {
-      
+
     //   // console.log(`\n---------- valueObj ----------\n`);
     //   // console.dir(valueObj);
     //   // console.log(`\n-----------------------------------\n`);
-      
-      
+
+
     //   // --------------------------------------------------
     //   //   Deep Copy
     //   // --------------------------------------------------
-      
+
     //   const clonedObj = lodashCloneDeep(valueObj);
-      
-      
+
+
     //   // --------------------------------------------------
     //   //   画像と動画の処理
     //   // --------------------------------------------------
-      
+
     //   const formattedObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.imagesAndVideosObj });
-      
+
     //   if (formattedObj) {
-        
+
     //     clonedObj.imagesAndVideosObj = formattedObj;
-        
+
     //   } else {
-        
+
     //     delete clonedObj.imagesAndVideosObj;
-        
+
     //   }
-      
+
     //   // console.log(`\n---------- clonedObj ----------\n`);
     //   // console.dir(clonedObj);
     //   // console.log(`\n-----------------------------------\n`);
-      
+
     //   // --------------------------------------------------
     //   //   Push
     //   // --------------------------------------------------
-      
+
     //   returnArr.push(clonedObj);
-      
-      
+
+
     // }
-    
-    
+
+
     // console.log(`
     //   ----- resultArr -----\n
     //   ${util.inspect(resultArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- returnArr -----\n
     //   ${util.inspect(returnArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return resultArr;
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -762,15 +762,15 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
 // --------------------------------------------------
 
 module.exports = {
-  
+
   findOne,
   find,
   count,
   upsert,
   insertMany,
   deleteMany,
-  
+
   findForHeroImage,
   findBySearchKeywordsArrForSuggestion,
-  
+
 };

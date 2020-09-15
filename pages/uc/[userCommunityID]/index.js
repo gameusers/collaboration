@@ -54,8 +54,8 @@ import Layout from 'app/common/layout/v2/layout.js';
 import ForumNavigation from 'app/common/forum/v2/navigation.js';
 import Forum from 'app/common/forum/v2/forum.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
-import FeedSidebar from 'app/common/feed/sidebar.js';
-import FeedHorizontal from 'app/common/feed/horizontal.js';
+import FeedSidebar from 'app/common/feed/v2/sidebar.js';
+import FeedHorizontal from 'app/common/feed/v2/horizontal.js';
 
 import About from 'app/uc/v2/about.js';
 

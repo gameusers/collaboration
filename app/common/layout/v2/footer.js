@@ -63,7 +63,7 @@ const cssMenu = css`
 
 const cssMenuVerticalBar = css`
   margin: 0 10px;
-  
+
   @media screen and (max-width: 480px) {
     margin: 0 5px;
   }
@@ -82,56 +82,60 @@ const cssMenuVerticalBar = css`
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/layout/v2/components/sidebar.js
   // `);
-  
+
   // console.log(chalk`
   //   login: {green ${login}}
   // `);
-  
+
   // console.log(`
   //   ----- linkArr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(linkArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <footer
       css={css`
-        position: relative;
+        width: 100%;
         color: white;
         background-color: black;
+
+        position: absolute;
+        bottom: 0;
+
         padding: 6px 0 6px;
       `}
     >
-      
-      
+
+
       {/* Top */}
       <div
         css={css`
           display: flex;
-          flex-direction: row;
+          flex-flow: row nowrap;
           font-size: 14px;
           color: white;
         `}
       >
-        
-        
+
+
         {/* Logo Flower */}
         <Button
           css={css`
@@ -141,7 +145,7 @@ const Component = (props) => {
               min-width: 30px;
               min-height: 34px;
               padding: 0 20px 0 8px;
-              
+
               @media screen and (max-width: 480px) {
                 font-size: 18px;
                 height: 30px;
@@ -156,27 +160,27 @@ const Component = (props) => {
             css={css`
               font-size: 26px;
               margin: 0 0 3px;
-              
+
               @media screen and (max-width: 480px) {
                 margin: 0 0 2px 0;
               }
             `}
-          /> 
+          />
           GU
         </Button>
-        
-        
-        
-        
+
+
+
+
         {/* Navigation */}
         <nav
           css={css`
             display: flex;
             flex-flow: row wrap;
             flex-grow: 2;
-            margin: 0 58px 0 0;
+            // margin: 0 0 0 0;
             color: white;
-            
+
             @media screen and (max-width: 480px) {
               font-size: 12px;
             }
@@ -188,14 +192,15 @@ const Component = (props) => {
           <div css={cssMenuVerticalBar}>|</div>
           <div css={cssMenu}>Twitter</div>
         </nav>
-        
-        
+
+
         {/* Scroll To Top Icon */}
         <div
           css={css`
-            position: absolute;
-            top: 10px;
-            right: 10px;
+            // position: absolute;
+            // top: 10px;
+            // right: 10px;
+            margin: 0 10px 0 0;
           `}
         >
           <Fab
@@ -206,12 +211,12 @@ const Component = (props) => {
             <IconNavigation />
           </Fab>
         </div>
-        
+
       </div>
-      
-      
-      
-      
+
+
+
+
       {/* Bottom */}
       <div
         css={css`
@@ -220,7 +225,7 @@ const Component = (props) => {
           justify-content: center;
         `}
       >
-        
+
         <IconCopyright
           css={css`
             && {
@@ -228,7 +233,7 @@ const Component = (props) => {
             }
           `}
         />
-        
+
         <div
           css={css`
             font-size: 12px;
@@ -237,14 +242,14 @@ const Component = (props) => {
         >
           Game Users All Rights Reserved.
         </div>
-        
+
       </div>
-      
-      
+
+
     </footer>
   );
-  
-  
+
+
 };
 
 

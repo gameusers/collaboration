@@ -254,7 +254,14 @@ const Component = (props) => {
   //   ${util.inspect(JSON.parse(JSON.stringify(loginUsersObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
+  // <div
+    //   css={css`
+    //     display: flex;
+    //     flex-flow: column wrap;
+    //     min-height: 100vh;
+    //   `}
+    // >
   
   
   
@@ -273,7 +280,7 @@ const Component = (props) => {
       </Head>
       
       
-      
+
       
       {/* Header - Navigation Top */}
       {navigationForLightbox && 
@@ -369,6 +376,7 @@ const Component = (props) => {
         <div
           css={css`
             width: 100%;
+            // max-width: 100vw;
             ${componentSidebar && 'max-width: 800px;'}
             
             @media screen and (max-width: 947px) {
@@ -414,7 +422,7 @@ const Component = (props) => {
       {/* Loading */}
       <Loading />
       
-      
+
     </React.Fragment>
   );
   

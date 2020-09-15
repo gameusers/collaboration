@@ -42,7 +42,6 @@ import { ContainerStateCommunity } from 'app/@states/community.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
-import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
@@ -51,8 +50,7 @@ import { getCookie } from 'app/@modules/cookie.js';
 
 import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
-import FeedSidebar from 'app/common/feed/sidebar.js';
-import FeedHorizontal from 'app/common/feed/horizontal.js';
+import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 
 import FormCommunity from 'app/uc/v2/form-community.js';
 
@@ -132,10 +130,6 @@ const ContainerLayout = (props) => {
       <FormCommunity
         headerObj={props.headerObj}
         userCommunityObj={props.userCommunityObj}
-      /> 
-
-      <FeedHorizontal
-        feedObj={props.feedObj}
       />
       
     </React.Fragment>
@@ -282,7 +276,7 @@ export async function getServerSideProps({ req, res, query }) {
   
   const login = lodashGet(dataObj, ['login'], false);
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
-  const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
+  // const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
   const feedObj = lodashGet(dataObj, ['feedObj'], {});
@@ -400,6 +394,8 @@ export async function getServerSideProps({ req, res, query }) {
   // `);
   
   
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------

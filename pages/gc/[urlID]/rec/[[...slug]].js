@@ -55,8 +55,8 @@ import Layout from 'app/common/layout/v2/layout.js';
 import RecruitmentNavigation from 'app/gc/rec/v2/navigation.js';
 import Recruitment from 'app/gc/rec/v2/recruitment.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
-import FeedSidebar from 'app/common/feed/sidebar.js';
-import FeedHorizontal from 'app/common/feed/horizontal.js';
+import FeedSidebar from 'app/common/feed/v2/sidebar.js';
+import FeedHorizontal from 'app/common/feed/v2/horizontal.js';
 
 
 

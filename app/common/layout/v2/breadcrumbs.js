@@ -71,163 +71,163 @@ import IconSearch from '@material-ui/icons/Search';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
-  const { 
-    
+
+  const {
+
     arr = [],
-    
+
   } = props;
-  
-  
+
+
   // --------------------------------------------------
   //   Component
   // --------------------------------------------------
-  
+
   const componentsArr = [];
-  
+
   for (const [index, valueObj] of arr.entries()) {
-    
-    
+
+
     // --------------------------------------------------
     //   Icon & Anchor Text
     // --------------------------------------------------
-    
+
     let icon = '';
     let anchorText = '';
-    
-    
+
+
     // --------------------------------------------------
     //   - Login
     // --------------------------------------------------
-    
+
     if (valueObj.type === 'login') {
-      
+
       icon = <IconLogin fontSize="small" />;
       anchorText = 'ログイン';
-      
-      
+
+
     } else if (valueObj.type === 'login/reset-password' || valueObj.type === 'confirm/reset-password') {
-      
+
       icon = <IconLock fontSize="small" />;
       anchorText = 'パスワード再設定';
-      
-    
+
+
     // --------------------------------------------------
     //   - Logout
     // --------------------------------------------------
-    
+
     } else if (valueObj.type === 'logout') {
-      
+
       icon = <IconLogout fontSize="small" />;
       anchorText = 'ログアウト';
-      
-      
+
+
     // --------------------------------------------------
     //   - 確認 / メールアドレス
     // --------------------------------------------------
-    
+
     } else if (valueObj.type === 'confirm/email') {
-      
+
       icon = <IconMail fontSize="small" />;
       anchorText = 'メールアドレス確認';
-    
-    
+
+
     // --------------------------------------------------
     //   - Game Community
     // --------------------------------------------------
-    
-    } else if (valueObj.type === 'gc') {
-      
+
+    } else if (valueObj.type === 'gc/list') {
+
       icon = <IconCommunityList fontSize="small" />;
       anchorText = 'ゲームコミュニティ';
-    
+
     } else if (valueObj.type === 'gc/index') {
-      
+
       icon = <IconGames fontSize="small" />;
       anchorText = valueObj.anchorText;
-      
+
     } else if (valueObj.type === 'gc/forum' || valueObj.type === 'uc/forum') {
-      
+
       icon = <IconForum fontSize="small" />;
       anchorText = 'フォーラム';
-      
+
     } else if (valueObj.type === 'gc/rec') {
-      
+
       icon = <IconDescription fontSize="small" />;
       anchorText = '募集';
-      
+
     } else if (valueObj.type === 'gc/forum/individual' || valueObj.type === 'gc/rec/individual' || valueObj.type === 'uc/forum/individual') {
-      
+
       icon = <IconIndividual fontSize="small" />;
       anchorText = valueObj.anchorText;
-      
+
     } else if (valueObj.type === 'gc/rec/search') {
-      
+
       icon = <IconSearch fontSize="small" />;
       anchorText = '検索';
-      
+
     } else if (valueObj.type === 'gc/follower') {
-      
+
       icon = <IconFollow fontSize="small" />;
       anchorText = 'フォロワー';
-      
-      
+
+
     // --------------------------------------------------
     //   - User Community
     // --------------------------------------------------
-      
-    } else if (valueObj.type === 'uc') {
-      
+
+    } else if (valueObj.type === 'uc/list') {
+
       icon = <IconCommunityList fontSize="small" />;
       anchorText = 'ユーザーコミュニティ';
-      
+
     } else if (valueObj.type === 'uc/index') {
-      
+
       icon = <IconUserCommunity fontSize="small" />;
       anchorText = valueObj.anchorText;
-      
+
     } else if (valueObj.type === 'uc/member') {
-      
+
       icon = <IconMembers fontSize="small" />;
       anchorText = 'メンバー';
 
     } else if (valueObj.type === 'uc/setting') {
-      
+
       icon = <IconSetting fontSize="small" />;
       anchorText = 'コミュニティ設定';
-    
-    
+
+
     // --------------------------------------------------
     //   - User
     // --------------------------------------------------
-      
+
     } else if (valueObj.type === 'ur') {
-      
+
       icon = <IconUser fontSize="small" />;
       anchorText = 'ユーザー';
-      
+
     } else if (valueObj.type === 'ur/follow') {
-      
+
       icon = <IconFollow fontSize="small" />;
       anchorText = 'フォロー';
-      
+
     } else if (valueObj.type === 'ur/setting') {
-      
+
       icon = <IconSetting fontSize="small" />;
       anchorText = 'ユーザー設定';
-      
+
     }
-    
-    
+
+
     // --------------------------------------------------
     //   push
     // --------------------------------------------------
-    
+
     componentsArr.push(
       <div
         css={css`
@@ -236,18 +236,18 @@ const Component = (props) => {
         `}
         key={`breadcrumbs-${index}`}
       >
-        
+
         {icon}
-        
+
         <div
           css={css`
             font-size: 14px;
             margin: 0 0 0 4px;
           `}
         >
-          
+
           {valueObj.href && valueObj.as ?
-            
+
             <Link href={valueObj.href} as={valueObj.as}>
               <a>
                 <span
@@ -261,9 +261,9 @@ const Component = (props) => {
                 </span>
               </a>
             </Link>
-            
+
           :
-          
+
             <div
               css={css`
                 font-size: 14px;
@@ -274,31 +274,31 @@ const Component = (props) => {
             >
               {anchorText}
             </div>
-            
+
           }
-          
+
         </div>
-        
+
       </div>
     );
-    
+
   }
-  
-  
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/layout/v2/components/breadcrumbs.js
   // `);
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Paper
       css={css`
@@ -306,20 +306,20 @@ const Component = (props) => {
         padding: 10px 12px;
       `}
     >
-      
-      
+
+
       <Breadcrumbs separator="›" aria-label="breadcrumb">
-        
-        
+
+
         <div
           css={css`
             display: flex;
             flex-flow: row wrap;
           `}
         >
-          
+
           <IconHome fontSize="small" />
-          
+
           <div
             css={css`
               font-size: 14px;
@@ -327,7 +327,7 @@ const Component = (props) => {
               margin: 0 0 0 4px;
             `}
           >
-            
+
             <Link href={'/'} as={'/'}>
               <a>
                 <span
@@ -340,22 +340,22 @@ const Component = (props) => {
                 </span>
               </a>
             </Link>
-            
+
           </div>
-          
+
         </div>
-        
-        
+
+
         {componentsArr}
-        
-        
+
+
       </Breadcrumbs>
-      
-      
+
+
     </Paper>
   );
-  
-  
+
+
 };
 
 

@@ -44,8 +44,7 @@ import { getCookie } from 'app/@modules/cookie.js';
 
 import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
-import FeedSidebar from 'app/common/feed/sidebar.js';
-import FeedHorizontal from 'app/common/feed/horizontal.js';
+import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 
 import FollowMembers from 'app/common/follow/v2/members.js';
 
@@ -64,12 +63,12 @@ import FollowMembers from 'app/common/follow/v2/members.js';
  * @param {Object} props - Props
  */
 const ContainerLayout = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Component - Sidebar
   // --------------------------------------------------
-  
+
   const componentSidebar =
     <React.Fragment>
 
@@ -80,19 +79,19 @@ const ContainerLayout = (props) => {
 
     </React.Fragment>
   ;
-  
-  
+
+
   // --------------------------------------------------
   //   Component - Contents
   // --------------------------------------------------
-  
-  const componentContent = 
+
+  const componentContent =
     <React.Fragment>
-      
+
       <Breadcrumbs
         arr={props.breadcrumbsArr}
       />
-      
+
       <FollowMembers
         pageType="gc"
         gameCommunities_id={props.gameCommunities_id}
@@ -101,30 +100,26 @@ const ContainerLayout = (props) => {
         followMembersObj={props.followMembersObj}
       />
 
-      <FeedHorizontal
-        feedObj={props.feedObj}
-      />
-      
     </React.Fragment>
   ;
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Layout
       title={props.title}
       componentSidebar={componentSidebar}
       componentContent={componentContent}
-      
+
       headerObj={props.headerObj}
       headerNavMainArr={props.headerNavMainArr}
     />
   );
-  
-  
+
+
 };
 
 
@@ -135,25 +130,25 @@ const ContainerLayout = (props) => {
  * @param {Object} props - Props
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Error
   //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
   // --------------------------------------------------
-  
+
   if (props.statusCode !== 200) {
     return <Error statusCode={props.statusCode} />;
   }
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return <ContainerLayout {...props} />;
-  
-  
+
+
 };
 
 
@@ -166,117 +161,117 @@ const Component = (props) => {
  * @param {Object} query - クエリー
  */
 export async function getServerSideProps({ req, res, query }) {
-  
-  
+
+
   // --------------------------------------------------
   //   CSRF
   // --------------------------------------------------
-  
+
   createCsrfToken(req, res);
-  
-  
+
+
   // --------------------------------------------------
   //   Cookie & Accept Language
   // --------------------------------------------------
-  
+
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-  
-  
+
+
   // --------------------------------------------------
   //   Query
   // --------------------------------------------------
-  
+
   const urlID = query.urlID;
-  
-  
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   const ISO8601 = moment().utc().toISOString();
-  
-  
+
+
   // --------------------------------------------------
   //   Get Cookie Data
   // --------------------------------------------------
-  
+
   const page = 1;
   const limit = getCookie({ key: 'followLimit', reqHeadersCookie });
-  
-  
+
+
   // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
-  
+
   const resultObj = await fetchWrapper({
-    
+
     urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/${urlID}/follower?page=${page}&limit=${limit}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
-    
+
   });
-  
+
   const statusCode = lodashGet(resultObj, ['statusCode'], 400);
   const dataObj = lodashGet(resultObj, ['data'], {});
-  
-  
+
+
   // --------------------------------------------------
   //   dataObj
   // --------------------------------------------------
-  
+
   const login = lodashGet(dataObj, ['login'], false);
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
   const feedObj = lodashGet(dataObj, ['feedObj'], {});
-  
+
   const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
   const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
   const cardPlayersObj = lodashGet(dataObj, ['cardPlayersObj'], {});
   const followMembersObj = lodashGet(dataObj, ['followMembersObj'], {});
-  
-  
+
+
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
-  
+
   const title = `フォロワー - ${gameName}`;
-  
-  
+
+
   // --------------------------------------------------
   //   Header Navigation Link
   // --------------------------------------------------
-  
+
   const headerNavMainArr = [
-    
+
     {
       name: 'トップ',
       href: `/gc/[urlID]`,
       as: `/gc/${urlID}`,
       active: false,
     },
-    
+
     {
       name: '募集',
       href: `/gc/[urlID]/rec/[[...slug]]`,
       as: `/gc/${urlID}/rec`,
       active: false,
     },
-    
+
     {
       name: 'フォロワー',
       href: `/gc/[urlID]/follower`,
       as: `/gc/${urlID}/follower`,
       active: true,
     }
-    
+
   ];
-  
+
   if (accessLevel === 100) {
-    
+
     headerNavMainArr.push(
       {
         name: '設定',
@@ -285,72 +280,72 @@ export async function getServerSideProps({ req, res, query }) {
         active: false,
       }
     );
-    
+
   }
-  
-  
+
+
   // --------------------------------------------------
   //   パンくずリスト
   // --------------------------------------------------
-  
+
   const breadcrumbsArr = [
-    
+
     {
-      type: 'gc',
+      type: 'gc/list',
       anchorText: '',
-      href: `/gc/index`,
-      as: `/gc`,
+      href: '/gc/list/[[...slug]]',
+      as: `/gc/list`,
     },
-    
+
     {
       type: 'gc/index',
       anchorText: gameName,
       href: `/gc/[urlID]`,
       as: `/gc/${urlID}`,
     },
-    
+
     {
       type: 'gc/follower',
       anchorText: '',
       href: '',
       as: '',
     },
-    
+
   ];
-  
-  
+
+
   // ---------------------------------------------
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
-  
+
   res.cookie('recentAccessPageHref', '/gc/[urlID]/follower');
   res.cookie('recentAccessPageAs', `/gc/${urlID}/follower`);
-  
-  
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /pages/gc/[urlID]/follower/index.js
   // `);
-  
+
   // console.log(`
   //   ----- resultObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
-  return { 
-    
+
+  return {
+
     props: {
-      
+
       reqAcceptLanguage,
       ISO8601,
       statusCode,
@@ -362,17 +357,17 @@ export async function getServerSideProps({ req, res, query }) {
       breadcrumbsArr,
       experienceObj,
       feedObj,
-      
+
       urlID,
       gameCommunities_id,
       cardPlayersObj,
       followMembersObj,
-      
+
     }
-    
+
   };
-  
-  
+
+
 }
 
 

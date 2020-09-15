@@ -65,34 +65,34 @@ import ImageAndVideo from 'app/common/image-and-video/v2/image-and-video.js';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     obj = {},
-    
+
   } = props;
-  
-  
+
+
   // --------------------------------------------------
   //   カードデータが存在しない場合、空のコンポーネントを返す
   // --------------------------------------------------
-  
+
   if (Object.keys(obj).length === 0) {
     return null;
   }
-  
-  
-  
-  
+
+
+
+
   // ---------------------------------------------
   //   Data
   // ---------------------------------------------
-  
+
   const type = lodashGet(obj, ['type'], '');
   const _id = lodashGet(obj, ['_id'], '');
   const title = lodashGet(obj, ['title'], '');
@@ -104,7 +104,7 @@ const Component = (props) => {
   // --------------------------------------------------
   //   Game
   // --------------------------------------------------
-  
+
   const gameUrlID = lodashGet(obj, ['gamesObj', 'urlID'], '');
   const gameName = lodashGet(obj, ['gamesObj', 'name'], '');
   const gameImagesAndVideosObj = lodashGet(obj, ['gamesObj', 'imagesAndVideosObj'], {});
@@ -114,13 +114,13 @@ const Component = (props) => {
   // --------------------------------------------------
   //   User Community
   // --------------------------------------------------
-  
+
   const userCommunityID = lodashGet(obj, ['userCommunitiesObj', 'userCommunityID'], '');
   const ucName = lodashGet(obj, ['userCommunitiesObj', 'name'], '');
   const ucImagesAndVideosObj = lodashGet(obj, ['userCommunitiesObj', 'imagesAndVideosObj'], {});
   const ucImagesAndVideosThumbnailObj = lodashGet(obj, ['userCommunitiesObj', 'imagesAndVideosThumbnailObj'], {});
-  
-  
+
+
 
 
   // --------------------------------------------------
@@ -130,7 +130,7 @@ const Component = (props) => {
   // ---------------------------------------------
   //   - ゲームのサムネイルを表示する
   // ---------------------------------------------
-  
+
   let imagesAndVideosObj = {};
   let maxHeight = '';
   let imageOrVideo = 'image';
@@ -194,12 +194,12 @@ const Component = (props) => {
   }
 
 
-  
+
 
   // ---------------------------------------------
   //   Link
   // ---------------------------------------------
-  
+
   let linkHref = '';
   let linkAs = '';
   let communityName = gameName;
@@ -226,36 +226,36 @@ const Component = (props) => {
 
   }
 
-  
-  
-  
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   app/common/feed/card.js
   // `);
-  
+
   // console.log(`
   //   ----- obj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(obj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(chalk`
   //   showEditButton: {green ${showEditButton}}
   //   defaultExpanded: {green ${defaultExpanded}}
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Card
       css={css`
@@ -268,7 +268,7 @@ const Component = (props) => {
         }
       `}
     >
-      
+
 
       {imageOrVideo === 'image' ? (
 
@@ -313,8 +313,8 @@ const Component = (props) => {
 
       )}
 
-      
-      
+
+
 
       <Link
         href={linkHref}
@@ -345,10 +345,10 @@ const Component = (props) => {
           </div>
         </a>
       </Link>
-      
-      
 
-      
+
+
+
       <div
         css={css`
           margin-top: auto;
@@ -364,7 +364,7 @@ const Component = (props) => {
             padding: 0 18px 0 18px;
           `}
         >
-          
+
           <div
             css={css`
               display: flex;
@@ -388,7 +388,7 @@ const Component = (props) => {
               {datetimeFrom}
             </div>
           </div>
-          
+
 
           <div
             css={css`
@@ -419,7 +419,7 @@ const Component = (props) => {
               </div>
             </div>
           </div>
-          
+
         </div>
 
 
@@ -447,12 +447,12 @@ const Component = (props) => {
         </Link>
 
       </div>
-      
+
 
     </Card>
   );
-  
-  
+
+
 };
 
 

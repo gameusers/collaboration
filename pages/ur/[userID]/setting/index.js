@@ -43,8 +43,7 @@ import { createCsrfToken } from 'app/@modules/csrf.js';
 
 import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
-import FeedSidebar from 'app/common/feed/sidebar.js';
-import FeedHorizontal from 'app/common/feed/horizontal.js';
+import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 
 import FormPage from 'app/ur/v2/setting/form-page.js';
 import FormAccount from 'app/ur/v2/setting/form-account.js';
@@ -113,10 +112,6 @@ const ContainerLayout = (props) => {
       
       <FormWebPush
         webPushAvailable={props.webPushAvailable}
-      />
-
-      <FeedHorizontal
-        feedObj={props.feedObj}
       />
       
     </React.Fragment>

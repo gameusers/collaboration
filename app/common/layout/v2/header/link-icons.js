@@ -35,20 +35,26 @@ import Button from '@material-ui/core/Button';
 // --------------------------------------------------
 
 const cssButtonBox = css`
-  margin: 0 12px 0 0;
+  margin: 5px 12px 0 0;
 `;
 
 const cssBox = css`
-  margin: 4px 12px 0 0;
+  margin: 8px 12px 0 0;
 `;
 
 const cssButton = css`
   && {
+    background-color: #00695c;
+    &:hover {
+      background-color: #004d40;
+    }
+
+    line-height: 1;
     font-size: 12px;
     min-width: 36px;
     min-height: 20px;
     margin: 0;
-    padding: 0 5px;
+    padding: 4px 5px 4px 5px;
   }
 `;
 
@@ -62,35 +68,35 @@ const cssButton = css`
 // --------------------------------------------------
 
 /**
- * 
+ *
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     linkArr = [],
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component
   // --------------------------------------------------
-  
+
   let componentsArr = [];
-  
-  
+
+
   for (const [index, valueObj] of linkArr.entries()) {
-    
+
     if (valueObj.type === 'Official') {
-      
+
       componentsArr.push(
         <div
           css={cssButtonBox}
@@ -107,9 +113,9 @@ const Component = (props) => {
           </Button>
         </div>
       );
-      
+
     } else if (valueObj.type === 'Other') {
-      
+
       componentsArr.push(
         <div
           css={cssButtonBox}
@@ -118,7 +124,7 @@ const Component = (props) => {
           <Button
             css={cssButton}
             variant="contained"
-            color="secondary"
+            color="primary"
             href={valueObj.url}
             target="_blank"
           >
@@ -126,9 +132,9 @@ const Component = (props) => {
           </Button>
         </div>
       );
-      
+
     } else if (valueObj.type === 'Twitter') {
-      
+
       componentsArr.push(
         <div
           css={cssBox}
@@ -139,9 +145,9 @@ const Component = (props) => {
           </a>
         </div>
       );
-      
+
     } else if (valueObj.type === 'Facebook') {
-      
+
       componentsArr.push(
         <div
           css={cssBox}
@@ -152,9 +158,9 @@ const Component = (props) => {
           </a>
         </div>
       );
-      
+
     } else if (valueObj.type === 'YouTube') {
-      
+
       componentsArr.push(
         <div
           css={cssBox}
@@ -165,9 +171,9 @@ const Component = (props) => {
           </a>
         </div>
       );
-      
+
     } else if (valueObj.type === 'Steam') {
-      
+
       componentsArr.push(
         <div
           css={cssBox}
@@ -178,49 +184,49 @@ const Component = (props) => {
           </a>
         </div>
       );
-      
+
     }
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/layout/v2/components/header/link-icons.js
   // `);
-  
+
   // console.log(`
   //   ----- linkArr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(linkArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <div
       css={css`
         display: flex;
-        flex-flow: row nowrap;
+        flex-flow: row wrap;
         padding: 6px 10px 1px 10px;
       `}
     >
       {componentsArr}
     </div>
   );
-  
-  
+
+
 };
 
 

@@ -51,8 +51,8 @@ import { getCookie } from 'app/@modules/cookie.js';
 
 import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
-import FeedSidebar from 'app/common/feed/sidebar.js';
-import FeedHorizontal from 'app/common/feed/horizontal.js';
+import FeedSidebar from 'app/common/feed/v2/sidebar.js';
+// import FeedHorizontal from 'app/common/feed/v2/horizontal.js';
 
 import FollowMembers from 'app/common/follow/v2/members.js';
 
@@ -135,10 +135,6 @@ const ContainerLayout = (props) => {
         accessLevel={props.accessLevel}
         cardPlayersObj={props.cardPlayersObj}
         followMembersObj={props.followMembersObj}
-      />
-
-      <FeedHorizontal
-        feedObj={props.feedObj}
       />
       
     </React.Fragment>

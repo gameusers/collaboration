@@ -69,38 +69,38 @@ const { formatImagesAndVideosObj, formatImagesAndVideosArr } = require('../image
  * @return {Object} 取得データ
  */
 const findOne = async ({ conditionObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   FindOne
     // --------------------------------------------------
-    
+
     return await SchemaForumComments.findOne(conditionObj).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -112,37 +112,37 @@ const findOne = async ({ conditionObj }) => {
  * @return {Array} 取得データ
  */
 const find = async ({ conditionObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Find
     // --------------------------------------------------
-    
+
     return await SchemaForumComments.find(conditionObj).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -154,37 +154,37 @@ const find = async ({ conditionObj }) => {
  * @return {number} カウント数
  */
 const count = async ({ conditionObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Find
     // --------------------------------------------------
-    
+
     return await SchemaForumComments.countDocuments(conditionObj).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -197,41 +197,41 @@ const count = async ({ conditionObj }) => {
  * @return {Array}
  */
 const upsert = async ({ conditionObj, saveObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
+
     if (!saveObj || !Object.keys(saveObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Upsert
     // --------------------------------------------------
-    
+
     return await SchemaForumComments.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -243,37 +243,37 @@ const upsert = async ({ conditionObj, saveObj }) => {
  * @return {Array}
  */
 const insertMany = async ({ saveArr }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!saveArr || !saveArr.length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   insertMany
     // --------------------------------------------------
-    
+
     return await SchemaForumComments.insertMany(saveArr);
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -283,40 +283,40 @@ const insertMany = async ({ saveArr }) => {
  * 削除する
  * @param {Object} conditionObj - 検索条件
  * @param {boolean} reset - trueでデータをすべて削除する
- * @return {Array} 
+ * @return {Array}
  */
 const deleteMany = async ({ conditionObj, reset = false }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!reset && (!conditionObj || !Object.keys(conditionObj).length)) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Delete
     // --------------------------------------------------
-    
+
     return await SchemaForumComments.deleteMany(conditionObj);
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -342,7 +342,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * @return {Array} 取得データ
  */
 const findCommentsAndRepliesByForumThreads_idsArr = async ({
-  
+
   req,
   localeObj,
   loginUsers_id,
@@ -352,51 +352,51 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
   commentLimit = process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT,
   replyPage = 1,
   replyLimit = process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT,
-  
+
 }) => {
-  
-  
+
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Language & Country
     // --------------------------------------------------
-    
+
     const language = lodashGet(localeObj, ['language'], '');
     const country = lodashGet(localeObj, ['country'], '');
-    
-    
+
+
     // --------------------------------------------------
     //   parseInt
     // --------------------------------------------------
-    
+
     const intCommentLimit = parseInt(commentLimit, 10);
     const intReplyLimit = parseInt(replyLimit, 10);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Forum Comments & Replies データ取得
     //   $in, sort, limit を使って最新のコメントを取得すると、古いコメントが limit で削られてしまうため
     //   あるスレッドでは古いコメントが表示されないという事態になってしまう
     //   そのため for のループで検索している　ただ良くない書き方だと思うので可能なら改善した方がいい
     // --------------------------------------------------
-    
+
     let resultArr = [];
-    
+
     for (let value of forumThreads_idsArr.values()) {
-      
-      
+
+
       const docArr = await SchemaForumComments.aggregate([
-        
-        
+
+
         // --------------------------------------------------
         //   コメント
         //   forumComments_id: '' この場合は親のコメントがないので、返信ではなくコメントということ
         // --------------------------------------------------
-        
+
         {
           $match: {
             $and: [
@@ -405,12 +405,12 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
             ]
           },
         },
-        
-        
+
+
         // --------------------------------------------------
         //   card-players
         // --------------------------------------------------
-        
+
         {
           $lookup:
             {
@@ -427,12 +427,12 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                     },
                   }
                 },
-                
-                
+
+
                 // --------------------------------------------------
                 //   card-players / images-and-videos / サムネイル画像
                 // --------------------------------------------------
-                
+
                 {
                   $lookup:
                     {
@@ -458,15 +458,15 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                       as: 'imagesAndVideosThumbnailObj'
                     }
                 },
-                
+
                 {
                   $unwind: {
                     path: '$imagesAndVideosThumbnailObj',
                     preserveNullAndEmptyArrays: true,
                   }
                 },
-                
-                
+
+
                 {
                   $project: {
                     name: 1,
@@ -478,19 +478,19 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
               as: 'cardPlayersObj'
             }
         },
-        
+
         {
           $unwind: {
             path: '$cardPlayersObj',
             preserveNullAndEmptyArrays: true,
           }
         },
-        
-        
+
+
         // --------------------------------------------------
         //   users
         // --------------------------------------------------
-        
+
         {
           $lookup:
             {
@@ -515,19 +515,19 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
               as: 'usersObj'
             }
         },
-        
+
         {
           $unwind: {
             path: '$usersObj',
             preserveNullAndEmptyArrays: true,
           }
         },
-        
-        
+
+
         // --------------------------------------------------
         //   experiences
         // --------------------------------------------------
-        
+
         {
           $lookup:
             {
@@ -551,19 +551,19 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
               as: 'experiencesObj'
             }
         },
-        
+
         {
           $unwind: {
             path: '$experiencesObj',
             preserveNullAndEmptyArrays: true,
           }
         },
-        
-        
+
+
         // --------------------------------------------------
         //   images-and-videos / メイン画像
         // --------------------------------------------------
-        
+
         {
           $lookup:
             {
@@ -587,32 +587,32 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
               as: 'imagesAndVideosObj'
             }
         },
-        
+
         {
           $unwind: {
             path: '$imagesAndVideosObj',
             preserveNullAndEmptyArrays: true,
           }
         },
-        
-        
-        
-        
+
+
+
+
         // --------------------------------------------------
         //   返信（内部の処理は上記コメントと同じ）
         // --------------------------------------------------
-        
+
         // --------------------------------------------------
         //   forum-comments
         // --------------------------------------------------
-        
+
         {
           $lookup:
             {
               from: 'forum-comments',
               let: { let_id: '$_id' },
               pipeline: [
-                
+
                 {
                   $match: {
                     $expr: {
@@ -620,12 +620,12 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                     }
                   }
                 },
-                
-                
+
+
                 // --------------------------------------------------
                 //   forum-comments / card-players
                 // --------------------------------------------------
-                
+
                 {
                   $lookup:
                     {
@@ -642,12 +642,12 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                             },
                           }
                         },
-                        
-                        
+
+
                         // --------------------------------------------------
                         //   forum-comments / card-players / images-and-videos / サムネイル画像
                         // --------------------------------------------------
-                        
+
                         {
                           $lookup:
                             {
@@ -673,15 +673,15 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                               as: 'imagesAndVideosThumbnailObj'
                             }
                         },
-                        
+
                         {
                           $unwind: {
                             path: '$imagesAndVideosThumbnailObj',
                             preserveNullAndEmptyArrays: true,
                           }
                         },
-                        
-                        
+
+
                         {
                           $project: {
                             name: 1,
@@ -693,19 +693,19 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                       as: 'cardPlayersObj'
                     }
                 },
-                
+
                 {
                   $unwind: {
                     path: '$cardPlayersObj',
                     preserveNullAndEmptyArrays: true,
                   }
                 },
-                
-                
+
+
                 // --------------------------------------------------
                 //   forum-comments / users
                 // --------------------------------------------------
-                
+
                 {
                   $lookup:
                     {
@@ -730,19 +730,19 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                       as: 'usersObj'
                     }
                 },
-                
+
                 {
                   $unwind: {
                     path: '$usersObj',
                     preserveNullAndEmptyArrays: true,
                   }
                 },
-                
-                
+
+
                 // --------------------------------------------------
                 //   forum-comments / experiences
                 // --------------------------------------------------
-                
+
                 {
                   $lookup:
                     {
@@ -766,19 +766,19 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                       as: 'experiencesObj'
                     }
                 },
-                
+
                 {
                   $unwind: {
                     path: '$experiencesObj',
                     preserveNullAndEmptyArrays: true,
                   }
                 },
-                
-                
+
+
                 // --------------------------------------------------
                 //   forum-comments / images-and-videos - メイン画像
                 // --------------------------------------------------
-                
+
                 {
                   $lookup:
                     {
@@ -804,27 +804,27 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                       as: 'imagesAndVideosObj'
                     }
                 },
-                
+
                 {
                   $unwind: {
                     path: '$imagesAndVideosObj',
                     preserveNullAndEmptyArrays: true,
                   }
                 },
-                
-                
+
+
                 // --------------------------------------------------
                 //   forum-comments / forum-comments - replyTo 用のデータ取得
                 // --------------------------------------------------
-                
+
                 {
                   $lookup:
                     {
                       from: 'forum-comments',
                       let: { letReplyToForumComments_id: '$replyToForumComments_id' },
                       pipeline: [
-                        
-                        
+
+
                         {
                           $match: {
                             $expr: {
@@ -832,12 +832,12 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                             },
                           }
                         },
-                        
-                        
+
+
                         // --------------------------------------------------
                         //   forum-comments / forum-comments / card-players
                         // --------------------------------------------------
-                        
+
                         {
                           $lookup:
                             {
@@ -863,15 +863,15 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                               as: 'cardPlayersObj'
                             }
                         },
-                        
+
                         {
                           $unwind: {
                             path: '$cardPlayersObj',
                             preserveNullAndEmptyArrays: true,
                           }
                         },
-                        
-                        
+
+
                         {
                           $project: {
                             _id: 0,
@@ -879,25 +879,25 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                             cardPlayersObj: 1,
                           }
                         }
-                        
-                        
+
+
                       ],
                       as: 'replyToObj'
                     }
                 },
-                
+
                 {
                   $unwind: {
                     path: '$replyToObj',
                     preserveNullAndEmptyArrays: true,
                   }
                 },
-                
-                
+
+
                 // --------------------------------------------------
                 //   $project
                 // --------------------------------------------------
-                
+
                 {
                   $project: {
                     imagesAndVideos_id: 0,
@@ -905,27 +905,27 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                     __v: 0,
                   }
                 },
-                
-                
+
+
                 // --------------------------------------------------
                 //   $sort / $skip / $limit
                 // --------------------------------------------------
-                
+
                 { $sort: { createdDate: 1 } },
                 { $skip: (replyPage - 1) * intReplyLimit },
                 { $limit: intReplyLimit },
-                
-                
+
+
               ],
               as: 'forumRepliesArr'
             }
         },
-        
-        
+
+
         // --------------------------------------------------
         //   $project
         // --------------------------------------------------
-        
+
         {
           $project: {
             imagesAndVideos_id: 0,
@@ -933,59 +933,59 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
             __v: 0,
           }
         },
-        
-        
+
+
         // --------------------------------------------------
         //   $sort / $skip / $limit
         // --------------------------------------------------
-        
+
         { '$sort': { 'updatedDate': -1 } },
         { $skip: (commentPage - 1) * intCommentLimit },
         { $limit: intCommentLimit },
-        
-        
+
+
       ]).exec();
-      
-      
-      
+
+
+
       // console.log(chalk`
       //   value: {green ${value}}
       // `);
-      
+
       // console.log(chalk`
       //   commentPage2: {green ${commentPage}}
       //   commentLimit2: {green ${commentLimit}}
       // `);
-      
+
       // console.log(`
       //   ----- docArr -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   配列を結合する
       // --------------------------------------------------
-      
+
       if (docArr.length > 0) {
         resultArr = resultArr.concat(docArr);
       }
-      
-      
+
+
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Format
     // --------------------------------------------------
-    
+
     const formattedObj = formatVer2({
-      
+
       req,
       localeObj,
       loginUsers_id,
@@ -995,45 +995,45 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
       commentLimit: intCommentLimit,
       replyPage,
       replyLimit: intReplyLimit,
-      
+
     });
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----- resultArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- formattedObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return formattedObj;
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -1052,7 +1052,7 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
  * @return {Array} 取得データ
  */
 const findRepliesByForumComments_idsArr = async ({
-  
+
   req,
   localeObj,
   loginUsers_id,
@@ -1063,47 +1063,47 @@ const findRepliesByForumComments_idsArr = async ({
   commentLimit = process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT,
   replyPage = 1,
   replyLimit = process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT,
-  
+
 }) => {
-  
-  
+
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Language & Country
     // --------------------------------------------------
-    
+
     const language = lodashGet(localeObj, ['language'], '');
     const country = lodashGet(localeObj, ['country'], '');
-    
-    
+
+
     // --------------------------------------------------
     //   parseInt
     // --------------------------------------------------
-    
+
     const intCommentLimit = forumComments_idsArr.length;
     const intReplyLimit = parseInt(replyLimit, 10);
-    
+
     // const intCommentLimit = parseInt(commentLimit, 10);
     // const intReplyLimit = parseInt(replyLimit, 10);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Match Condition Array
     // --------------------------------------------------
-    
+
     let matchConditionArr = [];
-    
-    
+
+
     // --------------------------------------------------
     //   Game Community
     // --------------------------------------------------
-    
+
     if (gameCommunities_id) {
-      
+
       matchConditionArr = [
         {
           $match: {
@@ -1114,14 +1114,14 @@ const findRepliesByForumComments_idsArr = async ({
           },
         },
       ];
-      
-      
+
+
     // --------------------------------------------------
     //   User Community
     // --------------------------------------------------
-    
+
     } else if (userCommunities_id) {
-    
+
       matchConditionArr = [
         {
           $match: {
@@ -1132,30 +1132,30 @@ const findRepliesByForumComments_idsArr = async ({
           },
         },
       ];
-      
+
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Aggregation
     // --------------------------------------------------
-    
+
     const docArr = await SchemaForumComments.aggregate([
-      
-      
+
+
       // --------------------------------------------------
       //   matchConditionArr
       // --------------------------------------------------
-      
+
       ...matchConditionArr,
-      
-      
+
+
       // --------------------------------------------------
       //   card-players
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1172,12 +1172,12 @@ const findRepliesByForumComments_idsArr = async ({
                   },
                 }
               },
-              
-              
+
+
               // --------------------------------------------------
               //   card-players / images-and-videos - サムネイル画像
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -1203,14 +1203,14 @@ const findRepliesByForumComments_idsArr = async ({
                     as: 'imagesAndVideosThumbnailObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$imagesAndVideosThumbnailObj',
                   preserveNullAndEmptyArrays: true,
                 }
               },
-              
+
               {
                 $project: {
                   name: 1,
@@ -1222,19 +1222,19 @@ const findRepliesByForumComments_idsArr = async ({
             as: 'cardPlayersObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$cardPlayersObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   users
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1260,19 +1260,19 @@ const findRepliesByForumComments_idsArr = async ({
             as: 'usersObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$usersObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   experiences
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1296,19 +1296,19 @@ const findRepliesByForumComments_idsArr = async ({
             as: 'experiencesObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$experiencesObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   images-and-videos - メイン画像
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1334,28 +1334,28 @@ const findRepliesByForumComments_idsArr = async ({
             as: 'imagesAndVideosObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   forum-comments - 返信
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
             from: 'forum-comments',
             let: { forumComments_id: '$_id' },
             pipeline: [
-              
+
               {
                 $match: {
                   $expr: {
@@ -1363,12 +1363,12 @@ const findRepliesByForumComments_idsArr = async ({
                   }
                 }
               },
-              
-              
+
+
               // --------------------------------------------------
               //   forum-comments / card-players
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -1385,12 +1385,12 @@ const findRepliesByForumComments_idsArr = async ({
                           },
                         }
                       },
-                      
-                      
+
+
                       // --------------------------------------------------
                       //   forum-comments / card-players / images-and-videos - サムネイル画像
                       // --------------------------------------------------
-                      
+
                       {
                         $lookup:
                           {
@@ -1416,15 +1416,15 @@ const findRepliesByForumComments_idsArr = async ({
                             as: 'imagesAndVideosThumbnailObj'
                           }
                       },
-                      
+
                       {
                         $unwind: {
                           path: '$imagesAndVideosThumbnailObj',
                           preserveNullAndEmptyArrays: true,
                         }
                       },
-                      
-                      
+
+
                       {
                         $project: {
                           name: 1,
@@ -1436,19 +1436,19 @@ const findRepliesByForumComments_idsArr = async ({
                     as: 'cardPlayersObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$cardPlayersObj',
                   preserveNullAndEmptyArrays: true,
                 }
               },
-              
-              
+
+
               // --------------------------------------------------
               //   forum-comments / users
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -1474,19 +1474,19 @@ const findRepliesByForumComments_idsArr = async ({
                     as: 'usersObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$usersObj',
                   preserveNullAndEmptyArrays: true,
                 }
               },
-              
-              
+
+
               // --------------------------------------------------
               //   forum-comments / experiences
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -1510,19 +1510,19 @@ const findRepliesByForumComments_idsArr = async ({
                     as: 'experiencesObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$experiencesObj',
                   preserveNullAndEmptyArrays: true,
                 }
               },
-              
-              
+
+
               // --------------------------------------------------
               //   forum-comments / images-and-videos
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -1548,28 +1548,28 @@ const findRepliesByForumComments_idsArr = async ({
                     as: 'imagesAndVideosObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$imagesAndVideosObj',
                   preserveNullAndEmptyArrays: true,
                 }
               },
-              
-              
-              
-              
+
+
+
+
               // --------------------------------------------------
               //   forum-comments / forum-comments - replyTo 用のデータ取得
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
                     from: 'forum-comments',
                     let: { letReplyToForumComments_id: '$replyToForumComments_id' },
                     pipeline: [
-                      
+
                       {
                         $match: {
                           $expr: {
@@ -1577,12 +1577,12 @@ const findRepliesByForumComments_idsArr = async ({
                           },
                         }
                       },
-                      
-                      
+
+
                       // --------------------------------------------------
                       //   forum-comments / forum-comments / card-players
                       // --------------------------------------------------
-                      
+
                       {
                         $lookup:
                           {
@@ -1608,14 +1608,14 @@ const findRepliesByForumComments_idsArr = async ({
                             as: 'cardPlayersObj'
                           }
                       },
-                      
+
                       {
                         $unwind: {
                           path: '$cardPlayersObj',
                           preserveNullAndEmptyArrays: true,
                         }
                       },
-                      
+
                       {
                         $project: {
                           _id: 0,
@@ -1623,79 +1623,79 @@ const findRepliesByForumComments_idsArr = async ({
                           cardPlayersObj: 1,
                         }
                       }
-                      
+
                     ],
                     as: 'replyToObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$replyToObj',
                   preserveNullAndEmptyArrays: true,
                 }
               },
-              
-              
+
+
               // --------------------------------------------------
               //   $project
               // --------------------------------------------------
-              
+
               {
                 $project: {
                   imagesAndVideos_id: 0,
                   __v: 0,
                 }
               },
-              
-              
+
+
               // --------------------------------------------------
               //   $sort / $skip /$limit
               // --------------------------------------------------
-              
+
               { $sort: { createdDate: 1 } },
               { $skip: (replyPage - 1) * intReplyLimit },
               { $limit: intReplyLimit },
-              
-              
+
+
             ],
             as: 'forumRepliesArr'
           }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $project
       // --------------------------------------------------
-      
+
       {
         $project: {
           imagesAndVideos_id: 0,
           __v: 0,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $sort / $skip /$limit
       // --------------------------------------------------
-      
+
       { $sort: { updatedDate: -1 } },
       { $skip: (commentPage - 1) * intCommentLimit },
       { $limit: intCommentLimit },
-      
-      
+
+
     ]).exec();
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Format
     // --------------------------------------------------
-    
+
     const formattedObj = formatVer2({
-      
+
       req,
       localeObj,
       loginUsers_id,
@@ -1705,21 +1705,21 @@ const findRepliesByForumComments_idsArr = async ({
       commentLimit: intCommentLimit,
       replyPage,
       replyLimit: intReplyLimit,
-      
+
     });
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----------------------------------------\n
     //   /app/@database/forum-comments/model.js - findRepliesByForumComments_idsArr
     // `);
-    
+
     // console.log(chalk`
     //   userCommunities_id: {green ${userCommunities_id}}
     //   commentPage: {green ${commentPage}}
@@ -1727,42 +1727,42 @@ const findRepliesByForumComments_idsArr = async ({
     //   replyPage: {green ${replyPage}}
     //   replyLimit: {green ${replyLimit}}
     // `);
-    
+
     // console.log(`
     //   ----- forumComments_idsArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(forumComments_idsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- docArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- formattedObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return lodashGet(formattedObj, ['forumRepliesObj'], {});
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -1782,7 +1782,7 @@ const findRepliesByForumComments_idsArr = async ({
  * @return {Array} フォーマット後のデータ
  */
 const formatVer2 = ({
-  
+
   req,
   localeObj,
   loginUsers_id,
@@ -1792,273 +1792,273 @@ const formatVer2 = ({
   commentLimit,
   replyPage,
   replyLimit,
-  
+
 }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Return Value
   // --------------------------------------------------
-  
+
   const forumCommentsObj = {
-    
+
     limit: commentLimit,
     dataObj: {},
-    
+
   };
-  
+
   const forumRepliesObj = {
-    
+
     limit: replyLimit,
     dataObj: {},
-    
+
   };
-  
-  
+
+
   // --------------------------------------------------
   //   コメントと返信に分離
   // --------------------------------------------------
-  
+
   let commentsArr = [];
   let repliesArr = [];
-  
-  
+
+
   for (let valueObj of arr.values()) {
-   
+
     if (lodashHas(valueObj, ['forumRepliesArr'])) {
-      
+
       const tempArr = lodashGet(valueObj, ['forumRepliesArr'], []);
       repliesArr = repliesArr.concat(tempArr);
-      
+
     }
-    
+
     delete valueObj.forumRepliesArr;
-    
+
     commentsArr.push(valueObj);
-    
+
   }
-  
-  
+
+
   // console.log(`
   //   ----- commentsArr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(commentsArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(`
   //   ----- repliesArr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(repliesArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(`
   //   ----- arr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
+
+
   // --------------------------------------------------
   //   function
   // --------------------------------------------------
-  
+
   const loopFormat = ({ arr, ISO8601 }) => {
-   
+
     const returnObj = {};
-    
-    
+
+
     for (let valueObj of arr.values()) {
-      
-      
+
+
       // console.log(`
       //   ----- valueObj -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(valueObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
+
+
       // --------------------------------------------------
       //   Deep Copy
       // --------------------------------------------------
-      
+
       const clonedObj = lodashCloneDeep(valueObj);
-      
-      
+
+
       // --------------------------------------------------
       //   画像と動画の処理
       // --------------------------------------------------
-      
+
       const formattedObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.imagesAndVideosObj });
-      
-      if (formattedObj) {
-        
+
+      if (Object.keys(formattedObj).length !== 0) {
+
         clonedObj.imagesAndVideosObj = formattedObj;
-        
+
       } else {
-        
+
         delete clonedObj.imagesAndVideosObj;
-        
+
       }
-      
-      
+
+
       // --------------------------------------------------
       //   画像と動画の処理 - ユーザーサムネイル
       // --------------------------------------------------
-      
+
       if (lodashHas(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'])) {
-        
+
         const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
-        
+
         // console.log(`
         //   ----- imagesAndVideosThumbnailObj -----\n
         //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailObj)), { colors: true, depth: null })}\n
         //   --------------------\n
         // `);
-        
+
         const formattedThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosThumbnailObj });
-        
-        if (formattedThumbnailObj) {
-          
+
+        if (Object.keys(formattedThumbnailObj).length !== 0) {
+
           lodashSet(clonedObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], formattedThumbnailObj);
-          
+
         } else {
-          
+
           delete clonedObj.cardPlayersObj.imagesAndVideosThumbnailObj;
-          
+
         }
-        
+
       }
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   編集権限
       // --------------------------------------------------
-      
+
       clonedObj.editable = verifyAuthority({
-        
+
         req,
         users_id: valueObj.users_id,
         loginUsers_id,
         ISO8601: valueObj.createdDate,
         _id: valueObj._id,
-        
+
       });
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   Name & Description
       // --------------------------------------------------
-      
+
       let filteredArr = valueObj.localesArr.filter((filterObj) => {
         return filterObj.language === localeObj.language;
       });
-      
-      
+
+
       if (lodashHas(filteredArr, [0])) {
-        
+
         clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');
         clonedObj.comment = lodashGet(filteredArr, [0, 'comment'], '');
-        
+
       } else {
-        
+
         clonedObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
         clonedObj.comment = lodashGet(valueObj, ['localesArr', 0, 'comment'], '');
-        
+
       }
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   Reply to: Name
       // --------------------------------------------------
-      
+
       if (valueObj.replyToObj) {
-        
+
         clonedObj.replyToName = lodashGet(valueObj, ['replyToObj', 'cardPlayersObj', 'name'], '');
-        
+
         if (!clonedObj.replyToName) {
-          
+
           const localesArr = lodashGet(valueObj, ['replyToObj', 'localesArr'], []);
-          
+
           filteredArr = localesArr.filter((filterObj) => {
             return filterObj.language === localeObj.language;
           });
-          
-          
+
+
           if (lodashHas(filteredArr, [0])) {
-            
+
             clonedObj.replyToName = lodashGet(filteredArr, [0, 'name'], '');
-            
+
           } else {
-            
+
             clonedObj.replyToName = lodashGet(localesArr, [0, 'name'], '');
-            
+
           }
-          
+
         }
-        
+
         // console.log(chalk`
         //   valueObj.replyToForumComments_id: {green ${valueObj.replyToForumComments_id}}
         //   clonedObj.replyToName: {green ${clonedObj.replyToName}}
         // `);
-        
+
       }
-      
-      
+
+
       // console.log(`
       //   ----- filteredArr -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(filteredArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
+
+
       // --------------------------------------------------
       //   exp
       // --------------------------------------------------
-      
+
       const exp = lodashGet(valueObj, ['experiencesObj', 'exp'], 0);
-      
+
       lodashSet(clonedObj, ['usersObj', 'exp'], exp);
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
-      //   匿名の場合の処理 - Card Players 
+      //   匿名の場合の処理 - Card Players
       // --------------------------------------------------
-      
+
       if (valueObj.anonymity) {
-        
+
         delete clonedObj.cardPlayersObj;
         delete clonedObj.usersObj;
-        
+
       }
-        
+
       // } else if (lodashHas(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'])) {
-        
-        
+
+
       //   // --------------------------------------------------
       //   //   サムネイル画像の処理 - Card Players
       //   // --------------------------------------------------
-        
+
       //   const thumbnailArr = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], []);
       //   lodashSet(clonedObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], formatImagesAndVideosArr({ arr: thumbnailArr }));
-        
-        
+
+
       // }
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   不要な項目を削除する
       // --------------------------------------------------
-      
+
       delete clonedObj._id;
       delete clonedObj.createdDate;
       delete clonedObj.users_id;
@@ -2070,137 +2070,137 @@ const formatVer2 = ({
       delete clonedObj.ip;
       delete clonedObj.userAgent;
       delete clonedObj.__v;
-      
+
       // console.log(`\n---------- clonedObj ----------\n`);
       // console.dir(clonedObj);
       // console.log(`\n-----------------------------------\n`);
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   オブジェクトに追加 - dataObj用
       // --------------------------------------------------
-      
+
       returnObj[valueObj._id] = clonedObj;
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   forumCommentsObj & forumRepliesPageArr 作成
       // --------------------------------------------------
-      
+
       const forumThreads_id = valueObj.forumThreads_id;
       const forumComments_id = valueObj.forumComments_id;
-      
-      
+
+
       if (forumComments_id) {
-        
+
         const replyCount = lodashGet(formattedCommentsObj, [forumComments_id, 'replies'], 0);
-        
+
         const forumRepliesPageArr = lodashGet(forumRepliesObj, [forumComments_id, `page${replyPage}Obj`, 'arr'], []);
         forumRepliesPageArr.push(valueObj._id);
-        
+
         forumRepliesObj[forumComments_id] = {
           page: replyPage,
           count : replyCount,
         };
-        
+
         forumRepliesObj[forumComments_id][`page${replyPage}Obj`] = {
           loadedDate: ISO8601,
           arr: forumRepliesPageArr,
         };
-        
+
       } else {
-        
+
         const commentCount = lodashGet(forumThreadsObj, ['dataObj', forumThreads_id, 'comments'], 0);
-        
-        
+
+
         const forumCommentsPageArr = lodashGet(forumCommentsObj, [forumThreads_id, `page${commentPage}Obj`, 'arr'], []);
         forumCommentsPageArr.push(valueObj._id);
-        
+
         forumCommentsObj[forumThreads_id] = {
           page: commentPage,
           count : commentCount,
         };
-        
+
         forumCommentsObj[forumThreads_id][`page${commentPage}Obj`] = {
           loadedDate: ISO8601,
           arr: forumCommentsPageArr,
         };
-        
+
       }
-      
-      
+
+
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return returnObj;
-    
-  
+
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   完成
   // --------------------------------------------------
-  
+
   const ISO8601 = moment().utc().toISOString();
-  
+
   const formattedCommentsObj = loopFormat({ arr: commentsArr, ISO8601 });
   const formattedRepliesObj = loopFormat({ arr: repliesArr, ISO8601 });
-  
+
   forumCommentsObj.dataObj = formattedCommentsObj;
   forumRepliesObj.dataObj = formattedRepliesObj;
-  
-  
-  
-  
+
+
+
+
   // console.log(`
   //   ----- formattedCommentsObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(formattedCommentsObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(`
   //   ----- formattedRepliesObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(formattedRepliesObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
+
+
   // console.log(`
   //   ----- forumCommentsObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(`
   //   ----- forumRepliesObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(forumRepliesObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return {
     forumCommentsObj,
     forumRepliesObj,
   };
-  
-  
+
+
 };
 
 
@@ -2220,7 +2220,7 @@ const formatVer2 = ({
  * @return {Array} 取得データ
  */
 const getPage = async ({
-  
+
   req,
   localeObj,
   loginUsers_id,
@@ -2229,9 +2229,9 @@ const getPage = async ({
   forumReplies_id,
   commentLimit,
   replyLimit,
-  
+
 }) => {
-  
+
   // console.log(chalk`
   //   ----- findForForumCommentsAndReplies -----
   //   commentPage: {green ${commentPage}}
@@ -2239,25 +2239,25 @@ const getPage = async ({
   //   replyPage: {green ${replyPage}}
   //   replyLimit: {green ${replyLimit}}
   // `);
-  
+
   try {
-    
-    
+
+
     // ------------------------------------------------------------
     //   コメントのページ番号を取得する
     // ------------------------------------------------------------
-    
+
     // --------------------------------------------------
     //   _idをすべて取得する
     // --------------------------------------------------
-    
+
     const comment_idsArr = await SchemaForumComments.aggregate([
-      
-      
+
+
       // --------------------------------------------------
       //   コメント
       // --------------------------------------------------
-      
+
       // forumComments_id: '' この場合は親のコメントがないので、返信ではなくコメントということ
       {
         $match: {
@@ -2267,57 +2267,57 @@ const getPage = async ({
           ]
         },
       },
-      
-      
+
+
       { $sort: { updatedDate: -1 } },
-      
-      
+
+
       { $project:
         {
           _id: 1,
         }
       },
-      
-      
+
+
     ]).exec();
-    
-    
+
+
     // --------------------------------------------------
     //   Format
     // --------------------------------------------------
-    
+
     const commentIndex = comment_idsArr.findIndex((valueObj) => {
       return valueObj._id === forumComments_id;
     });
-    
+
     let commentPage = Math.ceil(commentIndex / commentLimit) + 1;
-    
+
     if (commentPage === 0) {
       commentPage = 1;
     }
-    
-    
-    
+
+
+
     // ------------------------------------------------------------
     //   返信のページ番号を取得する
     // ------------------------------------------------------------
-    
+
     let replyPage = 1;
-    
+
     if (forumReplies_id) {
-      
-      
+
+
       // --------------------------------------------------
       //   _idをすべて取得する
       // --------------------------------------------------
-      
+
       const reply_idsArr = await SchemaForumComments.aggregate([
-        
-        
+
+
         // --------------------------------------------------
         //   コメント
         // --------------------------------------------------
-        
+
         {
           $match: {
             $and: [
@@ -2326,56 +2326,56 @@ const getPage = async ({
             ]
           },
         },
-        
-        
+
+
         { $sort: { createdDate: 1 } },
-        
-        
+
+
         { $project:
           {
             _id: 1,
           }
         },
-        
-        
+
+
       ]).exec();
-      
-      
+
+
       // --------------------------------------------------
       //   Format
       // --------------------------------------------------
-      
+
       const replyIndex = reply_idsArr.findIndex((valueObj) => {
         return valueObj._id === forumReplies_id;
       });
-      
+
       replyPage = Math.ceil(replyIndex / replyLimit) + 1;
-      
+
       if (replyPage === 0) {
         replyPage = 1;
       }
-      
+
       // console.log(chalk`
       //   replyIndex: {green ${replyIndex}}
       //   replyPage: {green ${replyPage}}
       // `);
-      
+
       // console.log(`
       //   ----- reply_idsArr -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(reply_idsArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
+
+
     }
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
     // console.log(chalk`
     //   Math.ceil(10 / 1): {green ${Math.ceil(10 / 1)}}
     //   Math.ceil(10 / 2): {green ${Math.ceil(10 / 2)}}
@@ -2389,12 +2389,12 @@ const getPage = async ({
     //   Math.ceil(10 / 10): {green ${Math.ceil(10 / 10)}}
     //   Math.ceil(10 / 11): {green ${Math.ceil(10 / 11)}}
     // `);
-    
-    
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(chalk`
     //   forumThreads_id: {green ${forumThreads_id}}
     //   forumComments_id: {green ${forumComments_id}}
@@ -2402,44 +2402,44 @@ const getPage = async ({
     //   commentLimit: {green ${commentLimit}}
     //   replyLimit: {green ${replyLimit}}
     // `);
-    
+
     // console.log(chalk`
     //   commentIndex: {green ${commentIndex}}
     //   commentPage: {green ${commentPage}}
     // `);
-    
+
     // console.log(`
     //   ----- comment_idsArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(comment_idsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- formattedObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return {
       commentPage,
       replyPage,
     };
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -2454,38 +2454,38 @@ const getPage = async ({
  * @return {Array} 取得データ
  */
 const findForEdit = async ({
-  
+
   req,
   localeObj,
   loginUsers_id,
   forumComments_id,
-  
+
 }) => {
-  
-  
+
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Aggregate
     // --------------------------------------------------
-    
+
     const docArr = await SchemaForumComments.aggregate([
-      
-      
+
+
       // --------------------------------------------------
       //   $match
       // --------------------------------------------------
-      
+
       {
         $match : { _id: forumComments_id }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   images-and-videos
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -2510,148 +2510,148 @@ const findForEdit = async ({
             as: 'imagesAndVideosObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
     ]).exec();
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   配列が空の場合は処理停止
     // --------------------------------------------------
-    
+
     if (docArr.length === 0) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: 'hSZgl_T02', messageID: 'cvS0qSAlE' }] });
     }
-    
-    
+
+
     // --------------------------------------------------
     //   編集権限がない場合は処理停止
     // --------------------------------------------------
-    
+
     const editable = verifyAuthority({
-      
+
       req,
       users_id: lodashGet(docArr, [0, 'users_id'], ''),
       loginUsers_id,
       ISO8601: lodashGet(docArr, [0, 'createdDate'], ''),
       _id: lodashGet(docArr, [0, '_id'], ''),
-      
+
     });
-    
+
     // console.log(chalk`
     //   editable: {green ${editable}}
     // `);
-    
+
     if (!editable) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: 'IRZhSgQnt', messageID: 'DSRlEoL29' }] });
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Format
     // --------------------------------------------------
-    
+
     const _id = lodashGet(docArr, [0, '_id'], '');
     const anonymity = lodashGet(docArr, [0, 'anonymity'], false);
     const imagesAndVideosObj = lodashGet(docArr, [0, 'imagesAndVideosObj'], {});
     let name = '';
     let comment = '';
-    
-    
+
+
     // --------------------------------------------------
     //   Name & Comment
     // --------------------------------------------------
-    
+
     const filteredArr = docArr.filter((filterObj) => {
       return filterObj.language === localeObj.language;
     });
-    
-    
+
+
     if (lodashHas(filteredArr, [0])) {
-      
+
       name = lodashGet(filteredArr, [0, 'name'], '');
       comment = lodashGet(filteredArr, [0, 'comment'], '');
-      
+
     } else {
-      
+
       name = lodashGet(docArr, [0, 'localesArr', 0, 'name'], '');
       comment = lodashGet(docArr, [0, 'localesArr', 0, 'comment'], '');
-      
+
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   returnObj
     // --------------------------------------------------
-    
+
     const returnObj = {
-      
+
       _id,
       name,
       anonymity,
       comment,
       imagesAndVideosObj,
-      
+
     };
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----------------------------------------\n
     //   /app/@database/forum-comments/model.js - findForEdit
     // `);
-    
+
     // console.log(chalk`
     //   forumComments_id: {green ${forumComments_id}}
     // `);
-    
+
     // console.log(`
     //   ----- docArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return returnObj;
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -2674,7 +2674,7 @@ const findForEdit = async ({
  * @return {Object} 取得データ
  */
 const findRepliesForUpsert = async ({
-  
+
   req,
   localeObj,
   loginUsers_id,
@@ -2687,22 +2687,22 @@ const findRepliesForUpsert = async ({
   commentLimit = process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT,
   replyPage = 1,
   replyLimit = process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT,
-  
+
 }) => {
-  
-  
+
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Property
     // --------------------------------------------------
-    
+
     let replyPage = 1;
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   編集
     //   返信は投稿順（昇順）で表示されるため、一番新しいページを単純に表示すれば編集した返信が表示されるわけではない
@@ -2710,23 +2710,23 @@ const findRepliesForUpsert = async ({
     //   返信の総数から順番を取得し
     //   limit で割って表示ページを取得する
     // --------------------------------------------------
-    
+
     if (forumReplies_id) {
-      
-      
+
+
       // --------------------------------------------------
       //   Match Condition Array
       // --------------------------------------------------
-      
+
       let matchConditionArr = [];
-      
-      
+
+
       // --------------------------------------------------
       //   Game Community
       // --------------------------------------------------
-      
+
       if (gameCommunities_id) {
-        
+
         matchConditionArr = [
           {
             $match: {
@@ -2736,14 +2736,14 @@ const findRepliesForUpsert = async ({
             },
           },
         ];
-        
-        
+
+
       // --------------------------------------------------
       //   User Community
       // --------------------------------------------------
-      
+
       } else if (userCommunities_id) {
-      
+
         matchConditionArr = [
           {
             $match: {
@@ -2753,67 +2753,67 @@ const findRepliesForUpsert = async ({
             },
           },
         ];
-        
+
       }
-      
-      
+
+
       // --------------------------------------------------
       //   Aggregation
       // --------------------------------------------------
-      
+
       const docForumRepliesArr = await SchemaForumComments.aggregate([
-        
-        
+
+
         // --------------------------------------------------
         //   matchConditionArr
         // --------------------------------------------------
-        
+
         ...matchConditionArr,
-        
-        
+
+
         { $sort: { createdDate: 1 } },
-        
-        
+
+
         { $project:
           {
             _id: 1,
           }
         },
-        
-        
+
+
       ]).exec();
-      
-      
-      
-      
+
+
+
+
       const index = docForumRepliesArr.findIndex((valueObj) => {
         return valueObj._id === forumReplies_id;
       });
-      
-      
+
+
       // const replies = docForumRepliesArr.length;
       replyPage = Math.ceil((index + 1) / replyLimit);
-      
-      
-      
-      
+
+
+
+
       // console.log(`
       //   ----------------------------------------\n
       //   Update
       // `);
-      
+
       // console.log(`
       //   ----- docForumRepliesArr -----\n
       //   ${util.inspect(docForumRepliesArr, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
+
       // console.log(chalk`
       //   index: {green ${index}}
       //   replies: {green ${replies}}
       // `);
-      
-      
+
+
     // --------------------------------------------------
     //   新規投稿
     //   返信は投稿順（昇順）で表示されるため、新規投稿した返信は順番的に最後に表示される
@@ -2821,78 +2821,78 @@ const findRepliesForUpsert = async ({
     //   コメントの情報から返信の総数を取得し
     //   limit で割って最後のページを取得する
     // --------------------------------------------------
-      
+
     } else {
-      
-      
+
+
       let docForumCommentsObj = {};
-      
-      
+
+
       // --------------------------------------------------
       //   Game Community
       // --------------------------------------------------
-      
+
       if (gameCommunities_id) {
-        
+
         docForumCommentsObj = await findOne({
-          
+
           conditionObj: {
             _id: forumComments_id,
             gameCommunities_id,
             forumThreads_id,
           }
-          
+
         });
-        
-        
+
+
       // --------------------------------------------------
       //   User Community
       // --------------------------------------------------
-      
+
       } else if (userCommunities_id) {
-      
+
         docForumCommentsObj = await findOne({
-          
+
           conditionObj: {
             _id: forumComments_id,
             userCommunities_id,
             forumThreads_id,
           }
-          
+
         });
-        
+
       }
-      
-      
+
+
       const replies = lodashGet(docForumCommentsObj, ['replies'], 1);
       replyPage = Math.ceil(replies / replyLimit);
-      
-      
-      
-      
+
+
+
+
       // console.log(`
       //   ----------------------------------------\n
       //   Insert
       // `);
-      
+
       // console.log(`
       //   ----- docForumCommentsObj -----\n
       //   ${util.inspect(docForumCommentsObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
+
+
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   findReplies
     // --------------------------------------------------
-    
+
     const forumRepliesObj = await findRepliesByForumComments_idsArr({
-      
+
       req,
       localeObj,
       loginUsers_id,
@@ -2903,21 +2903,21 @@ const findRepliesForUpsert = async ({
       commentLimit,
       replyPage,
       replyLimit,
-      
+
     });
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----------------------------------------\n
     //   /app/@database/forum-comments/model.js - findRepliesForUpsert
     // `);
-    
+
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
     //   gameCommunities_id: {green ${gameCommunities_id}}
@@ -2929,30 +2929,30 @@ const findRepliesForUpsert = async ({
     //   replyPage: {green ${replyPage}}
     //   replyLimit: {green ${replyLimit}}
     // `);
-    
+
     // console.log(`
     //   ----- forumRepliesObj -----\n
     //   ${util.inspect(forumRepliesObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return forumRepliesObj;
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -2967,25 +2967,25 @@ const findRepliesForUpsert = async ({
  * @return {Array} 取得データ
  */
 const findForDeleteComment = async ({
-  
+
   req,
   localeObj,
   loginUsers_id,
   forumComments_id,
-  
+
 }) => {
-  
-  
+
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Aggregate
     // --------------------------------------------------
-    
+
     const resultArr = await SchemaForumComments.aggregate([
-      
-      
+
+
       // コメントを取得
       {
         $match:
@@ -2996,8 +2996,8 @@ const findForDeleteComment = async ({
             ]
           },
       },
-      
-      
+
+
       // 画像と動画を取得
       {
         $lookup:
@@ -3020,15 +3020,15 @@ const findForDeleteComment = async ({
             as: 'imagesAndVideosObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       { $project:
         {
           createdDate: 1,
@@ -3038,28 +3038,28 @@ const findForDeleteComment = async ({
           imagesAndVideosObj: 1,
         }
       },
-      
-      
+
+
     ]).exec();
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   配列が空の場合は処理停止
     // --------------------------------------------------
-    
+
     if (resultArr.length === 0) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: 'jiSBn7Gb-', messageID: 'cvS0qSAlE' }] });
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   編集権限がない場合は処理停止
     // --------------------------------------------------
-    
+
     const editable = verifyAuthority({
       req,
       users_id: lodashGet(resultArr, [0, 'users_id'], ''),
@@ -3067,94 +3067,94 @@ const findForDeleteComment = async ({
       ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
       _id: lodashGet(resultArr, [0, '_id'], ''),
     });
-    
+
     if (!editable) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: 'IRZhSgQnt', messageID: 'DSRlEoL29' }] });
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Format
     // --------------------------------------------------
-    
+
     let replies = 0;
     let imagesAndVideos_idsArr = [];
     let images = 0;
     let videos = 0;
-    
+
     for (let valueObj of resultArr.values()) {
-      
+
       if (valueObj.imagesAndVideos_id) {
         imagesAndVideos_idsArr.push(valueObj.imagesAndVideos_id);
       }
-      
+
       const reply = lodashGet(valueObj, ['replies'], 0);
       const image = lodashGet(valueObj, ['imagesAndVideosObj', 'images'], 0);
       const video = lodashGet(valueObj, ['imagesAndVideosObj', 'videos'], 0);
-      
+
       replies -= reply;
       images -= image;
       videos -= video;
-      
+
     }
-    
+
     const returnObj = {
       replies,
       imagesAndVideos_idsArr,
       images,
       videos,
     };
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(chalk`
     //   forumComments_id: {green ${forumComments_id}}
     //   images: {green ${images}}
     //   videos: {green ${videos}}
     // `);
-    
+
     // console.log(`
     //   ----- imagesAndVideos_idsArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideos_idsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- resultArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return returnObj;
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -3173,7 +3173,7 @@ const findForDeleteComment = async ({
  * @return {Array} 取得データ
  */
 const findForDeleteReply = async ({
-  
+
   req,
   localeObj,
   loginUsers_id,
@@ -3182,26 +3182,26 @@ const findForDeleteReply = async ({
   forumThreads_id,
   forumComments_id,
   forumReplies_id,
-  
+
 }) => {
-  
-  
+
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Match Condition Array
     // --------------------------------------------------
-    
+
     let matchConditionArr = [];
-    
-    
+
+
     // --------------------------------------------------
     //   Game Community
     // --------------------------------------------------
-    
+
     if (gameCommunities_id) {
-      
+
       matchConditionArr = [
         {
           $match: {
@@ -3212,14 +3212,14 @@ const findForDeleteReply = async ({
           },
         },
       ];
-      
-      
+
+
     // --------------------------------------------------
     //   User Community
     // --------------------------------------------------
-    
+
     } else if (userCommunities_id) {
-    
+
       matchConditionArr = [
         {
           $match: {
@@ -3230,29 +3230,29 @@ const findForDeleteReply = async ({
           },
         },
       ];
-      
+
     }
-    
-    
-    
+
+
+
     // --------------------------------------------------
     //   Aggregate
     // --------------------------------------------------
-    
+
     const resultArr = await SchemaForumComments.aggregate([
-      
-      
+
+
       // --------------------------------------------------
       //   matchConditionArr
       // --------------------------------------------------
-      
+
       ...matchConditionArr,
-      
-      
+
+
       // --------------------------------------------------
       //   images-and-videos - 画像と動画を取得
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -3274,15 +3274,15 @@ const findForDeleteReply = async ({
             as: 'imagesAndVideosObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       { $project:
         {
           createdDate: 1,
@@ -3291,32 +3291,32 @@ const findForDeleteReply = async ({
           imagesAndVideosObj: 1,
         }
       },
-      
-      
+
+
     ]).exec();
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   配列が空の場合は処理停止
     // --------------------------------------------------
-    
+
     if (resultArr.length === 0) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: 'VsOOpVMYg', messageID: 'cvS0qSAlE' }] });
     }
-    
-    
+
+
     // console.log(`
     //   ----- resultArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // --------------------------------------------------
     //   編集権限がない場合は処理停止
     // --------------------------------------------------
-    
+
     const editable = verifyAuthority({
       req,
       users_id: lodashGet(resultArr, [0, 'users_id'], ''),
@@ -3324,76 +3324,76 @@ const findForDeleteReply = async ({
       ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
       _id: lodashGet(resultArr, [0, '_id'], ''),
     });
-    
+
     if (!editable) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: 'HdsQle2ZZ', messageID: 'DSRlEoL29' }] });
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Format
     // --------------------------------------------------
-    
+
     const imagesAndVideos_id = lodashGet(resultArr, [0, 'imagesAndVideos_id'], '');
     const images = - lodashGet(resultArr, [0, 'imagesAndVideosObj', 'images'], 0);
     const videos = - lodashGet(resultArr, [0, 'imagesAndVideosObj', 'videos'], 0);
-    
+
     const returnObj = {
       imagesAndVideos_id,
       images,
       videos,
     };
-    
+
     // const _id = lodashGet(resultArr, [0, '_id'], '');
     // const imagesAndVideosObj = lodashGet(resultArr, [0, 'imagesAndVideosObj'], {});
-    
+
     // const returnObj = {
     //   _id,
     //   imagesAndVideosObj,
     // };
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(chalk`
     //   forumComments_id: {green ${forumComments_id}}
     // `);
-    
+
     // console.log(`
     //   ----- resultArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return returnObj;
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -3408,7 +3408,7 @@ const findForDeleteReply = async ({
 /**
  * Transaction 挿入 / 更新する
  * コメント、スレッド、画像＆動画、コミュニティを同時に更新する
- * 
+ *
  * @param {Object} forumThreadsConditionObj - DB forum-threads 検索条件
  * @param {Object} forumThreadsSaveObj - DB forum-threads 保存データ
  * @param {Object} forumCommentsConditionObj - DB forum-comments 検索条件
@@ -3421,10 +3421,10 @@ const findForDeleteReply = async ({
  * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
  * @param {Object} userCommunitiesConditionObj - DB user-communities 検索条件
  * @param {Object} userCommunitiesSaveObj - DB user-communities 保存データ
- * @return {Object} 
+ * @return {Object}
  */
 const transactionForUpsert = async ({
-  
+
   forumThreadsConditionObj = {},
   forumThreadsSaveObj = {},
   forumCommentsConditionObj = {},
@@ -3437,235 +3437,235 @@ const transactionForUpsert = async ({
   gameCommunitiesSaveObj = {},
   userCommunitiesConditionObj = {},
   userCommunitiesSaveObj = {},
-  
+
 }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   let returnObj = {};
-  
-  
+
+
   // --------------------------------------------------
   //   Transaction / Session
   // --------------------------------------------------
-  
+
   const session = await SchemaForumThreads.startSession();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Transaction / Start
     // --------------------------------------------------
-    
+
     await session.startTransaction();
-    
-    
-    
-    
+
+
+
+
     // ---------------------------------------------
     //   - forum-threads / Thread
     // ---------------------------------------------
-    
+
     if (Object.keys(forumThreadsConditionObj).length !== 0 && Object.keys(forumThreadsSaveObj).length !== 0) {
       await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - forum-comments / Comment
     // ---------------------------------------------
-    
+
     if (Object.keys(forumCommentsConditionObj).length !== 0 && Object.keys(forumCommentsSaveObj).length !== 0) {
       await SchemaForumComments.updateOne(forumCommentsConditionObj, forumCommentsSaveObj, { session, upsert: true });
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - forum-comments / Reply
     // ---------------------------------------------
-    
+
     if (Object.keys(forumRepliesConditionObj).length !== 0 && Object.keys(forumRepliesSaveObj).length !== 0) {
       await SchemaForumComments.updateOne(forumRepliesConditionObj, forumRepliesSaveObj, { session, upsert: true });
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - images-and-videos
     // ---------------------------------------------
-    
+
     if (Object.keys(imagesAndVideosConditionObj).length !== 0 && Object.keys(imagesAndVideosSaveObj).length !== 0) {
-      
-      
+
+
       // --------------------------------------------------
       //   画像＆動画を削除する
       // --------------------------------------------------
-      
+
       const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
-      
+
       if (arr.length === 0) {
-        
+
         await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj, { session });
-        
-        
+
+
       // --------------------------------------------------
       //   画像＆動画を保存
       // --------------------------------------------------
-        
+
       } else {
-        
+
         await SchemaImagesAndVideos.updateOne(imagesAndVideosConditionObj, imagesAndVideosSaveObj, { session, upsert: true });
-        
+
       }
-      
+
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - game-communities
     // ---------------------------------------------
-    
+
     if (Object.keys(gameCommunitiesConditionObj).length !== 0 && Object.keys(gameCommunitiesSaveObj).length !== 0) {
       await SchemaGameCommunities.updateOne(gameCommunitiesConditionObj, gameCommunitiesSaveObj, { session });
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - user-communities
     // ---------------------------------------------
-    
+
     if (Object.keys(userCommunitiesConditionObj).length !== 0 && Object.keys(userCommunitiesSaveObj).length !== 0) {
       await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Transaction / Commit
     // --------------------------------------------------
-    
+
     await session.commitTransaction();
     // console.log('--------コミット-----------');
-    
+
     session.endSession();
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----- forumRepliesConditionObj -----\n
     //   ${util.inspect(forumRepliesConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- forumRepliesSaveObj -----\n
     //   ${util.inspect(forumRepliesSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- forumCommentsConditionObj -----\n
     //   ${util.inspect(forumCommentsConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- forumCommentsSaveObj -----\n
     //   ${util.inspect(forumCommentsSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- forumThreadsConditionObj -----\n
     //   ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- forumThreadsSaveObj -----\n
     //   ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- imagesAndVideosConditionObj -----\n
     //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- imagesAndVideosSaveObj -----\n
     //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- userCommunitiesConditionObj -----\n
     //   ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- userCommunitiesSaveObj -----\n
     //   ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return returnObj;
-    
-    
+
+
   } catch (errorObj) {
-    
+
     // console.log(`
     //   ----- errorObj -----\n
     //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
+
+
     // --------------------------------------------------
     //   Transaction / Rollback
     // --------------------------------------------------
-    
+
     await session.abortTransaction();
     // console.log('--------ロールバック-----------');
-    
+
     session.endSession();
-    
-    
+
+
     throw errorObj;
-    
+
   }
-  
+
 };
 
 
@@ -3686,7 +3686,7 @@ const transactionForUpsert = async ({
  * @return {Object}
  */
 const transactionForDeleteComment = async ({
-  
+
   forumThreadsConditionObj,
   forumThreadsSaveObj,
   forumCommentsConditionObj,
@@ -3696,171 +3696,171 @@ const transactionForDeleteComment = async ({
   gameCommunitiesSaveObj = {},
   userCommunitiesConditionObj = {},
   userCommunitiesSaveObj = {},
-  
+
 }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   let returnObj = {};
-  
-  
+
+
   // --------------------------------------------------
   //   Transaction / Session
   // --------------------------------------------------
-  
+
   const session = await SchemaForumThreads.startSession();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Transaction / Start
     // --------------------------------------------------
-    
+
     await session.startTransaction();
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   DB
     // --------------------------------------------------
-    
+
     await SchemaForumComments.deleteMany(forumRepliesConditionObj, { session });
     await SchemaForumComments.deleteOne(forumCommentsConditionObj, { session });
     await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session });
-    
-    
+
+
     // ---------------------------------------------
     //   - images-and-videos
     // ---------------------------------------------
-    
+
     if (Object.keys(imagesAndVideosConditionObj).length !== 0) {
       await SchemaImagesAndVideos.deleteMany(imagesAndVideosConditionObj, { session });
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - game-communities
     // ---------------------------------------------
-    
+
     if (Object.keys(gameCommunitiesConditionObj).length !== 0 && Object.keys(gameCommunitiesSaveObj).length !== 0) {
       await SchemaGameCommunities.updateOne(gameCommunitiesConditionObj, gameCommunitiesSaveObj, { session });
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - user-communities
     // ---------------------------------------------
-    
+
     if (Object.keys(userCommunitiesConditionObj).length !== 0 && Object.keys(userCommunitiesSaveObj).length !== 0) {
       await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Transaction / Commit
     // --------------------------------------------------
-    
+
     await session.commitTransaction();
     // console.log('--------コミット-----------');
-    
+
     session.endSession();
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----- forumCommentsConditionObj -----\n
     //   ${util.inspect(forumCommentsConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- imagesAndVideosConditionObj -----\n
     //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- forumThreadsConditionObj -----\n
     //   ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- forumThreadsSaveObj -----\n
     //   ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- userCommunitiesConditionObj -----\n
     //   ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- userCommunitiesSaveObj -----\n
     //   ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return returnObj;
-    
-    
+
+
   } catch (errorObj) {
-    
+
     // console.log(`
     //   ----- errorObj -----\n
     //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
+
+
     // --------------------------------------------------
     //   Transaction / Rollback
     // --------------------------------------------------
-    
+
     await session.abortTransaction();
     // console.log('--------ロールバック-----------');
-    
+
     session.endSession();
-    
-    
+
+
     throw errorObj;
-    
+
   }
-  
+
 };
 
 
@@ -3869,7 +3869,7 @@ const transactionForDeleteComment = async ({
 /**
  * Transaction 返信を削除する
  * 返信を削除して、コメント、スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
- * 
+ *
  * @param {Object} forumRepliesConditionObj - DB forum-comments 検索条件
  * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
  * @param {Object} forumCommentsConditionObj - DB forum-comments 検索条件
@@ -3880,10 +3880,10 @@ const transactionForDeleteComment = async ({
  * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
  * @param {Object} userCommunitiesConditionObj - DB user-communities 検索条件
  * @param {Object} userCommunitiesSaveObj - DB user-communities 保存データ
- * @return {Object} 
+ * @return {Object}
  */
 const transactionForDeleteReply = async ({
-  
+
   forumRepliesConditionObj,
   imagesAndVideosConditionObj,
   forumCommentsConditionObj,
@@ -3894,206 +3894,206 @@ const transactionForDeleteReply = async ({
   gameCommunitiesSaveObj = {},
   userCommunitiesConditionObj = {},
   userCommunitiesSaveObj = {},
-  
+
 }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   let returnObj = {};
-  
-  
+
+
   // --------------------------------------------------
   //   Transaction / Session
   // --------------------------------------------------
-  
+
   const session = await SchemaForumThreads.startSession();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Transaction / Start
     // --------------------------------------------------
-    
+
     await session.startTransaction();
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   - forum-comments (reply) / Delete
     // --------------------------------------------------
-    
+
     await SchemaForumComments.deleteOne(forumRepliesConditionObj, { session });
-    
-    
+
+
     // ---------------------------------------------
     //   - forum-comments & forum-threads / Update
     // ---------------------------------------------
-    
+
     await SchemaForumComments.updateOne(forumCommentsConditionObj, forumCommentsSaveObj, { session });
     await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session });
-    
-    
+
+
     // ---------------------------------------------
     //   - images-and-videos / Delete
     // ---------------------------------------------
-    
+
     if (Object.keys(imagesAndVideosConditionObj).length !== 0) {
       await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj, { session });
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - game-communities / Update
     // ---------------------------------------------
-    
+
     if (Object.keys(gameCommunitiesConditionObj).length !== 0 && Object.keys(gameCommunitiesSaveObj).length !== 0) {
       await SchemaGameCommunities.updateOne(gameCommunitiesConditionObj, gameCommunitiesSaveObj, { session });
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - user-communities / Update
     // ---------------------------------------------
-    
+
     if (Object.keys(userCommunitiesConditionObj).length !== 0 && Object.keys(userCommunitiesSaveObj).length !== 0) {
       await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Transaction / Commit
     // --------------------------------------------------
-    
+
     await session.commitTransaction();
     // console.log('--------コミット-----------');
-    
+
     session.endSession();
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----------------------------------------\n
     //   /app/@database/forum-comments/model.js - transactionForDeleteReply
     // `);
-    
+
     // console.log(`
     //   ----- forumRepliesConditionObj -----\n
     //   ${util.inspect(forumRepliesConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- imagesAndVideosConditionObj -----\n
     //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- forumCommentsConditionObj -----\n
     //   ${util.inspect(forumCommentsConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- forumCommentsSaveObj -----\n
     //   ${util.inspect(forumCommentsSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- forumThreadsConditionObj -----\n
     //   ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- forumThreadsSaveObj -----\n
     //   ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- gameCommunitiesConditionObj -----\n
     //   ${util.inspect(gameCommunitiesConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- gameCommunitiesSaveObj -----\n
     //   ${util.inspect(gameCommunitiesSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- userCommunitiesConditionObj -----\n
     //   ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- userCommunitiesSaveObj -----\n
     //   ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return returnObj;
-    
-    
+
+
   } catch (errorObj) {
-    
+
     // console.log(`
     //   ----- errorObj -----\n
     //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
+
+
     // --------------------------------------------------
     //   Transaction / Rollback
     // --------------------------------------------------
-    
+
     await session.abortTransaction();
     // console.log('--------ロールバック-----------');
-    
+
     session.endSession();
-    
-    
+
+
     throw errorObj;
-    
+
   }
-  
+
 };
 
 
@@ -4106,14 +4106,14 @@ const transactionForDeleteReply = async ({
 // --------------------------------------------------
 
 module.exports = {
-  
+
   findOne,
   find,
   count,
   upsert,
   insertMany,
   deleteMany,
-  
+
   findCommentsAndRepliesByForumThreads_idsArr,
   findRepliesByForumComments_idsArr,
   getPage,
@@ -4121,9 +4121,9 @@ module.exports = {
   findRepliesForUpsert,
   findForDeleteComment,
   findForDeleteReply,
-  
+
   transactionForUpsert,
   transactionForDeleteComment,
   transactionForDeleteReply,
-  
+
 };

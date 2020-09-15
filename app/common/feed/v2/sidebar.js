@@ -15,7 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-import SwiperCore, { Pagination, Autoplay } from 'swiper';
+import SwiperCore, { Pagination, Mousewheel, Autoplay } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 /** @jsx jsx */
@@ -34,14 +34,14 @@ import lodashHas from 'lodash/has';
 //   Components
 // ---------------------------------------------
 
-import FeedCard from 'app/common/feed/card.js';
+import FeedCard from 'app/common/feed/v2/card.js';
 
 
 // ---------------------------------------------
 //   install Swiper components
 // ---------------------------------------------
 
-SwiperCore.use([Pagination, Autoplay]);
+SwiperCore.use([Pagination, Mousewheel, Autoplay]);
 
 
 
@@ -65,6 +65,7 @@ const Component = (props) => {
   const {
     
     feedObj = {},
+    top = false,
     
   } = props;
   
@@ -136,56 +137,31 @@ const Component = (props) => {
   // --------------------------------------------------
   
   return (
-    <div
+    <Swiper
       css={css`
-        position: relative;
-        margin: 0 0 10px 0;
+        // max-height: 500px;
+        // height: 500px;
+        margin: ${top ? '0' : '18px 0 0 0'};
+        padding: 0 0 2px 0; 
+
+        @media screen and (max-width: 947px) {
+          display: none;
+        }
       `}
+      direction={'vertical'}
+      spaceBetween={14}
+      autoHeight={true}
+      slidesPerView={'auto'}
+      loop={true}
+      pagination={{ clickable: false }}
+      autoplay={{
+        delay: 30000,
+        disableOnInteraction: false,
+      }}
+      mousewheel={true}
     >
-      
-      <h2
-        css={css`
-          position: absolute;
-          top: 6px;
-          left: 6px;
-          z-index: 2;
-          
-          color: white;
-          border: solid 2px white;
-          padding: 5px 10px 2px 10px;
-          border-radius: 0.5em;
-          
-          background-color: #000;
-          background-color: rgba(0, 0, 0, 0.5);
-          
-          font-size: 20px;
-          font-weight: normal;
-          
-          pointer-events: none;
-        `}
-      >
-        最新フィード
-      </h2>
-
-      <Swiper
-        css={css`
-          margin: 24px 0 0 0;
-          padding: 0 0 2px 0; 
-        `}
-        direction={'horizontal'}
-        spaceBetween={14}
-        slidesPerView={'auto'}
-        freeMode={true}
-        pagination={{ clickable: false }}
-        autoplay={{
-          delay: 5000,
-          disableOnInteraction: false,
-        }}
-      >
-        {componentFeedsArr}
-      </Swiper>
-
-    </div>
+      {componentFeedsArr}
+    </Swiper>
   );
   
   

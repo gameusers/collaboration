@@ -30,6 +30,13 @@ a.link:hover {
 }
 
 
+/* コンテンツが少ないときもフッターをページ一番下に固定するために必要 */
+#__next {
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: 67px;
+  box-sizing: border-box;
+}
 
 
 /* Swiper 上書き */

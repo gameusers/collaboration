@@ -33,8 +33,8 @@ import lodashGet from 'lodash/get';
 //   States
 // ---------------------------------------------
 
-import { ContainerStateCommunity } from 'app/@states/community.js';
-import { ContainerStateForum } from 'app/@states/forum.js';
+// import { ContainerStateCommunity } from 'app/@states/community.js';
+// import { ContainerStateForum } from 'app/@states/forum.js';
 
 
 // ---------------------------------------------
@@ -51,11 +51,11 @@ import { getCookie } from 'app/@modules/cookie.js';
 // ---------------------------------------------
 
 import Layout from 'app/common/layout/v2/layout.js';
-import ForumNavigation from 'app/common/forum/v2/navigation.js';
-import Forum from 'app/common/forum/v2/forum.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 import FeedHorizontal from 'app/common/feed/v2/horizontal.js';
+
+import CardGC from 'app/common/community-list/v2/card-gc.js';
 
 
 
@@ -78,33 +78,33 @@ const ContainerLayout = (props) => {
   //   States
   // --------------------------------------------------
 
-  const stateCommunity = ContainerStateCommunity.useContainer();
-  const stateForum = ContainerStateForum.useContainer();
+  // const stateCommunity = ContainerStateCommunity.useContainer();
+  // const stateForum = ContainerStateForum.useContainer();
 
-  const { setGameCommunityObj } = stateCommunity;
-  const { setForumThreadsForListObj, setForumThreadsObj, setForumCommentsObj, setForumRepliesObj } = stateForum;
-
-
-  // --------------------------------------------------
-  //   Hooks
-  // --------------------------------------------------
-
-  useEffect(() => {
+  // const { setGameCommunityObj } = stateCommunity;
+  // const { setForumThreadsForListObj, setForumThreadsObj, setForumCommentsObj, setForumRepliesObj } = stateForum;
 
 
-    // --------------------------------------------------
-    //   Router.push でページを移動した際の処理
-    //   getServerSideProps でデータを取得してからデータを更新する
-    // --------------------------------------------------
+  // // --------------------------------------------------
+  // //   Hooks
+  // // --------------------------------------------------
 
-    setGameCommunityObj(props.gameCommunityObj);
-    setForumThreadsForListObj(props.forumThreadsForListObj);
-    setForumThreadsObj(props.forumThreadsObj);
-    setForumCommentsObj(props.forumCommentsObj);
-    setForumRepliesObj(props.forumRepliesObj);
+  // useEffect(() => {
 
 
-  }, [props.ISO8601]);
+  //   // --------------------------------------------------
+  //   //   Router.push でページを移動した際の処理
+  //   //   getServerSideProps でデータを取得してからデータを更新する
+  //   // --------------------------------------------------
+
+  //   setGameCommunityObj(props.gameCommunityObj);
+  //   setForumThreadsForListObj(props.forumThreadsForListObj);
+  //   setForumThreadsObj(props.forumThreadsObj);
+  //   setForumCommentsObj(props.forumCommentsObj);
+  //   setForumRepliesObj(props.forumRepliesObj);
+
+
+  // }, [props.ISO8601]);
 
 
 
@@ -138,13 +138,14 @@ const ContainerLayout = (props) => {
   const componentSidebar =
     <React.Fragment>
 
-      <ForumNavigation
+      {/* <ForumNavigation
         urlID={props.urlID}
         gameCommunities_id={props.gameCommunities_id}
-      />
+      /> */}
 
       <FeedSidebar
         feedObj={props.feedObj}
+        top={true}
       />
 
     </React.Fragment>
@@ -162,15 +163,17 @@ const ContainerLayout = (props) => {
         arr={props.breadcrumbsArr}
       />
 
-      <Forum
+      {/* <Forum
         urlID={props.urlID}
         gameCommunities_id={props.gameCommunities_id}
         enableAnonymity={true}
-      />
+      /> */}
 
-      <FeedHorizontal
+      <CardGC />
+
+      {/* <FeedHorizontal
         feedObj={props.feedObj}
-      />
+      /> */}
 
     </React.Fragment>
   ;
@@ -218,32 +221,22 @@ const Component = (props) => {
   //   unstated-next - Initial State
   // --------------------------------------------------
 
-  const initialStateObj = {
+  // const initialStateObj = {
 
-    gameCommunityObj: props.gameCommunityObj,
-    forumThreadsForListObj: props.forumThreadsForListObj,
-    forumThreadsObj: props.forumThreadsObj,
-    forumCommentsObj: props.forumCommentsObj,
-    forumRepliesObj: props.forumRepliesObj,
+  //   gameCommunityObj: props.gameCommunityObj,
+  //   forumThreadsForListObj: props.forumThreadsForListObj,
+  //   forumThreadsObj: props.forumThreadsObj,
+  //   forumCommentsObj: props.forumCommentsObj,
+  //   forumRepliesObj: props.forumRepliesObj,
 
-  };
+  // };
 
 
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
 
-  return (
-    <ContainerStateCommunity.Provider initialState={initialStateObj}>
-
-      <ContainerStateForum.Provider initialState={initialStateObj}>
-
-        <ContainerLayout {...props} />
-
-      </ContainerStateForum.Provider>
-
-    </ContainerStateCommunity.Provider>
-  );
+  return <ContainerLayout {...props} />;
 
 
 };
@@ -279,7 +272,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Query
   // --------------------------------------------------
 
-  const urlID = query.urlID;
+  const page = query.page;
 
 
   // --------------------------------------------------
@@ -293,13 +286,8 @@ export async function getServerSideProps({ req, res, query }) {
   //   Get Cookie Data
   // --------------------------------------------------
 
-  const threadListPage = 1;
-  const threadListLimit = getCookie({ key: 'forumThreadListLimit', reqHeadersCookie });
-
-  const threadPage = 1;
-  const threadLimit = getCookie({ key: 'forumThreadLimit', reqHeadersCookie });
-  const commentLimit = getCookie({ key: 'forumCommentLimit', reqHeadersCookie });
-  const replyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
+  // const page = 1;
+  const limit = getCookie({ key: 'communityLimit', reqHeadersCookie });
 
 
   // --------------------------------------------------
@@ -308,7 +296,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   const resultObj = await fetchWrapper({
 
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/${urlID}?threadListPage=${threadListPage}&threadListLimit=${threadListLimit}&threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/list?page=${page}&limit=${limit}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -325,25 +313,25 @@ export async function getServerSideProps({ req, res, query }) {
 
   const login = lodashGet(dataObj, ['login'], false);
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
-  const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
+  // const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
   const feedObj = lodashGet(dataObj, ['feedObj'], {});
 
-  const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
-  const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
-  const gameCommunityObj = lodashGet(dataObj, ['gameCommunityObj'], {});
-  const forumThreadsForListObj = lodashGet(dataObj, ['forumThreadsForListObj'], {});
-  const forumThreadsObj = lodashGet(dataObj, ['forumThreadsObj'], {});
-  const forumCommentsObj = lodashGet(dataObj, ['forumCommentsObj'], {});
-  const forumRepliesObj = lodashGet(dataObj, ['forumRepliesObj'], {});
+  // const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
+  // const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
+  // const gameCommunityObj = lodashGet(dataObj, ['gameCommunityObj'], {});
+  // const forumThreadsForListObj = lodashGet(dataObj, ['forumThreadsForListObj'], {});
+  // const forumThreadsObj = lodashGet(dataObj, ['forumThreadsObj'], {});
+  // const forumCommentsObj = lodashGet(dataObj, ['forumCommentsObj'], {});
+  // const forumRepliesObj = lodashGet(dataObj, ['forumRepliesObj'], {});
 
 
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
 
-  const title = `${gameName} - Game Users`;
+  const title = `ゲームコミュニティ - Game Users`;
 
 
   // --------------------------------------------------
@@ -354,39 +342,26 @@ export async function getServerSideProps({ req, res, query }) {
 
     {
       name: 'トップ',
-      href: `/gc/[urlID]`,
-      as: `/gc/${urlID}`,
+      href: `/`,
+      as: `/`,
+      active: false,
+    },
+
+    {
+      name: 'ゲームC',
+      href: `/gc/list/[[...slug]]`,
+      as: `/gc/list`,
       active: true,
     },
 
     {
-      name: '募集',
-      href: `/gc/[urlID]/rec/[[...slug]]`,
-      as: `/gc/${urlID}/rec`,
-      active: false,
-    },
-
-    {
-      name: 'フォロワー',
-      href: `/gc/[urlID]/follower`,
-      as: `/gc/${urlID}/follower`,
+      name: 'ユーザーC',
+      href: `/uc/list/[[...slug]]`,
+      as: `/uc/list`,
       active: false,
     }
 
   ];
-
-  if (accessLevel === 100) {
-
-    headerNavMainArr.push(
-      {
-        name: '設定',
-        href: `/gc/[urlID]/settings`,
-        as: `/gc/${urlID}/settings`,
-        active: false,
-      }
-    );
-
-  }
 
 
   // --------------------------------------------------
@@ -398,16 +373,16 @@ export async function getServerSideProps({ req, res, query }) {
     {
       type: 'gc/list',
       anchorText: '',
-      href: '/gc/list/[[...slug]]',
-      as: `/gc/list`,
-    },
-
-    {
-      type: 'gc/index',
-      anchorText: gameName,
       href: '',
       as: '',
     },
+
+    // {
+    //   type: 'gc/list',
+    //   anchorText: gameName,
+    //   href: '',
+    //   as: '',
+    // },
 
   ];
 
@@ -416,8 +391,8 @@ export async function getServerSideProps({ req, res, query }) {
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
-  res.cookie('recentAccessPageHref', '/gc/[urlID]');
-  res.cookie('recentAccessPageAs', `/gc/${urlID}`);
+  // res.cookie('recentAccessPageHref', '/gc/[urlID]');
+  // res.cookie('recentAccessPageAs', `/gc/${urlID}`);
 
 
 
@@ -485,13 +460,13 @@ export async function getServerSideProps({ req, res, query }) {
       experienceObj,
       feedObj,
 
-      urlID,
-      gameCommunities_id,
-      gameCommunityObj,
-      forumThreadsForListObj,
-      forumThreadsObj,
-      forumCommentsObj,
-      forumRepliesObj,
+      // urlID,
+      // gameCommunities_id,
+      // gameCommunityObj,
+      // forumThreadsForListObj,
+      // forumThreadsObj,
+      // forumCommentsObj,
+      // forumRepliesObj,
 
     }
 

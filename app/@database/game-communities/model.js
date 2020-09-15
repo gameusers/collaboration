@@ -50,38 +50,38 @@ const { formatFollowsObj } = require('../follows/format.js');
  * @return {Object} 取得データ
  */
 const findOne = async ({ conditionObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   FindOne
     // --------------------------------------------------
-    
+
     return await SchemaGameCommunities.findOne(conditionObj).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -93,37 +93,37 @@ const findOne = async ({ conditionObj }) => {
  * @return {Array} 取得データ
  */
 const find = async ({ conditionObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Find
     // --------------------------------------------------
-    
+
     return await SchemaGameCommunities.find(conditionObj).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -135,37 +135,37 @@ const find = async ({ conditionObj }) => {
  * @return {number} カウント数
  */
 const count = async ({ conditionObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Find
     // --------------------------------------------------
-    
+
     return await SchemaGameCommunities.countDocuments(conditionObj).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -178,41 +178,41 @@ const count = async ({ conditionObj }) => {
  * @return {Array}
  */
 const upsert = async ({ conditionObj, saveObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
+
     if (!saveObj || !Object.keys(saveObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Upsert
     // --------------------------------------------------
-    
+
     return await SchemaGameCommunities.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -224,37 +224,37 @@ const upsert = async ({ conditionObj, saveObj }) => {
  * @return {Array}
  */
 const insertMany = async ({ saveArr }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!saveArr || !saveArr.length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   insertMany
     // --------------------------------------------------
-    
+
     return await SchemaGameCommunities.insertMany(saveArr);
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -264,40 +264,40 @@ const insertMany = async ({ saveArr }) => {
  * 削除する
  * @param {Object} conditionObj - 検索条件
  * @param {boolean} reset - trueでデータをすべて削除する
- * @return {Array} 
+ * @return {Array}
  */
 const deleteMany = async ({ conditionObj, reset = false }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!reset && (!conditionObj || !Object.keys(conditionObj).length)) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Delete
     // --------------------------------------------------
-    
+
     return await SchemaGameCommunities.deleteMany(conditionObj);
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -314,36 +314,36 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * @return {Object} 取得データ
  */
 const findForGameCommunity = async ({
-  
+
   localeObj,
   loginUsers_id,
   urlID,
   gameCommunities_id,
-  
+
 }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Language & Country
     // --------------------------------------------------
-    
+
     const language = lodashGet(localeObj, ['language'], '');
     const country = lodashGet(localeObj, ['country'], '');
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Match Condition Array
     // --------------------------------------------------
-    
+
     let matchConditionArr = [{
       $match: {
         language,
@@ -351,9 +351,9 @@ const findForGameCommunity = async ({
         urlID,
       }
     }];
-    
+
     if (gameCommunities_id) {
-      
+
       matchConditionArr = [{
         $match: {
           language,
@@ -361,30 +361,30 @@ const findForGameCommunity = async ({
           gameCommunities_id,
         }
       }];
-      
+
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Aggregation - games
     // --------------------------------------------------
-    
+
     const docGamesArr = await SchemaGames.aggregate([
-      
-      
+
+
       // --------------------------------------------------
       //   Match Condition Array
       // --------------------------------------------------
-      
+
       ...matchConditionArr,
-      
-      
+
+
       // --------------------------------------------------
       //   images-and-videos / トップ画像
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -410,19 +410,19 @@ const findForGameCommunity = async ({
             as: 'imagesAndVideosObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   images-and-videos / サムネイル用
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -448,19 +448,19 @@ const findForGameCommunity = async ({
             as: 'imagesAndVideosThumbnailObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosThumbnailObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   hardwares / ハードウェア
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -489,12 +489,12 @@ const findForGameCommunity = async ({
             as: 'hardwaresArr'
           }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   game-genres / ジャンル
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -523,12 +523,12 @@ const findForGameCommunity = async ({
             as: 'gameGenresArr'
           }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   developers-publishers / 開発＆パブリッシャー
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -571,12 +571,12 @@ const findForGameCommunity = async ({
             as: 'developersPublishersArr'
           }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   follows
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -604,19 +604,19 @@ const findForGameCommunity = async ({
             as: 'followsObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$followsObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   game-communities
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -641,19 +641,19 @@ const findForGameCommunity = async ({
             as: 'gameCommunitiesObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$gameCommunitiesObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $project
       // --------------------------------------------------
-      
+
       {
         $project: {
           gameCommunities_id: 1,
@@ -672,12 +672,12 @@ const findForGameCommunity = async ({
           gameCommunitiesObj: 1,
         }
       },
-      
-      
+
+
     ]).exec();
-    
-    
-    
+
+
+
     // console.log(`
     //   ----- docGamesArr -----\n
     //   ${util.inspect(docGamesArr, { colors: true, depth: null })}\n
@@ -686,33 +686,33 @@ const findForGameCommunity = async ({
     // --------------------------------------------------
     //   docGamesObj
     // --------------------------------------------------
-    
+
     const docGamesObj = lodashGet(docGamesArr, [0], {});
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   follow フォーマット
     // --------------------------------------------------
-    
+
     const followsObj = formatFollowsObj({
-      
+
       followsObj: lodashGet(docGamesObj, ['followsObj'], {}),
       adminUsers_id: '',
       loginUsers_id,
-      
+
     });
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Locale / name & description
     // --------------------------------------------------
-    
+
     const headerObj = {
-      
+
       type: 'gc',
       gameCommunities_id: docGamesObj.gameCommunities_id,
       urlID: docGamesObj.urlID,
@@ -726,14 +726,14 @@ const findForGameCommunity = async ({
       imagesAndVideosObj: formatImagesAndVideosObj({ localeObj, obj: docGamesObj.imagesAndVideosObj }),
       imagesAndVideosThumbnailObj: formatImagesAndVideosObj({ localeObj, obj: docGamesObj.imagesAndVideosThumbnailObj }),
       followsObj,
-      
+
     };
-    
-    
+
+
     // --------------------------------------------------
     //   ヒーローイメージがランダムに表示されるように並び替える
     // --------------------------------------------------
-    
+
     // const imagesAndVideosObj = lodashGet(headerObj, ['imagesAndVideosObj'], {});
 
     // console.log(`
@@ -742,10 +742,10 @@ const findForGameCommunity = async ({
     //   --------------------\n
     // `);
 
-    if (headerObj.imagesAndVideosObj) {
-      
+    if (lodashHas(headerObj, ['imagesAndVideosObj', 'arr'])) {
+
       const arr = lodashGet(headerObj, ['imagesAndVideosObj', 'arr'], []);
-      
+
       // 並び替え
       for (let i = arr.length - 1; i > 0; i--){
         const r = Math.floor(Math.random() * (i + 1));
@@ -753,77 +753,77 @@ const findForGameCommunity = async ({
         arr[i] = arr[r];
         arr[r] = tmp;
       }
-      
+
       lodashSet(headerObj, ['imagesAndVideosObj', 'arr'], arr);
-      
+
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   returnObj
     // --------------------------------------------------
-    
+
     const returnObj = {
-      
+
       gameCommunitiesObj: docGamesObj.gameCommunitiesObj,
       headerObj,
-      
+
     };
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----------------------------------------\n
     //   /app/@database/game-communities/model.js - findForGameCommunity
     // `);
-    
+
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
     //   urlID: {green ${urlID}}
     // `);
-    
+
     // console.log(`
     //   ----- docGamesArr -----\n
     //   ${util.inspect(docGamesArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- docGamesObj -----\n
     //   ${util.inspect(docGamesObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return returnObj;
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -835,19 +835,19 @@ const findForGameCommunity = async ({
  * @return {Object} 取得データ
  */
 const findForGameCommunityByGameCommunities_id = async ({ gameCommunities_id }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Match Condition Array
     // --------------------------------------------------
-    
+
     const matchConditionArr = [
       {
         $match: {
@@ -855,26 +855,26 @@ const findForGameCommunityByGameCommunities_id = async ({ gameCommunities_id }) 
         }
       },
     ];
-    
-    
+
+
     // --------------------------------------------------
     //   Aggregation - game-communities
     // --------------------------------------------------
-    
+
     const docArr = await SchemaGameCommunities.aggregate([
-      
-      
+
+
       // --------------------------------------------------
       //   Match Condition Array
       // --------------------------------------------------
-      
+
       ...matchConditionArr,
-      
-      
+
+
       // --------------------------------------------------
       //   $project
       // --------------------------------------------------
-      
+
       { $project:
         {
           createdDate: 0,
@@ -882,64 +882,64 @@ const findForGameCommunityByGameCommunities_id = async ({ gameCommunities_id }) 
           __v: 0,
         }
       },
-      
-      
+
+
     ]).exec();
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   returnObj
     // --------------------------------------------------
-    
+
     const returnObj = lodashGet(docArr, [0], {});
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----------------------------------------\n
     //   /app/@database/game-communities/model.js - findForGameCommunityByGameCommunities_id
     // `);
-    
+
     // console.log(chalk`
     //   gameCommunities_id: {green ${gameCommunities_id}}
     // `);
-    
+
     // console.log(`
     //   ----- docArr -----\n
     //   ${util.inspect(docArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return returnObj;
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -952,15 +952,15 @@ const findForGameCommunityByGameCommunities_id = async ({ gameCommunities_id }) 
 // --------------------------------------------------
 
 module.exports = {
-  
+
   findOne,
   find,
   count,
   upsert,
   insertMany,
   deleteMany,
-  
+
   findForGameCommunity,
   findForGameCommunityByGameCommunities_id,
-  
+
 };

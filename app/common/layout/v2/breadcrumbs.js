@@ -63,6 +63,8 @@ import IconSearch from '@material-ui/icons/Search';
 
 
 
+
+
 // --------------------------------------------------
 //   Function Components
 // --------------------------------------------------
@@ -249,16 +251,13 @@ const Component = (props) => {
           {valueObj.href && valueObj.as ?
 
             <Link href={valueObj.href} as={valueObj.as}>
-              <a>
-                <span
-                  css={css`
-                    // color: rgba(0, 0, 0, 0.54);
-                    color: rgba(0, 0, 0, 0.7);
-                    cursor: pointer;
-                  `}
-                >
-                  {anchorText}
-                </span>
+              <a
+                css={css`
+                  color: rgba(0, 0, 0, 0.7);
+                  cursor: pointer;
+                `}
+              >
+                {anchorText}
               </a>
             </Link>
 
@@ -285,6 +284,8 @@ const Component = (props) => {
   }
 
 
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -293,6 +294,8 @@ const Component = (props) => {
   //   ----------------------------------------\n
   //   /app/common/layout/v2/components/breadcrumbs.js
   // `);
+
+
 
 
   // --------------------------------------------------
@@ -329,15 +332,13 @@ const Component = (props) => {
           >
 
             <Link href={'/'} as={'/'}>
-              <a>
-                <span
-                  css={css`
-                    color: rgba(0, 0, 0, 0.7);
-                    cursor: pointer;
-                  `}
-                >
-                  Game Users
-                </span>
+              <a
+                css={css`
+                  color: rgba(0, 0, 0, 0.7);
+                  cursor: pointer;
+                `}
+              >
+                Game Users
               </a>
             </Link>
 

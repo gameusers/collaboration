@@ -82,154 +82,42 @@ const Component = (props) => {
 
 
   // --------------------------------------------------
-  //   カードデータが存在しない場合、空のコンポーネントを返す
+  //   データが存在しない場合、空のコンポーネントを返す
   // --------------------------------------------------
 
-  // if (Object.keys(obj).length === 0) {
-  //   return null;
-  // }
+  if (Object.keys(obj).length === 0) {
+    return null;
+  }
 
 
 
-
-  // // ---------------------------------------------
-  // //   Data
-  // // ---------------------------------------------
-
-  // const type = lodashGet(obj, ['type'], '');
-  // const _id = lodashGet(obj, ['_id'], '');
-  // const title = lodashGet(obj, ['title'], '');
-  // const comment = lodashGet(obj, ['comment'], '');
-  // const datetimeFrom = lodashGet(obj, ['datetimeFrom'], '');
-  // const commentsAndReplies = lodashGet(obj, ['commentsAndReplies'], 0);
+  // console.log(`
+  //   ----- obj -----\n
+  //   ${util.inspect(obj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
 
 
-  // // --------------------------------------------------
-  // //   Game
-  // // --------------------------------------------------
+  // ---------------------------------------------
+  //   Data
+  // ---------------------------------------------
 
-  // const gameUrlID = lodashGet(obj, ['gamesObj', 'urlID'], '');
-  // const gameName = lodashGet(obj, ['gamesObj', 'name'], '');
-  // const gameImagesAndVideosObj = lodashGet(obj, ['gamesObj', 'imagesAndVideosObj'], {});
-  // const gameImagesAndVideosThumbnailObj = lodashGet(obj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
-
-
-  // // --------------------------------------------------
-  // //   User Community
-  // // --------------------------------------------------
-
-  // const userCommunityID = lodashGet(obj, ['userCommunitiesObj', 'userCommunityID'], '');
-  // const ucName = lodashGet(obj, ['userCommunitiesObj', 'name'], '');
-  // const ucImagesAndVideosObj = lodashGet(obj, ['userCommunitiesObj', 'imagesAndVideosObj'], {});
-  // const ucImagesAndVideosThumbnailObj = lodashGet(obj, ['userCommunitiesObj', 'imagesAndVideosThumbnailObj'], {});
+  const urlID = lodashGet(obj, ['urlID'], '');
+  const name = lodashGet(obj, ['name'], '');
+  const subtitle = lodashGet(obj, ['subtitle'], '');
+  const src = lodashGet(obj, ['src'], '/img/common/thumbnail/none-game.jpg');
+  const srcSet = lodashGet(obj, ['srcSet'], '');
+  const developersPublishers = lodashGet(obj, ['developersPublishers'], '');
+  const followedCount = lodashGet(obj, ['followedCount'], 0);
+  const datetimeFrom = lodashGet(obj, ['datetimeFrom'], '');
 
 
+  // --------------------------------------------------
+  //   Link
+  // --------------------------------------------------
 
-
-  // // --------------------------------------------------
-  // //   Images and Videos
-  // // --------------------------------------------------
-
-  // // ---------------------------------------------
-  // //   - ゲームのサムネイルを表示する
-  // // ---------------------------------------------
-
-  // let imagesAndVideosObj = {};
-  // let maxHeight = '';
-  // let imageOrVideo = 'image';
-
-
-  // // ---------------------------------------------
-  // //   - アップロードした画像または動画がある場合、そちらを表示
-  // // ---------------------------------------------
-
-  // if (lodashHas(obj, ['imagesAndVideosObj'])) {
-
-  //   imagesAndVideosObj = lodashGet(obj, ['imagesAndVideosObj'], {});
-  //   maxHeight = '';
-
-  //   const imagesAndVideosType = lodashGet(obj, ['imagesAndVideosObj', 'arr', 0, 'type'], '');
-
-  //   if (imagesAndVideosType === 'video') {
-  //     imageOrVideo = 'video';
-  //   }
-
-
-  // // ---------------------------------------------
-  // //   - ゲームのヒーローイメージ
-  // // ---------------------------------------------
-
-  // } else if (Object.keys(gameImagesAndVideosObj).length !== 0) {
-
-  //   imagesAndVideosObj = gameImagesAndVideosObj;
-  //   maxHeight = '';
-
-
-  // // ---------------------------------------------
-  // //   - ゲームのサムネイル
-  // // ---------------------------------------------
-
-  // } else if (Object.keys(gameImagesAndVideosThumbnailObj).length !== 0) {
-
-  //   imagesAndVideosObj = gameImagesAndVideosThumbnailObj;
-  //   maxHeight = '128';
-
-
-  // // ---------------------------------------------
-  // //   - ユーザーコミュニティのヒーローイメージ
-  // // ---------------------------------------------
-
-  // } else if (Object.keys(ucImagesAndVideosObj).length !== 0) {
-
-  //   imagesAndVideosObj = ucImagesAndVideosObj;
-  //   maxHeight = '';
-
-
-  // // ---------------------------------------------
-  // //   - ユーザーコミュニティのサムネイル
-  // // ---------------------------------------------
-
-  // } else if (Object.keys(ucImagesAndVideosThumbnailObj).length !== 0) {
-
-  //   imagesAndVideosObj = ucImagesAndVideosThumbnailObj;
-  //   maxHeight = '128';
-
-  // }
-
-
-
-
-  // // ---------------------------------------------
-  // //   Link
-  // // ---------------------------------------------
-
-  // let linkHref = '';
-  // let linkAs = '';
-  // let communityName = gameName;
-  // let communityLinkHref = `/gc/[urlID]`;
-  // let communityLinkAs = `/gc/${gameUrlID}`;
-
-  // if (type === 'forumThreadsGc' || type === 'forumCommentsAndRepliesGc') {
-
-  //   linkHref = `/gc/[urlID]/forum/[[...slug]]`;
-  //   linkAs = `/gc/${gameUrlID}/forum/${_id}`;
-
-  // } else if (type === 'recruitmentThreads' || type === 'recruitmentComments' || type === 'recruitmentReplies') {
-
-  //   linkHref = `/gc/[urlID]/rec/[[...slug]]`;
-  //   linkAs = `/gc/${gameUrlID}/rec/${_id}`;
-
-  // } else if (type === 'forumThreadsUc' || type === 'forumCommentsAndRepliesUc') {
-
-  //   linkHref = `/uc/[userCommunityID]/forum/[[...slug]]`;
-  //   linkAs = `/uc/${userCommunityID}/forum/${_id}`;
-  //   communityName = ucName;
-  //   communityLinkHref = `/uc/[userCommunityID]`;
-  //   communityLinkAs = `/uc/${userCommunityID}`;
-
-  // }
-
-
+  let linkHref = '/gc/[urlID]/';
+  let linkAs = `/gc/${urlID}`;
 
 
   // --------------------------------------------------
@@ -260,207 +148,224 @@ const Component = (props) => {
   // --------------------------------------------------
 
   return (
-    <Paper
-      css={css`
-        && {
-          display: flex;
-          flex-flow: row nowrap;
-          align-items: center;
-          margin: 12px 0 0 0;
-          // cursor: pointer;
-        }
-      `}
-      // square
+    <Link
+      href={linkHref}
+      as={linkAs}
     >
 
+      <a className="link">
 
-      {/* Left */}
-      <div
-        css={css`
-          // border-radius: 10px;
-          // width: 64px;
-          // margin: 12px 0 0 0;
-        `}
-      >
-        <img
+        <Paper
           css={css`
-            border-radius: 4px 0 0 4px;
-          `}
-          src="http://localhost:8080/img/gc/2G5j7D3AM/rykFm6Vfg/320w.jpg"
-          width="48"
-        />
-      </div>
-
-
-      {/* Right */}
-      <div
-        css={css`
-          display: flex;
-          flex-flow: column nowrap;
-          // align-content: space-between;
-          // height: 100%;
-          // align-items: center;
-          line-height: 1;
-          width: 100%;
-          margin: 4px 0 0 0;
-          padding: 4px 8px;
-        `}
-      >
-
-        <div
-          css={css`
-            font-weight: bold;
-            // background-color: pink;
-          `}
-        >
-          Dead by Daylight - 天空の花嫁たちへ　ビアンカ　フローラ -
-        </div>
-
-
-        <div
-          css={css`
-            display: flex;
-            flex-flow: row wrap;
-            align-items: center;
-
-            margin: 4px 0 0 0;
-            // background-color: green;
-            // font-weight: bold;
+            && {
+              display: flex;
+              flex-flow: row nowrap;
+              align-items: center;
+              margin: 12px 0 0 0;
+            }
           `}
         >
 
-          <div>Behaviour Interactive</div>
+
+          {/* Left */}
+          <div
+            css={css`
+              // border-radius: 10px;
+              // width: 64px;
+              // margin: 12px 0 0 0;
+            `}
+          >
+            <img
+              css={css`
+                border-radius: 4px 0 0 4px;
+              `}
+              src={src}
+              srcSet={srcSet}
+              width="48"
+            />
+          </div>
 
 
+
+
+          {/* Right */}
           <div
             css={css`
               display: flex;
-              flex-flow: row wrap;
-              margin: 0 0 0 auto;
-
-              @media screen and (max-width: 480px) {
-                display: none;
-              }
+              flex-flow: column nowrap;
+              line-height: 1;
+              width: 100%;
+              margin: 4px 0 0 0;
+              padding: 4px 8px;
             `}
           >
 
             <div
               css={css`
-                display: flex;
-                flex-flow: row nowrap;
-                align-items: center;
-                margin: 0 0 0 12px;
+                font-weight: bold;
+                // background-color: pink;
               `}
             >
-              <IconSchedule
-                css={css`
-                  && {
-                    font-size: 16px;
-                    margin: 0 0 2px 0;
-                  }
-                `}
-              />
-              <div
-                css={css`
-                  font-size: 12px;
-                  margin: 0 0 0 2px;
-                `}
-              >
-                20分前
-              </div>
-            </div>
-
-
-
-            <div
-              css={css`
-                display: flex;
-                flex-flow: row nowrap;
-                align-items: center;
-                margin: 0 0 0 12px;
-              `}
-            >
-              <IconPermIdentity
-                css={css`
-                  && {
-                    font-size: 16px;
-                    margin: 0 0 0 0;
-                  }
-                `}
-              />
-              <div
-                css={css`
-                  font-size: 12px;
-                  margin: 0 0 0 2px;
-                `}
-              >
-                1000
-              </div>
+              {name} {subtitle}
             </div>
 
 
             <div
               css={css`
                 display: flex;
-                flex-flow: row nowrap;
+                flex-flow: row wrap;
                 align-items: center;
-                margin: 0 0 0 12px;
+
+                margin: 4px 0 0 0;
+                // background-color: green;
+                // font-weight: bold;
               `}
             >
-              <IconChatBubble
-                css={css`
-                  && {
-                    font-size: 16px;
-                    margin: 0 0 0 0;
-                  }
-                `}
-              />
-              <div
-                css={css`
-                  font-size: 12px;
-                  margin: 0 0 0 2px;
-                `}
-              >
-                123
-              </div>
-            </div>
+
+              <div>{developersPublishers}</div>
 
 
-            <div
-              css={css`
-                display: flex;
-                flex-flow: row nowrap;
-                align-items: center;
-                margin: 0 0 0 12px;
-              `}
-            >
-              <IconDescription
-                css={css`
-                  && {
-                    font-size: 16px;
-                    margin: 0 0 0 0;
-                  }
-                `}
-              />
               <div
                 css={css`
-                  font-size: 12px;
-                  margin: 0 0 0 2px;
+                  display: flex;
+                  flex-flow: row wrap;
+                  margin: 0 0 0 auto;
+
+                  @media screen and (max-width: 480px) {
+                    display: none;
+                  }
                 `}
               >
-                30
+
+
+                {datetimeFrom &&
+                  <div
+                    css={css`
+                      display: flex;
+                      flex-flow: row nowrap;
+                      align-items: center;
+                      margin: 0 0 0 12px;
+                    `}
+                  >
+                    <IconSchedule
+                      css={css`
+                        && {
+                          font-size: 16px;
+                          margin: 0 0 1px 0;
+                        }
+                      `}
+                    />
+                    <div
+                      css={css`
+                        font-size: 12px;
+                        margin: 0 0 0 2px;
+                      `}
+                    >
+                      {datetimeFrom}
+                    </div>
+                  </div>
+                }
+
+
+                {followedCount > 0 &&
+                  <div
+                    css={css`
+                      display: flex;
+                      flex-flow: row nowrap;
+                      align-items: center;
+                      margin: 0 0 0 12px;
+                    `}
+                  >
+                    <IconPermIdentity
+                      css={css`
+                        && {
+                          font-size: 16px;
+                          margin: 0 0 0 0;
+                        }
+                      `}
+                    />
+                    <div
+                      css={css`
+                        font-size: 12px;
+                        margin: 0 0 0 2px;
+                      `}
+                    >
+                      {followedCount}
+                    </div>
+                  </div>
+                }
+
+
+                {/* {forumThreadCount > 0 &&
+                  <div
+                    css={css`
+                      display: flex;
+                      flex-flow: row nowrap;
+                      align-items: center;
+                      margin: 0 0 0 12px;
+                    `}
+                  >
+                    <IconChatBubble
+                      css={css`
+                        && {
+                          font-size: 16px;
+                          margin: 0 0 0 0;
+                        }
+                      `}
+                    />
+                    <div
+                      css={css`
+                        font-size: 12px;
+                        margin: 0 0 0 2px;
+                      `}
+                    >
+                      {forumThreadCount}
+                    </div>
+                  </div>
+                }
+
+
+                {recruitmentThreadCount > 0 &&
+                  <div
+                    css={css`
+                      display: flex;
+                      flex-flow: row nowrap;
+                      align-items: center;
+                      margin: 0 0 0 12px;
+                    `}
+                  >
+                    <IconDescription
+                      css={css`
+                        && {
+                          font-size: 16px;
+                          margin: 0 0 0 0;
+                        }
+                      `}
+                    />
+                    <div
+                      css={css`
+                        font-size: 12px;
+                        margin: 0 0 0 2px;
+                      `}
+                    >
+                      {recruitmentThreadCount}
+                    </div>
+                  </div>
+                } */}
+
               </div>
+
+
             </div>
 
           </div>
 
 
-        </div>
+        </Paper>
 
-      </div>
+      </a>
 
-
-    </Paper>
+    </Link>
   );
 
 

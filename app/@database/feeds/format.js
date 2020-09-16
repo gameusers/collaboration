@@ -469,7 +469,7 @@ const formatFeedsArr = ({
 
 
     // --------------------------------------------------
-    //   Data Push
+    //   Set Data
     // --------------------------------------------------
 
     lodashSet(obj, ['dataObj', valueObj._id], clonedObj);

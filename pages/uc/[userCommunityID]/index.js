@@ -74,75 +74,75 @@ import About from 'app/uc/v2/about.js';
  * @param {Object} props - Props
  */
 const ContainerLayout = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateCommunity = ContainerStateCommunity.useContainer();
   const stateForum = ContainerStateForum.useContainer();
-  
+
   const { setUserCommunityObj } = stateCommunity;
   const { setForumThreadsForListObj, setForumThreadsObj, setForumCommentsObj, setForumRepliesObj } = stateForum;
-  
-  
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
 
   useEffect(() => {
-    
-    
+
+
     // --------------------------------------------------
     //   Router.push でページを移動した際の処理
     //   getServerSideProps でデータを取得してからデータを更新する
     // --------------------------------------------------
-    
+
     setUserCommunityObj(props.userCommunityObj);
     setForumThreadsForListObj(props.forumThreadsForListObj);
     setForumThreadsObj(props.forumThreadsObj);
     setForumCommentsObj(props.forumCommentsObj);
     setForumRepliesObj(props.forumRepliesObj);
-    
-    
+
+
   }, [props.ISO8601]);
-  
-  
+
+
 
 
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /pages/uc/[userCommunityID]/index.js - ContainerLayout
   // `);
-  
+
   // console.log(`
   //   ----- props -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(props)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(`
   //   ----- forumThreadsObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(chalk`
   //   gameCommunities_id: {green ${gameCommunities_id}}
   // `);
-  
+
 
 
 
   // --------------------------------------------------
   //   Component - Sidebar
   // --------------------------------------------------
-  
+
   let componentSidebar =
     <React.Fragment>
 
@@ -173,18 +173,18 @@ const ContainerLayout = (props) => {
 
   }
 
-  
+
   // --------------------------------------------------
   //   Component - Contents
   // --------------------------------------------------
-  
-  const componentContent = 
+
+  const componentContent =
     <React.Fragment>
-      
+
       <Breadcrumbs
         arr={props.breadcrumbsArr}
       />
-      
+
       {props.accessRightRead &&
         <Forum
           userCommunityID={props.userCommunityID}
@@ -202,27 +202,27 @@ const ContainerLayout = (props) => {
       <FeedHorizontal
         feedObj={props.feedObj}
       />
-      
+
     </React.Fragment>
   ;
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Layout
       title={props.title}
       componentSidebar={componentSidebar}
       componentContent={componentContent}
-      
+
       headerObj={props.headerObj}
       headerNavMainArr={props.headerNavMainArr}
     />
   );
-  
-  
+
+
 };
 
 
@@ -233,50 +233,50 @@ const ContainerLayout = (props) => {
  * @param {Object} props - Props
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Error
   //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
   // --------------------------------------------------
-  
+
   if (props.statusCode !== 200) {
     return <Error statusCode={props.statusCode} />;
   }
-  
-  
+
+
   // --------------------------------------------------
   //   unstated-next - Initial State
   // --------------------------------------------------
-  
+
   const initialStateObj = {
-    
+
     userCommunityObj: props.userCommunityObj,
     forumThreadsForListObj: props.forumThreadsForListObj,
     forumThreadsObj: props.forumThreadsObj,
     forumCommentsObj: props.forumCommentsObj,
     forumRepliesObj: props.forumRepliesObj,
-    
+
   };
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <ContainerStateCommunity.Provider initialState={initialStateObj}>
-      
+
       <ContainerStateForum.Provider initialState={initialStateObj}>
-        
+
         <ContainerLayout {...props} />
-        
+
       </ContainerStateForum.Provider>
-      
+
     </ContainerStateCommunity.Provider>
   );
-  
-  
+
+
 };
 
 
@@ -289,114 +289,114 @@ const Component = (props) => {
  * @param {Object} query - クエリー
  */
 export async function getServerSideProps({ req, res, query }) {
-  
-  
+
+
   // --------------------------------------------------
   //   CSRF
   // --------------------------------------------------
-  
+
   createCsrfToken(req, res);
-  
-  
+
+
   // --------------------------------------------------
   //   Cookie & Accept Language
   // --------------------------------------------------
-  
+
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-  
-  
+
+
   // --------------------------------------------------
   //   Query
   // --------------------------------------------------
-  
+
   const userCommunityID = query.userCommunityID;
-  
-  
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   const ISO8601 = moment().utc().toISOString();
-  
-  
+
+
   // --------------------------------------------------
   //   Get Cookie Data
   // --------------------------------------------------
-  
+
   const threadListPage = 1;
   const threadListLimit = getCookie({ key: 'forumThreadListLimit', reqHeadersCookie });
-  
+
   const threadPage = 1;
   const threadLimit = getCookie({ key: 'forumThreadLimit', reqHeadersCookie });
   const commentLimit = getCookie({ key: 'forumCommentLimit', reqHeadersCookie });
   const replyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
-  
-  
+
+
   // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
-  
+
   const resultObj = await fetchWrapper({
-    
+
     urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/uc/${userCommunityID}?threadListPage=${threadListPage}&threadListLimit=${threadListLimit}&threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
-    
+
   });
-  
+
   const statusCode = lodashGet(resultObj, ['statusCode'], 400);
   const dataObj = lodashGet(resultObj, ['data'], {});
-  
-  
+
+
   // --------------------------------------------------
   //   dataObj
   // --------------------------------------------------
-  
+
   const login = lodashGet(dataObj, ['login'], false);
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
   const feedObj = lodashGet(dataObj, ['feedObj'], {});
-  
+
   const userCommunities_id = lodashGet(dataObj, ['userCommunityObj', '_id'], '');
   const userCommunityName = lodashGet(dataObj, ['userCommunityObj', 'name'], '');
   const enableAnonymity = lodashGet(dataObj, ['userCommunityObj', 'anonymity'], false);
   const accessRightRead = lodashGet(dataObj, ['accessRightRead'], false);
-  
+
   const userCommunityObj = lodashGet(dataObj, ['userCommunityObj'], {});
   const forumThreadsForListObj = lodashGet(dataObj, ['forumThreadsForListObj'], {});
   const forumThreadsObj = lodashGet(dataObj, ['forumThreadsObj'], {});
   const forumCommentsObj = lodashGet(dataObj, ['forumCommentsObj'], {});
   const forumRepliesObj = lodashGet(dataObj, ['forumRepliesObj'], {});
-  
-  
+
+
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
-  
+
   const title = `${userCommunityName}`;
-  
-  
+
+
   // --------------------------------------------------
   //   Header Navigation Link
   // --------------------------------------------------
-  
+
   const headerNavMainArr = [
-    
+
     {
       name: 'トップ',
       href: `/uc/[userCommunityID]`,
       as: `/uc/${userCommunityID}`,
       active: true,
     },
-    
+
   ];
-  
+
   if (accessRightRead) {
-    
+
     headerNavMainArr.push(
       {
         name: 'メンバー',
@@ -405,11 +405,11 @@ export async function getServerSideProps({ req, res, query }) {
         active: false,
       }
     );
-    
+
   }
-  
+
   if (accessLevel >= 50) {
-    
+
     headerNavMainArr.push(
       {
         name: '設定',
@@ -418,79 +418,79 @@ export async function getServerSideProps({ req, res, query }) {
         active: false,
       }
     );
-    
+
   }
-  
-  
+
+
   // --------------------------------------------------
   //   パンくずリスト
   // --------------------------------------------------
-  
+
   const breadcrumbsArr = [
-    
+
     {
-      type: 'uc',
+      type: 'uc/list',
       anchorText: '',
-      href: `/uc/index`,
-      as: `/uc`,
+      href: '/uc/list/[[...slug]]',
+      as: `/uc/list`,
     },
-    
+
     {
       type: 'uc/index',
       anchorText: userCommunityName,
       href: '',
       as: '',
     },
-    
+
   ];
-  
-  
+
+
   // ---------------------------------------------
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
-  
+
   res.cookie('recentAccessPageHref', '/uc/[userCommunityID]');
   res.cookie('recentAccessPageAs', `/uc/${userCommunityID}`);
-  
-  
+
+
 
 
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /pages/uc/[userCommunityID]/index.js
   // `);
-  
+
   // console.log(`
   //   ----- resultObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(chalk`
   //   threadListPage: {green ${threadListPage}}
   //   threadPage: {green ${threadPage}}
-    
+
   //   threadListLimit: {green ${threadListLimit}}
   //   threadLimit: {green ${threadLimit}}
   //   commentLimit: {green ${commentLimit}}
   //   replyLimit: {green ${replyLimit}}
   // `);
-  
 
 
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
-  return { 
-    
+
+  return {
+
     props: {
-      
+
       reqAcceptLanguage,
       ISO8601,
       statusCode,
@@ -512,12 +512,12 @@ export async function getServerSideProps({ req, res, query }) {
       forumCommentsObj,
       forumRepliesObj,
       enableAnonymity,
-      
+
     }
-    
+
   };
-  
-  
+
+
 }
 
 

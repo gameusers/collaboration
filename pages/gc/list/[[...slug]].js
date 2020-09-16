@@ -55,7 +55,7 @@ import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 import FeedHorizontal from 'app/common/feed/v2/horizontal.js';
 
-import CardGC from 'app/common/community-list/v2/card-gc.js';
+import GcList from 'app/gc/list/list.js';
 
 
 
@@ -72,6 +72,17 @@ import CardGC from 'app/common/community-list/v2/card-gc.js';
  * @param {Object} props - Props
  */
 const ContainerLayout = (props) => {
+
+
+  // --------------------------------------------------
+  //   props
+  // --------------------------------------------------
+
+  const {
+
+    gcListObj = {},
+
+  } = props;
 
 
   // --------------------------------------------------
@@ -105,6 +116,26 @@ const ContainerLayout = (props) => {
 
 
   // }, [props.ISO8601]);
+
+
+
+
+  // --------------------------------------------------
+  //   Component - List
+  // --------------------------------------------------
+
+  // const componentsArr = [];
+
+  // for (const [index, valueObj] of gameCommunitiesArr.entries()) {
+
+  //   componentsArr.push(
+  //     <CardGC
+  //       key={index}
+  //       obj={valueObj}
+  //     />
+  //   );
+
+  // }
 
 
 
@@ -163,13 +194,9 @@ const ContainerLayout = (props) => {
         arr={props.breadcrumbsArr}
       />
 
-      {/* <Forum
-        urlID={props.urlID}
-        gameCommunities_id={props.gameCommunities_id}
-        enableAnonymity={true}
-      /> */}
-
-      <CardGC />
+      <GcList
+        obj={gcListObj}
+      />
 
       {/* <FeedHorizontal
         feedObj={props.feedObj}
@@ -313,18 +340,11 @@ export async function getServerSideProps({ req, res, query }) {
 
   const login = lodashGet(dataObj, ['login'], false);
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
-  // const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
   const feedObj = lodashGet(dataObj, ['feedObj'], {});
 
-  // const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
-  // const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
-  // const gameCommunityObj = lodashGet(dataObj, ['gameCommunityObj'], {});
-  // const forumThreadsForListObj = lodashGet(dataObj, ['forumThreadsForListObj'], {});
-  // const forumThreadsObj = lodashGet(dataObj, ['forumThreadsObj'], {});
-  // const forumCommentsObj = lodashGet(dataObj, ['forumCommentsObj'], {});
-  // const forumRepliesObj = lodashGet(dataObj, ['forumRepliesObj'], {});
+  const gcListObj = lodashGet(dataObj, ['gcListObj'], {});
 
 
   // --------------------------------------------------
@@ -349,15 +369,15 @@ export async function getServerSideProps({ req, res, query }) {
 
     {
       name: 'ゲームC',
-      href: `/gc/list/[[...slug]]`,
-      as: `/gc/list`,
+      href: '/gc/list/[[...slug]]',
+      as: '/gc/list',
       active: true,
     },
 
     {
       name: 'ユーザーC',
-      href: `/uc/list/[[...slug]]`,
-      as: `/uc/list`,
+      href: '/uc/list/[[...slug]]',
+      as: '/uc/list',
       active: false,
     }
 
@@ -377,13 +397,6 @@ export async function getServerSideProps({ req, res, query }) {
       as: '',
     },
 
-    // {
-    //   type: 'gc/list',
-    //   anchorText: gameName,
-    //   href: '',
-    //   as: '',
-    // },
-
   ];
 
 
@@ -391,8 +404,8 @@ export async function getServerSideProps({ req, res, query }) {
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
-  // res.cookie('recentAccessPageHref', '/gc/[urlID]');
-  // res.cookie('recentAccessPageAs', `/gc/${urlID}`);
+  res.cookie('recentAccessPageHref', '/gc/list/[[...slug]]');
+  res.cookie('recentAccessPageAs', '/gc/list');
 
 
 
@@ -415,26 +428,6 @@ export async function getServerSideProps({ req, res, query }) {
   // console.log(chalk`
   //   ISO8601: {green ${ISO8601}}
   //   loginUsersObj.accessDate: {green ${loginUsersObj.accessDate}}
-  // `);
-
-  // console.log(chalk`
-  //   threadListPage: {green ${threadListPage}}
-  //   threadPage: {green ${threadPage}}
-
-  //   threadListLimit: {green ${threadListLimit}}
-  //   threadLimit: {green ${threadLimit}}
-  //   commentLimit: {green ${commentLimit}}
-  //   replyLimit: {green ${replyLimit}}
-  // `);
-
-  // console.log(`
-  //   ----- reqHeadersCookie -----\n
-  //   ${util.inspect(reqHeadersCookie, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-
-  // console.log(chalk`
-  //   reqAcceptLanguage: {green ${reqAcceptLanguage}}
   // `);
 
 
@@ -460,13 +453,7 @@ export async function getServerSideProps({ req, res, query }) {
       experienceObj,
       feedObj,
 
-      // urlID,
-      // gameCommunities_id,
-      // gameCommunityObj,
-      // forumThreadsForListObj,
-      // forumThreadsObj,
-      // forumCommentsObj,
-      // forumRepliesObj,
+      gcListObj,
 
     }
 

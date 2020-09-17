@@ -24,6 +24,7 @@ import lodashHas from 'lodash/has';
 // ---------------------------------------------
 
 import ModelGameCommunities from 'app/@database/game-communities/model.js';
+import ModelHardwares from 'app/@database/hardwares/model.js';
 import ModelFeeds from 'app/@database/feeds/model.js';
 
 
@@ -33,6 +34,16 @@ import ModelFeeds from 'app/@database/feeds/model.js';
 
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+import { validationInteger } from 'app/@validations/integer.js';
+import { validationKeyword } from 'app/@validations/keyword.js';
+
+import { validationGameCommunitiesListLimit } from 'app/@database/game-communities/validations/limit.js';
 
 
 // ---------------------------------------------
@@ -73,7 +84,6 @@ export default async (req, res) => {
 
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
-  // const loginUsersRole = lodashGet(req, ['user', 'role'], '');
 
 
   // --------------------------------------------------
@@ -105,9 +115,13 @@ export default async (req, res) => {
 
     const page = parseInt(lodashGet(req, ['query', 'page'], 1), 10);
     const limit = parseInt(lodashGet(req, ['query', 'limit'], ''), 10);
+    const hardwares = lodashGet(req, ['query', 'hardwares'], '');
+    const keyword = lodashGet(req, ['query', 'keyword'], '');
 
     lodashSet(requestParametersObj, ['page'], page);
     lodashSet(requestParametersObj, ['limit'], limit);
+    lodashSet(requestParametersObj, ['hardwares'], hardwares);
+    lodashSet(requestParametersObj, ['keyword'], keyword);
 
 
 
@@ -122,16 +136,54 @@ export default async (req, res) => {
 
 
     // --------------------------------------------------
-    //   DB find / Game Community
+    //   DB find / Game Communities List
     // --------------------------------------------------
 
-    returnObj.gcListObj = await ModelGameCommunities.findGameList({
+    // ---------------------------------------------
+    //   - 引数
+    // ---------------------------------------------
+
+    const argumentsObj = {
 
       localeObj,
-      // page,
-      // limit,
 
-    });
+    };
+
+
+    // ---------------------------------------------
+    //   - page & limit
+    // ---------------------------------------------
+
+    if (await validationInteger({ throwError: false, required: true, value: page }).error === false) {
+      argumentsObj.page = page;
+    }
+
+    if (await validationGameCommunitiesListLimit({ throwError: false, required: true, value: limit }).error === false) {
+      argumentsObj.limit = limit;
+    }
+
+
+    // ---------------------------------------------
+    //   - hardwareIDsArr
+    // ---------------------------------------------
+
+    const hardwareIDsArr = hardwares ? hardwares.split(',') : [];
+
+    if (hardwareIDsArr.length > 0) {
+      argumentsObj.hardwareIDsArr = hardwareIDsArr;
+    }
+
+
+    // ---------------------------------------------
+    //   - keyword
+    // ---------------------------------------------
+
+    if (await validationKeyword({ throwError: false, required: true, value: keyword }).error === false) {
+      argumentsObj.keyword = keyword;
+    }
+
+
+    returnObj.gcListObj = await ModelGameCommunities.findGameList(argumentsObj);
 
 
 
@@ -144,6 +196,20 @@ export default async (req, res) => {
 
       localeObj,
       arr: ['all'],
+
+    });
+
+
+
+
+    // --------------------------------------------------
+    //   ハードウェア情報 - 検索用
+    // --------------------------------------------------
+
+    returnObj.hardwaresArr = await ModelHardwares.findHardwaresArr({
+
+      localeObj,
+      hardwareIDsArr,
 
     });
 

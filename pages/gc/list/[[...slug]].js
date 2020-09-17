@@ -55,7 +55,8 @@ import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 import FeedHorizontal from 'app/common/feed/v2/horizontal.js';
 
-import GcList from 'app/gc/list/list.js';
+import GcNavigation from 'app/gc/list/v2/navigation.js';
+import GcList from 'app/gc/list/v2/list.js';
 
 
 
@@ -121,26 +122,6 @@ const ContainerLayout = (props) => {
 
 
   // --------------------------------------------------
-  //   Component - List
-  // --------------------------------------------------
-
-  // const componentsArr = [];
-
-  // for (const [index, valueObj] of gameCommunitiesArr.entries()) {
-
-  //   componentsArr.push(
-  //     <CardGC
-  //       key={index}
-  //       obj={valueObj}
-  //     />
-  //   );
-
-  // }
-
-
-
-
-  // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
 
@@ -169,14 +150,14 @@ const ContainerLayout = (props) => {
   const componentSidebar =
     <React.Fragment>
 
-      {/* <ForumNavigation
-        urlID={props.urlID}
-        gameCommunities_id={props.gameCommunities_id}
-      /> */}
+      <GcNavigation
+        // urlID={props.urlID}
+        // gameCommunities_id={props.gameCommunities_id}
+      />
 
       <FeedSidebar
         feedObj={props.feedObj}
-        top={true}
+        // top={true}
       />
 
     </React.Fragment>
@@ -299,7 +280,27 @@ export async function getServerSideProps({ req, res, query }) {
   //   Query
   // --------------------------------------------------
 
-  const page = query.page;
+  const page = lodashGet(query, ['page'], 1);
+  const hardwares = lodashGet(query, ['hardwares'], '');
+  const keyword = lodashGet(query, ['keyword'], '');
+  const slugsArr = lodashGet(query, ['slug'], []);
+
+  let pageType = '';
+
+  if (slugsArr.length === 0) {
+
+    pageType = 'index';
+
+  } else if (Math.sign(slugsArr[0]) === 1) {
+
+    pageType = 'page';
+    page = slugsArr[0];
+
+  } else if (slugsArr[0] === 'search') {
+
+    pageType = 'search';
+
+  }
 
 
   // --------------------------------------------------
@@ -313,8 +314,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Get Cookie Data
   // --------------------------------------------------
 
-  // const page = 1;
-  const limit = getCookie({ key: 'communityLimit', reqHeadersCookie });
+  const limit = getCookie({ key: 'communityListLimit', reqHeadersCookie });
 
 
   // --------------------------------------------------
@@ -323,7 +323,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   const resultObj = await fetchWrapper({
 
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/list?page=${page}&limit=${limit}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/list?page=${page}&limit=${limit}&hardwares=${hardwares}&keyword=${keyword}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -351,7 +351,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Title
   // --------------------------------------------------
 
-  const title = `ゲームコミュニティ - Game Users`;
+  let title = `ゲームコミュニティ - Game Users`;
 
 
   // --------------------------------------------------
@@ -400,12 +400,84 @@ export async function getServerSideProps({ req, res, query }) {
   ];
 
 
+  // --------------------------------------------------
+  //   recentAccessPage
+  // --------------------------------------------------
+
+  let recentAccessPageHref = '/gc/list/[[...slug]]';
+  let recentAccessPageAs = '/gc/list';
+
+
+  // --------------------------------------------------
+  //   2ページ目以降
+  // --------------------------------------------------
+
+  if (pageType === 'page') {
+
+
+    // ---------------------------------------------
+    //   - Title
+    // ---------------------------------------------
+
+    title = `ゲームコミュニティ: Page ${page} - Game Users`;
+
+
+    // --------------------------------------------------
+    //   - recentAccessPage
+    // --------------------------------------------------
+
+    recentAccessPageAs = `/gc/list/${page}`;
+
+
+  // --------------------------------------------------
+  //   検索
+  // --------------------------------------------------
+
+  } else if (pageType === 'search') {
+
+
+    // ---------------------------------------------
+    //   - Title
+    // ---------------------------------------------
+
+    title = `ゲームコミュニティ検索 - Game Users`;
+
+
+    // ---------------------------------------------
+    //   - パンくずリスト
+    // ---------------------------------------------
+
+    breadcrumbsArr.push(
+
+      {
+        type: 'gc/list/search',
+        anchorText: '',
+        href: '',
+        as: '',
+      },
+
+    );
+
+
+    // --------------------------------------------------
+    //   - recentAccessPage
+    // --------------------------------------------------
+
+    const urlHardwares = hardwares ? `hardwares=${hardwares}&` : '';
+    const urlKeyword = keyword ? `keyword=${encodeURI(keyword)}&` : '';
+
+    recentAccessPageAs = `/gc/list/search?${urlHardwares}${urlKeyword}page=${page}`;
+
+
+  }
+
+
   // ---------------------------------------------
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
-  res.cookie('recentAccessPageHref', '/gc/list/[[...slug]]');
-  res.cookie('recentAccessPageAs', '/gc/list');
+  res.cookie('recentAccessPageHref', recentAccessPageHref);
+  res.cookie('recentAccessPageAs', recentAccessPageAs);
 
 
 
@@ -416,7 +488,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   // console.log(`
   //   ----------------------------------------\n
-  //   /pages/gc/[urlID]/index.js
+  //   pages/gc/list/[[...slug]].js
   // `);
 
   // console.log(`

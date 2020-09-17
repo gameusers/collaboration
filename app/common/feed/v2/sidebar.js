@@ -56,44 +56,64 @@ SwiperCore.use([Pagination, Mousewheel, Autoplay]);
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     feedObj = {},
     top = false,
-    
+
   } = props;
-  
-  
+
+
   // --------------------------------------------------
   //   カードデータが存在しない場合、空のコンポーネントを返す
   // --------------------------------------------------
-  
+
   if (Object.keys(feedObj).length === 0) {
     return null;
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component - Forum Game Community
   // --------------------------------------------------
-  
+
   const feedDataObj = lodashGet(feedObj, ['allObj', 'dataObj'], {});
   const feedArr = lodashGet(feedObj, ['allObj', 'page1Obj', 'arr'], []);
 
+
+  // ---------------------------------------------
+  //   配列をランダムに並び替える
+  //   これがないとどのページも同じカードが最初に表示されて代わり映えがしないため
+  //   本当は Swiper の初期表示番号の設定で対応したかったが
+  //   direction={'vertical'} の場合、initialSlide={number} が動かない。仕様かバグみたい。
+  // ---------------------------------------------
+
+  const clonedFeedArr = feedArr.slice();
+
+  for (let i = clonedFeedArr.length - 1; i > 0; i--){
+    const rand = Math.floor(Math.random() * (i + 1));
+    [clonedFeedArr[i], clonedFeedArr[rand]] = [clonedFeedArr[rand], clonedFeedArr[i]];
+  }
+
+
+  // ---------------------------------------------
+  //   Loop
+  // ---------------------------------------------
+
   const componentFeedsArr = [];
-  
-  for (const [index, _id] of feedArr.entries()) {
-    
+
+  for (const [index, _id] of clonedFeedArr.entries()) {
+
     const obj = feedDataObj[_id];
-    
+
     componentFeedsArr.push(
       <SwiperSlide
         key={index}
@@ -103,46 +123,53 @@ const Component = (props) => {
         />
       </SwiperSlide>
     );
-    
+
   }
 
-  
-  
-  
+
+  // --------------------------------------------------
+  //   最初に表示するカードをランダムに決定する
+  //   これがないとどのページも同じカードが最初に表示されて代わり映えがしないため
+  // --------------------------------------------------
+
+  // const min = 0;
+  // const max = feedArr.length;
+  // const initialSlide = Math.floor(Math.random() * (max - min) + min);
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   app/common/feed/sidebar.js
   // `);
-  
+
   // console.log(`
   //   ----- obj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(obj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(chalk`
-  //   showEditButton: {green ${showEditButton}}
-  //   defaultExpanded: {green ${defaultExpanded}}
+  //   initialSlide: {green ${initialSlide}}
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Swiper
       css={css`
-        // max-height: 500px;
-        // height: 500px;
         margin: ${top ? '0' : '18px 0 0 0'};
-        padding: 0 0 2px 0; 
+        padding: 0 0 2px 0;
 
         @media screen and (max-width: 947px) {
           display: none;
@@ -152,6 +179,10 @@ const Component = (props) => {
       spaceBetween={14}
       autoHeight={true}
       slidesPerView={'auto'}
+      // centeredSlides={true}
+      // centeredSlidesBounds={true}
+      // initialSlide={initialSlide}
+      // cssMode={true}
       loop={true}
       pagination={{ clickable: false }}
       autoplay={{
@@ -163,8 +194,8 @@ const Component = (props) => {
       {componentFeedsArr}
     </Swiper>
   );
-  
-  
+
+
 };
 
 

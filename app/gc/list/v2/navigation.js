@@ -57,7 +57,7 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 //   States
 // ---------------------------------------------
 
-import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
+// import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 
 
 // ---------------------------------------------
@@ -95,8 +95,7 @@ const Component = (props) => {
 
   const {
 
-    urlID,
-    gameCommunities_id,
+    searchKeyword,
 
   } = props;
 
@@ -105,20 +104,20 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
 
-  const stateRecruitment = ContainerStateRecruitment.useContainer();
+  // const stateRecruitment = ContainerStateRecruitment.useContainer();
 
-  const {
+  // const {
 
-    searchHardwaresArr,
-    setSearchHardwaresArr,
+  //   searchHardwaresArr,
+  //   setSearchHardwaresArr,
 
-    searchCategoriesArr,
-    setSearchCategoriesArr,
+  //   searchCategoriesArr,
+  //   setSearchCategoriesArr,
 
-    searchKeyword,
-    setSearchKeyword,
+  //   searchKeyword,
+  //   setSearchKeyword,
 
-  } = stateRecruitment;
+  // } = stateRecruitment;
 
 
   // --------------------------------------------------
@@ -143,57 +142,6 @@ const Component = (props) => {
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-
-  /**
-   * カテゴリーをチェックしたときに呼び出す
-   * @param {string} value - 値
-   */
-  const handleCategory = ({ value }) => {
-
-
-    // --------------------------------------------------
-    //   Clone
-    // --------------------------------------------------
-
-    let clonedArr = lodashCloneDeep(searchCategoriesArr);
-
-
-    // --------------------------------------------------
-    //   配列に存在しない場合は追加、存在する場合は削除
-    // --------------------------------------------------
-
-    if (clonedArr.indexOf(value) === -1) {
-
-      clonedArr.push(value);
-
-    } else {
-
-      const newArr = clonedArr.filter(number => number !== value);
-      clonedArr = newArr;
-
-    }
-
-
-    // --------------------------------------------------
-    //   数字の昇順に並び替え
-    // --------------------------------------------------
-
-    clonedArr = clonedArr.slice().sort((a, b) => {
-      return a - b;
-    });
-
-
-    // --------------------------------------------------
-    //   更新
-    // --------------------------------------------------
-
-    setSearchCategoriesArr(clonedArr);
-
-
-  };
-
-
-
 
   /**
    * 募集を検索する
@@ -366,12 +314,12 @@ const Component = (props) => {
 
   return (
     <Panel
-      heading="募集検索"
+      heading="検索"
       defaultExpanded={true}
     >
 
 
-      <p>条件を設定して募集を検索することができます。</p>
+      <p>条件を設定して検索することができます。</p>
 
 
 
@@ -438,7 +386,7 @@ const Component = (props) => {
                 margin: 0 0 14px 0;
               `}
             >
-              募集に関係するハードウェアを選んでください（PC版、○○版などの情報です）
+              ゲームのハードウェアを選んでください。
             </p>
 
             <p
@@ -460,91 +408,12 @@ const Component = (props) => {
 
 
         {/* Form */}
-        <FormHardwares
+        {/* <FormHardwares
           hardwaresArr={searchHardwaresArr}
           setHardwaresArr={setSearchHardwaresArr}
           limit={limitHardwares}
-        />
+        /> */}
 
-
-      </div>
-
-
-
-
-      {/* Form Category */}
-      <div
-        css={css`
-          border-top: 1px dashed #848484;
-          margin: 24px 0 0 0;
-          padding: 24px 0 0 0;
-        `}
-      >
-
-
-        {/* Heading */}
-        <h3
-          css={css`
-            font-size: 14px;
-            margin: 0 0 6px 0;
-          `}
-        >
-          カテゴリー
-        </h3>
-
-
-
-
-        {/* Checkbox */}
-        <FormControl
-          required
-          component="fieldset"
-        >
-
-          <FormGroup row>
-
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={searchCategoriesArr.indexOf(1) !== -1}
-                  onChange={() => handleCategory({
-                    value: 1,
-                  })}
-                  color="primary"
-                />
-              }
-              label="フレンド募集"
-            />
-
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={searchCategoriesArr.indexOf(2) !== -1}
-                  onChange={() => handleCategory({
-                    value: 2,
-                  })}
-                  color="primary"
-                />
-              }
-              label="メンバー募集"
-            />
-
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={searchCategoriesArr.indexOf(3) !== -1}
-                  onChange={() => handleCategory({
-                    value: 3,
-                  })}
-                  color="primary"
-                />
-              }
-              label="売買・交換相手募集"
-            />
-
-          </FormGroup>
-
-        </FormControl>
 
       </div>
 
@@ -569,7 +438,7 @@ const Component = (props) => {
             margin: 0 0 6px 0;
           `}
         >
-          タイトル・募集文検索
+          ゲーム名
         </h3>
 
 

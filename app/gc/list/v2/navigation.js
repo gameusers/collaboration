@@ -40,10 +40,9 @@ import lodashMerge from 'lodash/merge';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+import Popover from '@material-ui/core/Popover';
+import Paper from '@material-ui/core/Paper';
+// import Typography from '@material-ui/core/Typography';
 
 
 // ---------------------------------------------
@@ -95,7 +94,9 @@ const Component = (props) => {
 
   const {
 
-    searchKeyword,
+    page = 1,
+    hardwaresArr = [],
+    keyword,
 
   } = props;
 
@@ -127,7 +128,9 @@ const Component = (props) => {
   const intl = useIntl();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
-  const [showHardwareExplanation, setShowHardwareExplanation] = useState(false);
+  const [searchHardwaresArr, setSearchHardwaresArr] = useState(hardwaresArr);
+  const [searchKeyword, setSearchKeyword] = useState(keyword);
+  const [anchorEl, setAnchorEl] = useState(null);
 
 
   useEffect(() => {
@@ -144,16 +147,27 @@ const Component = (props) => {
   // --------------------------------------------------
 
   /**
-   * 募集を検索する
-   * @param {string} urlID - ゲームのURLになるID　例）Dead-by-Daylight
-   * @param {number} page - スレッドのページ
+   * ハードウェアの解説を表示する
+   * @param {object} event - イベント
    */
-  const handleSearch = ({
+  const handleHardwareExplanationOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  }
 
-    urlID,
-    page,
 
-  }) => {
+  /**
+   * ハードウェアの解説を非表示にする
+   */
+  const handleHardwareExplanationClose = () => {
+    setAnchorEl(null);
+  }
+
+
+  /**
+   * 検索する
+   * @param {number} page - ページ
+   */
+  const handleSearch = () => {
 
 
     try {
@@ -175,23 +189,22 @@ const Component = (props) => {
       // ---------------------------------------------
 
       const urlHardwares = hardwareIDsArr.length > 0 ? `hardwares=${hardwareIDsArr.join(',')}&` : '';
-      const urlCategories = searchCategoriesArr.length > 0 ? `categories=${searchCategoriesArr.join(',')}&` : '';
       const urlKeyword = searchKeyword ? `keyword=${encodeURI(searchKeyword)}&` : '';
 
-      let url = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
-      let as = `/gc/${urlID}/rec/search?${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
+      let url = `/gc/list/[[...slug]]?${urlHardwares}${urlKeyword}page=${page}`;
+      let as = `/gc/list/search?${urlHardwares}${urlKeyword}page=${page}`;
 
-      if (!urlHardwares && !urlCategories && !urlKeyword) {
+      if (!urlHardwares && !urlKeyword) {
 
         if (page === 1) {
 
-          url = `/gc/[urlID]/rec/index?urlID=${urlID}&page=${page}`;
-          as = `/gc/${urlID}/rec`;
+          url = '/gc/list/[[...slug]]';
+          as = '/gc/list';
 
         } else {
 
-          url = `/gc/[urlID]/rec/[...slug]?urlID=${urlID}&page=${page}`;
-          as = `/gc/${urlID}/rec/${page}`;
+          url = '/gc/list/[[...slug]]';
+          as = `/gc/list/${page}`;
 
         }
 
@@ -206,21 +219,12 @@ const Component = (props) => {
 
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/gc/rec/stores/store.js - handleSearch
+      //   app/gc/list/v2/navigation.js - handleSearch
       // `);
 
       // console.log(chalk`
-      //   urlID: {green ${urlID}}
-      //   gameCommunities_id: {green ${gameCommunities_id}}
       //   page: {green ${page}}
-      // `);
-
-      // console.log(chalk`
-      //   urlHardwares: {green ${urlHardwares}}
-      //   urlCategories: {green ${urlCategories}}
-      //   urlKeyword: {green ${urlKeyword}}
-      //   url: {green ${url}}
-      //   as: {green ${as}}
+      //   searchKeyword: {green ${searchKeyword}}
       // `);
 
       // console.log(`
@@ -233,10 +237,6 @@ const Component = (props) => {
       //   ----- searchCategoriesArr -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(searchCategoriesArr)), { colors: true, depth: null })}\n
       //   --------------------\n
-      // `);
-
-      // console.log(chalk`
-      //   searchKeyword: {green ${searchKeyword}}
       // `);
 
 
@@ -261,7 +261,7 @@ const Component = (props) => {
   //   Property
   // --------------------------------------------------
 
-  const limitHardwares = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_SEARCH_HARDWARES_LIMIT, 10);
+  const limitHardwares = parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_SEARCH_HARDWARES_LIMIT, 10);
 
 
   // --------------------------------------------------
@@ -269,6 +269,14 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const validationKeywordObj = validationKeyword({ value: searchKeyword });
+
+
+  // --------------------------------------------------
+  //   Popover
+  // --------------------------------------------------
+
+  const hardwareExplanationOpen = Boolean(anchorEl);
+  const hardwareExplanationID = hardwareExplanationOpen ? 'simple-popover' : undefined;
 
 
 
@@ -279,7 +287,7 @@ const Component = (props) => {
 
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/gc/rec/v2/components/navigation.js
+  //   app/gc/list/v2/navigation.js
   // `);
 
   // console.log(chalk`
@@ -292,17 +300,6 @@ const Component = (props) => {
   //   ----- searchHardwaresArr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(searchHardwaresArr)), { colors: true, depth: null })}\n
   //   --------------------\n
-  // `);
-
-  // console.log(`
-  //   ----- searchCategoriesArr -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(searchCategoriesArr)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-
-  // console.log(chalk`
-  //   searchKeyword: {green ${searchKeyword}}
-  //   encodeURI(initialKeyword): {green ${encodeURI(searchKeyword)}}
   // `);
 
 
@@ -362,8 +359,8 @@ const Component = (props) => {
               }
             `}
             color="primary"
-            aria-label="Show Notification Explanation"
-            onClick={() => setShowHardwareExplanation(!showHardwareExplanation)}
+            aria-label="Show Explanation"
+            onClick={(eventObj) => setAnchorEl(eventObj.currentTarget)}
           >
             <IconHelpOutline />
           </IconButton>
@@ -373,46 +370,70 @@ const Component = (props) => {
 
 
 
-        {/* 解説 */}
-        {showHardwareExplanation &&
-          <div
+        {/* ？アイコンを押すと表示される解説文 */}
+        <Popover
+          id={Boolean(anchorEl) ? 'popover' : undefined}
+          open={Boolean(anchorEl)}
+          anchorEl={anchorEl}
+          onClose={() => setAnchorEl(null)}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+        >
+
+          <Paper
             css={css`
-              margin: 12px 0 0 0;
+              max-width: 400px;
+              padding: 0 16px 8px 16px;
             `}
           >
 
-            <p
+            <div
               css={css`
-                margin: 0 0 14px 0;
+                margin: 12px 0 0 0;
               `}
             >
-              ゲームのハードウェアを選んでください。
-            </p>
 
-            <p
-              css={css`
-                margin: 0 0 14px 0;
-              `}
-            >
-              ハードウェア名（またはSFC、N64などの略称）の一部を入力すると、入力フォームの下に一覧でハードウェアの正式名称が表示されます。一覧上でハードウェアをクリック（タップ）すると入力は完了です。この欄では複数のハードウェアを入力することが可能です。
-            </p>
+              <p
+                css={css`
+                  margin: 0 0 14px 0;
+                `}
+              >
+                ゲームのハードウェアを選んでください。
+              </p>
 
-            <p>
-              ゲームのハードウェア名だけでなく、「Android」「iOS」「PC」などもハードウェアとして入力できます。
-            </p>
+              <p
+                css={css`
+                  margin: 0 0 14px 0;
+                `}
+              >
+                ハードウェア名（またはSFC、N64などの略称）の一部を入力すると、入力フォームの下に一覧でハードウェアの正式名称が表示されます。一覧上でハードウェアをクリック（タップ）すると入力は完了です。この欄では複数のハードウェアを入力することが可能です。
+              </p>
 
-          </div>
-        }
+              <p>
+                ゲームのハードウェア名だけでなく、「Android」「iOS」「PC」などもハードウェアとして入力できます。
+              </p>
+
+            </div>
+
+          </Paper>
+
+        </Popover>
 
 
 
 
         {/* Form */}
-        {/* <FormHardwares
+        <FormHardwares
           hardwaresArr={searchHardwaresArr}
           setHardwaresArr={setSearchHardwaresArr}
           limit={limitHardwares}
-        /> */}
+        />
 
 
       </div>
@@ -482,11 +503,7 @@ const Component = (props) => {
           variant="contained"
           color="primary"
           disabled={buttonDisabled}
-          onClick={() => handleSearch({
-            urlID,
-            gameCommunities_id,
-            page: 1,
-          })}
+          onClick={handleSearch}
         >
           検索する
         </Button>

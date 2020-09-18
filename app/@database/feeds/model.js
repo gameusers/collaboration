@@ -78,12 +78,12 @@ moment.locale('ja');
 const sortArray = (arr) => {
 
   const sortedArr = arr.sort((a, b) => {
-    
+
     const date1 = new Date(a.createdDate);
     const date2 = new Date(b.createdDate);
-    
+
     return (date1 < date2) ? 1 : -1;
-    
+
   });
 
   return sortedArr;
@@ -109,22 +109,20 @@ const sortArray = (arr) => {
  * @return {Object} 取得データ
  */
 const findFeed = async ({
-  
-  req,
+
   localeObj,
-  loginUsers_id,
   arr = [],
   gameCommunities_id,
   userCommunities_id,
   page = 1,
   limit = process.env.NEXT_PUBLIC_FEED_FORUM_LIMIT,
-  
+
 }) => {
-  
-  
+
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Language & Country & Parse
     // --------------------------------------------------
@@ -138,7 +136,7 @@ const findFeed = async ({
     // --------------------------------------------------
     //   returnObj
     // --------------------------------------------------
-    
+
     const returnObj = {};
 
 
@@ -147,14 +145,14 @@ const findFeed = async ({
     // --------------------------------------------------
     //   フォーラム / ゲームコミュニティ
     // --------------------------------------------------
-    
+
     if (arr.includes('all')) {
 
 
       const docForumsGcArr = await findForumGc({
 
         localeObj,
-  
+
       });
 
       const docRecruitmentsArr = await findRecruitment({
@@ -173,7 +171,7 @@ const findFeed = async ({
       // --------------------------------------------------
       //   配列を結合する
       // --------------------------------------------------
-      
+
       mergedArr = docForumsGcArr.concat(docRecruitmentsArr, docForumsUcArr);
 
 
@@ -181,41 +179,78 @@ const findFeed = async ({
       //   フォーマット
       // --------------------------------------------------
 
-      returnObj.allObj = formatFeedsArr({
-  
+      const allObj = formatFeedsArr({
+
         localeObj,
         arr: sortArray(mergedArr),
         page,
         limit,
-        
+
       });
+
+
+      // ---------------------------------------------
+      //   配列をランダムに並び替える
+      //   これがないとどのページも同じカードが最初に表示されて代わり映えがしないため
+      //   本当は Swiper の初期表示番号の設定で対応したかったが
+      //   direction={'vertical'} の場合、initialSlide={number} が動かない。仕様かバグなようだ。
+      // ---------------------------------------------
+
+      const feedArr = lodashGet(allObj, ['page1Obj', 'arr'], []);
+      const clonedFeedArr = feedArr.slice();
+
+      for (let i = clonedFeedArr.length - 1; i > 0; i--){
+        const rand = Math.floor(Math.random() * (i + 1));
+        [clonedFeedArr[i], clonedFeedArr[rand]] = [clonedFeedArr[rand], clonedFeedArr[i]];
+      }
+
+
+      // --------------------------------------------------
+      //   Set
+      // --------------------------------------------------
+
+      returnObj.allObj = allObj;
+      returnObj.sidebarRandomArr = clonedFeedArr;
+
+
+      // console.log(`
+      //   ----- returnObj.allObj.page1Obj -----\n
+      //   ${util.inspect(returnObj.allObj.page1Obj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // console.log(`
+      //   ----- returnObj.sidebarRandomArr -----\n
+      //   ${util.inspect(returnObj.sidebarRandomArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
 
 
     }
 
 
-    
-    
+
+
     // --------------------------------------------------
     //   フォーラム / ゲームコミュニティ
     // --------------------------------------------------
-    
+
     if (arr.includes('forumGc')) {
 
       const docForumsGcArr = await findForumGc({
 
         localeObj,
         gameCommunities_id,
-  
+
       });
 
       returnObj.forumsGcObj = formatFeedsArr({
-  
+
         localeObj,
         arr: sortArray(docForumsGcArr),
         page,
         limit,
-        
+
       });
 
     }
@@ -224,7 +259,7 @@ const findFeed = async ({
     // --------------------------------------------------
     //   募集 / ゲームコミュニティ
     // --------------------------------------------------
-    
+
     if (arr.includes('recruitment')) {
 
       const docRecruitmentsArr = await findRecruitment({
@@ -233,23 +268,23 @@ const findFeed = async ({
         gameCommunities_id,
 
       });
-      
+
       returnObj.recruitmentsObj = formatFeedsArr({
-    
+
         localeObj,
         arr: sortArray(docRecruitmentsArr),
         page,
         limit,
-        
+
       });
 
     }
-    
+
 
     // --------------------------------------------------
     //   フォーラム / ユーザーコミュニティ
     // --------------------------------------------------
-    
+
     if (arr.includes('forumUc')) {
 
       const docForumsUcArr = await findForumUc({
@@ -260,23 +295,23 @@ const findFeed = async ({
       });
 
       returnObj.forumsUcObj = formatFeedsArr({
-    
+
         localeObj,
         arr: sortArray(docForumsUcArr),
         page,
         limit,
-        
+
       });
 
     }
-    
 
-    
-    
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----------------------------------------\n
     //   app/@database/feeds/model.js - findFeed
@@ -288,7 +323,7 @@ const findFeed = async ({
     //   page: {green ${page}}
     //   limit: {green ${limit}}
     // `);
-    
+
     // console.log(`
     //   ----- docForumsGcArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(docForumsGcArr)), { colors: true, depth: null })}\n
@@ -312,30 +347,30 @@ const findFeed = async ({
     //   ${util.inspect(JSON.parse(JSON.stringify(docForumsUcArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- forumsUcObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(forumsUcObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
-    
 
-    
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return returnObj;
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -350,18 +385,18 @@ const findFeed = async ({
  * @return {Object} 取得データ
  */
 const findForumGc = async ({
-  
+
   localeObj,
   gameCommunities_id,
   page = 1,
   limit = 100,
-  
+
 }) => {
-  
-  
+
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Language & Country & Parse
     // --------------------------------------------------
@@ -369,22 +404,22 @@ const findForumGc = async ({
     const language = lodashGet(localeObj, ['language'], '');
     const country = lodashGet(localeObj, ['country'], '');
     const intLimit = parseInt(limit, 10);
-    
+
 
 
 
     // --------------------------------------------------
     //   Threads
     // --------------------------------------------------
-    
+
     // ---------------------------------------------
     //   - Match Condition Array
     // ---------------------------------------------
-    
+
     let matchConditionArr = [];
-    
+
     if (gameCommunities_id) {
-      
+
       matchConditionArr = [
         {
           $match: {
@@ -393,7 +428,7 @@ const findForumGc = async ({
           }
         },
       ];
-        
+
     } else {
 
       matchConditionArr = [
@@ -415,21 +450,21 @@ const findForumGc = async ({
     // ---------------------------------------------
     //   - Aggregation
     // ---------------------------------------------
-    
+
     const docThreadsArr = await SchemaForumThreads.aggregate([
-      
-      
+
+
       // --------------------------------------------------
       //   Match Condition Array
       // --------------------------------------------------
-      
+
       ...matchConditionArr,
-      
-      
+
+
       // --------------------------------------------------
       //   images-and-videos
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -455,7 +490,7 @@ const findForumGc = async ({
             as: 'imagesAndVideosObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosObj',
@@ -467,7 +502,7 @@ const findForumGc = async ({
       // --------------------------------------------------
       //   games
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -485,12 +520,12 @@ const findForumGc = async ({
                   },
                 }
               },
-              
+
 
               // --------------------------------------------------
               //   games / images-and-videos / メイン画像
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -516,7 +551,7 @@ const findForumGc = async ({
                     as: 'imagesAndVideosObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$imagesAndVideosObj',
@@ -528,7 +563,7 @@ const findForumGc = async ({
               // --------------------------------------------------
               //   games / images-and-videos / サムネイル画像
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -554,14 +589,14 @@ const findForumGc = async ({
                     as: 'imagesAndVideosThumbnailObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$imagesAndVideosThumbnailObj',
                   preserveNullAndEmptyArrays: true,
                 }
               },
-              
+
               {
                 $project: {
                   _id: 0,
@@ -575,19 +610,19 @@ const findForumGc = async ({
             as: 'gamesObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$gamesObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $project
       // --------------------------------------------------
-      
+
       {
         $project: {
           type: 'forumThreadsGc',
@@ -599,32 +634,32 @@ const findForumGc = async ({
           gamesObj: 1,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $sort / $skip / $limit
       // --------------------------------------------------
-      
+
       { $sort: { createdDate: -1 } },
       { $skip: (page - 1) * intLimit },
       { $limit: intLimit },
-      
-      
+
+
     ]).exec();
-    
+
 
 
 
     // --------------------------------------------------
     //   Comments & Replies
     // --------------------------------------------------
-    
+
     // ---------------------------------------------
     //   - Match Condition Array
     // ---------------------------------------------
-    
+
     if (gameCommunities_id) {
-      
+
       matchConditionArr = [
         {
           $match: {
@@ -633,7 +668,7 @@ const findForumGc = async ({
           }
         },
       ];
-        
+
     } else {
 
       matchConditionArr = [
@@ -655,21 +690,21 @@ const findForumGc = async ({
     // ---------------------------------------------
     //   - Aggregation
     // ---------------------------------------------
-    
+
     const docCommentsArr = await SchemaForumComments.aggregate([
-      
-      
+
+
       // --------------------------------------------------
       //   Match Condition Array
       // --------------------------------------------------
-      
+
       ...matchConditionArr,
-      
-      
+
+
       // --------------------------------------------------
       //   images-and-videos
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -695,7 +730,7 @@ const findForumGc = async ({
             as: 'imagesAndVideosObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosObj',
@@ -707,7 +742,7 @@ const findForumGc = async ({
       // --------------------------------------------------
       //   games
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -725,12 +760,12 @@ const findForumGc = async ({
                   },
                 }
               },
-              
+
 
               // --------------------------------------------------
               //   games / images-and-videos / メイン画像
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -756,7 +791,7 @@ const findForumGc = async ({
                     as: 'imagesAndVideosObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$imagesAndVideosObj',
@@ -768,7 +803,7 @@ const findForumGc = async ({
               // --------------------------------------------------
               //   games / images-and-videos / サムネイル画像
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -794,14 +829,14 @@ const findForumGc = async ({
                     as: 'imagesAndVideosThumbnailObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$imagesAndVideosThumbnailObj',
                   preserveNullAndEmptyArrays: true,
                 }
               },
-              
+
               {
                 $project: {
                   _id: 0,
@@ -815,7 +850,7 @@ const findForumGc = async ({
             as: 'gamesObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$gamesObj',
@@ -827,7 +862,7 @@ const findForumGc = async ({
       // --------------------------------------------------
       //   forum-threads
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -852,19 +887,19 @@ const findForumGc = async ({
             as: 'forumThreadsObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$forumThreadsObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $project
       // --------------------------------------------------
-      
+
       {
         $project: {
           type: 'forumCommentsAndRepliesGc',
@@ -877,49 +912,49 @@ const findForumGc = async ({
           forumThreadsObj: 1,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $sort / $skip / $limit
       // --------------------------------------------------
-      
+
       { $sort: { createdDate: -1 } },
       { $skip: (page - 1) * intLimit },
       { $limit: intLimit },
-      
-      
+
+
     ]).exec();
-    
-    
+
+
 
 
     // --------------------------------------------------
     //   配列を結合する
     // --------------------------------------------------
-    
+
     mergedArr = docThreadsArr.concat(docCommentsArr);
-    
+
 
     // --------------------------------------------------
     //   日付で並び替える
     // --------------------------------------------------
 
     // const sortedArr = mergedArr.sort((a, b) => {
-      
+
     //   const date1 = new Date(a.createdDate);
     //   const date2 = new Date(b.createdDate);
-      
+
     //   return (date1 < date2) ? 1 : -1;
-      
+
     // });
 
-    
-    
-    
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----------------------------------------\n
     //   app/@database/forum-threads/model.js
@@ -931,7 +966,7 @@ const findForumGc = async ({
     //   page: {green ${page}}
     //   limit: {green ${limit}}
     // `);
-    
+
     // console.log(`
     //   ----- docThreadsArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(docThreadsArr)), { colors: true, depth: null })}\n
@@ -943,30 +978,30 @@ const findForumGc = async ({
     //   ${util.inspect(JSON.parse(JSON.stringify(docCommentsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- sortedArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(sortedArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return mergedArr;
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -981,18 +1016,18 @@ const findForumGc = async ({
  * @return {Object} 取得データ
  */
 const findRecruitment = async ({
-  
+
   localeObj,
   gameCommunities_id,
   page = 1,
   limit = 100,
-  
+
 }) => {
-  
-  
+
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Language & Country & Parse
     // --------------------------------------------------
@@ -1000,22 +1035,22 @@ const findRecruitment = async ({
     const language = lodashGet(localeObj, ['language'], '');
     const country = lodashGet(localeObj, ['country'], '');
     const intLimit = parseInt(limit, 10);
-    
+
 
 
 
     // --------------------------------------------------
     //   Threads
     // --------------------------------------------------
-    
+
     // ---------------------------------------------
     //   - Match Condition Array
     // ---------------------------------------------
-    
+
     let matchConditionArr = [];
-    
+
     if (gameCommunities_id) {
-      
+
       matchConditionArr = [
         {
           $match: {
@@ -1023,7 +1058,7 @@ const findRecruitment = async ({
           }
         },
       ];
-        
+
     } else {
 
       matchConditionArr = [
@@ -1044,21 +1079,21 @@ const findRecruitment = async ({
     // ---------------------------------------------
     //   - Aggregation
     // ---------------------------------------------
-    
+
     const docThreadsArr = await SchemaRecruitmentThreads.aggregate([
-      
-      
+
+
       // --------------------------------------------------
       //   Match Condition Array
       // --------------------------------------------------
-      
+
       ...matchConditionArr,
-      
-      
+
+
       // --------------------------------------------------
       //   images-and-videos
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1084,7 +1119,7 @@ const findRecruitment = async ({
             as: 'imagesAndVideosObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosObj',
@@ -1096,7 +1131,7 @@ const findRecruitment = async ({
       // --------------------------------------------------
       //   games
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1114,12 +1149,12 @@ const findRecruitment = async ({
                   },
                 }
               },
-              
+
 
               // --------------------------------------------------
               //   games / images-and-videos / メイン画像
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -1145,7 +1180,7 @@ const findRecruitment = async ({
                     as: 'imagesAndVideosObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$imagesAndVideosObj',
@@ -1157,7 +1192,7 @@ const findRecruitment = async ({
               // --------------------------------------------------
               //   games / images-and-videos / サムネイル画像
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -1183,14 +1218,14 @@ const findRecruitment = async ({
                     as: 'imagesAndVideosThumbnailObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$imagesAndVideosThumbnailObj',
                   preserveNullAndEmptyArrays: true,
                 }
               },
-              
+
               {
                 $project: {
                   _id: 0,
@@ -1204,19 +1239,19 @@ const findRecruitment = async ({
             as: 'gamesObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$gamesObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $project
       // --------------------------------------------------
-      
+
       {
         $project: {
           type: 'recruitmentThreads',
@@ -1228,32 +1263,32 @@ const findRecruitment = async ({
           gamesObj: 1,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $sort / $skip / $limit
       // --------------------------------------------------
-      
+
       { $sort: { createdDate: -1 } },
       { $skip: (page - 1) * intLimit },
       { $limit: intLimit },
-      
-      
+
+
     ]).exec();
-    
+
 
 
 
     // --------------------------------------------------
     //   Comments
     // --------------------------------------------------
-    
+
     // ---------------------------------------------
     //   - Match Condition Array
     // ---------------------------------------------
-    
+
     if (gameCommunities_id) {
-      
+
       matchConditionArr = [
         {
           $match: {
@@ -1261,7 +1296,7 @@ const findRecruitment = async ({
           }
         },
       ];
-        
+
     } else {
 
       matchConditionArr = [
@@ -1282,21 +1317,21 @@ const findRecruitment = async ({
     // ---------------------------------------------
     //   - Aggregation
     // ---------------------------------------------
-    
+
     const docCommentsArr = await SchemaRecruitmentComments.aggregate([
-      
-      
+
+
       // --------------------------------------------------
       //   Match Condition Array
       // --------------------------------------------------
-      
+
       ...matchConditionArr,
-      
-      
+
+
       // --------------------------------------------------
       //   images-and-videos
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1322,7 +1357,7 @@ const findRecruitment = async ({
             as: 'imagesAndVideosObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosObj',
@@ -1334,7 +1369,7 @@ const findRecruitment = async ({
       // --------------------------------------------------
       //   games
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1352,12 +1387,12 @@ const findRecruitment = async ({
                   },
                 }
               },
-              
+
 
               // --------------------------------------------------
               //   games / images-and-videos / メイン画像
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -1383,7 +1418,7 @@ const findRecruitment = async ({
                     as: 'imagesAndVideosObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$imagesAndVideosObj',
@@ -1395,7 +1430,7 @@ const findRecruitment = async ({
               // --------------------------------------------------
               //   games / images-and-videos / サムネイル画像
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -1421,14 +1456,14 @@ const findRecruitment = async ({
                     as: 'imagesAndVideosThumbnailObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$imagesAndVideosThumbnailObj',
                   preserveNullAndEmptyArrays: true,
                 }
               },
-              
+
               {
                 $project: {
                   _id: 0,
@@ -1442,7 +1477,7 @@ const findRecruitment = async ({
             as: 'gamesObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$gamesObj',
@@ -1454,7 +1489,7 @@ const findRecruitment = async ({
       // --------------------------------------------------
       //   recruitment-threads
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1479,19 +1514,19 @@ const findRecruitment = async ({
             as: 'recruitmentThreadsObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$recruitmentThreadsObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $project
       // --------------------------------------------------
-      
+
       {
         $project: {
           type: 'recruitmentComments',
@@ -1504,32 +1539,32 @@ const findRecruitment = async ({
           recruitmentThreadsObj: 1,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $sort / $skip / $limit
       // --------------------------------------------------
-      
+
       { $sort: { createdDate: -1 } },
       { $skip: (page - 1) * intLimit },
       { $limit: intLimit },
-      
-      
+
+
     ]).exec();
-    
+
 
 
 
     // --------------------------------------------------
     //   Replies
     // --------------------------------------------------
-    
+
     // ---------------------------------------------
     //   - Match Condition Array
     // ---------------------------------------------
-    
+
     if (gameCommunities_id) {
-      
+
       matchConditionArr = [
         {
           $match: {
@@ -1537,7 +1572,7 @@ const findRecruitment = async ({
           }
         },
       ];
-        
+
     } else {
 
       matchConditionArr = [
@@ -1558,21 +1593,21 @@ const findRecruitment = async ({
     // ---------------------------------------------
     //   - Aggregation
     // ---------------------------------------------
-    
+
     const docRepliesArr = await SchemaRecruitmentReplies.aggregate([
-      
-      
+
+
       // --------------------------------------------------
       //   Match Condition Array
       // --------------------------------------------------
-      
+
       ...matchConditionArr,
-      
-      
+
+
       // --------------------------------------------------
       //   images-and-videos
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1598,7 +1633,7 @@ const findRecruitment = async ({
             as: 'imagesAndVideosObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosObj',
@@ -1610,7 +1645,7 @@ const findRecruitment = async ({
       // --------------------------------------------------
       //   games
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1628,12 +1663,12 @@ const findRecruitment = async ({
                   },
                 }
               },
-              
+
 
               // --------------------------------------------------
               //   games / images-and-videos / メイン画像
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -1659,7 +1694,7 @@ const findRecruitment = async ({
                     as: 'imagesAndVideosObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$imagesAndVideosObj',
@@ -1671,7 +1706,7 @@ const findRecruitment = async ({
               // --------------------------------------------------
               //   games / images-and-videos / サムネイル画像
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -1697,14 +1732,14 @@ const findRecruitment = async ({
                     as: 'imagesAndVideosThumbnailObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$imagesAndVideosThumbnailObj',
                   preserveNullAndEmptyArrays: true,
                 }
               },
-              
+
               {
                 $project: {
                   _id: 0,
@@ -1718,7 +1753,7 @@ const findRecruitment = async ({
             as: 'gamesObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$gamesObj',
@@ -1730,7 +1765,7 @@ const findRecruitment = async ({
       // --------------------------------------------------
       //   recruitment-threads
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1755,19 +1790,19 @@ const findRecruitment = async ({
             as: 'recruitmentThreadsObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$recruitmentThreadsObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $project
       // --------------------------------------------------
-      
+
       {
         $project: {
           type: 'recruitmentReplies',
@@ -1780,49 +1815,49 @@ const findRecruitment = async ({
           recruitmentThreadsObj: 1,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $sort / $skip / $limit
       // --------------------------------------------------
-      
+
       { $sort: { createdDate: -1 } },
       { $skip: (page - 1) * intLimit },
       { $limit: intLimit },
-      
-      
+
+
     ]).exec();
 
-    
+
 
 
     // --------------------------------------------------
     //   配列を結合する
     // --------------------------------------------------
-    
+
     mergedArr = docThreadsArr.concat(docCommentsArr, docRepliesArr);
-    
+
 
     // --------------------------------------------------
     //   日付で並び替える
     // --------------------------------------------------
 
     // const sortedArr = mergedArr.sort((a, b) => {
-      
+
     //   const date1 = new Date(a.createdDate);
     //   const date2 = new Date(b.createdDate);
-      
+
     //   return (date1 < date2) ? 1 : -1;
-      
+
     // });
 
-    
-    
-    
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----------------------------------------\n
     //   app/@database/forum-threads/model.js - findRecruitment
@@ -1834,7 +1869,7 @@ const findRecruitment = async ({
     //   page: {green ${page}}
     //   limit: {green ${limit}}
     // `);
-    
+
     // console.log(`
     //   ----- docThreadsArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(docThreadsArr)), { colors: true, depth: null })}\n
@@ -1852,30 +1887,30 @@ const findRecruitment = async ({
     //   ${util.inspect(JSON.parse(JSON.stringify(docRepliesArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- sortedArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(sortedArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return mergedArr;
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -1890,18 +1925,18 @@ const findRecruitment = async ({
  * @return {Object} 取得データ
  */
 const findForumUc = async ({
-  
+
   localeObj,
   userCommunities_id,
   page = 1,
   limit = 100,
-  
+
 }) => {
-  
-  
+
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Language & Country & Parse
     // --------------------------------------------------
@@ -1909,22 +1944,22 @@ const findForumUc = async ({
     const language = lodashGet(localeObj, ['language'], '');
     const country = lodashGet(localeObj, ['country'], '');
     const intLimit = parseInt(limit, 10);
-    
+
 
 
 
     // --------------------------------------------------
     //   Threads
     // --------------------------------------------------
-    
+
     // ---------------------------------------------
     //   - Match Condition Array
     // ---------------------------------------------
-    
+
     let matchConditionArr = [];
-    
+
     if (userCommunities_id) {
-      
+
       matchConditionArr = [
         {
           $match: {
@@ -1933,7 +1968,7 @@ const findForumUc = async ({
           }
         },
       ];
-        
+
     } else {
 
       matchConditionArr = [
@@ -1955,21 +1990,21 @@ const findForumUc = async ({
     // ---------------------------------------------
     //   - Aggregation
     // ---------------------------------------------
-    
+
     const docThreadsArr = await SchemaForumThreads.aggregate([
-      
-      
+
+
       // --------------------------------------------------
       //   Match Condition Array
       // --------------------------------------------------
-      
+
       ...matchConditionArr,
-      
-      
+
+
       // --------------------------------------------------
       //   images-and-videos
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1995,7 +2030,7 @@ const findForumUc = async ({
             as: 'imagesAndVideosObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosObj',
@@ -2007,7 +2042,7 @@ const findForumUc = async ({
       // --------------------------------------------------
       //   user-communities
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -2024,12 +2059,12 @@ const findForumUc = async ({
                   },
                 }
               },
-              
+
 
               // --------------------------------------------------
               //   user-communities / images-and-videos / メイン画像
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -2055,7 +2090,7 @@ const findForumUc = async ({
                     as: 'imagesAndVideosObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$imagesAndVideosObj',
@@ -2067,7 +2102,7 @@ const findForumUc = async ({
               // --------------------------------------------------
               //   user-communities / images-and-videos / サムネイル画像
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -2093,14 +2128,14 @@ const findForumUc = async ({
                     as: 'imagesAndVideosThumbnailObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$imagesAndVideosThumbnailObj',
                   preserveNullAndEmptyArrays: true,
                 }
               },
-              
+
               {
                 $project: {
                   _id: 0,
@@ -2114,19 +2149,19 @@ const findForumUc = async ({
             as: 'userCommunitiesObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$userCommunitiesObj',
           // preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $project
       // --------------------------------------------------
-      
+
       {
         $project: {
           type: 'forumThreadsUc',
@@ -2138,32 +2173,32 @@ const findForumUc = async ({
           userCommunitiesObj: 1,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $sort / $skip / $limit
       // --------------------------------------------------
-      
+
       { $sort: { createdDate: -1 } },
       { $skip: (page - 1) * intLimit },
       { $limit: intLimit },
-      
-      
+
+
     ]).exec();
-    
+
 
 
 
     // --------------------------------------------------
     //   Comments & Replies
     // --------------------------------------------------
-    
+
     // ---------------------------------------------
     //   - Match Condition Array
     // ---------------------------------------------
-    
+
     if (userCommunities_id) {
-      
+
       matchConditionArr = [
         {
           $match: {
@@ -2172,7 +2207,7 @@ const findForumUc = async ({
           }
         },
       ];
-        
+
     } else {
 
       matchConditionArr = [
@@ -2194,21 +2229,21 @@ const findForumUc = async ({
     // ---------------------------------------------
     //   - Aggregation
     // ---------------------------------------------
-    
+
     const docCommentsArr = await SchemaForumComments.aggregate([
-      
-      
+
+
       // --------------------------------------------------
       //   Match Condition Array
       // --------------------------------------------------
-      
+
       ...matchConditionArr,
-      
-      
+
+
       // --------------------------------------------------
       //   images-and-videos
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -2234,7 +2269,7 @@ const findForumUc = async ({
             as: 'imagesAndVideosObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosObj',
@@ -2246,7 +2281,7 @@ const findForumUc = async ({
       // --------------------------------------------------
       //   user-communities
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -2263,12 +2298,12 @@ const findForumUc = async ({
                   },
                 }
               },
-              
+
 
               // --------------------------------------------------
               //   user-communities / images-and-videos / メイン画像
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -2294,7 +2329,7 @@ const findForumUc = async ({
                     as: 'imagesAndVideosObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$imagesAndVideosObj',
@@ -2306,7 +2341,7 @@ const findForumUc = async ({
               // --------------------------------------------------
               //   user-communities / images-and-videos / サムネイル画像
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -2332,14 +2367,14 @@ const findForumUc = async ({
                     as: 'imagesAndVideosThumbnailObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$imagesAndVideosThumbnailObj',
                   preserveNullAndEmptyArrays: true,
                 }
               },
-              
+
               {
                 $project: {
                   _id: 0,
@@ -2353,7 +2388,7 @@ const findForumUc = async ({
             as: 'userCommunitiesObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$userCommunitiesObj',
@@ -2365,7 +2400,7 @@ const findForumUc = async ({
       // --------------------------------------------------
       //   forum-threads
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -2390,19 +2425,19 @@ const findForumUc = async ({
             as: 'forumThreadsObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$forumThreadsObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $project
       // --------------------------------------------------
-      
+
       {
         $project: {
           type: 'forumCommentsAndRepliesUc',
@@ -2415,49 +2450,49 @@ const findForumUc = async ({
           forumThreadsObj: 1,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $sort / $skip / $limit
       // --------------------------------------------------
-      
+
       { $sort: { createdDate: -1 } },
       { $skip: (page - 1) * intLimit },
       { $limit: intLimit },
-      
-      
+
+
     ]).exec();
-    
-    
+
+
 
 
     // --------------------------------------------------
     //   配列を結合する
     // --------------------------------------------------
-    
+
     mergedArr = docThreadsArr.concat(docCommentsArr);
-    
+
 
     // --------------------------------------------------
     //   日付で並び替える
     // --------------------------------------------------
 
     // const sortedArr = mergedArr.sort((a, b) => {
-      
+
     //   const date1 = new Date(a.createdDate);
     //   const date2 = new Date(b.createdDate);
-      
+
     //   return (date1 < date2) ? 1 : -1;
-      
+
     // });
 
-    
-    
-    
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----------------------------------------\n
     //   app/@database/feeds/model.js - findForumUc
@@ -2469,7 +2504,7 @@ const findForumUc = async ({
     //   page: {green ${page}}
     //   limit: {green ${limit}}
     // `);
-    
+
     // console.log(`
     //   ----- docThreadsArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(docThreadsArr)), { colors: true, depth: null })}\n
@@ -2481,30 +2516,30 @@ const findForumUc = async ({
     //   ${util.inspect(JSON.parse(JSON.stringify(docCommentsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- sortedArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(sortedArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return mergedArr;
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -2517,7 +2552,7 @@ const findForumUc = async ({
 // --------------------------------------------------
 
 module.exports = {
-  
+
   findFeed,
-  
+
 };

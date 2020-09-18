@@ -70,23 +70,23 @@ const Component = (props) => {
   } = props;
 
 
+
+
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+
+  const feedDataObj = lodashGet(feedObj, ['allObj', 'dataObj'], {});
+  const feedArr = lodashGet(feedObj, ['sidebarRandomArr'], []);
+
+
   // --------------------------------------------------
   //   カードデータが存在しない場合、空のコンポーネントを返す
   // --------------------------------------------------
 
-  if (Object.keys(feedObj).length === 0) {
+  if (Object.keys(feedDataObj).length === 0 || feedArr.length === 0) {
     return null;
   }
-
-
-
-
-  // --------------------------------------------------
-  //   Component - Forum Game Community
-  // --------------------------------------------------
-
-  const feedDataObj = lodashGet(feedObj, ['allObj', 'dataObj'], {});
-  const feedArr = lodashGet(feedObj, ['allObj', 'page1Obj', 'arr'], []);
 
 
   // ---------------------------------------------
@@ -96,21 +96,21 @@ const Component = (props) => {
   //   direction={'vertical'} の場合、initialSlide={number} が動かない。仕様かバグみたい。
   // ---------------------------------------------
 
-  const clonedFeedArr = feedArr.slice();
+  // const clonedFeedArr = feedArr.slice();
 
-  for (let i = clonedFeedArr.length - 1; i > 0; i--){
-    const rand = Math.floor(Math.random() * (i + 1));
-    [clonedFeedArr[i], clonedFeedArr[rand]] = [clonedFeedArr[rand], clonedFeedArr[i]];
-  }
+  // for (let i = clonedFeedArr.length - 1; i > 0; i--){
+  //   const rand = Math.floor(Math.random() * (i + 1));
+  //   [clonedFeedArr[i], clonedFeedArr[rand]] = [clonedFeedArr[rand], clonedFeedArr[i]];
+  // }
 
 
   // ---------------------------------------------
-  //   Loop
+  //   Component
   // ---------------------------------------------
 
   const componentFeedsArr = [];
 
-  for (const [index, _id] of clonedFeedArr.entries()) {
+  for (const [index, _id] of feedArr.entries()) {
 
     const obj = feedDataObj[_id];
 
@@ -180,9 +180,7 @@ const Component = (props) => {
       autoHeight={true}
       slidesPerView={'auto'}
       // centeredSlides={true}
-      // centeredSlidesBounds={true}
       // initialSlide={initialSlide}
-      // cssMode={true}
       loop={true}
       pagination={{ clickable: false }}
       autoplay={{

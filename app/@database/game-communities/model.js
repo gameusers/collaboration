@@ -1005,16 +1005,8 @@ const findGameList = async ({
 
 
     // ---------------------------------------------
-    //   - andArr（ドキュメントの検索用） & countConditionObj（総数の検索用）
+    //   $match（ドキュメントの検索用） & count（総数の検索用）の条件作成
     // ---------------------------------------------
-
-    // const andArr = [
-
-    //   // { $eq: ['$gameCommunities_id', '$$let_id'] },
-    //   // { $eq: ['$language', language] },
-    //   // { $eq: ['$country', country] }
-
-    // ];
 
     const conditionObj = {
 
@@ -1029,7 +1021,17 @@ const findGameList = async ({
     // ---------------------------------------------
 
     if (hardwareIDsArr.length > 0) {
-      lodashSet(conditionObj, ['hardwareArr.hardwareID'], { $in: hardwareIDsArr });
+
+      lodashSet(conditionObj, ['hardwareArr'],
+        {
+          $elemMatch: {
+            hardwareID: {
+              $in: hardwareIDsArr
+            }
+          }
+        }
+      );
+
     }
 
     const pattern = new RegExp(`.*${keyword}.*`);
@@ -1037,34 +1039,6 @@ const findGameList = async ({
     if (keyword) {
       lodashSet(conditionObj, ['searchKeywordsArr'], { $regex: pattern, $options: 'i' });
     }
-
-
-    // ---------------------------------------------
-    //   - 検索条件設定
-    // ---------------------------------------------
-
-    // const matchConditionArr = [
-    //   {
-    //     $match: {
-    //       $and: andArr
-    //     }
-    //   }
-    // ];
-
-
-    // console.log(`
-    //   ----- matchConditionArr -----\n
-    //   ${util.inspect(matchConditionArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    console.log(`
-      ----- conditionObj -----\n
-      ${util.inspect(conditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-
-
 
 
 
@@ -1084,51 +1058,23 @@ const findGameList = async ({
         $match: conditionObj
       },
 
-      // ...matchConditionArr,
-
       // {
       //   $match: {
 
       //     language,
       //     country,
-      //     'hardwareArr.hardwareID': { $in: hardwareIDsArr },
-      //     searchKeywordsArr: { $regex: pattern, $options: 'i' }
+
+      //     hardwareArr: {
+      //       $elemMatch: {
+      //         hardwareID: {
+      //           $in: ['Zd_Ia4Hwm2']
+      //         }
+      //       }
+      //     },
+
+      //     // searchKeywordsArr: { $regex: pattern, $options: 'i' }
 
       //   }
-      // },
-
-
-      // --------------------------------------------------
-      //   hardwares
-      // --------------------------------------------------
-
-      // {
-      //   $lookup:
-      //     {
-      //       from: 'hardwares',
-      //       // let: { letHardwareIDsArr: '$hardwareIDsArr' },
-      //       pipeline: [
-      //         { $match:
-      //           { $expr:
-      //             { $and:
-      //               [
-      //                 { $eq: ['$language', language] },
-      //                 { $eq: ['$country', country] },
-      //                 { $in: ['$hardwareID', hardwareIDsArr] }
-      //               ]
-      //             },
-      //           }
-      //         },
-      //         {
-      //           $project: {
-      //             _id: 0,
-      //             hardwareID: 1,
-      //             name: 1,
-      //           }
-      //         }
-      //       ],
-      //       as: 'hardwaresArr'
-      //     }
       // },
 
 
@@ -1304,6 +1250,8 @@ const findGameList = async ({
           developersPublishersArr: 1,
           followsObj: 1,
           gameCommunitiesObj: 1,
+
+          // hardwareArr: 1,
         }
       },
 
@@ -1471,14 +1419,27 @@ const findGameList = async ({
     //   console.log
     // --------------------------------------------------
 
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/game-communities/model.js - findGameList
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/game-communities/model.js - findGameList
+    // `);
 
     // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   urlID: {green ${urlID}}
+    // page: {green ${page}}
+    // limit: {green ${limit}}
+    // keyword: {green ${keyword}}
+    // `);
+
+    // console.log(`
+    //   ----- hardwareIDsArr -----\n
+    //   ${util.inspect(hardwareIDsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- conditionObj -----\n
+    //   ${util.inspect(conditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
 
     // console.log(`
@@ -1487,11 +1448,11 @@ const findGameList = async ({
     //   --------------------\n
     // `);
 
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 
@@ -1511,917 +1472,6 @@ const findGameList = async ({
 
 
 };
-
-
-
-// /**
-//  * ゲーム一覧のデータを取得する / gc/list
-//  * @param {Object} localeObj - ロケール
-//  * @param {string} keyword - 検索キーワード
-//  * @param {number} page - ページ
-//  * @param {number} limit - リミット
-//  * @return {Object} 取得データ
-//  */
-// const findGameList = async ({
-
-//   localeObj,
-//   page = 1,
-//   limit = process.env.NEXT_PUBLIC_COMMUNITY_LIST_LIMIT,
-//   hardwareIDsArr = [],
-//   keyword,
-
-// }) => {
-
-
-//   // --------------------------------------------------
-//   //   Database
-//   // --------------------------------------------------
-
-//   try {
-
-
-//     // --------------------------------------------------
-//     //   Language & Country
-//     // --------------------------------------------------
-
-//     const language = lodashGet(localeObj, ['language'], '');
-//     const country = lodashGet(localeObj, ['country'], '');
-
-
-//     // --------------------------------------------------
-//     //   parseInt
-//     // --------------------------------------------------
-
-//     let intLimit = parseInt(limit, 10);
-
-
-
-
-//     // ---------------------------------------------
-//     //   - andArr（ドキュメントの検索用） & countConditionObj（総数の検索用）
-//     // ---------------------------------------------
-
-//     const andArr = [
-
-//       // { $eq: ['$gameCommunities_id', '$$let_id'] },
-//       // { $eq: ['$language', language] },
-//       // { $eq: ['$country', country] }
-
-//     ];
-
-//     const countConditionObj = {
-
-//       language,
-//       country,
-
-//     };
-
-
-//     // ---------------------------------------------
-//     //   - 検索条件
-//     // ---------------------------------------------
-
-//     if (hardwareIDsArr.length > 0) {
-
-//       andArr.push({
-//         $in: ['$hardwareIDsArr', hardwareIDsArr]
-//         // hardwareIDsArr: { $in: hardwareIDsArr }
-//       });
-
-//       countConditionObj.hardwareIDsArr = { $in: hardwareIDsArr };
-
-//     }
-
-
-//     if (keyword) {
-
-//       andArr.push({
-//         $regex: ['$searchKeywordsArr', keyword]
-//         // searchKeywordsArr: { $regex: keyword }
-//       });
-
-//       countConditionObj.searchKeywordsArr = { $regex: keyword };
-
-//     }
-
-
-//     // ---------------------------------------------
-//     //   - 検索条件設定
-//     // ---------------------------------------------
-
-//     const matchConditionArr = [
-//       {
-//         $match: {
-//           $and: andArr
-//         }
-//       }
-//     ];
-
-
-//     // console.log(`
-//     //   ----- matchConditionArr -----\n
-//     //   ${util.inspect(matchConditionArr, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-
-//     // console.log(`
-//     //   ----- countConditionObj -----\n
-//     //   ${util.inspect(countConditionObj, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-
-//     const pattern = new RegExp(`.*${keyword}.*`);
-
-
-
-
-//     // --------------------------------------------------
-//     //   Aggregation - games
-//     // --------------------------------------------------
-
-//     const doc2Arr = await SchemaGames.aggregate([
-
-
-//       // --------------------------------------------------
-//       //   Match Condition Array
-//       // --------------------------------------------------
-
-//       // ...matchConditionArr,
-
-//       {
-//         $match: {
-//           language,
-//           country,
-//           searchKeywordsArr: { $regex: pattern, $options: 'i' }
-//         }
-//       },
-
-
-//       // --------------------------------------------------
-//       //   images-and-videos / サムネイル用
-//       // --------------------------------------------------
-
-//       {
-//         $lookup:
-//           {
-//             from: 'images-and-videos',
-//             let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-//             pipeline: [
-//               {
-//                 $match: {
-//                   $expr: {
-//                     $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
-//                   },
-//                 }
-//               },
-//               {
-//                 $project: {
-//                   createdDate: 0,
-//                   updatedDate: 0,
-//                   users_id: 0,
-//                   __v: 0,
-//                 }
-//               }
-//             ],
-//             as: 'imagesAndVideosThumbnailObj'
-//           }
-//       },
-
-//       {
-//         $unwind: {
-//           path: '$imagesAndVideosThumbnailObj',
-//           preserveNullAndEmptyArrays: true,
-//         }
-//       },
-
-
-//       // --------------------------------------------------
-//       //   developers-publishers / 開発＆パブリッシャー
-//       // --------------------------------------------------
-
-//       {
-//         $lookup:
-//           {
-//             from: 'developers-publishers',
-//             let: {
-//               letPublisherID: '$hardwareArr.publisherID',
-//               letDeveloperID: '$hardwareArr.developerID',
-//             },
-//             pipeline: [
-//               {
-//                 $match: {
-//                   $expr: {
-//                     $or: [
-//                       {
-//                         $and: [
-//                           { $eq: ['$language', language] },
-//                           { $eq: ['$country', country] },
-//                           { $in: ['$developerPublisherID', '$$letPublisherID'] }
-//                         ]
-//                       },
-//                       {
-//                         $and: [
-//                           { $eq: ['$language', language] },
-//                           { $eq: ['$country', country] },
-//                           { $in: ['$developerPublisherID', '$$letDeveloperID'] }
-//                         ]
-//                       }
-//                     ]
-//                   },
-//                 }
-//               },
-//               {
-//                 $project: {
-//                   _id: 0,
-//                   name: 1,
-//                 }
-//               }
-//             ],
-//             as: 'developersPublishersArr'
-//           }
-//       },
-
-
-//       // --------------------------------------------------
-//       //   follows
-//       // --------------------------------------------------
-
-//       {
-//         $lookup:
-//           {
-//             from: 'follows',
-//             let: { letGameCommunities_id: '$gameCommunities_id' },
-//             pipeline: [
-//               {
-//                 $match: {
-//                   $expr: {
-//                     $eq: ['$gameCommunities_id', '$$letGameCommunities_id']
-//                   },
-//                 }
-//               },
-//               {
-//                 $project: {
-//                   _id: 0,
-//                   followedCount: 1,
-//                 }
-//               }
-//             ],
-//             as: 'followsObj'
-//           }
-//       },
-
-//       {
-//         $unwind: {
-//           path: '$followsObj',
-//           preserveNullAndEmptyArrays: true,
-//         }
-//       },
-
-
-//       // --------------------------------------------------
-//       //   game-communities
-//       // --------------------------------------------------
-
-//       {
-//         $lookup:
-//           {
-//             from: 'game-communities',
-//             let: { letGameCommunities_id: '$gameCommunities_id' },
-//             pipeline: [
-//               {
-//                 $match: {
-//                   $expr: {
-//                     $eq: ['$_id', '$$letGameCommunities_id']
-//                   },
-//                 }
-//               },
-//               {
-//                 $project: {
-//                   _id: 0,
-//                   updatedDate: 1,
-//                 }
-//               }
-//             ],
-//             as: 'gameCommunitiesObj'
-//           }
-//       },
-
-//       {
-//         $unwind: {
-//           path: '$gameCommunitiesObj',
-//           preserveNullAndEmptyArrays: true,
-//         }
-//       },
-
-
-//       // --------------------------------------------------
-//       //   $project
-//       // --------------------------------------------------
-
-//       {
-//         $project: {
-//           _id: 0,
-//           gameCommunities_id: 1,
-//           urlID: 1,
-//           imagesAndVideosThumbnailObj: 1,
-//           name: 1,
-//           subtitle: 1,
-//           developersPublishersArr: 1,
-//           followsObj: 1,
-//           gameCommunitiesObj: 1,
-//         }
-//       },
-
-
-//       // --------------------------------------------------
-//       //   $sort / $skip / $limit
-//       // --------------------------------------------------
-
-//       { $sort: { 'gameCommunitiesObj.updatedDate': -1 } },
-//       { $skip: (page - 1) * intLimit },
-//       { $limit: intLimit },
-
-
-//     ]).exec();
-
-// //////////////////////////////////
-//     // const doc2Arr = await SchemaGames.aggregate([
-
-
-//     //   {
-//     //     $match: {
-//     //       language,
-//     //       country,
-//     //       searchKeywordsArr: { $regex: pattern, $options: 'i' }
-//     //     }
-//     //   },
-
-
-//     //   // --------------------------------------------------
-//     //   //   game-communities
-//     //   // --------------------------------------------------
-
-//     //   {
-//     //     $lookup:
-//     //       {
-//     //         from: 'game-communities',
-//     //         let: { letGameCommunities_id: '$gameCommunities_id' },
-//     //         pipeline: [
-//     //           {
-//     //             $match: {
-//     //               $expr: {
-//     //                 $eq: ['$_id', '$$letGameCommunities_id']
-//     //                 // $and: [
-//     //                 //   { $eq: ['$_id', '$$letGameCommunities_id'] },
-//     //                 //   { $gte: ['$updatedDate', '2020-10-06T10:54:12.326Z'] },
-//     //                 //   // { updatedDate: { $gte: dateTimeLimit } },
-//     //                 //   // { $in: ['$developerPublisherID', '$$letPublisherID'] }
-//     //                 // ]
-//     //               },
-//     //             }
-//     //           },
-//     //           {
-//     //             $project: {
-//     //               // _id: 0,
-//     //               // createdDate: 0,
-//     //               updatedDate: 1,
-//     //               // anonymity: 0,
-//     //               // __v: 0,
-//     //             }
-//     //           },
-
-//     //           // --------------------------------------------------
-//     //           //   $sort / $skip / $limit
-//     //           // --------------------------------------------------
-
-//     //           // { $sort: { updatedDate: -1 } },
-//     //           // { $skip: (page - 1) * intLimit },
-//     //           // { $limit: intLimit },
-
-
-//     //         ],
-//     //         as: 'gameCommunitiesObj'
-//     //       }
-//     //   },
-
-//     //   // {
-//     //   //   $unwind: {
-//     //   //     path: '$gameCommunitiesObj',
-//     //   //     preserveNullAndEmptyArrays: true,
-//     //   //   }
-//     //   // },
-
-
-//     //   // --------------------------------------------------
-//     //   //   $project
-//     //   // --------------------------------------------------
-
-//     //   {
-//     //     $project: {
-//     //       updatedDate: 1,
-//     //       name: 1,
-//     //       gameCommunitiesObj: 1,
-//     //     }
-//     //   },
-
-
-//     //   // --------------------------------------------------
-//     //   //   $sort / $skip / $limit
-//     //   // --------------------------------------------------
-
-//     //   { $sort: { 'gameCommunitiesObj.updatedDate': -1 } },
-//     //   { $skip: (page - 1) * intLimit },
-//     //   { $limit: intLimit },
-
-
-//     // ]).exec();
-
-
-
-//     console.log(`
-//       ----- doc2Arr -----\n
-//       ${util.inspect(doc2Arr, { colors: true, depth: null })}\n
-//       --------------------\n
-//     `);
-
-
-
-
-//     // --------------------------------------------------
-//     //   Aggregation - game-communities
-//     // --------------------------------------------------
-
-//     const docArr = await SchemaGameCommunities.aggregate([
-
-
-//       // --------------------------------------------------
-//       //   games
-//       // --------------------------------------------------
-
-//       {
-//         $lookup:
-//           {
-//             from: 'games',
-//             let: { let_id: '$_id' },
-//             pipeline: [
-
-//               {
-//                 $match: {
-//                   language,
-//                   country,
-//                   searchKeywordsArr: { "$in": [ 'Dead by Daylight' ] }
-//                 }
-//               },
-
-//               // {
-//               //   $match: {
-//               //     $expr: {
-//               //       $and: [
-//               //         // { $eq: ['$gameCommunities_id', '$$let_id'] },
-//               //         { $eq: ['$language', language] },
-//               //         { $eq: ['$country', country] },
-//               //         { $in: [ "searchKeywordsArr", [ "Dead by Daylight" ] ] }
-//               //         // { $in: ['searchKeywordsArr', [ 'Dead by Daylight' ]] }
-//               //       ]
-//               //     },
-//               //   }
-//               // },
-
-//               // {
-//               //   $match : { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } }
-//               // },
-
-//               // {
-//               //   $match: {
-//               //     language,
-//               //     country,
-//               //     searchKeywordsArr: { $regex: pattern, $options: 'i' }
-//               //   }
-//               // },
-
-//               // {
-//               //   $match: {
-//               //         searchKeywordsArr: { $regex: keyword }
-//               //         // { $in: [ '$hardwareIDsArr', [ 'TdK3Oc-yV' ] ] },
-//               //         // { $regexFindAll: { input: '$searchKeywordsArr', regex: `.*${keyword}.*`, options: 'i' } }
-//               //         // { $regex: [ '$searchKeywordsArr', 'D' ] }
-//               //   }
-//               // },
-
-//               // ...matchConditionArr,
-//               // {
-//               //   $match: {
-//               //     $expr: {
-//               //       $and: [
-//               //         { $eq: ['$gameCommunities_id', '$$let_id'] },
-//               //         { $eq: ['$language', language] },
-//               //         { $eq: ['$country', country] }
-//               //       ]
-//               //     },
-//               //   }
-//               // },
-
-
-//               // --------------------------------------------------
-//               //   hardwares
-//               // --------------------------------------------------
-
-//               // {
-//               //   $lookup:
-//               //     {
-//               //       from: 'hardwares',
-//               //       let: { letHardwareIDsArr: '$hardwareIDsArr' },
-//               //       pipeline: [
-//               //         { $match:
-//               //           { $expr:
-//               //             { $and:
-//               //               [
-//               //                 { $eq: ['$language', language] },
-//               //                 { $eq: ['$country', country] },
-//               //                 { $in: ['$hardwareID', '$$letHardwareIDsArr'] }
-//               //               ]
-//               //             },
-//               //           }
-//               //         },
-//               //         { $project:
-//               //           {
-//               //             _id: 0,
-//               //             hardwareID: 1,
-//               //             name: 1,
-//               //           }
-//               //         }
-//               //       ],
-//               //       as: 'hardwaresArr'
-//               //     }
-//               // },
-
-
-//               // --------------------------------------------------
-//               //   games / images-and-videos / サムネイル用
-//               // --------------------------------------------------
-
-//               {
-//                 $lookup:
-//                   {
-//                     from: 'images-and-videos',
-//                     let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-//                     pipeline: [
-//                       {
-//                         $match: {
-//                           $expr: {
-//                             $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
-//                           },
-//                         }
-//                       },
-//                       {
-//                         $project: {
-//                           createdDate: 0,
-//                           updatedDate: 0,
-//                           users_id: 0,
-//                           __v: 0,
-//                         }
-//                       }
-//                     ],
-//                     as: 'imagesAndVideosThumbnailObj'
-//                   }
-//               },
-
-//               {
-//                 $unwind: {
-//                   path: '$imagesAndVideosThumbnailObj',
-//                   preserveNullAndEmptyArrays: true,
-//                 }
-//               },
-
-
-//               // --------------------------------------------------
-//               //   games / developers-publishers / 開発＆パブリッシャー
-//               // --------------------------------------------------
-
-//               {
-//                 $lookup:
-//                   {
-//                     from: 'developers-publishers',
-//                     let: {
-//                       letPublisherID: '$hardwareArr.publisherID',
-//                       letDeveloperID: '$hardwareArr.developerID',
-//                     },
-//                     pipeline: [
-//                       {
-//                         $match: {
-//                           $expr: {
-//                             $or: [
-//                               {
-//                                 $and: [
-//                                   { $eq: ['$language', language] },
-//                                   { $eq: ['$country', country] },
-//                                   { $in: ['$developerPublisherID', '$$letPublisherID'] }
-//                                 ]
-//                               },
-//                               {
-//                                 $and: [
-//                                   { $eq: ['$language', language] },
-//                                   { $eq: ['$country', country] },
-//                                   { $in: ['$developerPublisherID', '$$letDeveloperID'] }
-//                                 ]
-//                               }
-//                             ]
-//                           },
-//                         }
-//                       },
-//                       {
-//                         $project: {
-//                           _id: 0,
-//                           name: 1,
-//                         }
-//                       }
-//                     ],
-//                     as: 'developersPublishersArr'
-//                   }
-//               },
-
-
-//               // --------------------------------------------------
-//               //   games / follows
-//               // --------------------------------------------------
-
-//               {
-//                 $lookup:
-//                   {
-//                     from: 'follows',
-//                     let: { letGameCommunities_id: '$gameCommunities_id' },
-//                     pipeline: [
-//                       {
-//                         $match: {
-//                           $expr: {
-//                             $eq: ['$gameCommunities_id', '$$letGameCommunities_id']
-//                           },
-//                         }
-//                       },
-//                       {
-//                         $project: {
-//                           _id: 0,
-//                           followedCount: 1,
-//                         }
-//                       }
-//                     ],
-//                     as: 'followsObj'
-//                   }
-//               },
-
-//               {
-//                 $unwind: {
-//                   path: '$followsObj',
-//                   preserveNullAndEmptyArrays: true,
-//                 }
-//               },
-
-
-//               {
-//                 $project: {
-//                   _id: 0,
-//                   urlID: 1,
-//                   imagesAndVideosThumbnailObj: 1,
-//                   name: 1,
-//                   subtitle: 1,
-//                   developersPublishersArr: 1,
-//                   followsObj: 1,
-//                   gameCommunitiesObj: 1,
-//                 }
-//               }
-//             ],
-//             as: 'gamesObj'
-//           }
-//       },
-
-//       {
-//         $unwind: {
-//           path: '$gamesObj',
-//           preserveNullAndEmptyArrays: true,
-//         }
-//       },
-
-
-//       // --------------------------------------------------
-//       //   $project
-//       // --------------------------------------------------
-
-//       {
-//         $project: {
-//           updatedDate: 1,
-//           gamesObj: 1,
-//         }
-//       },
-
-
-//       // --------------------------------------------------
-//       //   $sort / $skip / $limit
-//       // --------------------------------------------------
-
-//       { $sort: { updatedDate: -1 } },
-//       { $skip: (page - 1) * intLimit },
-//       { $limit: intLimit },
-
-
-//     ]).exec();
-
-
-
-
-//     // --------------------------------------------------
-//     //   フォーマット
-//     // --------------------------------------------------
-
-//     const listCount = await ModelGames.count({
-
-//       conditionObj: {
-//         language,
-//         country,
-//       }
-
-//     });
-
-
-//     // ---------------------------------------------
-//     //   - Return Value
-//     // ---------------------------------------------
-
-//     const returnObj = {
-
-//       page,
-//       limit: intLimit,
-//       count: listCount,
-//       dataObj: {},
-
-//     };
-
-//     const ISO8601 = moment().utc().toISOString();
-//     const daysLimit = parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_UPDATED_DATE_DAYS_LOWER_LIMIT, 10);
-//     const followersLimit = parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_FOLLOWERS_LOWER_LIMIT, 10);
-
-
-//     // ---------------------------------------------
-//     //   - Loop
-//     // ---------------------------------------------
-
-//     for (let valueObj of docArr.values()) {
-
-
-//       // console.log(`
-//       //   ----- valueObj -----\n
-//       //   ${util.inspect(JSON.parse(JSON.stringify(valueObj)), { colors: true, depth: null })}\n
-//       //   --------------------\n
-//       // `);
-
-
-//       // --------------------------------------------------
-//       //   Deep Copy
-//       // --------------------------------------------------
-
-//       const obj = {};
-
-
-//       // --------------------------------------------------
-//       //   Data
-//       // --------------------------------------------------
-
-//       const gameCommunities_id = lodashGet(valueObj, ['_id'], '');
-//       const updatedDate = lodashGet(valueObj, ['updatedDate'], '');
-//       const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
-//       const developersPublishersArr = lodashGet(valueObj, ['gamesObj', 'developersPublishersArr'], []);
-//       const followedCount = lodashGet(valueObj, ['gamesObj', 'followsObj', 'followedCount'], 0);
-
-//       obj.urlID = lodashGet(valueObj, ['gamesObj', 'urlID'], '');
-//       obj.name = lodashGet(valueObj, ['gamesObj', 'name'], '');
-//       obj.subtitle = lodashGet(valueObj, ['gamesObj', 'subtitle'], '');
-
-//       if (followedCount >= followersLimit) {
-//         obj.followedCount = followedCount;
-//       }
-
-
-//       // --------------------------------------------------
-//       //   Datetime
-//       // --------------------------------------------------
-
-//       let datetimeCurrent = ISO8601;
-//       const datetimeUpdated = moment(updatedDate);
-
-//       if (datetimeUpdated.isAfter(datetimeCurrent)) {
-//         datetimeCurrent = datetimeUpdated;
-//       }
-
-//       const days = moment().diff(datetimeUpdated, 'days');
-
-//       if (days <= daysLimit) {
-//         obj.datetimeFrom = datetimeUpdated.from(datetimeCurrent);
-//       }
-
-//       // console.log(chalk`
-//       //   days: {green ${days}}
-//       // `);
-
-
-//       // ---------------------------------------------
-//       //   Developers / Publishers
-//       // ---------------------------------------------
-
-//       const tempArr = [];
-
-//       for (let valueObj of developersPublishersArr.values()) {
-//         tempArr.push(valueObj.name);
-//       }
-
-//       obj.developersPublishers = tempArr.join(' / ');
-
-
-//       // --------------------------------------------------
-//       //   画像と動画の処理
-//       // --------------------------------------------------
-
-//       const formattedThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosThumbnailObj });
-
-//       if (Object.keys(formattedThumbnailObj).length !== 0) {
-
-//         obj.src = lodashGet(formattedThumbnailObj, ['arr', 0, 'src'], '/img/common/thumbnail/none-game.jpg');
-//         obj.srcSet = lodashGet(formattedThumbnailObj, ['arr', 0, 'srcSet'], '');
-
-//       }
-
-
-//       // --------------------------------------------------
-//       //   Set Data
-//       // --------------------------------------------------
-
-//       lodashSet(returnObj, ['dataObj', gameCommunities_id], obj);
-
-
-//       // --------------------------------------------------
-//       //   Pages Array
-//       // --------------------------------------------------
-
-//       const pagesArr = lodashGet(returnObj, [`page${page}Obj`, 'arr'], []);
-//       pagesArr.push(gameCommunities_id);
-
-//       returnObj[`page${page}Obj`] = {
-
-//         loadedDate: ISO8601,
-//         arr: pagesArr,
-
-//       };
-
-
-//     }
-
-
-
-
-//     // --------------------------------------------------
-//     //   console.log
-//     // --------------------------------------------------
-
-//     // console.log(`
-//     //   ----------------------------------------\n
-//     //   /app/@database/game-communities/model.js - findGameList
-//     // `);
-
-//     // console.log(chalk`
-//     //   loginUsers_id: {green ${loginUsers_id}}
-//     //   urlID: {green ${urlID}}
-//     // `);
-
-//     // console.log(`
-//     //   ----- docArr -----\n
-//     //   ${util.inspect(docArr, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-
-//     // console.log(`
-//     //   ----- returnObj -----\n
-//     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-
-
-
-
-//     // --------------------------------------------------
-//     //   Return
-//     // --------------------------------------------------
-
-//     return returnObj;
-
-
-//   } catch (err) {
-
-//     throw err;
-
-//   }
-
-
-// };
-
-
 
 
 

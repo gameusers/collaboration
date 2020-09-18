@@ -213,7 +213,11 @@ export default async (req, res) => {
 
     });
 
-
+    // console.log(`
+    //   ----- returnObj.hardwaresArr -----\n
+    //   ${util.inspect(returnObj.hardwaresArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 
@@ -227,8 +231,16 @@ export default async (req, res) => {
     // `);
 
     // console.log(chalk`
-    //   urlID: {green ${urlID}}
-    //   gameCommunities_id: {green ${gameCommunities_id}}
+    // page: {green ${page}}
+    // limit: {green ${limit}}
+    // hardwares: {green ${hardwares}}
+    // keyword: {green ${keyword}}
+    // `);
+
+    // console.log(`
+    //   ----- returnObj.gcListObj -----\n
+    //   ${util.inspect(returnObj.gcListObj, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
 
     // console.log(`

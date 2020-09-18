@@ -41,6 +41,8 @@ import lodashGet from 'lodash/get';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import Popover from '@material-ui/core/Popover';
 import Paper from '@material-ui/core/Paper';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -52,7 +54,8 @@ import Select from '@material-ui/core/Select';
 //   Material UI / Icons
 // ---------------------------------------------
 
-import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
+import IconEdit from '@material-ui/icons/Edit';
+import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
 // ---------------------------------------------
@@ -69,7 +72,7 @@ import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 import Panel from 'app/common/layout/v2/panel.js';
 
 import CardGC from 'app/common/community-list/v2/card-gc.js';
-// import FormThread from 'app/common/forum/v2/form/thread.js';
+import Form from 'app/gc/list/v2/form.js';
 
 
 
@@ -125,6 +128,9 @@ const Component = (props) => {
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
+  const [anchorElEditMode, setAnchorElEditMode] = useState(null);
+  const [editable, setEditable] = useState(false);
+
 
   useEffect(() => {
 
@@ -153,8 +159,8 @@ const Component = (props) => {
   // --------------------------------------------------
 
   /**
-   * スレッドを読み込む
-   * @param {number} page - スレッドのページ
+   * ゲームコミュニティ一覧を読み込む
+   * @param {number} page - ページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
   const handleRead = async ({
@@ -175,33 +181,15 @@ const Component = (props) => {
       let url = '';
       let as = '';
 
-      if (gameCommunities_id) {
+      if (page === 1) {
 
-        if (page === 1) {
-
-          url = `/gc/[urlID]`;
-          as = `/gc/${urlID}`;
-
-        } else {
-
-          url = `/gc/[urlID]/forum/[[...slug]]`;
-          as = `/gc/${urlID}/forum/${page}`;
-
-        }
+        url = `/gc/list/[[...slug]]`;
+        as ='/gc/list';
 
       } else {
 
-        if (page === 1) {
-
-          url = `/uc/[userCommunityID]`;
-          as = `/uc/${userCommunityID}`;
-
-        } else {
-
-          url = `/uc/[userCommunityID]/forum/[[...slug]]`;
-          as = `/uc/${userCommunityID}/forum/${page}`;
-
-        }
+        url = '/gc/list/[[...slug]]';
+        as = `/gc/list/${page}`;
 
       }
 
@@ -211,7 +199,7 @@ const Component = (props) => {
       // ---------------------------------------------
 
       if (changeLimit) {
-        Cookies.set('forumThreadLimit', changeLimit);
+        Cookies.set('communityListLimit', changeLimit);
       }
 
 
@@ -221,7 +209,7 @@ const Component = (props) => {
 
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/forum.js - handleRead
+      //   app/gc/list/v2/list.js - handleRead
       // `);
 
       // console.log(chalk`
@@ -260,37 +248,6 @@ const Component = (props) => {
   const limit = lodashGet(obj, ['limit'], parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_LIMIT, 10));
   const count = lodashGet(obj, ['count'], 0);
   const arr = lodashGet(obj, [`page${page}Obj`, 'arr'], []);
-  // const dataObj = lodashGet(obj, ['dataObj'], {});
-
-
-  // // --------------------------------------------------
-  // //   Link Return Top
-  // // --------------------------------------------------
-
-  // let linkReturnTopHref = '';
-  // let linkReturnTopAs = '';
-
-
-  // // ---------------------------------------------
-  // //   - Game Community
-  // // ---------------------------------------------
-
-  // if (urlID) {
-
-  //   linkReturnTopHref = `/gc/[urlID]`;
-  //   linkReturnTopAs = `/gc/${urlID}`;
-
-
-  // // ---------------------------------------------
-  // //   - User Community
-  // // ---------------------------------------------
-
-  // } else if (userCommunityID) {
-
-  //   linkReturnTopHref = `/uc/[userCommunityID]`;
-  //   linkReturnTopAs = `/uc/${userCommunityID}`;
-
-  // }
 
 
 
@@ -348,6 +305,7 @@ const Component = (props) => {
       <CardGC
         key={index}
         obj={dataObj}
+        editable={editable}
       />
     );
 
@@ -472,6 +430,126 @@ const Component = (props) => {
 
       </Paper>
 
+
+
+
+      {/* Pagination */}
+      <Paper
+        css={css`
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
+          margin: 48px 0 0 0;
+          padding: 12px;
+        `}
+      >
+
+        <Button
+          // type="submit"
+          variant="outlined"
+          size="small"
+          disabled={buttonDisabled}
+          onClick={() => setEditable(!editable)}
+        >
+          <IconEdit
+            css={css`
+              padding: 0 4px 0 0;
+            `}
+          />
+          ゲーム登録・編集モード
+        </Button>
+
+
+
+
+        {/* ？アイコン */}
+        <div
+          css={css`
+            margin: 0 0 0 12px;
+          `}
+        >
+          <IconButton
+            css={css`
+              && {
+                margin: 0 0 0 4px;
+                padding: 0;
+              }
+            `}
+            color="primary"
+            aria-label="Show Explanation"
+            onClick={(eventObj) => setAnchorElEditMode(eventObj.currentTarget)}
+          >
+            <IconHelpOutline />
+          </IconButton>
+        </div>
+
+
+
+
+        {/* ？アイコンを押すと表示される解説文 */}
+        <Popover
+          id={Boolean(anchorElEditMode) ? 'popoverEditMode' : undefined}
+          open={Boolean(anchorElEditMode)}
+          anchorEl={anchorElEditMode}
+          onClose={() => setAnchorElEditMode(null)}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+        >
+
+          <Paper
+            css={css`
+              max-width: 400px;
+              padding: 0 16px 8px 16px;
+            `}
+          >
+
+            <div
+              css={css`
+                margin: 12px 0 0 0;
+              `}
+            >
+
+              <p
+                css={css`
+                  margin: 0 0 14px 0;
+                `}
+              >
+                左のボタンを押すと、ゲームの登録・編集フォームが利用できるようになります。
+              </p>
+
+              <p>
+                Game Users のコンテンツを充実させるために、ぜひデータ追加のお手伝いをよろしくお願いします。
+              </p>
+
+            </div>
+
+          </Paper>
+
+        </Popover>
+
+      </Paper>
+
+
+
+
+      <div
+        css={css`
+          margin: 14px 0 0 0;
+        `}
+      >
+        <Panel
+          heading="ゲーム新規登録フォーム"
+          defaultExpanded={false}
+        >
+          <Form />
+        </Panel>
+      </div>
 
 
     </Element>

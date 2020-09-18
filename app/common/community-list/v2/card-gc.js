@@ -47,6 +47,7 @@ import IconSchedule from '@material-ui/icons/Schedule';
 import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
 import IconDescription from '@material-ui/icons/Description';
 import IconPermIdentity from '@material-ui/icons/PermIdentity';
+import IconEdit from '@material-ui/icons/Edit';
 
 
 // ---------------------------------------------
@@ -77,6 +78,7 @@ const Component = (props) => {
   const {
 
     obj = {},
+    editable = false,
 
   } = props;
 
@@ -355,11 +357,59 @@ const Component = (props) => {
 
               </div>
 
-
             </div>
 
           </div>
 
+
+
+
+          {/* Edit Button */}
+          {editable &&
+            <div
+              css={css`
+                margin: 0 10px 0 0;
+              `}
+            >
+              <Button
+                css={css`
+                  && {
+                    font-size: 12px;
+                    height: 22px;
+                    min-width: 54px;
+                    min-height: 22px;
+                    margin: 0 0 0 12px;
+                    padding: 0 4px;
+
+                    @media screen and (max-width: 480px) {
+                      min-width: 36px;
+                      min-height: 22px;
+                    }
+                  }
+                `}
+                variant="outlined"
+                color="primary"
+                // onClick={() => handleShowFormRecruitmentThread({
+                //   pathArr: pathRecruitmentThreadEditFormArr,
+                //   recruitmentThreads_id,
+                // })}
+              >
+                <IconEdit
+                  css={css`
+                    && {
+                      font-size: 16px;
+                      margin: 0 2px 2px 0;
+
+                      @media screen and (max-width: 480px) {
+                        display: none;
+                      }
+                    }
+                  `}
+                />
+                編集
+              </Button>
+            </div>
+          }
 
         </Paper>
 

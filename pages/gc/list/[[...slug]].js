@@ -79,11 +79,13 @@ const ContainerLayout = (props) => {
   //   props
   // --------------------------------------------------
 
-  const {
+  // const {
 
-    gcListObj = {},
+  //   gcListObj = {},
+  //   hardwaresArr = [],
+  //   keyword,
 
-  } = props;
+  // } = props;
 
 
   // --------------------------------------------------
@@ -151,13 +153,13 @@ const ContainerLayout = (props) => {
     <React.Fragment>
 
       <GcNavigation
-        // urlID={props.urlID}
-        // gameCommunities_id={props.gameCommunities_id}
+        page={props.page}
+        hardwaresArr={props.hardwaresArr}
+        keyword={props.keyword}
       />
 
       <FeedSidebar
         feedObj={props.feedObj}
-        // top={true}
       />
 
     </React.Fragment>
@@ -176,7 +178,7 @@ const ContainerLayout = (props) => {
       />
 
       <GcList
-        obj={gcListObj}
+        obj={props.gcListObj}
       />
 
       {/* <FeedHorizontal
@@ -280,7 +282,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Query
   // --------------------------------------------------
 
-  const page = lodashGet(query, ['page'], 1);
+  let page = lodashGet(query, ['page'], 1);
   const hardwares = lodashGet(query, ['hardwares'], '');
   const keyword = lodashGet(query, ['keyword'], '');
   const slugsArr = lodashGet(query, ['slug'], []);
@@ -345,6 +347,7 @@ export async function getServerSideProps({ req, res, query }) {
   const feedObj = lodashGet(dataObj, ['feedObj'], {});
 
   const gcListObj = lodashGet(dataObj, ['gcListObj'], {});
+  const hardwaresArr = lodashGet(dataObj, ['hardwaresArr'], []);
 
 
   // --------------------------------------------------
@@ -525,7 +528,10 @@ export async function getServerSideProps({ req, res, query }) {
       experienceObj,
       feedObj,
 
+      page,
       gcListObj,
+      hardwaresArr,
+      keyword,
 
     }
 

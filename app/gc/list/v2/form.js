@@ -37,21 +37,22 @@ import lodashHas from 'lodash/has';
 // ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Popover from '@material-ui/core/Popover';
+import Paper from '@material-ui/core/Paper';
 
 
 // ---------------------------------------------
-//   States
+//   Material UI / Icons
 // ---------------------------------------------
 
-// import { ContainerStateUser } from 'app/@states/user.js';
-// import { ContainerStateLayout } from 'app/@states/layout.js';
-// import { ContainerStateCommunity } from 'app/@states/community.js';
-// import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
+import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
 // ---------------------------------------------
@@ -71,23 +72,19 @@ import { showSnackbar } from 'app/@modules/snackbar.js';
 import { validationBoolean } from 'app/@validations/boolean.js';
 import { validationHandleName } from 'app/@validations/name.js';
 
-import { validationRecruitmentThreadsCategory } from 'app/@database/recruitment-threads/validations/category.js';
-import { validationRecruitmentThreadsTitle } from 'app/@database/recruitment-threads/validations/title.js';
-import { validationRecruitmentThreadsComment } from 'app/@database/recruitment-threads/validations/comment.js';
-import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } from 'app/@database/recruitment-threads/validations/ids-informations.js';
-import { validationRecruitmentThreadsDeadlineDate } from 'app/@database/recruitment-threads/validations/deadline.js';
+import { validationGamesName, validationGamesSubtitle, validationGamesSortKeyword } from 'app/@database/games/validations/name.js';
+import { validationGamesURLID } from 'app/@database/games/validations/url.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import FormName from 'app/common/form/v2/name.js';
 import FormImageAndVideo from 'app/common/image-and-video/v2/form.js';
 import FormHardwares from 'app/common/hardware/v2/form.js';
-import WebPuchCheckbox from 'app/common/web-push/v2/checkbox.js';
-import FormIDsInformations from 'app/gc/rec/v2/form/ids-informations.js';
-import FormDeadline from 'app/gc/rec/v2/form/deadline.js';
+
+import FormTwitter from 'app/gc/list/v2/form/twitter.js';
+import FormSearchKeyword from 'app/gc/list/v2/form/search-keyword.js';
 
 
 
@@ -124,9 +121,7 @@ const Component = (props) => {
 
   const {
 
-    gameCommunities_id,
-    recruitmentThreads_id,
-
+    games_id,
     setShowForm,
 
   } = props;
@@ -142,11 +137,17 @@ const Component = (props) => {
   const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
-  const [hardwaresArr, setHardwaresArr] = useState([]);
-  const [category, setCategory] = useState('');
-  const [title, setTitle] = useState('');
+  const [language, setLanguage] = useState('ja');
+  const [country, setCountry] = useState('JP');
   const [name, setName] = useState('');
-  const [comment, setComment] = useState('');
+  const [subtitle, setSubtitle] = useState('');
+  const [sortKeyword, setSortKeyword] = useState('');
+  const [urlID, setURLID] = useState('');
+  const [twitterHashtagsArr, setTwitterHashtagsArr] = useState([]);
+  const [searchKeywordsArr, setSearchKeywordsArr] = useState([]);
+
+  const [hardwaresArr, setHardwaresArr] = useState([]);
+
   const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
 
     _id: '',
@@ -158,29 +159,8 @@ const Component = (props) => {
 
   });
 
-  const [idsArr, setIDsArr] = useState([]);
-  const [platform1, setPlatform1] = useState('Other');
-  const [platform2, setPlatform2] = useState('Other');
-  const [platform3, setPlatform3] = useState('Other');
-  const [id1, setID1] = useState('');
-  const [id2, setID2] = useState('');
-  const [id3, setID3] = useState('');
-  const [informationTitle1, setInformationTitle1] = useState('');
-  const [informationTitle2, setInformationTitle2] = useState('');
-  const [informationTitle3, setInformationTitle3] = useState('');
-  const [informationTitle4, setInformationTitle4] = useState('');
-  const [informationTitle5, setInformationTitle5] = useState('');
-  const [information1, setInformation1] = useState('');
-  const [information2, setInformation2] = useState('');
-  const [information3, setInformation3] = useState('');
-  const [information4, setInformation4] = useState('');
-  const [information5, setInformation5] = useState('');
-  const [publicSetting, setPublicSetting] = useState(1);
-
-  const [deadlineDate, setDeadlineDate] = useState('');
-
-  const [webPushAvailable, setWebPushAvailable] = useState(false);
-  const [webPushSubscriptionObj, setWebPushSubscriptionObj] = useState({});
+  const [anchorElSortKeyword, setAnchorElSortKeyword] = useState(null);
+  const [anchorElSubtitle, setAnchorElSubtitle] = useState(null);
 
 
   useEffect(() => {
@@ -197,52 +177,12 @@ const Component = (props) => {
     //   編集用データを読み込む
     // --------------------------------------------------
 
-    if (recruitmentThreads_id) {
+    if (games_id) {
       handleGetEditData();
     }
 
 
   }, []);
-
-
-
-
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-
-  // const stateUser = ContainerStateUser.useContainer();
-  // const stateLayout = ContainerStateLayout.useContainer();
-  // const stateCommunity = ContainerStateCommunity.useContainer();
-  // const stateRecruitment = ContainerStateRecruitment.useContainer();
-
-  // const {
-
-  //   localeObj,
-
-  // } = stateUser;
-
-  // const {
-
-  //   handleLoadingOpen,
-  //   handleLoadingClose,
-  //   handleScrollTo,
-
-  // } = stateLayout;
-
-  // const {
-
-  //   setGameCommunityObj,
-
-  // } = stateCommunity;
-
-  // const {
-
-  //   setRecruitmentThreadsObj,
-  //   setRecruitmentCommentsObj,
-  //   setRecruitmentRepliesObj,
-
-  // } = stateRecruitment;
 
 
 
@@ -935,14 +875,18 @@ const Component = (props) => {
   //   Validations
   // --------------------------------------------------
 
-  const validationRecruitmentThreadsTitleObj = validationRecruitmentThreadsTitle({ value: title });
+  const validationGamesNameObj = validationGamesName({ value: name });
+  const validationGamesSubtitleObj = validationGamesSubtitle({ value: subtitle });
+  const validationGamesSortKeywordObj = validationGamesSortKeyword({ value: sortKeyword });
+  const validationGamesURLIDObj = validationGamesURLID({ value: urlID });
+
 
 
   // --------------------------------------------------
   //   Element Name
   // --------------------------------------------------
 
-  const elementName = recruitmentThreads_id ? `${recruitmentThreads_id}-formThread` : `${gameCommunities_id}-formThread`;
+  const elementName = games_id ? `${games_id}-form` : 'games-form';
 
 
 
@@ -953,12 +897,12 @@ const Component = (props) => {
 
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/gc/rec/v2/components/form/thread.js
+  //   app/gc/list/v2/form.js
   // `);
 
   // console.log(chalk`
   //   gameCommunities_id: {green ${gameCommunities_id}}
-  //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+  //   games_id: {green ${games_id}}
   // `);
 
   // console.log(`
@@ -990,40 +934,430 @@ const Component = (props) => {
 
 
         {/* Heading & Explanation */}
-        {recruitmentThreads_id &&
-          <React.Fragment>
+        {games_id
+          ?
+            <React.Fragment>
 
-            <h3
-              css={css`
-                font-weight: bold;
-                margin: 0 0 12px 0;
-              `}
-            >
-              募集編集フォーム
-            </h3>
+              <h3
+                css={css`
+                  font-weight: bold;
+                  margin: 0 0 12px 0;
+                `}
+              >
+                ゲーム編集フォーム
+              </h3>
 
 
+              <p
+                css={css`
+                  margin: 0 0 14px 0;
+                `}
+              >
+                登録済みのゲームを編集できます。
+              </p>
+
+            </React.Fragment>
+          :
             <p
               css={css`
                 margin: 0 0 14px 0;
               `}
             >
-              投稿済みの募集を編集できます。
+              ゲームを新しく登録する場合、こちらのフォームを利用してください。すべての情報を正確に入力する必要はありません。わからない欄は未入力にするか、適当な文字列を入力してもらえるとありがたいです。
             </p>
-
-          </React.Fragment>
         }
 
 
-        {!recruitmentThreads_id &&
-          <p
+
+
+        {/* Category */}
+        <div css={cssBox}>
+
+          <h3
             css={css`
-              margin: 0 0 14px 0;
+              font-weight: bold;
+              margin: 0 0 2px 0;
             `}
           >
-            募集を新しく投稿する場合、こちらのフォームを利用して投稿してください。ログインして投稿すると募集をいつでも編集できるようになり、ID・情報の公開相手を選ぶことができるようになります。
+            言語・国
+          </h3>
+
+          <p
+            css={css`
+              margin: 0 0 24px 0;
+            `}
+          >
+            言語と国を選んでください。現在、選べるのは日本語・日本のみです。
           </p>
-        }
+
+
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row wrap;
+            `}
+          >
+
+            <div
+              css={css`
+                margin: 0 24px 12px 0;
+              `}
+            >
+              <FormControl>
+
+                <InputLabel shrink id="categoryLabel">言語</InputLabel>
+
+                <Select
+                  css={css`
+                    && {
+                      width: 200px;
+                    }
+                  `}
+                  labelId="言語"
+                  value={language}
+                  onChange={(eventObj) => setLanguage(eventObj.target.value)}
+                  displayEmpty
+                >
+                  <MenuItem value="ja">日本語</MenuItem>
+                </Select>
+
+              </FormControl>
+            </div>
+
+
+
+            <div
+              css={css`
+                margin: 0 0 12px 0;
+              `}
+            >
+              <FormControl>
+
+                <InputLabel shrink id="categoryLabel">国</InputLabel>
+
+                <Select
+                  css={css`
+                    && {
+                      width: 200px;
+                    }
+                  `}
+                  labelId="国"
+                  value={country}
+                  onChange={(eventObj) => setCountry(eventObj.target.value)}
+                  displayEmpty
+                >
+                  <MenuItem value="JP">日本</MenuItem>
+                </Select>
+
+              </FormControl>
+            </div>
+
+          </div>
+
+
+        </div>
+
+
+
+
+        {/* Name */}
+        <div css={cssBox}>
+
+
+          <h3
+            css={css`
+              font-weight: bold;
+              margin: 0 0 2px 0;
+            `}
+          >
+            ゲーム名
+          </h3>
+
+          <p
+            css={css`
+              margin: 0 0 12px 0;
+            `}
+          >
+            ゲーム名を入力してください。ゲーム名とサブタイトルは入力するフォームを分けてください。
+          </p>
+
+
+          {/* Name */}
+          <TextField
+            css={css`
+              && {
+                width: 100%;
+                max-width: 500px;
+                ${games_id && `margin-top: 4px;`}
+              }
+            `}
+            label="ゲーム名"
+            value={validationGamesNameObj.value}
+            onChange={(eventObj) => setName(eventObj.target.value)}
+            error={validationGamesNameObj.error}
+            helperText={intl.formatMessage({ id: validationGamesNameObj.messageID }, { numberOfCharacters: validationGamesNameObj.numberOfCharacters })}
+            margin="normal"
+            inputProps={{
+              maxLength: 100,
+            }}
+          />
+
+
+
+
+          {/* 並び替え用のカタカナ表記 */}
+          <TextField
+            css={css`
+              && {
+                width: 100%;
+                max-width: 500px;
+                ${games_id && `margin-top: 4px;`}
+              }
+            `}
+            label="ゲーム名（カタカナ）"
+            value={validationGamesSortKeywordObj.value}
+            onChange={(eventObj) => setSortKeyword(eventObj.target.value)}
+            error={validationGamesSortKeywordObj.error}
+            helperText={intl.formatMessage({ id: validationGamesSortKeywordObj.messageID }, { numberOfCharacters: validationGamesSortKeywordObj.numberOfCharacters })}
+            margin="normal"
+            inputProps={{
+              maxLength: 100,
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={(eventObj) => setAnchorElSortKeyword(eventObj.currentTarget)}
+                  >
+                    <IconHelpOutline />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+
+
+          {/* ？アイコンを押すと表示される解説文 */}
+          <Popover
+            id={Boolean(anchorElSortKeyword) ? 'popoverSortKeyword' : undefined}
+            open={Boolean(anchorElSortKeyword)}
+            anchorEl={anchorElSortKeyword}
+            onClose={() => setAnchorElSortKeyword(null)}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+          >
+
+            <Paper
+              css={css`
+                max-width: 400px;
+                padding: 0 16px 8px 16px;
+              `}
+            >
+
+              <div
+                css={css`
+                  margin: 12px 0 0 0;
+                `}
+              >
+
+                <p
+                  css={css`
+                    margin: 0 0 14px 0;
+                  `}
+                >
+                  ゲーム名をカタカナで入力してください。スペースはすべて削除し、数字は半角数字に変換してください。サブタイトルは不要です。五十音順で並べ替える際に利用します。
+                </p>
+
+                <p>
+                  例）ドラゴンクエストIII そして伝説へ…　→ ドラゴンクエスト3
+                </p>
+
+              </div>
+
+            </Paper>
+
+          </Popover>
+
+
+
+
+          {/* Sub Title */}
+          <TextField
+            css={css`
+              && {
+                width: 100%;
+                max-width: 500px;
+                ${games_id && `margin-top: 4px;`}
+              }
+            `}
+            label="サブタイトル"
+            value={validationGamesSubtitleObj.value}
+            onChange={(eventObj) => setSubtitle(eventObj.target.value)}
+            error={validationGamesSubtitleObj.error}
+            helperText={intl.formatMessage({ id: validationGamesSubtitleObj.messageID }, { numberOfCharacters: validationGamesSubtitleObj.numberOfCharacters })}
+            margin="normal"
+            inputProps={{
+              maxLength: 100,
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={(eventObj) => setAnchorElSubtitle(eventObj.currentTarget)}
+                  >
+                    <IconHelpOutline />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+
+
+          {/* ？アイコンを押すと表示される解説文 */}
+          <Popover
+            id={Boolean(anchorElSubtitle) ? 'popoverSubtitle' : undefined}
+            open={Boolean(anchorElSubtitle)}
+            anchorEl={anchorElSubtitle}
+            onClose={() => setAnchorElSubtitle(null)}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+          >
+
+            <Paper
+              css={css`
+                max-width: 400px;
+                padding: 0 16px 8px 16px;
+              `}
+            >
+
+              <div
+                css={css`
+                  margin: 12px 0 0 0;
+                `}
+              >
+
+                <p
+                  css={css`
+                    margin: 0 0 14px 0;
+                  `}
+                >
+                  サブタイトルがある場合はこちらに入力してください。
+                </p>
+
+                <p>
+                  例）ドラゴンクエストIII そして伝説へ…　→ そして伝説へ…
+                </p>
+
+              </div>
+
+            </Paper>
+
+          </Popover>
+
+
+        </div>
+
+
+
+
+        {/* URL */}
+        <div css={cssBox}>
+
+
+          <h3
+            css={css`
+              font-weight: bold;
+              margin: 0 0 2px 0;
+            `}
+          >
+            URL
+          </h3>
+
+          <p
+            css={css`
+              margin: 0 0 12px 0;
+            `}
+          >
+            ゲームコミュニティのURLを入力してください。次の形式のURLになります。https://gameusers.org/gc/<span css={css`color: red;`}>***</span>　この赤文字部分です。
+          </p>
+
+          <p
+            css={css`
+              margin: 0 0 12px 0;
+            `}
+          >
+            半角英数字で、ゲーム名を -（ハイフン）で繋げます。この欄は難しいかもしれないので、わからない場合は適当な文字を入力しておいてください。
+          </p>
+
+          <p
+            css={css`
+              margin: 0 0 12px 0;
+            `}
+          >
+            例）Dead by Daylight → Dead-by-Daylight
+          </p>
+
+
+          {/* urlID */}
+          <TextField
+            css={css`
+              && {
+                width: 100%;
+                max-width: 500px;
+                ${games_id && `margin-top: 4px;`}
+              }
+            `}
+            label="URL"
+            value={validationGamesURLIDObj.value}
+            onChange={(eventObj) => setURLID(eventObj.target.value)}
+            error={validationGamesURLIDObj.error}
+            helperText={intl.formatMessage({ id: validationGamesURLIDObj.messageID }, { numberOfCharacters: validationGamesURLIDObj.numberOfCharacters })}
+            margin="normal"
+            inputProps={{
+              maxLength: 100,
+            }}
+          />
+
+
+        </div>
+
+
+
+
+        {/* Search Keywords */}
+        <div css={cssBox}>
+
+          <FormSearchKeyword
+            arr={searchKeywordsArr}
+            setArr={setSearchKeywordsArr}
+          />
+
+        </div>
+
+
+
+
+        {/* Twitter Hashtags */}
+        <div css={cssBox}>
+
+          <FormTwitter
+            arr={twitterHashtagsArr}
+            setArr={setTwitterHashtagsArr}
+          />
+
+        </div>
 
 
 
@@ -1076,7 +1410,7 @@ const Component = (props) => {
 
 
         {/* Category */}
-        <div css={cssBox}>
+        {/* <div css={cssBox}>
 
           <h3
             css={css`
@@ -1119,85 +1453,18 @@ const Component = (props) => {
 
           </FormControl>
 
-        </div>
+        </div> */}
 
 
 
 
-        {/* Title & Handle Name & Comment */}
-        <div css={cssBox}>
 
-
-          {/* Title */}
-          <TextField
-            css={css`
-              && {
-                width: 100%;
-                max-width: 500px;
-                ${recruitmentThreads_id && `margin-top: 4px;`}
-              }
-            `}
-            label="募集タイトル"
-            value={validationRecruitmentThreadsTitleObj.value}
-            onChange={(eventObj) => setTitle(eventObj.target.value)}
-            error={validationRecruitmentThreadsTitleObj.error}
-            helperText={intl.formatMessage({ id: validationRecruitmentThreadsTitleObj.messageID }, { numberOfCharacters: validationRecruitmentThreadsTitleObj.numberOfCharacters })}
-            margin="normal"
-            inputProps={{
-              maxLength: 100,
-            }}
-          />
-
-
-
-
-          {/* Name */}
-          <FormName
-            name={name}
-            setName={setName}
-          />
-
-
-
-
-          {/* Comment */}
-          <div
-            css={css`
-              margin: 12px 0 0 0;
-            `}
-          >
-
-            <TextareaAutosize
-              css={css`
-                && {
-                  width: 100%;
-                  border-radius: 4px;
-                  box-sizing: border-box;
-                  padding: 8px 12px;
-                  line-height: 1.8;
-
-                  &:focus {
-                    outline: 1px #A9F5F2 solid;
-                  }
-
-                  resize: none;
-                }
-              `}
-              rows={5}
-              placeholder="募集について必要な情報をこちらに記述してください。"
-              value={comment}
-              maxLength={3000}
-              disabled={buttonDisabled}
-              onChange={(eventObj) => setComment(eventObj.target.value)}
-            />
-
-          </div>
 
 
 
 
           {/* Form Images & Videos */}
-          <div
+          {/* <div
             css={css`
               margin: 12px 0 0 0;
             `}
@@ -1213,128 +1480,10 @@ const Component = (props) => {
               setImagesAndVideosObj={setImagesAndVideosObj}
             />
 
-          </div>
+          </div> */}
 
 
-        </div>
-
-
-
-
-        {/* ID & Other Information */}
-        <div css={cssBox}>
-
-          <FormIDsInformations
-            type="thread"
-
-            idsArr={idsArr}
-            setIDsArr={setIDsArr}
-
-            platform1={platform1}
-            setPlatform1={setPlatform1}
-            platform2={platform2}
-            setPlatform2={setPlatform2}
-            platform3={platform3}
-            setPlatform3={setPlatform3}
-
-            id1={id1}
-            setID1={setID1}
-            id2={id2}
-            setID2={setID2}
-            id3={id3}
-            setID3={setID3}
-
-            informationTitle1={informationTitle1}
-            setInformationTitle1={setInformationTitle1}
-            informationTitle2={informationTitle2}
-            setInformationTitle2={setInformationTitle2}
-            informationTitle3={informationTitle3}
-            setInformationTitle3={setInformationTitle3}
-            informationTitle4={informationTitle4}
-            setInformationTitle4={setInformationTitle4}
-            informationTitle5={informationTitle5}
-            setInformationTitle5={setInformationTitle5}
-
-            information1={information1}
-            setInformation1={setInformation1}
-            information2={information2}
-            setInformation2={setInformation2}
-            information3={information3}
-            setInformation3={setInformation3}
-            information4={information4}
-            setInformation4={setInformation4}
-            information5={information5}
-            setInformation5={setInformation5}
-
-            publicSetting={publicSetting}
-            setPublicSetting={setPublicSetting}
-          />
-
-        </div>
-
-
-
-
-        {/* Deadline */}
-        <div css={cssBox}>
-
-          <FormDeadline
-            deadlineDate={deadlineDate}
-            setDeadlineDate={setDeadlineDate}
-            recruitmentThreads_id={recruitmentThreads_id}
-          />
-
-        </div>
-
-
-
-
-        {/* プッシュ通知 */}
-        <div css={cssBox}>
-
-          <h3
-            css={css`
-              font-weight: bold;
-              margin: 0 0 2px 0;
-            `}
-          >
-            プッシュ通知
-          </h3>
-
-          <p
-            css={css`
-              margin: 0 0 12px 0;
-            `}
-          >
-            ブラウザで通知を受け取れるプッシュ通知の設定を行えます。プッシュ通知を許可すると、募集に返信があったときに通知を受け取れるのでおすすめです。
-          </p>
-
-          <p
-            css={css`
-              margin: 0 0 12px 0;
-            `}
-          >
-            プッシュ通知に対応しているブラウザは最新の Chrome、Edge、Firefox、Opera です。
-          </p>
-
-          <p
-            css={css`
-              margin: 0 0 12px 0;
-            `}
-          >
-            過去にGame Usersからのプッシュ通知をブロックしたことがある方は、ブロックを解除しなければ通知を受けることができません。通知を受け取りたい場合は、ご使用のブラウザのブロック解除方法を調べて実行してください。
-          </p>
-
-
-          <WebPuchCheckbox
-            webPushAvailable={webPushAvailable}
-            setWebPushAvailable={setWebPushAvailable}
-            webPushSubscriptionObj={webPushSubscriptionObj}
-            setWebPushSubscriptionObj={setWebPushSubscriptionObj}
-          />
-
-        </div>
-
+        {/* </div> */}
 
 
 
@@ -1357,14 +1506,14 @@ const Component = (props) => {
             color="primary"
             disabled={buttonDisabled}
           >
-            {recruitmentThreads_id ? '編集する' : '投稿する'}
+            {games_id ? '編集する' : '登録する'}
           </Button>
 
 
 
 
           {/* Close */}
-          {recruitmentThreads_id &&
+          {games_id &&
             <div
               css={css`
                 margin: 0 0 0 auto;

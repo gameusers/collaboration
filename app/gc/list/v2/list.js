@@ -544,8 +544,8 @@ const Component = (props) => {
         `}
       >
         <Panel
-          heading="ゲーム新規登録フォーム"
-          defaultExpanded={false}
+          heading="ゲーム登録フォーム"
+          defaultExpanded={true}
         >
           <Form />
         </Panel>

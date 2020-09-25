@@ -57,52 +57,52 @@ import { validationCardPlayersSex, validationCardPlayersSexAlternativeText } fro
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     sex,
     setSex,
-    
+
     sexAlternativeText,
     setSexAlternativeText,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Validations
   // --------------------------------------------------
-  
+
   const validationObj = validationCardPlayersSex({ value: sex });
   const validationAlternativeTextObj = validationCardPlayersSexAlternativeText({ value: sexAlternativeText });
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <React.Fragment>
-      
-      
+
+
       {/* Heading */}
       <h3
         css={css`
@@ -111,8 +111,8 @@ const Component = (props) => {
       >
         性別
       </h3>
-      
-      
+
+
       <p
         css={css`
           margin: 0 0 12px 0;
@@ -120,19 +120,19 @@ const Component = (props) => {
       >
         性別を選択してください。選択すると性別が表示されます。選択肢以外の値を入力したい場合は、その他のフォームに入力してください。
       </p>
-      
-      
-      
-      
+
+
+
+
       {/* 性別 */}
       <div
         css={css`
           margin: 12px 0 0 0;
         `}
       >
-        
+
         <FormControl>
-          
+
           <Select
             value={validationObj.value}
             onChange={(eventObj) => setSex(eventObj.target.value)}
@@ -141,24 +141,24 @@ const Component = (props) => {
               id: 'sex',
             }}
           >
-            <MenuItem value={''}>&nbsp;</MenuItem>
+            <MenuItem value="">&nbsp;</MenuItem>
             <MenuItem value={'male'}>男性</MenuItem>
             <MenuItem value={'female'}>女性</MenuItem>
           </Select>
-          
+
         </FormControl>
-        
+
       </div>
-      
-      
-      
-      
+
+
+
+
       {/* 性別（固定値） */}
       <TextField
         css={css`
           && {
             width: 400px;
-            
+
             @media screen and (max-width: 480px) {
               width: 100%;
             }
@@ -175,12 +175,12 @@ const Component = (props) => {
           maxLength: 20,
         }}
       />
-      
-        
+
+
     </React.Fragment>
   );
-  
-  
+
+
 };
 
 

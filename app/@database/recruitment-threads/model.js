@@ -954,6 +954,7 @@ const findRecruitmentByRecruitmentID = async ({
  * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
  * @param {Array} hardwareIDsArr - DB hardwares _id / ハードウェアIDの入った配列
  * @param {Array} categoriesArr - カテゴリーNoの入った配列
+ * @param {string} keyword - キーワード
  * @param {number} threadPage - スレッドのページ
  * @param {number} threadLimit - スレッドのリミット
  * @param {number} commentPage - コメントのページ

@@ -372,7 +372,7 @@ const Component = (props) => {
 
         {/* ？アイコンを押すと表示される解説文 */}
         <Popover
-          id={Boolean(anchorEl) ? 'popover' : undefined}
+          id={hardwareExplanationID}
           open={Boolean(anchorEl)}
           anchorEl={anchorEl}
           onClose={() => setAnchorEl(null)}

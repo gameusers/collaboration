@@ -204,23 +204,15 @@ const Component = (props) => {
 
       <p
         css={css`
-          margin: 0 0 12px 0;
+          margin: 0 0 14px 0;
         `}
       >
-        検索キーワードを入力してください。ゲームを検索するときに引っかかりやすくなるようなキーワードを入力します。
+        検索キーワードを入力してください。ゲームを検索するときに引っかかりやすくなるようなキーワードを入力します。ゲーム名のひらがな表記、カタカナ表記、英語表記、よく使われている略称などです。最大20個。
       </p>
 
       <p
         css={css`
-          margin: 0 0 12px 0;
-        `}
-      >
-        ゲーム名のひらがな表記、カタカナ表記、英語表記、よく使われている略称などです。最大20個。
-      </p>
-
-      <p
-        css={css`
-          margin: 0 0 12px 0;
+          margin: 0 0 14px 0;
         `}
       >
         例）すーぱーまりおぶらざーず、スーパーマリオブラザーズ、Super Mario Brothers、スーマリ
@@ -244,11 +236,13 @@ const Component = (props) => {
 
 
         {/* テキストフィールド追加ボタン */}
-        <IconButton
-          onClick={handleAdd}
-        >
-          <IconAddCircle />
-        </IconButton>
+        {arr.length < limit &&
+          <IconButton
+            onClick={handleAdd}
+          >
+            <IconAddCircle />
+          </IconButton>
+        }
 
 
       </div>

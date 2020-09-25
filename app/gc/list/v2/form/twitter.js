@@ -204,7 +204,7 @@ const Component = (props) => {
 
       <p
         css={css`
-          margin: 0 0 12px 0;
+          margin: 0 0 14px 0;
         `}
       >
         Twitterのハッシュタグを入力してください。そのゲームでよく使われているハッシュタグを調べて入力します。
@@ -212,7 +212,7 @@ const Component = (props) => {
 
       <p
         css={css`
-          margin: 0 0 12px 0;
+          margin: 0 0 14px 0;
         `}
       >
         ハッシュタグの # は入力しないでください。最大2個。
@@ -220,7 +220,7 @@ const Component = (props) => {
 
       <p
         css={css`
-          margin: 0 0 12px 0;
+          margin: 0 0 14px 0;
         `}
       >
         例）スーパーマリオメーカー2、SuperMarioMaker2
@@ -244,11 +244,13 @@ const Component = (props) => {
 
 
         {/* テキストフィールド追加ボタン */}
-        <IconButton
-          onClick={handleAdd}
-        >
-          <IconAddCircle />
-        </IconButton>
+        {arr.length < limit &&
+          <IconButton
+            onClick={handleAdd}
+          >
+            <IconAddCircle />
+          </IconButton>
+        }
 
 
       </div>

@@ -29,38 +29,38 @@ const Schema = require('./schema');
  * @return {Object} 取得データ
  */
 const findOne = async ({ conditionObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   FindOne
     // --------------------------------------------------
-    
+
     return await Schema.findOne(conditionObj).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -72,37 +72,37 @@ const findOne = async ({ conditionObj }) => {
  * @return {Array} 取得データ
  */
 const find = async ({ conditionObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Find
     // --------------------------------------------------
-    
+
     return await Schema.find(conditionObj).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -114,37 +114,37 @@ const find = async ({ conditionObj }) => {
  * @return {number} カウント数
  */
 const count = async ({ conditionObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Find
     // --------------------------------------------------
-    
+
     return await Schema.countDocuments(conditionObj).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -157,41 +157,41 @@ const count = async ({ conditionObj }) => {
  * @return {Array}
  */
 const upsert = async ({ conditionObj, saveObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
+
     if (!saveObj || !Object.keys(saveObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Upsert
     // --------------------------------------------------
-    
+
     return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -203,37 +203,37 @@ const upsert = async ({ conditionObj, saveObj }) => {
  * @return {Array}
  */
 const insertMany = async ({ saveArr }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!saveArr || !saveArr.length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   insertMany
     // --------------------------------------------------
-    
+
     return await Schema.insertMany(saveArr);
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -243,42 +243,41 @@ const insertMany = async ({ saveArr }) => {
  * 削除する
  * @param {Object} conditionObj - 検索条件
  * @param {boolean} reset - trueでデータをすべて削除する
- * @return {Array} 
+ * @return {Array}
  */
 const deleteMany = async ({ conditionObj, reset = false }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!reset && (!conditionObj || !Object.keys(conditionObj).length)) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Delete
     // --------------------------------------------------
-    
-    return await Schema.deleteMany(conditionObj);
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
-  
-};
 
+    return await Schema.deleteMany(conditionObj);
+
+
+  } catch (err) {
+
+    throw err;
+
+  }
+
+};
 
 
 
@@ -288,12 +287,12 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 // --------------------------------------------------
 
 module.exports = {
-  
+
   findOne,
   find,
   count,
   upsert,
   insertMany,
   deleteMany,
-  
+
 };

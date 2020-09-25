@@ -85,6 +85,8 @@ import FormHardwares from 'app/common/hardware/v2/form.js';
 
 import FormTwitter from 'app/gc/list/v2/form/twitter.js';
 import FormSearchKeyword from 'app/gc/list/v2/form/search-keyword.js';
+import FormHardware from 'app/gc/list/v2/form/hardware.js';
+import FormLink from 'app/gc/list/v2/form/link.js';
 
 
 
@@ -124,6 +126,8 @@ const Component = (props) => {
     games_id,
     setShowForm,
 
+    gameGenresArr,
+
   } = props;
 
 
@@ -146,7 +150,27 @@ const Component = (props) => {
   const [twitterHashtagsArr, setTwitterHashtagsArr] = useState([]);
   const [searchKeywordsArr, setSearchKeywordsArr] = useState([]);
 
-  const [hardwaresArr, setHardwaresArr] = useState([]);
+  const [genre1, setGenre1] = useState('');
+  const [genre2, setGenre2] = useState('');
+  const [genre3, setGenre3] = useState('');
+
+  const [hardwares1Arr, setHardwares1Arr] = useState([]);
+  const [releaseDate1, setReleaseDate1] = useState('');
+  const [playersMin1, setPlayersMin1] = useState(1);
+  const [playersMax1, setPlayersMax1] = useState(1);
+  const [publisherID1, setPublisherID1] = useState('');
+  const [developerID1, setDeveloperID1] = useState('');
+
+  const [hardwaresArr, setHardwaresArr] = useState([
+    {
+      hardwareID: '',
+      releaseDate: '',
+      playersMin: 1,
+      playersMax: 1,
+      publisherID: '',
+      developerID: '',
+    }
+  ]);
 
   const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
 
@@ -154,10 +178,30 @@ const Component = (props) => {
     createdDate: '',
     updatedDate: '',
     users_id: '',
-    type: 'recruitment',
+    type: 'gc',
     arr: [],
 
   });
+
+  const [imagesAndVideosThumbnailObj, setImagesAndVideosThumbnailObj] = useState({
+
+    _id: '',
+    createdDate: '',
+    updatedDate: '',
+    users_id: '',
+    type: 'gc',
+    arr: [],
+
+  });
+
+  const [linkArr, setLinkArr] = useState([{
+
+    _id: '',
+    type: 'Official',
+    label: '',
+    url: '',
+
+  }]);
 
   const [anchorElSortKeyword, setAnchorElSortKeyword] = useState(null);
   const [anchorElSubtitle, setAnchorElSubtitle] = useState(null);
@@ -428,7 +472,7 @@ const Component = (props) => {
     //   新規投稿時の recruitmentThreads_id
     // ---------------------------------------------
 
-    let newRecruitmentThreads_id = '';
+    // let newRecruitmentThreads_id = '';
 
 
 
@@ -436,304 +480,266 @@ const Component = (props) => {
     try {
 
 
-      // console.log(chalk`
-      //   platform1: {green ${platform1}}
-      //   platform2: {green ${platform2}}
-      //   platform3: {green ${platform3}}
-      // `);
-
-
-      // ---------------------------------------------
-      //   Temp Data
-      // ---------------------------------------------
-
-      // setHardwaresArr([ { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },  { hardwareID: '2yKF4qXAw', name: 'メガドライブ' } ]);
-      // setCategory(1);
-      // setTitle('テストタイトル');
-      // setName('テストネーム');
-      // setComment('テストコメント');
-      // setWebPushAvailable(true);
-      // setPlatform1('Other');
-      // setPlatform2('Other');
-      // setPlatform3('Other');
-      // setID1('test-id-1');
-      // setInformationTitle1('情報タイトル1');
-      // setInformation1('情報1');
-      // setPublicSetting(1);
-      // setDeadlineDate('');
-      // setWebPushSubscriptionObj({
-
-      //   endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
-      //   keys: {
-      //     p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
-      //     auth: 'siDbUa9DCbg-n9AMsvWA1w'
-      //   }
-
-      // });
-
-
-
-
       // ---------------------------------------------
       //   Property
       // ---------------------------------------------
 
-      const hardwareIDsArr = [];
+      // const hardwareIDsArr = [];
 
-      for (let valueObj of hardwaresArr.values()) {
-        hardwareIDsArr.push(valueObj.hardwareID);
-      }
+      // for (let valueObj of hardwaresArr.values()) {
+      //   hardwareIDsArr.push(valueObj.hardwareID);
+      // }
 
-      const threadLimit = parseInt((getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
-      const commentLimit = parseInt((getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
-      const replyLimit = parseInt((getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
+      // const threadLimit = parseInt((getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
+      // const commentLimit = parseInt((getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
+      // const replyLimit = parseInt((getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
 
 
 
 
-      // ---------------------------------------------
-      //   Validations
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   Validations
+      // // ---------------------------------------------
 
-      if (
+      // if (
 
-        validationRecruitmentThreadsCategory({ value: category }).error ||
+      //   validationRecruitmentThreadsCategory({ value: category }).error ||
 
-        validationRecruitmentThreadsTitle({ value: title }).error ||
-        validationHandleName({ value: name }).error ||
-        validationRecruitmentThreadsComment({ value: comment }).error ||
+      //   validationRecruitmentThreadsTitle({ value: title }).error ||
+      //   validationHandleName({ value: name }).error ||
+      //   validationRecruitmentThreadsComment({ value: comment }).error ||
 
-        validationRecruitmentThreadsPlatform({ value: platform1 }).error ||
-        validationRecruitmentThreadsPlatform({ value: platform2 }).error ||
-        validationRecruitmentThreadsPlatform({ value: platform3 }).error ||
+      //   validationRecruitmentThreadsPlatform({ value: platform1 }).error ||
+      //   validationRecruitmentThreadsPlatform({ value: platform2 }).error ||
+      //   validationRecruitmentThreadsPlatform({ value: platform3 }).error ||
 
-        validationRecruitmentThreadsID({ value: id1 }).error ||
-        validationRecruitmentThreadsID({ value: id2 }).error ||
-        validationRecruitmentThreadsID({ value: id3 }).error ||
+      //   validationRecruitmentThreadsID({ value: id1 }).error ||
+      //   validationRecruitmentThreadsID({ value: id2 }).error ||
+      //   validationRecruitmentThreadsID({ value: id3 }).error ||
 
-        validationRecruitmentThreadsInformationTitle({ value: informationTitle1 }).error ||
-        validationRecruitmentThreadsInformationTitle({ value: informationTitle2 }).error ||
-        validationRecruitmentThreadsInformationTitle({ value: informationTitle3 }).error ||
-        validationRecruitmentThreadsInformationTitle({ value: informationTitle4 }).error ||
-        validationRecruitmentThreadsInformationTitle({ value: informationTitle5 }).error ||
+      //   validationRecruitmentThreadsInformationTitle({ value: informationTitle1 }).error ||
+      //   validationRecruitmentThreadsInformationTitle({ value: informationTitle2 }).error ||
+      //   validationRecruitmentThreadsInformationTitle({ value: informationTitle3 }).error ||
+      //   validationRecruitmentThreadsInformationTitle({ value: informationTitle4 }).error ||
+      //   validationRecruitmentThreadsInformationTitle({ value: informationTitle5 }).error ||
 
-        validationRecruitmentThreadsInformation({ value: information1 }).error ||
-        validationRecruitmentThreadsInformation({ value: information2 }).error ||
-        validationRecruitmentThreadsInformation({ value: information3 }).error ||
-        validationRecruitmentThreadsInformation({ value: information4 }).error ||
-        validationRecruitmentThreadsInformation({ value: information5 }).error ||
+      //   validationRecruitmentThreadsInformation({ value: information1 }).error ||
+      //   validationRecruitmentThreadsInformation({ value: information2 }).error ||
+      //   validationRecruitmentThreadsInformation({ value: information3 }).error ||
+      //   validationRecruitmentThreadsInformation({ value: information4 }).error ||
+      //   validationRecruitmentThreadsInformation({ value: information5 }).error ||
 
-        validationRecruitmentThreadsPublicSetting({ value: publicSetting }).error ||
+      //   validationRecruitmentThreadsPublicSetting({ value: publicSetting }).error ||
 
-        validationRecruitmentThreadsDeadlineDate({ value: deadlineDate }).error ||
+      //   validationRecruitmentThreadsDeadlineDate({ value: deadlineDate }).error ||
 
-        validationBoolean({ value: webPushAvailable }).error
+      //   validationBoolean({ value: webPushAvailable }).error
 
-      ) {
+      // ) {
 
-        throw new CustomError({ errorsArr: [{ code: 'S0JRF6V5l', messageID: 'uwHIKBy7c' }] });
+      //   throw new CustomError({ errorsArr: [{ code: 'S0JRF6V5l', messageID: 'uwHIKBy7c' }] });
 
-      }
+      // }
 
 
 
 
-      // ---------------------------------------------
-      //   Loading Open
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   Loading Open
+      // // ---------------------------------------------
 
-      handleLoadingOpen({});
+      // handleLoadingOpen({});
 
 
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   Button Disable
+      // // ---------------------------------------------
 
-      setButtonDisabled(true);
+      // setButtonDisabled(true);
 
 
 
 
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   FormData
+      // // ---------------------------------------------
 
-      const formDataObj = {
+      // const formDataObj = {
 
-        gameCommunities_id,
-        recruitmentThreads_id,
-        hardwareIDsArr,
-        category,
-        title,
-        name,
-        comment,
-        idsArr,
-        platform1,
-        platform2,
-        platform3,
-        id1,
-        id2,
-        id3,
-        informationTitle1,
-        informationTitle2,
-        informationTitle3,
-        informationTitle4,
-        informationTitle5,
-        information1,
-        information2,
-        information3,
-        information4,
-        information5,
-        publicSetting,
-        deadlineDate,
-        webPushAvailable,
-        threadLimit,
-        commentLimit,
-        replyLimit,
+      //   gameCommunities_id,
+      //   recruitmentThreads_id,
+      //   hardwareIDsArr,
+      //   category,
+      //   title,
+      //   name,
+      //   comment,
+      //   idsArr,
+      //   platform1,
+      //   platform2,
+      //   platform3,
+      //   id1,
+      //   id2,
+      //   id3,
+      //   informationTitle1,
+      //   informationTitle2,
+      //   informationTitle3,
+      //   informationTitle4,
+      //   informationTitle5,
+      //   information1,
+      //   information2,
+      //   information3,
+      //   information4,
+      //   information5,
+      //   publicSetting,
+      //   deadlineDate,
+      //   webPushAvailable,
+      //   threadLimit,
+      //   commentLimit,
+      //   replyLimit,
 
-      };
+      // };
 
-      if (Object.keys(imagesAndVideosObj).length !== 0) {
-        formDataObj.imagesAndVideosObj = imagesAndVideosObj;
-      }
+      // if (Object.keys(imagesAndVideosObj).length !== 0) {
+      //   formDataObj.imagesAndVideosObj = imagesAndVideosObj;
+      // }
 
-      if (webPushAvailable && Object.keys(webPushSubscriptionObj).length !== 0) {
-        formDataObj.webPushSubscriptionObj = webPushSubscriptionObj;
-      }
+      // if (webPushAvailable && Object.keys(webPushSubscriptionObj).length !== 0) {
+      //   formDataObj.webPushSubscriptionObj = webPushSubscriptionObj;
+      // }
 
 
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   Fetch
+      // // ---------------------------------------------
 
-      const resultObj = await fetchWrapper({
+      // const resultObj = await fetchWrapper({
 
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/upsert`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
+      //   urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/upsert`,
+      //   methodType: 'POST',
+      //   formData: JSON.stringify(formDataObj),
 
-      });
+      // });
 
 
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   Error
+      // // ---------------------------------------------
 
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
+      // if ('errorsArr' in resultObj) {
+      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
+      // }
 
 
 
 
-      // ---------------------------------------------
-      //   Reset Form
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   Reset Form
+      // // ---------------------------------------------
 
-      setHardwaresArr([]);
-      setCategory('');
-      setTitle('');
-      setName('');
-      setComment('');
-      setImagesAndVideosObj({
+      // setHardwaresArr([]);
+      // setCategory('');
+      // setTitle('');
+      // setName('');
+      // setComment('');
+      // setImagesAndVideosObj({
 
-        _id: '',
-        createdDate: '',
-        updatedDate: '',
-        users_id: '',
-        type: 'recruitment',
-        arr: [],
+      //   _id: '',
+      //   createdDate: '',
+      //   updatedDate: '',
+      //   users_id: '',
+      //   type: 'recruitment',
+      //   arr: [],
 
-      });
+      // });
 
-      setIDsArr([]);
-      setPlatform1('Other');
-      setPlatform2('Other');
-      setPlatform3('Other');
-      setID1('');
-      setID2('');
-      setID3('');
-      setInformationTitle1('');
-      setInformationTitle2('');
-      setInformationTitle3('');
-      setInformationTitle4('');
-      setInformationTitle5('');
-      setInformation1('');
-      setInformation2('');
-      setInformation3('');
-      setInformation4('');
-      setInformation5('');
-      setPublicSetting(1);
-      setDeadlineDate('');
-      setWebPushAvailable(false);
-      setWebPushSubscriptionObj({});
+      // setIDsArr([]);
+      // setPlatform1('Other');
+      // setPlatform2('Other');
+      // setPlatform3('Other');
+      // setID1('');
+      // setID2('');
+      // setID3('');
+      // setInformationTitle1('');
+      // setInformationTitle2('');
+      // setInformationTitle3('');
+      // setInformationTitle4('');
+      // setInformationTitle5('');
+      // setInformation1('');
+      // setInformation2('');
+      // setInformation3('');
+      // setInformation4('');
+      // setInformation5('');
+      // setPublicSetting(1);
+      // setDeadlineDate('');
+      // setWebPushAvailable(false);
+      // setWebPushSubscriptionObj({});
 
 
 
 
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   Button Enable
+      // // ---------------------------------------------
 
-      setButtonDisabled(false);
+      // setButtonDisabled(false);
 
 
-      // --------------------------------------------------
-      //   gameCommunityObj
-      // --------------------------------------------------
+      // // --------------------------------------------------
+      // //   gameCommunityObj
+      // // --------------------------------------------------
 
-      setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
+      // setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
 
 
-      // ---------------------------------------------
-      //   forumThreadsObj
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   forumThreadsObj
+      // // ---------------------------------------------
 
-      setRecruitmentThreadsObj(lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {}));
+      // setRecruitmentThreadsObj(lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {}));
 
 
-      // ---------------------------------------------
-      //   forumCommentsObj
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   forumCommentsObj
+      // // ---------------------------------------------
 
-      setRecruitmentCommentsObj(lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {}));
+      // setRecruitmentCommentsObj(lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {}));
 
 
-      // ---------------------------------------------
-      //   forumRepliesObj
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   forumRepliesObj
+      // // ---------------------------------------------
 
-      setRecruitmentRepliesObj(lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {}));
+      // setRecruitmentRepliesObj(lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {}));
 
 
-      // ---------------------------------------------
-      //   新規投稿時の recruitmentThreads_id
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   新規投稿時の recruitmentThreads_id
+      // // ---------------------------------------------
 
-      newRecruitmentThreads_id = lodashGet(resultObj, ['data', 'recruitmentThreadsObj', 'page1Obj', 'arr', 0], '');
+      // newRecruitmentThreads_id = lodashGet(resultObj, ['data', 'recruitmentThreadsObj', 'page1Obj', 'arr', 0], '');
 
 
 
 
-      // --------------------------------------------------
-      //   Snackbar: Success
-      // --------------------------------------------------
+      // // --------------------------------------------------
+      // //   Snackbar: Success
+      // // --------------------------------------------------
 
-      const experienceObj = lodashGet(resultObj, ['data', 'experienceObj'], {});
+      // const experienceObj = lodashGet(resultObj, ['data', 'experienceObj'], {});
 
-      showSnackbar({
+      // showSnackbar({
 
-        enqueueSnackbar,
-        intl,
-        experienceObj,
-        arr: [
-          {
-            variant: 'success',
-            messageID: recruitmentThreads_id ? 'xM5NqhTq5' : 'B9Goe5scP',
-          },
-        ]
+      //   enqueueSnackbar,
+      //   intl,
+      //   experienceObj,
+      //   arr: [
+      //     {
+      //       variant: 'success',
+      //       messageID: recruitmentThreads_id ? 'xM5NqhTq5' : 'B9Goe5scP',
+      //     },
+      //   ]
 
-      });
+      // });
 
 
 
@@ -742,10 +748,16 @@ const Component = (props) => {
       //   console.log
       // --------------------------------------------------
 
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/gc/rec/v2/components/form/thread.js / handleSubmit
-      // `);
+      console.log(`
+        ----------------------------------------\n
+        app/gc/list/v2/form.js / handleSubmit
+      `);
+
+      console.log(`
+        ----- hardwaresArr -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(hardwaresArr)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
 
       // console.log(`
       //   ----- formDataObj -----\n
@@ -795,31 +807,31 @@ const Component = (props) => {
       //   Hide Form
       // ---------------------------------------------
 
-      if (recruitmentThreads_id) {
-        setShowForm(false);
-      }
+      // if (recruitmentThreads_id) {
+      //   setShowForm(false);
+      // }
 
 
-      // ---------------------------------------------
-      //   Scroll
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   Scroll
+      // // ---------------------------------------------
 
-      handleScrollTo({
+      // handleScrollTo({
 
-        to: recruitmentThreads_id || newRecruitmentThreads_id || 'recruitmentThreads',
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
+      //   to: recruitmentThreads_id || newRecruitmentThreads_id || 'recruitmentThreads',
+      //   duration: 0,
+      //   delay: 0,
+      //   smooth: 'easeInOutQuart',
+      //   offset: -50,
 
-      });
+      // });
 
 
-      // ---------------------------------------------
-      //   Loading Close
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   Loading Close
+      // // ---------------------------------------------
 
-      handleLoadingClose();
+      // handleLoadingClose();
 
 
     }
@@ -867,8 +879,9 @@ const Component = (props) => {
   //   Property
   // --------------------------------------------------
 
-  const limitHardwares = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT, 10);
-  const limitImagesAndVideos = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_IMAGES_AND_VIDEOS_LIMIT, 10);
+  // const limitHardwares = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT, 10);
+  const limitImagesAndVideos = parseInt(process.env.NEXT_PUBLIC_GAMES_IMAGES_AND_VIDEOS_LIMIT, 10);
+  const limitImagesAndVideosThumbnail = parseInt(process.env.NEXT_PUBLIC_GAMES_IMAGES_AND_VIDEOS_THUMBNAIL_LIMIT, 10);
 
 
   // --------------------------------------------------
@@ -886,7 +899,42 @@ const Component = (props) => {
   //   Element Name
   // --------------------------------------------------
 
-  const elementName = games_id ? `${games_id}-form` : 'games-form';
+  const elementName = games_id ? `${games_id}-editForm` : 'gamesRegisterForm';
+
+
+
+
+  // --------------------------------------------------
+  //   Component - gameGenres
+  // --------------------------------------------------
+
+  const componentsGameGenreMenuItemsArr = [];
+
+  for (const [index, valueObj] of gameGenresArr.entries()) {
+
+
+    // --------------------------------------------------
+    //   dataObj
+    // --------------------------------------------------
+
+    // const dataObj = lodashGet(obj, ['dataObj', gameCommunities_id], {});
+
+
+    // --------------------------------------------------
+    //   push
+    // --------------------------------------------------
+
+    componentsGameGenreMenuItemsArr.push(
+      <MenuItem
+        key={index}
+        value={valueObj.genreID}
+      >
+        {valueObj.name}
+      </MenuItem>
+    );
+
+
+  }
 
 
 
@@ -1362,7 +1410,7 @@ const Component = (props) => {
 
 
 
-        {/* Form Hardware */}
+        {/* Category */}
         <div css={cssBox}>
 
           <h3
@@ -1371,68 +1419,27 @@ const Component = (props) => {
               margin: 0 0 2px 0;
             `}
           >
-            ハードウェア
-          </h3>
-
-
-          <p
-            css={css`
-              margin: 0 0 14px 0;
-            `}
-          >
-            募集に関係するハードウェアを選んでください（PC版、○○版などの情報です）
-          </p>
-
-          <p
-            css={css`
-              margin: 0 0 14px 0;
-            `}
-          >
-            ハードウェア名（またはSFC、N64などの略称）の一部を入力すると、入力フォームの下に一覧でハードウェアの正式名称が表示されます。一覧上でハードウェアをクリック（タップ）すると入力は完了です。この欄では複数のハードウェアを入力することが可能です。
-          </p>
-
-          <p>
-            ゲームのハードウェア名だけでなく、「Android」「iOS」「PC」などもハードウェアとして入力できます。
-          </p>
-
-
-
-
-          <FormHardwares
-            hardwaresArr={hardwaresArr}
-            setHardwaresArr={setHardwaresArr}
-            limit={limitHardwares}
-          />
-
-        </div>
-
-
-
-
-        {/* Category */}
-        {/* <div css={cssBox}>
-
-          <h3
-            css={css`
-              font-weight: bold;
-              margin: 0 0 2px 0;
-            `}
-          >
-            カテゴリー
+            ジャンル
           </h3>
 
           <p
             css={css`
-              margin: 0 0 24px 0;
+              margin: 0 0 12px 0;
             `}
           >
-            当てはまるカテゴリーを選んでください。どのカテゴリーにも当てはまらない場合は「なし」を選んでください。
+            当てはまるジャンルを選んでください。複数ジャンルに当てはまる場合は複数選んでください。
           </p>
 
 
-          <FormControl>
+          <FormControl
+            css={css`
+              && {
+                margin: 16px 16px 0 0;
+              }
+            `}
+          >
 
-            <InputLabel shrink id="categoryLabel">募集のカテゴリー</InputLabel>
+            <InputLabel shrink id="genreLabel">ジャンル1</InputLabel>
 
             <Select
               css={css`
@@ -1440,23 +1447,182 @@ const Component = (props) => {
                   width: 200px;
                 }
               `}
-              labelId="categoryLabel"
-              value={category}
-              onChange={(eventObj) => setCategory(eventObj.target.value)}
+              labelId="genreLabel"
+              value={genre1}
+              onChange={(eventObj) => setGenre1(eventObj.target.value)}
               displayEmpty
             >
-              <MenuItem value="">なし</MenuItem>
-              <MenuItem value={1}>フレンド募集</MenuItem>
-              <MenuItem value={2}>メンバー募集</MenuItem>
-              <MenuItem value={3}>売買・交換相手募集</MenuItem>
+              <MenuItem value="">&nbsp;</MenuItem>
+              {componentsGameGenreMenuItemsArr}
             </Select>
 
           </FormControl>
 
-        </div> */}
+
+          <FormControl
+            css={css`
+              && {
+                margin: 16px 16px 0 0;
+              }
+            `}
+          >
+
+            <InputLabel shrink id="genreLabel">ジャンル2</InputLabel>
+
+            <Select
+              css={css`
+                && {
+                  width: 200px;
+                }
+              `}
+              labelId="genreLabel"
+              value={genre2}
+              onChange={(eventObj) => setGenre2(eventObj.target.value)}
+              displayEmpty
+            >
+              <MenuItem value="">&nbsp;</MenuItem>
+              {componentsGameGenreMenuItemsArr}
+            </Select>
+
+          </FormControl>
+
+
+          <FormControl
+            css={css`
+              && {
+                margin: 16px 16px 0 0;
+              }
+            `}
+          >
+
+            <InputLabel shrink id="genreLabel">ジャンル3</InputLabel>
+
+            <Select
+              css={css`
+                && {
+                  width: 200px;
+                }
+              `}
+              labelId="genreLabel"
+              value={genre3}
+              onChange={(eventObj) => setGenre3(eventObj.target.value)}
+              displayEmpty
+            >
+              <MenuItem value="">&nbsp;</MenuItem>
+              {componentsGameGenreMenuItemsArr}
+            </Select>
+
+          </FormControl>
+
+        </div>
 
 
 
+
+        {/* Hardware */}
+        <div css={cssBox}>
+
+          <FormHardware
+            hardwares1Arr={hardwares1Arr}
+            setHardwares1Arr={setHardwares1Arr}
+            releaseDate1={releaseDate1}
+            setReleaseDate1={setReleaseDate1}
+            playersMin1={playersMin1}
+            setPlayersMin1={setPlayersMin1}
+            playersMax1={playersMax1}
+            setPlayersMax1={setPlayersMax1}
+            publisherID1={publisherID1}
+            setPublisherID1={setPublisherID1}
+            developerID1={developerID1}
+            setDeveloperID1={setDeveloperID1}
+
+            arr={hardwaresArr}
+            setArr={setHardwaresArr}
+            // limit={limitHardwares}
+          />
+
+        </div>
+
+
+
+
+        {/* Form Images & Videos - Main */}
+        <div css={cssBox}>
+
+          <h3
+            css={css`
+              margin: 0 0 6px 0;
+            `}
+          >
+            メイン画像
+          </h3>
+
+          <p
+            css={css`
+              margin: 0 0 12px 0;
+            `}
+          >
+            ゲームコミュニティのトップに表示される大きな画像です。横長の画像（推奨サイズ 1920 x ---）をアップロードしてください。
+          </p>
+
+
+          <FormImageAndVideo
+            showVideoButton={false}
+            descriptionImage="横長の大きな画像をアップロードしてください。"
+            showImageCaption={false}
+            limit={limitImagesAndVideos}
+            imagesAndVideosObj={imagesAndVideosObj}
+            setImagesAndVideosObj={setImagesAndVideosObj}
+          />
+
+        </div>
+
+
+
+
+        {/* Form Images & Videos - Thumbnail */}
+        <div css={cssBox}>
+
+          <h3
+            css={css`
+              margin: 0 0 6px 0;
+            `}
+          >
+            サムネイル画像
+          </h3>
+
+          <p
+            css={css`
+              margin: 0 0 12px 0;
+            `}
+          >
+            ゲームコミュニティの一覧に表示される小さな画像です。正方形の画像（推奨サイズ 256 x 256 ピクセル以上）をアップロードしてください。
+          </p>
+
+
+          <FormImageAndVideo
+            showVideoButton={false}
+            descriptionImage="サムネイル画像をアップロードできます。"
+            showImageCaption={false}
+            limit={limitImagesAndVideosThumbnail}
+            imagesAndVideosObj={imagesAndVideosThumbnailObj}
+            setImagesAndVideosObj={setImagesAndVideosThumbnailObj}
+          />
+
+        </div>
+
+
+
+
+        {/* Link */}
+        <div css={cssBox}>
+
+        <FormLink
+          linkArr={linkArr}
+          setLinkArr={setLinkArr}
+        />
+
+        </div>
 
 
 

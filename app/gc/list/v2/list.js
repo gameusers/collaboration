@@ -18,6 +18,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Router from 'next/router';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
@@ -59,10 +60,20 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
 // ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { CustomError } from 'app/@modules/error/custom.js';
+// import { getCookie } from 'app/@modules/cookie.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
+
+
+// ---------------------------------------------
 //   States
 // ---------------------------------------------
 
-// import { ContainerStateForum } from 'app/@states/forum.js';
+import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 // ---------------------------------------------
@@ -121,15 +132,34 @@ const Component = (props) => {
 
 
   // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+
+  const stateLayout = ContainerStateLayout.useContainer();
+
+  const {
+
+    // setHeaderObj,
+    // handleSnackbarOpen,
+    handleLoadingOpen,
+    handleLoadingClose,
+    handleScrollTo,
+
+  } = stateLayout;
+
+
+  // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
 
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
   const [anchorElEditMode, setAnchorElEditMode] = useState(null);
   const [editable, setEditable] = useState(false);
+  const [gameGenresArr, setGameGenresArr] = useState([]);
 
 
   useEffect(() => {
@@ -137,19 +167,6 @@ const Component = (props) => {
     setButtonDisabled(false);
 
   }, []);
-
-
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-
-  // const stateForum = ContainerStateForum.useContainer();
-
-  // const {
-
-  //   forumThreadsObj,
-
-  // } = stateForum;
 
 
 
@@ -233,6 +250,154 @@ const Component = (props) => {
 
 
     } catch (errorObj) {}
+
+
+  };
+
+
+
+
+  /**
+   * 新規登録用データを読み込む
+   */
+  const handleGetRegisterData = async () => {
+
+
+    try {
+
+
+      if (gameGenresArr.length === 0) {
+
+
+        // ---------------------------------------------
+        //   Loading Open
+        // ---------------------------------------------
+
+        handleLoadingOpen({});
+
+
+        // ---------------------------------------------
+        //   Button Disable
+        // ---------------------------------------------
+
+        setButtonDisabled(true);
+
+
+
+
+        // ---------------------------------------------
+        //   Scroll To
+        // ---------------------------------------------
+
+        handleScrollTo({
+
+          to: 'gamesRegisterForm',
+          duration: 0,
+          delay: 0,
+          smooth: 'easeInOutQuart',
+          offset: -50,
+
+        });
+
+
+
+
+        // ---------------------------------------------
+        //   FormData
+        // ---------------------------------------------
+
+        const formDataObj = {};
+
+
+        // ---------------------------------------------
+        //   Fetch
+        // ---------------------------------------------
+
+        const resultObj = await fetchWrapper({
+
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/gc/list/get-register-data`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj),
+
+        });
+
+
+        console.log(`
+          ----- resultObj -----\n
+          ${util.inspect(resultObj, { colors: true, depth: null })}\n
+          --------------------\n
+        `);
+
+
+        // ---------------------------------------------
+        //   Error
+        // ---------------------------------------------
+
+        if ('errorsArr' in resultObj) {
+          throw new CustomError({ errorsArr: resultObj.errorsArr });
+        }
+
+
+
+
+        // ---------------------------------------------
+        //   Button Enable
+        // ---------------------------------------------
+
+        setButtonDisabled(false);
+
+
+        // ---------------------------------------------
+        //   Set Form Data
+        // ---------------------------------------------
+
+        setGameGenresArr(lodashGet(resultObj, ['data', 'gameGenresArr'], []));
+
+
+      }
+
+
+      // ---------------------------------------------
+      //   Set editable
+      // ---------------------------------------------
+
+      setEditable(!editable);
+
+
+    } catch (errorObj) {
+
+
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+
+      setButtonDisabled(false);
+
+
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+
+      showSnackbar({
+
+        enqueueSnackbar,
+        intl,
+        errorObj,
+
+      });
+
+
+    } finally {
+
+
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
+
+      handleLoadingClose();
+
+
+    }
 
 
   };
@@ -433,7 +598,7 @@ const Component = (props) => {
 
 
 
-      {/* Pagination */}
+      {/* Button */}
       <Paper
         css={css`
           display: flex;
@@ -445,11 +610,11 @@ const Component = (props) => {
       >
 
         <Button
-          // type="submit"
           variant="outlined"
           size="small"
           disabled={buttonDisabled}
-          onClick={() => setEditable(!editable)}
+          onClick={handleGetRegisterData}
+          // onClick={() => setEditable(!editable)}
         >
           <IconEdit
             css={css`
@@ -547,7 +712,9 @@ const Component = (props) => {
           heading="ゲーム登録フォーム"
           defaultExpanded={true}
         >
-          <Form />
+          <Form
+            gameGenresArr={gameGenresArr}
+          />
         </Panel>
       </div>
 

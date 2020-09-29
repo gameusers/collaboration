@@ -26,6 +26,8 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 
 const SchemaGames = require('./schema');
 
+const ModelDevelopersPublishers = require('../developers-publishers/model.js');
+
 
 // ---------------------------------------------
 //   Format
@@ -319,39 +321,59 @@ const findForHeroImage = async ({ localeObj }) => {
 
 
     // --------------------------------------------------
+    //   Language & Country
+    // --------------------------------------------------
+
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+
+
+
+
+    // --------------------------------------------------
     //   Find
     // --------------------------------------------------
 
     let resultArr = await SchemaGames.aggregate([
 
 
-      // 画像＆動画が登録されているゲームを取得する
+      // --------------------------------------------------
+      //   画像＆動画が登録されているゲームを取得する
+      // --------------------------------------------------
+
       {
         $match : { 'imagesAndVideos_id': { $exists: true, $ne: '' } }
       },
 
 
-      // ランダムに1件データを取得する
+      // --------------------------------------------------
+      //   ランダムに1件データを取得する
+      // --------------------------------------------------
+
       {
         $sample: { size: 1 }
       },
 
 
-      // 画像と動画を取得
+      // --------------------------------------------------
+      //   images-and-videos / メイン画像
+      // --------------------------------------------------
+
       {
         $lookup:
           {
             from: 'images-and-videos',
-            let: { gamesImagesAndVideos_id: '$imagesAndVideos_id' },
+            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$gamesImagesAndVideos_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideos_id']
+                  },
                 }
               },
-              { $project:
-                {
-                  // _id: 0,
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -371,26 +393,29 @@ const findForHeroImage = async ({ localeObj }) => {
       },
 
 
-      // ハードウェア
+      // --------------------------------------------------
+      //   hardwares
+      // --------------------------------------------------
+
       {
         $lookup:
           {
             from: 'hardwares',
-            let: { gamesHardwareID: '$hardwareArr.hardwareID' },
+            let: { letHardwareID: '$hardwareArr.hardwareID' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
-                      { $eq: ['$language', localeObj.language] },
-                      { $eq: ['$country', localeObj.country] },
-                      { $in: ['$hardwareID', '$$gamesHardwareID'] }
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$language', language] },
+                      { $eq: ['$country', country] },
+                      { $in: ['$hardwareID', '$$letHardwareID'] }
                     ]
                   },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   _id: 0,
                   hardwareID: 1,
                   name: 1,
@@ -402,26 +427,29 @@ const findForHeroImage = async ({ localeObj }) => {
       },
 
 
-      // ジャンル
+      // --------------------------------------------------
+      //   game-genres
+      // --------------------------------------------------
+
       {
         $lookup:
           {
             from: 'game-genres',
-            let: { gamesGenreArr: '$genreArr' },
+            let: { letGenreArr: '$genreArr' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
-                      { $eq: ['$language', localeObj.language] },
-                      { $eq: ['$country', localeObj.country] },
-                      { $in: ['$genreID', '$$gamesGenreArr'] }
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$language', language] },
+                      { $eq: ['$country', country] },
+                      { $in: ['$genreID', '$$letGenreArr'] }
                     ]
                   },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   _id: 0,
                   genreID: 1,
                   name: 1,
@@ -433,54 +461,100 @@ const findForHeroImage = async ({ localeObj }) => {
       },
 
 
-      // 開発＆パブリッシャー
-      {
-        $lookup:
-          {
-            from: 'developers-publishers',
-            let: {
-              gamesPublisherID: '$hardwareArr.publisherID',
-              gamesDeveloperID: '$hardwareArr.developerID',
-            },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $or:
-                    [
-                      { $and:
-                        [
-                          { $eq: ['$language', localeObj.language] },
-                          { $eq: ['$country', localeObj.country] },
-                          { $in: ['$developerPublisherID', '$$gamesPublisherID'] }
-                        ]
-                      },
-                      { $and:
-                        [
-                          { $eq: ['$language', localeObj.language] },
-                          { $eq: ['$country', localeObj.country] },
-                          { $in: ['$developerPublisherID', '$$gamesDeveloperID'] }
-                        ]
-                      }
-                    ]
-                  },
-                }
-              },
-              { $project:
-                {
-                  _id: 0,
-                  developerPublisherID: 1,
-                  name: 1,
-                }
-              }
-            ],
-            as: 'developersPublishersArr'
-          }
-      },
+      // --------------------------------------------------
+      //   developers-publishers / 開発＆パブリッシャー
+      // --------------------------------------------------
 
+      // {
+      //   $unwind: '$hardwareArr'
+      // },
+
+      // {
+      //   $group: {
+      //     _id: '$hardwareArr.publisherIDsArr',
+      //     publisherIDsArr: '$hardwareArr.publisherIDsArr'
+      //   }
+      // },
+
+      // {
+      //   $project: {
+      //     publisherIDsArr: '$hardwareArr.publisherIDsArr',
+      //     // developerPublisherID: 1,
+      //     // name: 1,
+      //     // letPublisherIDsArr: 1,
+      //   }
+      // },
+
+      // {
+      //   $lookup:
+      //     {
+      //       from: 'developers-publishers',
+      //       let: {
+      //         // letPublisherIDsArr: '$hardwareArr.publisherIDsArr',
+      //         // letPublisherIDsArr: ['YtKRcK3Ar'],
+      //         // letHardwareArr: '$hardwareArr',
+      //         letPublisherIDsArr: '$hardwareArr.publisherIDsArr',
+      //         // letPublisherIDsArr: '$publisherIDsArr',
+      //         // letDeveloperIDsArr: '$hardwareArr.developerIDsArr',
+      //       },
+      //       pipeline: [
+      //         // {
+      //         //   $unwind: '$letHardwareArr'
+      //         // },
+      //         // {
+      //         //   $unwind: '$letHardwareArr.publisherIDsArr'
+      //         // },
+
+      //         {
+      //           $match: {
+      //             $expr: {
+      //               $or: [
+      //                 {
+      //                   $and: [
+      //                     { $eq: ['$language', language] },
+      //                     { $eq: ['$country', country] },
+      //                     // { $in: ['$developerPublisherID', '$$letPublisherIDsArr'] }
+      //                     // { $in: ['$developerPublisherID', ['YtKRcK3Ar']] }
+      //                     // { $eq: ['$developerPublisherID', '$$letPublisherIDsArr'] }
+      //                     // { $in: ['$developerPublisherID', '$letHardwareArr.publisherIDsArr'] }
+      //                     // { $in: ['$developerPublisherID', '$hardwareArr.publisherIDsArr'] }
+      //                     // { $in: ['$developerPublisherID', '$$letHardwareArr.publisherIDsArr'] }
+      //                     // { $in: ['$developerPublisherID', '$$letPublisherIDsArr'] }
+      //                   ]
+      //                 },
+      //                 // {
+      //                 //   $and: [
+      //                 //     { $eq: ['$language', language] },
+      //                 //     { $eq: ['$country', country] },
+      //                 //     // { $in: ['$developerPublisherID', '$$letDeveloperIDsArr'] }
+      //                 //     { $in: ['$developerPublisherID', ['zXOweU_0y']] }
+      //                 //   ]
+      //                 // }
+      //               ]
+      //             },
+      //           }
+      //         },
+      //         {
+      //           $project: {
+      //             _id: 0,
+      //             developerPublisherID: 1,
+      //             name: 1,
+      //             letPublisherIDsArr: '$$letPublisherIDsArr',
+      //             // letPublisherIDsArr: 1,
+      //           }
+      //         }
+      //       ],
+      //       as: 'developersPublishersArr'
+      //     }
+      // },
+
+
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
 
       {
         $project: {
-          // __v: 0,
           gameCommunities_id: 1,
           urlID: 1,
           imagesAndVideosObj: 1,
@@ -491,7 +565,9 @@ const findForHeroImage = async ({ localeObj }) => {
           linkArr: 1,
           hardwaresArr: 1,
           gameGenresArr: 1,
-          developersPublishersArr: 1,
+          // developersPublishersArr: 1,
+
+          // publisherIDsArr: 1,
         }
       },
 
@@ -524,6 +600,8 @@ const findForHeroImage = async ({ localeObj }) => {
     }
 
 
+
+
     // --------------------------------------------------
     //   画像をフォーマットする
     // --------------------------------------------------
@@ -544,6 +622,83 @@ const findForHeroImage = async ({ localeObj }) => {
 
 
     // --------------------------------------------------
+    //   Developers Publishers
+    // --------------------------------------------------
+
+    const hardwareArr = lodashGet(returnObj, ['hardwareArr'], []);
+    let developerPublisherIDsArr = [];
+
+
+    // ---------------------------------------------
+    //   - Loop
+    // ---------------------------------------------
+
+    for (let valueObj of hardwareArr.values()) {
+
+      const publisherIDsArr = lodashGet(valueObj, ['publisherIDsArr'], []);
+      const developerIDsArr = lodashGet(valueObj, ['developerIDsArr'], []);
+
+      developerPublisherIDsArr = developerPublisherIDsArr.concat(publisherIDsArr, developerIDsArr);
+
+    }
+
+
+    // ---------------------------------------------
+    //   - 配列の重複している値を削除
+    // ---------------------------------------------
+
+    developerPublisherIDsArr = Array.from(new Set(developerPublisherIDsArr));
+
+
+    // ---------------------------------------------
+    //   - find
+    // ---------------------------------------------
+
+    const docDevelopersPublishersArr = await ModelDevelopersPublishers.find({
+
+      conditionObj: {
+        language,
+        country,
+        developerPublisherID: { $in: developerPublisherIDsArr },
+      }
+
+    });
+
+
+    // ---------------------------------------------
+    //   - 名前だけ配列に入れる
+    // ---------------------------------------------
+
+    const developersPublishersArr = [];
+
+    for (let valueObj of docDevelopersPublishersArr.values()) {
+      developersPublishersArr.push(valueObj.name);
+    }
+
+    returnObj.developersPublishersArr = developersPublishersArr;
+
+    // console.log(`
+    //   ----- developerPublisherIDsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(developerPublisherIDsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- docDevelopersPublishersArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docDevelopersPublishersArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- developersPublishersArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(developersPublishersArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
+
+
+    // --------------------------------------------------
     //   Type
     // --------------------------------------------------
 
@@ -555,6 +710,11 @@ const findForHeroImage = async ({ localeObj }) => {
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
+
+    // console.log(`
+    //   ----------------------------------------\n
+    //   app/@database/games/model.js
+    // `);
 
     // console.log(`
     //   ----- resultArr -----\n
@@ -629,20 +789,25 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
       },
 
 
-      // 画像と動画を取得
+      // --------------------------------------------------
+      //   images-and-videos / サムネイル用
+      // --------------------------------------------------
+
       {
         $lookup:
           {
             from: 'images-and-videos',
-            let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+            let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -662,8 +827,12 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
       },
 
 
-      { $project:
-        {
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+
+      {
+        $project: {
           gameCommunities_id: 1,
           name: 1,
           imagesAndVideosThumbnailObj: 1,

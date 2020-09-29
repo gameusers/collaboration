@@ -158,19 +158,84 @@ const Component = (props) => {
   const [releaseDate1, setReleaseDate1] = useState('');
   const [playersMin1, setPlayersMin1] = useState(1);
   const [playersMax1, setPlayersMax1] = useState(1);
-  const [publisherID1, setPublisherID1] = useState('');
-  const [developerID1, setDeveloperID1] = useState('');
+  const [publisherIDs1Arr, setPublisherIDs1Arr] = useState([]);
+  const [developerIDs1Arr, setDeveloperIDs1Arr] = useState([]);
 
-  const [hardwaresArr, setHardwaresArr] = useState([
-    {
-      hardwareID: '',
-      releaseDate: '',
-      playersMin: 1,
-      playersMax: 1,
-      publisherID: '',
-      developerID: '',
-    }
-  ]);
+  const [hardwares2Arr, setHardwares2Arr] = useState([]);
+  const [releaseDate2, setReleaseDate2] = useState('');
+  const [playersMin2, setPlayersMin2] = useState(1);
+  const [playersMax2, setPlayersMax2] = useState(1);
+  const [publisherIDs2Arr, setPublisherIDs2Arr] = useState([]);
+  const [developerIDs2Arr, setDeveloperIDs2Arr] = useState([]);
+
+  const [hardwares3Arr, setHardwares3Arr] = useState([]);
+  const [releaseDate3, setReleaseDate3] = useState('');
+  const [playersMin3, setPlayersMin3] = useState(1);
+  const [playersMax3, setPlayersMax3] = useState(1);
+  const [publisherIDs3Arr, setPublisherIDs3Arr] = useState([]);
+  const [developerIDs3Arr, setDeveloperIDs3Arr] = useState([]);
+
+  const [hardwares4Arr, setHardwares4Arr] = useState([]);
+  const [releaseDate4, setReleaseDate4] = useState('');
+  const [playersMin4, setPlayersMin4] = useState(1);
+  const [playersMax4, setPlayersMax4] = useState(1);
+  const [publisherIDs4Arr, setPublisherIDs4Arr] = useState([]);
+  const [developerIDs4Arr, setDeveloperIDs4Arr] = useState([]);
+
+  const [hardwares5Arr, setHardwares5Arr] = useState([]);
+  const [releaseDate5, setReleaseDate5] = useState('');
+  const [playersMin5, setPlayersMin5] = useState(1);
+  const [playersMax5, setPlayersMax5] = useState(1);
+  const [publisherIDs5Arr, setPublisherIDs5Arr] = useState([]);
+  const [developerIDs5Arr, setDeveloperIDs5Arr] = useState([]);
+
+  const [hardwares6Arr, setHardwares6Arr] = useState([]);
+  const [releaseDate6, setReleaseDate6] = useState('');
+  const [playersMin6, setPlayersMin6] = useState(1);
+  const [playersMax6, setPlayersMax6] = useState(1);
+  const [publisherIDs6Arr, setPublisherIDs6Arr] = useState([]);
+  const [developerIDs6Arr, setDeveloperIDs6Arr] = useState([]);
+
+  const [hardwares7Arr, setHardwares7Arr] = useState([]);
+  const [releaseDate7, setReleaseDate7] = useState('');
+  const [playersMin7, setPlayersMin7] = useState(1);
+  const [playersMax7, setPlayersMax7] = useState(1);
+  const [publisherIDs7Arr, setPublisherIDs7Arr] = useState([]);
+  const [developerIDs7Arr, setDeveloperIDs7Arr] = useState([]);
+
+  const [hardwares8Arr, setHardwares8Arr] = useState([]);
+  const [releaseDate8, setReleaseDate8] = useState('');
+  const [playersMin8, setPlayersMin8] = useState(1);
+  const [playersMax8, setPlayersMax8] = useState(1);
+  const [publisherIDs8Arr, setPublisherIDs8Arr] = useState([]);
+  const [developerIDs8Arr, setDeveloperIDs8Arr] = useState([]);
+
+  const [hardwares9Arr, setHardwares9Arr] = useState([]);
+  const [releaseDate9, setReleaseDate9] = useState('');
+  const [playersMin9, setPlayersMin9] = useState(1);
+  const [playersMax9, setPlayersMax9] = useState(1);
+  const [publisherIDs9Arr, setPublisherIDs9Arr] = useState([]);
+  const [developerIDs9Arr, setDeveloperIDs9Arr] = useState([]);
+
+  const [hardwares10Arr, setHardwares10Arr] = useState([]);
+  const [releaseDate10, setReleaseDate10] = useState('');
+  const [playersMin10, setPlayersMin10] = useState(1);
+  const [playersMax10, setPlayersMax10] = useState(1);
+  const [publisherIDs10Arr, setPublisherIDs10Arr] = useState([]);
+  const [developerIDs10Arr, setDeveloperIDs10Arr] = useState([]);
+
+
+  // const [hardwaresArr, setHardwaresArr] = useState([
+  //   {
+  //     hardwareID: '',
+  //     releaseDate: '',
+  //     playersMin: 1,
+  //     playersMax: 1,
+  //     publisherID: '',
+  //     developerID: '',
+  //   }
+  // ]);
+
 
   const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
 
@@ -451,7 +516,7 @@ const Component = (props) => {
 
 
   /**
-   * 募集を投稿する
+   * ゲームを登録する
    * @param {Object} eventObj - イベント
    */
   const handleSubmit = async ({
@@ -497,49 +562,19 @@ const Component = (props) => {
 
 
 
-      // // ---------------------------------------------
-      // //   Validations
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Validations
+      // ---------------------------------------------
 
-      // if (
+      if (
 
-      //   validationRecruitmentThreadsCategory({ value: category }).error ||
+        validationGamesName({ value: name }).error
 
-      //   validationRecruitmentThreadsTitle({ value: title }).error ||
-      //   validationHandleName({ value: name }).error ||
-      //   validationRecruitmentThreadsComment({ value: comment }).error ||
+      ) {
 
-      //   validationRecruitmentThreadsPlatform({ value: platform1 }).error ||
-      //   validationRecruitmentThreadsPlatform({ value: platform2 }).error ||
-      //   validationRecruitmentThreadsPlatform({ value: platform3 }).error ||
+        throw new CustomError({ errorsArr: [{ code: 'PmDcQerd2', messageID: 'uwHIKBy7c' }] });
 
-      //   validationRecruitmentThreadsID({ value: id1 }).error ||
-      //   validationRecruitmentThreadsID({ value: id2 }).error ||
-      //   validationRecruitmentThreadsID({ value: id3 }).error ||
-
-      //   validationRecruitmentThreadsInformationTitle({ value: informationTitle1 }).error ||
-      //   validationRecruitmentThreadsInformationTitle({ value: informationTitle2 }).error ||
-      //   validationRecruitmentThreadsInformationTitle({ value: informationTitle3 }).error ||
-      //   validationRecruitmentThreadsInformationTitle({ value: informationTitle4 }).error ||
-      //   validationRecruitmentThreadsInformationTitle({ value: informationTitle5 }).error ||
-
-      //   validationRecruitmentThreadsInformation({ value: information1 }).error ||
-      //   validationRecruitmentThreadsInformation({ value: information2 }).error ||
-      //   validationRecruitmentThreadsInformation({ value: information3 }).error ||
-      //   validationRecruitmentThreadsInformation({ value: information4 }).error ||
-      //   validationRecruitmentThreadsInformation({ value: information5 }).error ||
-
-      //   validationRecruitmentThreadsPublicSetting({ value: publicSetting }).error ||
-
-      //   validationRecruitmentThreadsDeadlineDate({ value: deadlineDate }).error ||
-
-      //   validationBoolean({ value: webPushAvailable }).error
-
-      // ) {
-
-      //   throw new CustomError({ errorsArr: [{ code: 'S0JRF6V5l', messageID: 'uwHIKBy7c' }] });
-
-      // }
+      }
 
 
 
@@ -560,52 +595,243 @@ const Component = (props) => {
 
 
 
-      // // ---------------------------------------------
-      // //   FormData
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
 
-      // const formDataObj = {
+      const formDataObj = {
 
-      //   gameCommunities_id,
-      //   recruitmentThreads_id,
-      //   hardwareIDsArr,
-      //   category,
-      //   title,
-      //   name,
-      //   comment,
-      //   idsArr,
-      //   platform1,
-      //   platform2,
-      //   platform3,
-      //   id1,
-      //   id2,
-      //   id3,
-      //   informationTitle1,
-      //   informationTitle2,
-      //   informationTitle3,
-      //   informationTitle4,
-      //   informationTitle5,
-      //   information1,
-      //   information2,
-      //   information3,
-      //   information4,
-      //   information5,
-      //   publicSetting,
-      //   deadlineDate,
-      //   webPushAvailable,
-      //   threadLimit,
-      //   commentLimit,
-      //   replyLimit,
+        language,
+        country,
+        name,
+        subtitle,
+        sortKeyword,
+        urlID,
+        twitterHashtagsArr,
+        searchKeywordsArr,
+        genreArr: [],
+        hardwareArr: [],
+        linkArr,
 
-      // };
+      };
 
-      // if (Object.keys(imagesAndVideosObj).length !== 0) {
-      //   formDataObj.imagesAndVideosObj = imagesAndVideosObj;
-      // }
+      if (genre1) {
+        formDataObj.genreArr.push(genre1);
+      }
 
-      // if (webPushAvailable && Object.keys(webPushSubscriptionObj).length !== 0) {
-      //   formDataObj.webPushSubscriptionObj = webPushSubscriptionObj;
-      // }
+      if (genre2) {
+        formDataObj.genreArr.push(genre2);
+      }
+
+      if (genre3) {
+        formDataObj.genreArr.push(genre3);
+      }
+
+
+      // const [hardwares1Arr, setHardwares10Arr] = useState([]);
+      // const [releaseDate1, setReleaseDate10] = useState('');
+      // const [playersMin1, setPlayersMin10] = useState(1);
+      // const [playersMax1, setPlayersMax10] = useState(1);
+      // const [publisherIDs1Arr, setPublisherIDs10Arr] = useState([]);
+      // const [developerIDs1Arr, setDeveloperIDs10Arr] = useState([]);
+
+      let hardwareObj = {};
+
+      if (hardwares1Arr.length > 0) {
+
+        hardwareObj = {
+
+          hardwareID: lodashGet(hardwares1Arr, [0, 'hardwareID'], ''),
+          releaseDate: releaseDate1,
+          playersMin: playersMin1,
+          playersMax: playersMax1,
+          publisherIDsArr: publisherIDs1Arr,
+          developerIDsArr: developerIDs1Arr,
+
+        }
+
+        formDataObj.hardwareArr.push(hardwareObj);
+
+      }
+
+      if (hardwares2Arr.length > 0) {
+
+        hardwareObj = {
+
+          hardwareID: lodashGet(hardwares2Arr, [0, 'hardwareID'], ''),
+          releaseDate: releaseDate2,
+          playersMin: playersMin2,
+          playersMax: playersMax2,
+          publisherIDsArr: publisherIDs2Arr,
+          developerIDsArr: developerIDs2Arr,
+
+        }
+
+        formDataObj.hardwareArr.push(hardwareObj);
+
+      }
+
+      if (hardwares3Arr.length > 0) {
+
+        hardwareObj = {
+
+          hardwareID: lodashGet(hardwares3Arr, [0, 'hardwareID'], ''),
+          releaseDate: releaseDate3,
+          playersMin: playersMin3,
+          playersMax: playersMax3,
+          publisherIDsArr: publisherIDs3Arr,
+          developerIDsArr: developerIDs3Arr,
+
+        }
+
+        formDataObj.hardwareArr.push(hardwareObj);
+
+      }
+
+      if (hardwares4Arr.length > 0) {
+
+        hardwareObj = {
+
+          hardwareID: lodashGet(hardwares4Arr, [0, 'hardwareID'], ''),
+          releaseDate: releaseDate4,
+          playersMin: playersMin4,
+          playersMax: playersMax4,
+          publisherIDsArr: publisherIDs4Arr,
+          developerIDsArr: developerIDs4Arr,
+
+        }
+
+        formDataObj.hardwareArr.push(hardwareObj);
+
+      }
+
+      if (hardwares5Arr.length > 0) {
+
+        hardwareObj = {
+
+          hardwareID: lodashGet(hardwares5Arr, [0, 'hardwareID'], ''),
+          releaseDate: releaseDate5,
+          playersMin: playersMin5,
+          playersMax: playersMax5,
+          publisherIDsArr: publisherIDs5Arr,
+          developerIDsArr: developerIDs5Arr,
+
+        }
+
+        formDataObj.hardwareArr.push(hardwareObj);
+
+      }
+
+      if (hardwares6Arr.length > 0) {
+
+        hardwareObj = {
+
+          hardwareID: lodashGet(hardwares6Arr, [0, 'hardwareID'], ''),
+          releaseDate: releaseDate6,
+          playersMin: playersMin6,
+          playersMax: playersMax6,
+          publisherIDsArr: publisherIDs6Arr,
+          developerIDsArr: developerIDs6Arr,
+
+        }
+
+        formDataObj.hardwareArr.push(hardwareObj);
+
+      }
+
+      if (hardwares7Arr.length > 0) {
+
+        hardwareObj = {
+
+          hardwareID: lodashGet(hardwares7Arr, [0, 'hardwareID'], ''),
+          releaseDate: releaseDate7,
+          playersMin: playersMin7,
+          playersMax: playersMax7,
+          publisherIDsArr: publisherIDs7Arr,
+          developerIDsArr: developerIDs7Arr,
+
+        }
+
+        formDataObj.hardwareArr.push(hardwareObj);
+
+      }
+
+      if (hardwares8Arr.length > 0) {
+
+        hardwareObj = {
+
+          hardwareID: lodashGet(hardwares8Arr, [0, 'hardwareID'], ''),
+          releaseDate: releaseDate8,
+          playersMin: playersMin8,
+          playersMax: playersMax8,
+          publisherIDsArr: publisherIDs8Arr,
+          developerIDsArr: developerIDs8Arr,
+
+        }
+
+        formDataObj.hardwareArr.push(hardwareObj);
+
+      }
+
+      if (hardwares9Arr.length > 0) {
+
+        hardwareObj = {
+
+          hardwareID: lodashGet(hardwares9Arr, [0, 'hardwareID'], ''),
+          releaseDate: releaseDate9,
+          playersMin: playersMin9,
+          playersMax: playersMax9,
+          publisherIDsArr: publisherIDs9Arr,
+          developerIDsArr: developerIDs9Arr,
+
+        }
+
+        formDataObj.hardwareArr.push(hardwareObj);
+
+      }
+
+      if (hardwares10Arr.length > 0) {
+
+        hardwareObj = {
+
+          hardwareID: lodashGet(hardwares10Arr, [0, 'hardwareID'], ''),
+          releaseDate: releaseDate10,
+          playersMin: playersMin10,
+          playersMax: playersMax10,
+          publisherIDsArr: publisherIDs10Arr,
+          developerIDsArr: developerIDs10Arr,
+
+        }
+
+        formDataObj.hardwareArr.push(hardwareObj);
+
+      }
+
+      // console.log(`
+      //   ----- hardwares1Arr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(hardwares1Arr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // const [hardwaresArr, setHardwaresArr] = useState([
+      //   {
+      //     hardwareID: '',
+      //     releaseDate: '',
+      //     playersMin: 1,
+      //     playersMax: 1,
+      //     publisherID: '',
+      //     developerID: '',
+      //   }
+      // ]);
+
+
+      if (Object.keys(imagesAndVideosObj).length !== 0) {
+        formDataObj.imagesAndVideosObj = imagesAndVideosObj;
+      }
+
+      if (Object.keys(imagesAndVideosThumbnailObj).length !== 0) {
+        formDataObj.imagesAndVideosThumbnailObj = imagesAndVideosObj;
+      }
 
 
       // // ---------------------------------------------
@@ -754,16 +980,10 @@ const Component = (props) => {
       `);
 
       console.log(`
-        ----- hardwaresArr -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(hardwaresArr)), { colors: true, depth: null })}\n
+        ----- formDataObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
         --------------------\n
       `);
-
-      // console.log(`
-      //   ----- formDataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
 
       // console.log(`
       //   ----- resultObj -----\n
@@ -861,7 +1081,7 @@ const Component = (props) => {
 
     handleScrollTo({
 
-      to: recruitmentThreads_id,
+      to: games_id,
       duration: 0,
       delay: 0,
       smooth: 'easeInOutQuart',
@@ -879,7 +1099,6 @@ const Component = (props) => {
   //   Property
   // --------------------------------------------------
 
-  // const limitHardwares = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT, 10);
   const limitImagesAndVideos = parseInt(process.env.NEXT_PUBLIC_GAMES_IMAGES_AND_VIDEOS_LIMIT, 10);
   const limitImagesAndVideosThumbnail = parseInt(process.env.NEXT_PUBLIC_GAMES_IMAGES_AND_VIDEOS_THUMBNAIL_LIMIT, 10);
 
@@ -892,7 +1111,6 @@ const Component = (props) => {
   const validationGamesSubtitleObj = validationGamesSubtitle({ value: subtitle });
   const validationGamesSortKeywordObj = validationGamesSortKeyword({ value: sortKeyword });
   const validationGamesURLIDObj = validationGamesURLID({ value: urlID });
-
 
 
   // --------------------------------------------------
@@ -914,10 +1132,10 @@ const Component = (props) => {
 
 
     // --------------------------------------------------
-    //   dataObj
+    //   genreID
     // --------------------------------------------------
 
-    // const dataObj = lodashGet(obj, ['dataObj', gameCommunities_id], {});
+    const genreID = lodashGet(valueObj, ['genreID'], '');
 
 
     // --------------------------------------------------
@@ -927,7 +1145,7 @@ const Component = (props) => {
     componentsGameGenreMenuItemsArr.push(
       <MenuItem
         key={index}
-        value={valueObj.genreID}
+        value={genreID}
       >
         {valueObj.name}
       </MenuItem>
@@ -1006,14 +1224,28 @@ const Component = (props) => {
 
             </React.Fragment>
           :
-            <p
-              css={css`
-                margin: 0 0 14px 0;
-              `}
-            >
-              ゲームを新しく登録する場合、こちらのフォームを利用してください。すべての情報を正確に入力する必要はありません。わからない欄は未入力にするか、適当な文字列を入力してもらえるとありがたいです。
-            </p>
+            <React.Fragment>
+
+              <p
+                css={css`
+                  margin: 0 0 14px 0;
+                `}
+              >
+                ゲームを新しく登録する場合、こちらのフォームを利用してください。すべての情報を正確に入力する必要はありません。わからない欄は未入力にするか、適当な文字列を入力してもらえるとありがたいです。
+              </p>
+
+
+
+            </React.Fragment>
         }
+
+        <p
+          css={css`
+            margin: 0 0 14px 0;
+          `}
+        >
+          こちらで登録・編集するデータは、Game Users運営の確認後にサイトに反映されますので、空欄が多かったり、多少間違っている情報があっても問題はありません。気軽に登録を行ってみてください。
+        </p>
 
 
 
@@ -1531,14 +1763,130 @@ const Component = (props) => {
             setPlayersMin1={setPlayersMin1}
             playersMax1={playersMax1}
             setPlayersMax1={setPlayersMax1}
-            publisherID1={publisherID1}
-            setPublisherID1={setPublisherID1}
-            developerID1={developerID1}
-            setDeveloperID1={setDeveloperID1}
+            publisherIDs1Arr={publisherIDs1Arr}
+            setPublisherIDs1Arr={setPublisherIDs1Arr}
+            developerIDs1Arr={developerIDs1Arr}
+            setDeveloperIDs1Arr={setDeveloperIDs1Arr}
 
-            arr={hardwaresArr}
-            setArr={setHardwaresArr}
-            // limit={limitHardwares}
+            hardwares2Arr={hardwares2Arr}
+            setHardwares2Arr={setHardwares2Arr}
+            releaseDate2={releaseDate2}
+            setReleaseDate2={setReleaseDate2}
+            playersMin2={playersMin2}
+            setPlayersMin2={setPlayersMin2}
+            playersMax2={playersMax2}
+            setPlayersMax2={setPlayersMax2}
+            publisherIDs2Arr={publisherIDs2Arr}
+            setPublisherIDs2Arr={setPublisherIDs2Arr}
+            developerIDs2Arr={developerIDs2Arr}
+            setDeveloperIDs2Arr={setDeveloperIDs2Arr}
+
+            hardwares3Arr={hardwares3Arr}
+            setHardwares3Arr={setHardwares3Arr}
+            releaseDate3={releaseDate3}
+            setReleaseDate3={setReleaseDate3}
+            playersMin3={playersMin3}
+            setPlayersMin3={setPlayersMin3}
+            playersMax3={playersMax3}
+            setPlayersMax3={setPlayersMax3}
+            publisherIDs3Arr={publisherIDs3Arr}
+            setPublisherIDs3Arr={setPublisherIDs3Arr}
+            developerIDs3Arr={developerIDs3Arr}
+            setDeveloperIDs3Arr={setDeveloperIDs3Arr}
+
+            hardwares4Arr={hardwares4Arr}
+            setHardwares4Arr={setHardwares4Arr}
+            releaseDate4={releaseDate4}
+            setReleaseDate4={setReleaseDate4}
+            playersMin4={playersMin4}
+            setPlayersMin4={setPlayersMin4}
+            playersMax4={playersMax4}
+            setPlayersMax4={setPlayersMax4}
+            publisherIDs4Arr={publisherIDs4Arr}
+            setPublisherIDs4Arr={setPublisherIDs4Arr}
+            developerIDs4Arr={developerIDs4Arr}
+            setDeveloperIDs4Arr={setDeveloperIDs4Arr}
+
+            hardwares5Arr={hardwares5Arr}
+            setHardwares5Arr={setHardwares5Arr}
+            releaseDate5={releaseDate5}
+            setReleaseDate5={setReleaseDate5}
+            playersMin5={playersMin5}
+            setPlayersMin5={setPlayersMin5}
+            playersMax5={playersMax5}
+            setPlayersMax5={setPlayersMax5}
+            publisherIDs5Arr={publisherIDs5Arr}
+            setPublisherIDs5Arr={setPublisherIDs5Arr}
+            developerIDs5Arr={developerIDs5Arr}
+            setDeveloperIDs5Arr={setDeveloperIDs5Arr}
+
+            hardwares6Arr={hardwares6Arr}
+            setHardwares6Arr={setHardwares6Arr}
+            releaseDate6={releaseDate6}
+            setReleaseDate6={setReleaseDate6}
+            playersMin6={playersMin6}
+            setPlayersMin6={setPlayersMin6}
+            playersMax6={playersMax6}
+            setPlayersMax6={setPlayersMax6}
+            publisherIDs6Arr={publisherIDs6Arr}
+            setPublisherIDs6Arr={setPublisherIDs6Arr}
+            developerIDs6Arr={developerIDs6Arr}
+            setDeveloperIDs6Arr={setDeveloperIDs6Arr}
+
+            hardwares7Arr={hardwares7Arr}
+            setHardwares7Arr={setHardwares7Arr}
+            releaseDate7={releaseDate7}
+            setReleaseDate7={setReleaseDate7}
+            playersMin7={playersMin7}
+            setPlayersMin7={setPlayersMin7}
+            playersMax7={playersMax7}
+            setPlayersMax7={setPlayersMax7}
+            publisherIDs7Arr={publisherIDs7Arr}
+            setPublisherIDs7Arr={setPublisherIDs7Arr}
+            developerIDs7Arr={developerIDs7Arr}
+            setDeveloperIDs7Arr={setDeveloperIDs7Arr}
+
+            hardwares8Arr={hardwares8Arr}
+            setHardwares8Arr={setHardwares8Arr}
+            releaseDate8={releaseDate8}
+            setReleaseDate8={setReleaseDate8}
+            playersMin8={playersMin8}
+            setPlayersMin8={setPlayersMin8}
+            playersMax8={playersMax8}
+            setPlayersMax8={setPlayersMax8}
+            publisherIDs8Arr={publisherIDs8Arr}
+            setPublisherIDs8Arr={setPublisherIDs8Arr}
+            developerIDs8Arr={developerIDs8Arr}
+            setDeveloperIDs8Arr={setDeveloperIDs8Arr}
+
+            hardwares9Arr={hardwares9Arr}
+            setHardwares9Arr={setHardwares9Arr}
+            releaseDate9={releaseDate9}
+            setReleaseDate9={setReleaseDate9}
+            playersMin9={playersMin9}
+            setPlayersMin9={setPlayersMin9}
+            playersMax9={playersMax9}
+            setPlayersMax9={setPlayersMax9}
+            publisherIDs9Arr={publisherIDs9Arr}
+            setPublisherIDs9Arr={setPublisherIDs9Arr}
+            developerIDs9Arr={developerIDs9Arr}
+            setDeveloperIDs9Arr={setDeveloperIDs9Arr}
+
+            hardwares10Arr={hardwares10Arr}
+            setHardwares10Arr={setHardwares10Arr}
+            releaseDate10={releaseDate10}
+            setReleaseDate10={setReleaseDate10}
+            playersMin10={playersMin10}
+            setPlayersMin10={setPlayersMin10}
+            playersMax10={playersMax10}
+            setPlayersMax10={setPlayersMax10}
+            publisherIDs10Arr={publisherIDs10Arr}
+            setPublisherIDs10Arr={setPublisherIDs10Arr}
+            developerIDs10Arr={developerIDs10Arr}
+            setDeveloperIDs10Arr={setDeveloperIDs10Arr}
+
+            // arr={hardwaresArr}
+            // setArr={setHardwaresArr}
           />
 
         </div>

@@ -22,7 +22,7 @@ import lodashSet from 'lodash/set';
 //   Model
 // ---------------------------------------------
 
-import ModelHardwares from 'app/@database/hardwares/model.js';
+import ModelDevelopersPublishers from 'app/@database/developers-publishers/model.js';
 
 
 // ---------------------------------------------
@@ -53,7 +53,7 @@ import { locale } from 'app/@locales/locale.js';
 
 
 // --------------------------------------------------
-//   endpointID: FpeUiNF-A
+//   endpointID: LnbnRwHx0
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -139,7 +139,7 @@ export default async (req, res) => {
     //   サジェスト用のデータを取得
     // --------------------------------------------------
 
-    returnArr = await ModelHardwares.findForSuggestion({
+    returnArr = await ModelDevelopersPublishers.findSuggestion({
 
       localeObj,
       keyword,
@@ -155,7 +155,11 @@ export default async (req, res) => {
 
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/api/v2/db/hardwares/read-suggestion.js
+    //   pages/api/v2/db/developers-publishers/read-suggestion.js
+    // `);
+
+    // console.log(chalk`
+    //   keyword: {green ${keyword}}
     // `);
 
     // console.log(`
@@ -184,7 +188,7 @@ export default async (req, res) => {
     const resultErrorObj = returnErrorsArr({
 
       errorObj,
-      endpointID: 'FpeUiNF-A',
+      endpointID: 'LnbnRwHx0',
       users_id: loginUsers_id,
       ip,
       userAgent,

@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
 // --------------------------------------------------
 
 const schema = mongoose.Schema({
-  
+
   _id: { type: String, required: true },
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
@@ -35,8 +35,8 @@ const schema = mongoose.Schema({
       releaseDate: Date,
       playersMin: { type: Number, required: true },
       playersMax: { type: Number, required: true },
-      publisherID: String,
-      developerID: String,
+      publisherIDsArr: [String],
+      developerIDsArr: [String],
     }
   ],
   linkArr: [
@@ -47,7 +47,7 @@ const schema = mongoose.Schema({
       url: { type: String, required: true },
     },
   ]
-  
+
 });
 
 

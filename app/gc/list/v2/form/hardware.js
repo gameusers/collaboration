@@ -52,6 +52,7 @@ import IconRemoveCircle from '@material-ui/icons/RemoveCircle';
 // ---------------------------------------------
 
 import FormHardwares from 'app/common/hardware/v2/form.js';
+import FormDeveloperPublisher from 'app/common/developer-publisher/v2/form.js';
 
 
 
@@ -74,6 +75,7 @@ const ComponentForm = (props) => {
 
   const {
 
+    i,
     hardwaresArr,
     setHardwaresArr,
     releaseDate,
@@ -82,14 +84,14 @@ const ComponentForm = (props) => {
     setPlayersMin,
     playersMax,
     setPlayersMax,
-    publisherID,
-    setPublisherID,
-    developerID,
-    setDeveloperID,
+    publisherIDsArr,
+    setPublisherIDsArr,
+    developerIDsArr,
+    setDeveloperIDsArr,
 
   } = props;
 
-  // const limit = parseInt(process.env.NEXT_PUBLIC_GAMES_SEARCH_KEYWORD_LIMIT, 10);
+  const limit = parseInt(process.env.NEXT_PUBLIC_GAMES_DEVELOPERS_PUBLISHERS_LIMIT, 10);
 
 
 
@@ -99,9 +101,6 @@ const ComponentForm = (props) => {
   // --------------------------------------------------
 
   const intl = useIntl();
-
-  // const [hardwaresArr, setHardwaresArr] = useState(lodashGet(props, ['hardwaresArr'], []));
-  // const [releaseDate, setReleaseDate] = useState(lodashGet(props, ['releaseDate'], ''));
 
 
 
@@ -122,6 +121,15 @@ const ComponentForm = (props) => {
       `}
       // key={index}
     >
+
+
+      <h3
+        css={css`
+          margin: 0 0 6px 0;
+        `}
+      >
+        ハードウェア {i}
+      </h3>
 
 
       {/* ハードウェア */}
@@ -146,8 +154,12 @@ const ComponentForm = (props) => {
         id="releaseDate"
         type="date"
         margin="normal"
+        label="発売日"
         value={releaseDate}
         onChange={(eventObj) => setReleaseDate(eventObj.target.value)}
+        InputLabelProps={{
+          shrink: true,
+        }}
       />
 
 
@@ -197,6 +209,24 @@ const ComponentForm = (props) => {
       />
 
 
+      {/* 開発 */}
+      <FormDeveloperPublisher
+        type="developer"
+        arr={publisherIDsArr}
+        setArr={setPublisherIDsArr}
+        limit={limit}
+      />
+
+
+      {/* パブリッシャー */}
+      <FormDeveloperPublisher
+        type="publisher"
+        arr={developerIDsArr}
+        setArr={setDeveloperIDsArr}
+        limit={limit}
+      />
+
+
     </div>
   );
 
@@ -226,17 +256,132 @@ const Component = (props) => {
     setPlayersMin1,
     playersMax1,
     setPlayersMax1,
-    publisherID1,
-    setPublisherID1,
-    developerID1,
-    setDeveloperID1,
+    publisherIDs1Arr,
+    setPublisherIDs1Arr,
+    developerIDs1Arr,
+    setDeveloperIDs1Arr,
 
-    arr = [],
-    setArr,
+    hardwares2Arr,
+    setHardwares2Arr,
+    releaseDate2,
+    setReleaseDate2,
+    playersMin2,
+    setPlayersMin2,
+    playersMax2,
+    setPlayersMax2,
+    publisherIDs2Arr,
+    setPublisherIDs2Arr,
+    developerIDs2Arr,
+    setDeveloperIDs2Arr,
+
+    hardwares3Arr,
+    setHardwares3Arr,
+    releaseDate3,
+    setReleaseDate3,
+    playersMin3,
+    setPlayersMin3,
+    playersMax3,
+    setPlayersMax3,
+    publisherIDs3Arr,
+    setPublisherIDs3Arr,
+    developerIDs3Arr,
+    setDeveloperIDs3Arr,
+
+    hardwares4Arr,
+    setHardwares4Arr,
+    releaseDate4,
+    setReleaseDate4,
+    playersMin4,
+    setPlayersMin4,
+    playersMax4,
+    setPlayersMax4,
+    publisherIDs4Arr,
+    setPublisherIDs4Arr,
+    developerIDs4Arr,
+    setDeveloperIDs4Arr,
+
+    hardwares5Arr,
+    setHardwares5Arr,
+    releaseDate5,
+    setReleaseDate5,
+    playersMin5,
+    setPlayersMin5,
+    playersMax5,
+    setPlayersMax5,
+    publisherIDs5Arr,
+    setPublisherIDs5Arr,
+    developerIDs5Arr,
+    setDeveloperIDs5Arr,
+
+    hardwares6Arr,
+    setHardwares6Arr,
+    releaseDate6,
+    setReleaseDate6,
+    playersMin6,
+    setPlayersMin6,
+    playersMax6,
+    setPlayersMax6,
+    publisherIDs6Arr,
+    setPublisherIDs6Arr,
+    developerIDs6Arr,
+    setDeveloperIDs6Arr,
+
+    hardwares7Arr,
+    setHardwares7Arr,
+    releaseDate7,
+    setReleaseDate7,
+    playersMin7,
+    setPlayersMin7,
+    playersMax7,
+    setPlayersMax7,
+    publisherIDs7Arr,
+    setPublisherIDs7Arr,
+    developerIDs7Arr,
+    setDeveloperIDs7Arr,
+
+    hardwares8Arr,
+    setHardwares8Arr,
+    releaseDate8,
+    setReleaseDate8,
+    playersMin8,
+    setPlayersMin8,
+    playersMax8,
+    setPlayersMax8,
+    publisherIDs8Arr,
+    setPublisherIDs8Arr,
+    developerIDs8Arr,
+    setDeveloperIDs8Arr,
+
+    hardwares9Arr,
+    setHardwares9Arr,
+    releaseDate9,
+    setReleaseDate9,
+    playersMin9,
+    setPlayersMin9,
+    playersMax9,
+    setPlayersMax9,
+    publisherIDs9Arr,
+    setPublisherIDs9Arr,
+    developerIDs9Arr,
+    setDeveloperIDs9Arr,
+
+    hardwares10Arr,
+    setHardwares10Arr,
+    releaseDate10,
+    setReleaseDate10,
+    playersMin10,
+    setPlayersMin10,
+    playersMax10,
+    setPlayersMax10,
+    publisherIDs10Arr,
+    setPublisherIDs10Arr,
+    developerIDs10Arr,
+    setDeveloperIDs10Arr,
+
+    // arr = [],
+    // setArr,
 
   } = props;
-
-  const limit = parseInt(process.env.NEXT_PUBLIC_GAMES_SEARCH_KEYWORD_LIMIT, 10);
 
 
 
@@ -326,10 +471,10 @@ const Component = (props) => {
     let setPlayersMin = () => {};
     let playersMax = 1;
     let setPlayersMax = () => {};
-    let publisherID = '';
-    let setPublisherID = () => {};
-    let developerID = '';
-    let setDeveloperID = () => {};
+    let publisherIDsArr = '';
+    let setPublisherIDsArr = () => {};
+    let developerIDsArr = '';
+    let setDeveloperIDsArr = () => {};
 
     switch (i) {
 
@@ -343,16 +488,165 @@ const Component = (props) => {
         setPlayersMin = setPlayersMin1;
         playersMax = playersMax1;
         setPlayersMax = setPlayersMax1;
-        publisherID = publisherID1;
-        setPublisherID = setPublisherID1;
-        developerID = developerID1;
-        setDeveloperID = setDeveloperID1;
+        publisherIDsArr = publisherIDs1Arr;
+        setPublisherIDsArr = setPublisherIDs1Arr;
+        developerIDsArr = developerIDs1Arr;
+        setDeveloperIDsArr = setDeveloperIDs1Arr;
 
         break;
 
-      // default:
+      case 2:
 
-        // return locale_ja;
+        hardwaresArr = hardwares2Arr;
+        setHardwaresArr = setHardwares2Arr;
+        releaseDate = releaseDate2;
+        setReleaseDate = setReleaseDate2;
+        playersMin = playersMin2;
+        setPlayersMin = setPlayersMin2;
+        playersMax = playersMax2;
+        setPlayersMax = setPlayersMax2;
+        publisherIDsArr = publisherIDs2Arr;
+        setPublisherIDsArr = setPublisherIDs2Arr;
+        developerIDsArr = developerIDs2Arr;
+        setDeveloperIDsArr = setDeveloperIDs2Arr;
+
+        break;
+
+      case 3:
+
+        hardwaresArr = hardwares3Arr;
+        setHardwaresArr = setHardwares3Arr;
+        releaseDate = releaseDate3;
+        setReleaseDate = setReleaseDate3;
+        playersMin = playersMin3;
+        setPlayersMin = setPlayersMin3;
+        playersMax = playersMax3;
+        setPlayersMax = setPlayersMax3;
+        publisherIDsArr = publisherIDs3Arr;
+        setPublisherIDsArr = setPublisherIDs3Arr;
+        developerIDsArr = developerIDs3Arr;
+        setDeveloperIDsArr = setDeveloperIDs3Arr;
+
+        break;
+
+      case 4:
+
+        hardwaresArr = hardwares4Arr;
+        setHardwaresArr = setHardwares4Arr;
+        releaseDate = releaseDate4;
+        setReleaseDate = setReleaseDate4;
+        playersMin = playersMin4;
+        setPlayersMin = setPlayersMin4;
+        playersMax = playersMax4;
+        setPlayersMax = setPlayersMax4;
+        publisherIDsArr = publisherIDs4Arr;
+        setPublisherIDsArr = setPublisherIDs4Arr;
+        developerIDsArr = developerIDs4Arr;
+        setDeveloperIDsArr = setDeveloperIDs4Arr;
+
+        break;
+
+      case 5:
+
+        hardwaresArr = hardwares5Arr;
+        setHardwaresArr = setHardwares5Arr;
+        releaseDate = releaseDate5;
+        setReleaseDate = setReleaseDate5;
+        playersMin = playersMin5;
+        setPlayersMin = setPlayersMin5;
+        playersMax = playersMax5;
+        setPlayersMax = setPlayersMax5;
+        publisherIDsArr = publisherIDs5Arr;
+        setPublisherIDsArr = setPublisherIDs5Arr;
+        developerIDsArr = developerIDs5Arr;
+        setDeveloperIDsArr = setDeveloperIDs5Arr;
+
+        break;
+
+      case 6:
+
+        hardwaresArr = hardwares6Arr;
+        setHardwaresArr = setHardwares6Arr;
+        releaseDate = releaseDate6;
+        setReleaseDate = setReleaseDate6;
+        playersMin = playersMin6;
+        setPlayersMin = setPlayersMin6;
+        playersMax = playersMax6;
+        setPlayersMax = setPlayersMax6;
+        publisherIDsArr = publisherIDs6Arr;
+        setPublisherIDsArr = setPublisherIDs6Arr;
+        developerIDsArr = developerIDs6Arr;
+        setDeveloperIDsArr = setDeveloperIDs6Arr;
+
+        break;
+
+      case 7:
+
+        hardwaresArr = hardwares7Arr;
+        setHardwaresArr = setHardwares7Arr;
+        releaseDate = releaseDate7;
+        setReleaseDate = setReleaseDate7;
+        playersMin = playersMin7;
+        setPlayersMin = setPlayersMin7;
+        playersMax = playersMax7;
+        setPlayersMax = setPlayersMax7;
+        publisherIDsArr = publisherIDs7Arr;
+        setPublisherIDsArr = setPublisherIDs7Arr;
+        developerIDsArr = developerIDs7Arr;
+        setDeveloperIDsArr = setDeveloperIDs7Arr;
+
+        break;
+
+      case 8:
+
+        hardwaresArr = hardwares8Arr;
+        setHardwaresArr = setHardwares8Arr;
+        releaseDate = releaseDate8;
+        setReleaseDate = setReleaseDate8;
+        playersMin = playersMin8;
+        setPlayersMin = setPlayersMin8;
+        playersMax = playersMax8;
+        setPlayersMax = setPlayersMax8;
+        publisherIDsArr = publisherIDs8Arr;
+        setPublisherIDsArr = setPublisherIDs8Arr;
+        developerIDsArr = developerIDs8Arr;
+        setDeveloperIDsArr = setDeveloperIDs8Arr;
+
+        break;
+
+      case 9:
+
+        hardwaresArr = hardwares9Arr;
+        setHardwaresArr = setHardwares9Arr;
+        releaseDate = releaseDate9;
+        setReleaseDate = setReleaseDate9;
+        playersMin = playersMin9;
+        setPlayersMin = setPlayersMin9;
+        playersMax = playersMax9;
+        setPlayersMax = setPlayersMax9;
+        publisherIDsArr = publisherIDs9Arr;
+        setPublisherIDsArr = setPublisherIDs9Arr;
+        developerIDsArr = developerIDs9Arr;
+        setDeveloperIDsArr = setDeveloperIDs9Arr;
+
+        break;
+
+      case 10:
+
+        hardwaresArr = hardwares10Arr;
+        setHardwaresArr = setHardwares10Arr;
+        releaseDate = releaseDate10;
+        setReleaseDate = setReleaseDate10;
+        playersMin = playersMin10;
+        setPlayersMin = setPlayersMin10;
+        playersMax = playersMax10;
+        setPlayersMax = setPlayersMax10;
+        publisherIDsArr = publisherIDs10Arr;
+        setPublisherIDsArr = setPublisherIDs10Arr;
+        developerIDsArr = developerIDs10Arr;
+        setDeveloperIDsArr = setDeveloperIDs10Arr;
+
+        break;
 
     }
 
@@ -366,6 +660,7 @@ const Component = (props) => {
       >
 
         <ComponentForm
+          i={i}
           hardwaresArr={hardwaresArr}
           setHardwaresArr={setHardwaresArr}
           releaseDate={releaseDate}
@@ -374,10 +669,10 @@ const Component = (props) => {
           setPlayersMin={setPlayersMin}
           playersMax={playersMax}
           setPlayersMax={setPlayersMax}
-          publisherID={publisherID}
-          setPublisherID={setPublisherID}
-          developerID={developerID}
-          setDeveloperID={setDeveloperID}
+          publisherIDsArr={publisherIDsArr}
+          setPublisherIDsArr={setPublisherIDsArr}
+          developerIDsArr={developerIDsArr}
+          setDeveloperIDsArr={setDeveloperIDsArr}
         />
 
       </div>
@@ -424,12 +719,20 @@ const Component = (props) => {
 
       <p
         css={css`
-          border-bottom: 1px solid #dc143c;
-          // margin: 0 0 0 0;
-          padding: 0 0 30px 0;
+        margin: 0 0 14px 0;
         `}
       >
         ゲームのハードウェア名だけでなく、「Android」「iOS」「PC」などもハードウェアとして入力できます。
+      </p>
+
+      <p
+        css={css`
+          border-bottom: 1px solid #dc143c;
+          margin: 0 0 12px 0;
+          padding: 0 0 30px 0;
+        `}
+      >
+        開発・パブリッシャーはハードウェア名と同じで名前の一部をテキストフィールに入力すると、入力フォームの下に一覧で開発・パブリッシャーの正式名称が表示されますので、そこから選択してください。入力したい対象が出てこない場合は空欄にしておいてください。
       </p>
 
 

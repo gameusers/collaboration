@@ -223,17 +223,18 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const developersPublishersArr = lodashGet(headerObj, ['developersPublishersArr'], []);
-  const developerID = lodashGet(hardwareSortedArr, [0, 'developerID'], '');
+  // const developerID = lodashGet(hardwareSortedArr, [0, 'developerID'], '');
 
-  let developer = '';
+  // let developer = '';
 
-  for (let valueObj of developersPublishersArr.values()) {
+  // for (let valueObj of developersPublishersArr.values()) {
 
-    if (valueObj.developerPublisherID === developerID) {
-      developer = valueObj.name;
-    }
+  //   if (valueObj.developerPublisherID === developerID) {
+  //     developer = valueObj.name;
+  //   }
 
-  }
+  // }
+  const developersPublishers = developersPublishersArr.join(', ');
 
 
   // --------------------------------------------------
@@ -306,7 +307,7 @@ const Component = (props) => {
           <p css={cssInfo}>ジャンル | {genre}</p>
           <p css={cssInfo}>プレイ人数 | {players}</p>
           <p css={cssInfo}>発売日 | {formattedReleaseData}</p>
-          <p css={cssInfo}>開発 | {developer}</p>
+          <p css={cssInfo}>開発・販売 | {developersPublishers}</p>
 
           <LinkIcons linkArr={linkArr} />
 
@@ -462,8 +463,8 @@ const Component = (props) => {
   // `);
 
   // console.log(`
-  //   ----- hardwareSortedArr -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(hardwareSortedArr)), { colors: true, depth: null })}\n
+  //   ----- headerObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(headerObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
 

@@ -17,6 +17,7 @@ import util from 'util';
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 import keycode from 'keycode';
+import { useSnackbar } from 'notistack';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -57,6 +58,7 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -86,8 +88,9 @@ const Component = (props) => {
 
   const {
 
-    hardwaresArr,
-    setHardwaresArr,
+    type,
+    arr = [],
+    setArr,
     limit,
 
   } = props;
@@ -100,6 +103,7 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [keyword, setKeyword] = useState('');
   const [onFocus, setOnFocus] = useState(false);
@@ -125,13 +129,13 @@ const Component = (props) => {
   // --------------------------------------------------
 
   /**
-   * ハードウェアを追加する
-   * @param {string} hardwareID - DB hardwares hardwareID
-   * @param {string} name - ハードウェア名
+   * 追加する
+   * @param {string} developerPublisherID - DB developers-publishers developerPublisherID
+   * @param {string} name - 開発・パブリッシャー名
    */
   const handleAdd = ({
 
-    hardwareID,
+    developerPublisherID,
     name,
 
   }) => {
@@ -141,7 +145,7 @@ const Component = (props) => {
     //   Clone
     // --------------------------------------------------
 
-    let clonedArr = lodashCloneDeep(hardwaresArr);
+    let clonedArr = lodashCloneDeep(arr);
 
 
     // ---------------------------------------------
@@ -149,19 +153,27 @@ const Component = (props) => {
     // ---------------------------------------------
 
     const index = clonedArr.findIndex((valueObj) => {
-      return valueObj.hardwareID === hardwareID;
+      return valueObj.developerPublisherID === developerPublisherID;
     });
 
 
     // ---------------------------------------------
-    //   登録できるハードウェアの上限を超えている場合はエラー
+    //   登録できる数の上限を超えている場合はエラー
     // ---------------------------------------------
 
     if (clonedArr.length + 1 > limit) {
 
-      handleSnackbarOpen({
-        variant: 'warning',
-        messageID: 'Owq_rMCaL',
+      showSnackbar({
+
+        enqueueSnackbar,
+        intl,
+        arr: [
+          {
+            variant: 'warning',
+            messageID: 'Owq_rMCaL',
+          },
+        ]
+
       });
 
       return;
@@ -176,11 +188,11 @@ const Component = (props) => {
     if (index === -1) {
 
       clonedArr.push({
-        hardwareID,
+        developerPublisherID,
         name,
       });
 
-      setHardwaresArr(clonedArr);
+      setArr(clonedArr);
 
     }
 
@@ -195,16 +207,16 @@ const Component = (props) => {
     // `);
 
     // console.log(`
-    //   ----- hardwaresArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(hardwaresArr)), { colors: true, depth: null })}\n
+    //   ----- arr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
     // console.log(chalk`
-    //   hardwareID: {green ${hardwareID}}
+    //   developerPublisherID: {green ${developerPublisherID}}
     //   name: {green ${name}}
     //   limit: {green ${limit}}
-    //   hardwaresArr.length: {green ${hardwaresArr.length}}
+    //   arr.length: {green ${arr.length}}
     // `);
 
 
@@ -214,17 +226,17 @@ const Component = (props) => {
 
 
   /**
-   * ハードウェアを削除する
-   * @param {string} hardwareID - DB hardwares hardwareID
+   * 削除する
+   * @param {string} developerPublisherID - DB hardwares developerPublisherID
    */
-  const handleRemove = ({ hardwareID }) => {
+  const handleRemove = ({ developerPublisherID }) => {
 
 
     // --------------------------------------------------
     //   Clone
     // --------------------------------------------------
 
-    let clonedArr = lodashCloneDeep(hardwaresArr);
+    let clonedArr = lodashCloneDeep(arr);
 
 
     // ---------------------------------------------
@@ -232,7 +244,7 @@ const Component = (props) => {
     // ---------------------------------------------
 
     const index = clonedArr.findIndex((valueObj) => {
-      return valueObj.hardwareID === hardwareID;
+      return valueObj.developerPublisherID === developerPublisherID;
     });
 
 
@@ -247,7 +259,7 @@ const Component = (props) => {
     //   更新
     // --------------------------------------------------
 
-    setHardwaresArr(clonedArr);
+    setArr(clonedArr);
 
 
     // --------------------------------------------------
@@ -260,8 +272,8 @@ const Component = (props) => {
     // `);
 
     // console.log(`
-    //   ----- hardwaresArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(hardwaresArr)), { colors: true, depth: null })}\n
+    //   ----- arr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
@@ -272,9 +284,9 @@ const Component = (props) => {
 
 
   /**
-   * 所有ハードウェアのサジェストのキーボード操作
+   * サジェストのキーボード操作
    * ↓ ↑ で現在の選択状態を変更する
-   * Enter で現在選択されているハードウェアを登録する
+   * Enter で現在選択されているものを登録する
    * @param {Object} eventObj - イベント
    */
   const handleOnKeyDown = ({
@@ -356,7 +368,7 @@ const Component = (props) => {
 
       handleAdd({
 
-        hardwareID: suggestionsArr[suggestionSelectedIndex].hardwareID,
+        developerPublisherID: suggestionsArr[suggestionSelectedIndex].developerPublisherID,
         name: suggestionsArr[suggestionSelectedIndex].name,
 
       });
@@ -370,7 +382,7 @@ const Component = (props) => {
 
 
   /**
-   * ハードウェアの TextField を変更する
+   * TextField を変更する
    * 文字が入力されるたびに Fetch でサジェストデータを取得しにいく
    * @param {string} value - 値
    */
@@ -424,7 +436,7 @@ const Component = (props) => {
 
       const resultObj = await fetchWrapper({
 
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/hardwares/read-suggestion`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/developers-publishers/read-suggestion`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
 
@@ -486,17 +498,17 @@ const Component = (props) => {
 
 
   // --------------------------------------------------
-  //   Component - Hardware
+  //   Component - Developers Publishers
   // --------------------------------------------------
 
-  let componentHardwares = '';
-  let componentHardwaresArr = [];
+  let component = '';
+  let componentsArr = [];
 
-  if (hardwaresArr.length > 0) {
+  if (arr.length > 0) {
 
-    for (const [index, valueObj] of hardwaresArr.entries()) {
+    for (const [index, valueObj] of arr.entries()) {
 
-      componentHardwaresArr.push(
+      componentsArr.push(
         <Chip
           css={css`
             && {
@@ -507,7 +519,7 @@ const Component = (props) => {
           label={valueObj.name}
           color="primary"
           onDelete={() => handleRemove({
-            hardwareID: valueObj.hardwareID,
+            developerPublisherID: valueObj.developerPublisherID,
           })}
           variant="outlined"
         />
@@ -516,9 +528,9 @@ const Component = (props) => {
     }
 
 
-    if (componentHardwaresArr.length > 0) {
+    if (componentsArr.length > 0) {
 
-      componentHardwares =
+      component =
         <div
           css={css`
             display: flex;
@@ -526,7 +538,7 @@ const Component = (props) => {
             margin: 24px 0 0 0;
           `}
         >
-          {componentHardwaresArr}
+          {componentsArr}
         </div>
       ;
 
@@ -554,11 +566,11 @@ const Component = (props) => {
 
 
       // --------------------------------------------------
-      //   すでに選択されているハードウェアを太字で表示するためのindex
+      //   すでに選択されているものを太字で表示するためのindex
       // --------------------------------------------------
 
-      const index2 = hardwaresArr.findIndex((value2Obj) => {
-        return value2Obj.hardwareID === valueObj.hardwareID;
+      const index2 = arr.findIndex((value2Obj) => {
+        return value2Obj.developerPublisherID === valueObj.developerPublisherID;
       });
 
 
@@ -572,7 +584,7 @@ const Component = (props) => {
           component="div"
           selected={index === suggestionSelectedIndex}
           onMouseDown={() => handleAdd({
-            hardwareID: valueObj.hardwareID,
+            developerPublisherID: valueObj.developerPublisherID,
             name: valueObj.name,
           })}
           style={{
@@ -613,12 +625,12 @@ const Component = (props) => {
 
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/hardware/v2/components/form.js
+  //   app/common/developer-publisher/v2/form.js
   // `);
 
   // console.log(`
-  //   ----- hardwaresArr -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(hardwaresArr)), { colors: true, depth: null })}\n
+  //   ----- arr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
 
@@ -640,8 +652,8 @@ const Component = (props) => {
     <React.Fragment>
 
 
-      {/* Hardwares */}
-      {componentHardwares}
+      {/* 選択済み */}
+      {component}
 
 
 
@@ -665,7 +677,7 @@ const Component = (props) => {
               }
             }
           `}
-          label="ハードウェア名"
+          label={type === 'developer' ? '開発の名前' : 'パブリッシャーの名前'}
           value={validationKeywordObj.value}
           onChange={(eventObj) => handleKeyword({ value: eventObj.target.value })}
           onKeyDown={(eventObj) => handleOnKeyDown({

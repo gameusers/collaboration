@@ -35,6 +35,7 @@ const SchemaGameCommunities = require('./schema.js');
 const SchemaGames = require('../games/schema.js');
 
 const ModelGames = require('../games/model.js');
+const ModelDevelopersPublishers = require('../developers-publishers/model.js');
 
 
 // ---------------------------------------------
@@ -545,48 +546,51 @@ const findForGameCommunity = async ({
       //   developers-publishers / 開発＆パブリッシャー
       // --------------------------------------------------
 
-      {
-        $lookup:
-          {
-            from: 'developers-publishers',
-            let: {
-              letPublisherID: '$hardwareArr.publisherID',
-              letDeveloperID: '$hardwareArr.developerID',
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $or: [
-                      {
-                        $and: [
-                          { $eq: ['$language', language] },
-                          { $eq: ['$country', country] },
-                          { $in: ['$developerPublisherID', '$$letPublisherID'] }
-                        ]
-                      },
-                      {
-                        $and: [
-                          { $eq: ['$language', language] },
-                          { $eq: ['$country', country] },
-                          { $in: ['$developerPublisherID', '$$letDeveloperID'] }
-                        ]
-                      }
-                    ]
-                  },
-                }
-              },
-              {
-                $project: {
-                  _id: 0,
-                  developerPublisherID: 1,
-                  name: 1,
-                }
-              }
-            ],
-            as: 'developersPublishersArr'
-          }
-      },
+      // {
+      //   $lookup:
+      //     {
+      //       from: 'developers-publishers',
+      //       let: {
+      //         letPublisherIDsArr: '$hardwareArr.publisherIDsArr',
+      //         letDeveloperIDsArr: '$hardwareArr.developerIDsArr',
+      //       },
+      //       pipeline: [
+      //         {
+      //           $match: {
+      //             $expr: {
+      //               $or: [
+      //                 {
+      //                   $and: [
+      //                     { $eq: ['$language', language] },
+      //                     { $eq: ['$country', country] },
+      //                     { $in: ['$developerPublisherID', '$$letPublisherIDsArr'] }
+      //                     // { $in: ['$developerPublisherID', ['YtKRcK3Ar']] }
+      //                   ]
+      //                 },
+      //                 {
+      //                   $and: [
+      //                     { $eq: ['$language', language] },
+      //                     { $eq: ['$country', country] },
+      //                     { $in: ['$developerPublisherID', '$$letDeveloperIDsArr'] }
+      //                     // { $in: ['$developerPublisherID', 'zXOweU_0y'] }
+      //                   ]
+      //                 }
+      //               ]
+      //             },
+      //           }
+      //         },
+      //         {
+      //           $project: {
+      //             _id: 0,
+      //             developerPublisherID: 1,
+      //             name: 1,
+      //             // letPublisherIDsArr: 1,
+      //           }
+      //         }
+      //       ],
+      //       as: 'developersPublishersArr'
+      //     }
+      // },
 
 
       // --------------------------------------------------
@@ -699,6 +703,8 @@ const findForGameCommunity = async ({
     //   ${util.inspect(docGamesArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+
+
     // --------------------------------------------------
     //   docGamesObj
     // --------------------------------------------------
@@ -719,6 +725,84 @@ const findForGameCommunity = async ({
       loginUsers_id,
 
     });
+
+
+
+
+    // --------------------------------------------------
+    //   Developers Publishers
+    // --------------------------------------------------
+
+    const hardwareArr = lodashGet(docGamesObj, ['hardwareArr'], []);
+    let developerPublisherIDsArr = [];
+
+
+    // ---------------------------------------------
+    //   - Loop
+    // ---------------------------------------------
+
+    for (let valueObj of hardwareArr.values()) {
+
+      const publisherIDsArr = lodashGet(valueObj, ['publisherIDsArr'], []);
+      const developerIDsArr = lodashGet(valueObj, ['developerIDsArr'], []);
+
+      developerPublisherIDsArr = developerPublisherIDsArr.concat(publisherIDsArr, developerIDsArr);
+
+    }
+
+
+    // ---------------------------------------------
+    //   - 配列の重複している値を削除
+    // ---------------------------------------------
+
+    developerPublisherIDsArr = Array.from(new Set(developerPublisherIDsArr));
+
+
+    // ---------------------------------------------
+    //   - find
+    // ---------------------------------------------
+
+    const docDevelopersPublishersArr = await ModelDevelopersPublishers.find({
+
+      conditionObj: {
+        language,
+        country,
+        developerPublisherID: { $in: developerPublisherIDsArr },
+      }
+
+    });
+
+
+    // ---------------------------------------------
+    //   - 名前だけ配列に入れる
+    // ---------------------------------------------
+
+    const developersPublishersArr = [];
+
+    for (let valueObj of docDevelopersPublishersArr.values()) {
+      developersPublishersArr.push(valueObj.name);
+    }
+
+    docGamesObj.developersPublishersArr = developersPublishersArr;
+
+
+    // console.log(`
+    //   ----- developerPublisherIDsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(developerPublisherIDsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- docDevelopersPublishersArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docDevelopersPublishersArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- developersPublishersArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(developersPublishersArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 
@@ -1120,47 +1204,47 @@ const findGameList = async ({
       //   developers-publishers / 開発＆パブリッシャー
       // --------------------------------------------------
 
-      {
-        $lookup:
-          {
-            from: 'developers-publishers',
-            let: {
-              letPublisherID: '$hardwareArr.publisherID',
-              letDeveloperID: '$hardwareArr.developerID',
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $or: [
-                      {
-                        $and: [
-                          { $eq: ['$language', language] },
-                          { $eq: ['$country', country] },
-                          { $in: ['$developerPublisherID', '$$letPublisherID'] }
-                        ]
-                      },
-                      {
-                        $and: [
-                          { $eq: ['$language', language] },
-                          { $eq: ['$country', country] },
-                          { $in: ['$developerPublisherID', '$$letDeveloperID'] }
-                        ]
-                      }
-                    ]
-                  },
-                }
-              },
-              {
-                $project: {
-                  _id: 0,
-                  name: 1,
-                }
-              }
-            ],
-            as: 'developersPublishersArr'
-          }
-      },
+      // {
+      //   $lookup:
+      //     {
+      //       from: 'developers-publishers',
+      //       let: {
+      //         letPublisherIDsArr: '$hardwareArr.publisherIDsArr',
+      //         letDeveloperIDsArr: '$hardwareArr.developerIDsArr',
+      //       },
+      //       pipeline: [
+      //         {
+      //           $match: {
+      //             $expr: {
+      //               $or: [
+      //                 {
+      //                   $and: [
+      //                     { $eq: ['$language', language] },
+      //                     { $eq: ['$country', country] },
+      //                     { $in: ['$developerPublisherID', '$$letPublisherIDsArr'] }
+      //                   ]
+      //                 },
+      //                 {
+      //                   $and: [
+      //                     { $eq: ['$language', language] },
+      //                     { $eq: ['$country', country] },
+      //                     { $in: ['$developerPublisherID', '$$letDeveloperIDsArr'] }
+      //                   ]
+      //                 }
+      //               ]
+      //             },
+      //           }
+      //         },
+      //         {
+      //           $project: {
+      //             _id: 0,
+      //             name: 1,
+      //           }
+      //         }
+      //       ],
+      //       as: 'developersPublishersArr'
+      //     }
+      // },
 
 
       // --------------------------------------------------
@@ -1247,11 +1331,9 @@ const findGameList = async ({
           imagesAndVideosThumbnailObj: 1,
           name: 1,
           subtitle: 1,
-          developersPublishersArr: 1,
+          hardwareArr: 1,
           followsObj: 1,
           gameCommunitiesObj: 1,
-
-          // hardwareArr: 1,
         }
       },
 
@@ -1327,7 +1409,7 @@ const findGameList = async ({
       const gameCommunities_id = lodashGet(valueObj, ['gameCommunities_id'], '');
       const updatedDate = lodashGet(valueObj, ['gameCommunitiesObj', 'updatedDate'], '');
       const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['imagesAndVideosThumbnailObj'], {});
-      const developersPublishersArr = lodashGet(valueObj, ['developersPublishersArr'], []);
+      // const developersPublishersArr = lodashGet(valueObj, ['developersPublishersArr'], []);
       const followedCount = lodashGet(valueObj, ['followsObj', 'followedCount'], 0);
 
       obj.urlID = lodashGet(valueObj, ['urlID'], '');
@@ -1361,17 +1443,102 @@ const findGameList = async ({
       // `);
 
 
+
+
+      // --------------------------------------------------
+      //   Developers Publishers
+      // --------------------------------------------------
+
+      const hardwareArr = lodashGet(valueObj, ['hardwareArr'], []);
+      let developerPublisherIDsArr = [];
+
+
+      // ---------------------------------------------
+      //   - Loop
+      // ---------------------------------------------
+
+      for (let value2Obj of hardwareArr.values()) {
+
+        const publisherIDsArr = lodashGet(value2Obj, ['publisherIDsArr'], []);
+        const developerIDsArr = lodashGet(value2Obj, ['developerIDsArr'], []);
+
+        developerPublisherIDsArr = developerPublisherIDsArr.concat(publisherIDsArr, developerIDsArr);
+
+      }
+
+
+      // ---------------------------------------------
+      //   - 配列の重複している値を削除
+      // ---------------------------------------------
+
+      developerPublisherIDsArr = Array.from(new Set(developerPublisherIDsArr));
+
+
+      // ---------------------------------------------
+      //   - find
+      // ---------------------------------------------
+
+      const docDevelopersPublishersArr = await ModelDevelopersPublishers.find({
+
+        conditionObj: {
+          language,
+          country,
+          developerPublisherID: { $in: developerPublisherIDsArr },
+        }
+
+      });
+
+
+      // ---------------------------------------------
+      //   - 名前だけ配列に入れる
+      // ---------------------------------------------
+
+      const developersPublishersArr = [];
+
+      for (let value2Obj of docDevelopersPublishersArr.values()) {
+
+        developersPublishersArr.push(value2Obj.name);
+        // developersPublishersArr.push({
+        //   developerPublisherID: value2Obj.developerPublisherID,
+        //   name: value2Obj.name
+        // });
+
+      }
+
+      obj.developersPublishers = developersPublishersArr.join(', ');
+
+      // console.log(`
+      //   ----- developerPublisherIDsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(developerPublisherIDsArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // console.log(`
+      //   ----- docDevelopersPublishersArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(docDevelopersPublishersArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // console.log(`
+      //   ----- developersPublishersArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(developersPublishersArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+
+
       // ---------------------------------------------
       //   Developers / Publishers
       // ---------------------------------------------
 
-      const tempArr = [];
+      // const tempArr = [];
 
-      for (let valueObj of developersPublishersArr.values()) {
-        tempArr.push(valueObj.name);
-      }
+      // for (let valueObj of developersPublishersArr.values()) {
+      //   tempArr.push(valueObj.name);
+      // }
 
-      obj.developersPublishers = tempArr.join(' / ');
+      // obj.developersPublishers = tempArr.join(' / ');
 
 
       // --------------------------------------------------

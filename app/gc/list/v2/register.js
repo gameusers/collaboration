@@ -322,11 +322,11 @@ const Component = (props) => {
         });
 
 
-        // console.log(`
-        //   ----- resultObj -----\n
-        //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
+        console.log(`
+          ----- resultObj -----\n
+          ${util.inspect(resultObj, { colors: true, depth: null })}\n
+          --------------------\n
+        `);
 
 
         // ---------------------------------------------
@@ -598,114 +598,20 @@ const Component = (props) => {
 
 
 
-      {/* Button */}
-      <Paper
+      <div
         css={css`
-          display: flex;
-          flex-flow: row nowrap;
-          align-items: center;
-          margin: 48px 0 0 0;
-          padding: 12px;
+          margin: 28px 0 0 0;
         `}
       >
-
-        <Link
-          href={'/gc/register/[[...slug]]'}
-          as={'/gc/register'}
+        <Panel
+          heading="ゲーム登録フォーム"
+          defaultExpanded={true}
         >
-          <a className="link">
-            <Button
-              variant="outlined"
-              size="small"
-              disabled={buttonDisabled}
-              // onClick={handleGetRegisterData}
-              // onClick={() => setEditable(!editable)}
-            >
-              <IconEdit
-                css={css`
-                  padding: 0 4px 0 0;
-                `}
-              />
-              ゲーム登録・編集ページ
-            </Button>
-          </a>
-        </Link>
-
-
-
-
-        {/* ？アイコン */}
-        <div
-          css={css`
-            margin: 0 0 0 12px;
-          `}
-        >
-          <IconButton
-            css={css`
-              && {
-                margin: 0 0 0 4px;
-                padding: 0;
-              }
-            `}
-            color="primary"
-            aria-label="Show Explanation"
-            onClick={(eventObj) => setAnchorElEditMode(eventObj.currentTarget)}
-          >
-            <IconHelpOutline />
-          </IconButton>
-        </div>
-
-
-
-
-        {/* ？アイコンを押すと表示される解説文 */}
-        <Popover
-          id={Boolean(anchorElEditMode) ? 'popoverEditMode' : undefined}
-          open={Boolean(anchorElEditMode)}
-          anchorEl={anchorElEditMode}
-          onClose={() => setAnchorElEditMode(null)}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
-        >
-
-          <Paper
-            css={css`
-              max-width: 400px;
-              padding: 0 16px 8px 16px;
-            `}
-          >
-
-            <div
-              css={css`
-                margin: 12px 0 0 0;
-              `}
-            >
-
-              <p
-                css={css`
-                  margin: 0 0 14px 0;
-                `}
-              >
-                左のボタンを押すと、ゲームの登録・編集ページに移動します。
-              </p>
-
-              <p>
-                Game Users のコンテンツを充実させるために、ぜひデータ追加のお手伝いをよろしくお願いします。
-              </p>
-
-            </div>
-
-          </Paper>
-
-        </Popover>
-
-      </Paper>
+          <Form
+            gameGenresArr={gameGenresArr}
+          />
+        </Panel>
+      </div>
 
 
     </Element>

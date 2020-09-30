@@ -49,6 +49,9 @@ import IconLock from '@material-ui/icons/Lock';
 
 import IconGames from '@material-ui/icons/Games';
 import IconCommunityList from '@material-ui/icons/Style';
+import IconAddCircle from '@material-ui/icons/AddCircle';
+
+
 import IconUserCommunity from '@material-ui/icons/SupervisedUserCircle';
 import IconMembers from '@material-ui/icons/SentimentSatisfiedAlt';
 import IconUser from '@material-ui/icons/Person';
@@ -147,6 +150,11 @@ const Component = (props) => {
 
       icon = <IconCommunityList fontSize="small" />;
       anchorText = 'ゲームコミュニティ';
+
+    } else if (valueObj.type === 'gc/register') {
+
+      icon = <IconAddCircle fontSize="small" />;
+      anchorText = 'ゲーム登録';
 
     } else if (valueObj.type === 'gc/index') {
 

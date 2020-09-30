@@ -36,7 +36,7 @@ import lodashCloneDeep from 'lodash/cloneDeep';
 
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
+// import InputAdornment from '@material-ui/core/InputAdornment';
 
 
 // ---------------------------------------------
@@ -114,12 +114,9 @@ const ComponentForm = (props) => {
       css={css`
         display: flex;
         flex-flow: column wrap;
-        // border-top: 1px solid #dc143c;
         border-bottom: 1px solid #dc143c;
-        // margin: 0 0 0 0;
         padding: 12px 0 24px 0;
       `}
-      // key={index}
     >
 
 
@@ -377,9 +374,6 @@ const Component = (props) => {
     setPublisherIDs10Arr,
     developerIDs10Arr,
     setDeveloperIDs10Arr,
-
-    // arr = [],
-    // setArr,
 
   } = props;
 

@@ -18,7 +18,7 @@ import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
-import TextareaAutosize from 'react-autosize-textarea';
+// import TextareaAutosize from 'react-autosize-textarea';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -56,12 +56,19 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
 // ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateUser } from 'app/@states/user.js';
+
+
+// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-import { getCookie } from 'app/@modules/cookie.js';
+// import { getCookie } from 'app/@modules/cookie.js';
 import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
@@ -69,8 +76,8 @@ import { showSnackbar } from 'app/@modules/snackbar.js';
 //   Validations
 // ---------------------------------------------
 
-import { validationBoolean } from 'app/@validations/boolean.js';
-import { validationHandleName } from 'app/@validations/name.js';
+// import { validationBoolean } from 'app/@validations/boolean.js';
+// import { validationHandleName } from 'app/@validations/name.js';
 
 import { validationGamesName, validationGamesSubtitle, validationGamesSortKeyword } from 'app/@database/games/validations/name.js';
 import { validationGamesURLID } from 'app/@database/games/validations/url.js';
@@ -81,7 +88,7 @@ import { validationGamesURLID } from 'app/@database/games/validations/url.js';
 // ---------------------------------------------
 
 import FormImageAndVideo from 'app/common/image-and-video/v2/form.js';
-import FormHardwares from 'app/common/hardware/v2/form.js';
+// import FormHardwares from 'app/common/hardware/v2/form.js';
 
 import FormTwitter from 'app/gc/list/v2/form/twitter.js';
 import FormSearchKeyword from 'app/gc/list/v2/form/search-keyword.js';
@@ -129,6 +136,19 @@ const Component = (props) => {
     gameGenresArr,
 
   } = props;
+
+
+
+
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+
+  const stateUser = ContainerStateUser.useContainer();
+
+  const { loginUsersObj } = stateUser;
+  const role = lodashGet(loginUsersObj, ['role'], '');
+  const administrator = role === 'administrator' ? true : false;
 
 
 
@@ -243,7 +263,7 @@ const Component = (props) => {
     createdDate: '',
     updatedDate: '',
     users_id: '',
-    type: 'gc',
+    type: 'temp',
     arr: [],
 
   });
@@ -254,7 +274,7 @@ const Component = (props) => {
     createdDate: '',
     updatedDate: '',
     users_id: '',
-    type: 'gc',
+    type: 'temp',
     arr: [],
 
   });
@@ -628,13 +648,6 @@ const Component = (props) => {
       }
 
 
-      // const [hardwares1Arr, setHardwares10Arr] = useState([]);
-      // const [releaseDate1, setReleaseDate10] = useState('');
-      // const [playersMin1, setPlayersMin10] = useState(1);
-      // const [playersMax1, setPlayersMax10] = useState(1);
-      // const [publisherIDs1Arr, setPublisherIDs10Arr] = useState([]);
-      // const [developerIDs1Arr, setDeveloperIDs10Arr] = useState([]);
-
       let hardwareObj = {};
 
       if (hardwares1Arr.length > 0) {
@@ -807,44 +820,42 @@ const Component = (props) => {
 
       }
 
-      // console.log(`
-      //   ----- hardwares1Arr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(hardwares1Arr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
-      // const [hardwaresArr, setHardwaresArr] = useState([
-      //   {
-      //     hardwareID: '',
-      //     releaseDate: '',
-      //     playersMin: 1,
-      //     playersMax: 1,
-      //     publisherID: '',
-      //     developerID: '',
-      //   }
-      // ]);
-
-
-      if (Object.keys(imagesAndVideosObj).length !== 0) {
+      if (imagesAndVideosObj.arr.length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
 
-      if (Object.keys(imagesAndVideosThumbnailObj).length !== 0) {
+      if (imagesAndVideosThumbnailObj.arr.length !== 0) {
         formDataObj.imagesAndVideosThumbnailObj = imagesAndVideosObj;
       }
 
 
-      // // ---------------------------------------------
-      // //   Fetch
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
 
-      // const resultObj = await fetchWrapper({
+      let resultObj = {};
 
-      //   urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/upsert`,
-      //   methodType: 'POST',
-      //   formData: JSON.stringify(formDataObj),
+      if (administrator) {
 
-      // });
+        resultObj = await fetchWrapper({
+
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/games/upsert`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj),
+
+        });
+
+      } else {
+
+        resultObj = await fetchWrapper({
+
+          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/games-temps/upsert`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj),
+
+        });
+
+      }
 
 
       // // ---------------------------------------------
@@ -1118,6 +1129,9 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const elementName = games_id ? `${games_id}-editForm` : 'gamesRegisterForm';
+
+
+
 
 
 
@@ -1884,9 +1898,6 @@ const Component = (props) => {
             setPublisherIDs10Arr={setPublisherIDs10Arr}
             developerIDs10Arr={developerIDs10Arr}
             setDeveloperIDs10Arr={setDeveloperIDs10Arr}
-
-            // arr={hardwaresArr}
-            // setArr={setHardwaresArr}
           />
 
         </div>
@@ -1894,70 +1905,77 @@ const Component = (props) => {
 
 
 
-        {/* Form Images & Videos - Main */}
-        <div css={cssBox}>
+        {/* Form Images & Videos */}
+        {administrator &&
+          <React.Fragment>
 
-          <h3
-            css={css`
-              margin: 0 0 6px 0;
-            `}
-          >
-            メイン画像
-          </h3>
+            {/* Main */}
+            <div css={cssBox}>
 
-          <p
-            css={css`
-              margin: 0 0 12px 0;
-            `}
-          >
-            ゲームコミュニティのトップに表示される大きな画像です。横長の画像（推奨サイズ 1920 x ---）をアップロードしてください。
-          </p>
+              <h3
+                css={css`
+                  margin: 0 0 6px 0;
+                `}
+              >
+                メイン画像
+              </h3>
 
-
-          <FormImageAndVideo
-            showVideoButton={false}
-            descriptionImage="横長の大きな画像をアップロードしてください。"
-            showImageCaption={false}
-            limit={limitImagesAndVideos}
-            imagesAndVideosObj={imagesAndVideosObj}
-            setImagesAndVideosObj={setImagesAndVideosObj}
-          />
-
-        </div>
+              <p
+                css={css`
+                  margin: 0 0 12px 0;
+                `}
+              >
+                ゲームコミュニティのトップに表示される大きな画像です。横長の画像（推奨サイズ 1920 x ---）をアップロードしてください。
+              </p>
 
 
+              <FormImageAndVideo
+                showVideoButton={false}
+                descriptionImage="横長の大きな画像をアップロードしてください。"
+                showImageCaption={false}
+                limit={limitImagesAndVideos}
+                imagesAndVideosObj={imagesAndVideosObj}
+                setImagesAndVideosObj={setImagesAndVideosObj}
+              />
+
+            </div>
 
 
-        {/* Form Images & Videos - Thumbnail */}
-        <div css={cssBox}>
-
-          <h3
-            css={css`
-              margin: 0 0 6px 0;
-            `}
-          >
-            サムネイル画像
-          </h3>
-
-          <p
-            css={css`
-              margin: 0 0 12px 0;
-            `}
-          >
-            ゲームコミュニティの一覧に表示される小さな画像です。正方形の画像（推奨サイズ 256 x 256 ピクセル以上）をアップロードしてください。
-          </p>
 
 
-          <FormImageAndVideo
-            showVideoButton={false}
-            descriptionImage="サムネイル画像をアップロードできます。"
-            showImageCaption={false}
-            limit={limitImagesAndVideosThumbnail}
-            imagesAndVideosObj={imagesAndVideosThumbnailObj}
-            setImagesAndVideosObj={setImagesAndVideosThumbnailObj}
-          />
+            {/* Thumbnail */}
+            <div css={cssBox}>
 
-        </div>
+              <h3
+                css={css`
+                  margin: 0 0 6px 0;
+                `}
+              >
+                サムネイル画像
+              </h3>
+
+              <p
+                css={css`
+                  margin: 0 0 12px 0;
+                `}
+              >
+                ゲームコミュニティの一覧に表示される小さな画像です。正方形の画像（推奨サイズ 256 x 256 ピクセル以上）をアップロードしてください。
+              </p>
+
+
+              <FormImageAndVideo
+                showVideoButton={false}
+                descriptionImage="サムネイル画像をアップロードできます。"
+                showImageCaption={false}
+                limit={limitImagesAndVideosThumbnail}
+                imagesAndVideosObj={imagesAndVideosThumbnailObj}
+                setImagesAndVideosObj={setImagesAndVideosThumbnailObj}
+              />
+
+            </div>
+
+          </React.Fragment>
+        }
 
 
 
@@ -1965,39 +1983,13 @@ const Component = (props) => {
         {/* Link */}
         <div css={cssBox}>
 
-        <FormLink
-          linkArr={linkArr}
-          setLinkArr={setLinkArr}
-        />
+          <FormLink
+            linkArr={linkArr}
+            setLinkArr={setLinkArr}
+          />
 
         </div>
 
-
-
-
-
-
-          {/* Form Images & Videos */}
-          {/* <div
-            css={css`
-              margin: 12px 0 0 0;
-            `}
-          >
-
-            <FormImageAndVideo
-              // type="recruitment"
-              descriptionImage="募集に表示する画像をアップロードできます。"
-              descriptionVideo="募集に表示する動画を登録できます。"
-              showImageCaption={true}
-              limit={limitImagesAndVideos}
-              imagesAndVideosObj={imagesAndVideosObj}
-              setImagesAndVideosObj={setImagesAndVideosObj}
-            />
-
-          </div> */}
-
-
-        {/* </div> */}
 
 
 

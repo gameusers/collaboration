@@ -10,12 +10,12 @@ const mongoose = require('mongoose');
 // --------------------------------------------------
 
 const schema = mongoose.Schema({
-  
+
   _id: { type: String, required: true },
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
   users_id: { type: String },
-  type: { type: String, enum: ['gc', 'uc', 'ur', 'forum', 'recruitment'], required: true },
+  type: { type: String, enum: ['gc', 'uc', 'ur', 'forum', 'recruitment', 'temp'], required: true },
   images: { type: Number, default: 0, required: true },
   videos: { type: Number, default: 0, required: true },
   arr: [
@@ -48,7 +48,7 @@ const schema = mongoose.Schema({
       videoID: String,
     },
   ],
-  
+
 });
 
 

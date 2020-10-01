@@ -52,11 +52,11 @@ import { getCookie } from 'app/@modules/cookie.js';
 
 import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
-import FeedSidebar from 'app/common/feed/v2/sidebar.js';
-import FeedHorizontal from 'app/common/feed/v2/horizontal.js';
+// import FeedSidebar from 'app/common/feed/v2/sidebar.js';
+// import FeedHorizontal from 'app/common/feed/v2/horizontal.js';
 
-import GcNavigation from 'app/gc/list/v2/navigation.js';
-import GcRegister from 'app/gc/list/v2/register.js';
+import GcNavigation from 'app/gc/register/v2/navigation.js';
+import GcRegister from 'app/gc/register/v2/register.js';
 
 
 
@@ -65,7 +65,7 @@ import GcRegister from 'app/gc/list/v2/register.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: http://localhost:8080/gc/***
+//   URL: http://localhost:8080/gc/register
 // --------------------------------------------------
 
 /**
@@ -105,6 +105,7 @@ const ContainerLayout = (props) => {
 
       <GcRegister
         obj={props.gcListObj}
+        gameGenresArr={props.gameGenresArr}
       />
 
     </React.Fragment>
@@ -232,7 +233,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   const resultObj = await fetchWrapper({
 
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/list?page=${page}&limit=${limit}&hardwares=${hardwares}&keyword=${keyword}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/register?page=${page}&limit=${limit}&hardwares=${hardwares}&keyword=${keyword}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -254,6 +255,7 @@ export async function getServerSideProps({ req, res, query }) {
   const feedObj = lodashGet(dataObj, ['feedObj'], {});
 
   const gcListObj = lodashGet(dataObj, ['gcListObj'], {});
+  const gameGenresArr = lodashGet(dataObj, ['gameGenresArr'], []);
   const hardwaresArr = lodashGet(dataObj, ['hardwaresArr'], []);
 
 
@@ -437,6 +439,7 @@ export async function getServerSideProps({ req, res, query }) {
 
       page,
       gcListObj,
+      gameGenresArr,
       hardwaresArr,
       keyword,
 

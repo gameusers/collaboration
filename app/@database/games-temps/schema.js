@@ -14,6 +14,8 @@ const schema = mongoose.Schema({
   _id: { type: String, required: true },
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
+  approval: { type: Boolean, required: true },
+  users_id: { type: String, required: true },
   gameCommunities_id: { type: String },
   urlID: { type: String, required: true },
   language: { type: String, enum: ['en', 'ja'], required: true },

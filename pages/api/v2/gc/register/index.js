@@ -23,10 +23,10 @@ import lodashHas from 'lodash/has';
 //   Model
 // ---------------------------------------------
 
-// import ModelGameCommunities from 'app/@database/game-communities/model.js';
-// import ModelHardwares from 'app/@database/hardwares/model.js';
-// import ModelFeeds from 'app/@database/feeds/model.js';
+import ModelGameCommunities from 'app/@database/game-communities/model.js';
 import ModelGameGenres from 'app/@database/game-genres/model.js';
+import ModelHardwares from 'app/@database/hardwares/model.js';
+import ModelFeeds from 'app/@database/feeds/model.js';
 
 
 // ---------------------------------------------
@@ -34,17 +34,17 @@ import ModelGameGenres from 'app/@database/game-genres/model.js';
 // ---------------------------------------------
 
 import { returnErrorsArr } from 'app/@modules/log/log.js';
-// import { CustomError } from 'app/@modules/error/custom.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-// import { validationInteger } from 'app/@validations/integer.js';
-// import { validationKeyword } from 'app/@validations/keyword.js';
+import { validationInteger } from 'app/@validations/integer.js';
+import { validationKeyword } from 'app/@validations/keyword.js';
 
-// import { validationGameCommunitiesListLimit } from 'app/@database/game-communities/validations/limit.js';
+import { validationGameCommunitiesListLimit } from 'app/@database/game-communities/validations/limit.js';
 
 
 // ---------------------------------------------
@@ -58,7 +58,7 @@ import { locale } from 'app/@locales/locale.js';
 //   API
 // ---------------------------------------------
 
-// import { initialProps } from 'app/@api/v2/common.js';
+import { initialProps } from 'app/@api/v2/common.js';
 
 
 
@@ -66,7 +66,7 @@ import { locale } from 'app/@locales/locale.js';
 
 
 // --------------------------------------------------
-//   endpointID: Y4zdMtBkP
+//   endpointID: Q4XBgtXED
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -85,7 +85,6 @@ export default async (req, res) => {
 
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
-  const returnObj = {};
 
 
   // --------------------------------------------------
@@ -115,25 +114,77 @@ export default async (req, res) => {
     //   GET Data
     // --------------------------------------------------
 
-    // const page = parseInt(lodashGet(req, ['query', 'page'], 1), 10);
-    // const limit = parseInt(lodashGet(req, ['query', 'limit'], ''), 10);
-    // const hardwares = lodashGet(req, ['query', 'hardwares'], '');
-    // const keyword = lodashGet(req, ['query', 'keyword'], '');
+    const page = parseInt(lodashGet(req, ['query', 'page'], 1), 10);
+    const limit = parseInt(lodashGet(req, ['query', 'limit'], ''), 10);
+    const hardwares = lodashGet(req, ['query', 'hardwares'], '');
+    const keyword = lodashGet(req, ['query', 'keyword'], '');
 
-    // lodashSet(requestParametersObj, ['page'], page);
-    // lodashSet(requestParametersObj, ['limit'], limit);
-    // lodashSet(requestParametersObj, ['hardwares'], hardwares);
-    // lodashSet(requestParametersObj, ['keyword'], keyword);
+    lodashSet(requestParametersObj, ['page'], page);
+    lodashSet(requestParametersObj, ['limit'], limit);
+    lodashSet(requestParametersObj, ['hardwares'], hardwares);
+    lodashSet(requestParametersObj, ['keyword'], keyword);
 
 
 
 
     // --------------------------------------------------
-    //   Language & Country
+    //   Common Initial Props
     // --------------------------------------------------
 
-    const language = lodashGet(localeObj, ['language'], '');
-    const country = lodashGet(localeObj, ['country'], '');
+    const returnObj = await initialProps({ req, localeObj, getHeroImage: true });
+
+
+
+
+    // --------------------------------------------------
+    //   DB find / Game Communities List
+    // --------------------------------------------------
+
+    // ---------------------------------------------
+    //   - 引数
+    // ---------------------------------------------
+
+    const argumentsObj = {
+
+      localeObj,
+
+    };
+
+
+    // ---------------------------------------------
+    //   - page & limit
+    // ---------------------------------------------
+
+    if (await validationInteger({ throwError: false, required: true, value: page }).error === false) {
+      argumentsObj.page = page;
+    }
+
+    if (await validationGameCommunitiesListLimit({ throwError: false, required: true, value: limit }).error === false) {
+      argumentsObj.limit = limit;
+    }
+
+
+    // ---------------------------------------------
+    //   - hardwareIDsArr
+    // ---------------------------------------------
+
+    const hardwareIDsArr = hardwares ? hardwares.split(',') : [];
+
+    if (hardwareIDsArr.length > 0) {
+      argumentsObj.hardwareIDsArr = hardwareIDsArr;
+    }
+
+
+    // ---------------------------------------------
+    //   - keyword
+    // ---------------------------------------------
+
+    if (await validationKeyword({ throwError: false, required: true, value: keyword }).error === false) {
+      argumentsObj.keyword = keyword;
+    }
+
+
+    returnObj.gcListObj = await ModelGameCommunities.findGameList(argumentsObj);
 
 
 
@@ -145,12 +196,45 @@ export default async (req, res) => {
     returnObj.gameGenresArr = await ModelGameGenres.find({
 
       conditionObj: {
-        language,
-        country,
+        language: lodashGet(localeObj, ['language'], ''),
+        country: lodashGet(localeObj, ['country'], ''),
       }
 
     });
 
+
+
+
+    // --------------------------------------------------
+    //   DB find / Feed
+    // --------------------------------------------------
+
+    // returnObj.feedObj = await ModelFeeds.findFeed({
+
+    //   localeObj,
+    //   arr: ['all'],
+
+    // });
+
+
+
+
+    // --------------------------------------------------
+    //   ハードウェア情報 - 検索用
+    // --------------------------------------------------
+
+    returnObj.hardwaresArr = await ModelHardwares.findHardwaresArr({
+
+      localeObj,
+      hardwareIDsArr,
+
+    });
+
+    // console.log(`
+    //   ----- returnObj.hardwaresArr -----\n
+    //   ${util.inspect(returnObj.hardwaresArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 
@@ -160,7 +244,7 @@ export default async (req, res) => {
 
     // console.log(`
     //   ----------------------------------------\n
-    //   pages/api/v2/gc/list/get-register-data.js
+    //   /pages/api/v2/gc/[urlID]/index.js
     // `);
 
     // console.log(chalk`
@@ -168,6 +252,12 @@ export default async (req, res) => {
     // limit: {green ${limit}}
     // hardwares: {green ${hardwares}}
     // keyword: {green ${keyword}}
+    // `);
+
+    // console.log(`
+    //   ----- returnObj.gcListObj -----\n
+    //   ${util.inspect(returnObj.gcListObj, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
 
     // console.log(`
@@ -196,7 +286,7 @@ export default async (req, res) => {
     const resultErrorObj = returnErrorsArr({
 
       errorObj,
-      endpointID: 'Y4zdMtBkP',
+      endpointID: 'Q4XBgtXED',
       users_id: loginUsers_id,
       ip,
       userAgent,

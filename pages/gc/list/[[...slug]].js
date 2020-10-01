@@ -53,7 +53,6 @@ import { getCookie } from 'app/@modules/cookie.js';
 import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 import FeedSidebar from 'app/common/feed/v2/sidebar.js';
-import FeedHorizontal from 'app/common/feed/v2/horizontal.js';
 
 import GcNavigation from 'app/gc/list/v2/navigation.js';
 import GcList from 'app/gc/list/v2/list.js';

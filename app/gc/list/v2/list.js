@@ -80,10 +80,10 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 //   Components
 // ---------------------------------------------
 
-import Panel from 'app/common/layout/v2/panel.js';
+// import Panel from 'app/common/layout/v2/panel.js';
 
 import CardGC from 'app/common/community-list/v2/card-gc.js';
-import Form from 'app/gc/list/v2/form.js';
+// import Form from 'app/gc/list/v2/form.js';
 
 
 

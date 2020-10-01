@@ -83,7 +83,7 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 import Panel from 'app/common/layout/v2/panel.js';
 
 import CardGC from 'app/common/community-list/v2/card-gc.js';
-import Form from 'app/gc/list/v2/form.js';
+import Form from 'app/gc/register/v2/form.js';
 
 
 
@@ -110,6 +110,8 @@ const useStyles = makeStyles({
 
 
 
+
+
 // --------------------------------------------------
 //   Function Components
 // --------------------------------------------------
@@ -127,6 +129,7 @@ const Component = (props) => {
   const {
 
     obj,
+    gameGenresArr,
 
   } = props;
 
@@ -139,8 +142,6 @@ const Component = (props) => {
 
   const {
 
-    // setHeaderObj,
-    // handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
@@ -157,9 +158,7 @@ const Component = (props) => {
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
-  const [anchorElEditMode, setAnchorElEditMode] = useState(null);
   const [editable, setEditable] = useState(false);
-  const [gameGenresArr, setGameGenresArr] = useState([]);
 
 
   useEffect(() => {
@@ -176,7 +175,7 @@ const Component = (props) => {
   // --------------------------------------------------
 
   /**
-   * ゲームコミュニティ一覧を読み込む
+   * 仮登録ゲーム一覧を読み込む
    * @param {number} page - ページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
@@ -200,13 +199,13 @@ const Component = (props) => {
 
       if (page === 1) {
 
-        url = `/gc/list/[[...slug]]`;
-        as ='/gc/list';
+        url = `/gc/register/[[...slug]]`;
+        as ='/gc/register';
 
       } else {
 
-        url = '/gc/list/[[...slug]]';
-        as = `/gc/list/${page}`;
+        url = '/gc/register/[[...slug]]';
+        as = `/gc/register/${page}`;
 
       }
 
@@ -226,7 +225,7 @@ const Component = (props) => {
 
       // console.log(`
       //   ----------------------------------------\n
-      //   app/gc/list/v2/list.js - handleRead
+      //   app/gc/list/v2/register.js - handleRead
       // `);
 
       // console.log(chalk`
@@ -250,154 +249,6 @@ const Component = (props) => {
 
 
     } catch (errorObj) {}
-
-
-  };
-
-
-
-
-  /**
-   * 新規登録用データを読み込む
-   */
-  const handleGetRegisterData = async () => {
-
-
-    try {
-
-
-      if (gameGenresArr.length === 0) {
-
-
-        // ---------------------------------------------
-        //   Loading Open
-        // ---------------------------------------------
-
-        handleLoadingOpen({});
-
-
-        // ---------------------------------------------
-        //   Button Disable
-        // ---------------------------------------------
-
-        setButtonDisabled(true);
-
-
-
-
-        // ---------------------------------------------
-        //   Scroll To
-        // ---------------------------------------------
-
-        handleScrollTo({
-
-          to: 'gamesRegisterForm',
-          duration: 0,
-          delay: 0,
-          smooth: 'easeInOutQuart',
-          offset: -50,
-
-        });
-
-
-
-
-        // ---------------------------------------------
-        //   FormData
-        // ---------------------------------------------
-
-        const formDataObj = {};
-
-
-        // ---------------------------------------------
-        //   Fetch
-        // ---------------------------------------------
-
-        const resultObj = await fetchWrapper({
-
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/gc/list/get-register-data`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-
-        });
-
-
-        console.log(`
-          ----- resultObj -----\n
-          ${util.inspect(resultObj, { colors: true, depth: null })}\n
-          --------------------\n
-        `);
-
-
-        // ---------------------------------------------
-        //   Error
-        // ---------------------------------------------
-
-        if ('errorsArr' in resultObj) {
-          throw new CustomError({ errorsArr: resultObj.errorsArr });
-        }
-
-
-
-
-        // ---------------------------------------------
-        //   Button Enable
-        // ---------------------------------------------
-
-        setButtonDisabled(false);
-
-
-        // ---------------------------------------------
-        //   Set Form Data
-        // ---------------------------------------------
-
-        setGameGenresArr(lodashGet(resultObj, ['data', 'gameGenresArr'], []));
-
-
-      }
-
-
-      // ---------------------------------------------
-      //   Set editable
-      // ---------------------------------------------
-
-      setEditable(!editable);
-
-
-    } catch (errorObj) {
-
-
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-
-      setButtonDisabled(false);
-
-
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-
-      showSnackbar({
-
-        enqueueSnackbar,
-        intl,
-        errorObj,
-
-      });
-
-
-    } finally {
-
-
-      // ---------------------------------------------
-      //   Loading Close
-      // ---------------------------------------------
-
-      handleLoadingClose();
-
-
-    }
 
 
   };
@@ -486,33 +337,8 @@ const Component = (props) => {
 
   return (
     <Element
-      name="GcList"
+      name="GcRegister"
     >
-
-
-      {/* Form - Post New Thread */}
-      {/* <div
-        css={css`
-          margin: 0 0 16px 0;
-        `}
-      >
-
-        <Panel
-          heading="スレッド投稿フォーム"
-          defaultExpanded={false}
-        >
-
-          <FormThread
-            gameCommunities_id={gameCommunities_id}
-            userCommunities_id={userCommunities_id}
-            forumThreads_id=""
-          />
-
-        </Panel>
-
-      </div> */}
-
-
 
 
       {/* List */}
@@ -598,6 +424,7 @@ const Component = (props) => {
 
 
 
+      {/* Form */}
       <div
         css={css`
           margin: 28px 0 0 0;

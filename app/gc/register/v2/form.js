@@ -90,10 +90,10 @@ import { validationGamesURLID } from 'app/@database/games/validations/url.js';
 import FormImageAndVideo from 'app/common/image-and-video/v2/form.js';
 // import FormHardwares from 'app/common/hardware/v2/form.js';
 
-import FormTwitter from 'app/gc/list/v2/form/twitter.js';
-import FormSearchKeyword from 'app/gc/list/v2/form/search-keyword.js';
-import FormHardware from 'app/gc/list/v2/form/hardware.js';
-import FormLink from 'app/gc/list/v2/form/link.js';
+import FormTwitter from 'app/gc/register/v2/form/twitter.js';
+import FormSearchKeyword from 'app/gc/register/v2/form/search-keyword.js';
+import FormHardware from 'app/gc/register/v2/form/hardware.js';
+import FormLink from 'app/gc/register/v2/form/link.js';
 
 
 
@@ -244,18 +244,14 @@ const Component = (props) => {
   const [publisherIDs10Arr, setPublisherIDs10Arr] = useState([]);
   const [developerIDs10Arr, setDeveloperIDs10Arr] = useState([]);
 
+  const [linkArr, setLinkArr] = useState([{
 
-  // const [hardwaresArr, setHardwaresArr] = useState([
-  //   {
-  //     hardwareID: '',
-  //     releaseDate: '',
-  //     playersMin: 1,
-  //     playersMax: 1,
-  //     publisherID: '',
-  //     developerID: '',
-  //   }
-  // ]);
+    _id: '',
+    type: 'Official',
+    label: '',
+    url: '',
 
+  }]);
 
   const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
 
@@ -279,14 +275,6 @@ const Component = (props) => {
 
   });
 
-  const [linkArr, setLinkArr] = useState([{
-
-    _id: '',
-    type: 'Official',
-    label: '',
-    url: '',
-
-  }]);
 
   const [anchorElSortKeyword, setAnchorElSortKeyword] = useState(null);
   const [anchorElSubtitle, setAnchorElSubtitle] = useState(null);
@@ -599,18 +587,18 @@ const Component = (props) => {
 
 
 
-      // // ---------------------------------------------
-      // //   Loading Open
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Loading Open
+      // ---------------------------------------------
 
-      // handleLoadingOpen({});
+      handleLoadingOpen({});
 
 
-      // // ---------------------------------------------
-      // //   Button Disable
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
 
-      // setButtonDisabled(true);
+      setButtonDisabled(true);
 
 
 
@@ -858,67 +846,143 @@ const Component = (props) => {
       }
 
 
-      // // ---------------------------------------------
-      // //   Error
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
 
-      // if ('errorsArr' in resultObj) {
-      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
-      // }
-
-
-
-
-      // // ---------------------------------------------
-      // //   Reset Form
-      // // ---------------------------------------------
-
-      // setHardwaresArr([]);
-      // setCategory('');
-      // setTitle('');
-      // setName('');
-      // setComment('');
-      // setImagesAndVideosObj({
-
-      //   _id: '',
-      //   createdDate: '',
-      //   updatedDate: '',
-      //   users_id: '',
-      //   type: 'recruitment',
-      //   arr: [],
-
-      // });
-
-      // setIDsArr([]);
-      // setPlatform1('Other');
-      // setPlatform2('Other');
-      // setPlatform3('Other');
-      // setID1('');
-      // setID2('');
-      // setID3('');
-      // setInformationTitle1('');
-      // setInformationTitle2('');
-      // setInformationTitle3('');
-      // setInformationTitle4('');
-      // setInformationTitle5('');
-      // setInformation1('');
-      // setInformation2('');
-      // setInformation3('');
-      // setInformation4('');
-      // setInformation5('');
-      // setPublicSetting(1);
-      // setDeadlineDate('');
-      // setWebPushAvailable(false);
-      // setWebPushSubscriptionObj({});
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
 
 
 
 
-      // // ---------------------------------------------
-      // //   Button Enable
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Reset Form
+      // ---------------------------------------------
 
-      // setButtonDisabled(false);
+      setLanguage('ja');
+      setCountry('JP');
+      setName('');
+      setSubtitle('');
+      setSortKeyword('');
+      setURLID('');
+      setTwitterHashtagsArr([]);
+      setSearchKeywordsArr([]);
+
+      setGenre1('');
+      setGenre2('');
+      setGenre3('');
+
+      setHardwares1Arr([]);
+      setReleaseDate1('');
+      setPlayersMin1(1);
+      setPlayersMax1(1);
+      setPublisherIDs1Arr([]);
+      setDeveloperIDs1Arr([]);
+
+      setHardwares2Arr([]);
+      setReleaseDate2('');
+      setPlayersMin2(1);
+      setPlayersMax2(1);
+      setPublisherIDs2Arr([]);
+      setDeveloperIDs2Arr([]);
+
+      setHardwares3Arr([]);
+      setReleaseDate3('');
+      setPlayersMin3(1);
+      setPlayersMax3(1);
+      setPublisherIDs3Arr([]);
+      setDeveloperIDs3Arr([]);
+
+      setHardwares4Arr([]);
+      setReleaseDate4('');
+      setPlayersMin4(1);
+      setPlayersMax4(1);
+      setPublisherIDs4Arr([]);
+      setDeveloperIDs4Arr([]);
+
+      setHardwares5Arr([]);
+      setReleaseDate5('');
+      setPlayersMin5(1);
+      setPlayersMax5(1);
+      setPublisherIDs5Arr([]);
+      setDeveloperIDs5Arr([]);
+
+      setHardwares6Arr([]);
+      setReleaseDate6('');
+      setPlayersMin6(1);
+      setPlayersMax6(1);
+      setPublisherIDs6Arr([]);
+      setDeveloperIDs6Arr([]);
+
+      setHardwares7Arr([]);
+      setReleaseDate7('');
+      setPlayersMin7(1);
+      setPlayersMax7(1);
+      setPublisherIDs7Arr([]);
+      setDeveloperIDs7Arr([]);
+
+      setHardwares8Arr([]);
+      setReleaseDate8('');
+      setPlayersMin8(1);
+      setPlayersMax8(1);
+      setPublisherIDs8Arr([]);
+      setDeveloperIDs8Arr([]);
+
+      setHardwares9Arr([]);
+      setReleaseDate9('');
+      setPlayersMin9(1);
+      setPlayersMax9(1);
+      setPublisherIDs9Arr([]);
+      setDeveloperIDs9Arr([]);
+
+      setHardwares10Arr([]);
+      setReleaseDate10('');
+      setPlayersMin10(1);
+      setPlayersMax10(1);
+      setPublisherIDs10Arr([]);
+      setDeveloperIDs10Arr([]);
+
+      setLinkArr([{
+
+        _id: '',
+        type: 'Official',
+        label: '',
+        url: '',
+
+      }]);
+
+      setImagesAndVideosObj({
+
+        _id: '',
+        createdDate: '',
+        updatedDate: '',
+        users_id: '',
+        type: 'temp',
+        arr: [],
+
+      });
+
+      setImagesAndVideosThumbnailObj({
+
+        _id: '',
+        createdDate: '',
+        updatedDate: '',
+        users_id: '',
+        type: 'temp',
+        arr: [],
+
+      });
+
+
+
+
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+
+      setButtonDisabled(false);
 
 
       // // --------------------------------------------------
@@ -958,25 +1022,22 @@ const Component = (props) => {
 
 
 
-      // // --------------------------------------------------
-      // //   Snackbar: Success
-      // // --------------------------------------------------
+      // --------------------------------------------------
+      //   Snackbar: Success
+      // --------------------------------------------------
 
-      // const experienceObj = lodashGet(resultObj, ['data', 'experienceObj'], {});
+      showSnackbar({
 
-      // showSnackbar({
+        enqueueSnackbar,
+        intl,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'Kail6oUOo',
+          },
+        ]
 
-      //   enqueueSnackbar,
-      //   intl,
-      //   experienceObj,
-      //   arr: [
-      //     {
-      //       variant: 'success',
-      //       messageID: recruitmentThreads_id ? 'xM5NqhTq5' : 'B9Goe5scP',
-      //     },
-      //   ]
-
-      // });
+      });
 
 
 
@@ -985,16 +1046,16 @@ const Component = (props) => {
       //   console.log
       // --------------------------------------------------
 
-      console.log(`
-        ----------------------------------------\n
-        app/gc/list/v2/form.js / handleSubmit
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   app/gc/list/v2/form.js / handleSubmit
+      // `);
 
-      console.log(`
-        ----- formDataObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- formDataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
 
       // console.log(`
       //   ----- resultObj -----\n
@@ -1035,34 +1096,25 @@ const Component = (props) => {
 
 
       // ---------------------------------------------
-      //   Hide Form
+      //   Scroll
       // ---------------------------------------------
 
-      // if (recruitmentThreads_id) {
-      //   setShowForm(false);
-      // }
+      handleScrollTo({
+
+        to: 'GcRegister',
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+
+      });
 
 
-      // // ---------------------------------------------
-      // //   Scroll
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
 
-      // handleScrollTo({
-
-      //   to: recruitmentThreads_id || newRecruitmentThreads_id || 'recruitmentThreads',
-      //   duration: 0,
-      //   delay: 0,
-      //   smooth: 'easeInOutQuart',
-      //   offset: -50,
-
-      // });
-
-
-      // // ---------------------------------------------
-      // //   Loading Close
-      // // ---------------------------------------------
-
-      // handleLoadingClose();
+      handleLoadingClose();
 
 
     }
@@ -1129,7 +1181,6 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const elementName = games_id ? `${games_id}-editForm` : 'gamesRegisterForm';
-
 
 
 
@@ -1233,7 +1284,7 @@ const Component = (props) => {
                   margin: 0 0 14px 0;
                 `}
               >
-                登録済みのゲームを編集できます。
+                登録済みのゲームのデータを利用して、さらに情報を追加できます。
               </p>
 
             </React.Fragment>
@@ -1245,7 +1296,7 @@ const Component = (props) => {
                   margin: 0 0 14px 0;
                 `}
               >
-                ゲームを新しく登録する場合、こちらのフォームを利用してください。すべての情報を正確に入力する必要はありません。わからない欄は未入力にするか、適当な文字列を入力してもらえるとありがたいです。
+                ゲームを新しく登録する場合、こちらのフォームを利用してください。すべての情報を正確に入力する必要はありません。わからない欄は未入力にしておいてください。
               </p>
 
 
@@ -1258,7 +1309,16 @@ const Component = (props) => {
             margin: 0 0 14px 0;
           `}
         >
-          こちらで登録・編集するデータは、Game Users運営の確認後にサイトに反映されますので、空欄が多かったり、多少間違っている情報があっても問題はありません。気軽に登録を行ってみてください。
+          こちらのフォームに入力してもらったデータは仮登録という形で保存されます。Game Users運営の確認後に正式にサイトに反映されますので、空欄が多かったり、多少間違っている情報があっても問題はありません。気軽に登録を行ってみてください。
+        </p>
+
+        <p
+          css={css`
+            color: red;
+            margin: 0 0 14px 0;
+          `}
+        >
+          ※ フォームを送信するにはログインする必要があります。
         </p>
 
 
@@ -2012,14 +2072,14 @@ const Component = (props) => {
             color="primary"
             disabled={buttonDisabled}
           >
-            {games_id ? '編集する' : '登録する'}
+            {games_id ? '登録する' : '仮登録する'}
           </Button>
 
 
 
 
           {/* Close */}
-          {games_id &&
+          {/* {games_id &&
             <div
               css={css`
                 margin: 0 0 0 auto;
@@ -2034,7 +2094,7 @@ const Component = (props) => {
                 閉じる
               </Button>
             </div>
-          }
+          } */}
 
         </div>
 

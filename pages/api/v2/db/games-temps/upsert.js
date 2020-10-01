@@ -40,7 +40,7 @@ import ModelGameTemps from 'app/@database/games-temps/model.js';
 import { verifyCsrfToken } from 'app/@modules/csrf.js';
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-import { experienceCalculate } from 'app/@modules/experience.js';
+// import { experienceCalculate } from 'app/@modules/experience.js';
 
 
 // ---------------------------------------------
@@ -210,12 +210,14 @@ export default async (req, res) => {
 
       createdDate: ISO8601,
       updatedDate: ISO8601,
+      approval: false,
+      users_id: loginUsers_id,
       gameCommunities_id: '',
       urlID,
       language,
       country,
-      imagesAndVideos_id,
-      imagesAndVideosThumbnail_id,
+      imagesAndVideos_id: '',
+      imagesAndVideosThumbnail_id: '',
       name,
       subtitle,
       searchKeywordsArr,
@@ -236,12 +238,12 @@ export default async (req, res) => {
     //   DB upsert
     // --------------------------------------------------
 
-    // await ModelGameTemps.upsert({
+    await ModelGameTemps.upsert({
 
-    //   conditionObj,
-    //   saveObj,
+      conditionObj,
+      saveObj,
 
-    // });
+    });
 
 
 

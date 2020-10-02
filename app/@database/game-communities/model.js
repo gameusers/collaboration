@@ -1053,7 +1053,7 @@ const findForGameCommunityByGameCommunities_id = async ({ gameCommunities_id }) 
  * @param {number} limit - リミット
  * @return {Object} 取得データ
  */
-const findGameList = async ({
+const findGamesList = async ({
 
   localeObj,
   page = 1,
@@ -1142,25 +1142,6 @@ const findGameList = async ({
         $match: conditionObj
       },
 
-      // {
-      //   $match: {
-
-      //     language,
-      //     country,
-
-      //     hardwareArr: {
-      //       $elemMatch: {
-      //         hardwareID: {
-      //           $in: ['Zd_Ia4Hwm2']
-      //         }
-      //       }
-      //     },
-
-      //     // searchKeywordsArr: { $regex: pattern, $options: 'i' }
-
-      //   }
-      // },
-
 
       // --------------------------------------------------
       //   images-and-videos / サムネイル用
@@ -1198,53 +1179,6 @@ const findGameList = async ({
           preserveNullAndEmptyArrays: true,
         }
       },
-
-
-      // --------------------------------------------------
-      //   developers-publishers / 開発＆パブリッシャー
-      // --------------------------------------------------
-
-      // {
-      //   $lookup:
-      //     {
-      //       from: 'developers-publishers',
-      //       let: {
-      //         letPublisherIDsArr: '$hardwareArr.publisherIDsArr',
-      //         letDeveloperIDsArr: '$hardwareArr.developerIDsArr',
-      //       },
-      //       pipeline: [
-      //         {
-      //           $match: {
-      //             $expr: {
-      //               $or: [
-      //                 {
-      //                   $and: [
-      //                     { $eq: ['$language', language] },
-      //                     { $eq: ['$country', country] },
-      //                     { $in: ['$developerPublisherID', '$$letPublisherIDsArr'] }
-      //                   ]
-      //                 },
-      //                 {
-      //                   $and: [
-      //                     { $eq: ['$language', language] },
-      //                     { $eq: ['$country', country] },
-      //                     { $in: ['$developerPublisherID', '$$letDeveloperIDsArr'] }
-      //                   ]
-      //                 }
-      //               ]
-      //             },
-      //           }
-      //         },
-      //         {
-      //           $project: {
-      //             _id: 0,
-      //             name: 1,
-      //           }
-      //         }
-      //       ],
-      //       as: 'developersPublishersArr'
-      //     }
-      // },
 
 
       // --------------------------------------------------
@@ -1325,7 +1259,7 @@ const findGameList = async ({
 
       {
         $project: {
-          _id: 0,
+          // _id: 0,
           gameCommunities_id: 1,
           urlID: 1,
           imagesAndVideosThumbnailObj: 1,
@@ -1406,12 +1340,13 @@ const findGameList = async ({
       //   Data
       // --------------------------------------------------
 
+      const _id = lodashGet(valueObj, ['_id'], '');
       const gameCommunities_id = lodashGet(valueObj, ['gameCommunities_id'], '');
       const updatedDate = lodashGet(valueObj, ['gameCommunitiesObj', 'updatedDate'], '');
       const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['imagesAndVideosThumbnailObj'], {});
-      // const developersPublishersArr = lodashGet(valueObj, ['developersPublishersArr'], []);
       const followedCount = lodashGet(valueObj, ['followsObj', 'followedCount'], 0);
 
+      obj._id = _id;
       obj.urlID = lodashGet(valueObj, ['urlID'], '');
       obj.name = lodashGet(valueObj, ['name'], '');
       obj.subtitle = lodashGet(valueObj, ['subtitle'], '');
@@ -1526,21 +1461,6 @@ const findGameList = async ({
       // `);
 
 
-
-
-      // ---------------------------------------------
-      //   Developers / Publishers
-      // ---------------------------------------------
-
-      // const tempArr = [];
-
-      // for (let valueObj of developersPublishersArr.values()) {
-      //   tempArr.push(valueObj.name);
-      // }
-
-      // obj.developersPublishers = tempArr.join(' / ');
-
-
       // --------------------------------------------------
       //   画像と動画の処理
       // --------------------------------------------------
@@ -1588,7 +1508,7 @@ const findGameList = async ({
 
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/@database/game-communities/model.js - findGameList
+    //   /app/@database/game-communities/model.js - findGamesList
     // `);
 
     // console.log(chalk`
@@ -1658,6 +1578,6 @@ module.exports = {
 
   findForGameCommunity,
   findForGameCommunityByGameCommunities_id,
-  findGameList,
+  findGamesList,
 
 };

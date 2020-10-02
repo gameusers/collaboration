@@ -104,7 +104,8 @@ const ContainerLayout = (props) => {
       />
 
       <GcRegister
-        obj={props.gcListObj}
+        gcListObj={props.gcListObj}
+        gcTempsListObj={props.gcTempsListObj}
         gameGenresArr={props.gameGenresArr}
       />
 
@@ -255,6 +256,7 @@ export async function getServerSideProps({ req, res, query }) {
   const feedObj = lodashGet(dataObj, ['feedObj'], {});
 
   const gcListObj = lodashGet(dataObj, ['gcListObj'], {});
+  const gcTempsListObj = lodashGet(dataObj, ['gcTempsListObj'], {});
   const gameGenresArr = lodashGet(dataObj, ['gameGenresArr'], []);
   const hardwaresArr = lodashGet(dataObj, ['hardwaresArr'], []);
 
@@ -439,6 +441,7 @@ export async function getServerSideProps({ req, res, query }) {
 
       page,
       gcListObj,
+      gcTempsListObj,
       gameGenresArr,
       hardwaresArr,
       keyword,

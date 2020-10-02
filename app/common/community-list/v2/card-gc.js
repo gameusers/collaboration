@@ -208,7 +208,7 @@ const Component = (props) => {
                 // background-color: pink;
               `}
             >
-              {name} {subtitle}
+              {name}{subtitle}
             </div>
 
 

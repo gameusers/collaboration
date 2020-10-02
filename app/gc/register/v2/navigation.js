@@ -146,20 +146,20 @@ const Component = (props) => {
       const urlHardwares = hardwareIDsArr.length > 0 ? `hardwares=${hardwareIDsArr.join(',')}&` : '';
       const urlKeyword = searchKeyword ? `keyword=${encodeURI(searchKeyword)}&` : '';
 
-      let url = `/gc/list/[[...slug]]?${urlHardwares}${urlKeyword}page=${page}`;
-      let as = `/gc/list/search?${urlHardwares}${urlKeyword}page=${page}`;
+      let url = `/gc/register/[[...slug]]?${urlHardwares}${urlKeyword}page=${page}`;
+      let as = `/gc/register/search?${urlHardwares}${urlKeyword}page=${page}`;
 
       if (!urlHardwares && !urlKeyword) {
 
         if (page === 1) {
 
-          url = '/gc/list/[[...slug]]';
-          as = '/gc/list';
+          url = '/gc/register/[[...slug]]';
+          as = '/gc/register';
 
         } else {
 
-          url = '/gc/list/[[...slug]]';
-          as = `/gc/list/${page}`;
+          url = '/gc/register/[[...slug]]';
+          as = `/gc/register/${page}`;
 
         }
 
@@ -263,7 +263,7 @@ const Component = (props) => {
     >
 
 
-      <p>条件を設定して検索することができます。</p>
+      <p>登録するゲームがすでに存在しているか、まず検索してください。</p>
 
 
 

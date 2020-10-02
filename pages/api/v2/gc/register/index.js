@@ -24,6 +24,7 @@ import lodashHas from 'lodash/has';
 // ---------------------------------------------
 
 import ModelGameCommunities from 'app/@database/game-communities/model.js';
+import ModelGamesTemps from 'app/@database/games-temps/model.js';
 import ModelGameGenres from 'app/@database/game-genres/model.js';
 import ModelHardwares from 'app/@database/hardwares/model.js';
 import ModelFeeds from 'app/@database/feeds/model.js';
@@ -184,7 +185,20 @@ export default async (req, res) => {
     }
 
 
-    returnObj.gcListObj = await ModelGameCommunities.findGameList(argumentsObj);
+    // ---------------------------------------------
+    //   - List
+    // ---------------------------------------------
+
+    if (hardwares || keyword) {
+      returnObj.gcListObj = await ModelGameCommunities.findGamesList(argumentsObj);
+    }
+
+
+    // ---------------------------------------------
+    //   - Temps List
+    // ---------------------------------------------
+
+    returnObj.gcTempsListObj = await ModelGamesTemps.findGamesTempsList(argumentsObj);
 
 
 
@@ -242,10 +256,10 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
 
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/gc/[urlID]/index.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      pages/api/v2/gc/register/index.js
+    `);
 
     // console.log(chalk`
     // page: {green ${page}}
@@ -260,11 +274,11 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
 
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
 
 
 

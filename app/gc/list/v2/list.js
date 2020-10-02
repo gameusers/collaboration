@@ -626,7 +626,7 @@ const Component = (props) => {
                   padding: 0 4px 0 0;
                 `}
               />
-              ゲーム登録・編集ページ
+              ゲーム登録ページ
             </Button>
           </a>
         </Link>
@@ -692,7 +692,7 @@ const Component = (props) => {
                   margin: 0 0 14px 0;
                 `}
               >
-                左のボタンを押すと、ゲームの登録・編集ページに移動します。
+                左のボタンを押すと、ゲームの登録ページに移動します。<span css={css`color: red;`}>※ 登録フォームを利用するにはログインする必要があります。</span>
               </p>
 
               <p>

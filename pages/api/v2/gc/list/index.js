@@ -183,7 +183,7 @@ export default async (req, res) => {
     }
 
 
-    returnObj.gcListObj = await ModelGameCommunities.findGameList(argumentsObj);
+    returnObj.gcListObj = await ModelGameCommunities.findGamesList(argumentsObj);
 
 
 

@@ -60,6 +60,7 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 // ---------------------------------------------
 
 import { ContainerStateUser } from 'app/@states/user.js';
+import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 // ---------------------------------------------
@@ -145,8 +146,19 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const stateUser = ContainerStateUser.useContainer();
+  const stateLayout = ContainerStateLayout.useContainer();
 
   const { loginUsersObj } = stateUser;
+
+  const {
+
+    handleLoadingOpen,
+    handleLoadingClose,
+    handleScrollTo,
+
+  } = stateLayout;
+
+
   const role = lodashGet(loginUsersObj, ['role'], '');
   const administrator = role === 'administrator' ? true : false;
 
@@ -985,43 +997,6 @@ const Component = (props) => {
       setButtonDisabled(false);
 
 
-      // // --------------------------------------------------
-      // //   gameCommunityObj
-      // // --------------------------------------------------
-
-      // setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
-
-
-      // // ---------------------------------------------
-      // //   forumThreadsObj
-      // // ---------------------------------------------
-
-      // setRecruitmentThreadsObj(lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {}));
-
-
-      // // ---------------------------------------------
-      // //   forumCommentsObj
-      // // ---------------------------------------------
-
-      // setRecruitmentCommentsObj(lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {}));
-
-
-      // // ---------------------------------------------
-      // //   forumRepliesObj
-      // // ---------------------------------------------
-
-      // setRecruitmentRepliesObj(lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {}));
-
-
-      // // ---------------------------------------------
-      // //   新規投稿時の recruitmentThreads_id
-      // // ---------------------------------------------
-
-      // newRecruitmentThreads_id = lodashGet(resultObj, ['data', 'recruitmentThreadsObj', 'page1Obj', 'arr', 0], '');
-
-
-
-
       // --------------------------------------------------
       //   Snackbar: Success
       // --------------------------------------------------
@@ -1185,8 +1160,6 @@ const Component = (props) => {
 
 
 
-
-
   // --------------------------------------------------
   //   Component - gameGenres
   // --------------------------------------------------
@@ -1276,7 +1249,7 @@ const Component = (props) => {
                 `}
               >
                 ゲーム編集フォーム
-              </h3>
+              </h3>sudo service docker start
 
 
               <p
@@ -1652,7 +1625,7 @@ const Component = (props) => {
               margin: 0 0 12px 0;
             `}
           >
-            半角英数字で、ゲーム名を -（ハイフン）で繋げます。この欄は難しいかもしれないので、わからない場合は適当な文字を入力しておいてください。
+            半角英数字で、ゲーム名を -（ハイフン）で繋げます。
           </p>
 
           <p
@@ -2075,26 +2048,6 @@ const Component = (props) => {
             {games_id ? '登録する' : '仮登録する'}
           </Button>
 
-
-
-
-          {/* Close */}
-          {/* {games_id &&
-            <div
-              css={css`
-                margin: 0 0 0 auto;
-              `}
-            >
-              <Button
-                variant="outlined"
-                color="secondary"
-                disabled={buttonDisabled}
-                onClick={() => handleClose()}
-              >
-                閉じる
-              </Button>
-            </div>
-          } */}
 
         </div>
 

@@ -65,7 +65,6 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-// import { getCookie } from 'app/@modules/cookie.js';
 import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
@@ -73,6 +72,7 @@ import { showSnackbar } from 'app/@modules/snackbar.js';
 //   States
 // ---------------------------------------------
 
+import { ContainerStateUser } from 'app/@states/user.js';
 import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
@@ -82,7 +82,8 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 import Panel from 'app/common/layout/v2/panel.js';
 
-import CardGC from 'app/common/community-list/v2/card-gc.js';
+import Card from 'app/gc/register/v2/card.js';
+import CardTemp from 'app/gc/register/v2/card-temp.js';
 import Form from 'app/gc/register/v2/form.js';
 
 
@@ -128,7 +129,8 @@ const Component = (props) => {
 
   const {
 
-    obj,
+    gcListObj,
+    gcTempsListObj,
     gameGenresArr,
 
   } = props;
@@ -138,7 +140,10 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
 
+  const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
+
+  const { login } = stateUser;
 
   const {
 
@@ -260,10 +265,11 @@ const Component = (props) => {
   //   Thread
   // --------------------------------------------------
 
-  const page = lodashGet(obj, ['page'], 1);
-  const limit = lodashGet(obj, ['limit'], parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_LIMIT, 10));
-  const count = lodashGet(obj, ['count'], 0);
-  const arr = lodashGet(obj, [`page${page}Obj`, 'arr'], []);
+  const page = lodashGet(gcListObj, ['page'], 1);
+  const limit = lodashGet(gcListObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_LIMIT, 10));
+  const count = lodashGet(gcListObj, ['count'], 0);
+  const listArr = lodashGet(gcListObj, [`page${page}Obj`, 'arr'], []);
+  const tempsListArr = lodashGet(gcTempsListObj, [`page${page}Obj`, 'arr'], []);
 
 
 
@@ -301,24 +307,24 @@ const Component = (props) => {
   //   Component - List
   // --------------------------------------------------
 
-  const componentsArr = [];
+  const componentListArr = [];
 
-  for (const [index, gameCommunities_id] of arr.entries()) {
+  for (const [index, gameCommunities_id] of listArr.entries()) {
 
 
     // --------------------------------------------------
     //   dataObj
     // --------------------------------------------------
 
-    const dataObj = lodashGet(obj, ['dataObj', gameCommunities_id], {});
+    const dataObj = lodashGet(gcListObj, ['dataObj', gameCommunities_id], {});
 
 
     // --------------------------------------------------
     //   push
     // --------------------------------------------------
 
-    componentsArr.push(
-      <CardGC
+    componentListArr.push(
+      <Card
         key={index}
         obj={dataObj}
         editable={editable}
@@ -327,6 +333,39 @@ const Component = (props) => {
 
 
   }
+
+
+  // --------------------------------------------------
+  //   Component - Temps List
+  // --------------------------------------------------
+
+  const componentTempsListArr = [];
+
+  for (const [index, _id] of tempsListArr.entries()) {
+
+
+    // --------------------------------------------------
+    //   dataObj
+    // --------------------------------------------------
+
+    const dataObj = lodashGet(gcTempsListObj, ['dataObj', _id], {});
+
+
+    // --------------------------------------------------
+    //   push
+    // --------------------------------------------------
+
+    componentListArr.push(
+      <CardTemp
+        key={index}
+        obj={dataObj}
+        editable={editable}
+      />
+    );
+
+
+  }
+
 
 
 
@@ -347,7 +386,17 @@ const Component = (props) => {
           margin: 0 0 16px 0;
         `}
       >
-        {componentsArr}
+        {componentListArr}
+      </div>
+
+
+      {/* Temps List */}
+      <div
+        css={css`
+          margin: 0 0 16px 0;
+        `}
+      >
+        {componentTempsListArr}
       </div>
 
 
@@ -425,20 +474,38 @@ const Component = (props) => {
 
 
       {/* Form */}
-      <div
-        css={css`
-          margin: 28px 0 0 0;
-        `}
-      >
-        <Panel
-          heading="ゲーム登録フォーム"
-          defaultExpanded={true}
-        >
-          <Form
-            gameGenresArr={gameGenresArr}
-          />
-        </Panel>
-      </div>
+      {login
+        ?
+          <div
+            css={css`
+              margin: 28px 0 0 0;
+            `}
+          >
+            <Panel
+              heading="ゲーム登録フォーム"
+              defaultExpanded={true}
+            >
+              <Form
+                gameGenresArr={gameGenresArr}
+              />
+            </Panel>
+          </div>
+        :
+          <Paper
+            css={css`
+              margin: 28px 0 0 0;
+              padding: 8px 12px;
+            `}
+          >
+            <p
+              css={css`
+                color: red;
+              `}
+            >
+              ※ ログインしていないため、登録フォームは表示されません。
+            </p>
+          </Paper>
+      }
 
 
     </Element>

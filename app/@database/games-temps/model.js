@@ -14,6 +14,13 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
+const moment = require('moment');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
@@ -306,13 +313,22 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 
 /**
- * 取得する / サジェスト用のデータ
- * @param {string} language - 言語
- * @param {string} country - 国
+ * 仮登録ゲーム一覧データを取得する / gc/register
+ * @param {Object} localeObj - ロケール
  * @param {string} keyword - 検索キーワード
- * @return {Array} 取得データ
+ * @param {number} page - ページ
+ * @param {number} limit - リミット
+ * @return {Object} 取得データ
  */
-const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
+const findGamesTempsList = async ({
+
+  localeObj,
+  page = 1,
+  limit = process.env.NEXT_PUBLIC_COMMUNITY_LIST_LIMIT,
+  hardwareIDsArr = [],
+  keyword,
+
+}) => {
 
 
   // --------------------------------------------------
@@ -323,63 +339,74 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
 
 
     // --------------------------------------------------
-    //   Property
+    //   Language & Country
     // --------------------------------------------------
 
-    const pattern = new RegExp(`.*${keyword}.*`);
     const language = lodashGet(localeObj, ['language'], '');
     const country = lodashGet(localeObj, ['country'], '');
 
 
-
-
     // --------------------------------------------------
-    //   Aggregation
+    //   parseInt
     // --------------------------------------------------
 
-    const resultArr = await SchemaGames.aggregate([
+    const intLimit = parseInt(limit, 10);
 
 
-      {
-        $match : { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } }
-      },
 
 
-      // --------------------------------------------------
-      //   images-and-videos / サムネイル用
-      // --------------------------------------------------
+    // ---------------------------------------------
+    //   $match（ドキュメントの検索用） & count（総数の検索用）の条件作成
+    // ---------------------------------------------
 
-      {
-        $lookup:
-          {
-            from: 'images-and-videos',
-            let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
-                  },
-                }
-              },
-              {
-                $project: {
-                  createdDate: 0,
-                  updatedDate: 0,
-                  users_id: 0,
-                  __v: 0,
-                }
-              }
-            ],
-            as: 'imagesAndVideosThumbnailObj'
+    const conditionObj = {
+
+      language,
+      country,
+
+    };
+
+
+    // ---------------------------------------------
+    //   - 検索条件
+    // ---------------------------------------------
+
+    if (hardwareIDsArr.length > 0) {
+
+      lodashSet(conditionObj, ['hardwareArr'],
+        {
+          $elemMatch: {
+            hardwareID: {
+              $in: hardwareIDsArr
+            }
           }
-      },
+        }
+      );
+
+    }
+
+    const pattern = new RegExp(`.*${keyword}.*`);
+
+    if (keyword) {
+      lodashSet(conditionObj, ['searchKeywordsArr'], { $regex: pattern, $options: 'i' });
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   Aggregation - games
+    // --------------------------------------------------
+
+    const docArr = await SchemaGames.aggregate([
+
+
+      // --------------------------------------------------
+      //   Match Condition Array
+      // --------------------------------------------------
 
       {
-        $unwind: {
-          path: '$imagesAndVideosThumbnailObj',
-          preserveNullAndEmptyArrays: true,
-        }
+        $match: conditionObj
       },
 
 
@@ -389,11 +416,24 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
 
       {
         $project: {
+          // _id: 0,
+          createdDate: 1,
           gameCommunities_id: 1,
+          // urlID: 1,
           name: 1,
-          imagesAndVideosThumbnailObj: 1,
+          subtitle: 1,
+          hardwareArr: 1,
         }
       },
+
+
+      // --------------------------------------------------
+      //   $sort / $skip / $limit
+      // --------------------------------------------------
+
+      { $sort: { createdDate: -1 } },
+      { $skip: (page - 1) * intLimit },
+      { $limit: intLimit },
 
 
     ]).exec();
@@ -402,73 +442,214 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
 
 
     // --------------------------------------------------
-    //   Loop
+    //   フォーマット
     // --------------------------------------------------
 
-    // const returnArr = [];
+    const listCount = await count({
 
-    // for (let valueObj of resultArr.values()) {
+      conditionObj
 
-    //   // console.log(`\n---------- valueObj ----------\n`);
-    //   // console.dir(valueObj);
-    //   // console.log(`\n-----------------------------------\n`);
+    });
 
 
-    //   // --------------------------------------------------
-    //   //   Deep Copy
-    //   // --------------------------------------------------
+    // ---------------------------------------------
+    //   - Return Value
+    // ---------------------------------------------
 
-    //   const clonedObj = lodashCloneDeep(valueObj);
+    const returnObj = {
 
+      page,
+      limit: intLimit,
+      count: listCount,
+      dataObj: {},
 
-    //   // --------------------------------------------------
-    //   //   画像と動画の処理
-    //   // --------------------------------------------------
+    };
 
-    //   const formattedObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.imagesAndVideosObj });
-
-    //   if (formattedObj) {
-
-    //     clonedObj.imagesAndVideosObj = formattedObj;
-
-    //   } else {
-
-    //     delete clonedObj.imagesAndVideosObj;
-
-    //   }
-
-    //   // console.log(`\n---------- clonedObj ----------\n`);
-    //   // console.dir(clonedObj);
-    //   // console.log(`\n-----------------------------------\n`);
-
-    //   // --------------------------------------------------
-    //   //   Push
-    //   // --------------------------------------------------
-
-    //   returnArr.push(clonedObj);
+    const ISO8601 = moment().utc().toISOString();
 
 
-    // }
+    // ---------------------------------------------
+    //   - Loop
+    // ---------------------------------------------
 
+    for (let valueObj of docArr.values()) {
+
+
+      // console.log(`
+      //   ----- valueObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(valueObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // --------------------------------------------------
+      //   Deep Copy
+      // --------------------------------------------------
+
+      const obj = {};
+
+
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
+
+      const _id = lodashGet(valueObj, ['_id'], '');
+
+      obj._id = _id;
+      obj.createdDate = lodashGet(valueObj, ['createdDate'], '');
+      obj.name = lodashGet(valueObj, ['name'], '');
+      obj.subtitle = lodashGet(valueObj, ['subtitle'], '');
+
+
+      // --------------------------------------------------
+      //   Developers Publishers
+      // --------------------------------------------------
+
+      const hardwareArr = lodashGet(valueObj, ['hardwareArr'], []);
+      let developerPublisherIDsArr = [];
+
+
+      // ---------------------------------------------
+      //   - Loop
+      // ---------------------------------------------
+
+      for (let value2Obj of hardwareArr.values()) {
+
+        const publisherIDsArr = lodashGet(value2Obj, ['publisherIDsArr'], []);
+        const developerIDsArr = lodashGet(value2Obj, ['developerIDsArr'], []);
+
+        developerPublisherIDsArr = developerPublisherIDsArr.concat(publisherIDsArr, developerIDsArr);
+
+      }
+
+
+      // ---------------------------------------------
+      //   - 配列の重複している値を削除
+      // ---------------------------------------------
+
+      developerPublisherIDsArr = Array.from(new Set(developerPublisherIDsArr));
+
+
+      // ---------------------------------------------
+      //   - find
+      // ---------------------------------------------
+
+      const docDevelopersPublishersArr = await ModelDevelopersPublishers.find({
+
+        conditionObj: {
+          language,
+          country,
+          developerPublisherID: { $in: developerPublisherIDsArr },
+        }
+
+      });
+
+
+      // ---------------------------------------------
+      //   - 名前だけ配列に入れる
+      // ---------------------------------------------
+
+      const developersPublishersArr = [];
+
+      for (let value2Obj of docDevelopersPublishersArr.values()) {
+        developersPublishersArr.push(value2Obj.name);
+      }
+
+      obj.developersPublishers = developersPublishersArr.join(', ');
+
+      // console.log(`
+      //   ----- developerPublisherIDsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(developerPublisherIDsArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // console.log(`
+      //   ----- docDevelopersPublishersArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(docDevelopersPublishersArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // console.log(`
+      //   ----- developersPublishersArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(developersPublishersArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // --------------------------------------------------
+      //   Set Data
+      // --------------------------------------------------
+
+      lodashSet(returnObj, ['dataObj', _id], obj);
+
+
+      // --------------------------------------------------
+      //   Pages Array
+      // --------------------------------------------------
+
+      const pagesArr = lodashGet(returnObj, [`page${page}Obj`, 'arr'], []);
+      pagesArr.push(_id);
+
+      returnObj[`page${page}Obj`] = {
+
+        loadedDate: ISO8601,
+        arr: pagesArr,
+
+      };
+
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
 
     // console.log(`
-    //   ----- resultArr -----\n
-    //   ${util.inspect(resultArr, { colors: true, depth: null })}\n
+    //   ----------------------------------------\n
+    //   /app/@database/game-communities/model.js - findGameList
+    // `);
+
+    // console.log(chalk`
+    // page: {green ${page}}
+    // limit: {green ${limit}}
+    // keyword: {green ${keyword}}
+    // `);
+
+    // console.log(`
+    //   ----- hardwareIDsArr -----\n
+    //   ${util.inspect(hardwareIDsArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
     // console.log(`
-    //   ----- returnArr -----\n
-    //   ${util.inspect(returnArr, { colors: true, depth: null })}\n
+    //   ----- conditionObj -----\n
+    //   ${util.inspect(conditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
 
 
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
 
-    return resultArr;
+    return returnObj;
 
 
   } catch (err) {
@@ -477,7 +658,10 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
 
   }
 
+
 };
+
+
 
 
 
@@ -495,6 +679,6 @@ module.exports = {
   insertMany,
   deleteMany,
 
-  findBySearchKeywordsArrForSuggestion,
+  findGamesTempsList,
 
 };

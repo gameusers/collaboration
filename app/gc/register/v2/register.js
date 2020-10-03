@@ -74,6 +74,7 @@ import { showSnackbar } from 'app/@modules/snackbar.js';
 
 import { ContainerStateUser } from 'app/@states/user.js';
 import { ContainerStateLayout } from 'app/@states/layout.js';
+import { ContainerStateGcRegister } from 'app/@states/gc-register.js';
 
 
 // ---------------------------------------------
@@ -142,6 +143,7 @@ const Component = (props) => {
 
   const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
+  const stateGcRegister = ContainerStateGcRegister.useContainer();
 
   const { login } = stateUser;
 
@@ -153,6 +155,97 @@ const Component = (props) => {
 
   } = stateLayout;
 
+  const {
+
+    setLanguage,
+    setCountry,
+    setName,
+    setSubtitle,
+    setSortKeyword,
+    setURLID,
+    setTwitterHashtagsArr,
+    setSearchKeywordsArr,
+    setGenre1,
+    setGenre2,
+    setGenre3,
+
+    setHardwares1Arr,
+    setReleaseDate1,
+    setPlayersMin1,
+    setPlayersMax1,
+    setPublisherIDs1Arr,
+    setDeveloperIDs1Arr,
+
+    setHardwares2Arr,
+    setReleaseDate2,
+    setPlayersMin2,
+    setPlayersMax2,
+    setPublisherIDs2Arr,
+    setDeveloperIDs2Arr,
+
+    setHardwares3Arr,
+    setReleaseDate3,
+    setPlayersMin3,
+    setPlayersMax3,
+    setPublisherIDs3Arr,
+    setDeveloperIDs3Arr,
+
+    setHardwares4Arr,
+    setReleaseDate4,
+    setPlayersMin4,
+    setPlayersMax4,
+    setPublisherIDs4Arr,
+    setDeveloperIDs4Arr,
+
+    setHardwares5Arr,
+    setReleaseDate5,
+    setPlayersMin5,
+    setPlayersMax5,
+    setPublisherIDs5Arr,
+    setDeveloperIDs5Arr,
+
+    setHardwares6Arr,
+    setReleaseDate6,
+    setPlayersMin6,
+    setPlayersMax6,
+    setPublisherIDs6Arr,
+    setDeveloperIDs6Arr,
+
+    setHardwares7Arr,
+    setReleaseDate7,
+    setPlayersMin7,
+    setPlayersMax7,
+    setPublisherIDs7Arr,
+    setDeveloperIDs7Arr,
+
+    setHardwares8Arr,
+    setReleaseDate8,
+    setPlayersMin8,
+    setPlayersMax8,
+    setPublisherIDs8Arr,
+    setDeveloperIDs8Arr,
+
+    setHardwares9Arr,
+    setReleaseDate9,
+    setPlayersMin9,
+    setPlayersMax9,
+    setPublisherIDs9Arr,
+    setDeveloperIDs9Arr,
+
+    setHardwares10Arr,
+    setReleaseDate10,
+    setPlayersMin10,
+    setPlayersMax10,
+    setPublisherIDs10Arr,
+    setDeveloperIDs10Arr,
+
+    setLinkArr,
+
+    setImagesAndVideosObj,
+    setImagesAndVideosThumbnailObj,
+
+  } = stateGcRegister;
+
 
   // --------------------------------------------------
   //   Hooks
@@ -163,7 +256,6 @@ const Component = (props) => {
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
-  const [editable, setEditable] = useState(false);
 
 
   useEffect(() => {
@@ -261,6 +353,207 @@ const Component = (props) => {
 
 
 
+  /**
+   * 編集用データを読み込む
+   */
+  const handleGetEditData = async ({ games_id, gamesTemps_id }) => {
+
+
+    try {
+
+      // console.log(chalk`
+      //   games_id: {green ${games_id}}
+      //   gamesTemps_id: {green ${gamesTemps_id}}
+      // `);
+      // ---------------------------------------------
+      //   _id が存在しない場合エラー
+      // ---------------------------------------------
+
+      if (!games_id && !gamesTemps_id) {
+        throw new CustomError({ errorsArr: [{ code: 'oVxYzL2wk', messageID: 'Error' }] });
+      }
+
+
+
+
+      // ---------------------------------------------
+      //   Loading Open
+      // ---------------------------------------------
+
+      handleLoadingOpen({});
+
+
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+
+      setButtonDisabled(true);
+
+
+
+
+      // ---------------------------------------------
+      //   Scroll To
+      // ---------------------------------------------
+
+      handleScrollTo({
+
+        to: 'gcRegisterForm',
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+
+      });
+
+
+
+
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+
+      const formDataObj = {
+
+        games_id,
+        gamesTemps_id,
+
+      };
+
+
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+
+      const resultObj = await fetchWrapper({
+
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/games-temps/get-edit-data`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
+
+      });
+
+
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+
+
+
+
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+
+      setButtonDisabled(false);
+
+
+      // ---------------------------------------------
+      //   Set Form Data
+      // ---------------------------------------------
+
+      setLanguage(lodashGet(resultObj, ['data', 'language'], 'ja'));
+      setCountry(lodashGet(resultObj, ['data', 'country'], 'JP'));
+      setName(lodashGet(resultObj, ['data', 'name'], ''));
+      setSubtitle(lodashGet(resultObj, ['data', 'subtitle'], ''));
+      setSortKeyword(lodashGet(resultObj, ['data', 'sortKeyword'], ''));
+      setURLID(lodashGet(resultObj, ['data', 'urlID'], ''));
+      setTwitterHashtagsArr(lodashGet(resultObj, ['data', 'twitterHashtagsArr'], []));
+      setSearchKeywordsArr(lodashGet(resultObj, ['data', 'searchKeywordsArr'], []));
+
+      setGenre1(lodashGet(resultObj, ['data', 'genreArr', 0], ''));
+      setGenre2(lodashGet(resultObj, ['data', 'genreArr', 1], ''));
+      setGenre3(lodashGet(resultObj, ['data', 'genreArr', 2], ''));
+
+      setHardwares1Arr(lodashGet(resultObj, ['data', 'hardwareArr', 0, 'hardwaresArr'], []));
+      setHardwares1Arr(lodashGet(resultObj, ['data', 'hardwareArr', 0, 'hardwareID'], ''));
+      setReleaseDate1(lodashGet(resultObj, ['data', 'hardwareArr', 0, 'releaseDate'], ''));
+      setPlayersMin1(lodashGet(resultObj, ['data', 'hardwareArr', 0, 'playersMin'], ''));
+      setPlayersMax1(lodashGet(resultObj, ['data', 'hardwareArr', 0, 'playersMax'], ''));
+      setPublisherIDs1Arr(lodashGet(resultObj, ['data', 'hardwareArr', 0, 'publisherIDsArr'], []));
+      setDeveloperIDs1Arr(lodashGet(resultObj, ['data', 'hardwareArr', 0, 'developerIDsArr'], []));
+
+      // (lodashGet(resultObj, ['data', ''], ''));
+      // (lodashGet(resultObj, ['data', ''], ''));
+      // (lodashGet(resultObj, ['data', ''], ''));
+
+      // const anonymity = lodashGet(resultObj, ['data', 'anonymity'], false);
+      // const comment = lodashGet(resultObj, ['data', 'comment'], '');
+      // let imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
+
+      // if (Object.keys(imagesAndVideosObj).length === 0) {
+
+      //   imagesAndVideosObj = {
+
+      //     _id: '',
+      //     createdDate: '',
+      //     updatedDate: '',
+      //     users_id: '',
+      //     type: 'forum',
+      //     arr: [],
+
+      //   };
+
+      // }
+
+      console.log(chalk`
+      lodashGet(resultObj, ['data', 'hardwareArr', 0, 'releaseDate'], ''): {green ${lodashGet(resultObj, ['data', 'hardwareArr', 0, 'releaseDate'], '')}}
+      `);
+
+
+    } catch (errorObj) {
+
+
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+
+      setButtonDisabled(false);
+
+
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+
+      showSnackbar({
+
+        enqueueSnackbar,
+        intl,
+        errorObj,
+
+      });
+
+
+    } finally {
+
+
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
+
+      handleLoadingClose();
+
+
+
+    }
+
+
+  };
+
+
+
+
   // --------------------------------------------------
   //   Thread
   // --------------------------------------------------
@@ -327,7 +620,7 @@ const Component = (props) => {
       <Card
         key={index}
         obj={dataObj}
-        editable={editable}
+        handleGetEditData={handleGetEditData}
       />
     );
 
@@ -359,7 +652,7 @@ const Component = (props) => {
       <CardTemp
         key={index}
         obj={dataObj}
-        editable={editable}
+        handleGetEditData={handleGetEditData}
       />
     );
 
@@ -376,7 +669,7 @@ const Component = (props) => {
 
   return (
     <Element
-      name="GcRegister"
+      name="gcRegister"
     >
 
 
@@ -402,7 +695,7 @@ const Component = (props) => {
 
 
 
-      {/* Pagination */}
+      {/* Pagination Container */}
       <Paper
         css={css`
           display: flex;
@@ -481,14 +774,18 @@ const Component = (props) => {
               margin: 28px 0 0 0;
             `}
           >
+
             <Panel
               heading="ゲーム登録フォーム"
               defaultExpanded={true}
             >
+
               <Form
                 gameGenresArr={gameGenresArr}
               />
+
             </Panel>
+
           </div>
         :
           <Paper

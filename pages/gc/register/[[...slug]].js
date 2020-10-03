@@ -35,6 +35,7 @@ import lodashGet from 'lodash/get';
 
 // import { ContainerStateCommunity } from 'app/@states/community.js';
 // import { ContainerStateForum } from 'app/@states/forum.js';
+import { ContainerStateGcRegister } from 'app/@states/gc-register.js';
 
 
 // ---------------------------------------------
@@ -155,7 +156,13 @@ const Component = (props) => {
   //   Return
   // --------------------------------------------------
 
-  return <ContainerLayout {...props} />;
+  return (
+    <ContainerStateGcRegister.Provider>
+
+      <ContainerLayout {...props} />
+
+    </ContainerStateGcRegister.Provider>
+  );
 
 
 };

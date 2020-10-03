@@ -34,6 +34,7 @@ const SchemaExperiences = require('../@database/experiences/model');
 const SchemaAchievements = require('../@database/achievements/model');
 const SchemaTitles = require('../@database/titles/model');
 const SchemaGames = require('../@database/games/model');
+const SchemaGamesTemps = require('../@database/games-temps/model');
 const SchemaIDs = require('../@database/ids/model');
 const SchemaCardPlayers = require('../@database/card-players/model');
 // const SchemaCardGames = require('../@database/card-games/model');
@@ -3524,6 +3525,85 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
     await SchemaGames.deleteMany({ reset: true });
     returnObj = await SchemaGames.insertMany({ saveArr });
+
+
+
+
+    // --------------------------------------------------
+    //   DB / Games
+    // --------------------------------------------------
+
+    // ---------------------------------------------
+    //   Save Object
+    // ---------------------------------------------
+
+    saveArr = [
+
+      {
+        _id: 'TUJ3JKMjt',
+        createdDate: '2020-10-03T03:22:32.032Z',
+        updatedDate: '2020-10-03T03:22:32.032Z',
+        approval: false,
+        users_id: 'jun-deE4J',
+        games_id: '',
+        urlID: 'Fall-Guys',
+        language: 'ja',
+        country: 'JP',
+        // imagesAndVideos_id: '',
+        // imagesAndVideosThumbnail_id: '',
+        name: 'Fall Guys',
+        subtitle: ': Ultimate Knockout',
+        searchKeywordsArr: ['Fall Guys', 'フォールガイズ', 'ふぉーるがいず'],
+        sortKeyword: 'フォールガイズ',
+        twitterHashtagsArr: ['FallGuys'],
+        genreArr: ['YC3gSkK67'],
+        genreSubArr: [],
+        genreTagArr: [],
+        hardwareArr: [
+          {
+            _id: '',
+            hardwareID: 'TdK3Oc-yV',
+            releaseDate: '2020-08-04T00:00:00.000Z',
+            playersMin: 1,
+            playersMax: '60',
+            publisherIDsArr: ['YtKRcK3Ar'],
+            developerIDsArr: ['xu-H3gHC7']
+          },
+          {
+            _id: '',
+            hardwareID: 'P0UG-LHOQ',
+            releaseDate: '2020-08-04T00:00:00.000Z',
+            playersMin: 1,
+            playersMax: '60',
+            publisherIDsArr: [],
+            developerIDsArr: []
+          }
+        ],
+        linkArr: [
+          {
+            _id: '',
+            type: 'Steam',
+            label: '',
+            url: 'https://store.steampowered.com/app/1097150/Fall_Guys_Ultimate_Knockout/'
+          },
+          {
+            _id: '',
+            type: 'Other',
+            label: 'PlayStation.com',
+            url: 'https://www.playstation.com/ja-jp/games/fall-guys-ultimate-knockout-ps4/'
+          }
+        ]
+      }
+
+    ];
+
+
+    // ---------------------------------------------
+    //   Upsert
+    // ---------------------------------------------
+
+    await SchemaGamesTemps.deleteMany({ reset: true });
+    returnObj = await SchemaGamesTemps.insertMany({ saveArr });
 
 
 

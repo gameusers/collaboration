@@ -33,9 +33,9 @@ import lodashHas from 'lodash/has';
 //   Material UI
 // ---------------------------------------------
 
-import Card from '@material-ui/core/Card';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+// import Card from '@material-ui/core/Card';
+// import Button from '@material-ui/core/Button';
+// import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 
 
@@ -43,18 +43,25 @@ import Paper from '@material-ui/core/Paper';
 //   Material UI / Icons
 // ---------------------------------------------
 
-import IconSchedule from '@material-ui/icons/Schedule';
-import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
-import IconDescription from '@material-ui/icons/Description';
-import IconPermIdentity from '@material-ui/icons/PermIdentity';
-import IconEdit from '@material-ui/icons/Edit';
+// import IconSchedule from '@material-ui/icons/Schedule';
+// import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
+// import IconDescription from '@material-ui/icons/Description';
+// import IconPermIdentity from '@material-ui/icons/PermIdentity';
+// import IconEdit from '@material-ui/icons/Edit';
+
+
+// ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+// import { ContainerStateGcRegister } from 'app/@states/gc-register.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import ImageAndVideo from 'app/common/image-and-video/v2/image-and-video.js';
+// import ImageAndVideo from 'app/common/image-and-video/v2/image-and-video.js';
 
 
 
@@ -78,9 +85,109 @@ const Component = (props) => {
   const {
 
     obj = {},
-    editable = false,
+    handleGetEditData,
 
   } = props;
+
+
+
+
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+
+  // const stateGcRegister = ContainerStateGcRegister.useContainer();
+
+  // const {
+
+  //   setLanguage,
+  //   setCountry,
+  //   setName,
+  //   setSubtitle,
+  //   setSortKeyword,
+  //   setURLID,
+  //   setTwitterHashtagsArr,
+  //   setSearchKeywordsArr,
+  //   setGenre1,
+  //   setGenre2,
+  //   setGenre3,
+
+  //   setHardwares1Arr,
+  //   setReleaseDate1,
+  //   setPlayersMin1,
+  //   setPlayersMax1,
+  //   setPublisherIDs1Arr,
+  //   setDeveloperIDs1Arr,
+
+  //   setHardwares2Arr,
+  //   setReleaseDate2,
+  //   setPlayersMin2,
+  //   setPlayersMax2,
+  //   setPublisherIDs2Arr,
+  //   setDeveloperIDs2Arr,
+
+  //   setHardwares3Arr,
+  //   setReleaseDate3,
+  //   setPlayersMin3,
+  //   setPlayersMax3,
+  //   setPublisherIDs3Arr,
+  //   setDeveloperIDs3Arr,
+
+  //   setHardwares4Arr,
+  //   setReleaseDate4,
+  //   setPlayersMin4,
+  //   setPlayersMax4,
+  //   setPublisherIDs4Arr,
+  //   setDeveloperIDs4Arr,
+
+  //   setHardwares5Arr,
+  //   setReleaseDate5,
+  //   setPlayersMin5,
+  //   setPlayersMax5,
+  //   setPublisherIDs5Arr,
+  //   setDeveloperIDs5Arr,
+
+  //   setHardwares6Arr,
+  //   setReleaseDate6,
+  //   setPlayersMin6,
+  //   setPlayersMax6,
+  //   setPublisherIDs6Arr,
+  //   setDeveloperIDs6Arr,
+
+  //   setHardwares7Arr,
+  //   setReleaseDate7,
+  //   setPlayersMin7,
+  //   setPlayersMax7,
+  //   setPublisherIDs7Arr,
+  //   setDeveloperIDs7Arr,
+
+  //   setHardwares8Arr,
+  //   setReleaseDate8,
+  //   setPlayersMin8,
+  //   setPlayersMax8,
+  //   setPublisherIDs8Arr,
+  //   setDeveloperIDs8Arr,
+
+  //   setHardwares9Arr,
+  //   setReleaseDate9,
+  //   setPlayersMin9,
+  //   setPlayersMax9,
+  //   setPublisherIDs9Arr,
+  //   setDeveloperIDs9Arr,
+
+  //   setHardwares10Arr,
+  //   setReleaseDate10,
+  //   setPlayersMin10,
+  //   setPlayersMax10,
+  //   setPublisherIDs10Arr,
+  //   setDeveloperIDs10Arr,
+
+  //   setLinkArr,
+
+  //   setImagesAndVideosObj,
+  //   setImagesAndVideosThumbnailObj,
+
+  // } = stateGcRegister;
 
 
 
@@ -106,7 +213,6 @@ const Component = (props) => {
   const subtitle = lodashGet(obj, ['subtitle'], '');
   const src = '/img/common/thumbnail/none-game.jpg';
   const srcSet = '';
-  const developersPublishers = lodashGet(obj, ['developersPublishers'], '');
 
 
 
@@ -115,20 +221,19 @@ const Component = (props) => {
   //   console.log
   // --------------------------------------------------
 
-  console.log(`
-    ----------------------------------------\n
-    app/gc/register/v2/card.js
-  `);
+  // console.log(`
+  //   ----------------------------------------\n
+  //   app/gc/register/v2/card-temp.js
+  // `);
 
-  console.log(`
-    ----- obj -----\n
-    ${util.inspect(JSON.parse(JSON.stringify(obj)), { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- obj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(obj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
 
   // console.log(chalk`
-  //   showEditButton: {green ${showEditButton}}
-  //   defaultExpanded: {green ${defaultExpanded}}
+  //   _id: {green ${_id}}
   // `);
 
 
@@ -145,9 +250,11 @@ const Component = (props) => {
           display: flex;
           flex-flow: row nowrap;
           align-items: center;
+          cursor: pointer;
           margin: 12px 0 0 0;
         }
       `}
+      onClick={() => handleGetEditData({ gamesTemps_id: _id })}
     >
 
 
@@ -189,7 +296,7 @@ const Component = (props) => {
             font-weight: bold;
           `}
         >
-          {name}{subtitle} [仮登録]
+          {name}{subtitle}
         </div>
 
 
@@ -210,57 +317,39 @@ const Component = (props) => {
             Ver. {createdDate}
           </div>
 
+
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row wrap;
+              margin: 0 0 0 auto;
+
+              @media screen and (max-width: 480px) {
+                display: none;
+              }
+            `}
+          >
+
+            <div
+              css={css`
+                margin: 0 0 0 12px;
+              `}
+            >
+              <div
+                css={css`
+                  font-size: 12px;
+                `}
+              >
+                [仮登録]
+              </div>
+            </div>
+
+          </div>
+
         </div>
 
       </div>
 
-
-
-
-      {/* Edit Button */}
-      <div
-        css={css`
-          margin: 0 10px 0 0;
-        `}
-      >
-        <Button
-          css={css`
-            && {
-              font-size: 12px;
-              height: 22px;
-              min-width: 54px;
-              min-height: 22px;
-              margin: 0 0 0 12px;
-              padding: 0 4px;
-
-              @media screen and (max-width: 480px) {
-                min-width: 36px;
-                min-height: 22px;
-              }
-            }
-          `}
-          variant="outlined"
-          color="primary"
-          // onClick={() => handleShowFormRecruitmentThread({
-          //   pathArr: pathRecruitmentThreadEditFormArr,
-          //   recruitmentThreads_id,
-          // })}
-        >
-          <IconEdit
-            css={css`
-              && {
-                font-size: 16px;
-                margin: 0 2px 2px 0;
-
-                @media screen and (max-width: 480px) {
-                  display: none;
-                }
-              }
-            `}
-          />
-          追記
-        </Button>
-      </div>
 
     </Paper>
   );

@@ -16,12 +16,12 @@ const schema = mongoose.Schema({
   updatedDate: { type: Date, required: true },
   approval: { type: Boolean, required: true },
   users_id: { type: String, required: true },
-  gameCommunities_id: { type: String },
+  games_id: { type: String },
   urlID: { type: String, required: true },
   language: { type: String, enum: ['en', 'ja'], required: true },
   country: { type: String, enum: ['US', 'JP'], required: true },
-  imagesAndVideos_id: { type: String },
-  imagesAndVideosThumbnail_id: { type: String },
+  // imagesAndVideos_id: { type: String },
+  // imagesAndVideosThumbnail_id: { type: String },
   name: { type: String, required: true },
   subtitle: String,
   searchKeywordsArr: [String],
@@ -32,7 +32,7 @@ const schema = mongoose.Schema({
   genreTagArr: [String],
   hardwareArr: [
     {
-      _id: { type: String, required: true },
+      _id: { type: String },
       hardwareID: { type: String, required: true },
       releaseDate: Date,
       playersMin: { type: Number, required: true },
@@ -43,7 +43,7 @@ const schema = mongoose.Schema({
   ],
   linkArr: [
     {
-      _id: { type: String, required: true },
+      _id: { type: String },
       type: { type: String, enum: ['Official', 'Twitter', 'Facebook', 'YouTube', 'Steam', 'Other'], required: true },
       label: String,
       url: { type: String, required: true },

@@ -192,21 +192,21 @@ export default async (req, res) => {
     //   console.log
     // ---------------------------------------------
 
-    console.log(`
-      ----------------------------------------\n
-      pages/api/v2/db/games-temps/get-edit-data.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   pages/api/v2/db/games-temps/get-edit-data.js
+    // `);
 
-    console.log(chalk`
-      games_id: {green ${games_id}}
-      gamesTemps_id: {green ${gamesTemps_id}}
-    `);
+    // console.log(chalk`
+    //   games_id: {green ${games_id}}
+    //   gamesTemps_id: {green ${gamesTemps_id}}
+    // `);
 
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 

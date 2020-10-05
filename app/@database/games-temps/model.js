@@ -882,65 +882,22 @@ const findEditData = async ({
 
 
     // --------------------------------------------------
-    //   hardwareArr
+    //   Hardware & Developers Publishers
     // --------------------------------------------------
 
     const hardwareArr = lodashGet(returnObj, ['hardwareArr'], []);
-    const hardwaresArr = lodashGet(returnObj, ['hardwaresArr'], []);
-
-    const newHardwareArr = [];
-
-    for (let value1Obj of hardwareArr) {
-
-      const obj = hardwaresArr.find((valueOb2j) => {
-        return value1Obj.hardwareID === valueOb2j.hardwareID;
-      });
-
-      if (obj && 'name' in obj) {
-
-        newHardwareArr.push({
-
-          _id: value1Obj._id,
-          hardwaresArr: [{
-            hardwareID: obj.hardwareID,
-            name: obj.name
-          }],
-          releaseDate: value1Obj.releaseDate,
-          playersMin: value1Obj.playersMin,
-          playersMax: value1Obj.playersMax,
-          publisherIDsArr: value1Obj.publisherIDsArr,
-          developerIDsArr: value1Obj.developerIDsArr,
-
-        });
-
-      }
-
-    }
-
-    returnObj.hardwareArr = newHardwareArr;
 
 
+    // ---------------------------------------------
+    //   *** Developers Publishers
+    // ---------------------------------------------
 
-    // console.log(`
-    //   ----- newHardwareArr -----\n
-    //   ${util.inspect(newHardwareArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-
-
-
-    // --------------------------------------------------
-    //   Developers Publishers
-    // --------------------------------------------------
-
-    // const hardwareArr = lodashGet(valueObj, ['hardwareArr'], []);
     let developerPublisherIDsArr = [];
 
 
-    // ---------------------------------------------
+    // ----------------------------------------
     //   - Loop
-    // ---------------------------------------------
+    // ----------------------------------------
 
     for (let valueObj of hardwareArr.values()) {
 
@@ -952,16 +909,16 @@ const findEditData = async ({
     }
 
 
-    // ---------------------------------------------
+    // ----------------------------------------
     //   - 配列の重複している値を削除
-    // ---------------------------------------------
+    // ----------------------------------------
 
     developerPublisherIDsArr = Array.from(new Set(developerPublisherIDsArr));
 
 
-    // ---------------------------------------------
+    // ----------------------------------------
     //   - find
-    // ---------------------------------------------
+    // ----------------------------------------
 
     const docDevelopersPublishersArr = await ModelDevelopersPublishers.find({
 
@@ -974,59 +931,126 @@ const findEditData = async ({
     });
 
 
+    // ---------------------------------------------
+    //   *** Hardware
+    // ---------------------------------------------
+
+    const hardwaresArr = lodashGet(returnObj, ['hardwaresArr'], []);
+
+    const newHardwareArr = [];
+
+    for (let value1Obj of hardwareArr) {
+
+
+      // ----------------------------------------
+      //   - Hardware
+      // ----------------------------------------
+
+      const find1Obj = hardwaresArr.find((valueOb2j) => {
+        return value1Obj.hardwareID === valueOb2j.hardwareID;
+      });
+
+
+      // ----------------------------------------
+      //   - Developers Publishers
+      // ----------------------------------------
+
+      const publishersArr = [];
+      const developersArr = [];
+
+      const publisherIDsArr = lodashGet(value1Obj, ['publisherIDsArr'], []);
+      const developerIDsArr = lodashGet(value1Obj, ['developerIDsArr'], []);
+
+      for (let publisherID of publisherIDsArr.values()) {
+
+        const find2Obj = docDevelopersPublishersArr.find((value2Obj) => {
+          return value2Obj.developerPublisherID === publisherID;
+        });
+
+        publishersArr.push({
+          developerPublisherID: find2Obj.developerPublisherID,
+          name: find2Obj.name,
+        });
+
+      }
+
+      for (let developerID of developerIDsArr.values()) {
+
+        const find2Obj = docDevelopersPublishersArr.find((value2Obj) => {
+          return value2Obj.developerPublisherID === developerID;
+        });
+
+        developersArr.push({
+          developerPublisherID: find2Obj.developerPublisherID,
+          name: find2Obj.name,
+        });
+
+      }
+
+
+      // console.log(`
+      //   ----- value1Obj -----\n
+      //   ${util.inspect(value1Obj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // console.log(`
+      //   ----- publishersArr -----\n
+      //   ${util.inspect(publishersArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // ----------------------------------------
+      //   - Release Date
+      // ----------------------------------------
+
+      const releaseDate = lodashGet(value1Obj, ['releaseDate'], '');
+      const formattedDate = releaseDate ? moment(releaseDate).format('YYYY-MM-DD') : '';
+
+      if (find1Obj && 'name' in find1Obj) {
+
+        newHardwareArr.push({
+
+          _id: value1Obj._id,
+          hardwaresArr: [{
+            hardwareID: find1Obj.hardwareID,
+            name: find1Obj.name
+          }],
+          releaseDate: formattedDate,
+          playersMin: value1Obj.playersMin,
+          playersMax: value1Obj.playersMax,
+          publishersArr,
+          developersArr,
+
+        });
+
+      }
+
+    }
+
+    returnObj.hardwareArr = newHardwareArr;
+
+
+
+
+    // console.log(`
+    //   ----- newHardwareArr -----\n
+    //   ${util.inspect(newHardwareArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
     // console.log(`
     //   ----- developerPublisherIDsArr -----\n
     //   ${util.inspect(developerPublisherIDsArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
-    console.log(`
-      ----- docDevelopersPublishersArr -----\n
-      ${util.inspect(docDevelopersPublishersArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-
-
-    // ---------------------------------------------
-    //   -
-    // ---------------------------------------------
-
-    const developersPublishersArr = [];
-
-    for (let value1Obj of hardwareArr.values()) {
-
-      const publisherIDsArr = lodashGet(value1Obj, ['publisherIDsArr'], []);
-      const developerIDsArr = lodashGet(value1Obj, ['developerIDsArr'], []);
-
-      const obj = docDevelopersPublishersArr.find((value) => {
-        return value1Obj.developerPublisherID === value;
-      });
-
-      console.log(`
-        ----- value1Obj -----\n
-        ${util.inspect(value1Obj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-
-      console.log(`
-        ----- obj -----\n
-        ${util.inspect(obj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-
-      // developersPublishersArr.push({
-      //   developerPublisherID: value1Obj.developerPublisherID,
-      //   name: value1Obj.name,
-      // });
-      // developersPublishersArr.push({
-      //   developerPublisherID: value2Obj.developerPublisherID,
-      //   name: value2Obj.name
-      // });
-
-    }
-
-    // obj.developersPublishers = developersPublishersArr.join(', ');
-
+    // console.log(`
+    //   ----- docDevelopersPublishersArr -----\n
+    //   ${util.inspect(docDevelopersPublishersArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
     // console.log(`
     //   ----- developersPublishersArr -----\n
@@ -1034,27 +1058,6 @@ const findEditData = async ({
     //   --------------------\n
     // `);
 
-
-    //   // console.log(`
-    //   //   ----- developerPublisherIDsArr -----\n
-    //   //   ${util.inspect(JSON.parse(JSON.stringify(developerPublisherIDsArr)), { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
-
-    //   // console.log(`
-    //   //   ----- docDevelopersPublishersArr -----\n
-    //   //   ${util.inspect(JSON.parse(JSON.stringify(docDevelopersPublishersArr)), { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
-
-    //   // console.log(`
-    //   //   ----- developersPublishersArr -----\n
-    //   //   ${util.inspect(JSON.parse(JSON.stringify(developersPublishersArr)), { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
-
-
-    // }
 
 
 
@@ -1071,10 +1074,10 @@ const findEditData = async ({
     //   console.log
     // --------------------------------------------------
 
-    // console.log(`
-    //   ----------------------------------------\n
-    //   app/@database/games-temps/model.js - findEditData
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      app/@database/games-temps/model.js - findEditData
+    `);
 
     // console.log(chalk`
     //   gamesTemps_id: {green ${gamesTemps_id}}
@@ -1086,11 +1089,11 @@ const findEditData = async ({
     //   --------------------\n
     // `);
 
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
 
 
 

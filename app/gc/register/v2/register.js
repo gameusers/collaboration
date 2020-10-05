@@ -23,6 +23,7 @@ import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 import Cookies from 'js-cookie';
+import moment from 'moment';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -169,75 +170,77 @@ const Component = (props) => {
     setGenre2,
     setGenre3,
 
+    setHardwaresCount,
+
     setHardwares1Arr,
     setReleaseDate1,
     setPlayersMin1,
     setPlayersMax1,
-    setPublisherIDs1Arr,
-    setDeveloperIDs1Arr,
+    setPublishers1Arr,
+    setDevelopers1Arr,
 
     setHardwares2Arr,
     setReleaseDate2,
     setPlayersMin2,
     setPlayersMax2,
-    setPublisherIDs2Arr,
-    setDeveloperIDs2Arr,
+    setPublishers2Arr,
+    setDevelopers2Arr,
 
     setHardwares3Arr,
     setReleaseDate3,
     setPlayersMin3,
     setPlayersMax3,
-    setPublisherIDs3Arr,
-    setDeveloperIDs3Arr,
+    setPublishers3Arr,
+    setDevelopers3Arr,
 
     setHardwares4Arr,
     setReleaseDate4,
     setPlayersMin4,
     setPlayersMax4,
-    setPublisherIDs4Arr,
-    setDeveloperIDs4Arr,
+    setPublishers4Arr,
+    setDevelopers4Arr,
 
     setHardwares5Arr,
     setReleaseDate5,
     setPlayersMin5,
     setPlayersMax5,
-    setPublisherIDs5Arr,
-    setDeveloperIDs5Arr,
+    setPublishers5Arr,
+    setDevelopers5Arr,
 
     setHardwares6Arr,
     setReleaseDate6,
     setPlayersMin6,
     setPlayersMax6,
-    setPublisherIDs6Arr,
-    setDeveloperIDs6Arr,
+    setPublishers6Arr,
+    setDevelopers6Arr,
 
     setHardwares7Arr,
     setReleaseDate7,
     setPlayersMin7,
     setPlayersMax7,
-    setPublisherIDs7Arr,
-    setDeveloperIDs7Arr,
+    setPublishers7Arr,
+    setDevelopers7Arr,
 
     setHardwares8Arr,
     setReleaseDate8,
     setPlayersMin8,
     setPlayersMax8,
-    setPublisherIDs8Arr,
-    setDeveloperIDs8Arr,
+    setPublishers8Arr,
+    setDevelopers8Arr,
 
     setHardwares9Arr,
     setReleaseDate9,
     setPlayersMin9,
     setPlayersMax9,
-    setPublisherIDs9Arr,
-    setDeveloperIDs9Arr,
+    setPublishers9Arr,
+    setDevelopers9Arr,
 
     setHardwares10Arr,
     setReleaseDate10,
     setPlayersMin10,
     setPlayersMax10,
-    setPublisherIDs10Arr,
-    setDeveloperIDs10Arr,
+    setPublishers10Arr,
+    setDevelopers10Arr,
 
     setLinkArr,
 
@@ -476,40 +479,124 @@ const Component = (props) => {
       setGenre2(lodashGet(resultObj, ['data', 'genreArr', 1], ''));
       setGenre3(lodashGet(resultObj, ['data', 'genreArr', 2], ''));
 
+      const hardwareArr = lodashGet(resultObj, ['data', 'hardwareArr'], []);
+      setHardwaresCount(hardwareArr.length);
+
       setHardwares1Arr(lodashGet(resultObj, ['data', 'hardwareArr', 0, 'hardwaresArr'], []));
-      setHardwares1Arr(lodashGet(resultObj, ['data', 'hardwareArr', 0, 'hardwareID'], ''));
       setReleaseDate1(lodashGet(resultObj, ['data', 'hardwareArr', 0, 'releaseDate'], ''));
-      setPlayersMin1(lodashGet(resultObj, ['data', 'hardwareArr', 0, 'playersMin'], ''));
-      setPlayersMax1(lodashGet(resultObj, ['data', 'hardwareArr', 0, 'playersMax'], ''));
-      setPublisherIDs1Arr(lodashGet(resultObj, ['data', 'hardwareArr', 0, 'publisherIDsArr'], []));
-      setDeveloperIDs1Arr(lodashGet(resultObj, ['data', 'hardwareArr', 0, 'developerIDsArr'], []));
+      setPlayersMin1(lodashGet(resultObj, ['data', 'hardwareArr', 0, 'playersMin'], 1));
+      setPlayersMax1(lodashGet(resultObj, ['data', 'hardwareArr', 0, 'playersMax'], 1));
+      setPublishers1Arr(lodashGet(resultObj, ['data', 'hardwareArr', 0, 'publishersArr'], []));
+      setDevelopers1Arr(lodashGet(resultObj, ['data', 'hardwareArr', 0, 'developersArr'], []));
 
-      // (lodashGet(resultObj, ['data', ''], ''));
-      // (lodashGet(resultObj, ['data', ''], ''));
-      // (lodashGet(resultObj, ['data', ''], ''));
+      setHardwares2Arr(lodashGet(resultObj, ['data', 'hardwareArr', 1, 'hardwaresArr'], []));
+      setReleaseDate2(lodashGet(resultObj, ['data', 'hardwareArr', 1, 'releaseDate'], ''));
+      setPlayersMin2(lodashGet(resultObj, ['data', 'hardwareArr', 1, 'playersMin'], 1));
+      setPlayersMax2(lodashGet(resultObj, ['data', 'hardwareArr', 1, 'playersMax'], 1));
+      setPublishers2Arr(lodashGet(resultObj, ['data', 'hardwareArr', 1, 'publishersArr'], []));
+      setDevelopers2Arr(lodashGet(resultObj, ['data', 'hardwareArr', 1, 'developersArr'], []));
 
-      // const anonymity = lodashGet(resultObj, ['data', 'anonymity'], false);
-      // const comment = lodashGet(resultObj, ['data', 'comment'], '');
-      // let imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
+      setHardwares3Arr(lodashGet(resultObj, ['data', 'hardwareArr', 2, 'hardwaresArr'], []));
+      setReleaseDate3(lodashGet(resultObj, ['data', 'hardwareArr', 2, 'releaseDate'], ''));
+      setPlayersMin3(lodashGet(resultObj, ['data', 'hardwareArr', 2, 'playersMin'], 1));
+      setPlayersMax3(lodashGet(resultObj, ['data', 'hardwareArr', 2, 'playersMax'], 1));
+      setPublishers3Arr(lodashGet(resultObj, ['data', 'hardwareArr', 2, 'publishersArr'], []));
+      setDevelopers3Arr(lodashGet(resultObj, ['data', 'hardwareArr', 2, 'developersArr'], []));
 
-      // if (Object.keys(imagesAndVideosObj).length === 0) {
+      setHardwares4Arr(lodashGet(resultObj, ['data', 'hardwareArr', 3, 'hardwaresArr'], []));
+      setReleaseDate4(lodashGet(resultObj, ['data', 'hardwareArr', 3, 'releaseDate'], ''));
+      setPlayersMin4(lodashGet(resultObj, ['data', 'hardwareArr', 3, 'playersMin'], 1));
+      setPlayersMax4(lodashGet(resultObj, ['data', 'hardwareArr', 3, 'playersMax'], 1));
+      setPublishers4Arr(lodashGet(resultObj, ['data', 'hardwareArr', 3, 'publishersArr'], []));
+      setDevelopers4Arr(lodashGet(resultObj, ['data', 'hardwareArr', 3, 'developersArr'], []));
 
-      //   imagesAndVideosObj = {
+      setHardwares5Arr(lodashGet(resultObj, ['data', 'hardwareArr', 4, 'hardwaresArr'], []));
+      setReleaseDate5(lodashGet(resultObj, ['data', 'hardwareArr', 4, 'releaseDate'], ''));
+      setPlayersMin5(lodashGet(resultObj, ['data', 'hardwareArr', 4, 'playersMin'], 1));
+      setPlayersMax5(lodashGet(resultObj, ['data', 'hardwareArr', 4, 'playersMax'], 1));
+      setPublishers5Arr(lodashGet(resultObj, ['data', 'hardwareArr', 4, 'publishersArr'], []));
+      setDevelopers5Arr(lodashGet(resultObj, ['data', 'hardwareArr', 4, 'developersArr'], []));
 
-      //     _id: '',
-      //     createdDate: '',
-      //     updatedDate: '',
-      //     users_id: '',
-      //     type: 'forum',
-      //     arr: [],
+      setHardwares6Arr(lodashGet(resultObj, ['data', 'hardwareArr', 5, 'hardwaresArr'], []));
+      setReleaseDate6(lodashGet(resultObj, ['data', 'hardwareArr', 5, 'releaseDate'], ''));
+      setPlayersMin6(lodashGet(resultObj, ['data', 'hardwareArr', 5, 'playersMin'], 1));
+      setPlayersMax6(lodashGet(resultObj, ['data', 'hardwareArr', 5, 'playersMax'], 1));
+      setPublishers6Arr(lodashGet(resultObj, ['data', 'hardwareArr', 5, 'publishersArr'], []));
+      setDevelopers6Arr(lodashGet(resultObj, ['data', 'hardwareArr', 5, 'developersArr'], []));
 
-      //   };
+      setHardwares7Arr(lodashGet(resultObj, ['data', 'hardwareArr', 6, 'hardwaresArr'], []));
+      setReleaseDate7(lodashGet(resultObj, ['data', 'hardwareArr', 6, 'releaseDate'], ''));
+      setPlayersMin7(lodashGet(resultObj, ['data', 'hardwareArr', 6, 'playersMin'], 1));
+      setPlayersMax7(lodashGet(resultObj, ['data', 'hardwareArr', 6, 'playersMax'], 1));
+      setPublishers7Arr(lodashGet(resultObj, ['data', 'hardwareArr', 6, 'publishersArr'], []));
+      setDevelopers7Arr(lodashGet(resultObj, ['data', 'hardwareArr', 6, 'developersArr'], []));
 
-      // }
+      setHardwares8Arr(lodashGet(resultObj, ['data', 'hardwareArr', 7, 'hardwaresArr'], []));
+      setReleaseDate8(lodashGet(resultObj, ['data', 'hardwareArr', 7, 'releaseDate'], ''));
+      setPlayersMin8(lodashGet(resultObj, ['data', 'hardwareArr', 7, 'playersMin'], 1));
+      setPlayersMax8(lodashGet(resultObj, ['data', 'hardwareArr', 7, 'playersMax'], 1));
+      setPublishers8Arr(lodashGet(resultObj, ['data', 'hardwareArr', 7, 'publishersArr'], []));
+      setDevelopers8Arr(lodashGet(resultObj, ['data', 'hardwareArr', 7, 'developersArr'], []));
 
-      console.log(chalk`
-      lodashGet(resultObj, ['data', 'hardwareArr', 0, 'releaseDate'], ''): {green ${lodashGet(resultObj, ['data', 'hardwareArr', 0, 'releaseDate'], '')}}
-      `);
+      setHardwares9Arr(lodashGet(resultObj, ['data', 'hardwareArr', 8, 'hardwaresArr'], []));
+      setReleaseDate9(lodashGet(resultObj, ['data', 'hardwareArr', 8, 'releaseDate'], ''));
+      setPlayersMin9(lodashGet(resultObj, ['data', 'hardwareArr', 8, 'playersMin'], 1));
+      setPlayersMax9(lodashGet(resultObj, ['data', 'hardwareArr', 8, 'playersMax'], 1));
+      setPublishers9Arr(lodashGet(resultObj, ['data', 'hardwareArr', 8, 'publishersArr'], []));
+      setDevelopers9Arr(lodashGet(resultObj, ['data', 'hardwareArr', 8, 'developersArr'], []));
+
+      setHardwares10Arr(lodashGet(resultObj, ['data', 'hardwareArr', 9, 'hardwaresArr'], []));
+      setReleaseDate10(lodashGet(resultObj, ['data', 'hardwareArr', 9, 'releaseDate'], ''));
+      setPlayersMin10(lodashGet(resultObj, ['data', 'hardwareArr', 9, 'playersMin'], 1));
+      setPlayersMax10(lodashGet(resultObj, ['data', 'hardwareArr', 9, 'playersMax'], 1));
+      setPublishers10Arr(lodashGet(resultObj, ['data', 'hardwareArr', 9, 'publishersArr'], []));
+      setDevelopers10Arr(lodashGet(resultObj, ['data', 'hardwareArr', 9, 'developersArr'], []));
+
+      setLinkArr(lodashGet(resultObj, ['data', 'linkArr'], []));
+
+
+      let imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
+
+      if (Object.keys(imagesAndVideosObj).length === 0) {
+
+        imagesAndVideosObj = {
+
+          _id: '',
+          createdDate: '',
+          updatedDate: '',
+          users_id: '',
+          type: 'gc',
+          arr: [],
+
+        };
+
+      }
+
+      setImagesAndVideosObj(imagesAndVideosObj);
+
+      let imagesAndVideosThumbnailObj = lodashGet(resultObj, ['data', 'imagesAndVideosThumbnailObj'], {});
+
+      if (Object.keys(imagesAndVideosThumbnailObj).length === 0) {
+
+        imagesAndVideosThumbnailObj = {
+
+          _id: '',
+          createdDate: '',
+          updatedDate: '',
+          users_id: '',
+          type: 'gc',
+          arr: [],
+
+        };
+
+      }
+
+      setImagesAndVideosThumbnailObj(imagesAndVideosThumbnailObj);
+
+
+      // console.log(chalk`
+      // lodashGet(resultObj, ['data', 'hardwareArr', 0, 'releaseDate'], ''): {green ${lodashGet(resultObj, ['data', 'hardwareArr', 0, 'releaseDate'], '')}}
+      // `);
 
 
     } catch (errorObj) {

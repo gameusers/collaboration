@@ -18,7 +18,6 @@ import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
-// import TextareaAutosize from 'react-autosize-textarea';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -77,9 +76,6 @@ import { showSnackbar } from 'app/@modules/snackbar.js';
 //   Validations
 // ---------------------------------------------
 
-// import { validationBoolean } from 'app/@validations/boolean.js';
-// import { validationHandleName } from 'app/@validations/name.js';
-
 import { validationGamesName, validationGamesSubtitle, validationGamesSortKeyword } from 'app/@database/games/validations/name.js';
 import { validationGamesURLID } from 'app/@database/games/validations/url.js';
 
@@ -89,7 +85,6 @@ import { validationGamesURLID } from 'app/@database/games/validations/url.js';
 // ---------------------------------------------
 
 import FormImageAndVideo from 'app/common/image-and-video/v2/form.js';
-// import FormHardwares from 'app/common/hardware/v2/form.js';
 
 import FormTwitter from 'app/gc/register/v2/form/twitter.js';
 import FormSearchKeyword from 'app/gc/register/v2/form/search-keyword.js';
@@ -154,6 +149,7 @@ const Component = (props) => {
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
+    handleDialogOpen,
 
   } = stateLayout;
 
@@ -182,6 +178,8 @@ const Component = (props) => {
     genre3,
     setGenre3,
 
+    hardwaresCount,
+
     hardwares1Arr,
     setHardwares1Arr,
     releaseDate1,
@@ -190,10 +188,10 @@ const Component = (props) => {
     setPlayersMin1,
     playersMax1,
     setPlayersMax1,
-    publisherIDs1Arr,
-    setPublisherIDs1Arr,
-    developerIDs1Arr,
-    setDeveloperIDs1Arr,
+    publishers1Arr,
+    setPublishers1Arr,
+    developers1Arr,
+    setDevelopers1Arr,
 
     hardwares2Arr,
     setHardwares2Arr,
@@ -203,10 +201,10 @@ const Component = (props) => {
     setPlayersMin2,
     playersMax2,
     setPlayersMax2,
-    publisherIDs2Arr,
-    setPublisherIDs2Arr,
-    developerIDs2Arr,
-    setDeveloperIDs2Arr,
+    publishers2Arr,
+    setPublishers2Arr,
+    developers2Arr,
+    setDevelopers2Arr,
 
     hardwares3Arr,
     setHardwares3Arr,
@@ -216,10 +214,10 @@ const Component = (props) => {
     setPlayersMin3,
     playersMax3,
     setPlayersMax3,
-    publisherIDs3Arr,
-    setPublisherIDs3Arr,
-    developerIDs3Arr,
-    setDeveloperIDs3Arr,
+    publishers3Arr,
+    setPublishers3Arr,
+    developers3Arr,
+    setDevelopers3Arr,
 
     hardwares4Arr,
     setHardwares4Arr,
@@ -229,10 +227,10 @@ const Component = (props) => {
     setPlayersMin4,
     playersMax4,
     setPlayersMax4,
-    publisherIDs4Arr,
-    setPublisherIDs4Arr,
-    developerIDs4Arr,
-    setDeveloperIDs4Arr,
+    publishers4Arr,
+    setPublishers4Arr,
+    developers4Arr,
+    setDevelopers4Arr,
 
     hardwares5Arr,
     setHardwares5Arr,
@@ -242,10 +240,10 @@ const Component = (props) => {
     setPlayersMin5,
     playersMax5,
     setPlayersMax5,
-    publisherIDs5Arr,
-    setPublisherIDs5Arr,
-    developerIDs5Arr,
-    setDeveloperIDs5Arr,
+    publishers5Arr,
+    setPublishers5Arr,
+    developers5Arr,
+    setDevelopers5Arr,
 
     hardwares6Arr,
     setHardwares6Arr,
@@ -255,10 +253,10 @@ const Component = (props) => {
     setPlayersMin6,
     playersMax6,
     setPlayersMax6,
-    publisherIDs6Arr,
-    setPublisherIDs6Arr,
-    developerIDs6Arr,
-    setDeveloperIDs6Arr,
+    publishers6Arr,
+    setPublishers6Arr,
+    developers6Arr,
+    setDevelopers6Arr,
 
     hardwares7Arr,
     setHardwares7Arr,
@@ -268,10 +266,10 @@ const Component = (props) => {
     setPlayersMin7,
     playersMax7,
     setPlayersMax7,
-    publisherIDs7Arr,
-    setPublisherIDs7Arr,
-    developerIDs7Arr,
-    setDeveloperIDs7Arr,
+    publishers7Arr,
+    setPublishers7Arr,
+    developers7Arr,
+    setDevelopers7Arr,
 
     hardwares8Arr,
     setHardwares8Arr,
@@ -281,10 +279,10 @@ const Component = (props) => {
     setPlayersMin8,
     playersMax8,
     setPlayersMax8,
-    publisherIDs8Arr,
-    setPublisherIDs8Arr,
-    developerIDs8Arr,
-    setDeveloperIDs8Arr,
+    publishers8Arr,
+    setPublishers8Arr,
+    developers8Arr,
+    setDevelopers8Arr,
 
     hardwares9Arr,
     setHardwares9Arr,
@@ -294,10 +292,10 @@ const Component = (props) => {
     setPlayersMin9,
     playersMax9,
     setPlayersMax9,
-    publisherIDs9Arr,
-    setPublisherIDs9Arr,
-    developerIDs9Arr,
-    setDeveloperIDs9Arr,
+    publishers9Arr,
+    setPublishers9Arr,
+    developers9Arr,
+    setDevelopers9Arr,
 
     hardwares10Arr,
     setHardwares10Arr,
@@ -307,10 +305,10 @@ const Component = (props) => {
     setPlayersMin10,
     playersMax10,
     setPlayersMax10,
-    publisherIDs10Arr,
-    setPublisherIDs10Arr,
-    developerIDs10Arr,
-    setDeveloperIDs10Arr,
+    publishers10Arr,
+    setPublishers10Arr,
+    developers10Arr,
+    setDevelopers10Arr,
 
     linkArr,
     setLinkArr,
@@ -319,6 +317,8 @@ const Component = (props) => {
     setImagesAndVideosObj,
     imagesAndVideosThumbnailObj,
     setImagesAndVideosThumbnailObj,
+
+    handleResetForm,
 
   } = stateGcRegister;
 
@@ -336,121 +336,6 @@ const Component = (props) => {
   const intl = useIntl();
   const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
-
-  // const [language, setLanguage] = useState('ja');
-  // const [country, setCountry] = useState('JP');
-  // const [name, setName] = useState('');
-  // const [subtitle, setSubtitle] = useState('');
-  // const [sortKeyword, setSortKeyword] = useState('');
-  // const [urlID, setURLID] = useState('');
-  // const [twitterHashtagsArr, setTwitterHashtagsArr] = useState([]);
-  // const [searchKeywordsArr, setSearchKeywordsArr] = useState([]);
-
-  // const [genre1, setGenre1] = useState('');
-  // const [genre2, setGenre2] = useState('');
-  // const [genre3, setGenre3] = useState('');
-
-  // const [hardwares1Arr, setHardwares1Arr] = useState([]);
-  // const [releaseDate1, setReleaseDate1] = useState('');
-  // const [playersMin1, setPlayersMin1] = useState(1);
-  // const [playersMax1, setPlayersMax1] = useState(1);
-  // const [publisherIDs1Arr, setPublisherIDs1Arr] = useState([]);
-  // const [developerIDs1Arr, setDeveloperIDs1Arr] = useState([]);
-
-  // const [hardwares2Arr, setHardwares2Arr] = useState([]);
-  // const [releaseDate2, setReleaseDate2] = useState('');
-  // const [playersMin2, setPlayersMin2] = useState(1);
-  // const [playersMax2, setPlayersMax2] = useState(1);
-  // const [publisherIDs2Arr, setPublisherIDs2Arr] = useState([]);
-  // const [developerIDs2Arr, setDeveloperIDs2Arr] = useState([]);
-
-  // const [hardwares3Arr, setHardwares3Arr] = useState([]);
-  // const [releaseDate3, setReleaseDate3] = useState('');
-  // const [playersMin3, setPlayersMin3] = useState(1);
-  // const [playersMax3, setPlayersMax3] = useState(1);
-  // const [publisherIDs3Arr, setPublisherIDs3Arr] = useState([]);
-  // const [developerIDs3Arr, setDeveloperIDs3Arr] = useState([]);
-
-  // const [hardwares4Arr, setHardwares4Arr] = useState([]);
-  // const [releaseDate4, setReleaseDate4] = useState('');
-  // const [playersMin4, setPlayersMin4] = useState(1);
-  // const [playersMax4, setPlayersMax4] = useState(1);
-  // const [publisherIDs4Arr, setPublisherIDs4Arr] = useState([]);
-  // const [developerIDs4Arr, setDeveloperIDs4Arr] = useState([]);
-
-  // const [hardwares5Arr, setHardwares5Arr] = useState([]);
-  // const [releaseDate5, setReleaseDate5] = useState('');
-  // const [playersMin5, setPlayersMin5] = useState(1);
-  // const [playersMax5, setPlayersMax5] = useState(1);
-  // const [publisherIDs5Arr, setPublisherIDs5Arr] = useState([]);
-  // const [developerIDs5Arr, setDeveloperIDs5Arr] = useState([]);
-
-  // const [hardwares6Arr, setHardwares6Arr] = useState([]);
-  // const [releaseDate6, setReleaseDate6] = useState('');
-  // const [playersMin6, setPlayersMin6] = useState(1);
-  // const [playersMax6, setPlayersMax6] = useState(1);
-  // const [publisherIDs6Arr, setPublisherIDs6Arr] = useState([]);
-  // const [developerIDs6Arr, setDeveloperIDs6Arr] = useState([]);
-
-  // const [hardwares7Arr, setHardwares7Arr] = useState([]);
-  // const [releaseDate7, setReleaseDate7] = useState('');
-  // const [playersMin7, setPlayersMin7] = useState(1);
-  // const [playersMax7, setPlayersMax7] = useState(1);
-  // const [publisherIDs7Arr, setPublisherIDs7Arr] = useState([]);
-  // const [developerIDs7Arr, setDeveloperIDs7Arr] = useState([]);
-
-  // const [hardwares8Arr, setHardwares8Arr] = useState([]);
-  // const [releaseDate8, setReleaseDate8] = useState('');
-  // const [playersMin8, setPlayersMin8] = useState(1);
-  // const [playersMax8, setPlayersMax8] = useState(1);
-  // const [publisherIDs8Arr, setPublisherIDs8Arr] = useState([]);
-  // const [developerIDs8Arr, setDeveloperIDs8Arr] = useState([]);
-
-  // const [hardwares9Arr, setHardwares9Arr] = useState([]);
-  // const [releaseDate9, setReleaseDate9] = useState('');
-  // const [playersMin9, setPlayersMin9] = useState(1);
-  // const [playersMax9, setPlayersMax9] = useState(1);
-  // const [publisherIDs9Arr, setPublisherIDs9Arr] = useState([]);
-  // const [developerIDs9Arr, setDeveloperIDs9Arr] = useState([]);
-
-  // const [hardwares10Arr, setHardwares10Arr] = useState([]);
-  // const [releaseDate10, setReleaseDate10] = useState('');
-  // const [playersMin10, setPlayersMin10] = useState(1);
-  // const [playersMax10, setPlayersMax10] = useState(1);
-  // const [publisherIDs10Arr, setPublisherIDs10Arr] = useState([]);
-  // const [developerIDs10Arr, setDeveloperIDs10Arr] = useState([]);
-
-  // const [linkArr, setLinkArr] = useState([{
-
-  //   _id: '',
-  //   type: 'Official',
-  //   label: '',
-  //   url: '',
-
-  // }]);
-
-  // const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
-
-  //   _id: '',
-  //   createdDate: '',
-  //   updatedDate: '',
-  //   users_id: '',
-  //   type: 'temp',
-  //   arr: [],
-
-  // });
-
-  // const [imagesAndVideosThumbnailObj, setImagesAndVideosThumbnailObj] = useState({
-
-  //   _id: '',
-  //   createdDate: '',
-  //   updatedDate: '',
-  //   users_id: '',
-  //   type: 'temp',
-  //   arr: [],
-
-  // });
-
 
   const [anchorElSortKeyword, setAnchorElSortKeyword] = useState(null);
   const [anchorElSubtitle, setAnchorElSubtitle] = useState(null);
@@ -823,8 +708,8 @@ const Component = (props) => {
           releaseDate: releaseDate1,
           playersMin: playersMin1,
           playersMax: playersMax1,
-          publisherIDsArr: publisherIDs1Arr,
-          developerIDsArr: developerIDs1Arr,
+          publishersArr: publishers1Arr,
+          developersArr: developers1Arr,
 
         }
 
@@ -841,8 +726,8 @@ const Component = (props) => {
           releaseDate: releaseDate2,
           playersMin: playersMin2,
           playersMax: playersMax2,
-          publisherIDsArr: publisherIDs2Arr,
-          developerIDsArr: developerIDs2Arr,
+          publishersArr: publishers2Arr,
+          developersArr: developers2Arr,
 
         }
 
@@ -859,8 +744,8 @@ const Component = (props) => {
           releaseDate: releaseDate3,
           playersMin: playersMin3,
           playersMax: playersMax3,
-          publisherIDsArr: publisherIDs3Arr,
-          developerIDsArr: developerIDs3Arr,
+          publishersArr: publishers3Arr,
+          developersArr: developers3Arr,
 
         }
 
@@ -877,8 +762,8 @@ const Component = (props) => {
           releaseDate: releaseDate4,
           playersMin: playersMin4,
           playersMax: playersMax4,
-          publisherIDsArr: publisherIDs4Arr,
-          developerIDsArr: developerIDs4Arr,
+          publishersArr: publishers4Arr,
+          developersArr: developers4Arr,
 
         }
 
@@ -895,8 +780,8 @@ const Component = (props) => {
           releaseDate: releaseDate5,
           playersMin: playersMin5,
           playersMax: playersMax5,
-          publisherIDsArr: publisherIDs5Arr,
-          developerIDsArr: developerIDs5Arr,
+          publishersArr: publishers5Arr,
+          developersArr: developers5Arr,
 
         }
 
@@ -913,8 +798,8 @@ const Component = (props) => {
           releaseDate: releaseDate6,
           playersMin: playersMin6,
           playersMax: playersMax6,
-          publisherIDsArr: publisherIDs6Arr,
-          developerIDsArr: developerIDs6Arr,
+          publishersArr: publishers6Arr,
+          developersArr: developers6Arr,
 
         }
 
@@ -931,8 +816,8 @@ const Component = (props) => {
           releaseDate: releaseDate7,
           playersMin: playersMin7,
           playersMax: playersMax7,
-          publisherIDsArr: publisherIDs7Arr,
-          developerIDsArr: developerIDs7Arr,
+          publishersArr: publishers7Arr,
+          developersArr: developers7Arr,
 
         }
 
@@ -949,8 +834,8 @@ const Component = (props) => {
           releaseDate: releaseDate8,
           playersMin: playersMin8,
           playersMax: playersMax8,
-          publisherIDsArr: publisherIDs8Arr,
-          developerIDsArr: developerIDs8Arr,
+          publishersArr: publishers8Arr,
+          developersArr: developers8Arr,
 
         }
 
@@ -967,8 +852,8 @@ const Component = (props) => {
           releaseDate: releaseDate9,
           playersMin: playersMin9,
           playersMax: playersMax9,
-          publisherIDsArr: publisherIDs9Arr,
-          developerIDsArr: developerIDs9Arr,
+          publishersArr: publishers9Arr,
+          developersArr: developers9Arr,
 
         }
 
@@ -985,8 +870,8 @@ const Component = (props) => {
           releaseDate: releaseDate10,
           playersMin: playersMin10,
           playersMax: playersMax10,
-          publisherIDsArr: publisherIDs10Arr,
-          developerIDsArr: developerIDs10Arr,
+          publishersArr: publishers10Arr,
+          developersArr: developers10Arr,
 
         }
 
@@ -1064,71 +949,71 @@ const Component = (props) => {
       setReleaseDate1('');
       setPlayersMin1(1);
       setPlayersMax1(1);
-      setPublisherIDs1Arr([]);
-      setDeveloperIDs1Arr([]);
+      setPublishers1Arr([]);
+      setDevelopers1Arr([]);
 
       setHardwares2Arr([]);
       setReleaseDate2('');
       setPlayersMin2(1);
       setPlayersMax2(1);
-      setPublisherIDs2Arr([]);
-      setDeveloperIDs2Arr([]);
+      setPublishers2Arr([]);
+      setDevelopers2Arr([]);
 
       setHardwares3Arr([]);
       setReleaseDate3('');
       setPlayersMin3(1);
       setPlayersMax3(1);
-      setPublisherIDs3Arr([]);
-      setDeveloperIDs3Arr([]);
+      setPublishers3Arr([]);
+      setDevelopers3Arr([]);
 
       setHardwares4Arr([]);
       setReleaseDate4('');
       setPlayersMin4(1);
       setPlayersMax4(1);
-      setPublisherIDs4Arr([]);
-      setDeveloperIDs4Arr([]);
+      setPublishers4Arr([]);
+      setDevelopers4Arr([]);
 
       setHardwares5Arr([]);
       setReleaseDate5('');
       setPlayersMin5(1);
       setPlayersMax5(1);
-      setPublisherIDs5Arr([]);
-      setDeveloperIDs5Arr([]);
+      setPublishers5Arr([]);
+      setDevelopers5Arr([]);
 
       setHardwares6Arr([]);
       setReleaseDate6('');
       setPlayersMin6(1);
       setPlayersMax6(1);
-      setPublisherIDs6Arr([]);
-      setDeveloperIDs6Arr([]);
+      setPublishers6Arr([]);
+      setDevelopers6Arr([]);
 
       setHardwares7Arr([]);
       setReleaseDate7('');
       setPlayersMin7(1);
       setPlayersMax7(1);
-      setPublisherIDs7Arr([]);
-      setDeveloperIDs7Arr([]);
+      setPublishers7Arr([]);
+      setDevelopers7Arr([]);
 
       setHardwares8Arr([]);
       setReleaseDate8('');
       setPlayersMin8(1);
       setPlayersMax8(1);
-      setPublisherIDs8Arr([]);
-      setDeveloperIDs8Arr([]);
+      setPublishers8Arr([]);
+      setDevelopers8Arr([]);
 
       setHardwares9Arr([]);
       setReleaseDate9('');
       setPlayersMin9(1);
       setPlayersMax9(1);
-      setPublisherIDs9Arr([]);
-      setDeveloperIDs9Arr([]);
+      setPublishers9Arr([]);
+      setDevelopers9Arr([]);
 
       setHardwares10Arr([]);
       setReleaseDate10('');
       setPlayersMin10(1);
       setPlayersMax10(1);
-      setPublisherIDs10Arr([]);
-      setDeveloperIDs10Arr([]);
+      setPublishers10Arr([]);
+      setDevelopers10Arr([]);
 
       setLinkArr([{
 
@@ -1423,7 +1308,15 @@ const Component = (props) => {
             margin: 0 0 14px 0;
           `}
         >
-          こちらのフォームに入力してもらったデータは仮登録という形で保存されます。Game Users運営の確認後に正式にサイトに反映されますので、空欄が多かったり、多少間違っている情報があっても問題はありません。気軽に登録を行ってみてください。
+          こちらのフォームに入力してもらったデータは仮登録という形で保存されます。Game Users運営の確認後に正式にサイトに反映されますので、空欄が多かったり、多少間違っている情報があっても問題はありません。
+        </p>
+
+        <p
+          css={css`
+            margin: 0 0 14px 0;
+          `}
+        >
+          登録は新規にすべての情報を入力するか、既存の情報をベースにして追記していくかになります。ゲームの一覧をクリック（タップ）すると、登録済みの情報に追記することができるようになります。追記した場合、同じゲームが一覧に複数表示されることになりますが、これは元々の仕様なので気にしないでください。
         </p>
 
         <p
@@ -1943,6 +1836,8 @@ const Component = (props) => {
         <div css={cssBox}>
 
           <FormHardware
+            hardwaresCount={hardwaresCount}
+
             hardwares1Arr={hardwares1Arr}
             setHardwares1Arr={setHardwares1Arr}
             releaseDate1={releaseDate1}
@@ -1951,10 +1846,10 @@ const Component = (props) => {
             setPlayersMin1={setPlayersMin1}
             playersMax1={playersMax1}
             setPlayersMax1={setPlayersMax1}
-            publisherIDs1Arr={publisherIDs1Arr}
-            setPublisherIDs1Arr={setPublisherIDs1Arr}
-            developerIDs1Arr={developerIDs1Arr}
-            setDeveloperIDs1Arr={setDeveloperIDs1Arr}
+            publishers1Arr={publishers1Arr}
+            setPublishers1Arr={setPublishers1Arr}
+            developers1Arr={developers1Arr}
+            setDevelopers1Arr={setDevelopers1Arr}
 
             hardwares2Arr={hardwares2Arr}
             setHardwares2Arr={setHardwares2Arr}
@@ -1964,10 +1859,10 @@ const Component = (props) => {
             setPlayersMin2={setPlayersMin2}
             playersMax2={playersMax2}
             setPlayersMax2={setPlayersMax2}
-            publisherIDs2Arr={publisherIDs2Arr}
-            setPublisherIDs2Arr={setPublisherIDs2Arr}
-            developerIDs2Arr={developerIDs2Arr}
-            setDeveloperIDs2Arr={setDeveloperIDs2Arr}
+            publishers2Arr={publishers2Arr}
+            setPublishers2Arr={setPublishers2Arr}
+            developers2Arr={developers2Arr}
+            setDevelopers2Arr={setDevelopers2Arr}
 
             hardwares3Arr={hardwares3Arr}
             setHardwares3Arr={setHardwares3Arr}
@@ -1977,10 +1872,10 @@ const Component = (props) => {
             setPlayersMin3={setPlayersMin3}
             playersMax3={playersMax3}
             setPlayersMax3={setPlayersMax3}
-            publisherIDs3Arr={publisherIDs3Arr}
-            setPublisherIDs3Arr={setPublisherIDs3Arr}
-            developerIDs3Arr={developerIDs3Arr}
-            setDeveloperIDs3Arr={setDeveloperIDs3Arr}
+            publishers3Arr={publishers3Arr}
+            setPublishers3Arr={setPublishers3Arr}
+            developers3Arr={developers3Arr}
+            setDevelopers3Arr={setDevelopers3Arr}
 
             hardwares4Arr={hardwares4Arr}
             setHardwares4Arr={setHardwares4Arr}
@@ -1990,10 +1885,10 @@ const Component = (props) => {
             setPlayersMin4={setPlayersMin4}
             playersMax4={playersMax4}
             setPlayersMax4={setPlayersMax4}
-            publisherIDs4Arr={publisherIDs4Arr}
-            setPublisherIDs4Arr={setPublisherIDs4Arr}
-            developerIDs4Arr={developerIDs4Arr}
-            setDeveloperIDs4Arr={setDeveloperIDs4Arr}
+            publishers4Arr={publishers4Arr}
+            setPublishers4Arr={setPublishers4Arr}
+            developers4Arr={developers4Arr}
+            setDevelopers4Arr={setDevelopers4Arr}
 
             hardwares5Arr={hardwares5Arr}
             setHardwares5Arr={setHardwares5Arr}
@@ -2003,10 +1898,10 @@ const Component = (props) => {
             setPlayersMin5={setPlayersMin5}
             playersMax5={playersMax5}
             setPlayersMax5={setPlayersMax5}
-            publisherIDs5Arr={publisherIDs5Arr}
-            setPublisherIDs5Arr={setPublisherIDs5Arr}
-            developerIDs5Arr={developerIDs5Arr}
-            setDeveloperIDs5Arr={setDeveloperIDs5Arr}
+            publishers5Arr={publishers5Arr}
+            setPublishers5Arr={setPublishers5Arr}
+            developers5Arr={developers5Arr}
+            setDevelopers5Arr={setDevelopers5Arr}
 
             hardwares6Arr={hardwares6Arr}
             setHardwares6Arr={setHardwares6Arr}
@@ -2016,10 +1911,10 @@ const Component = (props) => {
             setPlayersMin6={setPlayersMin6}
             playersMax6={playersMax6}
             setPlayersMax6={setPlayersMax6}
-            publisherIDs6Arr={publisherIDs6Arr}
-            setPublisherIDs6Arr={setPublisherIDs6Arr}
-            developerIDs6Arr={developerIDs6Arr}
-            setDeveloperIDs6Arr={setDeveloperIDs6Arr}
+            publishers6Arr={publishers6Arr}
+            setPublishers6Arr={setPublishers6Arr}
+            developers6Arr={developers6Arr}
+            setDevelopers6Arr={setDevelopers6Arr}
 
             hardwares7Arr={hardwares7Arr}
             setHardwares7Arr={setHardwares7Arr}
@@ -2029,10 +1924,10 @@ const Component = (props) => {
             setPlayersMin7={setPlayersMin7}
             playersMax7={playersMax7}
             setPlayersMax7={setPlayersMax7}
-            publisherIDs7Arr={publisherIDs7Arr}
-            setPublisherIDs7Arr={setPublisherIDs7Arr}
-            developerIDs7Arr={developerIDs7Arr}
-            setDeveloperIDs7Arr={setDeveloperIDs7Arr}
+            publishers7Arr={publishers7Arr}
+            setPublishers7Arr={setPublishers7Arr}
+            developers7Arr={developers7Arr}
+            setDevelopers7Arr={setDevelopers7Arr}
 
             hardwares8Arr={hardwares8Arr}
             setHardwares8Arr={setHardwares8Arr}
@@ -2042,10 +1937,10 @@ const Component = (props) => {
             setPlayersMin8={setPlayersMin8}
             playersMax8={playersMax8}
             setPlayersMax8={setPlayersMax8}
-            publisherIDs8Arr={publisherIDs8Arr}
-            setPublisherIDs8Arr={setPublisherIDs8Arr}
-            developerIDs8Arr={developerIDs8Arr}
-            setDeveloperIDs8Arr={setDeveloperIDs8Arr}
+            publishers8Arr={publishers8Arr}
+            setPublishers8Arr={setPublishers8Arr}
+            developers8Arr={developers8Arr}
+            setDevelopers8Arr={setDevelopers8Arr}
 
             hardwares9Arr={hardwares9Arr}
             setHardwares9Arr={setHardwares9Arr}
@@ -2055,10 +1950,10 @@ const Component = (props) => {
             setPlayersMin9={setPlayersMin9}
             playersMax9={playersMax9}
             setPlayersMax9={setPlayersMax9}
-            publisherIDs9Arr={publisherIDs9Arr}
-            setPublisherIDs9Arr={setPublisherIDs9Arr}
-            developerIDs9Arr={developerIDs9Arr}
-            setDeveloperIDs9Arr={setDeveloperIDs9Arr}
+            publishers9Arr={publishers9Arr}
+            setPublishers9Arr={setPublishers9Arr}
+            developers9Arr={developers9Arr}
+            setDevelopers9Arr={setDevelopers9Arr}
 
             hardwares10Arr={hardwares10Arr}
             setHardwares10Arr={setHardwares10Arr}
@@ -2068,10 +1963,10 @@ const Component = (props) => {
             setPlayersMin10={setPlayersMin10}
             playersMax10={playersMax10}
             setPlayersMax10={setPlayersMax10}
-            publisherIDs10Arr={publisherIDs10Arr}
-            setPublisherIDs10Arr={setPublisherIDs10Arr}
-            developerIDs10Arr={developerIDs10Arr}
-            setDeveloperIDs10Arr={setDeveloperIDs10Arr}
+            publishers10Arr={publishers10Arr}
+            setPublishers10Arr={setPublishers10Arr}
+            developers10Arr={developers10Arr}
+            setDevelopers10Arr={setDevelopers10Arr}
           />
 
         </div>
@@ -2188,6 +2083,28 @@ const Component = (props) => {
           >
             {games_id ? '登録する' : '仮登録する'}
           </Button>
+
+
+          {/* Reset Form */}
+          <div
+            css={css`
+              margin: 0 0 0 auto;
+            `}
+          >
+            <Button
+              variant="contained"
+              color="secondary"
+              disabled={buttonDisabled}
+              onClick={() => handleDialogOpen({
+                title: 'フォームリセット',
+                description: 'フォームをリセットしますか？',
+                handle: handleResetForm,
+                argumentsObj: {},
+              })}
+            >
+              リセット
+            </Button>
+          </div>
 
 
         </div>

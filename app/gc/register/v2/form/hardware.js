@@ -84,10 +84,10 @@ const ComponentForm = (props) => {
     setPlayersMin,
     playersMax,
     setPlayersMax,
-    publisherIDsArr,
-    setPublisherIDsArr,
-    developerIDsArr,
-    setDeveloperIDsArr,
+    publishersArr,
+    setPublishersArr,
+    developersArr,
+    setDevelopersArr,
 
   } = props;
 
@@ -209,8 +209,8 @@ const ComponentForm = (props) => {
       {/* 開発 */}
       <FormDeveloperPublisher
         type="developer"
-        arr={publisherIDsArr}
-        setArr={setPublisherIDsArr}
+        arr={publishersArr}
+        setArr={setPublishersArr}
         limit={limit}
       />
 
@@ -218,8 +218,8 @@ const ComponentForm = (props) => {
       {/* パブリッシャー */}
       <FormDeveloperPublisher
         type="publisher"
-        arr={developerIDsArr}
-        setArr={setDeveloperIDsArr}
+        arr={developersArr}
+        setArr={setDevelopersArr}
         limit={limit}
       />
 
@@ -245,6 +245,8 @@ const Component = (props) => {
 
   const {
 
+    hardwaresCount,
+
     hardwares1Arr,
     setHardwares1Arr,
     releaseDate1,
@@ -253,10 +255,10 @@ const Component = (props) => {
     setPlayersMin1,
     playersMax1,
     setPlayersMax1,
-    publisherIDs1Arr,
-    setPublisherIDs1Arr,
-    developerIDs1Arr,
-    setDeveloperIDs1Arr,
+    publishers1Arr,
+    setPublishers1Arr,
+    developers1Arr,
+    setDevelopers1Arr,
 
     hardwares2Arr,
     setHardwares2Arr,
@@ -266,10 +268,10 @@ const Component = (props) => {
     setPlayersMin2,
     playersMax2,
     setPlayersMax2,
-    publisherIDs2Arr,
-    setPublisherIDs2Arr,
-    developerIDs2Arr,
-    setDeveloperIDs2Arr,
+    publishers2Arr,
+    setPublishers2Arr,
+    developers2Arr,
+    setDevelopers2Arr,
 
     hardwares3Arr,
     setHardwares3Arr,
@@ -279,10 +281,10 @@ const Component = (props) => {
     setPlayersMin3,
     playersMax3,
     setPlayersMax3,
-    publisherIDs3Arr,
-    setPublisherIDs3Arr,
-    developerIDs3Arr,
-    setDeveloperIDs3Arr,
+    publishers3Arr,
+    setPublishers3Arr,
+    developers3Arr,
+    setDevelopers3Arr,
 
     hardwares4Arr,
     setHardwares4Arr,
@@ -292,10 +294,10 @@ const Component = (props) => {
     setPlayersMin4,
     playersMax4,
     setPlayersMax4,
-    publisherIDs4Arr,
-    setPublisherIDs4Arr,
-    developerIDs4Arr,
-    setDeveloperIDs4Arr,
+    publishers4Arr,
+    setPublishers4Arr,
+    developers4Arr,
+    setDevelopers4Arr,
 
     hardwares5Arr,
     setHardwares5Arr,
@@ -305,10 +307,10 @@ const Component = (props) => {
     setPlayersMin5,
     playersMax5,
     setPlayersMax5,
-    publisherIDs5Arr,
-    setPublisherIDs5Arr,
-    developerIDs5Arr,
-    setDeveloperIDs5Arr,
+    publishers5Arr,
+    setPublishers5Arr,
+    developers5Arr,
+    setDevelopers5Arr,
 
     hardwares6Arr,
     setHardwares6Arr,
@@ -318,10 +320,10 @@ const Component = (props) => {
     setPlayersMin6,
     playersMax6,
     setPlayersMax6,
-    publisherIDs6Arr,
-    setPublisherIDs6Arr,
-    developerIDs6Arr,
-    setDeveloperIDs6Arr,
+    publishers6Arr,
+    setPublishers6Arr,
+    developers6Arr,
+    setDevelopers6Arr,
 
     hardwares7Arr,
     setHardwares7Arr,
@@ -331,10 +333,10 @@ const Component = (props) => {
     setPlayersMin7,
     playersMax7,
     setPlayersMax7,
-    publisherIDs7Arr,
-    setPublisherIDs7Arr,
-    developerIDs7Arr,
-    setDeveloperIDs7Arr,
+    publishers7Arr,
+    setPublishers7Arr,
+    developers7Arr,
+    setDevelopers7Arr,
 
     hardwares8Arr,
     setHardwares8Arr,
@@ -344,10 +346,10 @@ const Component = (props) => {
     setPlayersMin8,
     playersMax8,
     setPlayersMax8,
-    publisherIDs8Arr,
-    setPublisherIDs8Arr,
-    developerIDs8Arr,
-    setDeveloperIDs8Arr,
+    publishers8Arr,
+    setPublishers8Arr,
+    developers8Arr,
+    setDevelopers8Arr,
 
     hardwares9Arr,
     setHardwares9Arr,
@@ -357,10 +359,10 @@ const Component = (props) => {
     setPlayersMin9,
     playersMax9,
     setPlayersMax9,
-    publisherIDs9Arr,
-    setPublisherIDs9Arr,
-    developerIDs9Arr,
-    setDeveloperIDs9Arr,
+    publishers9Arr,
+    setPublishers9Arr,
+    developers9Arr,
+    setDevelopers9Arr,
 
     hardwares10Arr,
     setHardwares10Arr,
@@ -370,10 +372,10 @@ const Component = (props) => {
     setPlayersMin10,
     playersMax10,
     setPlayersMax10,
-    publisherIDs10Arr,
-    setPublisherIDs10Arr,
-    developerIDs10Arr,
-    setDeveloperIDs10Arr,
+    publishers10Arr,
+    setPublishers10Arr,
+    developers10Arr,
+    setDevelopers10Arr,
 
   } = props;
 
@@ -386,9 +388,11 @@ const Component = (props) => {
 
   const intl = useIntl();
 
-  const [formCount, setFormCount] = useState(1);
+  // const [hardwaresCount, setFormCount] = useState(hardwaresCount);
 
-
+  // console.log(chalk`
+  //   hardwaresCount: {green ${hardwaresCount}}
+  // `);
 
 
   // --------------------------------------------------
@@ -400,13 +404,13 @@ const Component = (props) => {
    */
   const handleAdd = () => {
 
-    if (formCount < 10) {
-      setFormCount(formCount + 1);
+    if (hardwaresCount < 10) {
+      setFormCount(hardwaresCount + 1);
     }
 
     // console.log(chalk`
     //   handleAdd
-    //   formCount: {green ${formCount}}
+    //   hardwaresCount: {green ${hardwaresCount}}
     // `);
 
   };
@@ -419,13 +423,13 @@ const Component = (props) => {
    */
   const handleRemove = () => {
 
-    if (formCount > 1) {
-      setFormCount(formCount - 1);
+    if (hardwaresCount > 1) {
+      setFormCount(hardwaresCount - 1);
     }
 
     // console.log(chalk`
     //   handleRemove
-    //   formCount: {green ${formCount}}
+    //   hardwaresCount: {green ${hardwaresCount}}
     // `);
 
   };
@@ -439,7 +443,7 @@ const Component = (props) => {
 
   const componentsArr = [];
 
-  for (let i = 1; i <= formCount; i++) {
+  for (let i = 1; i <= hardwaresCount; i++) {
 
 
     // console.log(`
@@ -450,8 +454,9 @@ const Component = (props) => {
 
     // console.log(chalk`
     //   i: {green ${i}}
-    //   formCount: {green ${formCount}}
+    //   hardwaresCount: {green ${hardwaresCount}}
     // `);
+
 
     // --------------------------------------------------
     //   dataObj
@@ -465,10 +470,10 @@ const Component = (props) => {
     let setPlayersMin = () => {};
     let playersMax = 1;
     let setPlayersMax = () => {};
-    let publisherIDsArr = '';
-    let setPublisherIDsArr = () => {};
-    let developerIDsArr = '';
-    let setDeveloperIDsArr = () => {};
+    let publishersArr = '';
+    let setPublishersArr = () => {};
+    let developersArr = '';
+    let setDevelopersArr = () => {};
 
     switch (i) {
 
@@ -482,10 +487,10 @@ const Component = (props) => {
         setPlayersMin = setPlayersMin1;
         playersMax = playersMax1;
         setPlayersMax = setPlayersMax1;
-        publisherIDsArr = publisherIDs1Arr;
-        setPublisherIDsArr = setPublisherIDs1Arr;
-        developerIDsArr = developerIDs1Arr;
-        setDeveloperIDsArr = setDeveloperIDs1Arr;
+        publishersArr = publishers1Arr;
+        setPublishersArr = setPublishers1Arr;
+        developersArr = developers1Arr;
+        setDevelopersArr = setDevelopers1Arr;
 
         break;
 
@@ -499,10 +504,10 @@ const Component = (props) => {
         setPlayersMin = setPlayersMin2;
         playersMax = playersMax2;
         setPlayersMax = setPlayersMax2;
-        publisherIDsArr = publisherIDs2Arr;
-        setPublisherIDsArr = setPublisherIDs2Arr;
-        developerIDsArr = developerIDs2Arr;
-        setDeveloperIDsArr = setDeveloperIDs2Arr;
+        publishersArr = publishers2Arr;
+        setPublishersArr = setPublishers2Arr;
+        developersArr = developers2Arr;
+        setDevelopersArr = setDevelopers2Arr;
 
         break;
 
@@ -516,10 +521,10 @@ const Component = (props) => {
         setPlayersMin = setPlayersMin3;
         playersMax = playersMax3;
         setPlayersMax = setPlayersMax3;
-        publisherIDsArr = publisherIDs3Arr;
-        setPublisherIDsArr = setPublisherIDs3Arr;
-        developerIDsArr = developerIDs3Arr;
-        setDeveloperIDsArr = setDeveloperIDs3Arr;
+        publishersArr = publishers3Arr;
+        setPublishersArr = setPublishers3Arr;
+        developersArr = developers3Arr;
+        setDevelopersArr = setDevelopers3Arr;
 
         break;
 
@@ -533,10 +538,10 @@ const Component = (props) => {
         setPlayersMin = setPlayersMin4;
         playersMax = playersMax4;
         setPlayersMax = setPlayersMax4;
-        publisherIDsArr = publisherIDs4Arr;
-        setPublisherIDsArr = setPublisherIDs4Arr;
-        developerIDsArr = developerIDs4Arr;
-        setDeveloperIDsArr = setDeveloperIDs4Arr;
+        publishersArr = publishers4Arr;
+        setPublishersArr = setPublishers4Arr;
+        developersArr = developers4Arr;
+        setDevelopersArr = setDevelopers4Arr;
 
         break;
 
@@ -550,10 +555,10 @@ const Component = (props) => {
         setPlayersMin = setPlayersMin5;
         playersMax = playersMax5;
         setPlayersMax = setPlayersMax5;
-        publisherIDsArr = publisherIDs5Arr;
-        setPublisherIDsArr = setPublisherIDs5Arr;
-        developerIDsArr = developerIDs5Arr;
-        setDeveloperIDsArr = setDeveloperIDs5Arr;
+        publishersArr = publishers5Arr;
+        setPublishersArr = setPublishers5Arr;
+        developersArr = developers5Arr;
+        setDevelopersArr = setDevelopers5Arr;
 
         break;
 
@@ -567,10 +572,10 @@ const Component = (props) => {
         setPlayersMin = setPlayersMin6;
         playersMax = playersMax6;
         setPlayersMax = setPlayersMax6;
-        publisherIDsArr = publisherIDs6Arr;
-        setPublisherIDsArr = setPublisherIDs6Arr;
-        developerIDsArr = developerIDs6Arr;
-        setDeveloperIDsArr = setDeveloperIDs6Arr;
+        publishersArr = publishers6Arr;
+        setPublishersArr = setPublishers6Arr;
+        developersArr = developers6Arr;
+        setDevelopersArr = setDevelopers6Arr;
 
         break;
 
@@ -584,10 +589,10 @@ const Component = (props) => {
         setPlayersMin = setPlayersMin7;
         playersMax = playersMax7;
         setPlayersMax = setPlayersMax7;
-        publisherIDsArr = publisherIDs7Arr;
-        setPublisherIDsArr = setPublisherIDs7Arr;
-        developerIDsArr = developerIDs7Arr;
-        setDeveloperIDsArr = setDeveloperIDs7Arr;
+        publishersArr = publishers7Arr;
+        setPublishersArr = setPublishers7Arr;
+        developersArr = developers7Arr;
+        setDevelopersArr = setDevelopers7Arr;
 
         break;
 
@@ -601,10 +606,10 @@ const Component = (props) => {
         setPlayersMin = setPlayersMin8;
         playersMax = playersMax8;
         setPlayersMax = setPlayersMax8;
-        publisherIDsArr = publisherIDs8Arr;
-        setPublisherIDsArr = setPublisherIDs8Arr;
-        developerIDsArr = developerIDs8Arr;
-        setDeveloperIDsArr = setDeveloperIDs8Arr;
+        publishersArr = publishers8Arr;
+        setPublishersArr = setPublishers8Arr;
+        developersArr = developers8Arr;
+        setDevelopersArr = setDevelopers8Arr;
 
         break;
 
@@ -618,10 +623,10 @@ const Component = (props) => {
         setPlayersMin = setPlayersMin9;
         playersMax = playersMax9;
         setPlayersMax = setPlayersMax9;
-        publisherIDsArr = publisherIDs9Arr;
-        setPublisherIDsArr = setPublisherIDs9Arr;
-        developerIDsArr = developerIDs9Arr;
-        setDeveloperIDsArr = setDeveloperIDs9Arr;
+        publishersArr = publishers9Arr;
+        setPublishersArr = setPublishers9Arr;
+        developersArr = developers9Arr;
+        setDevelopersArr = setDevelopers9Arr;
 
         break;
 
@@ -635,10 +640,10 @@ const Component = (props) => {
         setPlayersMin = setPlayersMin10;
         playersMax = playersMax10;
         setPlayersMax = setPlayersMax10;
-        publisherIDsArr = publisherIDs10Arr;
-        setPublisherIDsArr = setPublisherIDs10Arr;
-        developerIDsArr = developerIDs10Arr;
-        setDeveloperIDsArr = setDeveloperIDs10Arr;
+        publishersArr = publishers10Arr;
+        setPublishersArr = setPublishers10Arr;
+        developersArr = developers10Arr;
+        setDevelopersArr = setDevelopers10Arr;
 
         break;
 
@@ -663,10 +668,10 @@ const Component = (props) => {
           setPlayersMin={setPlayersMin}
           playersMax={playersMax}
           setPlayersMax={setPlayersMax}
-          publisherIDsArr={publisherIDsArr}
-          setPublisherIDsArr={setPublisherIDsArr}
-          developerIDsArr={developerIDsArr}
-          setDeveloperIDsArr={setDeveloperIDsArr}
+          publishersArr={publishersArr}
+          setPublishersArr={setPublishersArr}
+          developersArr={developersArr}
+          setDevelopersArr={setDevelopersArr}
         />
 
       </div>
@@ -753,7 +758,7 @@ const Component = (props) => {
         >
 
           {/* - ボタン */}
-          {formCount > 1 &&
+          {hardwaresCount > 1 &&
             <IconButton
               css={css`
                 && {
@@ -768,7 +773,7 @@ const Component = (props) => {
 
 
           {/* + ボタン */}
-          {formCount < 10 &&
+          {hardwaresCount < 10 &&
             <IconButton
               onClick={handleAdd}
             >

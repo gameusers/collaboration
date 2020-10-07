@@ -812,7 +812,7 @@ const findEditData = async ({
               {
                 $project: {
                   _id: 0,
-                  urlID: 1,
+                  // urlID: 1,
                   name: 1,
                   imagesAndVideosObj: 1,
                   imagesAndVideosThumbnailObj: 1,

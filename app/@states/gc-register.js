@@ -23,6 +23,8 @@ import { createContainer } from 'unstated-next';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 
@@ -40,8 +42,9 @@ const useGcRegister = (initialStateObj) => {
   //   Hooks
   // --------------------------------------------------
 
-  // const [gameCommunityObj, setGameCommunityObj] = useState(lodashGet(initialStateObj, ['gameCommunityObj'], {}));
-  // const [userCommunityObj, setUserCommunityObj] = useState(lodashGet(initialStateObj, ['userCommunityObj'], {}));
+  const [formType, setFormType] = useState('new');
+  const [games_id, setGames_id] = useState('');
+  const [sourceGamesName, setSourceGamesName] = useState('');
 
   const [language, setLanguage] = useState('ja');
   const [country, setCountry] = useState('JP');
@@ -159,6 +162,8 @@ const useGcRegister = (initialStateObj) => {
 
   });
 
+  const [approvalsArr, setApprovalsArr] = useState([]);
+
 
 
 
@@ -167,7 +172,9 @@ const useGcRegister = (initialStateObj) => {
    */
   const handleResetForm = async () => {
 
-    // console.log('AAA');
+    setFormType('');
+    setGames_id('');
+    setSourceGamesName('');
 
     setLanguage('ja');
     setCountry('JP');
@@ -254,7 +261,14 @@ const useGcRegister = (initialStateObj) => {
     setPublishers10Arr([]);
     setDevelopers10Arr([]);
 
-    setLinkArr([]);
+    setLinkArr([{
+
+      _id: '',
+      type: 'Official',
+      label: '',
+      url: '',
+
+    }]);
 
     setImagesAndVideosObj({
 
@@ -283,11 +297,60 @@ const useGcRegister = (initialStateObj) => {
 
 
 
+
+  /**
+   * 仮登録を承認する
+   */
+  const handleApproval = ({ gamesTemps_id }) => {
+
+    const clonedArr = lodashCloneDeep(approvalsArr);
+    const arrayIndex = clonedArr.indexOf(gamesTemps_id);
+
+    if (arrayIndex === -1) {
+
+      clonedArr.push(gamesTemps_id);
+
+    } else {
+
+      clonedArr.splice(arrayIndex, 1);
+
+    }
+
+    setApprovalsArr(clonedArr);
+
+
+    // console.log(`
+    //   ----------------------------------------\n
+    //   app/@states/gc-register.js - handleApproval
+    // `);
+
+    // console.log(chalk`
+    //   gamesTemps_id: {green ${gamesTemps_id}}
+    // `);
+
+    // console.log(`
+    //   ----- approvalsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(approvalsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+  };
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
 
   return {
+
+    formType,
+    setFormType,
+
+    games_id,
+    setGames_id,
+    sourceGamesName,
+    setSourceGamesName,
 
     language,
     setLanguage,
@@ -453,7 +516,11 @@ const useGcRegister = (initialStateObj) => {
     imagesAndVideosThumbnailObj,
     setImagesAndVideosThumbnailObj,
 
+    approvalsArr,
+    setApprovalsArr,
+
     handleResetForm,
+    handleApproval,
 
   };
 

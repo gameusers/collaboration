@@ -36,7 +36,6 @@ import lodashCloneDeep from 'lodash/cloneDeep';
 
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
-// import InputAdornment from '@material-ui/core/InputAdornment';
 
 
 // ---------------------------------------------
@@ -148,7 +147,7 @@ const ComponentForm = (props) => {
             }
           }
         `}
-        id="releaseDate"
+        id={`releaseDate${i}`}
         type="date"
         margin="normal"
         label="発売日"
@@ -171,7 +170,7 @@ const ComponentForm = (props) => {
             }
           }
         `}
-        id="playersMin"
+        id={`playersMin${i}`}
         type="number"
         margin="normal"
         label="プレイ人数 最小"
@@ -194,7 +193,7 @@ const ComponentForm = (props) => {
             }
           }
         `}
-        id="playersMax"
+        id={`playersMax${i}`}
         type="number"
         margin="normal"
         label="プレイ人数 最大"
@@ -246,6 +245,7 @@ const Component = (props) => {
   const {
 
     hardwaresCount,
+    setHardwaresCount,
 
     hardwares1Arr,
     setHardwares1Arr,
@@ -405,7 +405,7 @@ const Component = (props) => {
   const handleAdd = () => {
 
     if (hardwaresCount < 10) {
-      setFormCount(hardwaresCount + 1);
+      setHardwaresCount(hardwaresCount + 1);
     }
 
     // console.log(chalk`
@@ -424,7 +424,7 @@ const Component = (props) => {
   const handleRemove = () => {
 
     if (hardwaresCount > 1) {
-      setFormCount(hardwaresCount - 1);
+      setHardwaresCount(hardwaresCount - 1);
     }
 
     // console.log(chalk`

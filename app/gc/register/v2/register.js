@@ -34,6 +34,8 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+// import lodashSet from 'lodash/set';
+// import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
@@ -42,9 +44,9 @@ import lodashGet from 'lodash/get';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import Popover from '@material-ui/core/Popover';
+// import Button from '@material-ui/core/Button';
+// import IconButton from '@material-ui/core/IconButton';
+// import Popover from '@material-ui/core/Popover';
 import Paper from '@material-ui/core/Paper';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -56,8 +58,8 @@ import Select from '@material-ui/core/Select';
 //   Material UI / Icons
 // ---------------------------------------------
 
-import IconEdit from '@material-ui/icons/Edit';
-import IconHelpOutline from '@material-ui/icons/HelpOutline';
+// import IconEdit from '@material-ui/icons/Edit';
+// import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
 // ---------------------------------------------
@@ -157,6 +159,10 @@ const Component = (props) => {
   } = stateLayout;
 
   const {
+
+    setFormType,
+    setGames_id,
+    setSourceGamesName,
 
     setLanguage,
     setCountry,
@@ -275,7 +281,7 @@ const Component = (props) => {
   // --------------------------------------------------
 
   /**
-   * 仮登録ゲーム一覧を読み込む
+   * 登録ゲーム一覧を読み込む
    * @param {number} page - ページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
@@ -368,6 +374,8 @@ const Component = (props) => {
       //   games_id: {green ${games_id}}
       //   gamesTemps_id: {green ${gamesTemps_id}}
       // `);
+
+
       // ---------------------------------------------
       //   _id が存在しない場合エラー
       // ---------------------------------------------
@@ -555,7 +563,68 @@ const Component = (props) => {
       setLinkArr(lodashGet(resultObj, ['data', 'linkArr'], []));
 
 
-      let imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
+
+      // ---------------------------------------------
+      //   分岐
+      // ---------------------------------------------
+
+      // const postscriptGames_id = lodashGet(resultObj, ['data', 'games_id'], games_id);
+      const gamesObj = lodashGet(resultObj, ['data', 'gamesObj'], {});
+      let imagesAndVideosObj = {};
+      let imagesAndVideosThumbnailObj = {};
+
+
+      // ----------------------------------------
+      //   - 追記の場合 / games
+      // ----------------------------------------
+
+      // if (postscriptGames_id || Object.keys(gamesObj).length !== 0) {
+      if (games_id) {
+
+        setGames_id(games_id);
+        setFormType('postscript');
+        setSourceGamesName(lodashGet(resultObj, ['data', 'name'], ''));
+
+        imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
+        imagesAndVideosThumbnailObj = lodashGet(resultObj, ['data', 'imagesAndVideosThumbnailObj'], {});
+
+
+      // ----------------------------------------
+      //   - 追記の場合 / games-temps
+      // ----------------------------------------
+
+      } else if (Object.keys(gamesObj).length !== 0) {
+
+        setGames_id(lodashGet(resultObj, ['data', 'games_id'], ''));
+        setFormType('postscript');
+        setSourceGamesName(lodashGet(gamesObj, ['name'], ''));
+
+        imagesAndVideosObj = lodashGet(gamesObj, ['imagesAndVideosObj'], {});
+        imagesAndVideosThumbnailObj = lodashGet(gamesObj, ['imagesAndVideosThumbnailObj'], {});
+
+        // setGames_id(lodashGet(resultObj, ['data', 'games_id'], ''));
+        // setFormType('postscript');
+        // setSourceGamesName(lodashGet(resultObj, ['gamesObj', 'name'], ''));
+
+        // imagesAndVideosObj = lodashGet(resultObj, ['gamesObj', 'imagesAndVideosObj'], {});
+        // imagesAndVideosThumbnailObj = lodashGet(resultObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
+
+
+      // ----------------------------------------
+      //   - 新規登録の場合
+      // ----------------------------------------
+
+      } else {
+
+        setGames_id('');
+        setFormType('new');
+        setSourceGamesName(lodashGet(resultObj, ['data', 'name'], ''));
+
+        imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
+        imagesAndVideosThumbnailObj = lodashGet(resultObj, ['data', 'imagesAndVideosThumbnailObj'], {});
+
+      }
+
 
       if (Object.keys(imagesAndVideosObj).length === 0) {
 
@@ -574,7 +643,6 @@ const Component = (props) => {
 
       setImagesAndVideosObj(imagesAndVideosObj);
 
-      let imagesAndVideosThumbnailObj = lodashGet(resultObj, ['data', 'imagesAndVideosThumbnailObj'], {});
 
       if (Object.keys(imagesAndVideosThumbnailObj).length === 0) {
 
@@ -592,11 +660,6 @@ const Component = (props) => {
       }
 
       setImagesAndVideosThumbnailObj(imagesAndVideosThumbnailObj);
-
-
-      // console.log(chalk`
-      // lodashGet(resultObj, ['data', 'hardwareArr', 0, 'releaseDate'], ''): {green ${lodashGet(resultObj, ['data', 'hardwareArr', 0, 'releaseDate'], '')}}
-      // `);
 
 
     } catch (errorObj) {
@@ -735,7 +798,7 @@ const Component = (props) => {
     //   push
     // --------------------------------------------------
 
-    componentListArr.push(
+    componentTempsListArr.push(
       <CardTemp
         key={index}
         obj={dataObj}

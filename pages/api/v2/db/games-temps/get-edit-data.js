@@ -174,6 +174,20 @@ export default async (req, res) => {
 
       });
 
+
+    // ---------------------------------------------
+    //   - 本登録
+    // ---------------------------------------------
+
+    } else if (games_id) {
+
+      returnObj = await ModelGames.findEditData({
+
+        localeObj,
+        games_id,
+
+      });
+
     }
 
 

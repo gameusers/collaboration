@@ -15,7 +15,8 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
+// import Link from 'next/link';
+// import moment from 'moment';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -33,35 +34,17 @@ import lodashHas from 'lodash/has';
 //   Material UI
 // ---------------------------------------------
 
-// import Card from '@material-ui/core/Card';
-// import Button from '@material-ui/core/Button';
-// import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-
-
-// ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-// import IconSchedule from '@material-ui/icons/Schedule';
-// import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
-// import IconDescription from '@material-ui/icons/Description';
-// import IconPermIdentity from '@material-ui/icons/PermIdentity';
-// import IconEdit from '@material-ui/icons/Edit';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 
 // ---------------------------------------------
 //   States
 // ---------------------------------------------
 
-// import { ContainerStateGcRegister } from 'app/@states/gc-register.js';
-
-
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
-// import ImageAndVideo from 'app/common/image-and-video/v2/image-and-video.js';
+import { ContainerStateUser } from 'app/@states/user.js';
+import { ContainerStateGcRegister } from 'app/@states/gc-register.js';
 
 
 
@@ -93,6 +76,22 @@ const Component = (props) => {
 
 
   // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+
+  const stateUser = ContainerStateUser.useContainer();
+  const stateGcRegister = ContainerStateGcRegister.useContainer();
+
+  const { loginUsersObj } = stateUser;
+  const { approvalsArr, handleApproval } = stateGcRegister;
+
+  const role = lodashGet(loginUsersObj, ['role'], '');
+  const administrator = role === 'administrator' ? true : false;
+
+
+
+
+  // --------------------------------------------------
   //   データが存在しない場合、空のコンポーネントを返す
   // --------------------------------------------------
 
@@ -107,8 +106,9 @@ const Component = (props) => {
   //   Data
   // ---------------------------------------------
 
-  const _id = lodashGet(obj, ['_id'], '');
+  const gamesTemps_id = lodashGet(obj, ['_id'], '');
   const createdDate = lodashGet(obj, ['createdDate'], '');
+  // const createdDate = moment(lodashGet(obj, ['createdDate'], '')).utc().format('YYYY/MM/DD hh:mm');
   const name = lodashGet(obj, ['name'], '');
   const subtitle = lodashGet(obj, ['subtitle'], '');
   const src = '/img/common/thumbnail/none-game.jpg';
@@ -133,7 +133,7 @@ const Component = (props) => {
   // `);
 
   // console.log(chalk`
-  //   _id: {green ${_id}}
+  //   approvalsArr.includes(gamesTemps_id): {green ${approvalsArr.includes(gamesTemps_id)}}
   // `);
 
 
@@ -154,17 +154,12 @@ const Component = (props) => {
           margin: 12px 0 0 0;
         }
       `}
-      onClick={() => handleGetEditData({ gamesTemps_id: _id })}
     >
 
 
       {/* Left */}
       <div
-        css={css`
-          // border-radius: 10px;
-          // width: 64px;
-          // margin: 12px 0 0 0;
-        `}
+        onClick={() => handleGetEditData({ gamesTemps_id })}
       >
         <img
           css={css`
@@ -189,6 +184,7 @@ const Component = (props) => {
           margin: 4px 0 0 0;
           padding: 4px 8px;
         `}
+        onClick={() => handleGetEditData({ gamesTemps_id })}
       >
 
         <div
@@ -249,6 +245,33 @@ const Component = (props) => {
         </div>
 
       </div>
+
+
+
+
+      {/* Checkbox Approval */}
+      {administrator &&
+        <div
+          css={css`
+            margin: 0 0 0 24px;
+          `}
+        >
+          <FormControlLabel
+            control={
+              <Checkbox
+                css={css`
+                  && {
+                    // margin: 0 0 0 12px;
+                    padding: 0;
+                  }
+                `}
+                checked={approvalsArr.includes(gamesTemps_id)}
+                onChange={() => handleApproval({ gamesTemps_id })}
+              />
+            }
+          />
+        </div>
+      }
 
 
     </Paper>

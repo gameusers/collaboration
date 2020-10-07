@@ -78,6 +78,7 @@ const Component = (props) => {
   const {
 
     obj = {},
+    handleGetEditData,
 
   } = props;
 
@@ -99,6 +100,7 @@ const Component = (props) => {
   //   Data
   // ---------------------------------------------
 
+  const _id = lodashGet(obj, ['_id'], '');
   const name = lodashGet(obj, ['name'], '');
   const subtitle = lodashGet(obj, ['subtitle'], '');
   const src = lodashGet(obj, ['src'], '/img/common/thumbnail/none-game.jpg');
@@ -142,9 +144,11 @@ const Component = (props) => {
           display: flex;
           flex-flow: row nowrap;
           align-items: center;
+          cursor: pointer;
           margin: 12px 0 0 0;
         }
       `}
+      onClick={() => handleGetEditData({ games_id: _id })}
     >
 
 
@@ -216,9 +220,10 @@ const Component = (props) => {
               <div
                 css={css`
                   font-size: 12px;
+                  font-weight: bold;
                 `}
               >
-                本登録済み
+                [本登録]
               </div>
             </div>
 

@@ -3549,8 +3549,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
         urlID: 'Fall-Guys',
         language: 'ja',
         country: 'JP',
-        // imagesAndVideos_id: '',
-        // imagesAndVideosThumbnail_id: '',
         name: 'Fall Guys',
         subtitle: ': Ultimate Knockout',
         searchKeywordsArr: ['Fall Guys', 'フォールガイズ', 'ふぉーるがいず'],
@@ -3593,7 +3591,105 @@ router.post('/db', upload.none(), async (req, res, next) => {
             url: 'https://www.playstation.com/ja-jp/games/fall-guys-ultimate-knockout-ps4/'
           }
         ]
-      }
+      },
+
+
+      {
+        _id: 'idxT9TDFg',
+        createdDate: '2020-10-07T00:00:00.000Z',
+        updatedDate: '2020-10-07T00:00:00.000Z',
+        approval: false,
+        users_id: 'jun-deE4J',
+        games_id: '',
+        urlID: 'Among-Us',
+        language: 'ja',
+        country: 'JP',
+        name: 'Among Us',
+        subtitle: '',
+        searchKeywordsArr: ['Among Us', 'アモングアス', 'あもんぐあす'],
+        sortKeyword: 'アモングアス',
+        twitterHashtagsArr: ['AmongUs'],
+        genreArr: ['HBpRRumc3'],
+        genreSubArr: [],
+        genreTagArr: [],
+        hardwareArr: [],
+        linkArr: []
+      },
+
+
+      {
+        _id: 'eAXkQqcwp',
+        createdDate: '2020-10-07T08:57:40.788Z',
+        updatedDate: '2020-10-07T08:57:40.788Z',
+        approval: false,
+        users_id: 'jun-deE4J',
+        games_id: 'PdWVRzkoW',
+        urlID: 'Dragon-Quest-Builders2',
+        language: 'ja',
+        country: 'JP',
+        name: 'ドラゴンクエストビルダーズ2',
+        subtitle: ' 破壊神シドーとからっぽの島',
+        searchKeywordsArr: [
+          'ドラゴンクエストビルダーズ2',
+          'ドラクエビルダーズ2',
+          'DQB2'
+        ],
+        sortKeyword: 'ドラゴンクエストビルダーズ2',
+        twitterHashtagsArr: ['DQB2'],
+        genreArr: ['sU94RUPS7'],
+        genreSubArr: [],
+        genreTagArr: [],
+        hardwareArr: [
+          {
+            _id: '',
+            hardwareID: 'TdK3Oc-yV',
+            releaseDate: '2018-12-20T00:00:00.000Z',
+            playersMin: 1,
+            playersMax: 4,
+            publisherIDsArr: [],
+            developerIDsArr: []
+          },
+          {
+            _id: '',
+            hardwareID: 'Zd_Ia4Hwm',
+            releaseDate: '2017-12-20T00:00:00.000Z',
+            playersMin: 1,
+            playersMax: 4,
+            publisherIDsArr: [],
+            developerIDsArr: []
+          },
+          {
+            _id: '',
+            hardwareID: 'P0UG-LHOQ',
+            releaseDate: '2019-12-11T00:00:00.000Z',
+            playersMin: 1,
+            playersMax: 4,
+            publisherIDsArr: [],
+            developerIDsArr: []
+          }
+        ],
+        linkArr: [
+          {
+            _id: '',
+            type: 'Official',
+            label: '',
+            url: 'http://www.dragonquest.jp/builders2/'
+          },
+          {
+            _id: '',
+            type: 'Twitter',
+            label: '',
+            url: 'https://twitter.com/DQ_BUILDERS2'
+          },
+          {
+            _id: '',
+            type: 'Steam',
+            label: '',
+            url: 'https://store.steampowered.com/app/1072420/'
+          }
+        ]
+      },
+
 
     ];
 

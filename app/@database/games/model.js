@@ -14,6 +14,13 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
+const moment = require('moment');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
@@ -926,6 +933,421 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
 
 
 
+/**
+ * 編集用データを取得する / gc/register
+ * @param {Object} localeObj - ロケール
+ * @param {string} keyword - 検索キーワード
+ * @param {number} page - ページ
+ * @param {number} limit - リミット
+ * @return {Object} 取得データ
+ */
+const findEditData = async ({
+
+  localeObj,
+  games_id,
+
+}) => {
+
+
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+
+  try {
+
+
+    // --------------------------------------------------
+    //   Language & Country
+    // --------------------------------------------------
+
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+
+
+
+
+    // --------------------------------------------------
+    //   Aggregation - games
+    // --------------------------------------------------
+
+    const docArr = await SchemaGames.aggregate([
+
+
+      // --------------------------------------------------
+      //   $match
+      // --------------------------------------------------
+
+      {
+        $match: {
+          _id: games_id,
+        }
+      },
+
+
+      // --------------------------------------------------
+      //   images-and-videos / メイン画像
+      // --------------------------------------------------
+
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideos_id']
+                  },
+                }
+              },
+              {
+                $project: {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+
+
+      // --------------------------------------------------
+      //   images-and-videos / サムネイル画像
+      // --------------------------------------------------
+
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                  },
+                }
+              },
+              {
+                $project: {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosThumbnailObj'
+          }
+      },
+
+      {
+        $unwind: {
+          path: '$imagesAndVideosThumbnailObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+
+
+      // --------------------------------------------------
+      //   hardwares
+      // --------------------------------------------------
+
+      {
+        $lookup:
+          {
+            from: 'hardwares',
+            let: {
+              letHardwareID: '$hardwareArr.hardwareID',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$language', language] },
+                      { $eq: ['$country', country] },
+                      { $in: ['$hardwareID', '$$letHardwareID'] }
+                    ]
+                  }
+                }
+              },
+              {
+                $project: {
+                  _id: 0,
+                  hardwareID: 1,
+                  name: 1,
+                }
+              }
+            ],
+            as: 'hardwaresArr'
+          }
+      },
+
+
+    ]).exec();
+
+
+
+
+    // --------------------------------------------------
+    //   returnObj
+    // --------------------------------------------------
+
+    const returnObj = lodashGet(docArr, [0], {});
+
+
+
+
+    // --------------------------------------------------
+    //   Hardware & Developers Publishers
+    // --------------------------------------------------
+
+    const hardwareArr = lodashGet(returnObj, ['hardwareArr'], []);
+
+
+    // ---------------------------------------------
+    //   *** Developers Publishers
+    // ---------------------------------------------
+
+    let developerPublisherIDsArr = [];
+
+
+    // ----------------------------------------
+    //   - Loop
+    // ----------------------------------------
+
+    for (let valueObj of hardwareArr.values()) {
+
+      const publisherIDsArr = lodashGet(valueObj, ['publisherIDsArr'], []);
+      const developerIDsArr = lodashGet(valueObj, ['developerIDsArr'], []);
+
+      developerPublisherIDsArr = developerPublisherIDsArr.concat(publisherIDsArr, developerIDsArr);
+
+    }
+
+
+    // ----------------------------------------
+    //   - 配列の重複している値を削除
+    // ----------------------------------------
+
+    developerPublisherIDsArr = Array.from(new Set(developerPublisherIDsArr));
+
+
+    // ----------------------------------------
+    //   - find
+    // ----------------------------------------
+
+    const docDevelopersPublishersArr = await ModelDevelopersPublishers.find({
+
+      conditionObj: {
+        language,
+        country,
+        developerPublisherID: { $in: developerPublisherIDsArr },
+      }
+
+    });
+
+
+    // ---------------------------------------------
+    //   *** Hardware
+    // ---------------------------------------------
+
+    const hardwaresArr = lodashGet(returnObj, ['hardwaresArr'], []);
+
+    const newHardwareArr = [];
+
+    for (let value1Obj of hardwareArr) {
+
+
+      // ----------------------------------------
+      //   - Hardware
+      // ----------------------------------------
+
+      const find1Obj = hardwaresArr.find((valueOb2j) => {
+        return value1Obj.hardwareID === valueOb2j.hardwareID;
+      });
+
+
+      // ----------------------------------------
+      //   - Developers Publishers
+      // ----------------------------------------
+
+      const publishersArr = [];
+      const developersArr = [];
+
+      const publisherIDsArr = lodashGet(value1Obj, ['publisherIDsArr'], []);
+      const developerIDsArr = lodashGet(value1Obj, ['developerIDsArr'], []);
+
+      for (let publisherID of publisherIDsArr.values()) {
+
+        const find2Obj = docDevelopersPublishersArr.find((value2Obj) => {
+          return value2Obj.developerPublisherID === publisherID;
+        });
+
+        publishersArr.push({
+          developerPublisherID: find2Obj.developerPublisherID,
+          name: find2Obj.name,
+        });
+
+      }
+
+      for (let developerID of developerIDsArr.values()) {
+
+        const find2Obj = docDevelopersPublishersArr.find((value2Obj) => {
+          return value2Obj.developerPublisherID === developerID;
+        });
+
+        developersArr.push({
+          developerPublisherID: find2Obj.developerPublisherID,
+          name: find2Obj.name,
+        });
+
+      }
+
+
+      // console.log(`
+      //   ----- value1Obj -----\n
+      //   ${util.inspect(value1Obj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // console.log(`
+      //   ----- publishersArr -----\n
+      //   ${util.inspect(publishersArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // ----------------------------------------
+      //   - Release Date
+      // ----------------------------------------
+
+      const releaseDate = lodashGet(value1Obj, ['releaseDate'], '');
+      const formattedDate = releaseDate ? moment(releaseDate).format('YYYY-MM-DD') : '';
+
+      if (find1Obj && 'name' in find1Obj) {
+
+        newHardwareArr.push({
+
+          _id: value1Obj._id,
+          hardwaresArr: [{
+            hardwareID: find1Obj.hardwareID,
+            name: find1Obj.name
+          }],
+          releaseDate: formattedDate,
+          playersMin: value1Obj.playersMin,
+          playersMax: value1Obj.playersMax,
+          publishersArr,
+          developersArr,
+
+        });
+
+      }
+
+    }
+
+    returnObj.hardwareArr = newHardwareArr;
+
+
+
+
+    // console.log(`
+    //   ----- newHardwareArr -----\n
+    //   ${util.inspect(newHardwareArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- developerPublisherIDsArr -----\n
+    //   ${util.inspect(developerPublisherIDsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- docDevelopersPublishersArr -----\n
+    //   ${util.inspect(docDevelopersPublishersArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- developersPublishersArr -----\n
+    //   ${util.inspect(developersPublishersArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
+
+
+    // --------------------------------------------------
+    //   Delete
+    // --------------------------------------------------
+
+    delete returnObj.hardwaresArr;
+
+
+
+
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+
+    console.log(`
+      ----------------------------------------\n
+      app/@database/games/model.js - findEditData
+    `);
+
+    // console.log(chalk`
+    //   gamesTemps_id: {green ${gamesTemps_id}}
+    // `);
+
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+
+
+
+
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+
+    return returnObj;
+
+
+  } catch (err) {
+
+    throw err;
+
+  }
+
+
+};
+
+
+
+
+
+
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
@@ -941,5 +1363,6 @@ module.exports = {
 
   findForHeroImage,
   findBySearchKeywordsArrForSuggestion,
+  findEditData,
 
 };

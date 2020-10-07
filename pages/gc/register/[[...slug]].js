@@ -409,7 +409,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   // console.log(`
   //   ----------------------------------------\n
-  //   pages/gc/list/[[...slug]].js
+  //   pages/gc/register/[[...slug]].js
   // `);
 
   // console.log(`

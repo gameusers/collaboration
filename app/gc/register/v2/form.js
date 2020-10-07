@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
+import Router from 'next/router';
 import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
@@ -126,7 +127,6 @@ const Component = (props) => {
 
   const {
 
-    games_id,
     gameGenresArr,
 
   } = props;
@@ -155,6 +155,12 @@ const Component = (props) => {
 
   const {
 
+    formType,
+    setFormType,
+
+    games_id,
+    sourceGamesName,
+
     language,
     setLanguage,
     country,
@@ -179,6 +185,7 @@ const Component = (props) => {
     setGenre3,
 
     hardwaresCount,
+    setHardwaresCount,
 
     hardwares1Arr,
     setHardwares1Arr,
@@ -351,15 +358,6 @@ const Component = (props) => {
     setButtonDisabled(false);
 
 
-    // --------------------------------------------------
-    //   編集用データを読み込む
-    // --------------------------------------------------
-
-    if (games_id) {
-      handleGetEditData();
-    }
-
-
   }, []);
 
 
@@ -368,221 +366,6 @@ const Component = (props) => {
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-
-  /**
-   * 編集用データを読み込む
-   */
-  const handleGetEditData = async () => {
-
-
-    try {
-
-
-      // ---------------------------------------------
-      //   recruitmentThreads_id が存在しない場合エラー
-      // ---------------------------------------------
-
-      if (!recruitmentThreads_id) {
-        throw new CustomError({ errorsArr: [{ code: '1sfB7JPUO', messageID: 'Error' }] });
-      }
-
-
-
-
-      // ---------------------------------------------
-      //   Loading Open
-      // ---------------------------------------------
-
-      handleLoadingOpen({});
-
-
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-
-      setButtonDisabled(true);
-
-
-
-
-      // ---------------------------------------------
-      //   Scroll To
-      // ---------------------------------------------
-
-      handleScrollTo({
-
-        to: recruitmentThreads_id,
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
-
-      });
-
-
-
-
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
-
-      const formDataObj = {
-
-        recruitmentThreads_id,
-
-      };
-
-
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
-
-      const resultObj = await fetchWrapper({
-
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/get-edit-data`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
-
-      });
-
-
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
-
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-
-
-
-
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-
-      setButtonDisabled(false);
-
-
-      // ---------------------------------------------
-      //   Set Form Data
-      // ---------------------------------------------
-
-      setHardwaresArr(lodashGet(resultObj, ['data', 'hardwaresArr'], []));
-      setCategory(lodashGet(resultObj, ['data', 'category'], ''));
-
-
-      const localesArr = lodashGet(resultObj, ['data', 'localesArr'], []);
-
-      const filteredArr = localesArr.filter((filterObj) => {
-        return filterObj.language === localeObj.language;
-      });
-
-      if (lodashHas(filteredArr, [0])) {
-
-        setTitle(lodashGet(filteredArr, [0, 'title'], ''));
-        setName(lodashGet(filteredArr, [0, 'name'], ''));
-        setComment(lodashGet(filteredArr, [0, 'comment'], ''));
-
-      } else {
-
-        setTitle(lodashGet(localesArr, [0, 'title'], ''));
-        setName(lodashGet(localesArr, [0, 'name'], ''));
-        setComment(lodashGet(localesArr, [0, 'comment'], ''));
-
-      }
-
-
-      let tempImagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
-
-      if (Object.keys(tempImagesAndVideosObj).length === 0) {
-
-        tempImagesAndVideosObj = {
-
-          _id: '',
-          createdDate: '',
-          updatedDate: '',
-          users_id: '',
-          type: 'recruitment',
-          arr: [],
-
-        };
-
-      }
-
-      setImagesAndVideosObj(tempImagesAndVideosObj);
-
-
-      setIDsArr(lodashGet(resultObj, ['data', 'idsArr'], []));
-      setPlatform1(lodashGet(resultObj, ['data', 'platform1'], 'Other'));
-      setPlatform2(lodashGet(resultObj, ['data', 'platform2'], 'Other'));
-      setPlatform3(lodashGet(resultObj, ['data', 'platform3'], 'Other'));
-      setID1(lodashGet(resultObj, ['data', 'id1'], ''));
-      setID2(lodashGet(resultObj, ['data', 'id2'], ''));
-      setID3(lodashGet(resultObj, ['data', 'id3'], ''));
-      setInformationTitle1(lodashGet(resultObj, ['data', 'informationTitle1'], ''));
-      setInformationTitle2(lodashGet(resultObj, ['data', 'informationTitle2'], ''));
-      setInformationTitle3(lodashGet(resultObj, ['data', 'informationTitle3'], ''));
-      setInformationTitle4(lodashGet(resultObj, ['data', 'informationTitle4'], ''));
-      setInformationTitle5(lodashGet(resultObj, ['data', 'informationTitle5'], ''));
-      setInformation1(lodashGet(resultObj, ['data', 'information1'], ''));
-      setInformation2(lodashGet(resultObj, ['data', 'information2'], ''));
-      setInformation3(lodashGet(resultObj, ['data', 'information3'], ''));
-      setInformation4(lodashGet(resultObj, ['data', 'information4'], ''));
-      setInformation5(lodashGet(resultObj, ['data', 'information5'], ''));
-      setPublicSetting(lodashGet(resultObj, ['data', 'publicSetting'], 1));
-      setDeadlineDate(lodashGet(resultObj, ['data', 'deadlineDate'], ''));
-      setWebPushAvailable(lodashGet(resultObj, ['data', 'webPushAvailable'], false));
-      setWebPushSubscriptionObj(lodashGet(resultObj, ['data', 'webPushesObj', 'subscriptionObj'], {}));
-
-
-    } catch (errorObj) {
-
-
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-
-      setButtonDisabled(false);
-
-
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-
-      showSnackbar({
-
-        enqueueSnackbar,
-        intl,
-        errorObj,
-
-      });
-
-
-    } finally {
-
-
-      // ---------------------------------------------
-      //   Loading Close
-      // ---------------------------------------------
-
-      handleLoadingClose();
-
-
-    }
-
-
-  };
-
-
-
 
   /**
    * ゲームを登録する
@@ -602,33 +385,9 @@ const Component = (props) => {
     eventObj.preventDefault();
 
 
-    // ---------------------------------------------
-    //   新規投稿時の recruitmentThreads_id
-    // ---------------------------------------------
-
-    // let newRecruitmentThreads_id = '';
-
-
 
 
     try {
-
-
-      // ---------------------------------------------
-      //   Property
-      // ---------------------------------------------
-
-      // const hardwareIDsArr = [];
-
-      // for (let valueObj of hardwaresArr.values()) {
-      //   hardwareIDsArr.push(valueObj.hardwareID);
-      // }
-
-      // const threadLimit = parseInt((getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
-      // const commentLimit = parseInt((getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
-      // const replyLimit = parseInt((getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
-
-
 
 
       // ---------------------------------------------
@@ -670,6 +429,7 @@ const Component = (props) => {
 
       const formDataObj = {
 
+        games_id,
         language,
         country,
         name,
@@ -879,11 +639,11 @@ const Component = (props) => {
 
       }
 
-      if (imagesAndVideosObj.arr.length !== 0) {
+      if (administrator && imagesAndVideosObj.arr.length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
 
-      if (imagesAndVideosThumbnailObj.arr.length !== 0) {
+      if (administrator && imagesAndVideosThumbnailObj.arr.length !== 0) {
         formDataObj.imagesAndVideosThumbnailObj = imagesAndVideosObj;
       }
 
@@ -932,121 +692,7 @@ const Component = (props) => {
       //   Reset Form
       // ---------------------------------------------
 
-      setLanguage('ja');
-      setCountry('JP');
-      setName('');
-      setSubtitle('');
-      setSortKeyword('');
-      setURLID('');
-      setTwitterHashtagsArr([]);
-      setSearchKeywordsArr([]);
-
-      setGenre1('');
-      setGenre2('');
-      setGenre3('');
-
-      setHardwares1Arr([]);
-      setReleaseDate1('');
-      setPlayersMin1(1);
-      setPlayersMax1(1);
-      setPublishers1Arr([]);
-      setDevelopers1Arr([]);
-
-      setHardwares2Arr([]);
-      setReleaseDate2('');
-      setPlayersMin2(1);
-      setPlayersMax2(1);
-      setPublishers2Arr([]);
-      setDevelopers2Arr([]);
-
-      setHardwares3Arr([]);
-      setReleaseDate3('');
-      setPlayersMin3(1);
-      setPlayersMax3(1);
-      setPublishers3Arr([]);
-      setDevelopers3Arr([]);
-
-      setHardwares4Arr([]);
-      setReleaseDate4('');
-      setPlayersMin4(1);
-      setPlayersMax4(1);
-      setPublishers4Arr([]);
-      setDevelopers4Arr([]);
-
-      setHardwares5Arr([]);
-      setReleaseDate5('');
-      setPlayersMin5(1);
-      setPlayersMax5(1);
-      setPublishers5Arr([]);
-      setDevelopers5Arr([]);
-
-      setHardwares6Arr([]);
-      setReleaseDate6('');
-      setPlayersMin6(1);
-      setPlayersMax6(1);
-      setPublishers6Arr([]);
-      setDevelopers6Arr([]);
-
-      setHardwares7Arr([]);
-      setReleaseDate7('');
-      setPlayersMin7(1);
-      setPlayersMax7(1);
-      setPublishers7Arr([]);
-      setDevelopers7Arr([]);
-
-      setHardwares8Arr([]);
-      setReleaseDate8('');
-      setPlayersMin8(1);
-      setPlayersMax8(1);
-      setPublishers8Arr([]);
-      setDevelopers8Arr([]);
-
-      setHardwares9Arr([]);
-      setReleaseDate9('');
-      setPlayersMin9(1);
-      setPlayersMax9(1);
-      setPublishers9Arr([]);
-      setDevelopers9Arr([]);
-
-      setHardwares10Arr([]);
-      setReleaseDate10('');
-      setPlayersMin10(1);
-      setPlayersMax10(1);
-      setPublishers10Arr([]);
-      setDevelopers10Arr([]);
-
-      setLinkArr([{
-
-        _id: '',
-        type: 'Official',
-        label: '',
-        url: '',
-
-      }]);
-
-      setImagesAndVideosObj({
-
-        _id: '',
-        createdDate: '',
-        updatedDate: '',
-        users_id: '',
-        type: 'temp',
-        arr: [],
-
-      });
-
-      setImagesAndVideosThumbnailObj({
-
-        _id: '',
-        createdDate: '',
-        updatedDate: '',
-        users_id: '',
-        type: 'temp',
-        arr: [],
-
-      });
-
-
+      handleResetForm();
 
 
       // ---------------------------------------------
@@ -1072,6 +718,16 @@ const Component = (props) => {
         ]
 
       });
+
+
+      // ---------------------------------------------
+      //   Router.push = History API pushState()
+      // ---------------------------------------------
+
+      const url = '/gc/register/[[...slug]]';
+      const as = '/gc/register';
+
+      await Router.push(url, as);
 
 
 
@@ -1227,11 +883,10 @@ const Component = (props) => {
 
   // console.log(`
   //   ----------------------------------------\n
-  //   app/gc/list/v2/form.js
+  //   app/gc/register/v2/form.js
   // `);
 
   // console.log(chalk`
-  //   gameCommunities_id: {green ${gameCommunities_id}}
   //   games_id: {green ${games_id}}
   // `);
 
@@ -1264,26 +919,16 @@ const Component = (props) => {
 
 
         {/* Heading & Explanation */}
-        {games_id
+        {formType === 'postscript'
           ?
             <React.Fragment>
-
-              <h3
-                css={css`
-                  font-weight: bold;
-                  margin: 0 0 12px 0;
-                `}
-              >
-                ゲーム編集フォーム
-              </h3>sudo service docker start
-
 
               <p
                 css={css`
                   margin: 0 0 14px 0;
                 `}
               >
-                登録済みのゲームのデータを利用して、さらに情報を追加できます。
+                登録済みのゲームのデータを利用して、さらに情報を追加できます。追記した場合、同じゲームが一覧に複数表示されることになりますが、これは元々の仕様なので気にしないようにしてください。
               </p>
 
             </React.Fragment>
@@ -1298,8 +943,6 @@ const Component = (props) => {
                 ゲームを新しく登録する場合、こちらのフォームを利用してください。すべての情報を正確に入力する必要はありません。わからない欄は未入力にしておいてください。
               </p>
 
-
-
             </React.Fragment>
         }
 
@@ -1311,23 +954,70 @@ const Component = (props) => {
           こちらのフォームに入力してもらったデータは仮登録という形で保存されます。Game Users運営の確認後に正式にサイトに反映されますので、空欄が多かったり、多少間違っている情報があっても問題はありません。
         </p>
 
-        <p
+        {/* <p
           css={css`
             margin: 0 0 14px 0;
           `}
         >
-          登録は新規にすべての情報を入力するか、既存の情報をベースにして追記していくかになります。ゲームの一覧をクリック（タップ）すると、登録済みの情報に追記することができるようになります。追記した場合、同じゲームが一覧に複数表示されることになりますが、これは元々の仕様なので気にしないでください。
-        </p>
+          登録は新規にすべての情報を入力するか、既存の情報をベースにして追記していくかになります。ゲームの一覧をクリック（タップ）すると、登録済みの情報に追記することができるようになります。追記した場合、同じゲームが一覧に複数表示されることになりますが、これは元々の仕様なので気にしないようにしてください。
+        </p> */}
 
-        <p
-          css={css`
-            color: red;
-            margin: 0 0 14px 0;
-          `}
-        >
-          ※ フォームを送信するにはログインする必要があります。
-        </p>
 
+
+
+        {/* ウェブサイトの種類 */}
+        <div css={cssBox}>
+
+          <h3
+            css={css`
+              font-weight: bold;
+              margin: 0 0 2px 0;
+            `}
+          >
+            登録の種類
+          </h3>
+
+          <p
+            css={css`
+              margin: 0 0 12px 0;
+            `}
+          >
+            「新規登録」は新しくゲームを登録する場合に選んでください。「追記」はすでに本登録されているゲームに対して情報を追記・編集する場合に選びます。
+          </p>
+
+          <p
+            css={css`
+              margin: 0 0 24px 0;
+            `}
+          >
+            例えばシリーズもののゲームを登録する場合、ゲームの一覧で過去作を選び、フォームに過去作の情報を表示します。そして登録の種類を「新規登録」に変更すると、過去作のデータを利用して新しいゲームを登録することができます。
+          </p>
+
+
+          <FormControl>
+
+            <InputLabel>登録の種類</InputLabel>
+
+            <Select
+              css={css`
+                && {
+                  @media screen and (max-width: 480px) {
+                    max-width: 260px;
+                  }
+                }
+              `}
+              value={formType}
+              onChange={(eventObj) => setFormType(eventObj.target.value)}
+            >
+              <MenuItem value="new">新規登録</MenuItem>
+              {games_id &&
+                <MenuItem value="postscript">追記: {sourceGamesName}</MenuItem>
+              }
+            </Select>
+
+          </FormControl>
+
+        </div>
 
 
 
@@ -1449,7 +1139,6 @@ const Component = (props) => {
               && {
                 width: 100%;
                 max-width: 500px;
-                ${games_id && `margin-top: 4px;`}
               }
             `}
             label="ゲーム名"
@@ -1457,6 +1146,7 @@ const Component = (props) => {
             onChange={(eventObj) => setName(eventObj.target.value)}
             error={validationGamesNameObj.error}
             helperText={intl.formatMessage({ id: validationGamesNameObj.messageID }, { numberOfCharacters: validationGamesNameObj.numberOfCharacters })}
+            disabled={!administrator && games_id ? true : false}
             margin="normal"
             inputProps={{
               maxLength: 100,
@@ -1472,7 +1162,6 @@ const Component = (props) => {
               && {
                 width: 100%;
                 max-width: 500px;
-                ${games_id && `margin-top: 4px;`}
               }
             `}
             label="ゲーム名（カタカナ）"
@@ -1554,7 +1243,6 @@ const Component = (props) => {
               && {
                 width: 100%;
                 max-width: 500px;
-                ${games_id && `margin-top: 4px;`}
               }
             `}
             label="サブタイトル"
@@ -1677,7 +1365,6 @@ const Component = (props) => {
               && {
                 width: 100%;
                 max-width: 500px;
-                ${games_id && `margin-top: 4px;`}
               }
             `}
             label="URL"
@@ -1837,6 +1524,7 @@ const Component = (props) => {
 
           <FormHardware
             hardwaresCount={hardwaresCount}
+            setHardwaresCount={setHardwaresCount}
 
             hardwares1Arr={hardwares1Arr}
             setHardwares1Arr={setHardwares1Arr}
@@ -2081,7 +1769,7 @@ const Component = (props) => {
             color="primary"
             disabled={buttonDisabled}
           >
-            {games_id ? '登録する' : '仮登録する'}
+            {administrator ? '登録する' : '仮登録する'}
           </Button>
 
 

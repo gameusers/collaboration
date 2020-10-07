@@ -118,7 +118,7 @@ export default async (req, res) => {
 
     const {
 
-      gameCommunities_id,
+      games_id,
       language,
       country,
       name,
@@ -130,12 +130,12 @@ export default async (req, res) => {
       genreArr = [],
       hardwareArr = [],
       linkArr,
-      imagesAndVideosObj,
-      imagesAndVideosThumbnailObj,
+      // imagesAndVideosObj,
+      // imagesAndVideosThumbnailObj,
 
     } = bodyObj;
 
-    lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
+    lodashSet(requestParametersObj, ['games_id'], games_id);
     lodashSet(requestParametersObj, ['language'], language);
     lodashSet(requestParametersObj, ['country'], country);
     lodashSet(requestParametersObj, ['name'], name);
@@ -147,8 +147,8 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['genreArr'], genreArr);
     lodashSet(requestParametersObj, ['hardwareArr'], hardwareArr);
     lodashSet(requestParametersObj, ['linkArr'], linkArr);
-    lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
-    lodashSet(requestParametersObj, ['imagesAndVideosThumbnailObj'], {});
+    // lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
+    // lodashSet(requestParametersObj, ['imagesAndVideosThumbnailObj'], {});
 
 
 
@@ -212,12 +212,10 @@ export default async (req, res) => {
       updatedDate: ISO8601,
       approval: false,
       users_id: loginUsers_id,
-      games_id: '',
+      games_id,
       urlID,
       language,
       country,
-      // imagesAndVideos_id: '',
-      // imagesAndVideosThumbnail_id: '',
       name,
       subtitle,
       searchKeywordsArr,
@@ -249,77 +247,13 @@ export default async (req, res) => {
 
 
     // --------------------------------------------------
-    //   DB find / Recruitments
-    // --------------------------------------------------
-
-    // const recruitmentObj = await ModelRecruitmentThreads.findRecruitments({
-
-    //   req,
-    //   localeObj,
-    //   loginUsers_id,
-    //   gameCommunities_id,
-    //   threadPage: 1,
-    //   threadLimit,
-    //   commentPage: 1,
-    //   commentLimit,
-    //   replyPage: 1,
-    //   replyLimit,
-
-    // });
-
-    // returnObj.recruitmentThreadsObj = recruitmentObj.recruitmentThreadsObj;
-    // returnObj.recruitmentCommentsObj = recruitmentObj.recruitmentCommentsObj;
-    // returnObj.recruitmentRepliesObj = recruitmentObj.recruitmentRepliesObj;
-
-
-    // // --------------------------------------------------
-    // //   DB find / Game Community
-    // // --------------------------------------------------
-
-    // returnObj.gameCommunityObj = await ModelGameCommunities.findForGameCommunityByGameCommunities_id({
-
-    //   gameCommunities_id,
-
-    // });
-
-
-
-
-    // --------------------------------------------------
-    //   experience
-    // --------------------------------------------------
-
-    // if (!recruitmentThreads_id) {
-
-    //   const experienceObj = await experienceCalculate({
-
-    //     req,
-    //     localeObj,
-    //     loginUsers_id,
-    //     arr: [{
-    //       type: 'recruitment-count-post',
-    //       calculation: 'addition',
-    //     }],
-
-    //   });
-
-    //   if (Object.keys(experienceObj).length !== 0) {
-    //     returnObj.experienceObj = experienceObj;
-    //   }
-
-    // }
-
-
-
-
-    // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
 
-    console.log(`
-      ----------------------------------------\n
-      pages/api/v2/db/games/upsert.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   pages/api/v2/db/games/upsert.js
+    // `);
 
     // console.log(chalk`
     //   gameCommunities_id: {green ${gameCommunities_id}}
@@ -355,17 +289,17 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
 
-    console.log(`
-      ----- conditionObj -----\n
-      ${util.inspect(conditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- conditionObj -----\n
+    //   ${util.inspect(conditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- saveObj -----\n
-      ${util.inspect(saveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- saveObj -----\n
+    //   ${util.inspect(saveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 
@@ -415,10 +349,10 @@ export default async (req, res) => {
 //   config
 // --------------------------------------------------
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '25mb',
-    },
-  },
-};
+// export const config = {
+//   api: {
+//     bodyParser: {
+//       sizeLimit: '25mb',
+//     },
+//   },
+// };

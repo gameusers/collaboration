@@ -172,7 +172,7 @@ const useGcRegister = (initialStateObj) => {
    */
   const handleResetForm = async () => {
 
-    setFormType('');
+    setFormType('new');
     setGames_id('');
     setSourceGamesName('');
 

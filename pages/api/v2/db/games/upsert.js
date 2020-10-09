@@ -33,7 +33,7 @@ import lodashSet from 'lodash/set';
 import ModelRecruitmentThreads from 'app/@database/recruitment-threads/model.js';
 import ModelUsers from 'app/@database/users/model.js';
 import ModelGameCommunities from 'app/@database/game-communities/model.js';
-import ModelWebPushes from 'app/@database/web-pushes/model.js';
+import ModelGames from 'app/@database/games/model.js';
 
 
 // ---------------------------------------------
@@ -44,8 +44,7 @@ import { verifyCsrfToken } from 'app/@modules/csrf.js';
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
 import { formatAndSave } from 'app/@modules/image/save.js';
-import { setAuthority } from 'app/@modules/authority.js';
-import { experienceCalculate } from 'app/@modules/experience.js';
+// import { experienceCalculate } from 'app/@modules/experience.js';
 
 
 // ---------------------------------------------
@@ -55,7 +54,16 @@ import { experienceCalculate } from 'app/@modules/experience.js';
 import { validationIP } from 'app/@validations/ip.js';
 import { validationLanguage, validationCountry } from 'app/@validations/language.js';
 
-import { validationGamesName } from 'app/@database/games/validations/name.js';
+import { validationGames_idServer } from 'app/@database/games/validations/_id-server.js';
+import { validationGamesName, validationGamesSubtitle, validationGamesSortKeyword } from 'app/@database/games/validations/name.js';
+import { validationGamesURLID } from 'app/@database/games/validations/url.js';
+import { validationGamesTwitterHashtagsArr } from 'app/@database/games/validations/twitter.js';
+import { validationGamesSearchKeywordsArr } from 'app/@database/games/validations/search.js';
+import { validationGamesHardwareArrServer } from 'app/@database/games/validations/hardware.js';
+import { validationGamesLinkArr } from 'app/@database/games/validations/link.js';
+
+import { validationGameGenres_idsArrServer } from 'app/@database/game-genres/validations/_id-server.js';
+
 
 
 // ---------------------------------------------
@@ -123,7 +131,7 @@ export default async (req, res) => {
 
     const {
 
-      gameCommunities_id,
+      games_id,
       language,
       country,
       name,
@@ -140,7 +148,7 @@ export default async (req, res) => {
 
     } = bodyObj;
 
-    lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
+    lodashSet(requestParametersObj, ['games_id'], games_id);
     lodashSet(requestParametersObj, ['language'], language);
     lodashSet(requestParametersObj, ['country'], country);
     lodashSet(requestParametersObj, ['name'], name);
@@ -168,6 +176,28 @@ export default async (req, res) => {
 
 
     // --------------------------------------------------
+    //   Role
+    // --------------------------------------------------
+
+    const role = lodashGet(req, ['user', 'role'], 'user');
+    const administrator = role === 'administrator' ? true : false;
+
+
+    // --------------------------------------------------
+    //   Administrator Check
+    // --------------------------------------------------
+
+    if (!administrator) {
+
+      statusCode = 403;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'tY3zYBTXY', messageID: 'DSRlEoL29' }] });
+
+    }
+
+
+
+
+    // --------------------------------------------------
     //   Validation
     // --------------------------------------------------
 
@@ -175,17 +205,51 @@ export default async (req, res) => {
     await validationLanguage({ throwError: true, value: language });
     await validationCountry({ throwError: true, value: country });
 
+    if (games_id) {
+      await validationGames_idServer({ value: games_id });
+    }
+
     await validationGamesName({ throwError: true, value: name });
+    await validationGamesSubtitle({ throwError: true, value: subtitle });
+    await validationGamesSortKeyword({ throwError: true, value: sortKeyword });
+    await validationGamesURLID({ throwError: true, value: urlID });
+    await validationGamesSearchKeywordsArr({ arr: searchKeywordsArr });
+    await validationGamesTwitterHashtagsArr({ throwError: true, arr: twitterHashtagsArr });
+    await validationGameGenres_idsArrServer({ localeObj, arr: genreArr });
+    await validationGamesHardwareArrServer({ localeObj, valueArr: hardwareArr });
+    await validationGamesLinkArr({ throwError: true, valueArr: linkArr });
 
 
 
 
     // --------------------------------------------------
-    //   Role - サイト運営
+    //   データ取得　存在しない、または【編集権限】がない場合はエラーが投げられる
     // --------------------------------------------------
 
-    const role = lodashGet(req, ['user', 'role'], 'user');
-    const administrator = role === 'administrator' ? true : false;
+    let oldImagesAndVideosObj = {};
+    let oldImagesAndVideosThumbnailObj = {};
+
+    if (games_id) {
+
+      const tempOldObj = await ModelGames.findEditData({
+
+        localeObj,
+        games_id,
+
+      });
+
+      oldImagesAndVideosObj = lodashGet(tempOldObj, ['imagesAndVideosObj'], {});
+      oldImagesAndVideosThumbnailObj = lodashGet(tempOldObj, ['imagesAndVideosThumbnailObj'], {});
+
+      // console.log(`
+      //   ----- tempOldObj -----\n
+      //   ${util.inspect(tempOldObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+    }
+
+
 
 
 
@@ -207,7 +271,7 @@ export default async (req, res) => {
     let imagesAndVideosSaveObj = {};
     let imagesAndVideos_id = '';
 
-    if (administrator && imagesAndVideosObj) {
+    if (imagesAndVideosObj) {
 
 
       // --------------------------------------------------
@@ -266,7 +330,7 @@ export default async (req, res) => {
     let imagesAndVideosThumbnailSaveObj = {};
     let imagesAndVideosThumbnail_id = '';
 
-    if (administrator && imagesAndVideosThumbnailObj) {
+    if (imagesAndVideosThumbnailObj) {
 
 
       // --------------------------------------------------
@@ -323,14 +387,6 @@ export default async (req, res) => {
 
     // ---------------------------------------------
     //   - games
-    // ---------------------------------------------
-
-    // let gamesConditionObj = {};
-    // let gamesSaveObj = {};
-
-
-    // ---------------------------------------------
-    //   - web-pushes
     // ---------------------------------------------
 
     let gamesConditionObj = {
@@ -705,33 +761,6 @@ export default async (req, res) => {
 
 
     // --------------------------------------------------
-    //   experience
-    // --------------------------------------------------
-
-    // if (!recruitmentThreads_id) {
-
-    //   const experienceObj = await experienceCalculate({
-
-    //     req,
-    //     localeObj,
-    //     loginUsers_id,
-    //     arr: [{
-    //       type: 'recruitment-count-post',
-    //       calculation: 'addition',
-    //     }],
-
-    //   });
-
-    //   if (Object.keys(experienceObj).length !== 0) {
-    //     returnObj.experienceObj = experienceObj;
-    //   }
-
-    // }
-
-
-
-
-    // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
 
@@ -740,33 +769,33 @@ export default async (req, res) => {
       pages/api/v2/db/games/upsert.js
     `);
 
-    console.log(chalk`
-      gameCommunities_id: {green ${gameCommunities_id}}
-      language: {green ${language}}
-      country: {green ${country}}
-      name: {green ${name}}
-      subtitle: {green ${subtitle}}
-      sortKeyword: {green ${sortKeyword}}
-      urlID: {green ${urlID}}
-    `);
+    // console.log(chalk`
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   language: {green ${language}}
+    //   country: {green ${country}}
+    //   name: {green ${name}}
+    //   subtitle: {green ${subtitle}}
+    //   sortKeyword: {green ${sortKeyword}}
+    //   urlID: {green ${urlID}}
+    // `);
 
-    console.log(`
-      ----- twitterHashtagsArr -----\n
-      ${util.inspect(twitterHashtagsArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- twitterHashtagsArr -----\n
+    //   ${util.inspect(twitterHashtagsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- searchKeywordsArr -----\n
-      ${util.inspect(searchKeywordsArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- searchKeywordsArr -----\n
+    //   ${util.inspect(searchKeywordsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- genreArr -----\n
-      ${util.inspect(genreArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- genreArr -----\n
+    //   ${util.inspect(genreArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
     console.log(`
       ----- hardwareArr -----\n
@@ -774,17 +803,17 @@ export default async (req, res) => {
       --------------------\n
     `);
 
-    console.log(`
-      ----- imagesAndVideosObj -----\n
-      ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosObj -----\n
+    //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- imagesAndVideosThumbnailObj -----\n
-      ${util.inspect(imagesAndVideosThumbnailObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosThumbnailObj -----\n
+    //   ${util.inspect(imagesAndVideosThumbnailObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
     console.log(`
       ----- gamesConditionObj -----\n
@@ -798,7 +827,7 @@ export default async (req, res) => {
       --------------------\n
     `);
 
-    return;
+    // return;
 
 
 

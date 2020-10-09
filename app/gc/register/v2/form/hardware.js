@@ -90,7 +90,7 @@ const ComponentForm = (props) => {
 
   } = props;
 
-  const limit = parseInt(process.env.NEXT_PUBLIC_GAMES_DEVELOPERS_PUBLISHERS_LIMIT, 10);
+  const limitDevPub = parseInt(process.env.NEXT_PUBLIC_GAMES_DEVELOPERS_PUBLISHERS_LIMIT, 10);
 
 
 
@@ -210,7 +210,7 @@ const ComponentForm = (props) => {
         type="developer"
         arr={publishersArr}
         setArr={setPublishersArr}
-        limit={limit}
+        limit={limitDevPub}
       />
 
 
@@ -219,7 +219,7 @@ const ComponentForm = (props) => {
         type="publisher"
         arr={developersArr}
         setArr={setDevelopersArr}
-        limit={limit}
+        limit={limitDevPub}
       />
 
 
@@ -379,6 +379,7 @@ const Component = (props) => {
 
   } = props;
 
+  const limitHardwares = parseInt(process.env.NEXT_PUBLIC_GAMES_HARDWARES_LIMIT, 10);
 
 
 
@@ -404,7 +405,7 @@ const Component = (props) => {
    */
   const handleAdd = () => {
 
-    if (hardwaresCount < 10) {
+    if (hardwaresCount < limitHardwares) {
       setHardwaresCount(hardwaresCount + 1);
     }
 
@@ -773,7 +774,7 @@ const Component = (props) => {
 
 
           {/* + ボタン */}
-          {hardwaresCount < 10 &&
+          {hardwaresCount < limitHardwares &&
             <IconButton
               onClick={handleAdd}
             >

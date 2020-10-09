@@ -3129,13 +3129,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imagesAndVideosThumbnail_id: '2G5j7D3AM',
         name: 'Dead by Daylight',
         subtitle: '',
+        sortKeyword: 'デッドバイデイライト',
         searchKeywordsArr: [
           'デッドバイデイライト',
           'でっどばいでいらいと',
           'Dead by Daylight',
           'DbD',
         ],
-        sortKeyword: 'デッドバイデイライト',
         twitterHashtagsArr: ['DeadbyDaylight', 'デッドバイデイライト'],
         genreArr: ['YC3gSkK67'],
         genreSubArr: [],
@@ -3225,11 +3225,11 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imagesAndVideosThumbnail_id: '',
         name: 'Dead by Daylight',
         subtitle: '',
+        sortKeyword: 'Dead by Daylight',
         searchKeywordsArr: [
           'Dead by Daylight',
           'DbD',
         ],
-        sortKeyword: 'Dead by Daylight',
         twitterHashtagsArr: ['DeadbyDaylight'],
         genreArr: ['YC3gSkK67'],
         genreSubArr: [],
@@ -3268,13 +3268,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imagesAndVideosThumbnail_id: '',
         name: '大乱闘スマッシュブラザーズ SPECIAL',
         subtitle: '',
+        sortKeyword: 'ダイラントウスマッシュブラザーズスペシャル',
         searchKeywordsArr: [
           '大乱闘スマッシュブラザーズ SPECIAL',
           '大乱闘スマッシュブラザーズSPECIAL',
           '大乱闘スマッシュブラザーズスペシャル',
           'スマブラSP',
         ],
-        sortKeyword: 'ダイラントウスマッシュブラザーズスペシャル',
         twitterHashtagsArr: ['スマブラSP'],
         genreArr: ['n2k7J_e12'],
         genreSubArr: [],
@@ -3319,10 +3319,10 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imagesAndVideosThumbnail_id: '',
         name: 'Super Smash Bros. Ultimate',
         subtitle: '',
+        sortKeyword: 'Super Smash Bros. Ultimate',
         searchKeywordsArr: [
           'Super Smash Bros. Ultimate',
         ],
-        sortKeyword: 'Super Smash Bros. Ultimate',
         twitterHashtagsArr: [],
         genreArr: ['n2k7J_e12'],
         genreSubArr: [],
@@ -3367,12 +3367,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imagesAndVideosThumbnail_id: 'I_n3l4y8_',
         name: 'ドラゴンクエストビルダーズ2',
         subtitle: '',
+        sortKeyword: 'ドラゴンクエストビルダーズ2',
         searchKeywordsArr: [
           'ドラゴンクエストビルダーズ2',
           'ドラクエビルダーズ2',
           'DQB2'
         ],
-        sortKeyword: 'ドラゴンクエストビルダーズ2',
         twitterHashtagsArr: ['DQB2'],
         genreArr: ['sU94RUPS7'],
         genreSubArr: [],
@@ -3426,6 +3426,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imagesAndVideosThumbnail_id: 'DGTgnBdOd',
         name: 'Overcooked 2',
         subtitle: '',
+        sortKeyword: 'オーバークック2',
         searchKeywordsArr: [
           'オーバークック2',
           'オバク2',
@@ -3433,7 +3434,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
           'おばく',
           'Overcooked 2',
         ],
-        sortKeyword: 'オーバークック2',
         twitterHashtagsArr: ['Overcooked2'],
         genreArr: ['YC3gSkK67'],
         genreSubArr: [],
@@ -3551,8 +3551,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         country: 'JP',
         name: 'Fall Guys',
         subtitle: ': Ultimate Knockout',
-        searchKeywordsArr: ['Fall Guys', 'フォールガイズ', 'ふぉーるがいず'],
         sortKeyword: 'フォールガイズ',
+        searchKeywordsArr: ['Fall Guys', 'フォールガイズ', 'ふぉーるがいず'],
         twitterHashtagsArr: ['FallGuys'],
         genreArr: ['YC3gSkK67'],
         genreSubArr: [],
@@ -3606,8 +3606,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         country: 'JP',
         name: 'Among Us',
         subtitle: '',
-        searchKeywordsArr: ['Among Us', 'アモングアス', 'あもんぐあす'],
         sortKeyword: 'アモングアス',
+        searchKeywordsArr: ['Among Us', 'アモングアス', 'あもんぐあす'],
         twitterHashtagsArr: ['AmongUs'],
         genreArr: ['HBpRRumc3'],
         genreSubArr: [],
@@ -3629,12 +3629,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
         country: 'JP',
         name: 'ドラゴンクエストビルダーズ2',
         subtitle: ' 破壊神シドーとからっぽの島',
+        sortKeyword: 'ドラゴンクエストビルダーズ2',
         searchKeywordsArr: [
           'ドラゴンクエストビルダーズ2',
           'ドラクエビルダーズ2',
           'DQB2'
         ],
-        sortKeyword: 'ドラゴンクエストビルダーズ2',
         twitterHashtagsArr: ['DQB2'],
         genreArr: ['sU94RUPS7'],
         genreSubArr: [],
@@ -3646,8 +3646,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
             releaseDate: '2018-12-20T00:00:00.000Z',
             playersMin: 1,
             playersMax: 4,
-            publisherIDsArr: [],
-            developerIDsArr: []
+            publisherIDsArr: ['zXOweU_0y'],
+            developerIDsArr: ['zXOweU_0y']
           },
           {
             _id: '',
@@ -3655,8 +3655,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
             releaseDate: '2017-12-20T00:00:00.000Z',
             playersMin: 1,
             playersMax: 4,
-            publisherIDsArr: [],
-            developerIDsArr: []
+            publisherIDsArr: ['zXOweU_0y'],
+            developerIDsArr: ['zXOweU_0y']
           },
           {
             _id: '',
@@ -3664,8 +3664,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
             releaseDate: '2019-12-11T00:00:00.000Z',
             playersMin: 1,
             playersMax: 4,
-            publisherIDsArr: [],
-            developerIDsArr: []
+            publisherIDsArr: ['zXOweU_0y'],
+            developerIDsArr: ['zXOweU_0y']
           }
         ],
         linkArr: [

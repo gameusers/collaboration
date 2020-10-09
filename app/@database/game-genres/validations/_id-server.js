@@ -18,17 +18,24 @@ const validator = require('validator');
 
 
 // ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+const lodashGet = require('lodash/get');
+
+
+// ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const Model = require('../model.js');
+const Model = require('../model');
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom.js');
+const { CustomError } = require('../../../@modules/error/custom');
 
 
 
@@ -36,11 +43,12 @@ const { CustomError } = require('../../../@modules/error/custom.js');
 
 
 /**
- * hardwareID の配列
- * @param {string} value - 値
+ * _id の配列
+ * @param {boolean} required - 必須 true / 必須でない false
+ * @param {Array} arr - 値の入った配列
  * @return {Object} バリデーション結果
  */
-const validationHardwareIDsArrServer = async ({ arr }) => {
+const validationGameGenres_idsArrServer = async ({ required = false, localeObj, arr = [] }) => {
 
 
   // ---------------------------------------------
@@ -65,7 +73,7 @@ const validationHardwareIDsArrServer = async ({ arr }) => {
   // ---------------------------------------------
 
   if (!Array.isArray(arr)) {
-    throw new CustomError({ level: 'warn', errorsArr: [{ code: '_QkNkmz_P', messageID: '3mDvfqZHV' }] });
+    throw new CustomError({ level: 'warn', errorsArr: [{ code: 's2i3N1sRM', messageID: 'qnWsuPcrJ' }] });
   }
 
 
@@ -76,21 +84,14 @@ const validationHardwareIDsArrServer = async ({ arr }) => {
   const length = arr.length;
 
   if (length === 0) {
-    return;
-  }
 
-
-  // ---------------------------------------------
-  //   データベースから取得
-  // ---------------------------------------------
-
-  const docArr = await Model.find({
-
-    conditionObj: {
-      hardwareID: { $in: arr },
+    if (required) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'wxilDwCR6', messageID: 'Error' }] });
     }
 
-  });
+    return;
+
+  }
 
 
   // ---------------------------------------------
@@ -105,50 +106,45 @@ const validationHardwareIDsArrServer = async ({ arr }) => {
     // ---------------------------------------------
 
     if (!validator.isLength(value, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'hL4FvV-qW', messageID: 'Pp_CFyt_3' }] });
-    }
-
-
-    // ---------------------------------------------
-    //   英数と -_ のみ
-    // ---------------------------------------------
-
-    if (value.match(/^[\w\-]+$/) === null) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'iPhoN03Bb', messageID: 'JBkjlGQMh' }] });
-    }
-
-
-    // ---------------------------------------------
-    //   存在する hardwareID かチェックする
-    // ---------------------------------------------
-
-    const index = docArr.findIndex((valueObj) => {
-      return valueObj.hardwareID === value;
-    });
-
-    // console.log(chalk`
-    //   index: {green ${index}}
-    // `);
-
-    if (index === -1) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 't_RvzHXAA', messageID: '3mDvfqZHV' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'JUjLl3JNE', messageID: 'Pp_CFyt_3' }] });
     }
 
 
   }
 
 
-  // console.log(`
-  //   ----- arr -----\n
-  //   ${util.inspect(arr, { colors: true, depth: null })}\n
-  //   --------------------\n
+
+
+  // ---------------------------------------------
+  //   データベースに存在していない場合、エラー
+  // ---------------------------------------------
+
+  // --------------------------------------------------
+  //   Language & Country
+  // --------------------------------------------------
+
+  const language = lodashGet(localeObj, ['language'], '');
+  const country = lodashGet(localeObj, ['country'], '');
+
+  const count = await Model.count({
+
+    conditionObj: {
+      language,
+      country,
+      genreID: { $in: arr },
+    }
+
+  });
+
+  // console.log(chalk`
+  //   app/@database/game-genres/validations/_id-server.js
+  //   count: {green ${count}}
+  //   length: {green ${length}}
   // `);
 
-  // console.log(`
-  //   ----- docArr -----\n
-  //   ${util.inspect(docArr, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  if (count !== length) {
+    throw new CustomError({ level: 'warn', errorsArr: [{ code: 'rHZFMRkW0', messageID: 'cvS0qSAlE' }] });
+  }
 
 
   // ---------------------------------------------
@@ -171,6 +167,6 @@ const validationHardwareIDsArrServer = async ({ arr }) => {
 
 module.exports = {
 
-  validationHardwareIDsArrServer,
+  validationGameGenres_idsArrServer,
 
 };

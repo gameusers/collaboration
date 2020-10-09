@@ -461,6 +461,18 @@ const Component = (props) => {
 
       if (hardwares1Arr.length > 0) {
 
+        const publisherIDsArr = [];
+
+        for (let valueObj of publishers1Arr.values()) {
+          publisherIDsArr.push(valueObj.developerPublisherID);
+        }
+
+        const developerIDsArr = [];
+
+        for (let valueObj of developers1Arr.values()) {
+          developerIDsArr.push(valueObj.developerPublisherID);
+        }
+
         hardwareObj = {
 
           _id: '',
@@ -468,8 +480,8 @@ const Component = (props) => {
           releaseDate: releaseDate1,
           playersMin: playersMin1,
           playersMax: playersMax1,
-          publishersArr: publishers1Arr,
-          developersArr: developers1Arr,
+          publisherIDsArr,
+          developerIDsArr,
 
         }
 
@@ -479,6 +491,18 @@ const Component = (props) => {
 
       if (hardwares2Arr.length > 0) {
 
+        const publisherIDsArr = [];
+
+        for (let valueObj of publishers2Arr.values()) {
+          publisherIDsArr.push(valueObj.developerPublisherID);
+        }
+
+        const developerIDsArr = [];
+
+        for (let valueObj of developers2Arr.values()) {
+          developerIDsArr.push(valueObj.developerPublisherID);
+        }
+
         hardwareObj = {
 
           _id: '',
@@ -486,8 +510,8 @@ const Component = (props) => {
           releaseDate: releaseDate2,
           playersMin: playersMin2,
           playersMax: playersMax2,
-          publishersArr: publishers2Arr,
-          developersArr: developers2Arr,
+          publisherIDsArr,
+          developerIDsArr,
 
         }
 
@@ -497,6 +521,18 @@ const Component = (props) => {
 
       if (hardwares3Arr.length > 0) {
 
+        const publisherIDsArr = [];
+
+        for (let valueObj of publishers3Arr.values()) {
+          publisherIDsArr.push(valueObj.developerPublisherID);
+        }
+
+        const developerIDsArr = [];
+
+        for (let valueObj of developers3Arr.values()) {
+          developerIDsArr.push(valueObj.developerPublisherID);
+        }
+
         hardwareObj = {
 
           _id: '',
@@ -504,8 +540,8 @@ const Component = (props) => {
           releaseDate: releaseDate3,
           playersMin: playersMin3,
           playersMax: playersMax3,
-          publishersArr: publishers3Arr,
-          developersArr: developers3Arr,
+          publisherIDsArr,
+          developerIDsArr,
 
         }
 
@@ -515,6 +551,18 @@ const Component = (props) => {
 
       if (hardwares4Arr.length > 0) {
 
+        const publisherIDsArr = [];
+
+        for (let valueObj of publishers4Arr.values()) {
+          publisherIDsArr.push(valueObj.developerPublisherID);
+        }
+
+        const developerIDsArr = [];
+
+        for (let valueObj of developers4Arr.values()) {
+          developerIDsArr.push(valueObj.developerPublisherID);
+        }
+
         hardwareObj = {
 
           _id: '',
@@ -522,8 +570,8 @@ const Component = (props) => {
           releaseDate: releaseDate4,
           playersMin: playersMin4,
           playersMax: playersMax4,
-          publishersArr: publishers4Arr,
-          developersArr: developers4Arr,
+          publisherIDsArr,
+          developerIDsArr,
 
         }
 
@@ -533,6 +581,18 @@ const Component = (props) => {
 
       if (hardwares5Arr.length > 0) {
 
+        const publisherIDsArr = [];
+
+        for (let valueObj of publishers5Arr.values()) {
+          publisherIDsArr.push(valueObj.developerPublisherID);
+        }
+
+        const developerIDsArr = [];
+
+        for (let valueObj of developers5Arr.values()) {
+          developerIDsArr.push(valueObj.developerPublisherID);
+        }
+
         hardwareObj = {
 
           _id: '',
@@ -540,8 +600,8 @@ const Component = (props) => {
           releaseDate: releaseDate5,
           playersMin: playersMin5,
           playersMax: playersMax5,
-          publishersArr: publishers5Arr,
-          developersArr: developers5Arr,
+          publisherIDsArr,
+          developerIDsArr,
 
         }
 
@@ -551,6 +611,18 @@ const Component = (props) => {
 
       if (hardwares6Arr.length > 0) {
 
+        const publisherIDsArr = [];
+
+        for (let valueObj of publishers6Arr.values()) {
+          publisherIDsArr.push(valueObj.developerPublisherID);
+        }
+
+        const developerIDsArr = [];
+
+        for (let valueObj of developers6Arr.values()) {
+          developerIDsArr.push(valueObj.developerPublisherID);
+        }
+
         hardwareObj = {
 
           _id: '',
@@ -558,8 +630,8 @@ const Component = (props) => {
           releaseDate: releaseDate6,
           playersMin: playersMin6,
           playersMax: playersMax6,
-          publishersArr: publishers6Arr,
-          developersArr: developers6Arr,
+          publisherIDsArr,
+          developerIDsArr,
 
         }
 
@@ -569,6 +641,18 @@ const Component = (props) => {
 
       if (hardwares7Arr.length > 0) {
 
+        const publisherIDsArr = [];
+
+        for (let valueObj of publishers7Arr.values()) {
+          publisherIDsArr.push(valueObj.developerPublisherID);
+        }
+
+        const developerIDsArr = [];
+
+        for (let valueObj of developers7Arr.values()) {
+          developerIDsArr.push(valueObj.developerPublisherID);
+        }
+
         hardwareObj = {
 
           _id: '',
@@ -576,8 +660,8 @@ const Component = (props) => {
           releaseDate: releaseDate7,
           playersMin: playersMin7,
           playersMax: playersMax7,
-          publishersArr: publishers7Arr,
-          developersArr: developers7Arr,
+          publisherIDsArr,
+          developerIDsArr,
 
         }
 
@@ -587,6 +671,18 @@ const Component = (props) => {
 
       if (hardwares8Arr.length > 0) {
 
+        const publisherIDsArr = [];
+
+        for (let valueObj of publishers8Arr.values()) {
+          publisherIDsArr.push(valueObj.developerPublisherID);
+        }
+
+        const developerIDsArr = [];
+
+        for (let valueObj of developers8Arr.values()) {
+          developerIDsArr.push(valueObj.developerPublisherID);
+        }
+
         hardwareObj = {
 
           _id: '',
@@ -594,8 +690,8 @@ const Component = (props) => {
           releaseDate: releaseDate8,
           playersMin: playersMin8,
           playersMax: playersMax8,
-          publishersArr: publishers8Arr,
-          developersArr: developers8Arr,
+          publisherIDsArr,
+          developerIDsArr,
 
         }
 
@@ -605,6 +701,18 @@ const Component = (props) => {
 
       if (hardwares9Arr.length > 0) {
 
+        const publisherIDsArr = [];
+
+        for (let valueObj of publishers9Arr.values()) {
+          publisherIDsArr.push(valueObj.developerPublisherID);
+        }
+
+        const developerIDsArr = [];
+
+        for (let valueObj of developers9Arr.values()) {
+          developerIDsArr.push(valueObj.developerPublisherID);
+        }
+
         hardwareObj = {
 
           _id: '',
@@ -612,8 +720,8 @@ const Component = (props) => {
           releaseDate: releaseDate9,
           playersMin: playersMin9,
           playersMax: playersMax9,
-          publishersArr: publishers9Arr,
-          developersArr: developers9Arr,
+          publisherIDsArr,
+          developerIDsArr,
 
         }
 
@@ -623,6 +731,18 @@ const Component = (props) => {
 
       if (hardwares10Arr.length > 0) {
 
+        const publisherIDsArr = [];
+
+        for (let valueObj of publishers10Arr.values()) {
+          publisherIDsArr.push(valueObj.developerPublisherID);
+        }
+
+        const developerIDsArr = [];
+
+        for (let valueObj of developers10Arr.values()) {
+          developerIDsArr.push(valueObj.developerPublisherID);
+        }
+
         hardwareObj = {
 
           _id: '',
@@ -630,8 +750,8 @@ const Component = (props) => {
           releaseDate: releaseDate10,
           playersMin: playersMin10,
           playersMax: playersMax10,
-          publishersArr: publishers10Arr,
-          developersArr: developers10Arr,
+          publisherIDsArr,
+          developerIDsArr,
 
         }
 
@@ -644,7 +764,7 @@ const Component = (props) => {
       }
 
       if (administrator && imagesAndVideosThumbnailObj.arr.length !== 0) {
-        formDataObj.imagesAndVideosThumbnailObj = imagesAndVideosObj;
+        formDataObj.imagesAndVideosThumbnailObj = imagesAndVideosThumbnailObj;
       }
 
 
@@ -692,7 +812,7 @@ const Component = (props) => {
       //   Reset Form
       // ---------------------------------------------
 
-      handleResetForm();
+      // handleResetForm();
 
 
       // ---------------------------------------------
@@ -724,10 +844,10 @@ const Component = (props) => {
       //   Router.push = History API pushState()
       // ---------------------------------------------
 
-      const url = '/gc/register/[[...slug]]';
-      const as = '/gc/register';
+      // const url = '/gc/register/[[...slug]]';
+      // const as = '/gc/register';
 
-      await Router.push(url, as);
+      // await Router.push(url, as);
 
 
 
@@ -1769,7 +1889,7 @@ const Component = (props) => {
             color="primary"
             disabled={buttonDisabled}
           >
-            {administrator ? '登録する' : '仮登録する'}
+            {administrator ? '本登録する' : '仮登録する'}
           </Button>
 
 

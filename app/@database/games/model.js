@@ -1303,10 +1303,10 @@ const findEditData = async ({
     //   console.log
     // --------------------------------------------------
 
-    console.log(`
-      ----------------------------------------\n
-      app/@database/games/model.js - findEditData
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   app/@database/games/model.js - findEditData
+    // `);
 
     // console.log(chalk`
     //   gamesTemps_id: {green ${gamesTemps_id}}
@@ -1318,11 +1318,11 @@ const findEditData = async ({
     //   --------------------\n
     // `);
 
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 

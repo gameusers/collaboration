@@ -30,9 +30,9 @@ import lodashSet from 'lodash/set';
 //   Model
 // ---------------------------------------------
 
-import ModelRecruitmentThreads from 'app/@database/recruitment-threads/model.js';
-import ModelUsers from 'app/@database/users/model.js';
-import ModelGameCommunities from 'app/@database/game-communities/model.js';
+// import ModelRecruitmentThreads from 'app/@database/recruitment-threads/model.js';
+// import ModelUsers from 'app/@database/users/model.js';
+// import ModelGameCommunities from 'app/@database/game-communities/model.js';
 import ModelGames from 'app/@database/games/model.js';
 
 
@@ -382,8 +382,53 @@ export default async (req, res) => {
 
 
     // --------------------------------------------------
+    //   hardwareArr
+    // --------------------------------------------------
+
+    let newHardwareArr = [];
+
+    for (let valueObj of hardwareArr.values()) {
+
+      newHardwareArr.push({
+        _id: shortid.generate(),
+        hardwareID: valueObj.hardwareID,
+        releaseDate: moment(valueObj.releaseDate).utc().toISOString(),
+        playersMin: valueObj.playersMin,
+        playersMax: valueObj.playersMax,
+        publisherIDsArr: valueObj.publisherIDsArr,
+        developerIDsArr: valueObj.developerIDsArr,
+      });
+
+    }
+
+
+    // --------------------------------------------------
+    //   linkArr
+    // --------------------------------------------------
+
+    let newLinkArr = [];
+
+    for (let valueObj of linkArr.values()) {
+
+      newLinkArr.push({
+        _id: shortid.generate(),
+        type: valueObj.type,
+        label: valueObj.label,
+        url: valueObj.url,
+      });
+
+    }
+
+
+
+
+
+    // --------------------------------------------------
     //   Insert
     // --------------------------------------------------
+
+    const gameCommunities_id = shortid.generate();
+
 
     // ---------------------------------------------
     //   - games
@@ -397,7 +442,7 @@ export default async (req, res) => {
 
       createdDate: ISO8601,
       updatedDate: ISO8601,
-      gameCommunities_id: '',
+      gameCommunities_id,
       urlID,
       language,
       country,
@@ -411,8 +456,70 @@ export default async (req, res) => {
       genreArr,
       genreSubArr: [],
       genreTagArr: [],
-      hardwareArr,
-      linkArr,
+      hardwareArr: newHardwareArr,
+      linkArr: newLinkArr,
+
+    };
+
+
+    // ---------------------------------------------
+    //   - game-communities
+    // ---------------------------------------------
+
+    let gameCommunitiesConditionObj = {
+      _id: gameCommunities_id,
+    };
+
+    let gameCommunitiesSaveObj = {
+
+      createdDate: ISO8601,
+      updatedDate: ISO8601,
+      forumObj: {
+        threadCount: 1,
+      },
+      recruitmentObj: {
+        threadCount: 0,
+      },
+      updatedDateObj: {
+        forum: ISO8601,
+        recruitment: ISO8601,
+      },
+      anonymity: false,
+
+    };
+
+
+    // ---------------------------------------------
+    //   - game-communities
+    // ---------------------------------------------
+
+    let forumThreadsConditionObj = {
+      _id: shortid.generate(),
+    };
+
+    let forumThreadsSaveObj = {
+
+      createdDate: ISO8601,
+      updatedDate: ISO8601,
+      gameCommunities_id,
+      userCommunities_id: '',
+      users_id: '',
+      localesArr: [
+        {
+          _id: shortid.generate(),
+          language: 'ja',
+          name: `${name}について語ろう！`,
+          comment: '雑談でもなんでもOK！\nみんなで語りましょう！！',
+        }
+      ],
+      imagesAndVideos_id: '',
+      comments: 0,
+      replies: 0,
+      images: 0,
+      videos: 0,
+      acceptLanguage: '',
+      ip: '127.0.0.1',
+      userAgent: '',
 
     };
 
@@ -701,24 +808,22 @@ export default async (req, res) => {
 
 
 
-    // // --------------------------------------------------
-    // //   DB upsert Transaction
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   DB upsert Transaction
+    // --------------------------------------------------
 
-    // await ModelRecruitmentThreads.transactionForUpsert({
+    await ModelGames.transactionForUpsert({
 
-    //   recruitmentThreadsConditionObj,
-    //   recruitmentThreadsSaveObj,
-    //   imagesAndVideosConditionObj,
-    //   imagesAndVideosSaveObj,
-    //   gameCommunitiesConditionObj,
-    //   gameCommunitiesSaveObj,
-    //   webPushesConditionObj,
-    //   webPushesSaveObj,
-    //   usersConditionObj,
-    //   usersSaveObj,
+      gamesConditionObj,
+      gamesSaveObj,
+      imagesAndVideosConditionObj,
+      imagesAndVideosSaveObj,
+      gameCommunitiesConditionObj,
+      gameCommunitiesSaveObj,
+      forumThreadsConditionObj,
+      forumThreadsSaveObj,
 
-    // });
+    });
 
 
 
@@ -764,10 +869,10 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
 
-    console.log(`
-      ----------------------------------------\n
-      pages/api/v2/db/games/upsert.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   pages/api/v2/db/games/upsert.js
+    // `);
 
     // console.log(chalk`
     //   gameCommunities_id: {green ${gameCommunities_id}}
@@ -797,11 +902,11 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
 
-    console.log(`
-      ----- hardwareArr -----\n
-      ${util.inspect(hardwareArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- hardwareArr -----\n
+    //   ${util.inspect(hardwareArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
     // console.log(`
     //   ----- imagesAndVideosObj -----\n
@@ -815,17 +920,17 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
 
-    console.log(`
-      ----- gamesConditionObj -----\n
-      ${util.inspect(gamesConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gamesConditionObj -----\n
+    //   ${util.inspect(gamesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- gamesSaveObj -----\n
-      ${util.inspect(gamesSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gamesSaveObj -----\n
+    //   ${util.inspect(gamesSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
     // return;
 

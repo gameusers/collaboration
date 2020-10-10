@@ -79,11 +79,13 @@ const validationGamesGameCommunities_idServer = async ({ value, language, countr
 
     // データベースに存在しているか＆編集権限チェック
     const count = await Model.count({
+
       conditionObj: {
         language,
         country,
         gameCommunities_id: value,
       }
+
     });
 
     if (count !== 1) {

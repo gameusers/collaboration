@@ -833,7 +833,7 @@ const Component = (props) => {
         arr: [
           {
             variant: 'success',
-            messageID: 'Kail6oUOo',
+            messageID: administrator ? 'eeZLfSrPw' : 'Kail6oUOo',
           },
         ]
 

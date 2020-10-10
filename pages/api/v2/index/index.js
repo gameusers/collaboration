@@ -58,50 +58,50 @@ import { initialProps } from 'app/@api/v2/common.js';
 // --------------------------------------------------
 
 export default async (req, res) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Status Code
   // --------------------------------------------------
-  
+
   let statusCode = 400;
-  
-  
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
-  
-  
+
+
   // --------------------------------------------------
   //   Language & IP & User Agent
   // --------------------------------------------------
-  
+
   const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
-  
-  
+
+
   // --------------------------------------------------
   //   Locale
   // --------------------------------------------------
-  
+
   const localeObj = locale({
     acceptLanguage
   });
-  
-  
-  
-  
+
+
+
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   GET Data
     // --------------------------------------------------
-    
+
     // const urlID = lodashGet(req, ['query', 'urlID'], '');
     // const forumID = lodashGet(req, ['query', 'forumID'], '');
     // const threadListPage = parseInt(lodashGet(req, ['query', 'threadListPage'], 1), 10);
@@ -110,7 +110,7 @@ export default async (req, res) => {
     // const threadLimit = parseInt(lodashGet(req, ['query', 'threadLimit'], ''), 10);
     // const commentLimit = parseInt(lodashGet(req, ['query', 'commentLimit'], ''), 10);
     // const replyLimit = parseInt(lodashGet(req, ['query', 'replyLimit'], ''), 10);
-    
+
     // lodashSet(requestParametersObj, ['urlID'], urlID);
     // lodashSet(requestParametersObj, ['forumID'], forumID);
     // lodashSet(requestParametersObj, ['threadListPage'], threadListPage);
@@ -119,90 +119,90 @@ export default async (req, res) => {
     // lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     // lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
     // lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
-    
-    
+
+
 
 
     // --------------------------------------------------
     //   Common Initial Props
     // --------------------------------------------------
-    
+
     const returnObj = await initialProps({ req, localeObj, getHeroImage: true });
-    
 
 
-    
+
+
     // --------------------------------------------------
     //   DB find / Feed
     // --------------------------------------------------
-    
+
     returnObj.feedObj = await ModelFeeds.findFeed({
-      
+
       localeObj,
       arr: ['forumGc', 'recruitment', 'forumUc'],
-      
+
     });
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----------------------------------------\n
     //   pages/api/v2/index/index.js
     // `);
-    
+
     // console.log(chalk`
     //   urlID: {green ${urlID}}
     //   gameCommunities_id: {green ${gameCommunities_id}}
     // `);
-    
+
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // ---------------------------------------------
     //   Success
     // ---------------------------------------------
-    
+
     return res.status(200).json(returnObj);
-    
-    
+
+
   } catch (errorObj) {
-    
-    
+
+
     // ---------------------------------------------
     //   Log
     // ---------------------------------------------
-    
+
     const resultErrorObj = returnErrorsArr({
-      
+
       errorObj,
       endpointID: 'KPtPfJA6f',
       users_id: loginUsers_id,
       ip,
       userAgent,
       requestParametersObj,
-      
+
     });
-    
-    
+
+
     // --------------------------------------------------
     //   Return JSON Object / Error
     // --------------------------------------------------
-    
+
     return res.status(statusCode).json(resultErrorObj);
-    
-    
+
+
   }
-  
-  
+
+
 };

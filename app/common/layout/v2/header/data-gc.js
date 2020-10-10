@@ -404,7 +404,7 @@ const Component = (props) => {
           <p css={cssInfo}>ジャンル | {genre}</p>
           <p css={cssInfo}>プレイ人数 | {players}</p>
           <p css={cssInfo}>発売日 | {formattedReleaseData}</p>
-          <p css={cssInfo}>開発 | {developer}</p>
+          <p css={cssInfo}>開発・販売 | {developersPublishers}</p>
 
           <LinkIcons linkArr={linkArr} />
 

@@ -194,6 +194,30 @@ const Component = (props) => {
   }
 
 
+  // ---------------------------------------------
+  //   - Thumbnail None
+  // ---------------------------------------------
+
+  // const thumbnailNone =
+  //   <img
+  //     css={css`
+  //       // max-width: 100%;
+  //       // // min-height: 180px;
+  //       // max-height: ${maxHeight ? `${maxHeight}px` : 'none'};
+  //       // object-fit: contain;
+  //       // // object-fit: cover;
+  //       // margin: 0 auto;
+  //     `}
+  //     src="/img/common/thumbnail/none.svg"
+  //     // srcSet={valueObj.srcSet}
+  //     // alt={valueObj.caption}
+  //     width="128"
+  //   />
+  // ;
+
+  // const thumbnailSrc = '/img/common/thumbnail/none.svg';
+
+
 
 
   // ---------------------------------------------
@@ -269,7 +293,6 @@ const Component = (props) => {
       `}
     >
 
-
       {imageOrVideo === 'image' ? (
 
         <Link
@@ -279,16 +302,25 @@ const Component = (props) => {
           <a className="link">
             <div
               css={css`
+                display: flex;
+                justify-content: center;
                 background-color: black;
-                position: relative;
               `}
             >
 
-              <ImageAndVideo
-                imagesAndVideosObj={imagesAndVideosObj}
-                lightbox={false}
-                maxHeight={maxHeight}
-              />
+              {Object.keys(imagesAndVideosObj).length === 0
+                ?
+                  <img
+                    src="/img/common/thumbnail/none.svg"
+                    width="128"
+                  />
+                :
+                  <ImageAndVideo
+                    imagesAndVideosObj={imagesAndVideosObj}
+                    lightbox={false}
+                    maxHeight={maxHeight}
+                  />
+              }
 
             </div>
           </a>
@@ -299,7 +331,7 @@ const Component = (props) => {
         <div
           css={css`
             background-color: black;
-            position: relative;
+            // position: relative;
           `}
         >
 

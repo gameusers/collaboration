@@ -32,6 +32,9 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 // ---------------------------------------------
 
 const SchemaGames = require('./schema');
+const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
+const SchemaGameCommunities = require('../game-communities/schema.js');
+const SchemaForumThreads = require('../forum-threads/schema.js');
 
 const ModelDevelopersPublishers = require('../developers-publishers/model.js');
 
@@ -1349,6 +1352,246 @@ const findEditData = async ({
 
 
 // --------------------------------------------------
+//   transaction
+// --------------------------------------------------
+
+/**
+ * Transaction 挿入 / 更新する
+ *
+ * @param {Object} gamesConditionObj - DB games 検索条件
+ * @param {Object} gamesSaveObj - DB games 保存データ
+ * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
+ * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
+ * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
+ * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
+ * @param {Object} forumThreadsConditionObj - DB forum-threads 検索条件
+ * @param {Object} forumThreadsSaveObj - DB forum-threads 保存データ
+ * @return {Object}
+ */
+const transactionForUpsert = async ({
+
+  gamesConditionObj = {},
+  gamesSaveObj = {},
+  imagesAndVideosConditionObj = {},
+  imagesAndVideosSaveObj = {},
+  gameCommunitiesConditionObj = {},
+  gameCommunitiesSaveObj = {},
+  forumThreadsConditionObj = {},
+  forumThreadsSaveObj = {},
+
+}) => {
+
+
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+
+  let returnObj = {};
+
+
+  // --------------------------------------------------
+  //   Transaction / Session
+  // --------------------------------------------------
+
+  const session = await SchemaGames.startSession();
+
+
+
+
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+
+  try {
+
+
+    // --------------------------------------------------
+    //   Transaction / Start
+    // --------------------------------------------------
+
+    await session.startTransaction();
+
+
+
+
+    // ---------------------------------------------
+    //   - games
+    // ---------------------------------------------
+
+    await SchemaGames.updateOne(gamesConditionObj, gamesSaveObj, { session, upsert: true });
+
+
+    // ---------------------------------------------
+    //   - images-and-videos
+    // ---------------------------------------------
+
+    if (Object.keys(imagesAndVideosConditionObj).length !== 0 && Object.keys(imagesAndVideosSaveObj).length !== 0) {
+
+
+      // --------------------------------------------------
+      //   画像＆動画を削除する
+      // --------------------------------------------------
+
+      const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
+
+      if (arr.length === 0) {
+
+        await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj, { session });
+
+
+      // --------------------------------------------------
+      //   画像＆動画を保存
+      // --------------------------------------------------
+
+      } else {
+
+        await SchemaImagesAndVideos.updateOne(imagesAndVideosConditionObj, imagesAndVideosSaveObj, { session, upsert: true });
+
+      }
+
+    }
+
+
+    // ---------------------------------------------
+    //   - game-communities
+    // ---------------------------------------------
+
+    if (Object.keys(gameCommunitiesConditionObj).length !== 0 && Object.keys(gameCommunitiesSaveObj).length !== 0) {
+
+      await SchemaGameCommunities.updateOne(gameCommunitiesConditionObj, gameCommunitiesSaveObj, { session, upsert: true });
+
+    }
+
+
+    // ---------------------------------------------
+    //   - forum-threads
+    // ---------------------------------------------
+
+    if (Object.keys(forumThreadsConditionObj).length !== 0 && Object.keys(forumThreadsSaveObj).length !== 0) {
+
+      await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   Transaction / Commit
+    // --------------------------------------------------
+
+    await session.commitTransaction();
+    // console.log('--------コミット-----------');
+
+    session.endSession();
+
+
+
+
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+
+    console.log(`
+      ----------------------------------------\n
+      app/@database/games/model.js - transactionForUpsert
+    `);
+
+    console.log(`
+      ----- gamesConditionObj -----\n
+      ${util.inspect(gamesConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+
+    console.log(`
+      ----- gamesSaveObj -----\n
+      ${util.inspect(gamesSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+
+    console.log(`
+      ----- imagesAndVideosConditionObj -----\n
+      ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+
+    console.log(`
+      ----- imagesAndVideosSaveObj -----\n
+      ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+
+    console.log(`
+      ----- gameCommunitiesConditionObj -----\n
+      ${util.inspect(gameCommunitiesConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+
+    console.log(`
+      ----- gameCommunitiesSaveObj -----\n
+      ${util.inspect(gameCommunitiesSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+
+    console.log(`
+      ----- forumThreadsConditionObj -----\n
+      ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+
+    console.log(`
+      ----- forumThreadsSaveObj -----\n
+      ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
+
+
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+
+    return returnObj;
+
+
+  } catch (errorObj) {
+
+    // console.log(`
+    //   ----- errorObj -----\n
+    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
+    // --------------------------------------------------
+    //   Transaction / Rollback
+    // --------------------------------------------------
+
+    await session.abortTransaction();
+    // console.log('--------ロールバック-----------');
+
+    session.endSession();
+
+
+    throw errorObj;
+
+  }
+
+};
+
+
+
+
+
+
+// --------------------------------------------------
 //   Export
 // --------------------------------------------------
 
@@ -1364,5 +1607,7 @@ module.exports = {
   findForHeroImage,
   findBySearchKeywordsArrForSuggestion,
   findEditData,
+
+  transactionForUpsert,
 
 };

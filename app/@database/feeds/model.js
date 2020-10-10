@@ -253,6 +253,12 @@ const findFeed = async ({
 
       });
 
+      // console.log(`
+      //   ----- docForumsGcArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(docForumsGcArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
     }
 
 

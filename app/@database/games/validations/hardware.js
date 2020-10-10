@@ -26,6 +26,14 @@ const lodashGet = require('lodash/get');
 
 
 // ---------------------------------------------
+//   Model
+// ---------------------------------------------
+
+const ModelHardwares = require('../../hardwares/model.js');
+const ModelDevelopersPublishers = require('../../developers-publishers/model.js');
+
+
+// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -43,7 +51,7 @@ const { CustomError } = require('../../../@modules/error/custom.js');
  * @param {Array} valueArr - 配列
  * @return {Object} バリデーション結果
  */
-const validationGamesHardwareArrServer = ({ required = false, localeObj, valueArr }) => {
+const validationGamesHardwareArrServer = async ({ required = false, localeObj, valueArr }) => {
 
 
   // ---------------------------------------------
@@ -149,18 +157,74 @@ const validationGamesHardwareArrServer = ({ required = false, localeObj, valueAr
   developerPublisherIDsArr = Array.from(new Set(developerPublisherIDsArr));
 
 
+  // ---------------------------------------------
+  //   データベースに存在していない _id を含んでいる場合、エラー
+  // ---------------------------------------------
 
-  console.log(`
-    ----- hardwareIDsArr -----\n
-    ${util.inspect(JSON.parse(JSON.stringify(hardwareIDsArr)), { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // ---------------------------------------------
+  //   - Language & Country
+  // ---------------------------------------------
 
-  console.log(`
-    ----- developerPublisherIDsArr -----\n
-    ${util.inspect(JSON.parse(JSON.stringify(developerPublisherIDsArr)), { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  const language = lodashGet(localeObj, ['language'], '');
+  const country = lodashGet(localeObj, ['country'], '');
+
+
+  // ---------------------------------------------
+  //   - hardwares
+  // ---------------------------------------------
+
+  const countHardwares = await ModelHardwares.count({
+
+    conditionObj: {
+      language,
+      country,
+      hardwareID: { $in: hardwareIDsArr }
+    }
+
+  });
+
+  if (countHardwares !== hardwareIDsArr.length) {
+    throw new CustomError({ level: 'warn', errorsArr: [{ code: 'kAbHkNUZy', messageID: 'PH8jcw-VF' }] });
+  }
+
+
+  // ---------------------------------------------
+  //   - developers-publishers
+  // ---------------------------------------------
+
+  const countDevelopersPublishers = await ModelDevelopersPublishers.count({
+
+    conditionObj: {
+      language,
+      country,
+      developerPublisherID: { $in: developerPublisherIDsArr }
+    }
+
+  });
+
+  if (countDevelopersPublishers !== developerPublisherIDsArr.length) {
+    throw new CustomError({ level: 'warn', errorsArr: [{ code: 'F65GeHeFQ', messageID: 'PH8jcw-VF' }] });
+  }
+
+
+  // console.log(`
+  //   ----- hardwareIDsArr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(hardwareIDsArr)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+
+  // console.log(`
+  //   ----- developerPublisherIDsArr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(developerPublisherIDsArr)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+
+  // console.log(chalk`
+  //   countHardwares: {green ${countHardwares}}
+  //   hardwareIDsArr.length: {green ${hardwareIDsArr.length}}
+  //   countDevelopersPublishers: {green ${countDevelopersPublishers}}
+  //   developerPublisherIDsArr.length: {green ${developerPublisherIDsArr.length}}
+  // `);
 
 
 

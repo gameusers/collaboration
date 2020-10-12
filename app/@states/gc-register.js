@@ -27,6 +27,13 @@ import lodashSet from 'lodash/set';
 import lodashCloneDeep from 'lodash/cloneDeep';
 
 
+// ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+// import { ContainerStateLayout } from 'app/@states/layout.js';
+
+
 
 
 
@@ -36,6 +43,22 @@ import lodashCloneDeep from 'lodash/cloneDeep';
 // --------------------------------------------------
 
 const useGcRegister = (initialStateObj) => {
+
+
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+
+  // const stateLayout = ContainerStateLayout.useContainer();
+  // const {
+
+  //   handleLoadingOpen,
+  //   handleLoadingClose,
+  //   handleScrollTo,
+
+  // } = stateLayout;
+
+
 
 
   // --------------------------------------------------
@@ -162,7 +185,8 @@ const useGcRegister = (initialStateObj) => {
 
   });
 
-  const [approvalsArr, setApprovalsArr] = useState([]);
+  const [adminCheckedGamesTemps_idsArr, setAdminCheckedGamesTemps_idsArr] = useState([]);
+  // const [adminCheckedGamesTemps_idsArr, setAdminCheckedGamesTemps_idsArr] = useState([]);
 
 
 
@@ -299,11 +323,11 @@ const useGcRegister = (initialStateObj) => {
 
 
   /**
-   * 仮登録を承認する
+   * 仮登録を承認または削除するためにチェックする
    */
-  const handleApproval = ({ gamesTemps_id }) => {
+  const handleAdminCheck = ({ gamesTemps_id }) => {
 
-    const clonedArr = lodashCloneDeep(approvalsArr);
+    const clonedArr = lodashCloneDeep(adminCheckedGamesTemps_idsArr);
     const arrayIndex = clonedArr.indexOf(gamesTemps_id);
 
     if (arrayIndex === -1) {
@@ -316,12 +340,12 @@ const useGcRegister = (initialStateObj) => {
 
     }
 
-    setApprovalsArr(clonedArr);
+    setAdminCheckedGamesTemps_idsArr(clonedArr);
 
 
     // console.log(`
     //   ----------------------------------------\n
-    //   app/@states/gc-register.js - handleApproval
+    //   app/@states/gc-register.js - handleAdminCheck
     // `);
 
     // console.log(chalk`
@@ -329,12 +353,13 @@ const useGcRegister = (initialStateObj) => {
     // `);
 
     // console.log(`
-    //   ----- approvalsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(approvalsArr)), { colors: true, depth: null })}\n
+    //   ----- adminCheckedGamesTemps_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(adminCheckedGamesTemps_idsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
   };
+
 
 
 
@@ -516,11 +541,11 @@ const useGcRegister = (initialStateObj) => {
     imagesAndVideosThumbnailObj,
     setImagesAndVideosThumbnailObj,
 
-    approvalsArr,
-    setApprovalsArr,
+    adminCheckedGamesTemps_idsArr,
+    setAdminCheckedGamesTemps_idsArr,
 
     handleResetForm,
-    handleApproval,
+    handleAdminCheck,
 
   };
 

@@ -14,8 +14,8 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import shortid from 'shortid';
-import moment from 'moment';
+// import shortid from 'shortid';
+// import moment from 'moment';
 
 
 // ---------------------------------------------
@@ -47,9 +47,9 @@ import { CustomError } from 'app/@modules/error/custom.js';
 // ---------------------------------------------
 
 import { validationIP } from 'app/@validations/ip.js';
-import { validationLanguage, validationCountry } from 'app/@validations/language.js';
+// import { validationLanguage, validationCountry } from 'app/@validations/language.js';
 
-import { validationGamesName } from 'app/@database/games/validations/name.js';
+// import { validationGamesName } from 'app/@database/games/validations/name.js';
 
 
 // ---------------------------------------------
@@ -64,7 +64,7 @@ import { locale } from 'app/@locales/locale.js';
 
 
 // --------------------------------------------------
-//   endpointID: 8mHi5ZjYn
+//   endpointID: CsdAP7mOD
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -81,7 +81,7 @@ export default async (req, res) => {
   //   Property
   // --------------------------------------------------
 
-  const returnObj = {};
+  let returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
 
@@ -117,33 +117,11 @@ export default async (req, res) => {
 
     const {
 
-      games_id,
-      language,
-      country,
-      name,
-      subtitle,
-      sortKeyword,
-      urlID,
-      twitterHashtagsArr,
-      searchKeywordsArr,
-      genreArr = [],
-      hardwareArr = [],
-      linkArr,
+      gamesTemps_idsArr,
 
     } = bodyObj;
 
-    lodashSet(requestParametersObj, ['games_id'], games_id);
-    lodashSet(requestParametersObj, ['language'], language);
-    lodashSet(requestParametersObj, ['country'], country);
-    lodashSet(requestParametersObj, ['name'], name);
-    lodashSet(requestParametersObj, ['subtitle'], subtitle);
-    lodashSet(requestParametersObj, ['sortKeyword'], sortKeyword);
-    lodashSet(requestParametersObj, ['urlID'], urlID);
-    lodashSet(requestParametersObj, ['twitterHashtagsArr'], twitterHashtagsArr);
-    lodashSet(requestParametersObj, ['searchKeywordsArr'], searchKeywordsArr);
-    lodashSet(requestParametersObj, ['genreArr'], genreArr);
-    lodashSet(requestParametersObj, ['hardwareArr'], hardwareArr);
-    lodashSet(requestParametersObj, ['linkArr'], linkArr);
+    lodashSet(requestParametersObj, ['gamesTemps_idsArr'], gamesTemps_idsArr);
 
 
 
@@ -158,13 +136,21 @@ export default async (req, res) => {
 
 
     // --------------------------------------------------
-    //   Login Check
+    //   Role
     // --------------------------------------------------
 
-    if (!req.isAuthenticated()) {
+    const role = lodashGet(req, ['user', 'role'], 'user');
+    const administrator = role === 'administrator' ? true : false;
+
+
+    // --------------------------------------------------
+    //   Administrator Check
+    // --------------------------------------------------
+
+    if (!administrator) {
 
       statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'GQ5rGPUrS', messageID: 'xLLNIpo6a' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'YQHSIt9cd', messageID: 'DSRlEoL29' }] });
 
     }
 
@@ -176,20 +162,6 @@ export default async (req, res) => {
     // --------------------------------------------------
 
     await validationIP({ throwError: true, value: ip });
-    await validationLanguage({ throwError: true, value: language });
-    await validationCountry({ throwError: true, value: country });
-
-    await validationGamesName({ throwError: true, value: name });
-
-
-
-
-    // --------------------------------------------------
-    //   Datetime
-    // --------------------------------------------------
-
-    const ISO8601 = moment().utc().toISOString();
-
 
 
 
@@ -198,43 +170,19 @@ export default async (req, res) => {
     // --------------------------------------------------
 
     const conditionObj = {
-      _id: shortid.generate(),
-    };
-
-    const saveObj = {
-
-      createdDate: ISO8601,
-      updatedDate: ISO8601,
-      approval: false,
-      users_id: loginUsers_id,
-      games_id,
-      urlID,
-      language,
-      country,
-      name,
-      subtitle,
-      searchKeywordsArr,
-      sortKeyword,
-      twitterHashtagsArr,
-      genreArr,
-      genreSubArr: [],
-      genreTagArr: [],
-      hardwareArr,
-      linkArr,
-
+      _id: { $in: gamesTemps_idsArr }
     };
 
 
 
 
     // --------------------------------------------------
-    //   DB upsert
+    //   DB Delete
     // --------------------------------------------------
 
-    await ModelGameTemps.upsert({
+    returnObj = await ModelGameTemps.deleteMany({
 
       conditionObj,
-      saveObj,
 
     });
 
@@ -247,52 +195,18 @@ export default async (req, res) => {
 
     // console.log(`
     //   ----------------------------------------\n
-    //   pages/api/v2/db/games/upsert.js
-    // `);
-
-    // console.log(chalk`
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   language: {green ${language}}
-    //   country: {green ${country}}
-    //   name: {green ${name}}
-    //   subtitle: {green ${subtitle}}
-    //   sortKeyword: {green ${sortKeyword}}
-    //   urlID: {green ${urlID}}
+    //   pages/api/v2/db/games-temps/delete.js
     // `);
 
     // console.log(`
-    //   ----- twitterHashtagsArr -----\n
-    //   ${util.inspect(twitterHashtagsArr, { colors: true, depth: null })}\n
+    //   ----- gamesTemps_idsArr -----\n
+    //   ${util.inspect(gamesTemps_idsArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
     // console.log(`
-    //   ----- searchKeywordsArr -----\n
-    //   ${util.inspect(searchKeywordsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- genreArr -----\n
-    //   ${util.inspect(genreArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- hardwareArr -----\n
-    //   ${util.inspect(hardwareArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- conditionObj -----\n
-    //   ${util.inspect(conditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- saveObj -----\n
-    //   ${util.inspect(saveObj, { colors: true, depth: null })}\n
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
@@ -316,7 +230,7 @@ export default async (req, res) => {
     const resultErrorObj = returnErrorsArr({
 
       errorObj,
-      endpointID: '8mHi5ZjYn',
+      endpointID: 'CsdAP7mOD',
       users_id: loginUsers_id,
       ip,
       userAgent,

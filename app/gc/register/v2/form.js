@@ -812,7 +812,7 @@ const Component = (props) => {
       //   Reset Form
       // ---------------------------------------------
 
-      // handleResetForm();
+      handleResetForm();
 
 
       // ---------------------------------------------
@@ -826,6 +826,18 @@ const Component = (props) => {
       //   Snackbar: Success
       // --------------------------------------------------
 
+      let messageID = 'Kail6oUOo';
+
+      if (administrator) {
+
+        messageID = 'eeZLfSrPw';
+
+        if (games_id) {
+          messageID = 'EnStWOly-';
+        }
+
+      }
+
       showSnackbar({
 
         enqueueSnackbar,
@@ -833,7 +845,7 @@ const Component = (props) => {
         arr: [
           {
             variant: 'success',
-            messageID: administrator ? 'eeZLfSrPw' : 'Kail6oUOo',
+            messageID,
           },
         ]
 
@@ -844,10 +856,10 @@ const Component = (props) => {
       //   Router.push = History API pushState()
       // ---------------------------------------------
 
-      // const url = '/gc/register/[[...slug]]';
-      // const as = '/gc/register';
+      const url = '/gc/register/[[...slug]]';
+      const as = '/gc/register';
 
-      // await Router.push(url, as);
+      await Router.push(url, as);
 
 
 
@@ -911,7 +923,7 @@ const Component = (props) => {
 
       handleScrollTo({
 
-        to: 'GcRegister',
+        to: 'gcRegisterForm',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',

@@ -15,8 +15,6 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-// import Link from 'next/link';
-// import moment from 'moment';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -76,22 +74,6 @@ const Component = (props) => {
 
 
   // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-
-  const stateUser = ContainerStateUser.useContainer();
-  const stateGcRegister = ContainerStateGcRegister.useContainer();
-
-  const { loginUsersObj } = stateUser;
-  const { approvalsArr, handleApproval } = stateGcRegister;
-
-  const role = lodashGet(loginUsersObj, ['role'], '');
-  const administrator = role === 'administrator' ? true : false;
-
-
-
-
-  // --------------------------------------------------
   //   データが存在しない場合、空のコンポーネントを返す
   // --------------------------------------------------
 
@@ -102,13 +84,28 @@ const Component = (props) => {
 
 
 
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+
+  const stateUser = ContainerStateUser.useContainer();
+  const stateGcRegister = ContainerStateGcRegister.useContainer();
+
+  const { loginUsersObj } = stateUser;
+  const { adminCheckedGamesTemps_idsArr, handleAdminCheck } = stateGcRegister;
+
+  const role = lodashGet(loginUsersObj, ['role'], '');
+  const administrator = role === 'administrator' ? true : false;
+
+
+
+
   // ---------------------------------------------
   //   Data
   // ---------------------------------------------
 
   const gamesTemps_id = lodashGet(obj, ['_id'], '');
   const createdDate = lodashGet(obj, ['createdDate'], '');
-  // const createdDate = moment(lodashGet(obj, ['createdDate'], '')).utc().format('YYYY/MM/DD hh:mm');
   const name = lodashGet(obj, ['name'], '');
   const subtitle = lodashGet(obj, ['subtitle'], '');
   const src = '/img/common/thumbnail/none-game.jpg';
@@ -133,7 +130,7 @@ const Component = (props) => {
   // `);
 
   // console.log(chalk`
-  //   approvalsArr.includes(gamesTemps_id): {green ${approvalsArr.includes(gamesTemps_id)}}
+  //   adminCheckedGamesTemps_idsArr.includes(gamesTemps_id): {green ${adminCheckedGamesTemps_idsArr.includes(gamesTemps_id)}}
   // `);
 
 
@@ -249,7 +246,7 @@ const Component = (props) => {
 
 
 
-      {/* Checkbox Approval */}
+      {/* Admin Approval And Delete Checkbox */}
       {administrator &&
         <div
           css={css`
@@ -265,8 +262,8 @@ const Component = (props) => {
                     padding: 0;
                   }
                 `}
-                checked={approvalsArr.includes(gamesTemps_id)}
-                onChange={() => handleApproval({ gamesTemps_id })}
+                checked={adminCheckedGamesTemps_idsArr.includes(gamesTemps_id)}
+                onChange={() => handleAdminCheck({ gamesTemps_id })}
               />
             }
           />

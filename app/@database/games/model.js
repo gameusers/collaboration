@@ -1167,9 +1167,8 @@ const findEditData = async ({
     //   *** Hardware
     // ---------------------------------------------
 
-    const hardwaresArr = lodashGet(returnObj, ['hardwaresArr'], []);
-
     const newHardwareArr = [];
+    const hardwaresArr = lodashGet(returnObj, ['hardwaresArr'], []);
 
     for (let value1Obj of hardwareArr) {
 
@@ -1259,9 +1258,13 @@ const findEditData = async ({
 
       }
 
+
     }
 
-    returnObj.hardwareArr = newHardwareArr;
+
+    if (newHardwareArr.length > 0) {
+      returnObj.hardwareArr = newHardwareArr;
+    }
 
 
 
@@ -1360,24 +1363,28 @@ const findEditData = async ({
  *
  * @param {Object} gamesConditionObj - DB games 検索条件
  * @param {Object} gamesSaveObj - DB games 保存データ
- * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
- * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
  * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
  * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
  * @param {Object} forumThreadsConditionObj - DB forum-threads 検索条件
  * @param {Object} forumThreadsSaveObj - DB forum-threads 保存データ
+ * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
+ * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
+ * @param {Object} imagesAndVideosThumbnailConditionObj - DB images-and-videos 検索条件
+ * @param {Object} imagesAndVideosThumbnailSaveObj - DB images-and-videos 保存データ
  * @return {Object}
  */
 const transactionForUpsert = async ({
 
   gamesConditionObj = {},
   gamesSaveObj = {},
-  imagesAndVideosConditionObj = {},
-  imagesAndVideosSaveObj = {},
   gameCommunitiesConditionObj = {},
   gameCommunitiesSaveObj = {},
   forumThreadsConditionObj = {},
   forumThreadsSaveObj = {},
+  imagesAndVideosConditionObj = {},
+  imagesAndVideosSaveObj = {},
+  imagesAndVideosThumbnailConditionObj = {},
+  imagesAndVideosThumbnailSaveObj = {},
 
 }) => {
 
@@ -1422,7 +1429,29 @@ const transactionForUpsert = async ({
 
 
     // ---------------------------------------------
-    //   - images-and-videos
+    //   - game-communities
+    // ---------------------------------------------
+
+    if (Object.keys(gameCommunitiesConditionObj).length !== 0 && Object.keys(gameCommunitiesSaveObj).length !== 0) {
+
+      await SchemaGameCommunities.updateOne(gameCommunitiesConditionObj, gameCommunitiesSaveObj, { session, upsert: true });
+
+    }
+
+
+    // ---------------------------------------------
+    //   - forum-threads
+    // ---------------------------------------------
+
+    if (Object.keys(forumThreadsConditionObj).length !== 0 && Object.keys(forumThreadsSaveObj).length !== 0) {
+
+      await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
+
+    }
+
+
+    // ---------------------------------------------
+    //   - images-and-videos - メイン画像
     // ---------------------------------------------
 
     if (Object.keys(imagesAndVideosConditionObj).length !== 0 && Object.keys(imagesAndVideosSaveObj).length !== 0) {
@@ -1452,24 +1481,33 @@ const transactionForUpsert = async ({
     }
 
 
-    // ---------------------------------------------
-    //   - game-communities
-    // ---------------------------------------------
+    // --------------------------------------------------
+    //   Images And Videos - サムネイル画像
+    // --------------------------------------------------
 
-    if (Object.keys(gameCommunitiesConditionObj).length !== 0 && Object.keys(gameCommunitiesSaveObj).length !== 0) {
-
-      await SchemaGameCommunities.updateOne(gameCommunitiesConditionObj, gameCommunitiesSaveObj, { session, upsert: true });
-
-    }
+    if (Object.keys(imagesAndVideosThumbnailConditionObj).length !== 0 && Object.keys(imagesAndVideosThumbnailSaveObj).length !== 0) {
 
 
-    // ---------------------------------------------
-    //   - forum-threads
-    // ---------------------------------------------
+      // --------------------------------------------------
+      //   画像＆動画を削除する
+      // --------------------------------------------------
 
-    if (Object.keys(forumThreadsConditionObj).length !== 0 && Object.keys(forumThreadsSaveObj).length !== 0) {
+      const arr = lodashGet(imagesAndVideosThumbnailSaveObj, ['arr'], []);
 
-      await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
+      if (arr.length === 0) {
+
+        await SchemaImagesAndVideos.deleteOne(imagesAndVideosThumbnailConditionObj, { session });
+
+
+      // --------------------------------------------------
+      //   画像＆動画を保存
+      // --------------------------------------------------
+
+      } else {
+
+        await SchemaImagesAndVideos.updateOne(imagesAndVideosThumbnailConditionObj, imagesAndVideosThumbnailSaveObj, { session, upsert: true });
+
+      }
 
     }
 
@@ -1492,58 +1530,58 @@ const transactionForUpsert = async ({
     //   console.log
     // --------------------------------------------------
 
-    console.log(`
-      ----------------------------------------\n
-      app/@database/games/model.js - transactionForUpsert
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   app/@database/games/model.js - transactionForUpsert
+    // `);
 
-    console.log(`
-      ----- gamesConditionObj -----\n
-      ${util.inspect(gamesConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gamesConditionObj -----\n
+    //   ${util.inspect(gamesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- gamesSaveObj -----\n
-      ${util.inspect(gamesSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gamesSaveObj -----\n
+    //   ${util.inspect(gamesSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- imagesAndVideosConditionObj -----\n
-      ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosConditionObj -----\n
+    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- imagesAndVideosSaveObj -----\n
-      ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosSaveObj -----\n
+    //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- gameCommunitiesConditionObj -----\n
-      ${util.inspect(gameCommunitiesConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gameCommunitiesConditionObj -----\n
+    //   ${util.inspect(gameCommunitiesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- gameCommunitiesSaveObj -----\n
-      ${util.inspect(gameCommunitiesSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gameCommunitiesSaveObj -----\n
+    //   ${util.inspect(gameCommunitiesSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- forumThreadsConditionObj -----\n
-      ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- forumThreadsConditionObj -----\n
+    //   ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- forumThreadsSaveObj -----\n
-      ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- forumThreadsSaveObj -----\n
+    //   ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
     // console.log(`
     //   ----- returnObj -----\n

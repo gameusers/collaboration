@@ -78,7 +78,7 @@ import { locale } from 'app/@locales/locale.js';
 
 
 // --------------------------------------------------
-//   endpointID: 8mHi5ZjYn
+//   endpointID: XK1toMm5Z
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -226,30 +226,29 @@ export default async (req, res) => {
     //   データ取得　存在しない、または【編集権限】がない場合はエラーが投げられる
     // --------------------------------------------------
 
+    let currentGamesObj = {};
     let oldImagesAndVideosObj = {};
     let oldImagesAndVideosThumbnailObj = {};
 
     if (games_id) {
 
-      const tempOldObj = await ModelGames.findEditData({
+      currentGamesObj = await ModelGames.findEditData({
 
         localeObj,
         games_id,
 
       });
 
-      oldImagesAndVideosObj = lodashGet(tempOldObj, ['imagesAndVideosObj'], {});
-      oldImagesAndVideosThumbnailObj = lodashGet(tempOldObj, ['imagesAndVideosThumbnailObj'], {});
+      oldImagesAndVideosObj = lodashGet(currentGamesObj, ['imagesAndVideosObj'], {});
+      oldImagesAndVideosThumbnailObj = lodashGet(currentGamesObj, ['imagesAndVideosThumbnailObj'], {});
 
       // console.log(`
-      //   ----- tempOldObj -----\n
-      //   ${util.inspect(tempOldObj, { colors: true, depth: null })}\n
+      //   ----- currentGamesObj -----\n
+      //   ${util.inspect(currentGamesObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
 
     }
-
-
 
 
 
@@ -490,7 +489,7 @@ export default async (req, res) => {
 
 
     // ---------------------------------------------
-    //   - game-communities
+    //   - forum-threads
     // ---------------------------------------------
 
     let forumThreadsConditionObj = {
@@ -526,284 +525,60 @@ export default async (req, res) => {
 
 
 
-    //   // ---------------------------------------------
-    //   //   - 更新
-    //   // ---------------------------------------------
+    // ---------------------------------------------
+    //   - 更新
+    // ---------------------------------------------
 
-    //   if (currentWebPushes_id || currentUsersWebPushes_id) {
+    if (Object.keys(currentGamesObj).length !== 0) {
 
-    //     webPushes_id = currentWebPushes_id || currentUsersWebPushes_id;
 
+      // ---------------------------------------------
+      //   - games
+      // ---------------------------------------------
 
-    //     // ---------------------------------------------
-    //     //   既存のドキュメントを取得
-    //     // ---------------------------------------------
+      gamesConditionObj = {
+        _id: games_id,
+      };
 
-    //     const docWebPushesObj = await ModelWebPushes.findOne({
+      gamesSaveObj = {
 
-    //       conditionObj: {
-    //         _id: webPushes_id,
-    //       }
+        updatedDate: ISO8601,
+        urlID,
+        language,
+        country,
+        imagesAndVideos_id,
+        imagesAndVideosThumbnail_id,
+        name,
+        subtitle,
+        searchKeywordsArr,
+        sortKeyword,
+        twitterHashtagsArr,
+        genreArr,
+        genreSubArr: [],
+        genreTagArr: [],
+        hardwareArr: newHardwareArr,
+        linkArr: newLinkArr,
 
-    //     });
+      };
 
 
-    //     // ---------------------------------------------
-    //     //   subscription に変更があった場合のみ更新
-    //     // ---------------------------------------------
+      // ---------------------------------------------
+      //   - game-communities
+      // ---------------------------------------------
 
-    //     if (
+      gameCommunitiesConditionObj = {};
+      gameCommunitiesSaveObj = {};
 
-    //       docWebPushesObj.subscriptionObj.endpoint !== endpoint ||
-    //       docWebPushesObj.subscriptionObj.keys.p256dh !== p256dh ||
-    //       docWebPushesObj.subscriptionObj.keys.auth !== auth
 
-    //     ) {
+      // ---------------------------------------------
+      //   - forum-threads
+      // ---------------------------------------------
 
-    //       webPushesConditionObj._id = webPushes_id;
+      forumThreadsConditionObj = {};
+      forumThreadsSaveObj = {};
 
-    //       webPushesSaveObj = {
 
-    //         $set: {
-    //           updatedDate: ISO8601,
-    //           sendDate: '',
-    //           subscriptionObj: {
-    //             endpoint,
-    //             keys: {
-    //               p256dh,
-    //               auth,
-    //             }
-    //           },
-    //           sendTotalCount: 0,
-    //           sendTodayCount: 0,
-    //           errorCount: 0,
-    //         }
-
-    //       };
-
-
-    //     // ---------------------------------------------
-    //     //   subscription に変更がない場合は、DB web-pushes のドキュメントは更新しない
-    //     // ---------------------------------------------
-
-    //     } else {
-
-    //       webPushesConditionObj = {};
-    //       webPushesSaveObj = {};
-
-    //     }
-
-
-    //     // console.log(chalk`
-    //     //   currentWebPushes_id: {green ${currentWebPushes_id}}
-    //     //   currentUsersWebPushes_id: {green ${currentUsersWebPushes_id}}
-    //     // `);
-
-    //     // console.log(`
-    //     //   ----------------------------------------\n
-    //     //   web-pushes 更新
-
-    //     //   ----- docWebPushesObj -----\n
-    //     //   ${util.inspect(docWebPushesObj, { colors: true, depth: null })}\n
-    //     //   --------------------\n
-    //     // `);
-
-
-    //   // ---------------------------------------------
-    //   //   - 挿入
-    //   // ---------------------------------------------
-
-    //   } else {
-
-
-    //     // ---------------------------------------------
-    //     //   既存のデータを取得
-    //     // ---------------------------------------------
-
-    //     const docWebPushesObj = await ModelWebPushes.findOne({
-
-    //       conditionObj: {
-    //         'subscriptionObj.endpoint': endpoint,
-    //         'subscriptionObj.keys.p256dh': p256dh,
-    //         'subscriptionObj.keys.auth': auth,
-    //       }
-
-    //     });
-
-
-    //     // ---------------------------------------------
-    //     //   同じ subscription がすでに存在する場合、既存のものを利用し DB web-pushes に挿入はしない
-    //     // ---------------------------------------------
-
-    //     if (docWebPushesObj) {
-
-    //       webPushes_id = docWebPushesObj._id;
-
-    //       webPushesConditionObj = {};
-    //       webPushesSaveObj = {};
-
-
-    //     // ---------------------------------------------
-    //     //   同じ subscription が存在しない場合、挿入
-    //     // ---------------------------------------------
-
-    //     } else {
-
-    //       webPushes_id = webPushesConditionObj._id;
-
-    //     }
-
-
-
-    //     // ---------------------------------------------
-    //     //   ログインしている場合、DB users に webPushes_id を保存
-    //     // ---------------------------------------------
-
-    //     if (loginUsers_id) {
-
-    //       usersConditionObj = {
-    //         _id: loginUsers_id,
-    //       };
-
-    //       usersSaveObj = {
-    //         $set: {
-    //           updatedDate: ISO8601,
-    //           webPushes_id,
-    //         }
-    //       };
-
-    //     }
-
-
-    //     // console.log(chalk`
-    //     //   endpoint: {green ${endpoint}}
-    //     //   p256dh: {green ${p256dh}}
-    //     //   auth: {green ${auth}}
-    //     // `);
-
-    //     // console.log(`
-    //     //   ----------------------------------------\n
-    //     //   web-pushes 挿入
-
-    //     //   ----- docWebPushesObj -----\n
-    //     //   ${util.inspect(docWebPushesObj, { colors: true, depth: null })}\n
-    //     //   --------------------\n
-    //     // `);
-
-
-    //   }
-
-
-    // } else {
-
-    //   webPushAvailable = false;
-    //   webPushesConditionObj = {};
-    //   webPushesSaveObj = {};
-
-    // }
-
-
-
-
-    // // ---------------------------------------------
-    // //   - recruitment-threads
-    // // ---------------------------------------------
-
-    // const recruitmentThreadsConditionObj = {
-    //   _id: shortid.generate(),
-    // };
-
-
-    // const recruitmentThreadsSaveObj = {
-
-    //   createdDate: ISO8601,
-    //   updatedDate: ISO8601,
-    //   gameCommunities_id,
-    //   users_id: loginUsers_id,
-    //   hardwareIDsArr,
-    //   category,
-    //   localesArr: [
-    //     {
-    //       _id: shortid.generate(),
-    //       language: localeObj.language,
-    //       title,
-    //       name,
-    //       comment,
-    //     }
-    //   ],
-    //   imagesAndVideos_id,
-    //   ids_idsArr,
-    //   publicIDsArr,
-    //   publicInformationsArr,
-    //   publicSetting,
-    //   deadlineDate,
-    //   webPushAvailable,
-    //   webPushes_id,
-    //   publicCommentsUsers_idsArr: [],
-    //   publicApprovalUsers_idsArrr: [],
-    //   comments: 0,
-    //   replies: 0,
-    //   images,
-    //   videos,
-    //   acceptLanguage,
-    //   ip,
-    //   userAgent,
-
-    // };
-
-
-    // // ---------------------------------------------
-    // //   - game-communities / 更新日時の変更＆スレッド総数 + 1
-    // // ---------------------------------------------
-
-    // const gameCommunitiesConditionObj = {
-    //   _id: gameCommunities_id,
-    // };
-
-
-    // const gameCommunitiesSaveObj = {
-
-    //   updatedDate: ISO8601,
-    //   'updatedDateObj.recruitment': ISO8601,
-    //   $inc: { 'recruitmentObj.threadCount': 1 }
-
-    // };
-
-
-
-
-    // // --------------------------------------------------
-    // //   Update - 編集の場合、更新しない方がいいフィールドを削除する
-    // // --------------------------------------------------
-
-    // if (recruitmentThreads_id) {
-
-
-    //   // ---------------------------------------------
-    //   //   - recruitment-threads
-    //   // ---------------------------------------------
-
-    //   recruitmentThreadsConditionObj._id = recruitmentThreads_id;
-
-    //   delete recruitmentThreadsSaveObj.createdDate;
-    //   delete recruitmentThreadsSaveObj.gameCommunities_id;
-    //   delete recruitmentThreadsSaveObj.users_id;
-    //   delete recruitmentThreadsSaveObj.comments;
-    //   delete recruitmentThreadsSaveObj.replies;
-    //   delete recruitmentThreadsSaveObj.images;
-    //   delete recruitmentThreadsSaveObj.videos;
-
-    //   recruitmentThreadsSaveObj.$inc = { images, videos };
-
-
-    //   // ---------------------------------------------
-    //   //   - game-communities / $inc を削除して threadCount（ゲームコミュニティに記録するスレッド総数）を増やさない
-    //   // ---------------------------------------------
-
-    //   delete gameCommunitiesSaveObj.$inc;
-
-
-    // }
+    }
 
 
 
@@ -816,51 +591,16 @@ export default async (req, res) => {
 
       gamesConditionObj,
       gamesSaveObj,
-      imagesAndVideosConditionObj,
-      imagesAndVideosSaveObj,
       gameCommunitiesConditionObj,
       gameCommunitiesSaveObj,
       forumThreadsConditionObj,
       forumThreadsSaveObj,
+      imagesAndVideosConditionObj,
+      imagesAndVideosSaveObj,
+      imagesAndVideosThumbnailConditionObj,
+      imagesAndVideosThumbnailSaveObj,
 
     });
-
-
-
-
-    // --------------------------------------------------
-    //   DB find / Recruitments
-    // --------------------------------------------------
-
-    // const recruitmentObj = await ModelRecruitmentThreads.findRecruitments({
-
-    //   req,
-    //   localeObj,
-    //   loginUsers_id,
-    //   gameCommunities_id,
-    //   threadPage: 1,
-    //   threadLimit,
-    //   commentPage: 1,
-    //   commentLimit,
-    //   replyPage: 1,
-    //   replyLimit,
-
-    // });
-
-    // returnObj.recruitmentThreadsObj = recruitmentObj.recruitmentThreadsObj;
-    // returnObj.recruitmentCommentsObj = recruitmentObj.recruitmentCommentsObj;
-    // returnObj.recruitmentRepliesObj = recruitmentObj.recruitmentRepliesObj;
-
-
-    // // --------------------------------------------------
-    // //   DB find / Game Community
-    // // --------------------------------------------------
-
-    // returnObj.gameCommunityObj = await ModelGameCommunities.findForGameCommunityByGameCommunities_id({
-
-    //   gameCommunities_id,
-
-    // });
 
 
 
@@ -954,7 +694,7 @@ export default async (req, res) => {
     const resultErrorObj = returnErrorsArr({
 
       errorObj,
-      endpointID: '8mHi5ZjYn',
+      endpointID: 'XK1toMm5Z',
       users_id: loginUsers_id,
       ip,
       userAgent,

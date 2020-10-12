@@ -44,7 +44,7 @@ import lodashGet from 'lodash/get';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-// import Button from '@material-ui/core/Button';
+import Button from '@material-ui/core/Button';
 // import IconButton from '@material-ui/core/IconButton';
 // import Popover from '@material-ui/core/Popover';
 import Paper from '@material-ui/core/Paper';
@@ -140,6 +140,8 @@ const Component = (props) => {
   } = props;
 
 
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
@@ -148,10 +150,11 @@ const Component = (props) => {
   const stateLayout = ContainerStateLayout.useContainer();
   const stateGcRegister = ContainerStateGcRegister.useContainer();
 
-  const { login } = stateUser;
+  const { login, loginUsersObj } = stateUser;
 
   const {
 
+    handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
@@ -253,7 +256,15 @@ const Component = (props) => {
     setImagesAndVideosObj,
     setImagesAndVideosThumbnailObj,
 
+    adminCheckedGamesTemps_idsArr,
+
   } = stateGcRegister;
+
+
+  const role = lodashGet(loginUsersObj, ['role'], '');
+  const administrator = role === 'administrator' ? true : false;
+
+
 
 
   // --------------------------------------------------
@@ -264,7 +275,6 @@ const Component = (props) => {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
-
 
 
   useEffect(() => {
@@ -568,7 +578,6 @@ const Component = (props) => {
       //   分岐
       // ---------------------------------------------
 
-      // const postscriptGames_id = lodashGet(resultObj, ['data', 'games_id'], games_id);
       const gamesObj = lodashGet(resultObj, ['data', 'gamesObj'], {});
       let imagesAndVideosObj = {};
       let imagesAndVideosThumbnailObj = {};
@@ -578,7 +587,6 @@ const Component = (props) => {
       //   - 追記の場合 / games
       // ----------------------------------------
 
-      // if (postscriptGames_id || Object.keys(gamesObj).length !== 0) {
       if (games_id) {
 
         setGames_id(games_id);
@@ -601,13 +609,6 @@ const Component = (props) => {
 
         imagesAndVideosObj = lodashGet(gamesObj, ['imagesAndVideosObj'], {});
         imagesAndVideosThumbnailObj = lodashGet(gamesObj, ['imagesAndVideosThumbnailObj'], {});
-
-        // setGames_id(lodashGet(resultObj, ['data', 'games_id'], ''));
-        // setFormType('postscript');
-        // setSourceGamesName(lodashGet(resultObj, ['gamesObj', 'name'], ''));
-
-        // imagesAndVideosObj = lodashGet(resultObj, ['gamesObj', 'imagesAndVideosObj'], {});
-        // imagesAndVideosThumbnailObj = lodashGet(resultObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
 
 
       // ----------------------------------------
@@ -694,6 +695,163 @@ const Component = (props) => {
 
       handleLoadingClose();
 
+
+    }
+
+
+  };
+
+
+
+
+  /**
+   * 仮登録を削除する
+   */
+  const handleDelete = async ({ adminCheckedGamesTemps_idsArr }) => {
+
+
+    try {
+
+
+      // ---------------------------------------------
+      //   _id が存在しない場合エラー
+      // ---------------------------------------------
+
+      if (adminCheckedGamesTemps_idsArr.length === 0) {
+        throw new CustomError({ errorsArr: [{ code: 'p2v1IP42S', messageID: 'Error' }] });
+      }
+
+
+
+
+      // ---------------------------------------------
+      //   Loading Open
+      // ---------------------------------------------
+
+      handleLoadingOpen({});
+
+
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+
+      setButtonDisabled(true);
+
+
+
+
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+
+      const formDataObj = {
+
+        gamesTemps_idsArr: adminCheckedGamesTemps_idsArr,
+
+      };
+
+
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+
+      const resultObj = await fetchWrapper({
+
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/games-temps/delete`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
+
+      });
+
+
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+
+
+
+
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+
+      setButtonDisabled(false);
+
+
+      // ---------------------------------------------
+      //   Router.push = History API pushState()
+      // ---------------------------------------------
+
+      const url = '/gc/register/[[...slug]]';
+      const as = '/gc/register';
+
+      await Router.push(url, as);
+
+
+
+
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+
+      // console.log(`
+      //   ----------------------------------------\n
+      //   app/@states/gc-register.js - handleDelete
+      // `);
+
+      // console.log(chalk`
+      //   gamesTemps_id: {green ${gamesTemps_id}}
+      // `);
+
+      // console.log(`
+      //   ----- adminCheckedGamesTemps_idsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(adminCheckedGamesTemps_idsArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+    } catch (errorObj) {
+
+
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+
+      setButtonDisabled(false);
+
+
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+
+      showSnackbar({
+
+        enqueueSnackbar,
+        intl,
+        errorObj,
+
+      });
+
+
+    } finally {
+
+
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
+
+      handleLoadingClose();
 
 
     }
@@ -841,6 +999,58 @@ const Component = (props) => {
       >
         {componentTempsListArr}
       </div>
+
+
+
+
+      {/* Administrator Buttons */}
+      {administrator &&
+        <Paper
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            margin: 0 0 12px 0;
+            padding: 8px;
+          `}
+        >
+
+          {/* Approval Button */}
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={buttonDisabled}
+            // onClick={() => setShowFormReply(true)}
+          >
+            承認する
+          </Button>
+
+
+          {/* Delete Button */}
+          <div
+            css={css`
+              margin: 0 0 0 auto;
+            `}
+          >
+            <Button
+              variant="contained"
+              color="secondary"
+              disabled={buttonDisabled}
+              onClick={() => handleDialogOpen({
+                title: '仮登録削除',
+                description: '削除しますか？',
+                handle: handleDelete,
+                argumentsObj: {
+                  adminCheckedGamesTemps_idsArr
+                },
+              })}
+              // onClick={handleDelete}
+            >
+              削除する
+            </Button>
+          </div>
+
+        </Paper>
+      }
 
 
 

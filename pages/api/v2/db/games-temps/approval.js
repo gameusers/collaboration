@@ -40,6 +40,7 @@ import ModelGamesTemps from 'app/@database/games-temps/model.js';
 import { verifyCsrfToken } from 'app/@modules/csrf.js';
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { experienceCalculate } from 'app/@modules/experience.js';
 
 
 // ---------------------------------------------
@@ -47,9 +48,6 @@ import { CustomError } from 'app/@modules/error/custom.js';
 // ---------------------------------------------
 
 import { validationIP } from 'app/@validations/ip.js';
-// import { validationLanguage, validationCountry } from 'app/@validations/language.js';
-
-// import { validationGamesName } from 'app/@database/games/validations/name.js';
 
 
 // ---------------------------------------------
@@ -150,7 +148,7 @@ export default async (req, res) => {
     if (!administrator) {
 
       statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'YQHSIt9cd', messageID: 'DSRlEoL29' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'OiO8GNTVD', messageID: 'DSRlEoL29' }] });
 
     }
 
@@ -167,16 +165,78 @@ export default async (req, res) => {
 
 
     // --------------------------------------------------
-    //   DB Delete
+    //   DB find
+    // --------------------------------------------------
+
+    const docGamesTempsArr = await ModelGamesTemps.find({
+
+      conditionObj: {
+        _id: { $in: gamesTemps_idsArr }
+      },
+
+    });
+
+
+
+
+    // --------------------------------------------------
+    //   Experience
+    // --------------------------------------------------
+
+    for (let valueObj of docGamesTempsArr.values()) {
+
+
+      // ---------------------------------------------
+      //   approval & targetUsers_id
+      // ---------------------------------------------
+
+      const approval = lodashGet(valueObj, ['approval'], false);
+      const targetUsers_id = lodashGet(valueObj, ['users_id'], '');
+
+
+      // ---------------------------------------------
+      //   experienceCalculate
+      // ---------------------------------------------
+
+      if (!approval && targetUsers_id) {
+
+        await experienceCalculate({
+
+          req,
+          localeObj,
+          loginUsers_id,
+          targetUsers_id,
+          arr: [{
+            type: 'gc-register',
+            calculation: 'addition',
+          }],
+
+        });
+
+      }
+
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   DB upsert
     // --------------------------------------------------
 
     const conditionObj = {
       _id: { $in: gamesTemps_idsArr }
     };
 
-    returnObj = await ModelGamesTemps.deleteMany({
+    const saveObj = {
+      approval: true
+    };
+
+    returnObj = await ModelGamesTemps.updateMany({
 
       conditionObj,
+      saveObj,
 
     });
 
@@ -187,16 +247,22 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
 
-    // console.log(`
-    //   ----------------------------------------\n
-    //   pages/api/v2/db/games-temps/delete.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      pages/api/v2/db/games-temps/approval.js
+    `);
 
-    // console.log(`
-    //   ----- gamesTemps_idsArr -----\n
-    //   ${util.inspect(gamesTemps_idsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- gamesTemps_idsArr -----\n
+      ${util.inspect(gamesTemps_idsArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+
+    console.log(`
+      ----- docGamesTempsArr -----\n
+      ${util.inspect(docGamesTempsArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
 
     // console.log(`
     //   ----- returnObj -----\n

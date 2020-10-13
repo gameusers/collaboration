@@ -705,6 +705,164 @@ const Component = (props) => {
 
 
   /**
+   * 仮登録を承認する
+   */
+  const handleApproval = async () => {
+
+
+    try {
+
+
+      // ---------------------------------------------
+      //   _id が存在しない場合エラー
+      // ---------------------------------------------
+
+      if (adminCheckedGamesTemps_idsArr.length === 0) {
+        throw new CustomError({ errorsArr: [{ code: 'Zh0mo70CB', messageID: 'Error' }] });
+      }
+
+
+
+
+      // ---------------------------------------------
+      //   Loading Open
+      // ---------------------------------------------
+
+      handleLoadingOpen({});
+
+
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+
+      setButtonDisabled(true);
+
+
+
+
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+
+      const formDataObj = {
+
+        gamesTemps_idsArr: adminCheckedGamesTemps_idsArr,
+
+      };
+
+
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+
+      const resultObj = await fetchWrapper({
+
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/games-temps/approval`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
+
+      });
+
+
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+
+
+
+
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+
+      setButtonDisabled(false);
+
+
+      // ---------------------------------------------
+      //   Router.push = History API pushState()
+      // ---------------------------------------------
+
+      // const url = '/gc/register/[[...slug]]';
+      // const as = '/gc/register';
+
+      // await Router.push(url, as);
+
+
+
+
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+
+      // console.log(`
+      //   ----------------------------------------\n
+      //   app/@states/gc-register.js - handleDelete
+      // `);
+
+      // console.log(chalk`
+      //   gamesTemps_id: {green ${gamesTemps_id}}
+      // `);
+
+      // console.log(`
+      //   ----- adminCheckedGamesTemps_idsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(adminCheckedGamesTemps_idsArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+    } catch (errorObj) {
+
+
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+
+      setButtonDisabled(false);
+
+
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+
+      showSnackbar({
+
+        enqueueSnackbar,
+        intl,
+        errorObj,
+
+      });
+
+
+    } finally {
+
+
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
+
+      handleLoadingClose();
+
+
+    }
+
+
+  };
+
+
+
+
+  /**
    * 仮登録を削除する
    */
   const handleDelete = async ({ adminCheckedGamesTemps_idsArr }) => {
@@ -1019,7 +1177,7 @@ const Component = (props) => {
             variant="contained"
             color="primary"
             disabled={buttonDisabled}
-            // onClick={() => setShowFormReply(true)}
+            onClick={handleApproval}
           >
             承認する
           </Button>

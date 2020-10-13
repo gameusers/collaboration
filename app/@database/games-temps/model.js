@@ -226,6 +226,53 @@ const upsert = async ({ conditionObj, saveObj }) => {
 
 
 /**
+ * 大量に更新する
+ * @param {Object} conditionObj - 検索条件
+ * @param {Object} saveObj - 保存するデータ / $set を使うこと
+ * @return {Array}
+ */
+const updateMany = async ({ conditionObj, saveObj }) => {
+
+
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+
+  try {
+
+
+    // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+
+    if (!saveObj || !Object.keys(saveObj).length) {
+      throw new Error();
+    }
+
+
+    // --------------------------------------------------
+    //   Upsert
+    // --------------------------------------------------
+
+    return await SchemaGamesTemps.updateMany(conditionObj, saveObj).exec();
+
+
+  } catch (err) {
+
+    throw err;
+
+  }
+
+};
+
+
+
+
+/**
  * 大量に挿入する
  * @param {Array} saveArr - 保存するデータ
  * @return {Array}
@@ -416,10 +463,8 @@ const findGamesTempsList = async ({
 
       {
         $project: {
-          // _id: 0,
           createdDate: 1,
-          gameCommunities_id: 1,
-          // urlID: 1,
+          approval: 1,
           name: 1,
           subtitle: 1,
           hardwareArr: 1,
@@ -497,83 +542,9 @@ const findGamesTempsList = async ({
 
       obj._id = _id;
       obj.createdDate = lodashGet(valueObj, ['createdDate'], '');
+      obj.approval = lodashGet(valueObj, ['approval'], '');
       obj.name = lodashGet(valueObj, ['name'], '');
       obj.subtitle = lodashGet(valueObj, ['subtitle'], '');
-
-
-      // --------------------------------------------------
-      //   Developers Publishers
-      // --------------------------------------------------
-
-      // const hardwareArr = lodashGet(valueObj, ['hardwareArr'], []);
-      // let developerPublisherIDsArr = [];
-
-
-      // // ---------------------------------------------
-      // //   - Loop
-      // // ---------------------------------------------
-
-      // for (let value2Obj of hardwareArr.values()) {
-
-      //   const publisherIDsArr = lodashGet(value2Obj, ['publisherIDsArr'], []);
-      //   const developerIDsArr = lodashGet(value2Obj, ['developerIDsArr'], []);
-
-      //   developerPublisherIDsArr = developerPublisherIDsArr.concat(publisherIDsArr, developerIDsArr);
-
-      // }
-
-
-      // // ---------------------------------------------
-      // //   - 配列の重複している値を削除
-      // // ---------------------------------------------
-
-      // developerPublisherIDsArr = Array.from(new Set(developerPublisherIDsArr));
-
-
-      // // ---------------------------------------------
-      // //   - find
-      // // ---------------------------------------------
-
-      // const docDevelopersPublishersArr = await ModelDevelopersPublishers.find({
-
-      //   conditionObj: {
-      //     language,
-      //     country,
-      //     developerPublisherID: { $in: developerPublisherIDsArr },
-      //   }
-
-      // });
-
-
-      // // ---------------------------------------------
-      // //   - 名前だけ配列に入れる
-      // // ---------------------------------------------
-
-      // const developersPublishersArr = [];
-
-      // for (let value2Obj of docDevelopersPublishersArr.values()) {
-      //   developersPublishersArr.push(value2Obj.name);
-      // }
-
-      // obj.developersPublishers = developersPublishersArr.join(', ');
-
-      // console.log(`
-      //   ----- developerPublisherIDsArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(developerPublisherIDsArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
-      // console.log(`
-      //   ----- docDevelopersPublishersArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(docDevelopersPublishersArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
-      // console.log(`
-      //   ----- developersPublishersArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(developersPublishersArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
 
 
       // --------------------------------------------------
@@ -1129,6 +1100,7 @@ module.exports = {
   find,
   count,
   upsert,
+  updateMany,
   insertMany,
   deleteMany,
 

@@ -91,7 +91,7 @@ const Component = (props) => {
   const stateUser = ContainerStateUser.useContainer();
   const stateGcRegister = ContainerStateGcRegister.useContainer();
 
-  const { loginUsersObj } = stateUser;
+  const { login, loginUsersObj } = stateUser;
   const { adminCheckedGamesTemps_idsArr, handleAdminCheck } = stateGcRegister;
 
   const role = lodashGet(loginUsersObj, ['role'], '');
@@ -106,6 +106,7 @@ const Component = (props) => {
 
   const gamesTemps_id = lodashGet(obj, ['_id'], '');
   const createdDate = lodashGet(obj, ['createdDate'], '');
+  const approval = lodashGet(obj, ['approval'], false);
   const name = lodashGet(obj, ['name'], '');
   const subtitle = lodashGet(obj, ['subtitle'], '');
   const src = '/img/common/thumbnail/none-game.jpg';
@@ -156,7 +157,7 @@ const Component = (props) => {
 
       {/* Left */}
       <div
-        onClick={() => handleGetEditData({ gamesTemps_id })}
+        onClick={login ? () => handleGetEditData({ gamesTemps_id }) : () => {}}
       >
         <img
           css={css`
@@ -181,7 +182,7 @@ const Component = (props) => {
           margin: 4px 0 0 0;
           padding: 4px 8px;
         `}
-        onClick={() => handleGetEditData({ gamesTemps_id })}
+        onClick={login ? () => handleGetEditData({ gamesTemps_id }) : () => {}}
       >
 
         <div
@@ -233,7 +234,7 @@ const Component = (props) => {
                   font-size: 12px;
                 `}
               >
-                [仮登録]
+                [仮登録 / {approval ? '運営確認済み' : '運営未確認'}]
               </div>
             </div>
 
@@ -250,23 +251,25 @@ const Component = (props) => {
       {administrator &&
         <div
           css={css`
+            width: 26px;
             margin: 0 0 0 24px;
           `}
         >
-          <FormControlLabel
-            control={
-              <Checkbox
-                css={css`
-                  && {
-                    // margin: 0 0 0 12px;
-                    padding: 0;
-                  }
-                `}
-                checked={adminCheckedGamesTemps_idsArr.includes(gamesTemps_id)}
-                onChange={() => handleAdminCheck({ gamesTemps_id })}
-              />
-            }
-          />
+          {!approval &&
+            <FormControlLabel
+              control={
+                <Checkbox
+                  css={css`
+                    && {
+                      padding: 0;
+                    }
+                  `}
+                  checked={adminCheckedGamesTemps_idsArr.includes(gamesTemps_id)}
+                  onChange={() => handleAdminCheck({ gamesTemps_id })}
+                />
+              }
+            />
+          }
         </div>
       }
 

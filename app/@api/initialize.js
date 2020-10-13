@@ -334,6 +334,17 @@ router.post('/db', upload.none(), async (req, res, next) => {
             countTotal: 30
           },
           {
+            _id: 'NQJQiDfvY',
+            createdDate: '2020-10-13T00:00:00.000Z',
+            updatedDate: '2020-10-13T00:00:00.000Z',
+            type: 'gc-register',
+            countDay: 0,
+            countMonth: 0,
+            countYear: 0,
+            countValid: 1,
+            countTotal: 1
+          },
+          {
             _id: '-6rOeYCIj',
             createdDate: '2020-08-12T04:53:54.804Z',
             updatedDate: '2020-08-12T08:59:20.171Z',
@@ -513,9 +524,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
           '7YCic-Yds', 'RhpW8VDw4', 'bnOJOwQN4',
           '4e2otkg81', 'iPgdAE8rL', 'oU2EDF7vI',
           '0c0jL9cW-', '065apjMq1', 'oZlexPqhS',
-          'GjGPfC8e1', 'MYLwdOLD1'
+          'GjGPfC8e1', 'MYLwdOLD1', 'oUikoyNw8'
         ],
-        selectedTitles_idsArr: ['MuK2dKVpn', 'NwzUOqsiC', '8Fbta4f9O'],
+        selectedTitles_idsArr: ['MuK2dKVpn', 'NwzUOqsiC', 'oUikoyNw8'],
       },
 
     ];
@@ -589,50 +600,50 @@ router.post('/db', upload.none(), async (req, res, next) => {
             countDay: 0,
           },
           {
+            _id: 'z7tSIs5EJ',
+            titles_id: 'FM8hGmeqv',
+            count: 3,
+            countDay: 0,
+          },
+          {
             _id: 'okRG_KnV1',
             titles_id: 'GjGPfC8e1',
-            count: 3,
+            count: 4,
             countDay: 0,
           },
           {
             _id: 'QHNzx7Hfw',
             titles_id: 'MYLwdOLD1',
-            count: 4,
+            count: 5,
             countDay: 0,
           },
           {
             _id: 'Y6HRgbn3c',
             titles_id: 'XdNCO6eIe',
-            count: 5,
+            count: 6,
             countDay: 0,
           },
           {
             _id: 'UsbhgG7A2',
             titles_id: '0lmhBTKPF',
-            count: 6,
+            count: 7,
             countDay: 0,
           },
           {
             _id: 'oLPAB2LwH',
             titles_id: 'VN3reZuRi',
-            count: 7,
+            count: 8,
             countDay: 0,
           },
           {
             _id: 'GpKQHoVFK',
             titles_id: 'NwRla-9WG',
-            count: 8,
+            count: 9,
             countDay: 0,
           },
           {
             _id: 'CF9WNHeSj',
             titles_id: 'C00pgN_Xn',
-            count: 9,
-            countDay: 0,
-          },
-          {
-            _id: 'jvB0I2QwX',
-            titles_id: 'FM8hGmeqv',
             count: 10,
             countDay: 0,
           },
@@ -1198,7 +1209,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
 
 
-
       // ---------------------------------------------
       //   Goodボタンを押される / good-count-clicked
       // ---------------------------------------------
@@ -1305,6 +1315,88 @@ router.post('/db', upload.none(), async (req, res, next) => {
             _id: 'vOJN3blU1',
             titles_id: 'BNJ30I7Wu',
             count: 550,
+            countDay: 0,
+          },
+        ],
+      },
+
+
+      // ---------------------------------------------
+      //   ゲーム登録 / gc-register
+      // ---------------------------------------------
+
+      {
+        _id: 'kmeOXYeUY',
+        type: 'gc-register',
+        exp: 20,
+        limitDay: 0,
+        limitMonth: 0,
+        limitYear: 0,
+        conditionsArr: [
+          {
+            _id: 'Au7um4CF5',
+            titles_id: 'oUikoyNw8',
+            count: 1,
+            countDay: 0,
+          },
+          {
+            _id: 'saFW5zjQH',
+            titles_id: 'RC23wuPie',
+            count: 5,
+            countDay: 0,
+          },
+          {
+            _id: 'hH4FniIwV',
+            titles_id: '4hcDA5La3',
+            count: 10,
+            countDay: 0,
+          },
+          {
+            _id: 'ZcM6UqY4f',
+            titles_id: '9tnHg8N6a',
+            count: 15,
+            countDay: 0,
+          },
+          {
+            _id: 'A1TCtB7BW',
+            titles_id: 'O1z1kO6fk',
+            count: 20,
+            countDay: 0,
+          },
+          {
+            _id: 'NLpKuwkjn',
+            titles_id: 't7KFWLOYJ',
+            count: 25,
+            countDay: 0,
+          },
+          {
+            _id: 'Sh3pN0fyI',
+            titles_id: 'z0VBPIIfi',
+            count: 30,
+            countDay: 0,
+          },
+          {
+            _id: 'IKuyJfUwI',
+            titles_id: 'O0loEvj9c',
+            count: 35,
+            countDay: 0,
+          },
+          {
+            _id: 'OWVALgeIq',
+            titles_id: 'UiFiyYOP5',
+            count: 40,
+            countDay: 0,
+          },
+          {
+            _id: '35S2obQxs',
+            titles_id: '6tNoSpoSA',
+            count: 45,
+            countDay: 0,
+          },
+          {
+            _id: 'TxhSBmml2',
+            titles_id: 'A4r74MAjm',
+            count: 50,
             countDay: 0,
           },
         ],
@@ -1842,7 +1934,14 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: 'oZlexPqhS',
         urlID: 'oZlexPqhS',
         language: 'ja',
-        name: '子犬',
+        name: '駄犬',
+      },
+
+      {
+        _id: 'FM8hGmeqv',
+        urlID: 'FM8hGmeqv',
+        language: 'ja',
+        name: 'ネコ',
       },
 
       {
@@ -1892,13 +1991,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
         urlID: 'C00pgN_Xn',
         language: 'ja',
         name: '型落ち',
-      },
-
-      {
-        _id: 'FM8hGmeqv',
-        urlID: 'FM8hGmeqv',
-        language: 'ja',
-        name: 'ギャル',
       },
 
       {
@@ -2630,6 +2722,88 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
 
       // ---------------------------------------------
+      //   gc-register
+      // ---------------------------------------------
+
+      {
+        _id: 'oUikoyNw8',
+        urlID: 'oUikoyNw8',
+        language: 'ja',
+        name: 'エディター',
+      },
+
+      {
+        _id: 'RC23wuPie',
+        urlID: 'RC23wuPie',
+        language: 'ja',
+        name: 'インデックス',
+      },
+
+      {
+        _id: '4hcDA5La3',
+        urlID: '4hcDA5La3',
+        language: 'ja',
+        name: '物知り博士',
+      },
+
+      {
+        _id: '9tnHg8N6a',
+        urlID: '9tnHg8N6a',
+        language: 'ja',
+        name: '知の巨人',
+      },
+
+      {
+        _id: 'O1z1kO6fk',
+        urlID: 'O1z1kO6fk',
+        language: 'ja',
+        name: '博愛精神',
+      },
+
+      {
+        _id: 't7KFWLOYJ',
+        urlID: 't7KFWLOYJ',
+        language: 'ja',
+        name: 'サンタクロース',
+      },
+
+      {
+        _id: 'z0VBPIIfi',
+        urlID: 'z0VBPIIfi',
+        language: 'ja',
+        name: 'パラドックス',
+      },
+
+      {
+        _id: 'O0loEvj9c',
+        urlID: 'O0loEvj9c',
+        language: 'ja',
+        name: '聖域の解放者',
+      },
+
+      {
+        _id: 'UiFiyYOP5',
+        urlID: 'UiFiyYOP5',
+        language: 'ja',
+        name: '三千世界',
+      },
+
+      {
+        _id: '6tNoSpoSA',
+        urlID: '6tNoSpoSA',
+        language: 'ja',
+        name: '創造主',
+      },
+
+      {
+        _id: 'A4r74MAjm',
+        urlID: 'A4r74MAjm',
+        language: 'ja',
+        name: '深淵を覗く者',
+      },
+
+
+      // ---------------------------------------------
       //   forum-count-post
       // ---------------------------------------------
 
@@ -2805,17 +2979,18 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
 
       {
-        _id: 'weSo6n4qF',
-        urlID: 'weSo6n4qF',
-        language: 'ja',
-        name: '御目付け役',
-      },
-
-      {
         _id: 'BT2y8MD1d',
         urlID: 'BT2y8MD1d',
         language: 'ja',
         name: 'シナリオライター',
+      },
+
+
+      {
+        _id: 'weSo6n4qF',
+        urlID: 'weSo6n4qF',
+        language: 'ja',
+        name: '言葉の紡ぎ手',
       },
 
       {

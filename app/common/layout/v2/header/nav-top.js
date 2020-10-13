@@ -86,14 +86,14 @@ import { CustomError } from 'app/@modules/error/custom.js';
 // --------------------------------------------------
 
 const useStyles = makeStyles({
-  
+
   paper: {
     top: 0,
     right: 0,
     marginTop: 14,
     marginRight: 14,
   },
-  
+
 });
 
 
@@ -110,27 +110,27 @@ const useStyles = makeStyles({
  * 参考：https://www.react-spring.io/
  */
 const Container = ({ children, showNavTop }) => {
-  
+
   // console.log(chalk`
   //   showNavTop: {green ${showNavTop}}
   // `);
-  
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const props = useSpring({
-    
+
     transform: showNavTop ? 'translateY(0px)' : 'translateY(-53px)',
     config: { duration: 250 },
-    
+
   });
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return <animated.header
       css={css`
         display: flex;
@@ -147,8 +147,8 @@ const Container = ({ children, showNavTop }) => {
     >
       {children}
     </animated.header>;
-  
-  
+
+
 };
 
 
@@ -158,14 +158,14 @@ const Container = ({ children, showNavTop }) => {
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     showNavTop,
     setShowNavTop,
     setLowerNavMain,
@@ -173,392 +173,392 @@ const Component = (props) => {
     heroImageHeight,
     scrollToEnd,
     setScrollToEnd,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const classes = useStyles();
-  
+
   const [loginMenuOpen, setLoginMenuOpen] = useState(false);
-  
-  
+
+
   useEffect(() => {
-    
-    
+
+
     // ---------------------------------------------
     //   EventListener: scroll
     // ---------------------------------------------
-    
+
     window.addEventListener('scroll', handleScroll);
-    
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-    
-    
+
+
   }, [heroImageHeight, scrollToEnd]);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
-  
+
   const { login, loginUsersObj } = stateUser;
-  
+
   const {
-    
+
     handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
     setDialogAchievementOpen,
     setDialogAchievementObj,
     setDialogAchievementSelectedTitles_idsArr,
-    
+
   } = stateLayout;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   let scrollYOffset = 0;
   const navTopHeight = 53;
-  
-  
+
+
   /**
    * スクロール時の処理
    */
   const handleScroll = useCallback(lodashThrottle(() => {
-    
-    
+
+
     // console.log(chalk`
     //     handleScroll
     //     scrollToEnd: {green ${scrollToEnd}}
     // `);
-    
-    
+
+
     // ---------------------------------------------
     //   Property
     // ---------------------------------------------
-    
+
     const scrollY = window.scrollY;
     let scrollUp = false;
-    
+
     let showNavTopNew = true;
     let lowerNavMainNew = false;
     let lowerSidebarNew = false;
-    
-    
-    
-    
+
+
+
+
     // ---------------------------------------------
     //   Scroll Up / Scroll Down
     // ---------------------------------------------
-    
+
     scrollUp = (scrollY > scrollYOffset) ? false : true;
-    
-    
+
+
     // ---------------------------------------------
     //   ヒーローイメージの高さよりもスクロールが小さい場合（スクロールバーのノブが上の方にある場合）
     // ---------------------------------------------
-    
+
     if (heroImageHeight < scrollY) {
-      
+
       showNavTopNew = (scrollUp) ? true : false;
-      
+
     }
-    
-    
+
+
     // ---------------------------------------------
     //   上向きのスクロールで Navigation Top が表示中の場合、Navigation Main の位置を下げる
     // ---------------------------------------------
-    
+
     if (navTopHeight + heroImageHeight < scrollY) {
-      
+
       if (scrollUp && showNavTopNew) {
         lowerNavMainNew = true;
       }
-      
+
       // サイドバーの位置を下げる
       lowerSidebarNew = true;
-      
+
     }
-    
-    
-    
-    
+
+
+
+
     // ---------------------------------------------
     //   過去のスクロール量を記録
     // ---------------------------------------------
-    
+
     scrollYOffset = scrollY;
-    
-    
-    
-    
+
+
+
+
     // ---------------------------------------------
     //   デバイスの横幅が狭い場合（スマホなど）はサイドバーの位置を下げない
     // ---------------------------------------------
-    
+
     if (window.innerWidth <= 947) {
       lowerSidebarNew = false;
     }
-    
-    
-    
-    
+
+
+
+
     // ---------------------------------------------
     //   scrollY === 0 / スクロールしていない状態、処理停止
     // ---------------------------------------------
-    
+
     if (scrollY === 0) {
-      
+
       return;
-      
-      
+
+
     // ---------------------------------------------
     //   ScrollTo で移動した場合の処理
     // ---------------------------------------------
-    
+
     } else if (scrollToEnd) {
-      
+
       setScrollToEnd(false);
-      
+
       return;
-      
+
     }
-    
-    
-    
-    
+
+
+
+
     // ---------------------------------------------
     //   State 更新
     // ---------------------------------------------
-    
+
     setShowNavTop(showNavTopNew);
     setLowerNavMain(lowerNavMainNew);
     setLowerSidebar(lowerSidebarNew);
-    
-    
-    
-    
+
+
+
+
     // ---------------------------------------------
     //   console.log
     // ---------------------------------------------
-    
+
     // console.log(`
     //   ----------------------------------------\n
     //   /app/common/layout/components/header/nav-top.js - handleScroll
     // `);
-    
+
     // console.log(chalk`
     //   showNavTopNew: {green ${showNavTopNew}}
     //   lowerNavMainNew: {green ${lowerNavMainNew}}
     //   lowerSidebarNew: {green ${lowerSidebarNew}}
     // `);
-    
+
     // console.log(chalk`
     //   scrollY: {green ${scrollY}}
     //   scrollUp: {green ${scrollUp}}
     //   showNavTop: {green ${showNavTop}}
     //   showNavTopNew: {green ${showNavTopNew}}
     // `);
-    
+
     // console.log(chalk`
     //   scrollY: {green ${scrollY}}
     //   this.navTopHeight: {green ${this.navTopHeight}}
     //   headerHeroImageHeight: {green ${headerHeroImageHeight}}
     //   scrollUp: {green ${scrollUp}}
     // `);
-    
-    
+
+
   }, 100), [heroImageHeight, scrollToEnd]);
-  
-  
-  
-  
+
+
+
+
   /**
    * 実績ダイアログを開く - 編集用データを読み込む
    */
   const handleDialogAchievementOpen = async () => {
-    
-    
+
+
     try {
-      
-      
+
+
       // ---------------------------------------------
       //   Loading Open
       // ---------------------------------------------
-      
+
       handleLoadingOpen({});
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
-      
+
       const formDataObj = {};
-      
-      
+
+
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
-      
+
       const resultObj = await fetchWrapper({
-        
+
         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/achievements/get-edit-data`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
-        
+
       });
-      
-      
+
+
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
-      
+
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Set Form Data
       // ---------------------------------------------
-      
+
       setDialogAchievementObj(lodashGet(resultObj, ['data'], {}));
       setDialogAchievementSelectedTitles_idsArr(lodashGet(resultObj, ['data', 'experiencesObj', 'selectedTitles_idsArr'], []));
-      
-      
+
+
       // ---------------------------------------------
       //   Dialog Open
       // ---------------------------------------------
-      
+
       setDialogAchievementOpen(true);
       setLoginMenuOpen(false);
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   console.log
       // ---------------------------------------------
-      
+
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/common/layout/v2/header/nav-top.js - handleGetEditData
+      //   /app/common/layout/v2/header/nav-top.js - handleDialogAchievementOpen
       // `);
-      
+
       // console.log(`
       //   ----- resultObj -----\n
       //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
+
+
     } catch (errorObj) {
-      
-      
+
+
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
-      
+
       handleSnackbarOpen({
-        
+
         variant: 'error',
         errorObj,
-        
+
       });
-      
-      
+
+
     } finally {
-      
-      
+
+
       // ---------------------------------------------
       //   Loading Close
       // ---------------------------------------------
-      
+
       handleLoadingClose();
-      
-      
+
+
     }
-    
-    
+
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   loginUsersObj
   // --------------------------------------------------
-  
+
   const userID = lodashGet(loginUsersObj, ['userID'], '');
-  
+
   const imagesAndVideosThumbnailArr = lodashGet(loginUsersObj, ['cardPlayerObj', 'imagesAndVideosThumbnailObj', 'arr'], []);
-  
+
   let thumbnailSrc = '/img/common/thumbnail/none.svg';
   let thumbnailSrcSet = '';
-  
+
   if (imagesAndVideosThumbnailArr.length > 0) {
-    
+
     thumbnailSrc = lodashGet(imagesAndVideosThumbnailArr, [0, 'src'], '/img/common/thumbnail/none.svg');
     thumbnailSrcSet = lodashGet(imagesAndVideosThumbnailArr, [0, 'srcSet'], '');
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/layout/v2/header/nav-top.js
   // `);
-  
+
   // console.log(chalk`
   //   login: {green ${login}}
   // `);
-  
+
   // console.log(`
   //   ----- loginUsersObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(loginUsersObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Container
       showNavTop={showNavTop}
     >
-      
-      
+
+
       {/* ロゴ */}
       <Link href="/">
         <a className="link">
@@ -569,7 +569,7 @@ const Component = (props) => {
               background-image: url('/img/common/header/logo.png');
               cursor: pointer;
               margin: 0 0 0 6px;
-              
+
               @media screen and (max-width: 480px) {
                 width: 30px;
                 min-width: 30px;
@@ -581,9 +581,9 @@ const Component = (props) => {
           />
         </a>
       </Link>
-      
-      
-      
+
+
+
       {/* ベル・通知 */}
         {/*{userID &&
           <IconButton
@@ -591,7 +591,7 @@ const Component = (props) => {
               && {
                 margin: 6px 0 0 6px !important;
                 padding: 6px !important;
-                
+
                 @media screen and (max-width: 480px) {
                   width: 26px;
                 }
@@ -610,8 +610,8 @@ const Component = (props) => {
             </Badge>
           </IconButton>
         }*/}
-        
-        
+
+
         {/* 検索フォーム */}
         {/*<div
           css={css`
@@ -640,10 +640,10 @@ const Component = (props) => {
             }}
           />
         </div>*/}
-        
-        
-        
-        
+
+
+
+
         {/* 右寄せ（検索フォームを非表示にした場合、代わりにこのタグで右寄せにしている） */}
         <div
           css={css`
@@ -653,12 +653,12 @@ const Component = (props) => {
             margin-left: auto;
           `}
         >
-          
-          
+
+
           {/* サムネイルまたはログインページへのリンク */}
           {login
             ?
-              
+
               <IconButton
                 css={css`
                   && {
@@ -674,9 +674,9 @@ const Component = (props) => {
                   srcSet={thumbnailSrcSet}
                 />
               </IconButton>
-              
+
             :
-              
+
               <Link href="/login">
                 <a>
                   <div
@@ -687,7 +687,7 @@ const Component = (props) => {
                       cursor: pointer;
                       white-space: nowrap;
                       margin: 0 16px 0 0;
-                      
+
                       @media screen and (max-width: 480px) {
                         margin: 0 10px 0 0;
                       }
@@ -703,15 +703,15 @@ const Component = (props) => {
                   </div>
                 </a>
               </Link>
-              
+
           }
-          
-          
+
+
         </div>
-        
-        
-        
-        
+
+
+
+
         {/* ログインメニュー */}
         <Menu
           classes={{
@@ -722,18 +722,18 @@ const Component = (props) => {
           disableAutoFocusItem={true}
           anchorReference="none"
         >
-          
-          
+
+
           {/* ユーザー */}
           <MenuItem
             onClick={() => setLoginMenuOpen(false)}
           >
-            
+
             <ListItemIcon>
               <IconPerson />
             </ListItemIcon>
-            
-            
+
+
             <Link
               href={`/ur/[userID]`}
               as={`/ur/${userID}`}
@@ -749,22 +749,22 @@ const Component = (props) => {
                 />
               </a>
             </Link>
-            
+
           </MenuItem>
-          
-          
-          
-          
+
+
+
+
           {/* 実績 */}
           <MenuItem
             onClick={() => handleDialogAchievementOpen()}
           >
-            
+
             <ListItemIcon>
               <IconAchievement />
             </ListItemIcon>
-            
-            
+
+
             <ListItemText
               css={css`
                 && {
@@ -773,22 +773,22 @@ const Component = (props) => {
               `}
               primary="実績"
             />
-            
+
           </MenuItem>
-          
-          
-          
-          
+
+
+
+
           {/* ログアウト */}
           <MenuItem
             onClick={() => setLoginMenuOpen(false)}
           >
-            
+
             <ListItemIcon>
               <IconEject />
             </ListItemIcon>
-            
-            
+
+
             <Link
               href="/logout"
             >
@@ -803,17 +803,17 @@ const Component = (props) => {
                 />
               </a>
             </Link>
-            
+
           </MenuItem>
-          
-          
+
+
         </Menu>
-        
-    
+
+
     </Container>
   );
-  
-  
+
+
 };
 
 

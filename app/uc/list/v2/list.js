@@ -18,6 +18,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Router from 'next/router';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
@@ -59,10 +60,29 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
 // ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { CustomError } from 'app/@modules/error/custom.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
+
+
+// ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
+
+
+// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
+// import Panel from 'app/common/layout/v2/panel.js';
+
 import CardGC from 'app/common/community-list/v2/card-gc.js';
+// import Form from 'app/gc/list/v2/form.js';
 
 
 
@@ -112,6 +132,19 @@ const Component = (props) => {
   } = props;
 
 
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+
+  const stateLayout = ContainerStateLayout.useContainer();
+
+  const {
+
+    handleLoadingOpen,
+    handleLoadingClose,
+    handleScrollTo,
+
+  } = stateLayout;
 
 
   // --------------------------------------------------
@@ -119,10 +152,13 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
   const [anchorElEditMode, setAnchorElEditMode] = useState(null);
+  const [editable, setEditable] = useState(false);
+  const [gameGenresArr, setGameGenresArr] = useState([]);
 
 
   useEffect(() => {
@@ -139,7 +175,7 @@ const Component = (props) => {
   // --------------------------------------------------
 
   /**
-   * ゲームコミュニティ一覧を読み込む
+   * ユーザーコミュニティ一覧を読み込む
    * @param {number} page - ページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
@@ -163,13 +199,13 @@ const Component = (props) => {
 
       if (page === 1) {
 
-        url = `/gc/list/[[...slug]]`;
-        as ='/gc/list';
+        url = `/uc/list/[[...slug]]`;
+        as ='/uc/list';
 
       } else {
 
-        url = '/gc/list/[[...slug]]';
-        as = `/gc/list/${page}`;
+        url = '/uc/list/[[...slug]]';
+        as = `/uc/list/${page}`;
 
       }
 
@@ -238,7 +274,7 @@ const Component = (props) => {
 
   // console.log(`
   //   ----------------------------------------\n
-  //   app/gc/list/v2/list.js
+  //   /app/common/forum/v2/components/forum.js
   // `);
 
   // console.log(chalk`
@@ -285,6 +321,7 @@ const Component = (props) => {
       <CardGC
         key={index}
         obj={dataObj}
+        editable={editable}
       />
     );
 
@@ -302,6 +339,31 @@ const Component = (props) => {
     <Element
       name="GcList"
     >
+
+
+      {/* Form - Post New Thread */}
+      {/* <div
+        css={css`
+          margin: 0 0 16px 0;
+        `}
+      >
+
+        <Panel
+          heading="スレッド投稿フォーム"
+          defaultExpanded={false}
+        >
+
+          <FormThread
+            gameCommunities_id={gameCommunities_id}
+            userCommunities_id={userCommunities_id}
+            forumThreads_id=""
+          />
+
+        </Panel>
+
+      </div> */}
+
+
 
 
       {/* List */}
@@ -407,13 +469,15 @@ const Component = (props) => {
               variant="outlined"
               size="small"
               disabled={buttonDisabled}
+              // onClick={handleGetRegisterData}
+              // onClick={() => setEditable(!editable)}
             >
               <IconEdit
                 css={css`
                   padding: 0 4px 0 0;
                 `}
               />
-              ゲーム登録ページ
+              ユーザーコミュニティ作成ページ
             </Button>
           </a>
         </Link>
@@ -479,11 +543,7 @@ const Component = (props) => {
                   margin: 0 0 14px 0;
                 `}
               >
-                左のボタンを押すと、ゲームの登録ページに移動します。<span css={css`color: red;`}>※ 登録フォームを利用するにはログインする必要があります。</span>
-              </p>
-
-              <p>
-                Game Users のコンテンツを充実させるために、ぜひデータ追加のお手伝いをよろしくお願いします。
+                左のボタンを押すと、ユーザーコミュニティの作成ページに移動します。<span css={css`color: red;`}>※ 作成フォームを利用するにはログインする必要があります。</span>
               </p>
 
             </div>

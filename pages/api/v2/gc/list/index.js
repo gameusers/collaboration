@@ -43,7 +43,7 @@ import { CustomError } from 'app/@modules/error/custom.js';
 import { validationInteger } from 'app/@validations/integer.js';
 import { validationKeyword } from 'app/@validations/keyword.js';
 
-import { validationGameCommunitiesListLimit } from 'app/@database/game-communities/validations/limit.js';
+import { validationCommunitiesListLimit } from 'app/@database/game-communities/validations/limit.js';
 
 
 // ---------------------------------------------
@@ -158,7 +158,7 @@ export default async (req, res) => {
       argumentsObj.page = page;
     }
 
-    if (await validationGameCommunitiesListLimit({ throwError: false, required: true, value: limit }).error === false) {
+    if (await validationCommunitiesListLimit({ throwError: false, required: true, value: limit }).error === false) {
       argumentsObj.limit = limit;
     }
 

@@ -6634,6 +6634,34 @@ router.post('/db', upload.none(), async (req, res, next) => {
         communityType: 'open',
         anonymity: true,
       },
+
+      {
+        _id: 'H5I8BcRCH',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        userCommunityID: 'community2',
+        users_id: 'P7UJMuUnx',
+        localesArr: [
+          {
+            _id: 'DZWvGsVAA',
+            language: 'ja',
+            name: 'User Community 2',
+            description: 'description: ユーザーコミュニティ2',
+            descriptionShort: 'descriptionShort: User Community 2',
+          },
+        ],
+        imagesAndVideos_id: '',
+        imagesAndVideosThumbnail_id: '',
+        gameCommunities_idsArr: ['YcIvt9hf7'],
+        forumObj: {
+          threadCount: 0,
+        },
+        updatedDateObj: {
+          forum: ISO8601,
+        },
+        communityType: 'closed',
+        anonymity: false,
+      },
     ];
 
 

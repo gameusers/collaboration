@@ -33,9 +33,6 @@ import lodashHas from 'lodash/has';
 //   Material UI
 // ---------------------------------------------
 
-import Card from '@material-ui/core/Card';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 
 
@@ -44,17 +41,7 @@ import Paper from '@material-ui/core/Paper';
 // ---------------------------------------------
 
 import IconSchedule from '@material-ui/icons/Schedule';
-import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
-import IconDescription from '@material-ui/icons/Description';
 import IconPermIdentity from '@material-ui/icons/PermIdentity';
-import IconEdit from '@material-ui/icons/Edit';
-
-
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
-import ImageAndVideo from 'app/common/image-and-video/v2/image-and-video.js';
 
 
 
@@ -78,7 +65,6 @@ const Component = (props) => {
   const {
 
     obj = {},
-    editable = false,
 
   } = props;
 
@@ -90,7 +76,6 @@ const Component = (props) => {
   if (Object.keys(obj).length === 0) {
     return null;
   }
-
 
 
   // console.log(`
@@ -118,8 +103,10 @@ const Component = (props) => {
   //   Link
   // --------------------------------------------------
 
-  let linkHref = '/gc/[urlID]/';
-  let linkAs = `/gc/${urlID}`;
+  const linkHref = '/gc/[urlID]/';
+  const linkAs = `/gc/${urlID}`;
+
+
 
 
   // --------------------------------------------------
@@ -170,13 +157,7 @@ const Component = (props) => {
 
 
           {/* Left */}
-          <div
-            css={css`
-              // border-radius: 10px;
-              // width: 64px;
-              // margin: 12px 0 0 0;
-            `}
-          >
+          <div>
             <img
               css={css`
                 border-radius: 4px 0 0 4px;
@@ -205,7 +186,6 @@ const Component = (props) => {
             <div
               css={css`
                 font-weight: bold;
-                // background-color: pink;
               `}
             >
               {name}{subtitle}
@@ -219,8 +199,6 @@ const Component = (props) => {
                 align-items: center;
 
                 margin: 4px 0 0 0;
-                // background-color: green;
-                // font-weight: bold;
               `}
             >
 
@@ -297,119 +275,11 @@ const Component = (props) => {
                   </div>
                 }
 
-
-                {/* {forumThreadCount > 0 &&
-                  <div
-                    css={css`
-                      display: flex;
-                      flex-flow: row nowrap;
-                      align-items: center;
-                      margin: 0 0 0 12px;
-                    `}
-                  >
-                    <IconChatBubble
-                      css={css`
-                        && {
-                          font-size: 16px;
-                          margin: 0 0 0 0;
-                        }
-                      `}
-                    />
-                    <div
-                      css={css`
-                        font-size: 12px;
-                        margin: 0 0 0 2px;
-                      `}
-                    >
-                      {forumThreadCount}
-                    </div>
-                  </div>
-                }
-
-
-                {recruitmentThreadCount > 0 &&
-                  <div
-                    css={css`
-                      display: flex;
-                      flex-flow: row nowrap;
-                      align-items: center;
-                      margin: 0 0 0 12px;
-                    `}
-                  >
-                    <IconDescription
-                      css={css`
-                        && {
-                          font-size: 16px;
-                          margin: 0 0 0 0;
-                        }
-                      `}
-                    />
-                    <div
-                      css={css`
-                        font-size: 12px;
-                        margin: 0 0 0 2px;
-                      `}
-                    >
-                      {recruitmentThreadCount}
-                    </div>
-                  </div>
-                } */}
-
               </div>
 
             </div>
 
           </div>
-
-
-
-
-          {/* Edit Button */}
-          {editable &&
-            <div
-              css={css`
-                margin: 0 10px 0 0;
-              `}
-            >
-              <Button
-                css={css`
-                  && {
-                    font-size: 12px;
-                    height: 22px;
-                    min-width: 54px;
-                    min-height: 22px;
-                    margin: 0 0 0 12px;
-                    padding: 0 4px;
-
-                    @media screen and (max-width: 480px) {
-                      min-width: 36px;
-                      min-height: 22px;
-                    }
-                  }
-                `}
-                variant="outlined"
-                color="primary"
-                // onClick={() => handleShowFormRecruitmentThread({
-                //   pathArr: pathRecruitmentThreadEditFormArr,
-                //   recruitmentThreads_id,
-                // })}
-              >
-                <IconEdit
-                  css={css`
-                    && {
-                      font-size: 16px;
-                      margin: 0 2px 2px 0;
-
-                      @media screen and (max-width: 480px) {
-                        display: none;
-                      }
-                    }
-                  `}
-                />
-                編集
-              </Button>
-            </div>
-          }
 
         </Paper>
 

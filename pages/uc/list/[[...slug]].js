@@ -30,14 +30,6 @@ import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-// import { ContainerStateCommunity } from 'app/@states/community.js';
-// import { ContainerStateForum } from 'app/@states/forum.js';
-
-
-// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -54,8 +46,8 @@ import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 
-import GcNavigation from 'app/gc/list/v2/navigation.js';
-import GcList from 'app/gc/list/v2/list.js';
+import UcNavigation from 'app/uc/list/v2/navigation.js';
+import UcList from 'app/uc/list/v2/list.js';
 
 
 
@@ -64,7 +56,7 @@ import GcList from 'app/gc/list/v2/list.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: http://localhost:8080/gc/list
+//   URL: http://localhost:8080/uc/list
 // --------------------------------------------------
 
 /**
@@ -81,7 +73,7 @@ const ContainerLayout = (props) => {
   const componentSidebar =
     <React.Fragment>
 
-      <GcNavigation
+      <UcNavigation
         page={props.page}
         hardwaresArr={props.hardwaresArr}
         keyword={props.keyword}
@@ -106,8 +98,8 @@ const ContainerLayout = (props) => {
         arr={props.breadcrumbsArr}
       />
 
-      <GcList
-        obj={props.gcListObj}
+      <UcList
+        obj={props.ucListObj}
       />
 
     </React.Fragment>
@@ -193,7 +185,6 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
 
   let page = lodashGet(query, ['page'], 1);
-  const hardwares = lodashGet(query, ['hardwares'], '');
   const keyword = lodashGet(query, ['keyword'], '');
   const slugsArr = lodashGet(query, ['slug'], []);
 
@@ -235,7 +226,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   const resultObj = await fetchWrapper({
 
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/gc/list?page=${page}&limit=${limit}&hardwares=${hardwares}&keyword=${keyword}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/uc/list?page=${page}&limit=${limit}&keyword=${keyword}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -256,7 +247,7 @@ export async function getServerSideProps({ req, res, query }) {
   const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
   const feedObj = lodashGet(dataObj, ['feedObj'], {});
 
-  const gcListObj = lodashGet(dataObj, ['gcListObj'], {});
+  const ucListObj = lodashGet(dataObj, ['ucListObj'], {});
   const hardwaresArr = lodashGet(dataObj, ['hardwaresArr'], []);
 
 
@@ -264,7 +255,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Title
   // --------------------------------------------------
 
-  let title = `ゲームコミュニティ - Game Users`;
+  let title = `ユーザーコミュニティ - Game Users`;
 
 
   // --------------------------------------------------
@@ -284,14 +275,14 @@ export async function getServerSideProps({ req, res, query }) {
       name: 'ゲームC',
       href: '/gc/list/[[...slug]]',
       as: '/gc/list',
-      active: true,
+      active: false,
     },
 
     {
       name: 'ユーザーC',
       href: '/uc/list/[[...slug]]',
       as: '/uc/list',
-      active: false,
+      active: true,
     }
 
   ];
@@ -304,7 +295,7 @@ export async function getServerSideProps({ req, res, query }) {
   let breadcrumbsArr = [
 
     {
-      type: 'gc/list',
+      type: 'uc/list',
       anchorText: '',
       href: '',
       as: '',
@@ -317,8 +308,8 @@ export async function getServerSideProps({ req, res, query }) {
   //   recentAccessPage
   // --------------------------------------------------
 
-  let recentAccessPageHref = '/gc/list/[[...slug]]';
-  let recentAccessPageAs = '/gc/list';
+  let recentAccessPageHref = '/uc/list/[[...slug]]';
+  let recentAccessPageAs = '/uc/list';
 
 
   // --------------------------------------------------
@@ -332,14 +323,14 @@ export async function getServerSideProps({ req, res, query }) {
     //   - Title
     // ---------------------------------------------
 
-    title = `ゲームコミュニティ: Page ${page} - Game Users`;
+    title = `ユーザーコミュニティ: Page ${page} - Game Users`;
 
 
     // --------------------------------------------------
     //   - recentAccessPage
     // --------------------------------------------------
 
-    recentAccessPageAs = `/gc/list/${page}`;
+    recentAccessPageAs = `/uc/list/${page}`;
 
 
   // --------------------------------------------------
@@ -353,30 +344,30 @@ export async function getServerSideProps({ req, res, query }) {
     //   - Title
     // ---------------------------------------------
 
-    title = `ゲームコミュニティ検索 - Game Users`;
+    title = `ユーザーコミュニティ検索 - Game Users`;
 
 
     // ---------------------------------------------
     //   - パンくずリスト
     // ---------------------------------------------
 
-    breadcrumbsArr = [
+    breadcrumbsArr.push(
 
       {
-        type: 'gc/list',
+        type: 'uc/list',
         anchorText: '',
-        href: '/gc/list/[[...slug]]',
-        as: '/gc/list',
+        href: '/uc/list/[[...slug]]',
+        as: '/uc/list',
       },
 
       {
-        type: 'gc/list/search',
+        type: 'uc/list/search',
         anchorText: '',
         href: '',
         as: '',
       },
 
-    ];
+    );
 
 
     // --------------------------------------------------
@@ -386,7 +377,7 @@ export async function getServerSideProps({ req, res, query }) {
     const urlHardwares = hardwares ? `hardwares=${hardwares}&` : '';
     const urlKeyword = keyword ? `keyword=${encodeURI(keyword)}&` : '';
 
-    recentAccessPageAs = `/gc/list/search?${urlHardwares}${urlKeyword}page=${page}`;
+    recentAccessPageAs = `/uc/list/search?${urlHardwares}${urlKeyword}page=${page}`;
 
 
   }
@@ -446,7 +437,7 @@ export async function getServerSideProps({ req, res, query }) {
       feedObj,
 
       page,
-      gcListObj,
+      ucListObj,
       hardwaresArr,
       keyword,
 

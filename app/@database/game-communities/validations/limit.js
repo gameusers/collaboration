@@ -36,13 +36,13 @@ const { CustomError } = require('../../../@modules/error/custom.js');
 
 
 /**
- * ゲームコミュニティ一覧で1ページに表示する件数
+ * コミュニティ一覧（ゲーム＆ユーザー）で1ページに表示する件数
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationGameCommunitiesListLimit = ({ throwError = false, required = false, value }) => {
+const validationCommunitiesListLimit = ({ throwError = false, required = false, value }) => {
 
 
   // ---------------------------------------------
@@ -120,6 +120,6 @@ const validationGameCommunitiesListLimit = ({ throwError = false, required = fal
 
 module.exports = {
 
-  validationGameCommunitiesListLimit,
+  validationCommunitiesListLimit,
 
 };

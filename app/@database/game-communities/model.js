@@ -1048,9 +1048,10 @@ const findForGameCommunityByGameCommunities_id = async ({ gameCommunities_id }) 
 /**
  * ゲーム一覧のデータを取得する / gc/list
  * @param {Object} localeObj - ロケール
- * @param {string} keyword - 検索キーワード
  * @param {number} page - ページ
  * @param {number} limit - リミット
+ * @param {Array} hardwareIDsArr - DB hardwares hardwareID の入った配列
+ * @param {string} keyword - 検索キーワード
  * @return {Object} 取得データ
  */
 const findGamesList = async ({
@@ -1287,7 +1288,7 @@ const findGamesList = async ({
 
 
     // --------------------------------------------------
-    //   フォーマット
+    //   Count
     // --------------------------------------------------
 
     const listCount = await ModelGames.count({

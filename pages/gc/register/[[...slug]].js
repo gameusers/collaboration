@@ -33,8 +33,6 @@ import lodashGet from 'lodash/get';
 //   States
 // ---------------------------------------------
 
-// import { ContainerStateCommunity } from 'app/@states/community.js';
-// import { ContainerStateForum } from 'app/@states/forum.js';
 import { ContainerStateGcRegister } from 'app/@states/gc-register.js';
 
 
@@ -53,8 +51,6 @@ import { getCookie } from 'app/@modules/cookie.js';
 
 import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
-// import FeedSidebar from 'app/common/feed/v2/sidebar.js';
-// import FeedHorizontal from 'app/common/feed/v2/horizontal.js';
 
 import GcNavigation from 'app/gc/register/v2/navigation.js';
 import GcRegister from 'app/gc/register/v2/register.js';
@@ -309,7 +305,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   パンくずリスト
   // --------------------------------------------------
 
-  const breadcrumbsArr = [
+  let breadcrumbsArr = [
 
     {
       type: 'gc/register',
@@ -368,7 +364,14 @@ export async function getServerSideProps({ req, res, query }) {
     //   - パンくずリスト
     // ---------------------------------------------
 
-    breadcrumbsArr.push(
+    breadcrumbsArr = [
+
+      {
+        type: 'gc/register',
+        anchorText: '',
+        href: '/gc/register/[[...slug]]',
+        as: '/gc/register',
+      },
 
       {
         type: 'gc/register/search',
@@ -377,7 +380,7 @@ export async function getServerSideProps({ req, res, query }) {
         as: '',
       },
 
-    );
+    ];
 
 
     // --------------------------------------------------

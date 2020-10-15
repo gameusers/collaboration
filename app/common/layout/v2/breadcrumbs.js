@@ -151,6 +151,11 @@ const Component = (props) => {
       icon = <IconCommunityList fontSize="small" />;
       anchorText = 'ゲームコミュニティ';
 
+    } else if (valueObj.type === 'gc/list/search' || valueObj.type === 'gc/register/search') {
+
+      icon = <IconSearch fontSize="small" />;
+      anchorText = '検索';
+
     } else if (valueObj.type === 'gc/register') {
 
       icon = <IconAddCircle fontSize="small" />;
@@ -195,6 +200,16 @@ const Component = (props) => {
 
       icon = <IconCommunityList fontSize="small" />;
       anchorText = 'ユーザーコミュニティ';
+
+    } else if (valueObj.type === 'uc/list/search' || valueObj.type === 'uc/register/search') {
+
+      icon = <IconSearch fontSize="small" />;
+      anchorText = '検索';
+
+    } else if (valueObj.type === 'uc/register') {
+
+      icon = <IconAddCircle fontSize="small" />;
+      anchorText = 'ユーザーコミュニティ作成';
 
     } else if (valueObj.type === 'uc/index') {
 

@@ -23,10 +23,8 @@ import lodashHas from 'lodash/has';
 //   Model
 // ---------------------------------------------
 
-import ModelGameCommunities from 'app/@database/game-communities/model.js';
-import ModelGamesTemps from 'app/@database/games-temps/model.js';
-import ModelGameGenres from 'app/@database/game-genres/model.js';
-import ModelHardwares from 'app/@database/hardwares/model.js';
+import ModelUserCommunities from 'app/@database/user-communities/model.js';
+// import ModelHardwares from 'app/@database/hardwares/model.js';
 import ModelFeeds from 'app/@database/feeds/model.js';
 
 
@@ -67,7 +65,7 @@ import { initialProps } from 'app/@api/v2/common.js';
 
 
 // --------------------------------------------------
-//   endpointID: Q4XBgtXED
+//   endpointID: WTMqeyRjP
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -117,12 +115,10 @@ export default async (req, res) => {
 
     const page = parseInt(lodashGet(req, ['query', 'page'], 1), 10);
     const limit = parseInt(lodashGet(req, ['query', 'limit'], ''), 10);
-    const hardwares = lodashGet(req, ['query', 'hardwares'], '');
     const keyword = lodashGet(req, ['query', 'keyword'], '');
 
     lodashSet(requestParametersObj, ['page'], page);
     lodashSet(requestParametersObj, ['limit'], limit);
-    lodashSet(requestParametersObj, ['hardwares'], hardwares);
     lodashSet(requestParametersObj, ['keyword'], keyword);
 
 
@@ -166,17 +162,6 @@ export default async (req, res) => {
 
 
     // ---------------------------------------------
-    //   - hardwareIDsArr
-    // ---------------------------------------------
-
-    const hardwareIDsArr = hardwares ? hardwares.split(',') : [];
-
-    if (hardwareIDsArr.length > 0) {
-      argumentsObj.hardwareIDsArr = hardwareIDsArr;
-    }
-
-
-    // ---------------------------------------------
     //   - keyword
     // ---------------------------------------------
 
@@ -185,36 +170,7 @@ export default async (req, res) => {
     }
 
 
-    // ---------------------------------------------
-    //   - List
-    // ---------------------------------------------
-
-    if (hardwares || keyword) {
-      returnObj.gcListObj = await ModelGameCommunities.findGamesList(argumentsObj);
-    }
-
-
-    // ---------------------------------------------
-    //   - Temps List
-    // ---------------------------------------------
-
-    returnObj.gcTempsListObj = await ModelGamesTemps.findGamesTempsList(argumentsObj);
-
-
-
-
-    // --------------------------------------------------
-    //   DB find / Genres
-    // --------------------------------------------------
-
-    returnObj.gameGenresArr = await ModelGameGenres.find({
-
-      conditionObj: {
-        language: lodashGet(localeObj, ['language'], ''),
-        country: lodashGet(localeObj, ['country'], ''),
-      }
-
-    });
+    returnObj.ucListObj = await ModelUserCommunities.findUserCommunitiesList(argumentsObj);
 
 
 
@@ -223,32 +179,13 @@ export default async (req, res) => {
     //   DB find / Feed
     // --------------------------------------------------
 
-    // returnObj.feedObj = await ModelFeeds.findFeed({
-
-    //   localeObj,
-    //   arr: ['all'],
-
-    // });
-
-
-
-
-    // --------------------------------------------------
-    //   ハードウェア情報 - 検索用
-    // --------------------------------------------------
-
-    returnObj.hardwaresArr = await ModelHardwares.findHardwaresArr({
+    returnObj.feedObj = await ModelFeeds.findFeed({
 
       localeObj,
-      hardwareIDsArr,
+      arr: ['all'],
 
     });
 
-    // console.log(`
-    //   ----- returnObj.hardwaresArr -----\n
-    //   ${util.inspect(returnObj.hardwaresArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
 
 
 
@@ -258,7 +195,7 @@ export default async (req, res) => {
 
     // console.log(`
     //   ----------------------------------------\n
-    //   pages/api/v2/gc/register/index.js
+    //   pages/api/v2/uc/list/index.js
     // `);
 
     // console.log(chalk`
@@ -300,7 +237,7 @@ export default async (req, res) => {
     const resultErrorObj = returnErrorsArr({
 
       errorObj,
-      endpointID: 'Q4XBgtXED',
+      endpointID: 'WTMqeyRjP',
       users_id: loginUsers_id,
       ip,
       userAgent,

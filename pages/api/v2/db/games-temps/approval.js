@@ -11,14 +11,6 @@ import util from 'util';
 
 
 // ---------------------------------------------
-//   Node Packages
-// ---------------------------------------------
-
-// import shortid from 'shortid';
-// import moment from 'moment';
-
-
-// ---------------------------------------------
 //   Lodash
 // ---------------------------------------------
 
@@ -247,22 +239,22 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
 
-    console.log(`
-      ----------------------------------------\n
-      pages/api/v2/db/games-temps/approval.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   pages/api/v2/db/games-temps/approval.js
+    // `);
 
-    console.log(`
-      ----- gamesTemps_idsArr -----\n
-      ${util.inspect(gamesTemps_idsArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gamesTemps_idsArr -----\n
+    //   ${util.inspect(gamesTemps_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- docGamesTempsArr -----\n
-      ${util.inspect(docGamesTempsArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- docGamesTempsArr -----\n
+    //   ${util.inspect(docGamesTempsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
     // console.log(`
     //   ----- returnObj -----\n
@@ -310,18 +302,3 @@ export default async (req, res) => {
 
 
 };
-
-
-
-
-// --------------------------------------------------
-//   config
-// --------------------------------------------------
-
-// export const config = {
-//   api: {
-//     bodyParser: {
-//       sizeLimit: '25mb',
-//     },
-//   },
-// };

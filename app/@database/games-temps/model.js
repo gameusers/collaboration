@@ -36,13 +36,6 @@ const SchemaGamesTemps = require('./schema');
 const ModelDevelopersPublishers = require('../developers-publishers/model.js');
 
 
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-const { formatImagesAndVideosObj } = require('../images-and-videos/format');
-
-
 
 
 

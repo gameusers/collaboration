@@ -62,7 +62,7 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 //   Components
 // ---------------------------------------------
 
-import CardGC from 'app/common/community-list/v2/card-gc.js';
+import CardGc from 'app/common/community-list/v2/card-gc.js';
 
 
 
@@ -282,7 +282,7 @@ const Component = (props) => {
     // --------------------------------------------------
 
     componentsArr.push(
-      <CardGC
+      <CardGc
         key={index}
         obj={dataObj}
       />

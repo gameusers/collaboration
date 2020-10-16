@@ -377,16 +377,21 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
 
-  // console.log(`
-  //   ----------------------------------------\n
-  //   /uc/[userCommunityID]/member/index.js
-  // `);
+  console.log(`
+    ----------------------------------------\n
+    /uc/[userCommunityID]/member/index.js
+  `);
 
   // console.log(`
   //   ----- resultObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
+
+
+  console.log(chalk`
+    accessLevel: {green ${accessLevel}}
+  `);
 
   // console.log(chalk`
   //   threadListPage: {green ${threadListPage}}
@@ -430,6 +435,7 @@ export async function getServerSideProps({ req, res, query }) {
       breadcrumbsArr,
       experienceObj,
       feedObj,
+      accessLevel,
 
       userCommunityID,
       userCommunities_id,

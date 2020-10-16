@@ -1705,11 +1705,11 @@ const findUserCommunitiesList = async ({
           userCommunityID: 1,
           localesArr: 1,
           communityType: 1,
-          anonymity: 1,
-          imagesAndVideosObj: 1,
-          gamesArr: 1,
-          followsObj: 1,
+          // anonymity: 1,
           gameCommunities_idsArr: 1,
+          gamesArr: 1,
+          imagesAndVideosThumbnailObj: 1,
+          followsObj: 1,
         }
       },
 
@@ -1754,14 +1754,12 @@ const findUserCommunitiesList = async ({
 
     const ISO8601 = moment().utc().toISOString();
     // const daysLimit = parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_UPDATED_DATE_DAYS_LOWER_LIMIT, 10);
-    const followersLimit = parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_FOLLOWERS_LOWER_LIMIT, 10);
+    // const followersLimit = parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_FOLLOWERS_LOWER_LIMIT, 10);
 
 
     // --------------------------------------------------
     //   Loop
     // --------------------------------------------------
-
-    const returnArr = [];
 
     for (let value1Obj of docArr.values()) {
 
@@ -1778,16 +1776,12 @@ const findUserCommunitiesList = async ({
       // --------------------------------------------------
 
       const _id = lodashGet(value1Obj, ['_id'], '');
-      // const userCommunityID = lodashGet(valueObj, ['userCommunityID'], '');
-      // const createdDate = lodashGet(value1Obj, ['createdDate'], ''),;
-      // const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['imagesAndVideosThumbnailObj'], {});
-      // const followedCount = lodashGet(value1Obj, ['followsObj', 'followedCount'], 0);
 
       obj._id = _id;
-      obj.createdDate = lodashGet(value1Obj, ['createdDate'], '');
       obj.userCommunityID = lodashGet(value1Obj, ['userCommunityID'], '');
       obj.communityType = lodashGet(value1Obj, ['communityType'], 'open');
-      obj.anonymity = lodashGet(value1Obj, ['anonymity'], false);
+      obj.approval = lodashGet(value1Obj, ['followsObj', 'approval'], false);
+      // obj.anonymity = lodashGet(value1Obj, ['anonymity'], false);
       obj.followedCount = lodashGet(value1Obj, ['followsObj', 'followedCount'], 0);
 
       // if (followedCount >= followersLimit) {
@@ -1796,34 +1790,11 @@ const findUserCommunitiesList = async ({
 
 
       // --------------------------------------------------
-      //   Datetime
-      // --------------------------------------------------
-
-      // let datetimeCurrent = ISO8601;
-      // const datetimeUpdated = moment(updatedDate);
-
-      // if (datetimeUpdated.isAfter(datetimeCurrent)) {
-      //   datetimeCurrent = datetimeUpdated;
-      // }
-
-      // const days = moment().diff(datetimeUpdated, 'days');
-
-      // if (days <= daysLimit) {
-      //   obj.datetimeFrom = datetimeUpdated.from(datetimeCurrent);
-      // }
-
-
-      // --------------------------------------------------
-      //   画像の処理
-      // --------------------------------------------------
-
-      // const formattedObj = {
-
       //   createdDate
-      //   communityType: lodashGet(value1Obj, ['communityType'], 'open'),
-      //   anonymity: lodashGet(value1Obj, ['anonymity'], false),
+      // --------------------------------------------------
 
-      // };
+      const createdDate = lodashGet(value1Obj, ['createdDate'], '');
+      obj.createdDate = moment(createdDate).utc().format('YYYY/MM/DD');
 
 
       // --------------------------------------------------
@@ -1837,7 +1808,6 @@ const findUserCommunitiesList = async ({
         const formattedThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosThumbnailObj });
         obj.src = lodashGet(formattedThumbnailObj, ['arr', 0, 'src'], '/img/common/thumbnail/none-game.jpg');
         obj.srcSet = lodashGet(formattedThumbnailObj, ['arr', 0, 'srcSet'], '');
-        // formattedObj.imagesAndVideosThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosThumbnailObj });
 
       }
 
@@ -1926,13 +1896,6 @@ const findUserCommunitiesList = async ({
 
 
       // --------------------------------------------------
-      //   followedCount
-      // --------------------------------------------------
-
-      // formattedObj.followedCount = lodashGet(value1Obj, ['followsObj', 'followedCount'], 0);
-
-
-      // --------------------------------------------------
       //   Set Data
       // --------------------------------------------------
 
@@ -1954,13 +1917,6 @@ const findUserCommunitiesList = async ({
       };
 
 
-      // --------------------------------------------------
-      //   push
-      // --------------------------------------------------
-
-      // returnArr.push(formattedObj);
-
-
     }
 
 
@@ -1970,10 +1926,10 @@ const findUserCommunitiesList = async ({
     //   console.log
     // --------------------------------------------------
 
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/user-communities/model.js - findUserCommunitiesList
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/user-communities/model.js - findUserCommunitiesList
+    // `);
 
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
@@ -1986,11 +1942,11 @@ const findUserCommunitiesList = async ({
     //   --------------------\n
     // `);
 
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
     // --------------------------------------------------

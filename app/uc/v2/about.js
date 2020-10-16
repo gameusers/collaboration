@@ -79,32 +79,36 @@ import Paragraph from 'app/common/layout/v2/paragraph.js';
  * Export Component
  */
 const Component = (props) => {
-  
+
 
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     headerObj,
     userCommunityObj,
     accessRightRead,
-    
+
   } = props;
 
-  
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   const approval = lodashGet(headerObj, ['followsObj', 'approval'], false);
   const followedCount = lodashGet(headerObj, ['followsObj', 'followedCount'], 1);
   const gamesArr = lodashGet(headerObj, ['gamesArr'], []);
@@ -129,61 +133,61 @@ const Component = (props) => {
   //     '\n' +
   //     'ぜひ気軽に参加してください！'
   // },
-  
+
   // return null;
-  
-  
+
+
   // --------------------------------------------------
   //   パネルを初期状態で開くかどうか
   // --------------------------------------------------
-  
+
   const defaultExpanded = accessRightRead ? false : true;
-  
-  
+
+
   // --------------------------------------------------
   //   開設日
   // --------------------------------------------------
-  
+
   const codeCreatedDate = moment(createdDate).format('YYYY/MM/DD');
-  
-  
+
+
   // --------------------------------------------------
   //   公開タイプ
   // --------------------------------------------------
-  
+
   const codeCommunityType = communityType === 'open' ? intl.formatMessage({ id: 'DXeihaDx8' }) : intl.formatMessage({ id: 'QHz1wbGch' });
-  
-  
+
+
   // --------------------------------------------------
   //   参加
   // --------------------------------------------------
-  
+
   const codeApproval = approval ? intl.formatMessage({ id: 'Da45qlq9l' }) : intl.formatMessage({ id: 'nEtCLmbKz' });
-  
-  
+
+
   // --------------------------------------------------
   //   匿名での投稿
   // --------------------------------------------------
-  
+
   const codeAnonymity = anonymity ? intl.formatMessage({ id: 'I2lSx_RQh' }) : intl.formatMessage({ id: 'btIZLhdBM' });
-  
-  
+
+
   // --------------------------------------------------
   //   関連するゲーム
   // --------------------------------------------------
-  
+
   const codeGames = [];
-  
+
   for (const [index, valueObj] of gamesArr.entries()) {
-    
+
     const src = lodashGet(valueObj, ['imagesAndVideosThumbnailObj', 'arr', 0, 'src'], '/img/common/thumbnail/none-game.jpg');
     const srcSet = lodashGet(valueObj, ['imagesAndVideosThumbnailObj', 'arr', 0, 'srcSet'], '');
     const urlID = lodashGet(valueObj, ['urlID'], '');
-    
+
     const linkHref = '/gc/[urlID]';
     const linkAs = `/gc/${urlID}`;
-    
-    
+
+
     codeGames.push(
       <div
         key={index}
@@ -194,7 +198,7 @@ const Component = (props) => {
           margin: 8px 0 0 0;
         `}
       >
-        
+
         <Avatar
           css={css`
             && {
@@ -207,53 +211,53 @@ const Component = (props) => {
           src={src}
           srcSet={srcSet}
         />
-        
-        
-        
+
+
+
         <p>
           <Link href={linkHref} as={linkAs}>
             <a>{valueObj.name}</a>
           </Link>
         </p>
-        
-        
+
+
       </div>
     );
-    
+
   }
-  
-  
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/uc/v2/about.js
   // `);
-  
+
   // console.log(chalk`
   //   urlID: {green ${urlID}}
   //   gameCommunities_id: {green ${gameCommunities_id}}
   //   userCommunityID: {green ${userCommunityID}}
   //   userCommunities_id: {green ${userCommunities_id}}
-    
+
   //   page: {green ${page}}
   //   count: {green ${count}}
   //   limit: {green ${limit}}
   // `);
-  
+
   // console.log(`
   //   ----- arr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <div
       css={css`
@@ -266,14 +270,14 @@ const Component = (props) => {
         heading="コミュニティについて"
         defaultExpanded={defaultExpanded}
       >
-        
-        
+
+
         {/* Description */}
         <Paragraph text={description} />
-        
-        
-        
-        
+
+
+
+
         {/* 開設日 */}
         <p
           css={css`
@@ -290,10 +294,10 @@ const Component = (props) => {
             開設日
           </span> | {codeCreatedDate}
         </p>
-        
-        
-        
-        
+
+
+
+
         {/* メンバー */}
         <p
           css={css`
@@ -308,10 +312,10 @@ const Component = (props) => {
             メンバー
           </span> | {followedCount}人
         </p>
-        
-        
-        
-        
+
+
+
+
         {/* 公開タイプ */}
         <p
           css={css`
@@ -326,10 +330,10 @@ const Component = (props) => {
             公開タイプ
           </span> | {codeCommunityType}
         </p>
-        
-        
-        
-        
+
+
+
+
         {/* 参加 */}
         <p
           css={css`
@@ -344,10 +348,10 @@ const Component = (props) => {
             参加
           </span> | {codeApproval}
         </p>
-        
-        
-        
-        
+
+
+
+
         {/* 匿名での投稿 */}
         <p
           css={css`
@@ -362,10 +366,10 @@ const Component = (props) => {
             匿名での投稿
           </span> | {codeAnonymity}
         </p>
-        
-        
-        
-        
+
+
+
+
         {/* 関連ゲーム */}
         <p
           css={css`
@@ -377,16 +381,16 @@ const Component = (props) => {
         >
           関連ゲーム
         </p>
-        
+
         {codeGames}
-        
-        
+
+
       </Panel>
 
 
     </div>
   );
-  
+
 
 };
 

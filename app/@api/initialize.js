@@ -7969,6 +7969,24 @@ emotion: https://emotion.sh/docs/introduction`,
 
 
       {
+        _id: 'jmwKMzpht',
+        updatedDate: ISO8601,
+        gameCommunities_id: '',
+        userCommunities_id: 'H5I8BcRCH',
+        users_id: '',
+        approval: false,
+        followArr: [],
+        followCount: 0,
+        followedArr: ['P7UJMuUnx'],
+        followedCount: 1,
+        approvalArr: [],
+        approvalCount: 0,
+        blockArr: [],
+        blockCount: 0,
+      },
+
+
+      {
         _id: 'CpcIZRiRK',
         updatedDate: ISO8601,
         gameCommunities_id: 'Jk92aglWl',

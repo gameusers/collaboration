@@ -76,7 +76,6 @@ const Component = (props) => {
   const {
 
     page = 1,
-    hardwaresArr = [],
     keyword,
 
   } = props;
@@ -89,9 +88,7 @@ const Component = (props) => {
   const intl = useIntl();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
-  const [searchHardwaresArr, setSearchHardwaresArr] = useState(hardwaresArr);
   const [searchKeyword, setSearchKeyword] = useState(keyword);
-  // const [anchorEl, setAnchorEl] = useState(null);
 
 
   useEffect(() => {
@@ -118,21 +115,9 @@ const Component = (props) => {
 
 
       // ---------------------------------------------
-      //   For Search
-      // ---------------------------------------------
-
-      const hardwareIDsArr = [];
-
-      for (let valueObj of searchHardwaresArr.values()) {
-        hardwareIDsArr.push(valueObj.hardwareID);
-      }
-
-
-      // ---------------------------------------------
       //   Router.push 用
       // ---------------------------------------------
 
-      // const urlHardwares = hardwareIDsArr.length > 0 ? `hardwares=${hardwareIDsArr.join(',')}&` : '';
       const urlKeyword = searchKeyword ? `keyword=${encodeURI(searchKeyword)}&` : '';
 
       let url = `/uc/list/[[...slug]]?${urlKeyword}page=${page}`;

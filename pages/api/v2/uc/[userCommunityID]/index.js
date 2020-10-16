@@ -68,51 +68,51 @@ import { initialProps } from 'app/@api/v2/common.js';
 // --------------------------------------------------
 
 export default async (req, res) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Status Code
   // --------------------------------------------------
-  
+
   let statusCode = 400;
-  
-  
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   const loginUsersRole = lodashGet(req, ['user', 'role'], '');
-  
-  
+
+
   // --------------------------------------------------
   //   Language & IP & User Agent
   // --------------------------------------------------
-  
+
   const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
-  
-  
+
+
   // --------------------------------------------------
   //   Locale
   // --------------------------------------------------
-  
+
   const localeObj = locale({
     acceptLanguage
   });
-  
-  
-  
-  
+
+
+
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   GET Data
     // --------------------------------------------------
-    
+
     const userCommunityID = lodashGet(req, ['query', 'userCommunityID'], '');
     const forumID = lodashGet(req, ['query', 'forumID'], '');
     const threadListPage = parseInt(lodashGet(req, ['query', 'threadListPage'], 1), 10);
@@ -121,7 +121,7 @@ export default async (req, res) => {
     const threadLimit = parseInt(lodashGet(req, ['query', 'threadLimit'], ''), 10);
     const commentLimit = parseInt(lodashGet(req, ['query', 'commentLimit'], ''), 10);
     const replyLimit = parseInt(lodashGet(req, ['query', 'replyLimit'], ''), 10);
-    
+
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
     lodashSet(requestParametersObj, ['forumID'], forumID);
     lodashSet(requestParametersObj, ['threadListPage'], threadListPage);
@@ -130,83 +130,95 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
     lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
-    
-    
 
-    
+
+
+
     // --------------------------------------------------
     //   Common Initial Props
     // --------------------------------------------------
-    
+
     const returnObj = await initialProps({ req, localeObj, getHeroImage: true });
-    
-    
-    
-    
+
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+
+
     // --------------------------------------------------
     //   DB find / User Community
     // --------------------------------------------------
-    
+
     const userCommunityObj = await ModelUserCommunities.findForUserCommunity({
-      
+
       localeObj,
       loginUsers_id,
       userCommunityID,
-      
+
     });
-    
-    
+
+
     // ---------------------------------------------
     //   - コミュニティのデータがない場合はエラー
     // ---------------------------------------------
-    
+
     // if (Object.keys(userCommunityObj).length === 0) {
     if (userCommunityObj.name === '') {
-      
+
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'retRq6eFo', messageID: 'Error' }] });
-      
+
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - userCommunities_id
     // ---------------------------------------------
-    
+
     const userCommunities_id = lodashGet(userCommunityObj, ['_id'], '');
-    
-    
+
+
     // ---------------------------------------------
     //   - headerObj
     // ---------------------------------------------
-    
+
+    const imagesAndVideosObj = lodashGet(returnObj, ['headerObj', 'imagesAndVideosObj'], {});
+    const userCommunityImagesAndVideosObj = lodashGet(userCommunityObj, ['headerObj', 'imagesAndVideosObj'], {});
+
+    if (Object.keys(userCommunityImagesAndVideosObj).length === 0) {
+      lodashSet(userCommunityObj, ['headerObj', 'imagesAndVideosObj'], imagesAndVideosObj);
+    }
+
     returnObj.headerObj = userCommunityObj.headerObj;
 
-    if (!lodashHas(userCommunityObj, ['headerObj', 'imagesAndVideosObj'])) {
-      lodashSet(returnObj, ['headerObj', 'imagesAndVideosObj'], commonInitialPropsObj.headerObj.imagesAndVideosObj);
-    }
-    
+
+    // if (!lodashHas(userCommunityObj, ['headerObj', 'imagesAndVideosObj'])) {
+    //   // lodashSet(returnObj, ['headerObj', 'imagesAndVideosObj'], returnObj.headerObj.imagesAndVideosObj);
+    // }
+
     delete userCommunityObj.headerObj;
-    
-    
+
+
     // ---------------------------------------------
     //   - userCommunityObj
     // ---------------------------------------------
-    
+
     returnObj.userCommunityObj = userCommunityObj;
-    
-    
+
+
     // ---------------------------------------------
     //   - コンテンツを表示するかどうか
     // ---------------------------------------------
-    
+
     const communityType = lodashGet(userCommunityObj, ['communityType'], 'open');
     const followsAdmin = lodashGet(returnObj, ['headerObj', 'followsObj', 'admin'], false);
     const followsFollow = lodashGet(returnObj, ['headerObj', 'followsObj', 'follow'], false);
     const followsBlocked = lodashGet(returnObj, ['headerObj', 'followsObj', 'followBlocked'], false);
-    
+
     returnObj.accessRightRead = false;
-    
+
     if (communityType === 'open' || (communityType === 'closed' && followsFollow)) {
       returnObj.accessRightRead = true;
     }
@@ -231,17 +243,17 @@ export default async (req, res) => {
     // --------------------------------------------------
     //   DB find / Feed
     // --------------------------------------------------
-    
+
     returnObj.feedObj = await ModelFeeds.findFeed({
-      
+
       localeObj,
       arr: ['all'],
-      
+
     });
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   権限
     //   0: ブロックしているユーザー
@@ -251,63 +263,63 @@ export default async (req, res) => {
     //   50: コミュニティの管理者
     //   100: サイト運営
     // --------------------------------------------------
-    
+
     returnObj.accessLevel = 1;
-    
-    
+
+
     // ---------------------------------------------
     //   - サイト運営
     // ---------------------------------------------
-    
+
     if (loginUsersRole === 'administrator') {
-      
+
       returnObj.accessLevel = 100;
-      
-      
+
+
     // ---------------------------------------------
     //   - コミュニティの管理者
     // ---------------------------------------------
-    
+
     } else if (followsAdmin) {
-      
+
       returnObj.accessLevel = 50;
-      
-      
+
+
     // ---------------------------------------------
     //   - コミュニティのメンバー
     // ---------------------------------------------
-    
+
     } else if (followsFollow) {
-      
+
       returnObj.accessLevel = 3;
-      
-      
+
+
     // ---------------------------------------------
     //   - ブロックしているユーザー
     // ---------------------------------------------
-    
+
     } else if (followsBlocked) {
-      
+
       returnObj.accessLevel = 0;
-      
-      
+
+
     // ---------------------------------------------
     //   - ログインユーザー
     // ---------------------------------------------
-    
+
     } else if (loginUsersRole === 'user') {
-      
+
       returnObj.accessLevel = 2;
-      
+
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----------------------------------------\n
     //   /pages/api/v2/uc/[userCommunityID]/index.js
@@ -318,71 +330,71 @@ export default async (req, res) => {
     //   ${util.inspect(JSON.parse(JSON.stringify(userCommunityObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(chalk`
     //   communityType: {green ${communityType}}
     //   member: {green ${member}}
     //   returnObj.accessRightRead: {green ${returnObj.accessRightRead}}
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   コンテンツを表示していい場合はフォーラムのデータを取得
     // --------------------------------------------------
-    
+
     let forumObj = {};
 
     if (returnObj.accessRightRead) {
-      
-      
+
+
       // --------------------------------------------------
       //   DB find / Forum Threads For List
       // --------------------------------------------------
-      
+
       let argumentsObj = {
-        
+
         localeObj,
         loginUsers_id,
         userCommunities_id,
-        
+
       };
-      
+
       if (await validationInteger({ throwError: false, required: true, value: threadListPage }).error === false) {
         argumentsObj.page = threadListPage;
       }
-      
+
       if (await validationForumThreadsListLimit({ throwError: false, required: true, value: threadListLimit }).error === false) {
         argumentsObj.limit = threadListLimit;
       }
-      
+
       returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList(argumentsObj);
-      
-      
+
+
       // --------------------------------------------------
       //   フォーラムのデータ取得
       // --------------------------------------------------
-      
+
       argumentsObj = {
-        
+
         req,
         localeObj,
         loginUsers_id,
         userCommunities_id,
-        
+
       };
 
 
       // ---------------------------------------------
       //   - forumID
       // ---------------------------------------------
-      
+
       if (forumID) {
         argumentsObj.forumID = forumID;
       }
-      
-      
+
+
       // ---------------------------------------------
       //   - page & limit
       // ---------------------------------------------
@@ -390,39 +402,39 @@ export default async (req, res) => {
       if (await validationInteger({ throwError: false, required: true, value: threadPage }).error === false) {
         argumentsObj.threadPage = threadPage;
       }
-      
+
       if (await validationForumThreadsLimit({ throwError: false, required: true, value: threadLimit }).error === false) {
         argumentsObj.threadLimit = threadLimit;
       }
-      
+
       if (await validationForumCommentsLimit({ throwError: false, required: true, value: commentLimit }).error === false) {
         argumentsObj.commentLimit = commentLimit;
       }
-      
+
       if (await validationForumRepliesLimit({ throwError: false, required: true, value: replyLimit }).error === false) {
         argumentsObj.replyLimit = replyLimit;
       }
-      
+
 
       // --------------------------------------------------
       //   DB find / Forum by forumID
       // --------------------------------------------------
-      
+
       if (forumID) {
-        
+
         forumObj = await ModelForumThreads.findForumByforumID(argumentsObj);
-        
-        
+
+
       // --------------------------------------------------
       //   DB find / Forum
       // --------------------------------------------------
-        
+
       } else {
-        
+
         forumObj = await ModelForumThreads.findForForum(argumentsObj);
-        
+
       }
-      
+
 
       // --------------------------------------------------
       //   returnObj
@@ -431,65 +443,65 @@ export default async (req, res) => {
       returnObj.forumThreadsObj = forumObj.forumThreadsObj;
       returnObj.forumCommentsObj = forumObj.forumCommentsObj;
       returnObj.forumRepliesObj = forumObj.forumRepliesObj;
-      
-      
+
+
     }
     // console.log(`
     //   ----- forumObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(forumObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // ---------------------------------------------
     //   スレッドのデータがない場合はエラー
     // ---------------------------------------------
-    
+
     // const forumThreadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
-    
+
     // if (Object.keys(forumThreadsDataObj).length === 0) {
-      
+
     //   statusCode = 404;
     //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'aDeKgfO_U', messageID: 'Error' }] });
-      
+
     // }
 
-    
-    
-    
+
+
+
     // ---------------------------------------------
     //   Success
     // ---------------------------------------------
-    
+
     return res.status(200).json(returnObj);
-    
-    
+
+
   } catch (errorObj) {
-    
-    
+
+
     // ---------------------------------------------
     //   Log
     // ---------------------------------------------
-    
+
     const resultErrorObj = returnErrorsArr({
-      
+
       errorObj,
       endpointID: 'R8-TcJ2vj',
       users_id: loginUsers_id,
       ip,
       userAgent,
       requestParametersObj,
-      
+
     });
-    
-    
+
+
     // --------------------------------------------------
     //   Return JSON Object / Error
     // --------------------------------------------------
-    
+
     return res.status(statusCode).json(resultErrorObj);
-    
-    
+
+
   }
-  
-  
+
+
 };

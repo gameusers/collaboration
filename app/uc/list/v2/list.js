@@ -18,7 +18,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Router from 'next/router';
 import { useIntl } from 'react-intl';
-import { useSnackbar } from 'notistack';
+// import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
@@ -60,29 +60,10 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
 // ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-import { fetchWrapper } from 'app/@modules/fetch.js';
-import { CustomError } from 'app/@modules/error/custom.js';
-import { showSnackbar } from 'app/@modules/snackbar.js';
-
-
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateLayout } from 'app/@states/layout.js';
-
-
-// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-// import Panel from 'app/common/layout/v2/panel.js';
-
-import CardGC from 'app/common/community-list/v2/card-gc.js';
-// import Form from 'app/gc/list/v2/form.js';
+import CardUc from 'app/common/community-list/v2/card-uc.js';
 
 
 
@@ -133,32 +114,14 @@ const Component = (props) => {
 
 
   // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-
-  const stateLayout = ContainerStateLayout.useContainer();
-
-  const {
-
-    handleLoadingOpen,
-    handleLoadingClose,
-    handleScrollTo,
-
-  } = stateLayout;
-
-
-  // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
 
   const intl = useIntl();
-  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
   const [anchorElEditMode, setAnchorElEditMode] = useState(null);
-  const [editable, setEditable] = useState(false);
-  const [gameGenresArr, setGameGenresArr] = useState([]);
 
 
   useEffect(() => {
@@ -318,10 +281,9 @@ const Component = (props) => {
     // --------------------------------------------------
 
     componentsArr.push(
-      <CardGC
+      <CardUc
         key={index}
         obj={dataObj}
-        editable={editable}
       />
     );
 
@@ -337,33 +299,8 @@ const Component = (props) => {
 
   return (
     <Element
-      name="GcList"
+      name="ucList"
     >
-
-
-      {/* Form - Post New Thread */}
-      {/* <div
-        css={css`
-          margin: 0 0 16px 0;
-        `}
-      >
-
-        <Panel
-          heading="スレッド投稿フォーム"
-          defaultExpanded={false}
-        >
-
-          <FormThread
-            gameCommunities_id={gameCommunities_id}
-            userCommunities_id={userCommunities_id}
-            forumThreads_id=""
-          />
-
-        </Panel>
-
-      </div> */}
-
-
 
 
       {/* List */}
@@ -461,16 +398,14 @@ const Component = (props) => {
       >
 
         <Link
-          href={'/gc/register/[[...slug]]'}
-          as={'/gc/register'}
+          href={'/uc/register/[[...slug]]'}
+          as={'/uc/register'}
         >
           <a className="link">
             <Button
               variant="outlined"
               size="small"
               disabled={buttonDisabled}
-              // onClick={handleGetRegisterData}
-              // onClick={() => setEditable(!editable)}
             >
               <IconEdit
                 css={css`

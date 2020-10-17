@@ -36,6 +36,7 @@ const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
 
 const ModelIDs = require('../ids/model.js');
 const ModelFollows = require('../follows/model.js');
+const ModelUserCommunities = require('../user-communities/model.js');
 
 
 // ---------------------------------------------
@@ -68,38 +69,38 @@ const { CustomError } = require('../../@modules/error/custom.js');
  * @return {Object} 取得データ
  */
 const findOne = async ({ conditionObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   FindOne
     // --------------------------------------------------
-    
+
     return await SchemaCardPlayers.findOne(conditionObj).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -111,37 +112,37 @@ const findOne = async ({ conditionObj }) => {
  * @return {Array} 取得データ
  */
 const find = async ({ conditionObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Find
     // --------------------------------------------------
-    
+
     return await SchemaCardPlayers.find(conditionObj).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -153,37 +154,37 @@ const find = async ({ conditionObj }) => {
  * @return {number} カウント数
  */
 const count = async ({ conditionObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Find
     // --------------------------------------------------
-    
+
     return await SchemaCardPlayers.countDocuments(conditionObj).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -193,44 +194,44 @@ const count = async ({ conditionObj }) => {
  * 挿入 / 更新する
  * @param {Object} conditionObj - 検索条件
  * @param {Object} saveObj - 保存するデータ
- * @return {Array} 
+ * @return {Array}
  */
 const upsert = async ({ conditionObj, saveObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!conditionObj || !Object.keys(conditionObj).length) {
       throw new Error();
     }
-    
+
     if (!saveObj || !Object.keys(saveObj).length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Upsert
     // --------------------------------------------------
-    
+
     return await SchemaCardPlayers.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -239,40 +240,40 @@ const upsert = async ({ conditionObj, saveObj }) => {
 /**
  * 大量に挿入する
  * @param {Array} saveArr - 保存するデータ
- * @return {Array} 
+ * @return {Array}
  */
 const insertMany = async ({ saveArr }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!saveArr || !saveArr.length) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   insertMany
     // --------------------------------------------------
-    
+
     return await SchemaCardPlayers.insertMany(saveArr);
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -282,40 +283,40 @@ const insertMany = async ({ saveArr }) => {
  * 削除する
  * @param {Object} conditionObj - 検索条件
  * @param {boolean} reset - trueでデータをすべて削除する
- * @return {Array} 
+ * @return {Array}
  */
 const deleteMany = async ({ conditionObj, reset = false }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
-    
+
     if (!reset && (!conditionObj || !Object.keys(conditionObj).length)) {
       throw new Error();
     }
-    
-    
+
+
     // --------------------------------------------------
     //   Delete
     // --------------------------------------------------
-    
+
     return await SchemaCardPlayers.deleteMany(conditionObj);
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -332,19 +333,19 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * @return {Object} 取得データ
  */
 const findForCardPlayers = async ({
-  
+
   localeObj,
   loginUsers_id,
   users_id,
   cardPlayers_id,
-  
+
 }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Match Condition Array
   // --------------------------------------------------
-  
+
   let matchConditionArr = [
     {
       $match: {
@@ -352,18 +353,18 @@ const findForCardPlayers = async ({
       }
     },
   ];
-  
-  
+
+
   if (cardPlayers_id) {
-    
+
     const docCardPlayersObj = await findOne({
-      
+
       conditionObj: {
         _id: cardPlayers_id
       }
-      
+
     });
-    
+
     matchConditionArr = [
       {
         $match: {
@@ -371,17 +372,17 @@ const findForCardPlayers = async ({
         }
       },
     ];
-    
+
   }
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return aggregateAndFormat({ localeObj, loginUsers_id, matchConditionArr });
-  
-  
+
+
 };
 
 
@@ -398,60 +399,60 @@ const findForCardPlayers = async ({
  * @return {Object} 取得データ
  */
 const aggregateAndFormat = async ({
-  
+
   localeObj,
   loginUsers_id,
   matchConditionArr,
   page = 1,
   limit = 1,
-  
+
 }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   parse
     // --------------------------------------------------
-    
+
     const intPage = parseInt(page, 10);
     const intLimit = parseInt(limit, 10);
-    
-    
+
+
     // --------------------------------------------------
     //   Language & Country
     // --------------------------------------------------
-    
+
     const language = lodashGet(localeObj, ['language'], '');
     const country = lodashGet(localeObj, ['country'], '');
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Card Players のデータを取得
     //   ShemaUsers をベースにしているのは accessDate でソートするため
     // --------------------------------------------------
-    
+
     const docArr = await SchemaUsers.aggregate([
-      
-      
+
+
       // --------------------------------------------------
       //   Match Condition
       // --------------------------------------------------
-      
+
       ...matchConditionArr,
-      
-      
+
+
       // --------------------------------------------------
       //   card-players
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -465,12 +466,12 @@ const aggregateAndFormat = async ({
                   },
                 }
               },
-              
-              
+
+
               // --------------------------------------------------
               //   card-players / images-and-videos / メイン画像
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -496,19 +497,19 @@ const aggregateAndFormat = async ({
                     as: 'imagesAndVideosObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$imagesAndVideosObj',
                   preserveNullAndEmptyArrays: true,
                 }
               },
-              
-              
+
+
               // --------------------------------------------------
               //   card-players / images-and-videos / サムネイル用
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -534,19 +535,19 @@ const aggregateAndFormat = async ({
                     as: 'imagesAndVideosThumbnailObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$imagesAndVideosThumbnailObj',
                   preserveNullAndEmptyArrays: true,
                 }
               },
-              
-              
+
+
               // --------------------------------------------------
               //   card-players / hardwares
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -589,12 +590,12 @@ const aggregateAndFormat = async ({
                     as: 'hardwaresArr'
                   }
               },
-              
-              
+
+
               // --------------------------------------------------
               //   card-players / follows
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -612,16 +613,16 @@ const aggregateAndFormat = async ({
                     as: 'followsObj'
                   }
               },
-              
+
               {
                 $unwind: '$followsObj'
               },
-              
-              
+
+
               // --------------------------------------------------
               //   card-players / ids
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -635,12 +636,12 @@ const aggregateAndFormat = async ({
                           }
                         }
                       },
-                      
-                      
+
+
                       // --------------------------------------------------
                       //   card-players / ids / games
                       // --------------------------------------------------
-                      
+
                       {
                         $lookup:
                           {
@@ -658,12 +659,12 @@ const aggregateAndFormat = async ({
                                   },
                                 }
                               },
-                              
-                              
+
+
                               // --------------------------------------------------
                               //   card-players / ids / games / images-and-videos / サムネイル用
                               // --------------------------------------------------
-                              
+
                               {
                                 $lookup:
                                   {
@@ -689,15 +690,15 @@ const aggregateAndFormat = async ({
                                     as: 'imagesAndVideosThumbnailObj'
                                   }
                               },
-                              
+
                               {
                                 $unwind: {
                                   path: '$imagesAndVideosThumbnailObj',
                                   preserveNullAndEmptyArrays: true,
                                 }
                               },
-                              
-                              
+
+
                               {
                                 $project: {
                                   _id: 1,
@@ -710,15 +711,15 @@ const aggregateAndFormat = async ({
                             as: 'gamesObj'
                           }
                       },
-                      
+
                       {
                         $unwind: {
                           path: '$gamesObj',
                           preserveNullAndEmptyArrays: true
                         }
                       },
-                      
-                      
+
+
                       {
                         $project: {
                           createdDate: 0,
@@ -732,12 +733,12 @@ const aggregateAndFormat = async ({
                     as: 'idsArr'
                   }
               },
-              
-              
+
+
               // --------------------------------------------------
               //   $project
               // --------------------------------------------------
-              
+
               {
                 $project: {
                   __v: 0,
@@ -748,25 +749,25 @@ const aggregateAndFormat = async ({
                   search: 0,
                 }
               },
-              
-              
+
+
             ],
             as: 'cardPlayerObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$cardPlayerObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   experiences
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -780,37 +781,37 @@ const aggregateAndFormat = async ({
                   },
                 }
               },
-              
-              
+
+
               // --------------------------------------------------
               //   $project
               // --------------------------------------------------
-              
+
               {
                 $project: {
                   _id: 0,
                   exp: 1,
                 }
               },
-              
-              
+
+
             ],
             as: 'experiencesObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$experiencesObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $project
       // --------------------------------------------------
-      
+
       {
         $project: {
           accessDate: 1,
@@ -819,93 +820,93 @@ const aggregateAndFormat = async ({
           experiencesObj: 1,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   $sort / $skip / $limit
       // --------------------------------------------------
-      
+
       { $sort: { accessDate: -1 } },
       { $skip: (intPage - 1) * intLimit },
       { $limit: intLimit },
-      
-      
+
+
     ]).exec();
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Format
     // --------------------------------------------------
-    
+
     const formattedObj = formatCardPlayersArr({
-      
+
       localeObj,
       loginUsers_id,
       arr: docArr,
-      
+
     });
-    
+
     const returnObj = {};
-    
+
     returnObj.cardPlayersObj = lodashGet(formattedObj, ['obj'], {});
     returnObj.cardPlayersArr = lodashGet(formattedObj, ['arr'], []);
     returnObj.cardPlayers_idsArr = lodashGet(formattedObj, ['_idsArr'], []);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----------------------------------------\n
     //   /app/@database/card-players/model.js - aggregateAndFormat
     // `);
-    
+
     // console.log(`
     //   ----- matchConditionArr -----\n
     //   ${util.inspect(matchConditionArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- docArr -----\n
     //   ${util.inspect(docArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- formattedObj -----\n
     //   ${util.inspect(formattedObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return returnObj;
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
-  
+
+
 };
 
 
@@ -919,54 +920,54 @@ const aggregateAndFormat = async ({
  * @return {Array} 取得データ
  */
 const findOneForEdit = async ({
-  
+
   localeObj,
   loginUsers_id,
   cardPlayers_id,
-  
+
 }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Language & Country
     // --------------------------------------------------
-    
+
     const language = lodashGet(localeObj, ['language'], '');
     const country = lodashGet(localeObj, ['country'], '');
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Aggregate
     // --------------------------------------------------
-    
+
     const docArr = await SchemaCardPlayers.aggregate([
-      
-      
+
+
       // --------------------------------------------------
       //   Match
       // --------------------------------------------------
-      
+
       {
         $match: {
           _id: cardPlayers_id,
           users_id: loginUsers_id,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   images-and-videos - トップ画像
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -992,19 +993,19 @@ const findOneForEdit = async ({
             as: 'imagesAndVideosObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   images-and-videos - サムネイル画像
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1030,19 +1031,19 @@ const findOneForEdit = async ({
             as: 'imagesAndVideosThumbnailObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosThumbnailObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   hardwares
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1085,12 +1086,12 @@ const findOneForEdit = async ({
             as: 'hardwaresArr'
           }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   ids
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1110,12 +1111,12 @@ const findOneForEdit = async ({
                   },
                 }
               },
-              
-              
+
+
               // --------------------------------------------------
               //   ids / games
               // --------------------------------------------------
-              
+
               {
                 $lookup:
                   {
@@ -1133,12 +1134,12 @@ const findOneForEdit = async ({
                           },
                         }
                       },
-                      
-                      
+
+
                       // --------------------------------------------------
                       //   ids / games / images-and-videos / サムネイル用
                       // --------------------------------------------------
-                      
+
                       {
                         $lookup:
                           {
@@ -1164,15 +1165,15 @@ const findOneForEdit = async ({
                             as: 'imagesAndVideosThumbnailObj'
                           }
                       },
-                      
+
                       {
                         $unwind: {
                           path: '$imagesAndVideosThumbnailObj',
                           preserveNullAndEmptyArrays: true,
                         }
                       },
-                      
-                      
+
+
                       {
                         $project: {
                           _id: 1,
@@ -1185,15 +1186,15 @@ const findOneForEdit = async ({
                     as: 'gamesObj'
                   }
               },
-              
+
               {
                 $unwind: {
                   path: '$gamesObj',
                   preserveNullAndEmptyArrays: true
                 }
               },
-              
-              
+
+
               {
                 $project: {
                   createdDate: 0,
@@ -1207,140 +1208,140 @@ const findOneForEdit = async ({
             as: 'idsArr'
           }
       },
-      
-      
+
+
     ]).exec();
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   配列が空の場合は処理停止
     // --------------------------------------------------
-    
+
     if (docArr.length === 0) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: 'bGSSbWbBE', messageID: 'cvS0qSAlE' }] });
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Format
     // --------------------------------------------------
-    
+
     const formattedObj = docArr[0];
-    
+
     const hardwaresArr = lodashGet(formattedObj, ['hardwaresArr'], []);
-    
-    
+
+
     // --------------------------------------------------
     //   hardwareActive
     // --------------------------------------------------
-    
+
     const hardwareActiveValueArr = lodashGet(formattedObj, ['hardwareActiveArr'], []);
-    
+
     const hardwareActiveArr = [];
-    
+
     for (let value of hardwareActiveValueArr) {
-      
+
       const obj = hardwaresArr.find((valueObj) => {
         return valueObj.hardwareID === value;
       });
-      
+
       if (obj && 'name' in obj) {
-        
+
         hardwareActiveArr.push({
           hardwareID: value,
           name: obj.name
         });
-        
+
       }
-      
+
     }
-    
+
     formattedObj.hardwareActiveArr = hardwareActiveArr;
-    
-    
+
+
     // --------------------------------------------------
     //   hardwareInactive
     // --------------------------------------------------
-    
+
     const hardwareInactiveValueArr = lodashGet(formattedObj, ['hardwareInactiveArr'], []);
-    
+
     const hardwareInactiveArr = [];
-    
+
     for (let value of hardwareInactiveValueArr) {
-      
+
       const obj = hardwaresArr.find((valueObj) => {
         return valueObj.hardwareID === value;
       });
-      
+
       if (obj && 'name' in obj) {
-        
+
         hardwareInactiveArr.push({
           hardwareID: value,
           name: obj.name
         });
-        
+
       }
-      
+
     }
-    
+
     formattedObj.hardwareInactiveArr = hardwareInactiveArr;
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   returnObj
     // --------------------------------------------------
-    
+
     const returnObj = formattedObj;
-    
+
     // returnObj[cardPlayers_id] = formattedObj;
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----------------------------------------\n
     //   /app/@database/card-players/model.js - findOneForEdit
     // `);
-    
+
     // console.log(`
     //   ----- docArr -----\n
     //   ${util.inspect(docArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     // return {};
     return returnObj;
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -1352,49 +1353,49 @@ const findOneForEdit = async ({
  * @return {Object} 取得データ
  */
 const findOneBy_idForEditForm = async ({
-  
+
   _id,
   localeObj,
   loginUsers_id,
-  
+
 }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Language & Country
     // --------------------------------------------------
-    
+
     const language = lodashGet(localeObj, ['language'], '');
     const country = lodashGet(localeObj, ['country'], '');
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Aggregate
     // --------------------------------------------------
-    
+
     const docArr = await SchemaCardPlayers.aggregate([
-      
+
       {
         $match: {
           _id,
           users_id: loginUsers_id
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   images-and-videos - メイン画像
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1420,19 +1421,19 @@ const findOneBy_idForEditForm = async ({
             as: 'imagesAndVideosObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   images-and-videos - サムネイル画像
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1458,19 +1459,19 @@ const findOneBy_idForEditForm = async ({
             as: 'imagesAndVideosThumbnailObj'
           }
       },
-      
+
       {
         $unwind: {
           path: '$imagesAndVideosThumbnailObj',
           preserveNullAndEmptyArrays: true,
         }
       },
-      
-      
+
+
       // --------------------------------------------------
       //   hardwares
       // --------------------------------------------------
-      
+
       {
         $lookup:
           {
@@ -1513,91 +1514,91 @@ const findOneBy_idForEditForm = async ({
             as: 'hardwaresArr'
           }
       },
-      
-      
+
+
     ]).exec();
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   ID データをまとめて取得
     // --------------------------------------------------
-    
+
     let ids_idsArr = [];
-    
+
     for (let valueObj of docArr.values()) {
       ids_idsArr = ids_idsArr.concat(valueObj.ids_idsArr);
     }
-    
+
     const resultIDsObj = await ModelIDs.findForCardPlayer({
-      
+
       localeObj,
       loginUsers_id,
       ids_idsArr,
-      
+
     });
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   カードデータのフォーマット
     // --------------------------------------------------
-    
+
     const returnObj = formatForEditForm({
-      
+
       cardPlayersArr: docArr,
       idsObj: resultIDsObj,
-      
+
     });
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----------------------------------------\n
     //   /app/@database/card-players/model.js - findOneBy_idForEditForm
     // `);
-    
+
     // console.log(`
     //   ----- resultCardPlayersArr -----\n
     //   ${util.inspect(resultCardPlayersArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- resultIDsObj -----\n
     //   ${util.inspect(resultIDsObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return returnObj;
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -1617,7 +1618,7 @@ const findOneBy_idForEditForm = async ({
  * @return {Object} 取得データ
  */
 const findForFollowers = async ({
-  
+
   localeObj,
   loginUsers_id,
   adminUsers_id,
@@ -1627,114 +1628,136 @@ const findForFollowers = async ({
   controlType,
   page = 1,
   limit = process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT,
-  
+
 }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Return Value
   // --------------------------------------------------
-  
+
   let returnObj = {};
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   parseInt
     // --------------------------------------------------
-    
+
     let intPage = parseInt(page, 10);
     let intLimit = parseInt(limit, 10);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   follows のデータを取得
     //   card-players のデータを取得するために必要
     // --------------------------------------------------
-    
+
     // ---------------------------------------------
     //   - 検索条件
     // ---------------------------------------------
-    
+
     let conditionObj = {
       users_id
     };
-    
+
     if (gameCommunities_id) {
-      
+
       conditionObj = {
         gameCommunities_id
       };
-      
+
     } else if (userCommunities_id) {
-      
+
       conditionObj = {
         userCommunities_id
       };
-      
+
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - DB find / Follows
     // ---------------------------------------------
-    
+
     const followsObj = await ModelFollows.findOne({ conditionObj });
-    
+
     const followCount = lodashGet(followsObj, ['followCount'], 0);
     const followedCount = lodashGet(followsObj, ['followedCount'], 0);
     let approvalCount = 0;
     let blockCount = 0;
-    
+
     if (adminUsers_id === loginUsers_id) {
-      
+
       approvalCount = lodashGet(followsObj, ['approvalCount'], 0);
       blockCount = lodashGet(followsObj, ['blockCount'], 0);
-      
+
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - 検索用に users_id の配列を作成する
     // ---------------------------------------------
-    
+
     let users_idsArr = [];
-    
+
     if (controlType === 'follow') {
-      
+
       users_idsArr = lodashGet(followsObj, ['followArr'], []);
-      
+
     } else if (controlType === 'followed') {
-      
+
       users_idsArr = lodashGet(followsObj, ['followedArr'], []);
-      
+
     } else if (controlType === 'approval') {
-      
+
       users_idsArr = lodashGet(followsObj, ['approvalArr'], []);
-      
+
     } else if (controlType === 'block') {
-      
+
       users_idsArr = lodashGet(followsObj, ['blockArr'], []);
-      
+
+    } else if (controlType === 'administrator') {
+
+      const docUserCommunitiesObj = await ModelUserCommunities.findOne({
+
+        conditionObj: {
+          _id: userCommunities_id
+        }
+
+      });
+
+      // console.log(`
+      //   ----- docUserCommunitiesObj -----\n
+      //   ${util.inspect(docUserCommunitiesObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      users_idsArr = [lodashGet(docUserCommunitiesObj, ['users_id'], '')];
+
     }
-    
-    
-    
-    
+
+    // console.log(`
+    //   ----- users_idsArr -----\n
+    //   ${util.inspect(users_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
     // --------------------------------------------------
     //   Match Condition Array
     // --------------------------------------------------
-    
+
     const matchConditionArr = [
       {
         $match : {
@@ -1742,161 +1765,169 @@ const findForFollowers = async ({
         },
       },
     ];
-    
-    
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     const formattedObj = await aggregateAndFormat({
-      
+
       localeObj,
       loginUsers_id,
       matchConditionArr,
       page: intPage,
       limit: intLimit,
-      
+
     });
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   cardPlayersObj & cardPlayersArr
     // --------------------------------------------------
-    
+
     returnObj.cardPlayersObj = lodashGet(formattedObj, ['cardPlayersObj'], {});
     const cardPlayers_idsArr = lodashGet(formattedObj, ['cardPlayers_idsArr'], []);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Datetime
     // --------------------------------------------------
-    
+
     const ISO8601 = moment().utc().toISOString();
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return Object
     // --------------------------------------------------
-    
+
     lodashSet(returnObj, ['followMembersObj', 'limit'], intLimit);
     lodashSet(returnObj, ['followMembersObj', 'followObj', 'count'], followCount);
     lodashSet(returnObj, ['followMembersObj', 'followedObj', 'count'], followedCount);
-    
-    
+
+
     // ---------------------------------------------
     //   - 権限がある場合
     // ---------------------------------------------
-    
+
     if (adminUsers_id === loginUsers_id) {
-      
+
       lodashSet(returnObj, ['followMembersObj', 'approvalObj', 'count'], approvalCount);
       lodashSet(returnObj, ['followMembersObj', 'blockObj', 'count'], blockCount);
-      
+
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - データ更新
     // ---------------------------------------------
-    
+
     if (controlType === 'follow') {
-      
+
       lodashSet(returnObj, ['followMembersObj', 'followObj', 'page'], intPage);
       lodashSet(returnObj, ['followMembersObj', 'followObj', `page${intPage}Obj`, 'loadedDate'], ISO8601);
       lodashSet(returnObj, ['followMembersObj', 'followObj', `page${intPage}Obj`, 'arr'], cardPlayers_idsArr);
-      
+
     } else if (controlType === 'followed') {
-      
+
       lodashSet(returnObj, ['followMembersObj', 'followedObj', 'page'], intPage);
       lodashSet(returnObj, ['followMembersObj', 'followedObj', `page${intPage}Obj`, 'loadedDate'], ISO8601);
       lodashSet(returnObj, ['followMembersObj', 'followedObj', `page${intPage}Obj`, 'arr'], cardPlayers_idsArr);
-      
+
     } else if (controlType === 'approval') {
-      
+
       lodashSet(returnObj, ['followMembersObj', 'approvalObj', 'page'], intPage);
       lodashSet(returnObj, ['followMembersObj', 'approvalObj', `page${intPage}Obj`, 'loadedDate'], ISO8601);
       lodashSet(returnObj, ['followMembersObj', 'approvalObj', `page${intPage}Obj`, 'arr'], cardPlayers_idsArr);
-      
+
     } else if (controlType === 'block') {
-      
+
       lodashSet(returnObj, ['followMembersObj', 'blockObj', 'page'], intPage);
       lodashSet(returnObj, ['followMembersObj', 'blockObj', `page${intPage}Obj`, 'loadedDate'], ISO8601);
       lodashSet(returnObj, ['followMembersObj', 'blockObj', `page${intPage}Obj`, 'arr'], cardPlayers_idsArr);
-      
+
+    } else if (controlType === 'administrator') {
+
+      lodashSet(returnObj, ['followMembersObj', 'administratorObj', 'page'], intPage);
+      lodashSet(returnObj, ['followMembersObj', 'administratorObj', `page${intPage}Obj`, 'loadedDate'], ISO8601);
+      lodashSet(returnObj, ['followMembersObj', 'administratorObj', `page${intPage}Obj`, 'arr'], cardPlayers_idsArr);
+
+      lodashSet(returnObj, ['followMembersObj', 'administratorObj', 'count'], 1);
+
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----------------------------------------\n
     //   /app/@database/card-players/model.js - findForFollowers
     // `);
-    
+
     // console.log(`
     //   ----- followsObj -----\n
     //   ${util.inspect(followsObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- users_idsArr -----\n
     //   ${util.inspect(users_idsArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
-      
+
     //   adminUsers_id: {green ${adminUsers_id} / ${typeof adminUsers_id}}
     //   users_id: {green ${users_id} / ${typeof users_id}}
     //   gameCommunities_id: {green ${gameCommunities_id} / ${typeof gameCommunities_id}}
     //   userCommunities_id: {green ${userCommunities_id} / ${typeof userCommunities_id}}
     //   controlType: {green ${controlType} / ${typeof controlType}}
-      
+
     //   page: {green ${page}}
     //   limit: {green ${limit}}
-      
+
     // `);
-    
+
     // console.log(`
     //   ----- formattedObj -----\n
     //   ${util.inspect(formattedObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return returnObj;
-    
-    
+
+
   } catch (err) {
-    
+
     throw err;
-    
+
   }
-  
+
 };
 
 
@@ -1909,107 +1940,107 @@ const findForFollowers = async ({
  * @return {Object} フォーマット後のデータ
  */
 const formatForEditForm = ({ cardPlayersArr, idsObj }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Return Value
   // --------------------------------------------------
-  
+
   let returnObj = {};
-  
-  
+
+
   // --------------------------------------------------
   //   Loop
   // --------------------------------------------------
-  
+
   for (let valueObj of cardPlayersArr) {
-    
-    
+
+
     // --------------------------------------------------
     //   ディープコピー
     // --------------------------------------------------
-    
+
     const clonedObj = lodashCloneDeep(valueObj);
-    
-    
+
+
     // --------------------------------------------------
     //   hardwareActive
     // --------------------------------------------------
-    
+
     clonedObj.hardwareActiveArr = [];
-    
+
     for (let value of valueObj.hardwareActiveObj.valueArr) {
-      
+
       const obj = valueObj.hardwaresArr.find((value2) => {
         return value2.hardwareID === value;
       });
-      
+
       if (obj && 'name' in obj) {
         clonedObj.hardwareActiveArr.push({
           hardwareID: value,
           name: obj.name
         });
       }
-      
+
     }
-    
-    
+
+
     // --------------------------------------------------
     //   hardwareInactive
     // --------------------------------------------------
-    
+
     clonedObj.hardwareInactiveArr = [];
-    
+
     for (let value of valueObj.hardwareInactiveObj.valueArr) {
-      
+
       const obj = valueObj.hardwaresArr.find((value2) => {
         return value2.hardwareID === value;
       });
-      
+
       if (obj && 'name' in obj) {
         clonedObj.hardwareInactiveArr.push({
           hardwareID: value,
           name: obj.name
         });
       }
-      
+
     }
-    
-    
+
+
     // --------------------------------------------------
     //   ID
     // --------------------------------------------------
-    
+
     clonedObj.ids_idsArr = [];
-    
+
     for (let value of valueObj.ids_idsArr) {
-      
+
       if (value in idsObj) {
         clonedObj.ids_idsArr.push(idsObj[value]);
       }
-      
+
     }
-    
-    
+
+
     // --------------------------------------------------
     //   不要な項目を削除する
     // --------------------------------------------------
-    
+
     delete clonedObj.hardwaresArr;
-    
-    
+
+
     returnObj[valueObj._id] = clonedObj;
-    
+
   }
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return returnObj;
-  
-  
+
+
 };
 
 
@@ -2018,225 +2049,225 @@ const formatForEditForm = ({ cardPlayersArr, idsObj }) => {
 /**
  * Transaction 挿入 / 更新する
  * プレイヤーカードと画像＆動画を同時に更新する
- * 
+ *
  * @param {Object} cardPlayersConditionObj - DB card-players 検索条件
  * @param {Object} cardPlayersSaveObj - DB card-players 保存データ
  * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
  * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
  * @param {Object} imagesAndVideosThumbnailConditionObj - DB images-and-videos 検索条件
  * @param {Object} imagesAndVideosThumbnailSaveObj - DB images-and-videos 保存データ
- * @return {Object} 
+ * @return {Object}
  */
 const transactionForUpsert = async ({
-  
+
   cardPlayersConditionObj,
   cardPlayersSaveObj,
   imagesAndVideosConditionObj = {},
   imagesAndVideosSaveObj = {},
   imagesAndVideosThumbnailConditionObj,
   imagesAndVideosThumbnailSaveObj,
-  
+
 }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   let returnObj = {};
-  
-  
+
+
   // --------------------------------------------------
   //   Transaction / Session
   // --------------------------------------------------
-  
+
   const session = await SchemaCardPlayers.startSession();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
-  
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   Transaction / Start
     // --------------------------------------------------
-    
+
     await session.startTransaction();
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Card Player
     // --------------------------------------------------
-    
+
     await SchemaCardPlayers.updateOne(cardPlayersConditionObj, cardPlayersSaveObj, { session, upsert: true });
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Images And Videos - メイン画像
     // --------------------------------------------------
-    
+
     if (Object.keys(imagesAndVideosConditionObj).length !== 0 && Object.keys(imagesAndVideosSaveObj).length !== 0) {
-      
-      
+
+
       // --------------------------------------------------
       //   画像＆動画を削除する
       // --------------------------------------------------
-      
+
       const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
-      
+
       if (arr.length === 0) {
-        
+
         await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj, { session });
-        
-        
+
+
       // --------------------------------------------------
       //   画像＆動画を保存
       // --------------------------------------------------
-        
+
       } else {
-        
+
         await SchemaImagesAndVideos.updateOne(imagesAndVideosConditionObj, imagesAndVideosSaveObj, { session, upsert: true });
-        
+
       }
-      
+
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Images And Videos - サムネイル画像
     // --------------------------------------------------
-    
+
     if (Object.keys(imagesAndVideosThumbnailConditionObj).length !== 0 && Object.keys(imagesAndVideosThumbnailSaveObj).length !== 0) {
-      
-      
+
+
       // --------------------------------------------------
       //   画像＆動画を削除する
       // --------------------------------------------------
-      
+
       const arr = lodashGet(imagesAndVideosThumbnailSaveObj, ['arr'], []);
-      
+
       if (arr.length === 0) {
-        
+
         await SchemaImagesAndVideos.deleteOne(imagesAndVideosThumbnailConditionObj, { session });
-        
-        
+
+
       // --------------------------------------------------
       //   画像＆動画を保存
       // --------------------------------------------------
-        
+
       } else {
-        
+
         await SchemaImagesAndVideos.updateOne(imagesAndVideosThumbnailConditionObj, imagesAndVideosThumbnailSaveObj, { session, upsert: true });
-        
+
       }
-      
+
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Transaction / Commit
     // --------------------------------------------------
-    
+
     await session.commitTransaction();
     // console.log('--------コミット-----------');
-    
+
     session.endSession();
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----- cardPlayersConditionObj -----\n
     //   ${util.inspect(cardPlayersConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- cardPlayersSaveObj -----\n
     //   ${util.inspect(cardPlayersSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- imagesAndVideosConditionObj -----\n
     //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- imagesAndVideosSaveObj -----\n
     //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- imagesAndVideosThumbnailConditionObj -----\n
     //   ${util.inspect(imagesAndVideosThumbnailConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- imagesAndVideosThumbnailSaveObj -----\n
     //   ${util.inspect(imagesAndVideosThumbnailSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+
     return returnObj;
-    
-    
+
+
   } catch (errorObj) {
-    
+
     // console.log(`
     //   ----- errorObj -----\n
     //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
+
+
     // --------------------------------------------------
     //   Transaction / Rollback
     // --------------------------------------------------
-    
+
     await session.abortTransaction();
     // console.log('--------ロールバック-----------');
-    
+
     session.endSession();
-    
-    
+
+
     throw errorObj;
-    
+
   }
-  
+
 };
 
 
@@ -2249,18 +2280,18 @@ const transactionForUpsert = async ({
 // --------------------------------------------------
 
 module.exports = {
-  
+
   findOne,
   find,
   count,
   upsert,
   insertMany,
   deleteMany,
-  
+
   findForCardPlayers,
   findOneForEdit,
   findOneBy_idForEditForm,
   findForFollowers,
   transactionForUpsert,
-  
+
 };

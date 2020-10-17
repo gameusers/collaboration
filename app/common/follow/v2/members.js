@@ -306,7 +306,29 @@ const Component = (props) => {
       }
 
 
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/follow/v2/components/members.js - handleRead
+      // `);
 
+      // console.log(chalk`
+      //   newControlType: {green ${newControlType}}
+      //   controlType: {green ${controlType}}
+      //   page: {green ${page}}
+      //   reload: {green ${reload}}
+      // `);
+
+      // console.log(`
+      //   ----- followMembersObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(followMembersObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // console.log(`
+      //   ----- arr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
 
       // ---------------------------------------------
       //   すでにデータを読み込んでいる場合は、ストアのデータを表示する
@@ -314,7 +336,7 @@ const Component = (props) => {
 
       if (!reload && arr.length > 0) {
 
-        console.log('store');
+        // console.log('store');
 
 
         // ---------------------------------------------
@@ -335,7 +357,7 @@ const Component = (props) => {
 
       }
 
-      console.log('fetch');
+      // console.log('fetch');
 
 
 

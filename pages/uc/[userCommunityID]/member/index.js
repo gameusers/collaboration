@@ -377,10 +377,10 @@ export async function getServerSideProps({ req, res, query }) {
   //   console.log
   // --------------------------------------------------
 
-  console.log(`
-    ----------------------------------------\n
-    /uc/[userCommunityID]/member/index.js
-  `);
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /uc/[userCommunityID]/member/index.js
+  // `);
 
   // console.log(`
   //   ----- resultObj -----\n
@@ -389,9 +389,9 @@ export async function getServerSideProps({ req, res, query }) {
   // `);
 
 
-  console.log(chalk`
-    accessLevel: {green ${accessLevel}}
-  `);
+  // console.log(chalk`
+  //   accessLevel: {green ${accessLevel}}
+  // `);
 
   // console.log(chalk`
   //   threadListPage: {green ${threadListPage}}

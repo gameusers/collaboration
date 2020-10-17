@@ -140,11 +140,11 @@ export default async (req, res) => {
 
     const returnObj = await initialProps({ req, localeObj, getHeroImage: true });
 
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
     // --------------------------------------------------

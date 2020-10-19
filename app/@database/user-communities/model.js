@@ -2117,7 +2117,7 @@ const transactionForUpsertSettings = async ({
     //   Transaction / Commit
     // --------------------------------------------------
 
-    await session.commitTransaction();
+    // await session.commitTransaction();
 
     // console.log('--------コミット-----------');
 
@@ -2130,53 +2130,53 @@ const transactionForUpsertSettings = async ({
     //   console.log
     // --------------------------------------------------
 
-    // console.log(`
-    //   ----- userCommunitiesConditionObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(userCommunitiesConditionObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- userCommunitiesConditionObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(userCommunitiesConditionObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
 
-    // console.log(`
-    //   ----- userCommunitiesSaveObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(userCommunitiesSaveObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- userCommunitiesSaveObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(userCommunitiesSaveObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
 
-    // console.log(`
-    //   ----- followsConditionObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(followsConditionObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- followsConditionObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(followsConditionObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
 
-    // console.log(`
-    //   ----- followsSaveObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(followsSaveObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- followsSaveObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(followsSaveObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
 
-    // console.log(`
-    //   ----- imagesAndVideosConditionObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosConditionObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- imagesAndVideosConditionObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosConditionObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
 
-    // console.log(`
-    //   ----- imagesAndVideosSaveObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosSaveObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- imagesAndVideosSaveObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosSaveObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
 
-    // console.log(`
-    //   ----- imagesAndVideosThumbnailConditionObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailConditionObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- imagesAndVideosThumbnailConditionObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailConditionObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
 
-    // console.log(`
-    //   ----- imagesAndVideosThumbnailSaveObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailSaveObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- imagesAndVideosThumbnailSaveObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailSaveObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
 
     // console.log(`
     //   ----- returnObj -----\n

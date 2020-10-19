@@ -16,36 +16,34 @@ import util from 'util';
 
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-import ModelGames from 'app/@database/games/model.js';
+import ModelUserCommunities from 'app/@database/user-communities/model.js';
+// import ModelHardwares from 'app/@database/hardwares/model.js';
+import ModelFeeds from 'app/@database/feeds/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-import { verifyCsrfToken } from 'app/@modules/csrf.js';
 import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-import { validationIP } from 'app/@validations/ip.js';
+import { validationInteger } from 'app/@validations/integer.js';
 import { validationKeyword } from 'app/@validations/keyword.js';
 
-
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-import { formatImagesAndVideosArr } from 'app/@database/images-and-videos/format.js';
+import { validationCommunitiesListLimit } from 'app/@database/game-communities/validations/limit.js';
 
 
 // ---------------------------------------------
@@ -55,12 +53,19 @@ import { formatImagesAndVideosArr } from 'app/@database/images-and-videos/format
 import { locale } from 'app/@locales/locale.js';
 
 
+// ---------------------------------------------
+//   API
+// ---------------------------------------------
+
+import { initialProps } from 'app/@api/v2/common.js';
+
+
 
 
 
 
 // --------------------------------------------------
-//   endpointID: 73be0Rq9j
+//   endpointID: WTMqeyRjP
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -77,7 +82,6 @@ export default async (req, res) => {
   //   Property
   // --------------------------------------------------
 
-  let returnArr = [];
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
 
@@ -106,75 +110,110 @@ export default async (req, res) => {
 
 
     // --------------------------------------------------
-    //   POST Data
+    //   GET Data
     // --------------------------------------------------
 
-    const bodyObj = JSON.parse(req.body);
+    const page = parseInt(lodashGet(req, ['query', 'page'], 1), 10);
+    const limit = parseInt(lodashGet(req, ['query', 'limit'], ''), 10);
+    const keyword = lodashGet(req, ['query', 'keyword'], '');
 
-    const {
-
-      keyword,
-
-    } = bodyObj;
-
-
+    lodashSet(requestParametersObj, ['page'], page);
+    lodashSet(requestParametersObj, ['limit'], limit);
     lodashSet(requestParametersObj, ['keyword'], keyword);
 
 
 
 
+    // --------------------------------------------------
+    //   Common Initial Props
+    // --------------------------------------------------
+
+    const returnObj = await initialProps({ req, localeObj, getHeroImage: true });
+
+
+
+
+    // --------------------------------------------------
+    //   DB find / Game Communities List
+    // --------------------------------------------------
+
     // ---------------------------------------------
-    //   Verify CSRF
+    //   - 引数
     // ---------------------------------------------
 
-    verifyCsrfToken(req, res);
-
-
-
-
-    // --------------------------------------------------
-    //   Validation
-    // --------------------------------------------------
-
-    await validationIP({ throwError: true, value: ip });
-    await validationKeyword({ throwError: true, required: true, value: keyword });
-
-
-
-
-    // --------------------------------------------------
-    //   サジェスト用のデータを取得
-    // --------------------------------------------------
-
-    const resultArr = await ModelGames.findBySearchKeywordsArrForSuggestion({
+    const argumentsObj = {
 
       localeObj,
-      keyword,
+
+    };
+
+
+    // ---------------------------------------------
+    //   - page & limit
+    // ---------------------------------------------
+
+    if (await validationInteger({ throwError: false, required: true, value: page }).error === false) {
+      argumentsObj.page = page;
+    }
+
+    if (await validationCommunitiesListLimit({ throwError: false, required: true, value: limit }).error === false) {
+      argumentsObj.limit = limit;
+    }
+
+
+    // ---------------------------------------------
+    //   - keyword
+    // ---------------------------------------------
+
+    if (await validationKeyword({ throwError: false, required: true, value: keyword }).error === false) {
+      argumentsObj.keyword = keyword;
+    }
+
+
+    returnObj.ucListObj = await ModelUserCommunities.findUserCommunitiesList(argumentsObj);
+
+
+
+
+    // --------------------------------------------------
+    //   DB find / Feed
+    // --------------------------------------------------
+
+    returnObj.feedObj = await ModelFeeds.findFeed({
+
+      localeObj,
+      arr: ['all'],
 
     });
 
 
+
+
     // --------------------------------------------------
-    //   画像をフォーマット
-    // --------------------------------------------------
-
-    returnArr = formatImagesAndVideosArr({ arr: resultArr });
-
-
-
-
-    // ---------------------------------------------
     //   console.log
-    // ---------------------------------------------
+    // --------------------------------------------------
 
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/api/v2/db/games/read-suggestion.js
+    //   pages/api/v2/uc/list/index.js
+    // `);
+
+    // console.log(chalk`
+    // page: {green ${page}}
+    // limit: {green ${limit}}
+    // hardwares: {green ${hardwares}}
+    // keyword: {green ${keyword}}
     // `);
 
     // console.log(`
-    //   ----- returnArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(returnArr)), { colors: true, depth: null })}\n
+    //   ----- returnObj.gcListObj -----\n
+    //   ${util.inspect(returnObj.gcListObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
@@ -185,7 +224,7 @@ export default async (req, res) => {
     //   Success
     // ---------------------------------------------
 
-    return res.status(200).json(returnArr);
+    return res.status(200).json(returnObj);
 
 
   } catch (errorObj) {
@@ -198,7 +237,7 @@ export default async (req, res) => {
     const resultErrorObj = returnErrorsArr({
 
       errorObj,
-      endpointID: '73be0Rq9j',
+      endpointID: 'WTMqeyRjP',
       users_id: loginUsers_id,
       ip,
       userAgent,

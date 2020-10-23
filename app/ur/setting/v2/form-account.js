@@ -81,288 +81,288 @@ import FormLoginPassword from 'app/common/form/v2/login-password.js';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  
+
   const [loginID, setLoginID] = useState(lodashGet(props, ['loginID'], ''));
   const [loginPassword, setLoginPassword] = useState('');
   const [loginPasswordConfirmation, setLoginPasswordConfirmation] = useState('');
-  
-  
+
+
   useEffect(() => {
-    
+
     setButtonDisabled(false);
-    
+
   }, []);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateLayout = ContainerStateLayout.useContainer();
-  
+
   const {
-    
+
     handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
-    
+
   } = stateLayout;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   /**
    * フォームを送信する
    * @param {Object} eventObj - イベント
    */
   const handleSubmit = async ({
-    
+
     eventObj,
-    
+
   }) => {
-    
-    
+
+
     // ---------------------------------------------
     //   フォームの送信処理停止
     // ---------------------------------------------
-    
+
     eventObj.preventDefault();
-    
-    
-    
-    
+
+
+
+
     try {
-      
-      
+
+
       // ---------------------------------------------
       //   Validations
       // ---------------------------------------------
-      
+
       if (
-        
+
         validationUsersLoginID({ required: true, value: loginID }).error ||
         validationUsersLoginPassword({ required: true, value: loginPassword, loginID }).error ||
         validationUsersLoginPasswordConfirmation({ required: true, value: loginPasswordConfirmation, loginPassword }).error
-        
+
       ) {
-        
+
         throw new CustomError({ errorsArr: [{ code: 'G22F0axr0', messageID: 'uwHIKBy7c' }] });
-        
+
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Loading Open
       // ---------------------------------------------
-      
+
       handleLoadingOpen({});
-      
-      
+
+
       // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
-      
+
       setButtonDisabled(true);
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
-      
+
       const formDataObj = {
-        
+
         loginID,
         loginPassword,
-        
+
       };
-      
-      
+
+
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
-      
+
       const resultObj = await fetchWrapper({
-        
+
         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/upsert-setting-account`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
-        
+
       });
-      
-      
+
+
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
-      
+
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
-      
+
       setButtonDisabled(false);
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Reset Form
       // ---------------------------------------------
-      
+
       setLoginPassword('');
       setLoginPasswordConfirmation('');
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Snackbar: Success
       // ---------------------------------------------
-      
+
       handleSnackbarOpen({
-        
+
         variant: 'success',
         messageID: 'EnStWOly-',
-        
+
       });
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   console.log
       // --------------------------------------------------
-      
+
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/ur/v2/setting/form-account.js / handleSubmit
+      //   /app/ur/setting/v2/form-account.js / handleSubmit
       // `);
-      
+
       // console.log(`
       //   ----- formDataObj -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
+
       // console.log(`
       //   ----- resultObj -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
+
+
     } catch (errorObj) {
-      
-      
+
+
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
-      
+
       setButtonDisabled(false);
-      
-      
+
+
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
-      
+
       handleSnackbarOpen({
-        
+
         variant: 'error',
         errorObj,
-        
+
       });
-      
-      
+
+
     } finally {
-      
-      
+
+
       // ---------------------------------------------
       //   Scroll
       // ---------------------------------------------
-      
+
       handleScrollTo({
-        
+
         to: 'formAccount',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
         offset: -50,
-        
+
       });
-      
-      
+
+
       // ---------------------------------------------
       //   Loading Close
       // ---------------------------------------------
-      
+
       handleLoadingClose();
-      
-      
+
+
     }
-    
-    
+
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/forum/v2/components/forum.js
   // `);
-  
+
   // console.log(chalk`
   //   urlID: {green ${urlID}}
   //   gameCommunities_id: {green ${gameCommunities_id}}
   //   userCommunityID: {green ${userCommunityID}}
   //   userCommunities_id: {green ${userCommunities_id}}
-    
+
   //   page: {green ${page}}
   //   count: {green ${count}}
   //   limit: {green ${limit}}
   // `);
-  
+
   // console.log(`
   //   ----- arr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Element
       css={css`
@@ -370,14 +370,14 @@ const Component = (props) => {
       `}
       name="formAccount"
     >
-      
-      
+
+
       <Panel
         heading="ログインID ＆ パスワード変更"
         defaultExpanded={false}
       >
-        
-        
+
+
         <p
           css={css`
             margin: 0 0 12px 0;
@@ -385,14 +385,14 @@ const Component = (props) => {
         >
           ログインする際のIDとパスワードを変更することができます。
         </p>
-        
+
         <p>
           IDとパスワードに利用できる文字は、半角英数字とハイフン( - )アンダースコア( _ )です。※ IDは6文字以上、32文字以内。パスワードは8文字以上、32文字以内。
         </p>
-        
-        
-        
-        
+
+
+
+
         {/* フォーム */}
         <form
           name="formAccount"
@@ -400,8 +400,8 @@ const Component = (props) => {
             eventObj,
           })}
         >
-          
-          
+
+
           <div
             css={css`
               border-top: 1px dashed #848484;
@@ -409,14 +409,14 @@ const Component = (props) => {
               padding: 24px 0 0 0;
             `}
           >
-            
+
             {/* Login ID */}
             <FormLoginID
               loginID={loginID}
               setLoginID={setLoginID}
             />
-            
-            
+
+
             {/* Login Password */}
             <FormLoginPassword
               loginPassword={loginPassword}
@@ -427,12 +427,12 @@ const Component = (props) => {
               strength={true}
               confirmation={true}
             />
-            
+
           </div>
-          
-          
-          
-          
+
+
+
+
           {/* Submit Button */}
           <div
             css={css`
@@ -443,7 +443,7 @@ const Component = (props) => {
               padding: 24px 0 0 0;
             `}
           >
-            
+
             <Button
               type="submit"
               variant="contained"
@@ -452,20 +452,20 @@ const Component = (props) => {
             >
               送信する
             </Button>
-            
+
           </div>
-          
-          
+
+
         </form>
-        
-        
+
+
       </Panel>
-      
-      
+
+
     </Element>
   );
-  
-  
+
+
 };
 
 

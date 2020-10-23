@@ -32,6 +32,8 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 // ---------------------------------------------
 
 const SchemaUserCommunities = require('./schema.js');
+const SchemaForumThreads = require('../forum-threads/schema.js');
+const SchemaForumComments = require('../forum-comments/schema.js');
 const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
 const SchemaFollows = require('../follows/schema.js');
 
@@ -1480,7 +1482,7 @@ const findUserCommunitiesList = async ({
   localeObj,
   page = 1,
   limit = process.env.NEXT_PUBLIC_COMMUNITY_LIST_LIMIT,
-  keyword = 'Community',
+  keyword,
 
 }) => {
 
@@ -1513,7 +1515,9 @@ const findUserCommunitiesList = async ({
     //   $match（ドキュメントの検索用） & count（総数の検索用）の条件作成
     // --------------------------------------------------
 
-    const conditionObj = {};
+    const conditionObj = {
+      _id: { $exists: true }
+    };
 
     const pattern = new RegExp(`.*${keyword}.*`);
 
@@ -1702,6 +1706,7 @@ const findUserCommunitiesList = async ({
         $project: {
           _id: 1,
           createdDate: 1,
+          updatedDate: 1,
           userCommunityID: 1,
           localesArr: 1,
           communityType: 1,
@@ -2117,7 +2122,7 @@ const transactionForUpsertSettings = async ({
     //   Transaction / Commit
     // --------------------------------------------------
 
-    // await session.commitTransaction();
+    await session.commitTransaction();
 
     // console.log('--------コミット-----------');
 
@@ -2130,53 +2135,53 @@ const transactionForUpsertSettings = async ({
     //   console.log
     // --------------------------------------------------
 
-    console.log(`
-      ----- userCommunitiesConditionObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(userCommunitiesConditionObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- userCommunitiesConditionObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(userCommunitiesConditionObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- userCommunitiesSaveObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(userCommunitiesSaveObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- userCommunitiesSaveObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(userCommunitiesSaveObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- followsConditionObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(followsConditionObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- followsConditionObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(followsConditionObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- followsSaveObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(followsSaveObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- followsSaveObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(followsSaveObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- imagesAndVideosConditionObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosConditionObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosConditionObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosConditionObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- imagesAndVideosSaveObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosSaveObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosSaveObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosSaveObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- imagesAndVideosThumbnailConditionObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailConditionObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosThumbnailConditionObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailConditionObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- imagesAndVideosThumbnailSaveObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailSaveObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosThumbnailSaveObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailSaveObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
     // console.log(`
     //   ----- returnObj -----\n
@@ -2212,8 +2217,197 @@ const transactionForUpsertSettings = async ({
 
   }
 
+
 };
 
+
+
+
+/**
+ * Transaction 削除する
+ * スレッド、コメント、返信、画像＆動画を削除して、ユーザーコミュニティを更新する
+ * @param {Object} forumCommentsConditionObj - DB forum-comments 検索条件
+ * @param {Object} forumThreadsConditionObj - DB forum-threads 検索条件
+ * @param {Object} followsConditionObj - DB follows 検索条件
+ * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
+ * @param {Object} userCommunitiesConditionObj - DB user-communities 検索条件
+ * @return {Object}
+ */
+const transactionForDelete = async ({
+
+  forumCommentsConditionObj,
+  forumThreadsConditionObj,
+  followsConditionObj,
+  imagesAndVideosConditionObj = {},
+  userCommunitiesConditionObj = {},
+
+}) => {
+
+
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+
+  let returnObj = {};
+
+
+  // --------------------------------------------------
+  //   Transaction / Session
+  // --------------------------------------------------
+
+  const session = await SchemaUserCommunities.startSession();
+
+
+
+
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+
+  try {
+
+
+    // --------------------------------------------------
+    //   Transaction / Start
+    // --------------------------------------------------
+
+    await session.startTransaction();
+
+
+
+
+    // --------------------------------------------------
+    //   - forum-comments / Comments & Replies / deleteMany
+    // --------------------------------------------------
+
+    await SchemaForumComments.deleteMany(forumCommentsConditionObj, { session });
+
+
+    // --------------------------------------------------
+    //   - forum-threads / deleteMany
+    // --------------------------------------------------
+
+    await SchemaForumThreads.deleteMany(forumThreadsConditionObj, { session });
+
+
+    // --------------------------------------------------
+    //   - follows / deleteOne
+    // --------------------------------------------------
+
+    await SchemaFollows.deleteOne(followsConditionObj, { session });
+
+
+    // ---------------------------------------------
+    //   - images-and-videos / deleteMany
+    // ---------------------------------------------
+
+    if (Object.keys(imagesAndVideosConditionObj).length !== 0) {
+      await SchemaImagesAndVideos.deleteMany(imagesAndVideosConditionObj, { session });
+    }
+
+
+    // ---------------------------------------------
+    //   - user-communities / deleteOne
+    // ---------------------------------------------
+
+    if (Object.keys(userCommunitiesConditionObj).length !== 0) {
+      await SchemaUserCommunities.deleteOne(userCommunitiesConditionObj, { session });
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   Transaction / Commit
+    // --------------------------------------------------
+
+    await session.commitTransaction();
+    // console.log('--------コミット-----------');
+
+    session.endSession();
+
+
+
+
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+
+    // console.log(`
+    //   ----------------------------------------\n
+    //   app/@database/user-communities/model.js - transactionForDelete
+    // `);
+
+    // console.log(`
+    //   ----- forumCommentsConditionObj -----\n
+    //   ${util.inspect(forumCommentsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- forumThreadsConditionObj -----\n
+    //   ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- followsConditionObj -----\n
+    //   ${util.inspect(followsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- imagesAndVideosConditionObj -----\n
+    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- userCommunitiesConditionObj -----\n
+    //   ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
+
+
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+
+    return returnObj;
+
+
+  } catch (errorObj) {
+
+    // console.log(`
+    //   ----- errorObj -----\n
+    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
+    // --------------------------------------------------
+    //   Transaction / Rollback
+    // --------------------------------------------------
+
+    await session.abortTransaction();
+    // console.log('--------ロールバック-----------');
+
+    session.endSession();
+
+
+    throw errorObj;
+
+  }
+
+};
 
 
 
@@ -2239,5 +2433,6 @@ module.exports = {
   findUserCommunitiesList,
 
   transactionForUpsertSettings,
+  transactionForDelete,
 
 };

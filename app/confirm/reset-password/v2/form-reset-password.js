@@ -320,7 +320,7 @@ const Component = (props) => {
 
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/ur/v2/setting/form-account.js / handleSubmit
+      //   /app/ur/setting/v2/form-account.js / handleSubmit
       // `);
 
       // console.log(`

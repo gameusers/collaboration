@@ -52,7 +52,8 @@ import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 
-import FormCommunity from 'app/uc/v2/form-community.js';
+import FormCommunity from 'app/uc/setting/v2/form-community.js';
+import FormDelete from 'app/uc/setting/v2/form-delete.js';
 
 
 
@@ -78,6 +79,8 @@ const ContainerLayout = (props) => {
   const stateCommunity = ContainerStateCommunity.useContainer();
 
   const { setUserCommunityObj } = stateCommunity;
+
+
 
 
   // --------------------------------------------------
@@ -130,6 +133,12 @@ const ContainerLayout = (props) => {
       <FormCommunity
         headerObj={props.headerObj}
         userCommunityObj={props.userCommunityObj}
+        defaultExpanded={true}
+      />
+
+      <FormDelete
+        userCommunityObj={props.userCommunityObj}
+        defaultExpanded={false}
       />
 
     </React.Fragment>
@@ -293,7 +302,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Title
   // --------------------------------------------------
 
-  let title = `設定 - ${userCommunityName}`;
+  let title = `ユーザーコミュニティ設定 - ${userCommunityName}`;
 
 
   // --------------------------------------------------

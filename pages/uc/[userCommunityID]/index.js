@@ -57,7 +57,7 @@ import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 import FeedHorizontal from 'app/common/feed/v2/horizontal.js';
 
-import About from 'app/uc/v2/about.js';
+import About from 'app/uc/index/v2/about.js';
 
 
 

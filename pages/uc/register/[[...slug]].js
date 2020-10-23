@@ -47,8 +47,7 @@ import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 
 import UcNavigation from 'app/uc/list/v2/navigation.js';
-import FormCommunity from 'app/uc/v2/form-community.js';
-// import UcList from 'app/uc/list/v2/list.js';
+import FormCommunity from 'app/uc/setting/v2/form-community.js';
 
 
 
@@ -99,10 +98,9 @@ const ContainerLayout = (props) => {
         arr={props.breadcrumbsArr}
       />
 
-      <FormCommunity />
-      {/* <UcList
-        obj={props.ucListObj}
-      /> */}
+      <FormCommunity
+        defaultExpanded={true}
+      />
 
     </React.Fragment>
   ;

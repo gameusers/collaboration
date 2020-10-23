@@ -87,162 +87,162 @@ import FormImageAndVideo from 'app/common/image-and-video/v2/form.js';
  * Form Page Title
  */
 const FormPageTitle = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     pagesArr = [],
     setPagesArr,
-    
+
   } = props;
-  
-  
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
+
   const [type, setType] = useState('top');
-  
-  
+
+
 
 
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   /**
    * タイトルを入力する
    */
   const handleOnChangeTitle = ({ value }) => {
-    
+
     const clonedArr = lodashCloneDeep(pagesArr);
-    
+
     const index = clonedArr.findIndex((valueObj) => {
       return valueObj.type === type;
     });
-    
-    
+
+
     // --------------------------------------------------
     //   index がない場合はオブジェクトを新たに追加する
     // --------------------------------------------------
-    
+
     if (index === -1) {
-      
+
       const tempObj = {
-        
+
         _id: '',
         type,
         title: value,
         language: 'ja',
-        
+
       };
-      
+
       clonedArr.push(tempObj);
-      
-      
+
+
     // --------------------------------------------------
     //   オブジェクトが存在する場合はタイトルを更新
     // --------------------------------------------------
-      
+
     } else {
-      
+
       lodashSet(clonedArr, [index, 'title'], value);
-      
+
     }
-    
+
     setPagesArr(clonedArr);
-    
-    
+
+
     // console.log(chalk`
     //   value: {green ${value}}
     // `);
-    
+
     // console.log(`
     //   ----- clonedArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(clonedArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // const newArr = [
-      
+
     //   {
     //     _id: '',
     //     type: 'top',
     //     title: '',
     //     language: 'ja',
     //   },
-      
+
     //   {
     //     _id: '',
     //     type: 'follow',
     //     title: '',
     //     language: 'ja',
     //   },
-      
+
     // ];
-    
-    
+
+
   };
-  
 
 
-  
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   const resultObj = pagesArr.find((valueObj) => {
     return valueObj.type === type;
   });
-  
-  
+
+
   // --------------------------------------------------
   //   Validations
   // --------------------------------------------------
-  
+
   const title = lodashGet(resultObj, ['title'], '');
   const validationUsersPagesTitleObj = validationUsersPagesTitle({ value: title });
-  
-  
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/ur/v2/setting/form-page.js
+  //   /app/ur/setting/v2/form-page.js
   // `);
-  
+
   // console.log(`
   //   ----- arr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <React.Fragment>
-      
-      
+
+
       {/* Select Type */}
       <div
         css={css`
           margin: 24px 0 12px 0;
         `}
       >
-        
+
         <FormControl>
-          
+
           <Select
             value={type}
             onChange={(eventObj) => setType(eventObj.target.value)}
@@ -251,22 +251,22 @@ const FormPageTitle = (props) => {
               id: 'type',
             }}
           >
-            
+
             <MenuItem value="top">トップ</MenuItem>
             <MenuItem value="follow">フォロー</MenuItem>
-            
+
           </Select>
-          
+
         </FormControl>
-        
+
       </div>
-      
-      
-      
-      
+
+
+
+
       {/* Title */}
       <div>
-        
+
         <TextField
           css={css`
             && {
@@ -285,14 +285,14 @@ const FormPageTitle = (props) => {
             maxLength: 100,
           }}
         />
-        
+
       </div>
-      
-      
+
+
     </React.Fragment>
   );
-  
-  
+
+
 };
 
 
@@ -302,183 +302,183 @@ const FormPageTitle = (props) => {
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     pagesObj,
-    
+
   } = props;
-  
+
   const pagesImagesAndVideosObj = lodashGet(props, ['pagesImagesAndVideosObj'], [{
-    
+
     _id: '',
     createdDate: '',
     updatedDate: '',
     users_id: '',
     type: 'ur',
     arr: [],
-    
+
   }]);
 
   const arr = lodashGet(pagesObj, ['arr'], [{
-    
+
     _id: '',
     type: 'top',
     title: '',
     language: 'ja',
-    
+
   }]);
-  
-  
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
   const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  
+
   const [userID, setUserID] = useState(lodashGet(props, ['userID'], ''));
   const [approval, setApproval] = useState(lodashGet(props, ['approval'], false));
   const [pagesArr, setPagesArr] = useState(arr);
-  
+
   const [imagesAndVideosObj, setImagesAndVideosObj] = useState(pagesImagesAndVideosObj);
-  
-  
+
+
   useEffect(() => {
-    
+
     setButtonDisabled(false);
-    
+
   }, []);
-  
-  
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateLayout = ContainerStateLayout.useContainer();
-  
+
   const {
-    
+
     setHeaderObj,
     handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
-    
+
   } = stateLayout;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   /**
    * フォームを送信する
    * @param {Object} eventObj - イベント
    */
   const handleSubmit = async ({
-    
+
     eventObj,
-    
+
   }) => {
-    
-    
+
+
     // ---------------------------------------------
     //   フォームの送信処理停止
     // ---------------------------------------------
-    
+
     eventObj.preventDefault();
-    
-    
+
+
     try {
-      
-      
+
+
       // ---------------------------------------------
       //   Validations
       // ---------------------------------------------
-      
+
       if (validationUsersUserID({ value: userID }).error) {
         throw new CustomError({ errorsArr: [{ code: 'jj7ApE77f', messageID: 'uwHIKBy7c' }] });
       }
-      
-      
+
+
       // ---------------------------------------------
       //   Loading Open
       // ---------------------------------------------
-      
+
       handleLoadingOpen({});
-      
-      
+
+
       // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
-      
+
       setButtonDisabled(true);
-      
-      
+
+
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
-      
+
       const formDataObj = {
-        
+
         userID,
         approval,
         pagesArr,
-        
+
       };
-      
+
       if (Object.keys(imagesAndVideosObj).length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
-      
-      
+
+
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
-      
+
       const resultObj = await fetchWrapper({
-        
+
         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/upsert-setting-pages`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
-        
+
       });
-      
-      
+
+
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
-      
+
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
-      
-      
+
+
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
-      
+
       setButtonDisabled(false);
-      
-      
+
+
       // ---------------------------------------------
       //   Snackbar: Success
       // ---------------------------------------------
-      
+
       // ページをリロードする場合は短い表示にする
       if (pageTransition) {
-        
+
         showSnackbar({
-          
+
           enqueueSnackbar,
           intl,
           arr: [
@@ -486,15 +486,15 @@ const Component = (props) => {
               variant: 'success',
               messageID: 'EnStWOly-',
             },
-            
+
           ]
-          
+
         });
-        
+
       } else {
-        
+
         showSnackbar({
-          
+
           enqueueSnackbar,
           intl,
           experienceObj: lodashGet(resultObj, ['data', 'experienceObj'], {}),
@@ -503,177 +503,177 @@ const Component = (props) => {
               variant: 'success',
               messageID: 'EnStWOly-',
             },
-            
+
           ]
-          
+
         });
-        
+
       }
-      
-      
+
+
       // ---------------------------------------------
       //   Page Transition / URLを変更した場合にリロードする
       // ---------------------------------------------
-      
+
       const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
-      
+
       if (pageTransition) {
         window.location.href = `${process.env.NEXT_PUBLIC_URL_BASE}ur/${userID}/setting`;
       }
-      
-      
+
+
       // ---------------------------------------------
       //   Update - Header
       // ---------------------------------------------
-      
+
       const headerObj = lodashGet(resultObj, ['data', 'headerObj'], {});
-      
+
       if (Object.keys(headerObj).length !== 0) {
         setHeaderObj(headerObj);
       }
-      
-      
+
+
       // --------------------------------------------------
       //   console.log
       // --------------------------------------------------
-      
+
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/ur/v2/setting/form-page.js / handleSubmit
+      //   /app/ur/setting/v2/form-page.js / handleSubmit
       // `);
-      
+
       // console.log(`
       //   ----- formDataObj -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
+
       // console.log(`
       //   ----- resultObj -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
+
+
     } catch (errorObj) {
-      
-      
+
+
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
-      
+
       setButtonDisabled(false);
-      
-      
+
+
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
-      
+
       handleSnackbarOpen({
-        
+
         variant: 'error',
         errorObj,
-        
+
       });
-      
-      
+
+
     } finally {
-      
-      
+
+
       // ---------------------------------------------
       //   Scroll
       // ---------------------------------------------
-      
+
       handleScrollTo({
-        
+
         to: 'formPage',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
         offset: -50,
-        
+
       });
-      
-      
+
+
       // ---------------------------------------------
       //   Loading Close
       // ---------------------------------------------
-      
+
       handleLoadingClose();
-      
-      
+
+
     }
-    
-    
+
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Limit
   // --------------------------------------------------
-  
+
   const limitImagesAndVideos = parseInt(process.env.NEXT_PUBLIC_USER_PAGE_IMAGES_AND_VIDEOS_LIMIT, 10);
-  
-  
+
+
   // --------------------------------------------------
   //   Validations
   // --------------------------------------------------
-  
+
   const validationUsersUserIDObj = validationUsersUserID({ value: userID });
-  
-  
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/forum/v2/components/forum.js
   // `);
-  
+
   // console.log(chalk`
   //   urlID: {green ${urlID}}
   //   gameCommunities_id: {green ${gameCommunities_id}}
   //   userCommunityID: {green ${userCommunityID}}
   //   userCommunities_id: {green ${userCommunities_id}}
-    
+
   //   page: {green ${page}}
   //   count: {green ${count}}
   //   limit: {green ${limit}}
   // `);
-  
+
   // console.log(`
   //   ----- arr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Element
       name="formPage"
     >
-      
-      
+
+
       <Panel
         heading="ユーザーページ設定"
         defaultExpanded={false}
       >
-        
-        
+
+
         <p>
           ユーザーページの設定を行います。ユーザーページというのは、各ユーザーごとに用意される固有のページになります。URLやページのタイトルを変更することが可能です。
         </p>
-        
-        
-        
-        
+
+
+
+
         {/* フォーム */}
         <form
           name="formPage"
@@ -681,8 +681,8 @@ const Component = (props) => {
             eventObj,
           })}
         >
-          
-          
+
+
           {/* トップ画像 */}
           <div
             css={css`
@@ -691,7 +691,7 @@ const Component = (props) => {
               padding: 24px 0 0 0;
             `}
           >
-            
+
             <h3
               css={css`
                 font-weight: bold;
@@ -700,12 +700,12 @@ const Component = (props) => {
             >
               トップ画像
             </h3>
-            
+
             <p>
               ユーザーページのトップに表示される大きな画像です。横長の画像（推奨サイズ 1920 x ---）をアップロードしてください。
             </p>
-            
-            
+
+
             <FormImageAndVideo
               showVideoButton={false}
               descriptionImage="横長の大きな画像をアップロードしてください。"
@@ -714,12 +714,12 @@ const Component = (props) => {
               imagesAndVideosObj={imagesAndVideosObj}
               setImagesAndVideosObj={setImagesAndVideosObj}
             />
-            
+
           </div>
-          
-          
-          
-          
+
+
+
+
           {/* URL */}
           <div
             css={css`
@@ -728,7 +728,7 @@ const Component = (props) => {
               padding: 24px 0 0 0;
             `}
           >
-            
+
             <h3
               css={css`
                 margin: 0 0 6px 0;
@@ -736,11 +736,11 @@ const Component = (props) => {
             >
               URL変更
             </h3>
-            
+
             <p>
               ユーザーページのURLを入力してください。次の形式のURLになります。https://gameusers.org/ur/<span css={css`color: red;`}>***</span>　赤文字部分の文字列を入力してください。
             </p>
-            
+
             <p
               css={css`
                 margin: 0 0 8px 0;
@@ -748,8 +748,8 @@ const Component = (props) => {
             >
               利用できる文字は半角英数字とハイフン( - )アンダースコア( _ )です。3文字以上、32文字以内。
             </p>
-            
-            
+
+
             <TextField
               css={css`
                 && {
@@ -767,12 +767,12 @@ const Component = (props) => {
                 maxLength: 32,
               }}
             />
-            
+
           </div>
-          
-          
-          
-          
+
+
+
+
           {/* Page Title */}
           <div
             css={css`
@@ -781,7 +781,7 @@ const Component = (props) => {
               padding: 24px 0 0 0;
             `}
           >
-            
+
             <h3
               css={css`
                 font-weight: bold;
@@ -790,7 +790,7 @@ const Component = (props) => {
             >
               ページのタイトル変更
             </h3>
-            
+
             <p
               css={css`
                 margin: 0 0 12px 0;
@@ -798,18 +798,18 @@ const Component = (props) => {
             >
               ユーザーページのタイトルを変更できます。
             </p>
-            
-            
+
+
             <FormPageTitle
               pagesArr={pagesArr}
               setPagesArr={setPagesArr}
             />
-          
+
           </div>
-          
-          
-          
-          
+
+
+
+
           {/* フォロー承認 */}
           <div
             css={css`
@@ -818,7 +818,7 @@ const Component = (props) => {
               padding: 24px 0 0 0;
             `}
           >
-            
+
             <h3
               css={css`
                 font-weight: bold;
@@ -827,7 +827,7 @@ const Component = (props) => {
             >
               フォロー承認制
             </h3>
-            
+
             <p
               css={css`
                 margin: 0 0 12px 0;
@@ -835,8 +835,8 @@ const Component = (props) => {
             >
               チェックすると、あなたをフォローするのにあなたの承認が必要になります。チェックを外すと誰でもフォローができるようになります。
             </p>
-            
-            
+
+
             <FormControlLabel
               control={
                 <Checkbox
@@ -846,12 +846,12 @@ const Component = (props) => {
               }
               label="フォロー承認制にする"
             />
-            
+
           </div>
-          
-          
-          
-          
+
+
+
+
           {/* Submit Button */}
           <div
             css={css`
@@ -862,7 +862,7 @@ const Component = (props) => {
               padding: 24px 0 0 0;
             `}
           >
-            
+
             <Button
               type="submit"
               variant="contained"
@@ -871,20 +871,20 @@ const Component = (props) => {
             >
               送信する
             </Button>
-            
+
           </div>
-          
-          
+
+
         </form>
-        
-        
+
+
       </Panel>
-      
-      
+
+
     </Element>
   );
-  
-  
+
+
 };
 
 

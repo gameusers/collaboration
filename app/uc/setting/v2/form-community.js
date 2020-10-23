@@ -30,6 +30,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
@@ -161,6 +162,8 @@ const Component = (props) => {
   const [approval, setApproval] = useState(lodashGet(props, ['headerObj', 'followsObj', 'approval'], false));
   const [anonymity, setAnonymity] = useState(lodashGet(props, ['userCommunityObj', 'anonymity'], false));
 
+  const [defaultExpanded, setDefaultExpanded] = useState(lodashGet(props, ['defaultExpanded'], false));
+
 
   useEffect(() => {
 
@@ -223,7 +226,11 @@ const Component = (props) => {
 
 
 
-
+      // console.log(`
+      //   ----- imagesAndVideosObj -----\n
+      //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
@@ -243,12 +250,14 @@ const Component = (props) => {
       };
 
       // if (Object.keys(imagesAndVideosObj).length !== 0) {
-      if (imagesAndVideosObj._id) {
+      // if (imagesAndVideosObj.arr.length) {
+      if (lodashHas(imagesAndVideosObj, ['arr', 0, '_id'])) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
 
       // if (Object.keys(imagesAndVideosThumbnailObj).length !== 0) {
-      if (imagesAndVideosThumbnailObj._id) {
+      // if (imagesAndVideosThumbnailObj._id) {
+      if (lodashHas(imagesAndVideosThumbnailObj, ['arr', 0, '_id'])) {
         formDataObj.imagesAndVideosThumbnailObj = imagesAndVideosThumbnailObj;
       }
 
@@ -319,6 +328,10 @@ const Component = (props) => {
         if (pageTransition) {
           Router.push('/uc/[userCommunityID]/setting', `/uc/${userCommunityID}/setting`);
         }
+
+      } else {
+
+        Router.push('/uc/[userCommunityID]', `/uc/${userCommunityID}`);
 
       }
 
@@ -468,7 +481,7 @@ const Component = (props) => {
 
     <Panel
       heading={userCommunities_id ? 'ユーザーコミュニティ編集' : 'ユーザーコミュニティ作成'}
-      defaultExpanded={true}
+      defaultExpanded={defaultExpanded}
     >
 
 

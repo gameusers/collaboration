@@ -24,7 +24,6 @@ import lodashHas from 'lodash/has';
 // ---------------------------------------------
 
 import ModelUserCommunities from 'app/@database/user-communities/model.js';
-// import ModelHardwares from 'app/@database/hardwares/model.js';
 import ModelFeeds from 'app/@database/feeds/model.js';
 
 
@@ -33,7 +32,6 @@ import ModelFeeds from 'app/@database/feeds/model.js';
 // ---------------------------------------------
 
 import { returnErrorsArr } from 'app/@modules/log/log.js';
-import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------

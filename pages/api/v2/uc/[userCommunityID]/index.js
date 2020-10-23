@@ -164,7 +164,6 @@ export default async (req, res) => {
     //   - コミュニティのデータがない場合はエラー
     // ---------------------------------------------
 
-    // if (Object.keys(userCommunityObj).length === 0) {
     if (userCommunityObj.name === '') {
 
       statusCode = 404;
@@ -182,6 +181,7 @@ export default async (req, res) => {
 
     // ---------------------------------------------
     //   - headerObj
+    //   ユーザーがトップ画像をアップロードしていない場合は、ランダム取得のゲーム画像を代わりに利用する
     // ---------------------------------------------
 
     const imagesAndVideosObj = lodashGet(returnObj, ['headerObj', 'imagesAndVideosObj'], {});
@@ -192,11 +192,6 @@ export default async (req, res) => {
     }
 
     returnObj.headerObj = userCommunityObj.headerObj;
-
-
-    // if (!lodashHas(userCommunityObj, ['headerObj', 'imagesAndVideosObj'])) {
-    //   // lodashSet(returnObj, ['headerObj', 'imagesAndVideosObj'], returnObj.headerObj.imagesAndVideosObj);
-    // }
 
     delete userCommunityObj.headerObj;
 

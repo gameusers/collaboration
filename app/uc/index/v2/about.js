@@ -17,7 +17,6 @@ import util from 'util';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useIntl } from 'react-intl';
-import { Element } from 'react-scroll';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -36,29 +35,6 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import Avatar from '@material-ui/core/Avatar';
-
-
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateLayout } from 'app/@states/layout.js';
-
-
-// ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-// import { fetchWrapper } from 'app/@modules/fetch.js';
-// import { CustomError } from 'app/@modules/error/custom.js';
-
-
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-// import { validationUsersLoginID } from 'app/@database/users/validations/login-id.js';
-// import { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } from 'app/@database/users/validations/login-password.js';
 
 
 // ---------------------------------------------
@@ -227,13 +203,15 @@ const Component = (props) => {
   }
 
 
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
 
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/uc/v2/about.js
+  //   /app/uc/index/v2/about.js
   // `);
 
   // console.log(chalk`
@@ -252,6 +230,8 @@ const Component = (props) => {
   //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
+
+
 
 
   // --------------------------------------------------

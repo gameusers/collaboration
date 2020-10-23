@@ -349,8 +349,10 @@ export default async (req, res) => {
     //   User Communities
     // ---------------------------------------------
 
+    const newUserCommunities_id = shortid.generate();
+
     let userCommunitiesConditionObj = {
-      _id: shortid.generate(),
+      _id: newUserCommunities_id,
     };
 
     let userCommunitiesSaveObj = {
@@ -395,13 +397,13 @@ export default async (req, res) => {
 
       updatedDate: ISO8601,
       gameCommunities_id: '',
-      userCommunities_id,
+      userCommunities_id: newUserCommunities_id,
       users_id: '',
       approval: false,
       followArr: [],
       followCount: 0,
       followedArr: [loginUsers_id],
-      followedCount: 0,
+      followedCount: 1,
       approvalArr: [],
       approvalCount: 0,
       blockArr: [],

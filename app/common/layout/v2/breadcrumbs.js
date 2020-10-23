@@ -224,7 +224,7 @@ const Component = (props) => {
     } else if (valueObj.type === 'uc/setting') {
 
       icon = <IconSetting fontSize="small" />;
-      anchorText = 'コミュニティ設定';
+      anchorText = 'ユーザーコミュニティ設定';
 
 
     // --------------------------------------------------

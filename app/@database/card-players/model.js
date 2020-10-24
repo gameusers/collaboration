@@ -2292,6 +2292,7 @@ module.exports = {
   findOneForEdit,
   findOneBy_idForEditForm,
   findForFollowers,
+
   transactionForUpsert,
 
 };

@@ -29,9 +29,12 @@ import lodashSet from 'lodash/set';
 //   Model
 // ---------------------------------------------
 
+import ModelUsers from 'app/@database/users/model.js';
+import ModelCardPlayers from 'app/@database/card-players/model.js';
 import ModelUserCommunities from 'app/@database/user-communities/model.js';
 import ModelForumThreads from 'app/@database/forum-threads/model.js';
 import ModelForumComments from 'app/@database/forum-comments/model.js';
+// import ModelFollows from 'app/@database/follows/model.js';
 
 
 // ---------------------------------------------
@@ -48,7 +51,6 @@ import { CustomError } from 'app/@modules/error/custom.js';
 // ---------------------------------------------
 
 import { validationIP } from 'app/@validations/ip.js';
-import { validationUserCommunities_idAndAuthorityServer } from 'app/@database/user-communities/validations/_id-server.js';
 
 
 // ---------------------------------------------
@@ -108,24 +110,6 @@ export default async (req, res) => {
   try {
 
 
-    // --------------------------------------------------
-    //   POST Data
-    // --------------------------------------------------
-
-    // const bodyObj = JSON.parse(req.body);
-
-    // const {
-
-    //   userCommunities_id,
-
-    // } = bodyObj;
-
-
-    // lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
-
-
-
-
     // ---------------------------------------------
     //   Verify CSRF
     // ---------------------------------------------
@@ -159,192 +143,340 @@ export default async (req, res) => {
 
 
     // --------------------------------------------------
-    //   imagesAndVideos_idsArr
+    //   DB
     // --------------------------------------------------
 
-    // const userCommunitiesImagesAndVideos_idsArr = [];
-    // const forumImagesAndVideos_idsArr = [];
+    const userCommunities_idsArr = [];
+
+    const usersImagesAndVideos_idsArr = [];
+    const userCommunitiesImagesAndVideos_idsArr = [];
+    const forumImagesAndVideos_idsArr = [];
 
 
-    // // ---------------------------------------------
-    // //   - user-communities
-    // // ---------------------------------------------
+    // ---------------------------------------------
+    //   - users
+    // ---------------------------------------------
 
-    // const docUserCommunitiesObj = await ModelUserCommunities.findOne({
+    const docUsersObj = await ModelUsers.findOne({
 
-    //   conditionObj: {
-    //     _id: userCommunities_id
-    //   }
+      conditionObj: {
+        _id: loginUsers_id
+      }
+
+    });
+
+    const pagesImagesAndVideos_id = lodashGet(docUsersObj, ['pagesObj', 'imagesAndVideos_id'], '');
+
+    if (pagesImagesAndVideos_id) {
+      usersImagesAndVideos_idsArr.push(pagesImagesAndVideos_id);
+    }
+
+    // const webPushes_id = lodashGet(docUsersObj, ['webPushes_id'], '');
+
+
+    // ---------------------------------------------
+    //   - card-players
+    // ---------------------------------------------
+
+    const docCardPlayersArr = await ModelCardPlayers.find({
+
+      conditionObj: {
+        users_id: loginUsers_id
+      }
+
+    });
+
+    for (let valueObj of docCardPlayersArr.values()) {
+
+      if (valueObj.imagesAndVideos_id) {
+        usersImagesAndVideos_idsArr.push(valueObj.imagesAndVideos_id);
+      }
+
+      if (valueObj.imagesAndVideosThumbnail_id) {
+        usersImagesAndVideos_idsArr.push(valueObj.imagesAndVideosThumbnail_id);
+      }
+
+    }
+
+
+    // ---------------------------------------------
+    //   - user-communities
+    // ---------------------------------------------
+
+    const docUserCommunitiesArr = await ModelUserCommunities.find({
+
+      conditionObj: {
+        users_id: loginUsers_id
+      }
+
+    });
+
+    for (let valueObj of docUserCommunitiesArr.values()) {
+
+      userCommunities_idsArr.push(valueObj._id);
+
+      if (valueObj.imagesAndVideos_id) {
+        userCommunitiesImagesAndVideos_idsArr.push(valueObj.imagesAndVideos_id);
+      }
+
+      if (valueObj.imagesAndVideosThumbnail_id) {
+        userCommunitiesImagesAndVideos_idsArr.push(valueObj.imagesAndVideosThumbnail_id);
+      }
+
+    }
+
+
+    // ---------------------------------------------
+    //   - forum-threads
+    // ---------------------------------------------
+
+    const docThreadsArr = await ModelForumThreads.find({
+
+      conditionObj: {
+        userCommunities_id: { $in: userCommunities_idsArr }
+      }
+
+    });
+
+    for (let valueObj of docThreadsArr.values()) {
+
+      if (valueObj.imagesAndVideos_id) {
+        forumImagesAndVideos_idsArr.push(valueObj.imagesAndVideos_id);
+      }
+
+    }
+
+
+    // ---------------------------------------------
+    //   - forum-comments
+    // ---------------------------------------------
+
+    const docCommentsArr = await ModelForumComments.find({
+
+      conditionObj: {
+        userCommunities_id: { $in: userCommunities_idsArr }
+      }
+
+    });
+
+    for (let valueObj of docCommentsArr.values()) {
+
+      if (valueObj.imagesAndVideos_id) {
+        forumImagesAndVideos_idsArr.push(valueObj.imagesAndVideos_id);
+      }
+
+    }
+
+
+    // --------------------------------------------------
+    //   配列を結合する
+    // --------------------------------------------------
+
+    const imagesAndVideos_idsArr = usersImagesAndVideos_idsArr.concat(userCommunitiesImagesAndVideos_idsArr, forumImagesAndVideos_idsArr);
+
+
+
+
+    // --------------------------------------------------
+    //   Delete
+    // --------------------------------------------------
+
+    // ---------------------------------------------
+    //   - users
+    // ---------------------------------------------
+
+    const usersConditionObj = {
+      _id: loginUsers_id
+    };
+
+
+    // ---------------------------------------------
+    //   - card-players
+    // ---------------------------------------------
+
+    const cardPlayersConditionObj = {
+      users_id: loginUsers_id
+    };
+
+
+    // ---------------------------------------------
+    //   - experiences
+    // ---------------------------------------------
+
+    const experiencesConditionObj = {
+      users_id: loginUsers_id
+    };
+
+
+    // ---------------------------------------------
+    //   - follows
+    // ---------------------------------------------
+
+    const followsConditionObj = {
+      $or: [
+        { users_id: loginUsers_id },
+        { userCommunities_id: { $in: userCommunities_idsArr } },
+      ]
+    };
+
+
+    // ---------------------------------------------
+    //   - forum-comments / コメント＆返信
+    // ---------------------------------------------
+
+    const forumCommentsConditionObj = {
+      userCommunities_id: { $in: userCommunities_idsArr },
+    };
+
+
+    // ---------------------------------------------
+    //   - forum-threads
+    // ---------------------------------------------
+
+    const forumThreadsConditionObj = {
+      userCommunities_id: { $in: userCommunities_idsArr },
+    };
+
+
+    // ---------------------------------------------
+    //   - ids
+    // ---------------------------------------------
+
+    const idsConditionObj = {
+      users_id: loginUsers_id
+    };
+
+
+    // ---------------------------------------------
+    //   - images-and-videos
+    // ---------------------------------------------
+
+    let imagesAndVideosConditionObj = {};
+
+    if (imagesAndVideos_idsArr.length > 0) {
+      imagesAndVideosConditionObj = {
+        _id: { $in: imagesAndVideos_idsArr }
+      };
+    }
+
+
+    // ---------------------------------------------
+    //   - user-communities
+    // ---------------------------------------------
+
+    const userCommunitiesConditionObj = {
+      _id: { $in: userCommunities_idsArr }
+    };
+
+
+    // ---------------------------------------------
+    //   - web-pushes
+    // ---------------------------------------------
+
+    const webPushesConditionObj = {
+      users_id: loginUsers_id
+    };
+
+
+
+
+    // const docFollowsObj = await ModelFollows.find({
+
+    //   conditionObj: followsConditionObj
 
     // });
 
-    // if (docUserCommunitiesObj.imagesAndVideos_id) {
-    //   userCommunitiesImagesAndVideos_idsArr.push(docUserCommunitiesObj.imagesAndVideos_id);
-    // }
-
-    // if (docUserCommunitiesObj.imagesAndVideosThumbnail_id) {
-    //   userCommunitiesImagesAndVideos_idsArr.push(docUserCommunitiesObj.imagesAndVideosThumbnail_id);
-    // }
-
-
-    // // ---------------------------------------------
-    // //   - forum-threads
-    // // ---------------------------------------------
-
-    // const docThreadsArr = await ModelForumThreads.find({
-
-    //   conditionObj: {
-    //     userCommunities_id
-    //   }
-
-    // });
-
-    // for (let valueObj of docThreadsArr.values()) {
-
-    //   if (valueObj.imagesAndVideos_id) {
-    //     forumImagesAndVideos_idsArr.push(valueObj.imagesAndVideos_id);
-    //   }
-
-    // }
-
-
-    // // ---------------------------------------------
-    // //   - forum-comments
-    // // ---------------------------------------------
-
-    // const docCommentsArr = await ModelForumComments.find({
-
-    //   conditionObj: {
-    //     userCommunities_id
-    //   }
-
-    // });
-
-    // for (let valueObj of docCommentsArr.values()) {
-
-    //   if (valueObj.imagesAndVideos_id) {
-    //     forumImagesAndVideos_idsArr.push(valueObj.imagesAndVideos_id);
-    //   }
-
-    // }
-
-
-    // // --------------------------------------------------
-    // //   配列を結合する
-    // // --------------------------------------------------
-
-    // const imagesAndVideos_idsArr = userCommunitiesImagesAndVideos_idsArr.concat(forumImagesAndVideos_idsArr);
+    // console.log(`
+    //   ----- docFollowsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docFollowsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 
 
-    // // --------------------------------------------------
-    // //   Delete
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   DB insert Transaction
+    // --------------------------------------------------
 
-    // // ---------------------------------------------
-    // //   - forum-comments / コメント＆返信
-    // // ---------------------------------------------
+    await ModelUsers.transactionForDelete({
 
-    // const forumCommentsConditionObj = {
-    //   userCommunities_id,
-    // };
+      usersConditionObj,
+      cardPlayersConditionObj,
+      experiencesConditionObj,
+      followsConditionObj,
+      forumCommentsConditionObj,
+      forumThreadsConditionObj,
+      idsConditionObj,
+      imagesAndVideosConditionObj,
+      userCommunitiesConditionObj,
+      webPushesConditionObj,
 
-
-    // // ---------------------------------------------
-    // //   - forum-threads
-    // // ---------------------------------------------
-
-    // const forumThreadsConditionObj = {
-    //   userCommunities_id,
-    // };
-
-
-    // // ---------------------------------------------
-    // //   - follows
-    // // ---------------------------------------------
-
-    // const followsConditionObj = {
-    //   userCommunities_id,
-    // };
-
-
-    // // ---------------------------------------------
-    // //   - images-and-videos
-    // // ---------------------------------------------
-
-    // let imagesAndVideosConditionObj = {};
-
-    // if (imagesAndVideos_idsArr.length > 0) {
-    //   imagesAndVideosConditionObj = {
-    //     _id: { $in: imagesAndVideos_idsArr }
-    //   };
-    // }
-
-
-    // // ---------------------------------------------
-    // //   - user-communities
-    // // ---------------------------------------------
-
-    // const userCommunitiesConditionObj = {
-    //   _id: userCommunities_id,
-    // };
+    });
 
 
 
 
-    // // --------------------------------------------------
-    // //   DB insert Transaction
-    // // --------------------------------------------------
+    // ---------------------------------------------
+    //   画像を削除する
+    // ---------------------------------------------
 
-    // // await ModelUserCommunities.transactionForDelete({
+    for (let value of usersImagesAndVideos_idsArr.values()) {
 
-    // //   forumCommentsConditionObj,
-    // //   forumThreadsConditionObj,
-    // //   followsConditionObj,
-    // //   imagesAndVideosConditionObj,
-    // //   userCommunitiesConditionObj,
+      const dirPath = `public/img/ur/${value}`;
 
-    // // });
+      // console.log(chalk`
+      //   delete images: {green ${dirPath}}
+      // `);
+
+      rimraf(dirPath, (err) => {
+        if (err) {
+          throw new CustomError({ level: 'error', errorsArr: [{ code: 'Ki2ln4CnW', messageID: 'Error' }] });
+        }
+      });
+
+    }
+
+    for (let value of userCommunitiesImagesAndVideos_idsArr.values()) {
+
+      const dirPath = `public/img/uc/${value}`;
+
+      // console.log(chalk`
+      //   delete images: {green ${dirPath}}
+      // `);
+
+      rimraf(dirPath, (err) => {
+        if (err) {
+          throw new CustomError({ level: 'error', errorsArr: [{ code: 'Ki2ln4CnW', messageID: 'Error' }] });
+        }
+      });
+
+    }
+
+    for (let value of forumImagesAndVideos_idsArr.values()) {
+
+      const dirPath = `public/img/forum/${value}`;
+
+      // console.log(chalk`
+      //   delete images: {green ${dirPath}}
+      // `);
+
+      rimraf(dirPath, (err) => {
+        if (err) {
+          throw new CustomError({ level: 'error', errorsArr: [{ code: 'RSYocBCDB', messageID: 'Error' }] });
+        }
+      });
+
+    }
 
 
 
 
-    // // ---------------------------------------------
-    // //   画像を削除する
-    // // ---------------------------------------------
+    // ---------------------------------------------
+    //   Logout
+    // ---------------------------------------------
 
-    // for (let value of userCommunitiesImagesAndVideos_idsArr.values()) {
-
-    //   const dirPath = `public/img/uc/${value}`;
-
-    //   console.log(chalk`
-    //     delete images: {green ${dirPath}}
-    //   `);
-
-    //   // rimraf(dirPath, (err) => {
-    //   //   if (err) {
-    //   //     throw new CustomError({ level: 'error', errorsArr: [{ code: 'Ki2ln4CnW', messageID: 'Error' }] });
-    //   //   }
-    //   // });
-
-    // }
-
-    // for (let value of forumImagesAndVideos_idsArr.values()) {
-
-    //   const dirPath = `public/img/forum/${value}`;
-
-    //   console.log(chalk`
-    //     delete images: {green ${dirPath}}
-    //   `);
-
-    //   // rimraf(dirPath, (err) => {
-    //   //   if (err) {
-    //   //     throw new CustomError({ level: 'error', errorsArr: [{ code: 'RSYocBCDB', messageID: 'Error' }] });
-    //   //   }
-    //   // });
-
-    // }
+    req.logout();
 
 
 
@@ -353,18 +485,25 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
 
-    console.log(`
-      ----------------------------------------\n
-      pages/api/v2/db/users/delete-setting-account.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   pages/api/v2/db/users/delete-setting-account.js
+    // `);
 
     // console.log(chalk`
-    //   userCommunities_id: {green ${userCommunities_id}}
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   webPushes_id: {green ${webPushes_id}}
     // `);
 
     // console.log(`
-    //   ----- docUserCommunitiesObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(docUserCommunitiesObj)), { colors: true, depth: null })}\n
+    //   ----- docUsersObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docUsersObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- docUserCommunitiesArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docUserCommunitiesArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 

@@ -440,8 +440,13 @@ const Component = (props) => {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => handleSubmit({})}
             disabled={buttonDisabled}
+            onClick={() => handleDialogOpen({
+              title: 'ユーザーコミュニティ削除',
+              description: 'ユーザーコミュニティを削除しますか？',
+              handle: handleSubmit,
+              argumentsObj: {},
+            })}
           >
             削除する
           </Button>

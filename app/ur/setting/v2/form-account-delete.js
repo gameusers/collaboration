@@ -104,7 +104,7 @@ const Component = (props) => {
 
   const stateLayout = ContainerStateLayout.useContainer();
 
-  const { handleLoadingOpen, handleLoadingClose, handleScrollTo } = stateLayout;
+  const { handleLoadingOpen, handleLoadingClose, handleScrollTo, handleDialogOpen } = stateLayout;
 
 
   // --------------------------------------------------
@@ -222,7 +222,7 @@ const Component = (props) => {
       //   リロードする
       // ---------------------------------------------
 
-      // Router.push('/', '/');
+      Router.push('/', '/');
 
 
 
@@ -443,8 +443,13 @@ const Component = (props) => {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => handleSubmit({})}
             disabled={buttonDisabled}
+            onClick={() => handleDialogOpen({
+              title: 'アカウント削除',
+              description: 'アカウントを削除しますか？',
+              handle: handleSubmit,
+              argumentsObj: {},
+            })}
           >
             削除する
           </Button>

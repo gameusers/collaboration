@@ -14,410 +14,339 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React from 'react';
-import Error from 'next/error';
-import Head from 'next/head';
+import React, { useState, useEffect } from 'react';
 import Router from 'next/router';
-import { observer, Provider } from 'mobx-react';
-// import { loadReCaptcha, ReCaptcha } from 'react-recaptcha-v3';
-import lodashGet from 'lodash/get';
+import Error from 'next/error';
+import moment from 'moment';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
+
+
+// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from '../../app/@modules/fetch';
-import { createCsrfToken } from '../../app/@modules/csrf';
-
-
-// ---------------------------------------------
-//   Stores
-// ---------------------------------------------
-
-import initStoreRoot from '../../app/@stores/root';
-import initStoreLoginAccount from '../../app/login/account/stores/store';
-import initStoreFollow from '../../app/common/follow/stores/store';
+import { fetchWrapper } from 'app/@modules/fetch.js';
+import { createCsrfToken } from 'app/@modules/csrf.js';
+import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import Layout from '../../app/common/layout/components/layout';
-import Sidebar from '../../app/common/layout/components/sidebar';
-import FormCreateAccount from '../../app/login/account/components/form-create-account';
+import Layout from 'app/common/layout/v2/layout.js';
+import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
+import FeedSidebar from 'app/common/feed/v2/sidebar.js';
+
+import FormAccountCreate from 'app/login/account/form-account-create.js';
 
 
 
+
+
+
+// --------------------------------------------------
+//   Function Components
+//   URL: http://localhost:8080/login/account
+// --------------------------------------------------
 
 /**
- * ストアを読み込む、または作成する
- * @param {Object} propsObj - ストアに入れる値
+ * レイアウト
+ * @param {Object} props - Props
  */
-const getOrCreateStore = ({ propsObj }) => {
-  
-  
+const ContainerLayout = (props) => {
+
+
   // --------------------------------------------------
-  //   Stores
+  //   Component - Sidebar
   // --------------------------------------------------
-  
-  initStoreRoot({ propsObj });
-  
-  const storeLoginAccount = initStoreLoginAccount({});
-  const storeFollow = initStoreFollow({});
-  
-  
+
+  const componentSidebar =
+    <FeedSidebar
+      feedObj={props.feedObj}
+      top={true}
+    />
+  ;
+
+
+  // --------------------------------------------------
+  //   Component - Contents
+  // --------------------------------------------------
+
+  const componentContent =
+    <React.Fragment>
+
+      <Breadcrumbs
+        arr={props.breadcrumbsArr}
+      />
+
+      <FormAccountCreate
+        recentAccessPageHref={props.recentAccessPageHref}
+        recentAccessPageAs={props.recentAccessPageAs}
+      />
+
+    </React.Fragment>
+  ;
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
-  return {
-    
-    storeLoginAccount,
-    storeFollow,
-    
-  };
-  
-  
+
+  return (
+    <Layout
+      title={props.title}
+      componentSidebar={componentSidebar}
+      componentContent={componentContent}
+
+      headerObj={props.headerObj}
+      headerNavMainArr={props.headerNavMainArr}
+    />
+  );
+
+
 };
 
 
 
 
+/**
+ * コンポーネント / このページ独自のステートを設定する
+ * @param {Object} props - Props
+ */
+const Component = (props) => {
+
+
+  // --------------------------------------------------
+  //   Error
+  //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
+  // --------------------------------------------------
+
+  if (props.statusCode !== 200) {
+    return <Error statusCode={props.statusCode} />;
+  }
+
+
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+
+  return <ContainerLayout {...props} />;
+
+
+};
+
+
+
+
+/**
+ * getServerSideProps
+ * @param {Object} req - リクエスト
+ * @param {Object} res - レスポンス
+ * @param {Object} query - クエリー
+ */
+export async function getServerSideProps({ req, res, query }) {
+
+
+  // --------------------------------------------------
+  //   CSRF
+  // --------------------------------------------------
+
+  createCsrfToken(req, res);
+
+
+  // --------------------------------------------------
+  //   Cookie & Accept Language
+  // --------------------------------------------------
+
+  const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
+  const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+
+
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+
+  const ISO8601 = moment().utc().toISOString();
+
+
+  // --------------------------------------------------
+  //   Get Cookie Data
+  // --------------------------------------------------
+
+  const recentAccessPageHref = getCookie({ key: 'recentAccessPageHref', reqHeadersCookie, decode: true });
+  const recentAccessPageAs = getCookie({ key: 'recentAccessPageAs', reqHeadersCookie, decode: true });
+
+
+
+
+  // --------------------------------------------------
+  //   Fetch
+  // --------------------------------------------------
+
+  const resultObj = await fetchWrapper({
+
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/common/initial-props`),
+    methodType: 'GET',
+    reqHeadersCookie,
+    reqAcceptLanguage,
+
+  });
+
+  const statusCode = lodashGet(resultObj, ['statusCode'], 400);
+  const dataObj = lodashGet(resultObj, ['data'], {});
+
+
+  // --------------------------------------------------
+  //   dataObj
+  // --------------------------------------------------
+
+  const login = lodashGet(dataObj, ['login'], false);
+  const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
+  const headerObj = lodashGet(dataObj, ['headerObj'], {});
+  const feedObj = lodashGet(dataObj, ['feedObj'], {});
+
+
+
+
+  // --------------------------------------------------
+  //   Title
+  // --------------------------------------------------
+
+  const title = `アカウント作成 - Game Users`;
+
+
+
+
+  // --------------------------------------------------
+  //   Header Navigation Link
+  // --------------------------------------------------
+
+  const headerNavMainArr = [
+
+    {
+      name: 'ログイン',
+      href: '/login',
+      as: '/login',
+      active: false,
+    },
+
+    {
+      name: 'アカウント作成',
+      href: '/login/account',
+      as: '/login/account',
+      active: true,
+    }
+
+  ];
+
+
+  // --------------------------------------------------
+  //   パンくずリスト
+  // --------------------------------------------------
+
+  const breadcrumbsArr = [
+
+    {
+      type: 'login/account',
+      anchorText: '',
+      href: '',
+      as: '',
+    },
+
+  ];
+
+
+
+
+  // --------------------------------------------------
+  //   ログインしている場合はログアウトページにリダイレクト
+  // --------------------------------------------------
+
+  if (login) {
+
+    const isServer = !process.browser;
+
+    if (isServer && res) {
+
+      res.writeHead(302, {
+        Location: '/logout'
+      });
+
+      res.end();
+
+    } else {
+
+      Router.replace('/logout');
+
+    }
+
+  }
+
+
+
+
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+
+  // console.log(`
+  //   ----------------------------------------\n
+  //   pages/login/index.js
+  // `);
+
+  // console.log(`
+  //   ----- resultObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+
+
+
+
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+
+  return {
+
+    props: {
+
+      reqAcceptLanguage,
+      ISO8601,
+      statusCode,
+      login,
+      loginUsersObj,
+      title,
+      headerObj,
+      headerNavMainArr,
+      breadcrumbsArr,
+      feedObj,
+
+      recentAccessPageHref,
+      recentAccessPageAs,
+
+    }
+
+  };
+
+
+}
+
+
+
+
 // --------------------------------------------------
-//   Class
-//   URL: http://dev-1.gameusers.org:8080/login/account
+//   Export
 // --------------------------------------------------
 
-@observer
-export default class extends React.Component {
-  
-  
-  // --------------------------------------------------
-  //   getInitialProps
-  // --------------------------------------------------
-  
-  static async getInitialProps({ req, res, datetimeCurrent }) {
-    
-    
-    // --------------------------------------------------
-    //   CSRF
-    // --------------------------------------------------
-    
-    createCsrfToken(req, res);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Property
-    // --------------------------------------------------
-    
-    const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
-    const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-    const pathname = `/login/account`;
-    
-    
-    // --------------------------------------------------
-    //   Fetch
-    // --------------------------------------------------
-    
-    const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/common/initial-props`),
-      methodType: 'GET',
-      reqHeadersCookie,
-      reqAcceptLanguage,
-    });
-    
-    const statusCode = lodashGet(resultObj, ['statusCode'], 400);
-    let propsObj = lodashGet(resultObj, ['data'], {});
-    const login = lodashGet(resultObj, ['data', 'login'], false);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   ログインしている場合はログアウトページにリダイレクト
-    // --------------------------------------------------
-    
-    if (login) {
-      
-      const isServer = !process.browser;
-      
-      if (isServer && res) {
-        
-        res.writeHead(302, {
-          Location: '/logout'
-        });
-        
-        res.end();
-        
-      } else {
-        
-        Router.replace('/logout');
-        
-      }
-      
-    }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Stores
-    // --------------------------------------------------
-    
-    const headerNavMainArr = [
-      {
-        name: 'ログイン',
-        href: '/login',
-        as: '/login',
-      },
-      {
-        name: 'アカウント作成',
-        href: '/login/account',
-        as: '/login/account',
-      }
-    ];
-    
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr };
-    
-    const storesObj = getOrCreateStore({ propsObj });
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return { 
-      
-      statusCode,
-      reqAcceptLanguage,
-      storesObj,
-      propsObj,
-      
-    };
-    
-    
-  }
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   constructor
-  // --------------------------------------------------
-  
-  constructor(props) {
-    
-    
-    // --------------------------------------------------
-    //   super
-    // --------------------------------------------------
-    
-    super(props);
-    
-    
-    // --------------------------------------------------
-    //   Property / Error Flag
-    // --------------------------------------------------
-    
-    this.error = false;
-    
-    
-    // --------------------------------------------------
-    //   Store
-    // --------------------------------------------------
-    
-    try {
-      
-      
-      // --------------------------------------------------
-      //   Error
-      // --------------------------------------------------
-      
-      if (props.statusCode !== 200) {
-        throw new Error();
-      }
-      
-      
-      // --------------------------------------------------
-      //   Stores
-      // --------------------------------------------------
-      
-      const isServer = !process.browser;
-      
-      if (isServer) {
-        this.storesObj = props.storesObj;
-      } else {
-        this.storesObj = getOrCreateStore({ propsObj: props.propsObj });
-      }
-      
-      
-    } catch (e) {
-      this.error = true;
-    }
-    
-  }
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   componentDidMount
-  // --------------------------------------------------
-  
-  componentDidMount() {
-    
-    
-    // --------------------------------------------------
-    //   Initialize the ReCaptcha
-    //   https://github.com/codeep/react-recaptcha-v3
-    // --------------------------------------------------
-    
-    // if (process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1' && process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
-    //   loadReCaptcha(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
-    // }
-    
-    
-  }
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   render
-  // --------------------------------------------------
-  
-  render() {
-    
-    
-    // --------------------------------------------------
-    //   Error
-    //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
-    // --------------------------------------------------
-    
-    if (this.error) {
-      return <Error statusCode={this.props.statusCode} />;
-    }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return (
-      <Provider { ...this.storesObj }>
-        
-        <Layout>
-          
-          
-          {/* Head 内部のタグをここで追記する */}
-          <Head>
-            <title>アカウント作成 - Game Users</title>
-          </Head>
-          
-          
-          
-          
-          {/* 2 Column */}
-          <div
-            css={css`
-              display: flex;
-              flex-flow: row nowrap;
-              justify-content: center;
-              margin: 0 auto;
-              padding: 16px;
-              
-              @media screen and (max-width: 947px) {
-                display: flex;
-                flex-flow: column nowrap;
-                padding: 10px 0 10px 0;
-              }
-            `}
-          >
-            
-            
-            {/* Sidebar */}
-            <div
-              css={css`
-                width: 300px;
-                margin: 0 16px 0 0;
-                
-                @media screen and (max-width: 947px) {
-                  width: auto;
-                  margin: 0 0 16px 0;
-                }
-              `}
-            >
-              
-              
-              <Sidebar>
-                <img
-                  src="/img/common/advertisement/300x250.jpg"
-                  width="300"
-                  height="250"
-                />
-              </Sidebar>
-              
-              
-              Sidebar
-              
-            </div>
-            
-            
-            
-            
-            {/* Main */}
-            <div
-              css={css`
-                width: 100%;
-                max-width: 800px;
-                
-                @media screen and (max-width: 947px) {
-                  max-width: none;
-                }
-              `}
-            >
-              
-              
-              {/* reCAPTCHA */}
-              {/*{(process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1' && process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) &&
-                <ReCaptcha
-                  ref={ref => this.recaptcha = ref}
-                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-                  action='createAccount'
-                  verifyCallback={(response) => this.storesObj.storeLoginAccount.handleRecaptchaResponse({
-                    response,
-                    ref: this.recaptcha,
-                  })}
-                />
-              }*/}
-              
-              
-              {/* Create Account */}
-              <FormCreateAccount />
-              
-              
-            </div>
-            
-            
-          </div>
-          
-          
-        </Layout>
-        
-      </Provider>
-    );
-    
-  }
-  
-}
+export default Component;

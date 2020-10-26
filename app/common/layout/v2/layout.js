@@ -102,6 +102,8 @@ const Component = (props) => {
   } = props;
 
 
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
@@ -109,6 +111,8 @@ const Component = (props) => {
   const stateLayout = ContainerStateLayout.useContainer();
 
   const { navigationForLightbox } = stateLayout;
+
+
 
 
   // --------------------------------------------------
@@ -255,13 +259,6 @@ const Component = (props) => {
   //   --------------------\n
   // `);
 
-  // <div
-    //   css={css`
-    //     display: flex;
-    //     flex-flow: column wrap;
-    //     min-height: 100vh;
-    //   `}
-    // >
 
 
 
@@ -336,7 +333,7 @@ const Component = (props) => {
           flex-flow: row nowrap;
           justify-content: center;
           margin: 0 auto;
-          padding: 16px;
+          padding: 16px 16px 24px 16px;
 
           @media screen and (max-width: 947px) {
             display: flex;

@@ -6,54 +6,57 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-const moment = require('moment');
-const shortid = require('shortid');
-const bcrypt = require('bcryptjs');
+import moment from 'moment';
+import shortid from 'shortid';
+import bcrypt from 'bcryptjs';
 
 
 // ---------------------------------------------
 //   Lodash
 // ---------------------------------------------
 
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUsers = require('../../../../../app/@database/users/model');
+import ModelUsers from 'app/@database/users/model.js';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
-const { verifyRecaptcha } = require('../../../../../app/@modules/recaptcha');
-const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../app/@modules/error/custom');
-const { encrypt }  = require('../../../../../app/@modules/crypto');
-const { sendMailConfirmation } = require('../../../../../app/@modules/email');
+import { verifyCsrfToken } from 'app/@modules/csrf.js';
+import { verifyRecaptcha } from 'app/@modules/recaptcha.js';
+import { returnErrorsArr } from 'app/@modules/log/log.js';
+import { CustomError } from 'app/@modules/error/custom.js';
+import { encrypt }  from 'app/@modules/crypto.js';
+import { sendMailConfirmation } from 'app/@modules/email.js';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationUsersLoginIDServer } = require('../../../../../app/@database/users/validations/login-id-server');
-const { validationUsersLoginPassword } = require('../../../../../app/@database/users/validations/login-password');
-const { validationUsersEmailServer } = require('../../../../../app/@database/users/validations/email-server');
+import { validationIP } from 'app/@validations/ip.js';
+
+import { validationUsersLoginIDServer } from 'app/@database/users/validations/login-id-server.js';
+import { validationUsersLoginPassword } from 'app/@database/users/validations/login-password.js';
+import { validationUsersEmailServer } from 'app/@database/users/validations/email-server.js';
+
+
 
 
 
@@ -63,148 +66,148 @@ const { validationUsersEmailServer } = require('../../../../../app/@database/use
 // --------------------------------------------------
 
 export default async (req, res) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Status Code
   // --------------------------------------------------
-  
+
   let statusCode = 400;
-  
-  
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
-  
-  
+
+
   // --------------------------------------------------
   //   Language & IP & User Agent
   // --------------------------------------------------
-  
+
   const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
-  
-  
-  
-  
+
+
+
+
   try {
-    
-    
+
+
     // --------------------------------------------------
     //   POST Data
     // --------------------------------------------------
-    
+
     const bodyObj = JSON.parse(req.body);
-    
-    const { 
-      
+
+    const {
+
       loginID,
       loginPassword,
       email,
       response,
-      
+
     } = bodyObj;
-    
-    
+
+
     // --------------------------------------------------
     //   Log Data
     // --------------------------------------------------
-    
+
     lodashSet(requestParametersObj, ['loginID'], loginID ? '******' : '');
     lodashSet(requestParametersObj, ['loginPassword'], loginPassword ? '******' : '');
     lodashSet(requestParametersObj, ['email'], email ? '******' : '');
     lodashSet(requestParametersObj, ['response'], response ? '******' : '');
-    
-    
-    
-    
+
+
+
+
     // ---------------------------------------------
     //   Verify CSRF
     // ---------------------------------------------
-    
+
     verifyCsrfToken(req, res);
-    
-    
+
+
     // ---------------------------------------------
     //   Verify reCAPTCHA
     // ---------------------------------------------
-    
+
     await verifyRecaptcha({ response, remoteip: ip });
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Login Check / ログイン状態ではアカウントを作成させない
     // --------------------------------------------------
-    
+
     if (req.isAuthenticated()) {
       statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Pc90koKsJ', messageID: 'xLLNIpo6a' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Pc90koKsJ', messageID: 'V9vI1Cl1S' }] });
     }
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Encrypt E-Mail
     // --------------------------------------------------
-    
+
     const encryptedEmail = email ? encrypt(email) : '';
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Validations
     // --------------------------------------------------
-    
+
     await validationIP({ throwError: true, value: ip });
     await validationUsersLoginIDServer({ value: loginID, loginUsers_id });
     await validationUsersLoginPassword({ throwError: true, required: true, value: loginPassword, loginID });
     await validationUsersEmailServer({ value: email, loginUsers_id, encryptedEmail });
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Hash Password
     // --------------------------------------------------
-    
+
     const hashedPassword = bcrypt.hashSync(loginPassword, 10);
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   Update
     // --------------------------------------------------
-    
+
     // ---------------------------------------------
-    //   - 
+    //   -
     // ---------------------------------------------
-    
+
     const ISO8601 = moment().utc().toISOString();
     const users_id = shortid.generate();
     const userID = shortid.generate();
     const emailConfirmationID = `${shortid.generate()}${shortid.generate()}${shortid.generate()}`;
-    
-    
+
+
     // ---------------------------------------------
     //   - users
     // ---------------------------------------------
-    
+
     const usersConditionObj = {
       _id: users_id
     };
-    
+
     const usersSaveObj = {
-      
+
       // _id: users_id,
       createdDate: ISO8601,
       updatedDate: ISO8601,
@@ -232,20 +235,20 @@ export default async (req, res) => {
         }
       },
       role: 'user',
-      
+
     };
-    
-    
+
+
     // ---------------------------------------------
     //   - card-players
     // ---------------------------------------------
-    
+
     const cardPlayersConditionObj = {
       _id: shortid.generate()
     };
-    
+
     const cardPlayersSaveObj = {
-      
+
       createdDate: ISO8601,
       updatedDate: ISO8601,
       users_id,
@@ -297,8 +300,8 @@ export default async (req, res) => {
       voiceChatComment: '',
       linkArr: [],
       search: true,
-      
-      
+
+
       // createdDate: ISO8601,
       // updatedDate: ISO8601,
       // users_id,
@@ -400,20 +403,20 @@ export default async (req, res) => {
       //   search: true,
       // },
       // linkArr: [],
-      
+
     };
-    
-    
+
+
     // ---------------------------------------------
     //   - follows
     // ---------------------------------------------
-    
+
     const followsConditionObj = {
       _id: shortid.generate()
     };
-    
+
     const followsSaveObj = {
-      
+
       // _id: shortid.generate(),
       updatedDate: ISO8601,
       gameCommunities_id: '',
@@ -428,25 +431,25 @@ export default async (req, res) => {
       approvalCount: 0,
       blockArr: [],
       blockCount: 0,
-      
+
     };
-    
-    
+
+
     // ---------------------------------------------
     //   - email-confirmations
     // ---------------------------------------------
-    
+
     let emailConfirmationsConditionObj = {};
     let emailConfirmationsSaveObj = {};
-    
+
     if (email) {
-      
+
       emailConfirmationsConditionObj = {
         _id: shortid.generate()
       };
-      
+
       emailConfirmationsSaveObj = {
-        
+
         // _id: shortid.generate(),
         createdDate: ISO8601,
         users_id,
@@ -457,18 +460,18 @@ export default async (req, res) => {
         isSuccess: false,
         ip: req.ip,
         userAgent: lodashGet(req, ['headers', 'user-agent'], ''),
-        
+
       };
-      
+
     }
-    
-    
+
+
     // ---------------------------------------------
     //   Insert
     // ---------------------------------------------
-    
+
     await ModelUsers.transactionForUpsert({
-      
+
       usersConditionObj,
       usersSaveObj,
       cardPlayersConditionObj,
@@ -477,33 +480,33 @@ export default async (req, res) => {
       followsSaveObj,
       emailConfirmationsConditionObj,
       emailConfirmationsSaveObj,
-      
+
     });
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   確認メール送信
     // --------------------------------------------------
-    
+
     sendMailConfirmation({
       to: email,
       emailConfirmationID,
     });
-    
-    
-    
-    
+
+
+
+
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
+
     // console.log(`
     //   ----------------------------------------\n
     //   /pages/api/v2/db/users/upsert-create-account.js
     // `);
-    
+
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
     //   loginID: {green ${loginID}}
@@ -511,50 +514,50 @@ export default async (req, res) => {
     //   email: {green ${email}}
     //   response: {green ${response}}
     // `);
-    
+
     // console.log(`
     //   ----- imagesAndVideosObj -----\n
     //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
+
+
+
+
     // ---------------------------------------------
     //   Success
     // ---------------------------------------------
-    
+
     return res.status(200).json(returnObj);
-    
-    
+
+
   } catch (errorObj) {
-    
-    
+
+
     // ---------------------------------------------
     //   Log
     // ---------------------------------------------
-    
+
     const resultErrorObj = returnErrorsArr({
-      
+
       errorObj,
       endpointID: 'fmVLqHFfj',
       users_id: loginUsers_id,
       ip,
       userAgent,
       requestParametersObj,
-      
+
     });
-    
-    
+
+
     // --------------------------------------------------
     //   Return JSON Object / Error
     // --------------------------------------------------
-    
+
     return res.status(statusCode).json(resultErrorObj);
-    
-    
+
+
   }
-  
-  
+
+
 };

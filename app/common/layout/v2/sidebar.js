@@ -42,50 +42,50 @@ import { css, jsx } from '@emotion/core';
  * 参考：https://www.react-spring.io/
  */
 const Container = ({ children, showNavTop, lowerSidebar }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   移動させる距離を指定
   // --------------------------------------------------
-  
+
   let ypx = 52;
-  
+
   // Navigation Top が表示されている場合は、大きく移動させる
   if (showNavTop) {
     ypx = 105;
   }
-  
+
   // console.log(chalk`
   //   showNavTop: {green ${showNavTop}}
   //   lowerSidebar: {green ${lowerSidebar}}
   //   ypx: {green ${ypx}}
   // `);
-  
-  
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const props = useSpring({
-    
+
     transform: lowerSidebar ? `translateY(${ypx}px)` : 'translateY(0px)',
     config: { duration: 250 },
-    
+
   });
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return <animated.div
       css={css`
         width: 300px;
-        margin: 0 0 50px 0;
-        
+        // margin: 0 0 50px 0;
+
         position: sticky;
         top: 0;
-        
+
         @media screen and (max-width: 947px) {
           width: 100%;
           position: static;
@@ -96,8 +96,8 @@ const Container = ({ children, showNavTop, lowerSidebar }) => {
     >
       {children}
     </animated.div>;
-  
-  
+
+
 };
 
 
@@ -107,63 +107,63 @@ const Container = ({ children, showNavTop, lowerSidebar }) => {
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     showNavTop,
     lowerSidebar,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/layout/v2/components/sidebar.js
   // `);
-  
+
   // console.log(chalk`
   //   login: {green ${login}}
   // `);
-  
+
   // console.log(`
   //   ----- linkArr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(linkArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Container
       showNavTop={showNavTop}
       lowerSidebar={lowerSidebar}
     >
-      
-      
+
+
       {/* Contents */}
       {props.children}
-      
-      
+
+
     </Container>
   );
-  
-  
+
+
 };
 
 

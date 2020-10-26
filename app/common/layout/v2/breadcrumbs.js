@@ -51,7 +51,6 @@ import IconGames from '@material-ui/icons/Games';
 import IconCommunityList from '@material-ui/icons/Style';
 import IconAddCircle from '@material-ui/icons/AddCircle';
 
-
 import IconUserCommunity from '@material-ui/icons/SupervisedUserCircle';
 import IconMembers from '@material-ui/icons/SentimentSatisfiedAlt';
 import IconUser from '@material-ui/icons/Person';
@@ -115,6 +114,10 @@ const Component = (props) => {
       icon = <IconLogin fontSize="small" />;
       anchorText = 'ログイン';
 
+    } else if (valueObj.type === 'login/account') {
+
+      icon = <IconUser fontSize="small" />;
+      anchorText = 'アカウント作成';
 
     } else if (valueObj.type === 'login/reset-password' || valueObj.type === 'confirm/reset-password') {
 

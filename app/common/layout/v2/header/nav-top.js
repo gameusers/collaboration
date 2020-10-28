@@ -16,6 +16,8 @@ import util from 'util';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { useSpring, animated } from 'react-spring';
 
 /** @jsx jsx */
@@ -74,8 +76,7 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-
-
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 
@@ -183,6 +184,8 @@ const Component = (props) => {
   //   Hooks
   // --------------------------------------------------
 
+  const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
 
   const [loginMenuOpen, setLoginMenuOpen] = useState(false);
@@ -218,7 +221,6 @@ const Component = (props) => {
 
   const {
 
-    handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
     setDialogAchievementOpen,
@@ -480,9 +482,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
 
-      handleSnackbarOpen({
+      showSnackbar({
 
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
 
       });

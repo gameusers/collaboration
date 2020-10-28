@@ -46,8 +46,6 @@ import { validationCardPlayersPCModel } from 'app/@database/card-players/validat
 
 
 
-
-
 // --------------------------------------------------
 //   Emotion
 //   https://emotion.sh/docs/composition
@@ -56,7 +54,7 @@ import { validationCardPlayersPCModel } from 'app/@database/card-players/validat
 const cssTextField = css`
   && {
     width: 400px;
-    
+
     @media screen and (max-width: 480px) {
       width: 100%;
     }
@@ -76,70 +74,70 @@ const cssTextField = css`
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     pcModel,
     setPCModel,
     pcComment,
     setPCComment,
     pcSpecsObj,
     setPCSpecsObj,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   /**
    * <TextField /> に入力する
    */
   const handleOnChange = (value, type) => {
-    
+
     const clonedObj = lodashCloneDeep(pcSpecsObj);
     clonedObj[type] = value;
     setPCSpecsObj(clonedObj);
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Validations
   // --------------------------------------------------
-  
+
   const validationModelObj = validationCardPlayersPCModel({ value: pcModel });
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <React.Fragment>
-      
-      
+
+
       {/* Heading */}
       <h3
         css={css`
@@ -148,8 +146,8 @@ const Component = (props) => {
       >
         PC
       </h3>
-      
-      
+
+
       <p
         css={css`
           margin: 0 0 12px 0;
@@ -157,16 +155,16 @@ const Component = (props) => {
       >
         入力するとPCについての情報が表示されます。現在、利用しているPCの情報を入力してください。
       </p>
-      
-      
-      
-      
+
+
+
+
       {/* モデル・機種名 */}
       <TextField
         css={css`
           && {
             width: 400px;
-            
+
             @media screen and (max-width: 480px) {
               width: 100%;
             }
@@ -183,10 +181,10 @@ const Component = (props) => {
           maxLength: 50,
         }}
       />
-      
-      
-      
-      
+
+
+
+
       {/* コメント */}
       <TextareaAutosize
         css={css`
@@ -197,11 +195,11 @@ const Component = (props) => {
             line-height: 1.8;
             margin: 12px 0;
             padding: 8px 12px;
-            
+
             &:focus {
               outline: 1px #A9F5F2 solid;
             }
-            
+
             resize: none;
           }
         `}
@@ -211,10 +209,10 @@ const Component = (props) => {
         maxLength={3000}
         onChange={(eventObj) => setPCComment(eventObj.target.value)}
       />
-      
-      
-      
-      
+
+
+
+
       {/* スペック */}
       <TextField
         css={cssTextField}
@@ -227,8 +225,8 @@ const Component = (props) => {
           maxLength: 100,
         }}
       />
-      
-      
+
+
       <TextField
         css={cssTextField}
         id="specCPU"
@@ -240,8 +238,8 @@ const Component = (props) => {
           maxLength: 100,
         }}
       />
-      
-      
+
+
       <TextField
         css={cssTextField}
         id="specCPUCooler"
@@ -253,8 +251,8 @@ const Component = (props) => {
           maxLength: 100,
         }}
       />
-      
-      
+
+
       <TextField
         css={cssTextField}
         id="specMotherboard"
@@ -266,8 +264,8 @@ const Component = (props) => {
           maxLength: 100,
         }}
       />
-      
-      
+
+
       <TextField
         css={cssTextField}
         id="specMemory"
@@ -279,8 +277,8 @@ const Component = (props) => {
           maxLength: 100,
         }}
       />
-      
-      
+
+
       <TextField
         css={cssTextField}
         id="specStorage"
@@ -292,8 +290,8 @@ const Component = (props) => {
           maxLength: 100,
         }}
       />
-      
-      
+
+
       <TextField
         css={cssTextField}
         id="specGraphicsCard"
@@ -305,8 +303,8 @@ const Component = (props) => {
           maxLength: 100,
         }}
       />
-      
-      
+
+
       <TextField
         css={cssTextField}
         id="specOpticalDrive"
@@ -318,8 +316,8 @@ const Component = (props) => {
           maxLength: 100,
         }}
       />
-      
-      
+
+
       <TextField
         css={cssTextField}
         id="specPowerSupply"
@@ -331,8 +329,8 @@ const Component = (props) => {
           maxLength: 100,
         }}
       />
-      
-      
+
+
       <TextField
         css={cssTextField}
         id="specCase"
@@ -344,8 +342,8 @@ const Component = (props) => {
           maxLength: 100,
         }}
       />
-      
-      
+
+
       <TextField
         css={cssTextField}
         id="specMonitor"
@@ -357,8 +355,8 @@ const Component = (props) => {
           maxLength: 100,
         }}
       />
-      
-      
+
+
       <TextField
         css={cssTextField}
         id="specMouse"
@@ -370,8 +368,8 @@ const Component = (props) => {
           maxLength: 100,
         }}
       />
-      
-      
+
+
       <TextField
         css={cssTextField}
         id="specKeyboard"
@@ -383,12 +381,12 @@ const Component = (props) => {
           maxLength: 100,
         }}
       />
-      
-        
+
+
     </React.Fragment>
   );
-  
-  
+
+
 };
 
 

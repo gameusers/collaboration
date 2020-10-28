@@ -44,8 +44,6 @@ import IconPC from '@material-ui/icons/LaptopMac';
 
 
 
-
-
 // --------------------------------------------------
 //   Emotion
 //   https://emotion.sh/docs/composition
@@ -73,51 +71,51 @@ const cssAvatar = css`
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     platform,
     label,
     id,
     games_id,
     gamesName,
     gamesImagesAndVideosThumbnailObj = {},
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   必要な情報がない場合、空のコンポーネントを返す
   // --------------------------------------------------
-  
+
   if (!platform && !id) {
     return null;
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component - Avatar & Label
   // --------------------------------------------------
-  
+
   let componentAvatar = '';
   let labelValue = '';
-  
-  
+
+
   // ---------------------------------------------
   //   PlayStation
   // ---------------------------------------------
-  
+
   if (platform === 'PlayStation') {
-    
+
     componentAvatar =
       <Avatar css={cssAvatar} alt="PlayStation" style={{ 'backgroundColor': '#003791' }}>
         <div style={{ 'width': '80%', 'marginTop': '4px' }}>
@@ -125,16 +123,16 @@ const Component = (props) => {
         </div>
       </Avatar>
     ;
-    
+
     labelValue = 'PlayStation';
-    
-    
+
+
   // ---------------------------------------------
   //   Xbox
   // ---------------------------------------------
-    
+
   } else if (platform === 'Xbox') {
-    
+
     componentAvatar =
       <Avatar css={cssAvatar} alt="Xbox" style={{ 'backgroundColor': '#107C10' }}>
         <div style={{ 'width': '75%', 'marginTop': '2px' }}>
@@ -142,16 +140,16 @@ const Component = (props) => {
         </div>
       </Avatar>
     ;
-    
+
     labelValue = 'Xbox';
-    
-    
+
+
   // ---------------------------------------------
   //   Nintendo
   // ---------------------------------------------
-    
+
   } else if (platform === 'Nintendo') {
-    
+
     componentAvatar =
       <Avatar css={cssAvatar} alt="Nintendo" style={{ 'backgroundColor': '#e60012' }}>
         <div style={{ 'width': '55%', 'marginTop': '4px' }}>
@@ -159,31 +157,31 @@ const Component = (props) => {
         </div>
       </Avatar>
     ;
-    
+
     labelValue = 'Nintendo';
-    
-    
+
+
   // ---------------------------------------------
   //   PC
   // ---------------------------------------------
-    
+
   } else if (platform === 'PC') {
-    
+
     componentAvatar =
       <Avatar css={cssAvatar} alt="PC" style={{ 'backgroundColor': '#000000' }}>
         <IconPC />
       </Avatar>
     ;
-    
+
     labelValue = gamesName ? `PC [${gamesName}]` : 'PC';
-    
-  
+
+
   // ---------------------------------------------
   //   Android
   // ---------------------------------------------
-    
+
   } else if (platform === 'Android') {
-    
+
     componentAvatar =
       <Avatar css={cssAvatar} alt="Android" style={{ 'backgroundColor': '#A4C639' }}>
         <div style={{ 'width': '75%', 'marginTop': '4px' }}>
@@ -191,16 +189,16 @@ const Component = (props) => {
         </div>
       </Avatar>
     ;
-    
+
     labelValue = gamesName ? `Android [${gamesName}]` : 'Android';
-    
-    
+
+
   // ---------------------------------------------
   //   iOS
   // ---------------------------------------------
-    
+
   } else if (platform === 'iOS') {
-    
+
     componentAvatar =
       <Avatar css={cssAvatar} alt="Apple" style={{ 'backgroundColor': '#999999' }}>
         <div style={{ 'width': '75%', 'marginTop': '2px' }}>
@@ -208,16 +206,16 @@ const Component = (props) => {
         </div>
       </Avatar>
     ;
-    
+
     labelValue = gamesName ? `iOS [${gamesName}]` : 'iOS';
-    
-    
+
+
   // ---------------------------------------------
   //   Steam
   // ---------------------------------------------
-    
+
   } else if (platform === 'Steam') {
-    
+
     componentAvatar =
       <Avatar css={cssAvatar} alt="Steam" style={{ 'backgroundColor': '#000000' }}>
         <div style={{ 'width': '80%', 'marginTop': '4px' }}>
@@ -225,16 +223,16 @@ const Component = (props) => {
         </div>
       </Avatar>
     ;
-    
+
     labelValue = 'Steam';
-    
-    
+
+
   // ---------------------------------------------
   //   Origin
   // ---------------------------------------------
-    
+
   } else if (platform === 'Origin') {
-    
+
     componentAvatar =
       <Avatar css={cssAvatar} alt="Origin" style={{ 'backgroundColor': '#F56C2D' }}>
         <div style={{ 'width': '80%', 'marginTop': '4px' }}>
@@ -242,16 +240,16 @@ const Component = (props) => {
         </div>
       </Avatar>
     ;
-    
+
     labelValue = 'Origin';
-    
-    
+
+
   // ---------------------------------------------
   //   Discord
   // ---------------------------------------------
-    
+
   } else if (platform === 'Discord') {
-    
+
     componentAvatar =
       <Avatar css={cssAvatar} alt="Discord" style={{ 'backgroundColor': '#7289DA' }}>
         <div style={{ 'width': '65%', 'marginTop': '5px', 'marginRight': '1px' }}>
@@ -259,16 +257,16 @@ const Component = (props) => {
         </div>
       </Avatar>
     ;
-    
+
     labelValue = 'Discord';
-    
-    
+
+
   // ---------------------------------------------
   //   Skype
   // ---------------------------------------------
-    
+
   } else if (platform === 'Skype') {
-    
+
     componentAvatar =
       <Avatar css={cssAvatar} alt="Skype" style={{ 'backgroundColor': '#00AFF0' }}>
         <div style={{ 'width': '70%', 'marginTop': '4px' }}>
@@ -276,16 +274,16 @@ const Component = (props) => {
         </div>
       </Avatar>
     ;
-    
+
     labelValue = 'Skype';
-    
-    
+
+
   // ---------------------------------------------
   //   ICQ
   // ---------------------------------------------
-    
+
   } else if (platform === 'ICQ') {
-    
+
     componentAvatar =
       <Avatar css={cssAvatar} alt="ICQ" style={{ 'backgroundColor': '#7EBD00' }}>
         <div style={{ 'width': '75%', 'marginTop': '4px' }}>
@@ -293,16 +291,16 @@ const Component = (props) => {
         </div>
       </Avatar>
     ;
-    
+
     labelValue = 'ICQ';
-    
-    
+
+
   // ---------------------------------------------
   //   Line
   // ---------------------------------------------
-    
+
   } else if (platform === 'Line') {
-    
+
     componentAvatar =
       <Avatar css={cssAvatar} alt="Line" style={{ 'backgroundColor': '#00C300' }}>
         <div style={{ 'width': '75%', 'marginTop': '5px' }}>
@@ -310,16 +308,16 @@ const Component = (props) => {
         </div>
       </Avatar>
     ;
-    
+
     labelValue = 'Line';
-    
-    
+
+
   // ---------------------------------------------
   //   Other
   // ---------------------------------------------
-    
+
   } else if (platform === 'Other') {
-    
+
     componentAvatar =
       <Avatar
         css={css`
@@ -333,34 +331,34 @@ const Component = (props) => {
         <IconGrade />
       </Avatar>
     ;
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Label
   // --------------------------------------------------
-  
+
   if (label) {
     labelValue = label;
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component - Sub Avatar
   // --------------------------------------------------
-  
+
   let componentSubAvatar = '';
-  
+
   if (games_id && gamesName && Object.keys(gamesImagesAndVideosThumbnailObj).length !== 0) {
-    
+
     const src = lodashGet(gamesImagesAndVideosThumbnailObj, ['arr', 0, 'src'], '');
     const srcSet = lodashGet(gamesImagesAndVideosThumbnailObj, ['arr', 0, 'srcSet'], '');
-    
+
     componentSubAvatar =
       <div
         css={css`
@@ -376,36 +374,36 @@ const Component = (props) => {
       </div>
     ;
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/id/v2/components/chip.js
   // `);
-  
+
   // console.log(chalk`
   //   cardPlayers_id: {green ${cardPlayers_id}}
   // `);
-  
+
   // console.log(`
   //   ----- gamesImagesAndVideosThumbnailObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(gamesImagesAndVideosThumbnailObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <div
       css={css`
@@ -418,13 +416,13 @@ const Component = (props) => {
         margin: 8px 8px 0 0;
       `}
     >
-      
-      
+
+
       <div>
         {componentAvatar}
       </div>
-      
-      
+
+
       <div
         css={css`
           display: flex;
@@ -434,7 +432,7 @@ const Component = (props) => {
           padding: ${componentSubAvatar ? '4px 6px 4px 6px' : '4px 14px 4px 6px'}
         `}
       >
-        
+
         <span
           css={css`
             font-weight: bold;
@@ -443,19 +441,19 @@ const Component = (props) => {
         >
           {labelValue}:
         </span>
-        
+
         <span>{id}</span>
-        
+
       </div>
-      
-      
+
+
       {componentSubAvatar}
-      
-      
+
+
     </div>
   );
-  
-  
+
+
 };
 
 

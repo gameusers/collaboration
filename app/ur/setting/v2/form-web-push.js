@@ -105,7 +105,6 @@ const Component = (props) => {
   const {
 
     setHeaderObj,
-    // handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
@@ -158,13 +157,6 @@ const Component = (props) => {
       // ---------------------------------------------
 
       if (webPushAvailable && Object.keys(webPushSubscriptionObj).length === 0) {
-
-        // handleSnackbarOpen({
-
-        //   variant: 'success',
-        //   messageID: 'etyRC_hg3',
-
-        // });
 
         showSnackbar({
 
@@ -378,7 +370,7 @@ const Component = (props) => {
 
       handleScrollTo({
 
-        to: 'formWebPush',
+        to: 'elementFormWebPush',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -440,7 +432,7 @@ const Component = (props) => {
       css={css`
         margin: 14px 0 0 0;
       `}
-      name="formWebPush"
+      name="elementFormWebPush"
     >
 
 

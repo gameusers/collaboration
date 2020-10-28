@@ -16,6 +16,7 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
 
 /** @jsx jsx */
@@ -49,6 +50,7 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -86,6 +88,7 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
   const [email, setEmail] = useState(lodashGet(props, ['email'], ''));
@@ -109,7 +112,6 @@ const Component = (props) => {
 
   const {
 
-    handleSnackbarOpen,
     handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
@@ -170,10 +172,16 @@ const Component = (props) => {
 
       if (email && emailCurrent && email === emailCurrent && emailConfirmation) {
 
-        handleSnackbarOpen({
+        showSnackbar({
 
-          variant: 'warning',
-          messageID: 'DQrBNlhe4',
+          enqueueSnackbar,
+          intl,
+          arr: [
+            {
+              variant: 'warning',
+              messageID: 'DQrBNlhe4',
+            },
+          ]
 
         });
 
@@ -248,10 +256,16 @@ const Component = (props) => {
       //   Snackbar: Success
       // ---------------------------------------------
 
-      handleSnackbarOpen({
+      showSnackbar({
 
-        variant: 'success',
-        messageID: 'CquCU7BtA',
+        enqueueSnackbar,
+        intl,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'CquCU7BtA',
+          },
+        ]
 
       });
 
@@ -294,9 +308,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
 
-      handleSnackbarOpen({
+      showSnackbar({
 
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
 
       });
@@ -311,7 +326,7 @@ const Component = (props) => {
 
       handleScrollTo({
 
-        to: 'formEmail',
+        to: 'elementFormEmail',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -350,10 +365,16 @@ const Component = (props) => {
 
       if (!emailCurrent) {
 
-        handleSnackbarOpen({
+        showSnackbar({
 
-          variant: 'warning',
-          messageID: 'a107F1Uxw',
+          enqueueSnackbar,
+          intl,
+          arr: [
+            {
+              variant: 'warning',
+              messageID: 'a107F1Uxw',
+            },
+          ]
 
         });
 
@@ -434,10 +455,16 @@ const Component = (props) => {
       //   Snackbar: Success
       // ---------------------------------------------
 
-      handleSnackbarOpen({
+      showSnackbar({
 
-        variant: 'success',
-        messageID: 'hbRy4HpaP',
+        enqueueSnackbar,
+        intl,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'hbRy4HpaP',
+          },
+        ]
 
       });
 
@@ -480,9 +507,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
 
-      handleSnackbarOpen({
+      showSnackbar({
 
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
 
       });
@@ -497,7 +525,7 @@ const Component = (props) => {
 
       handleScrollTo({
 
-        to: 'formEmail',
+        to: 'elementFormEmail',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -591,7 +619,7 @@ const Component = (props) => {
       css={css`
         margin: 14px 0 0 0;
       `}
-      name="formEmail"
+      name="elementFormEmail"
     >
 
 

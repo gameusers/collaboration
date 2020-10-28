@@ -111,7 +111,6 @@ const Component = (props) => {
 
   const [loginID, setLoginID] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
-
   const [recaptchaResponse, setRecaptchaResponse] = useState('');
 
 

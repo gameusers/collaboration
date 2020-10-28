@@ -91,25 +91,23 @@ import Comment from 'app/common/forum/v2/comment.js';
 
 
 
-
-
 // --------------------------------------------------
 //   Material UI Style Overrides
 //   https://material-ui.com/styles/basics/
 // --------------------------------------------------
 
 const useStyles = makeStyles({
-  
+
   expanded: {
     marginBottom: '0 !important',
   },
-  
+
   input: {
     fontSize: '12px',
     color: '#666',
     padding: '6px 26px 6px 12px',
   },
-  
+
 });
 
 
@@ -125,213 +123,212 @@ const useStyles = makeStyles({
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     urlID,
     gameCommunities_id,
     userCommunityID,
     userCommunities_id,
     forumThreads_id,
     enableAnonymity,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [panelExpanded, setPanelExpanded] = useState(true);
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  
+
   const [showComment, setShowComment] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  
-  
+
+
   useEffect(() => {
-    
+
     setButtonDisabled(false);
-    
+
   }, []);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateLayout = ContainerStateLayout.useContainer();
   const stateCommunity = ContainerStateCommunity.useContainer();
   const stateForum = ContainerStateForum.useContainer();
-  
+
   const {
-    
-    // handleSnackbarOpen,
+
     handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
-    
+
   } = stateLayout;
-  
+
   const {
-    
+
     setGameCommunityObj,
     setUserCommunityObj,
-    
+
   } = stateCommunity;
-  
+
   const {
-    
+
     forumThreadsObj,
     setForumThreadsObj,
-    
+
   } = stateForum;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   /**
    * スレッドを削除する
    */
   const handleDelete = async () => {
-    
-    
+
+
     try {
-      
-      
+
+
       // ---------------------------------------------
       //   _id が存在しない場合エラー
       // ---------------------------------------------
-      
+
       if ((!gameCommunities_id && !forumThreads_id) || (!userCommunities_id && !forumThreads_id)) {
         throw new CustomError({ errorsArr: [{ code: 'cGHv25p8q', messageID: '1YJnibkmh' }] });
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Loading Open
       // ---------------------------------------------
-      
+
       handleLoadingOpen({});
-      
-      
+
+
       // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
-      
+
       setButtonDisabled(true);
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
-      
+
       const formDataObj = {
-        
+
         gameCommunities_id,
         userCommunities_id,
         forumThreads_id,
-        
+
       };
-      
-      
+
+
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
-      
+
       let resultObj = {};
-      
+
       if (gameCommunities_id) {
-        
+
         resultObj = await fetchWrapper({
-          
+
           urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/delete-gc`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
-          
+
         });
-        
+
       } else {
-        
+
         resultObj = await fetchWrapper({
-          
+
           urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-threads/delete-uc`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
-          
+
         });
-        
+
       }
-      
-      
+
+
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
-      
+
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Update - gameCommunityObj / userCommunityObj
       // ---------------------------------------------
-      
+
       if (gameCommunities_id) {
-        
+
         setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
-        
+
       } else {
-        
+
         setUserCommunityObj(lodashGet(resultObj, ['data', 'userCommunityObj'], {}));
-        
+
       }
-      
-      
+
+
       // ---------------------------------------------
       //   Delete Thread Data
       // ---------------------------------------------
-      
+
       const clonedObj = lodashCloneDeep(forumThreadsObj);
-      
+
       const dataObj = lodashGet(clonedObj, ['dataObj'], {});
       delete dataObj[forumThreads_id];
-      
+
       setForumThreadsObj(clonedObj);
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   Snackbar: Success
       // --------------------------------------------------
-      
+
       const experienceObj = lodashGet(resultObj, ['data', 'experienceObj'], {});
-      
+
       showSnackbar({
-        
+
         enqueueSnackbar,
         intl,
         experienceObj,
@@ -341,222 +338,212 @@ const Component = (props) => {
             messageID: 'KBPPfi4f9',
           },
         ]
-        
+
       });
-      // ---------------------------------------------
-      //   Snackbar: Success
-      // ---------------------------------------------
-      
-      // handleSnackbarOpen({
-        
-      //   variant: 'success',
-      //   messageID: 'KBPPfi4f9',
-        
-      // });
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   console.log
       // ---------------------------------------------
-      
+
       // console.log(`
       //   ----------------------------------------\n
       //   /app/common/forum/v2/components/thread.js - handleDelete
       // `);
-      
+
       // console.log(chalk`
       //   gameCommunities_id: {green ${gameCommunities_id}}
       //   userCommunities_id: {green ${userCommunities_id}}
       //   forumThreads_id: {green ${forumThreads_id}}
       // `);
-      
+
       // console.log(`
       //   ----- resultObj -----\n
       //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
+
       // console.log(`
       //   ----- clonedObj -----\n
       //   ${util.inspect(clonedObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
+
+
     } catch (errorObj) {
-      
-      
+
+
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
-      
+
       showSnackbar({
-        
+
         enqueueSnackbar,
         intl,
         errorObj,
-        
+
       });
-      
-      
+
+
     } finally {
-      
-      
+
+
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
-      
+
       setButtonDisabled(false);
-      
-      
+
+
       // ---------------------------------------------
       //   Loading Close
       // ---------------------------------------------
-      
+
       handleLoadingClose();
-      
-      
+
+
     }
-    
-    
+
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   dataObj
   // --------------------------------------------------
-  
+
   const dataObj = lodashGet(forumThreadsObj, ['dataObj', forumThreads_id], {});
-  
+
   if (Object.keys(dataObj).length === 0) {
     return null;
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   const name = lodashGet(dataObj, ['name'], '');
   const comment = lodashGet(dataObj, ['comment'], '');
-  
+
   const imagesAndVideosObj = lodashGet(dataObj, ['imagesAndVideosObj'], {});
-  
+
   // 管理者権限がある、またはスレッドを建てた本人の場合、編集ボタンを表示する
   const editable = lodashGet(dataObj, ['editable'], false);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Link
   // --------------------------------------------------
-  
+
   let linkHref = '';
   let linkAs = '';
-  
-  
+
+
   // ---------------------------------------------
   //   - Game Community
   // ---------------------------------------------
-  
+
   if (urlID) {
-    
+
     linkHref = `/gc/[urlID]/forum/[[...slug]]`;
     linkAs = `/gc/${urlID}/forum/${forumThreads_id}`;
-    
-    
+
+
   // ---------------------------------------------
   //   - User Community
   // ---------------------------------------------
-  
+
   } else if (userCommunityID) {
-    
+
     linkHref = `/uc/[userCommunityID]/forum/[[...slug]]`;
     linkAs = `/uc/${userCommunityID}/forum/${forumThreads_id}`;
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Share: Twitter
   //   参考：https://blog.ikunaga.net/entry/twitter-com-intent-tweet/
   // --------------------------------------------------
-  
+
   const twitterHashtagsArr = lodashGet(dataObj, ['gamesObj', 'twitterHashtagsArr'], []);
-  
+
   let shareTwitterText = name;
-  
+
   if (name.length > 50) {
     shareTwitterText = name.substr(0, 50) + '…';
   }
-  
+
   let shareTwitter = '';
-  
-  
+
+
   // ---------------------------------------------
   //   - Game Community
   // ---------------------------------------------
-  
+
   if (urlID) {
-    
+
     shareTwitter = `https://twitter.com/intent/tweet?text=${encodeURI(shareTwitterText)}&url=${process.env.NEXT_PUBLIC_URL_BASE}gc/${urlID}/forum/${forumThreads_id}`;
-    
-    
+
+
   // ---------------------------------------------
   //   - User Community
   // ---------------------------------------------
-  
+
   } else if (userCommunityID) {
-    
+
     shareTwitter = `https://twitter.com/intent/tweet?text=${encodeURI(shareTwitterText)}&url=${process.env.NEXT_PUBLIC_URL_BASE}uc/${userCommunityID}/forum/${forumThreads_id}`;
-    
+
   }
-  
-  
+
+
   if (twitterHashtagsArr.length > 0) {
     shareTwitter += `&hashtags=${twitterHashtagsArr.join(',')}`;
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/forum/v2/components/thread.js
   // `);
-  
+
   // console.log(`
   //   ----- formImagesAndVideosObj -----\n
   //   ${util.inspect(formImagesAndVideosObj, { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Element
       name={forumThreads_id}
     >
-      
-      
+
+
       {/* Panel */}
       <Accordion
         css={css`
@@ -564,15 +551,15 @@ const Component = (props) => {
         `}
         expanded={panelExpanded}
       >
-        
-        
+
+
         {/* Summary */}
         <AccordionSummary
           css={css`
             && {
               cursor: default !important;
               background-color: white !important;
-              
+
               @media screen and (max-width: 480px) {
                 padding: 0 16px;
               }
@@ -582,8 +569,8 @@ const Component = (props) => {
             expanded: classes.expanded
           }}
         >
-          
-          
+
+
           {/* Form - Edit Thread */}
           {showForm &&
             <div
@@ -591,21 +578,21 @@ const Component = (props) => {
                 width: 100%;
               `}
             >
-              
+
               <FormThread
                 gameCommunities_id={gameCommunities_id}
                 userCommunities_id={userCommunities_id}
                 forumThreads_id={forumThreads_id}
-                
+
                 setShowForm={setShowForm}
               />
-              
+
             </div>
           }
-          
-          
-          
-          
+
+
+
+
           {/* Thread */}
           {!showForm &&
             <div
@@ -615,8 +602,8 @@ const Component = (props) => {
                 width: 100%;
               `}
             >
-              
-              
+
+
               {/* Container - Thread Name & Expansion Button */}
               <div
                 css={css`
@@ -626,14 +613,14 @@ const Component = (props) => {
                   width: 100%;
                 `}
               >
-                
-                
+
+
                 {/* h2 */}
                 <h2
                   css={css`
                     font-weight: bold;
                     font-size: 16px;
-                    
+
                     @media screen and (max-width: 480px) {
                       font-size: 14px;
                     }
@@ -641,17 +628,17 @@ const Component = (props) => {
                 >
                   {name}
                 </h2>
-                
-                
-                
-                
+
+
+
+
                 {/* Expansion Button */}
                 <div
                   css={css`
                     margin-left: auto;
                   `}
                 >
-                  
+
                   <IconButton
                     css={css`
                       && {
@@ -659,7 +646,7 @@ const Component = (props) => {
                         padding: 4px;
                       }
                     `}
-                    
+
                     onClick={() => setPanelExpanded(!panelExpanded)}
                     aria-expanded={panelExpanded}
                     aria-label="Show more"
@@ -671,15 +658,15 @@ const Component = (props) => {
                       <IconExpandMore />
                     )}
                   </IconButton>
-                  
+
                 </div>
-                
-                
+
+
               </div>
-              
-              
-              
-              
+
+
+
+
               {/* Images and Videos */}
               {Object.keys(imagesAndVideosObj).length > 0 &&
                 <div
@@ -687,17 +674,17 @@ const Component = (props) => {
                     margin: 12px 0 4px 0;
                   `}
                 >
-                  
+
                   <ImageAndVideo
                     imagesAndVideosObj={imagesAndVideosObj}
                   />
-                  
+
                 </div>
               }
-              
-              
-              
-              
+
+
+
+
               {/* Information */}
               <div
                 css={css`
@@ -707,8 +694,8 @@ const Component = (props) => {
                   margin: 6px 0 0 0;
                 `}
               >
-                
-                
+
+
                 {/* Show Thread Description */}
                 <div
                   css={css`
@@ -717,7 +704,7 @@ const Component = (props) => {
                     margin: 0 6px 0 0;
                   `}
                 >
-                  
+
                   <IconAssignment
                     css={css`
                       && {
@@ -726,7 +713,7 @@ const Component = (props) => {
                       }
                     `}
                   />
-                  
+
                   <div
                     css={css`
                       font-size: 12px;
@@ -738,12 +725,12 @@ const Component = (props) => {
                   >
                     スレッドについて
                   </div>
-                  
+
                 </div>
-                
-                
-                
-                
+
+
+
+
                 {/* Thread _id */}
                 <div
                   css={css`
@@ -751,7 +738,7 @@ const Component = (props) => {
                     flex-flow: row nowrap;
                   `}
                 >
-                  
+
                   <IconPublic
                     css={css`
                       && {
@@ -760,7 +747,7 @@ const Component = (props) => {
                       }
                     `}
                   />
-                  
+
                   <div
                     css={css`
                       font-size: 12px;
@@ -769,25 +756,25 @@ const Component = (props) => {
                       margin: 2px 0 0 0;
                     `}
                   >
-                    
+
                     <Link href={linkHref} as={linkAs}>
                       <a>{forumThreads_id}</a>
                     </Link>
                   </div>
-                  
+
                 </div>
-                
-                
+
+
               </div>
-              
-              
-              
-              
+
+
+
+
               <div
                 css={css`
                   font-size: 14px;
                   line-height: 1.6em;
-                  
+
                   ${showComment &&
                     `
                     border-left: 4px solid #A4A4A4;
@@ -795,22 +782,22 @@ const Component = (props) => {
                     padding: 8px 0 8px 16px;
                     `
                   }
-                  
+
                   @media screen and (max-width: 480px) {
                     padding: 0 0 8px 12px;
                   }
                 `}
               >
-                
-                
+
+
                 {/* Comment */}
                 {showComment &&
                   <Paragraph text={comment} />
                 }
-                
-                
-                
-                
+
+
+
+
                 {/* Bottom Container */}
                 <div
                   css={css`
@@ -819,8 +806,8 @@ const Component = (props) => {
                     margin: 16px 0 0 0;
                   `}
                 >
-                  
-                  
+
+
                   {/* Buttons */}
                   <div
                     css={css`
@@ -829,8 +816,8 @@ const Component = (props) => {
                       margin-left: auto;
                     `}
                   >
-                    
-                    
+
+
                     <Button
                       css={css`
                         && {
@@ -840,7 +827,7 @@ const Component = (props) => {
                           min-height: 22px;
                           line-height: 1;
                           padding: 0 3px;
-                          
+
                           @media screen and (max-width: 480px) {
                             min-width: 36px;
                             min-height: 22px;
@@ -871,10 +858,10 @@ const Component = (props) => {
                       </Avatar>
                       シェア
                     </Button>
-                    
-                    
-                    
-                    
+
+
+
+
                     {/* Delete Button */}
                     {editable &&
                       <Button
@@ -886,7 +873,7 @@ const Component = (props) => {
                             min-height: 22px;
                             margin: 0 0 0 12px;
                             padding: 0 4px;
-                            
+
                             @media screen and (max-width: 480px) {
                               min-width: 36px;
                               min-height: 22px;
@@ -902,12 +889,12 @@ const Component = (props) => {
                               () => {}
                             :
                               () => handleDialogOpen({
-                              
+
                                 title: 'スレッド削除',
                                 description: 'スレッドを削除しますか？',
                                 handle: handleDelete,
                                 argumentsObj: {},
-                                
+
                               })
                         }
                       >
@@ -922,10 +909,10 @@ const Component = (props) => {
                         削除
                       </Button>
                     }
-                    
-                    
-                    
-                    
+
+
+
+
                     {/* Edit Button */}
                     {editable &&
                       <Button
@@ -937,7 +924,7 @@ const Component = (props) => {
                             min-height: 22px;
                             margin: 0 0 0 12px;
                             padding: 0 4px;
-                            
+
                             @media screen and (max-width: 480px) {
                               min-width: 36px;
                               min-height: 22px;
@@ -960,26 +947,26 @@ const Component = (props) => {
                         編集
                       </Button>
                     }
-                    
-                    
+
+
                   </div>
-                  
-                  
+
+
                 </div>
-                
-                
+
+
               </div>
-              
-              
+
+
             </div>
           }
-          
-          
+
+
         </AccordionSummary>
-        
-        
-        
-        
+
+
+
+
         {/* Contents */}
         <AccordionDetails
           css={css`
@@ -988,15 +975,15 @@ const Component = (props) => {
             }
           `}
         >
-          
+
           <div
             css={css`
               width: 100%;
               margin: 12px 0 0 0;
             `}
           >
-            
-            
+
+
             {/* Form - Post New Comment */}
             <div
               css={css`
@@ -1004,17 +991,17 @@ const Component = (props) => {
                 padding: 14px 0 0 0;
               `}
             >
-              
+
               <FormComment
                 gameCommunities_id={gameCommunities_id}
                 userCommunities_id={userCommunities_id}
                 forumThreads_id={forumThreads_id}
                 enableAnonymity={enableAnonymity}
               />
-              
+
             </div>
-            
-            
+
+
             {/* Comment */}
             <Comment
               urlID={urlID}
@@ -1024,21 +1011,21 @@ const Component = (props) => {
               forumThreads_id={forumThreads_id}
               enableAnonymity={enableAnonymity}
             />
-            
-            
+
+
           </div>
-          
-          
+
+
         </AccordionDetails>
-        
-        
+
+
       </Accordion>
-      
-      
+
+
     </Element>
   );
-  
-  
+
+
 };
 
 

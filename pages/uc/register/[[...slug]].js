@@ -44,7 +44,6 @@ import { getCookie } from 'app/@modules/cookie.js';
 
 import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
-import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 
 import UcNavigation from 'app/uc/list/v2/navigation.js';
 import FormCommunity from 'app/uc/setting/v2/form-community.js';
@@ -77,10 +76,6 @@ const ContainerLayout = (props) => {
         page={props.page}
         hardwaresArr={props.hardwaresArr}
         keyword={props.keyword}
-      />
-
-      <FeedSidebar
-        feedObj={props.feedObj}
       />
 
     </React.Fragment>
@@ -220,6 +215,8 @@ export async function getServerSideProps({ req, res, query }) {
   const limit = getCookie({ key: 'communityListLimit', reqHeadersCookie });
 
 
+
+
   // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
@@ -245,10 +242,11 @@ export async function getServerSideProps({ req, res, query }) {
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
-  const feedObj = lodashGet(dataObj, ['feedObj'], {});
 
   const ucListObj = lodashGet(dataObj, ['ucListObj'], {});
   const hardwaresArr = lodashGet(dataObj, ['hardwaresArr'], []);
+
+
 
 
   // --------------------------------------------------
@@ -256,6 +254,8 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
 
   let title = `ユーザーコミュニティ - Game Users`;
+
+
 
 
   // --------------------------------------------------
@@ -304,12 +304,16 @@ export async function getServerSideProps({ req, res, query }) {
   ];
 
 
+
+
   // --------------------------------------------------
   //   recentAccessPage
   // --------------------------------------------------
 
   let recentAccessPageHref = '/uc/register/[[...slug]]';
   let recentAccessPageAs = '/uc/register';
+
+
 
 
   // --------------------------------------------------
@@ -383,6 +387,8 @@ export async function getServerSideProps({ req, res, query }) {
   }
 
 
+
+
   // ---------------------------------------------
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
@@ -434,7 +440,6 @@ export async function getServerSideProps({ req, res, query }) {
       headerNavMainArr,
       breadcrumbsArr,
       experienceObj,
-      feedObj,
 
       page,
       ucListObj,

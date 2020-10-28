@@ -30,14 +30,6 @@ import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-// import { ContainerStateCommunity } from 'app/@states/community.js';
-// import { ContainerStateForum } from 'app/@states/forum.js';
-
-
-// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -229,6 +221,8 @@ export async function getServerSideProps({ req, res, query }) {
   const limit = getCookie({ key: 'communityListLimit', reqHeadersCookie });
 
 
+
+
   // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
@@ -260,11 +254,15 @@ export async function getServerSideProps({ req, res, query }) {
   const hardwaresArr = lodashGet(dataObj, ['hardwaresArr'], []);
 
 
+
+
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
 
   let title = `ゲームコミュニティ - Game Users`;
+
+
 
 
   // --------------------------------------------------
@@ -313,12 +311,16 @@ export async function getServerSideProps({ req, res, query }) {
   ];
 
 
+
+
   // --------------------------------------------------
   //   recentAccessPage
   // --------------------------------------------------
 
   let recentAccessPageHref = '/gc/list/[[...slug]]';
   let recentAccessPageAs = '/gc/list';
+
+
 
 
   // --------------------------------------------------
@@ -390,6 +392,8 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   }
+
+
 
 
   // ---------------------------------------------

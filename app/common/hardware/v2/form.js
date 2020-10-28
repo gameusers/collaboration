@@ -16,6 +16,7 @@ import util from 'util';
 
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import keycode from 'keycode';
 
 /** @jsx jsx */
@@ -45,18 +46,12 @@ import Chip from '@material-ui/core/Chip';
 
 
 // ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateLayout } from 'app/@states/layout.js';
-
-
-// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -100,22 +95,12 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [keyword, setKeyword] = useState('');
   const [onFocus, setOnFocus] = useState(false);
   const [suggestionsArr, setSuggestionsArr] = useState([]);
   const [suggestionSelectedIndex, setSuggestionSelectedIndex] = useState(9999);
-
-
-
-
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-
-  const stateLayout = ContainerStateLayout.useContainer();
-
-  const { handleSnackbarOpen } = stateLayout;
 
 
 
@@ -159,9 +144,17 @@ const Component = (props) => {
 
     if (clonedArr.length + 1 > limit) {
 
-      handleSnackbarOpen({
-        variant: 'warning',
-        messageID: 'Owq_rMCaL',
+      showSnackbar({
+
+        enqueueSnackbar,
+        intl,
+        arr: [
+          {
+            variant: 'warning',
+            messageID: 'Owq_rMCaL',
+          },
+        ]
+
       });
 
       return;

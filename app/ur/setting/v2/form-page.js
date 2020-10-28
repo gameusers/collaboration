@@ -79,6 +79,8 @@ import FormImageAndVideo from 'app/common/image-and-video/v2/form.js';
 
 
 
+
+
 // --------------------------------------------------
 //   Function Components
 // --------------------------------------------------
@@ -210,6 +212,8 @@ const FormPageTitle = (props) => {
   const validationUsersPagesTitleObj = validationUsersPagesTitle({ value: title });
 
 
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -224,6 +228,8 @@ const FormPageTitle = (props) => {
   //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
+
+
 
 
   // --------------------------------------------------
@@ -366,7 +372,6 @@ const Component = (props) => {
   const {
 
     setHeaderObj,
-    handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
@@ -398,6 +403,8 @@ const Component = (props) => {
     eventObj.preventDefault();
 
 
+
+
     try {
 
 
@@ -408,6 +415,8 @@ const Component = (props) => {
       if (validationUsersUserID({ value: userID }).error) {
         throw new CustomError({ errorsArr: [{ code: 'jj7ApE77f', messageID: 'uwHIKBy7c' }] });
       }
+
+
 
 
       // ---------------------------------------------
@@ -422,6 +431,8 @@ const Component = (props) => {
       // ---------------------------------------------
 
       setButtonDisabled(true);
+
+
 
 
       // ---------------------------------------------
@@ -461,6 +472,8 @@ const Component = (props) => {
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
+
+
 
 
       // ---------------------------------------------
@@ -533,6 +546,8 @@ const Component = (props) => {
       }
 
 
+
+
       // --------------------------------------------------
       //   console.log
       // --------------------------------------------------
@@ -569,9 +584,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
 
-      handleSnackbarOpen({
+      showSnackbar({
 
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
 
       });
@@ -586,7 +602,7 @@ const Component = (props) => {
 
       handleScrollTo({
 
-        to: 'formPage',
+        to: 'elementFormPage',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -624,6 +640,8 @@ const Component = (props) => {
   const validationUsersUserIDObj = validationUsersUserID({ value: userID });
 
 
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -657,7 +675,7 @@ const Component = (props) => {
 
   return (
     <Element
-      name="formPage"
+      name="elementFormPage"
     >
 
 

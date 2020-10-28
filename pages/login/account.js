@@ -89,10 +89,7 @@ const ContainerLayout = (props) => {
         arr={props.breadcrumbsArr}
       />
 
-      <FormAccountCreate
-        recentAccessPageHref={props.recentAccessPageHref}
-        recentAccessPageAs={props.recentAccessPageAs}
-      />
+      <FormAccountCreate/>
 
     </React.Fragment>
   ;
@@ -177,14 +174,6 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
 
   const ISO8601 = moment().utc().toISOString();
-
-
-  // --------------------------------------------------
-  //   Get Cookie Data
-  // --------------------------------------------------
-
-  const recentAccessPageHref = getCookie({ key: 'recentAccessPageHref', reqHeadersCookie, decode: true });
-  const recentAccessPageAs = getCookie({ key: 'recentAccessPageAs', reqHeadersCookie, decode: true });
 
 
 
@@ -331,9 +320,6 @@ export async function getServerSideProps({ req, res, query }) {
       headerNavMainArr,
       breadcrumbsArr,
       feedObj,
-
-      recentAccessPageHref,
-      recentAccessPageAs,
 
     }
 

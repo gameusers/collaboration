@@ -28,6 +28,7 @@ import { css, jsx } from '@emotion/core';
 
 import lodashGet from 'lodash/get';
 
+
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
@@ -219,6 +220,8 @@ export async function getServerSideProps({ req, res, query }) {
   const ISO8601 = moment().utc().toISOString();
 
 
+
+
   // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
@@ -253,6 +256,8 @@ export async function getServerSideProps({ req, res, query }) {
   const cardPlayers_id = cardPlayers_idsArr[0];
 
 
+
+
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
@@ -265,6 +270,8 @@ export async function getServerSideProps({ req, res, query }) {
 
   const userName = lodashGet(cardPlayersObj, [cardPlayers_id, 'name'], '');
   const title = pageTitle ? pageTitle : `${userName} - Game Users`;
+
+
 
 
   // --------------------------------------------------

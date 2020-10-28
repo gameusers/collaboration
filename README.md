@@ -111,6 +111,12 @@ Docker を利用します。起動していない場合は、以下のコマン�
     # コンテナ停止
     docker-compose down
 
+    # 開始
+    docker-compose start
+
+    # 停止
+    docker-compose stop
+
     # コンテナ確認
     docker-compose ps
 

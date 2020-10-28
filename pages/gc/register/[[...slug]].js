@@ -231,6 +231,8 @@ export async function getServerSideProps({ req, res, query }) {
   const limit = getCookie({ key: 'communityListLimit', reqHeadersCookie });
 
 
+
+
   // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
@@ -264,11 +266,15 @@ export async function getServerSideProps({ req, res, query }) {
   const hardwaresArr = lodashGet(dataObj, ['hardwaresArr'], []);
 
 
+
+
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
 
   let title = `ゲーム登録 - Game Users`;
+
+
 
 
   // --------------------------------------------------
@@ -317,12 +323,16 @@ export async function getServerSideProps({ req, res, query }) {
   ];
 
 
+
+
   // --------------------------------------------------
   //   recentAccessPage
   // --------------------------------------------------
 
   let recentAccessPageHref = '/gc/register/[[...slug]]';
   let recentAccessPageAs = '/gc/register';
+
+
 
 
   // --------------------------------------------------
@@ -394,6 +404,8 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   }
+
+
 
 
   // ---------------------------------------------

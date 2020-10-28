@@ -15,8 +15,11 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
+import Router from 'next/router';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
+import { GoogleReCaptchaProvider, GoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -49,6 +52,7 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -57,6 +61,7 @@ import { CustomError } from 'app/@modules/error/custom.js';
 
 import { validationUsersLoginID } from 'app/@database/users/validations/login-id.js';
 import { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } from 'app/@database/users/validations/login-password.js';
+import { validationUsersEmail } from 'app/@database/users/validations/email.js';
 
 
 // ---------------------------------------------
@@ -90,6 +95,7 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
   const [loginID, setLoginID] = useState(lodashGet(props, ['loginID'], ''));
@@ -97,6 +103,7 @@ const Component = (props) => {
   const [loginPasswordConfirmation, setLoginPasswordConfirmation] = useState('');
   const [email, setEmail] = useState(lodashGet(props, ['email'], ''));
   const [agreeTermsOfService, setAgreeTermsOfService] = useState(false);
+  const [recaptchaResponse, setRecaptchaResponse] = useState('');
 
 
   useEffect(() => {
@@ -116,7 +123,6 @@ const Component = (props) => {
 
   const {
 
-    handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
@@ -161,7 +167,9 @@ const Component = (props) => {
 
         validationUsersLoginID({ required: true, value: loginID }).error ||
         validationUsersLoginPassword({ required: true, value: loginPassword, loginID }).error ||
-        validationUsersLoginPasswordConfirmation({ required: true, value: loginPasswordConfirmation, loginPassword }).error
+        validationUsersLoginPasswordConfirmation({ required: true, value: loginPasswordConfirmation, loginPassword }).error ||
+        validationUsersEmail({ value: email }).error ||
+        agreeTermsOfService === false
 
       ) {
 
@@ -196,6 +204,8 @@ const Component = (props) => {
 
         loginID,
         loginPassword,
+        email,
+        response: recaptchaResponse,
 
       };
 
@@ -204,22 +214,22 @@ const Component = (props) => {
       //   Fetch
       // ---------------------------------------------
 
-      // const resultObj = await fetchWrapper({
+      const resultObj = await fetchWrapper({
 
-      //   urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/upsert-setting-account`,
-      //   methodType: 'POST',
-      //   formData: JSON.stringify(formDataObj),
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/users/upsert-create-account`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
 
-      // });
+      });
 
 
-      // // ---------------------------------------------
-      // //   Error
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
 
-      // if ('errorsArr' in resultObj) {
-      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
-      // }
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
 
 
 
@@ -237,8 +247,11 @@ const Component = (props) => {
       //   Reset Form
       // ---------------------------------------------
 
+      setLoginID('');
       setLoginPassword('');
       setLoginPasswordConfirmation('');
+      setEmail('');
+      setAgreeTermsOfService(false);
 
 
 
@@ -247,12 +260,62 @@ const Component = (props) => {
       //   Snackbar: Success
       // ---------------------------------------------
 
-      handleSnackbarOpen({
+      showSnackbar({
 
-        variant: 'success',
-        messageID: 'Jje25z6lV',
+        enqueueSnackbar,
+        intl,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'Jje25z6lV',
+          },
+        ]
 
       });
+
+
+
+
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+
+      const formData = new FormData();
+
+      formData.append('loginID', loginID);
+      formData.append('loginPassword', loginPassword);
+      formData.append('response', recaptchaResponse);
+
+
+      // ---------------------------------------------
+      //   Fetch - Login
+      // ---------------------------------------------
+
+      const resultLoginObj = await fetchWrapper({
+
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v1/login/login`,
+        methodType: 'POST',
+        formData,
+
+      });
+
+
+      // console.log(`
+      //   ----- resultLoginObj -----\n
+      //   ${util.inspect(resultLoginObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // ---------------------------------------------
+      //   Router.push = History API pushState()
+      // ---------------------------------------------
+
+      const userID = lodashGet(resultLoginObj, ['data', 'userID'], '');
+      const url = '/ur/[userID]';
+      const as = `/ur/${userID}`;
+
+      Router.push(url, as);
 
 
 
@@ -293,9 +356,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
 
-      handleSnackbarOpen({
+      showSnackbar({
 
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
 
       });
@@ -310,7 +374,7 @@ const Component = (props) => {
 
       handleScrollTo({
 
-        to: 'formAccountCreate',
+        to: 'elementFormAccountCreate',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -374,6 +438,16 @@ const Component = (props) => {
       `}
       name="elementFormAccountCreate"
     >
+
+
+      {/* reCAPTCHA */}
+      {process.env.NODE_ENV === 'production' &&
+        <GoogleReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}>
+          <GoogleReCaptcha onVerify={(token) => setRecaptchaResponse(token)} />
+        </GoogleReCaptchaProvider>
+      }
+
+
 
 
       <Panel
@@ -491,8 +565,6 @@ const Component = (props) => {
 
 
       </Panel>
-
-
 
 
     </Element>

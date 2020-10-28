@@ -46,13 +46,6 @@ import Chip from '@material-ui/core/Chip';
 
 
 // ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-// import { ContainerStateLayout } from 'app/@states/layout.js';
-
-
-// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -109,17 +102,6 @@ const Component = (props) => {
   const [onFocus, setOnFocus] = useState(false);
   const [suggestionsArr, setSuggestionsArr] = useState([]);
   const [suggestionSelectedIndex, setSuggestionSelectedIndex] = useState(9999);
-
-
-
-
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-
-  // const stateLayout = ContainerStateLayout.useContainer();
-
-  // const { handleSnackbarOpen } = stateLayout;
 
 
 

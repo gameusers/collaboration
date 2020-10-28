@@ -79,18 +79,20 @@ import FormThread from 'app/common/forum/v2/form/thread.js';
 // --------------------------------------------------
 
 const useStyles = makeStyles({
-  
+
   expanded: {
     marginBottom: '0 !important',
   },
-  
+
   input: {
     fontSize: '12px',
     color: '#666',
     padding: '6px 26px 6px 12px',
   },
-  
+
 });
+
+
 
 
 
@@ -103,234 +105,239 @@ const useStyles = makeStyles({
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     urlID,
     gameCommunities_id,
     userCommunityID,
     userCommunities_id,
-    
+
     enableAnonymity,
     individual,
-    
+
   } = props;
-  
-  
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  
-  
+
+
   useEffect(() => {
-    
+
     setButtonDisabled(false);
-    
+
   }, []);
-  
-  
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateForum = ContainerStateForum.useContainer();
-  
+
   const {
-    
+
     forumThreadsObj,
-    
+
   } = stateForum;
-  
 
 
-  
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   /**
    * スレッドを読み込む
    * @param {number} page - スレッドのページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
   const handleRead = async ({
-    
+
     page,
     changeLimit,
-    
+
   }) => {
-    
-    
+
+
     try {
-      
-      
+
+
       // ---------------------------------------------
       //   Router.push 用
       // ---------------------------------------------
-      
+
       let url = '';
       let as = '';
-      
+
       if (gameCommunities_id) {
-        
+
         if (page === 1) {
-          
+
           url = `/gc/[urlID]`;
           as = `/gc/${urlID}`;
-          
+
         } else {
-          
+
           url = `/gc/[urlID]/forum/[[...slug]]`;
           as = `/gc/${urlID}/forum/${page}`;
-          
+
         }
-        
+
       } else {
-        
+
         if (page === 1) {
-          
+
           url = `/uc/[userCommunityID]`;
           as = `/uc/${userCommunityID}`;
-          
+
         } else {
-          
+
           url = `/uc/[userCommunityID]/forum/[[...slug]]`;
           as = `/uc/${userCommunityID}/forum/${page}`;
-          
+
         }
-        
+
       }
-      
-      
+
+
       // ---------------------------------------------
       //   Change Limit / Set Cookie
       // ---------------------------------------------
-      
+
       if (changeLimit) {
         Cookies.set('forumThreadLimit', changeLimit);
       }
-      
-      
+
+
       // ---------------------------------------------
       //   console.log
       // ---------------------------------------------
-      
+
       // console.log(`
       //   ----------------------------------------\n
       //   /app/common/forum/v2/components/forum.js - handleRead
       // `);
-      
+
       // console.log(chalk`
       //   gameCommunities_id: {green ${gameCommunities_id}}
       //   userCommunities_id: {green ${userCommunities_id}}
       //   page: {green ${page}}
       //   changeLimit: {green ${changeLimit}}
-        
+
       //   url: {green ${url}}
       //   as: {green ${as}}
       // `);
-      
+
       // return;
-      
-      
+
+
       // ---------------------------------------------
       //   Router.push = History API pushState()
       // ---------------------------------------------
-      
+
       await Router.push(url, as);
-      
-      
+
+
     } catch (errorObj) {}
-    
-    
+
+
   };
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Thread
   // --------------------------------------------------
-  
+
   const page = lodashGet(forumThreadsObj, ['page'], 1);
   const limit = lodashGet(forumThreadsObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT, 10));
   const count = lodashGet(forumThreadsObj, ['count'], 0);
   const arr = lodashGet(forumThreadsObj, [`page${page}Obj`, 'arr'], []);
-  
-  
+
+
   // --------------------------------------------------
   //   Link Return Top
   // --------------------------------------------------
-  
+
   let linkReturnTopHref = '';
   let linkReturnTopAs = '';
-  
-  
+
+
   // ---------------------------------------------
   //   - Game Community
   // ---------------------------------------------
-  
+
   if (urlID) {
-    
+
     linkReturnTopHref = `/gc/[urlID]`;
     linkReturnTopAs = `/gc/${urlID}`;
-    
-    
+
+
   // ---------------------------------------------
   //   - User Community
   // ---------------------------------------------
-  
+
   } else if (userCommunityID) {
-    
+
     linkReturnTopHref = `/uc/[userCommunityID]`;
     linkReturnTopAs = `/uc/${userCommunityID}`;
-    
+
   }
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/forum/v2/components/forum.js
   // `);
-  
+
   // console.log(chalk`
   //   urlID: {green ${urlID}}
   //   gameCommunities_id: {green ${gameCommunities_id}}
   //   userCommunityID: {green ${userCommunityID}}
   //   userCommunities_id: {green ${userCommunities_id}}
-    
+
   //   page: {green ${page}}
   //   count: {green ${count}}
   //   limit: {green ${limit}}
   // `);
-  
+
   // console.log(`
   //   ----- arr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component - Thread
   // --------------------------------------------------
-  
+
   const componentsArr = [];
-  
-  
+
   for (let forumThreads_id of arr.values()) {
-    
+
     componentsArr.push(
       <Thread
         key={forumThreads_id}
@@ -342,60 +349,62 @@ const Component = (props) => {
         enableAnonymity={enableAnonymity}
       />
     );
-    
+
   }
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Element
-      name="forumThreads"
+      name="elementForumThreads"
     >
-      
-      
+
+
       {/* Form - Post New Thread */}
       <div
         css={css`
           margin: 0 0 16px 0;
         `}
       >
-        
+
         <Panel
           heading="スレッド投稿フォーム"
           defaultExpanded={false}
         >
-          
+
           <FormThread
             gameCommunities_id={gameCommunities_id}
             userCommunities_id={userCommunities_id}
             forumThreads_id=""
           />
-          
+
         </Panel>
-        
+
       </div>
-      
-      
-      
-      
+
+
+
+
       {/* Forum */}
       {componentsArr}
-      
-      
-      
-      
+
+
+
+
       {/* Pagination */}
       {individual ? (
-        
+
         <div
           css={css`
             margin: 24px 0 8px 0;
           `}
         >
-          
+
           <Paper
             css={css`
               display: flex;
@@ -403,7 +412,7 @@ const Component = (props) => {
               padding: 12px 0 12px 12px;
             `}
           >
-            
+
             <Link href={linkReturnTopHref} as={linkReturnTopAs}>
               <a className="link">
                 <Button
@@ -417,13 +426,13 @@ const Component = (props) => {
                 </Button>
               </a>
             </Link>
-            
+
           </Paper>
-          
+
         </div>
-        
+
       ) : (
-        
+
         <Paper
           css={css`
             display: flex;
@@ -431,15 +440,15 @@ const Component = (props) => {
             padding: 0 8px 8px 8px;
           `}
         >
-          
-          
+
+
           {/* Pagination */}
           <div
             css={css`
               margin: 8px 24px 0 0;
             `}
           >
-            
+
             <Pagination
               disabled={buttonDisabled}
               onChange={(page) => handleRead({
@@ -450,10 +459,10 @@ const Component = (props) => {
               total={count}
               locale={localeInfo}
             />
-            
+
           </div>
-          
-          
+
+
           {/* Rows Per Page */}
           <FormControl
             css={css`
@@ -461,7 +470,7 @@ const Component = (props) => {
             `}
             variant="outlined"
           >
-            
+
             <Select
               value={limit}
               onChange={(eventObj) => handleRead({
@@ -485,19 +494,19 @@ const Component = (props) => {
               <MenuItem value={20}>20</MenuItem>
               <MenuItem value={50}>50</MenuItem>
             </Select>
-            
+
           </FormControl>
-          
-          
+
+
         </Paper>
-        
+
       )}
-      
-      
+
+
     </Element>
   );
-  
-  
+
+
 };
 
 

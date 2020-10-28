@@ -341,10 +341,6 @@ const Component = (props) => {
                   display: flex;
                   flex-flow: row wrap;
                   margin: 0 0 0 auto;
-
-                  // @media screen and (max-width: 480px) {
-                  //   display: none;
-                  // }
                 `}
               >
 
@@ -413,36 +409,6 @@ const Component = (props) => {
                     {codeApproval}
                   </div>
                 </div>
-
-
-
-
-                {/* 匿名での投稿 */}
-                {/* <div
-                  css={css`
-                    display: flex;
-                    flex-flow: row nowrap;
-                    align-items: center;
-                    margin: 0 0 0 12px;
-                  `}
-                >
-                  <IconSchedule
-                    css={css`
-                      && {
-                        font-size: 16px;
-                        margin: 0 0 1px 0;
-                      }
-                    `}
-                  />
-                  <div
-                    css={css`
-                      font-size: 12px;
-                      margin: 0 0 0 2px;
-                    `}
-                  >
-                    {codeAnonymity}
-                  </div>
-                </div> */}
 
 
 

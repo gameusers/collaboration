@@ -72,316 +72,318 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 // --------------------------------------------------
 
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     type,
     gameCommunities_id,
     userCommunities_id,
     users_id,
     followsObj = {},
     updateHeader = false,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
   const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  
-  
+
+
   useEffect(() => {
-    
+
     setButtonDisabled(false);
-    
+
   }, []);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
-  
+
   const { login } = stateUser;
-  
+
   const {
-    
+
     setHeaderObj,
     handleDialogOpen,
-    
+
   } = stateLayout;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   const handleFollow = async ({
-    
+
     type,
     gameCommunities_id,
     userCommunities_id,
     users_id,
-    
+
   }) => {
-    
-    
+
+
     try {
-      
-      
+
+
       // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
-      
+
       setButtonDisabled(true);
-      
-      
+
+
       // ---------------------------------------------
       //   Property
       // ---------------------------------------------
-      
+
       let resultObj = {};
-      // let pageTransition = false;
-      
-      
+      let pageTransition = false;
+
+
       // ---------------------------------------------
       //   Game Community & User Community
       // ---------------------------------------------
-      
+
       if (gameCommunities_id || userCommunities_id) {
-        
-        
+
+
         // ---------------------------------------------
         //   FormData
         // ---------------------------------------------
-        
+
         const formDataObj = {
-          
+
           gameCommunities_id,
           userCommunities_id,
-          
+
         };
-        
-        
+
+
         // ---------------------------------------------
         //   Fetch
         // ---------------------------------------------
-        
+
         resultObj = await fetchWrapper({
-          
+
           urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/upsert-follow-gc-uc`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
-          
+
         });
-        
-        
+
+
         // ---------------------------------------------
         //   Error
         // ---------------------------------------------
-        
+
         if ('errorsArr' in resultObj) {
           throw new CustomError({ errorsArr: resultObj.errorsArr });
         }
-        
-        
+
+
         // --------------------------------------------------
         //   console.log
         // --------------------------------------------------
-        
+
         // console.log(`
         //   ----------------------------------------\n
         //   /app/common/follow/v2/components/follow-button.js - handleFollow
         // `);
-        
+
         // console.log(chalk`
         //   type: {green ${type}}
         //   gameCommunities_id: {green ${gameCommunities_id}}
         //   userCommunities_id: {green ${userCommunities_id}}
         // `);
-        
+
         // console.log(`
         //   ----- resultObj -----\n
         //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
         //   --------------------\n
         // `);
-        
-        
+
+
       // ---------------------------------------------
       //   User
       // ---------------------------------------------
-        
+
       } else {
-        
-        
+
+
         // ---------------------------------------------
         //   FormData
         // ---------------------------------------------
-        
+
         const formDataObj = {
-          
+
           users_id,
           updateHeader,
-          
+
         };
-        
-        
+
+
         // ---------------------------------------------
         //   Fetch
         // ---------------------------------------------
-        
+
         resultObj = await fetchWrapper({
-          
+
           urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/upsert-follow-ur`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
-          
+
         });
-        
-        
+
+
         // ---------------------------------------------
         //   Error
         // ---------------------------------------------
-        
+
         if ('errorsArr' in resultObj) {
           throw new CustomError({ errorsArr: resultObj.errorsArr });
         }
-        
-        
+
+
         // --------------------------------------------------
         //   console.log
         // --------------------------------------------------
-        
+
         // console.log(`
         //   ----------------------------------------\n
         //   /app/common/follow/v2/components/follow-button.js - handleFollow
         // `);
-        
+
         // console.log(chalk`
         //   type: {green ${type}}
         //   gameCommunities_id: {green ${gameCommunities_id}}
         //   userCommunities_id: {green ${userCommunities_id}}
         // `);
-        
+
         // console.log(`
         //   ----- resultObj -----\n
         //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
         //   --------------------\n
         // `);
-        
-        
+
+
       }
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   結果反映：フォロー状態＆フォロー数変更
       // ---------------------------------------------
-      
+
       const follow = lodashGet(resultObj, ['data', 'follow'], null);
-      
+
       if (follow !== null) {
         lodashSet(followsObj, ['follow'], follow);
       }
-      
+
       const followedCount = lodashGet(resultObj, ['data', 'followedCount'], null);
-      
+
       if (followedCount !== null) {
         lodashSet(followsObj, ['followedCount'], followedCount);
       }
-      
-      
+
+
       // ---------------------------------------------
       //   リロードするかどうか
       // ---------------------------------------------
-      
-      // pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
-      
-      
-      
-      
+
+      pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
+
+
+
+
       // ---------------------------------------------
       //   Update - Header
       // ---------------------------------------------
-      
+
       const headerObj = lodashGet(resultObj, ['data', 'headerObj'], {});
-      
+
       if (Object.keys(headerObj).length !== 0) {
         setHeaderObj(headerObj);
       }
-      
-      
+
+
       // ---------------------------------------------
       //   Snackbar: Success
       // ---------------------------------------------
-      
+
       let messageID = 'RTsMTGw-1';
-      
+
       switch (type) {
-        
+
         case 'followGc':
           messageID = 'RTsMTGw-1';
           break;
-          
+
         case 'unfollowGc':
           messageID = '1z127R0YE';
           break;
-          
+
 
         case 'followUc':
           messageID = 'SY6WWDyxQ';
           break;
-          
+
         case 'unfollowUc':
           messageID = 'xWAfTONZ6';
           break;
-          
+
         case 'followApprovalUc':
           messageID = 'PaC4bsJe2';
           break;
-          
+
         case 'unfollowApprovalUc':
           messageID = 'HOo6u_sXD';
           break;
-          
+
 
         case 'follow':
           messageID = 'RTsMTGw-1';
           break;
-          
+
         case 'unfollow':
           messageID = '1z127R0YE';
           break;
-          
+
         case 'followApproval':
           messageID = 'T7i5qYulJ';
           break;
-          
+
         case 'unfollowApproval':
           messageID = 'a-BV7oEkP';
           break;
-          
+
       }
-      
-      
+
+
       showSnackbar({
-        
+
         enqueueSnackbar,
         intl,
         experienceObj: lodashGet(resultObj, ['data', 'experienceObj'], {}),
@@ -391,147 +393,153 @@ const Component = (props) => {
             messageID,
           },
         ]
-        
+
       });
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   console.log
       // --------------------------------------------------
-      
+
       // console.log(`
       //   ----------------------------------------\n
       //   /app/common/follow/v2/follow-button.js
       // `);
-      
+
+      // console.log(chalk`
+      //   pageTransition: {green ${pageTransition}}
+      // `);
+
       // console.log(`
       //   ----- resultObj -----\n
       //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   リロードする
       // ---------------------------------------------
-      
-      // if (pageTransition) {
-      //   window.location.reload();
-      // }
-      
-      
+
+      if (pageTransition) {
+        window.location.reload();
+      }
+
+
     } catch (errorObj) {
-      
-      
+
+
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
-      
+
       showSnackbar({
-        
+
         enqueueSnackbar,
         intl,
         errorObj,
-        
+
       });
-      
-      
+
+
     } finally {
-      
-      
+
+
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
-      
+
       setButtonDisabled(false);
-      
-      
+
+
     }
-    
-    
+
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
-  // const login = lodashHas(loginUsersObj, ['_id']);
-  
+
   const approval = lodashGet(followsObj, ['approval'], false);
   const admin = lodashGet(followsObj, ['admin'], false);
   const follow = lodashGet(followsObj, ['follow'], false);
   const followedCount = lodashGet(followsObj, ['followedCount'], 0);
   const followApproval = lodashGet(followsObj, ['followApproval'], false);
   const followBlocked = lodashGet(followsObj, ['followBlocked'], false);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/follow/v2/components/follow-button.js
   // `);
-  
+
   // console.log(chalk`
   //   login: {green ${login}}
   //   lodashHas(loginUsersObj, ['_id']): {green ${lodashHas(loginUsersObj, ['_id'])}}
   // `);
-  
+
   // console.log(`
   //   ----- loginUsersObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(loginUsersObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(`
   //   ----- followsObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(followsObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // ---------------------------------------------
   //   - 自分自身（コミュニティの作者）またはブロックされている場合、処理停止
   // ---------------------------------------------
-  
+
   if (admin || followBlocked) {
     return null;
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component - Button
   // --------------------------------------------------
-  
+
   let component =  '';
   const size = type === 'header' ? 'small' : 'medium';
-  
-  
+
+
   // ---------------------------------------------
   //   - Game Community
   // ---------------------------------------------
-  
+
   if (gameCommunities_id) {
-    
-    
+
+
     // ---------------------------------------------
     //   - ログインしていない場合
     // ---------------------------------------------
-    
+
     if (!login) {
-      
-      component = 
+
+      component =
         <Link href="/login">
           <a className="link">
             <Button
@@ -544,17 +552,17 @@ const Component = (props) => {
           </a>
         </Link>
       ;
-      
+
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - ログインしていてフォローしていない場合
     // ---------------------------------------------
-    
+
     if (login && !follow) {
-      
-      component = 
+
+      component =
         <Button
           variant="contained"
           color="secondary"
@@ -568,17 +576,17 @@ const Component = (props) => {
           フォローする
         </Button>
       ;
-      
+
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - ログインしていてフォローしている場合
     // ---------------------------------------------
-    
+
     if (login && follow) {
-      
-      component = 
+
+      component =
         <Button
           variant="contained"
           color="primary"
@@ -597,24 +605,24 @@ const Component = (props) => {
           フォロー中
         </Button>
       ;
-      
+
     }
-    
-    
+
+
   // ---------------------------------------------
   //   - User Community
   // ---------------------------------------------
-    
+
   } else if (userCommunities_id) {
-    
-    
+
+
     // ---------------------------------------------
     //   - ログインしていない場合
     // ---------------------------------------------
-    
+
     if (!login) {
-      
-      component = 
+
+      component =
         <Link href="/login">
           <a className="link">
             <Button
@@ -627,24 +635,24 @@ const Component = (props) => {
           </a>
         </Link>
       ;
-      
+
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - ログインしていてメンバーでない場合
     // ---------------------------------------------
-    
+
     if (login && !follow) {
-      
-      
+
+
       // ---------------------------------------------
       //   - 承認制
       // ---------------------------------------------
-      
+
       if (approval) {
-        
-        component = 
+
+        component =
           <Button
             variant="contained"
             color="secondary"
@@ -658,15 +666,15 @@ const Component = (props) => {
             参加申請する
           </Button>
         ;
-        
-        
+
+
       // ---------------------------------------------
       //   - だれでも参加可能
       // ---------------------------------------------
-        
+
       } else {
-        
-        component = 
+
+        component =
           <Button
             variant="contained"
             color="secondary"
@@ -680,20 +688,20 @@ const Component = (props) => {
             参加する
           </Button>
         ;
-        
+
       }
-      
-      
+
+
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - ログインしていてメンバーである場合
     // ---------------------------------------------
-    
+
     if (login && follow) {
-      
-      component = 
+
+      component =
         <Button
           variant="contained"
           color="primary"
@@ -712,17 +720,17 @@ const Component = (props) => {
           退会する
         </Button>
       ;
-      
+
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - 参加申請済みの場合
     // ---------------------------------------------
-    
+
     if (followApproval) {
-      
-      component = 
+
+      component =
         <Button
           variant="contained"
           color="primary"
@@ -741,24 +749,24 @@ const Component = (props) => {
           参加申請を取り下げる
         </Button>
       ;
-      
+
     }
-    
-    
+
+
   // ---------------------------------------------
   //   - User
   // ---------------------------------------------
-  
+
   } else if (users_id) {
-    
-    
+
+
     // ---------------------------------------------
     //   - ログインしていない場合
     // ---------------------------------------------
-    
+
     if (!login) {
-      
-      component = 
+
+      component =
         <Link href="/login">
           <a className="link">
             <Button
@@ -771,24 +779,24 @@ const Component = (props) => {
           </a>
         </Link>
       ;
-      
+
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - ログインしていてフォローしていない場合
     // ---------------------------------------------
-    
+
     if (login && !follow) {
-      
-      
+
+
       // ---------------------------------------------
       //   - 承認制
       // ---------------------------------------------
-      
+
       if (approval) {
-        
-        component = 
+
+        component =
           <Button
             variant="contained"
             color="secondary"
@@ -802,15 +810,15 @@ const Component = (props) => {
             フォロー申請をする
           </Button>
         ;
-        
-        
+
+
       // ---------------------------------------------
       //   - だれでもフォロー可能
       // ---------------------------------------------
-        
+
       } else {
-        
-        component = 
+
+        component =
           <Button
             variant="contained"
             color="secondary"
@@ -824,20 +832,20 @@ const Component = (props) => {
             フォローする
           </Button>
         ;
-        
+
       }
-      
-      
+
+
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - ログインしていてフォロー済みである場合
     // ---------------------------------------------
-    
+
     if (login && follow) {
-      
-      component = 
+
+      component =
         <Button
           variant="contained"
           color="primary"
@@ -856,17 +864,17 @@ const Component = (props) => {
           フォロー中
         </Button>
       ;
-      
+
     }
-    
-    
+
+
     // ---------------------------------------------
     //   - 参加申請済みの場合
     // ---------------------------------------------
-    
+
     if (followApproval) {
-      
-      component = 
+
+      component =
         <Button
           variant="contained"
           color="primary"
@@ -885,19 +893,19 @@ const Component = (props) => {
           フォロー申請を取り下げる
         </Button>
       ;
-      
+
     }
-    
-    
+
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component - Number of People
   // --------------------------------------------------
-  
+
   const componentNumberOfPeople =
     <div
       css={css`
@@ -916,36 +924,36 @@ const Component = (props) => {
       {followedCount} 人
     </div>
   ;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/follow/v2/follow-button.js
   // `);
-  
+
   // console.log(chalk`
   //   login: {green ${login}}
   // `);
-  
+
   // console.log(`
   //   ----- linkArr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(linkArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <div
       css={css`
@@ -965,8 +973,8 @@ const Component = (props) => {
         }
       `}
     >
-      
-      
+
+
       {/* Button */}
       <div
         css={css`
@@ -975,18 +983,18 @@ const Component = (props) => {
           align-items: center;
         `}
       >
-        
+
         {component}
-        
+
         {componentNumberOfPeople}
-        
+
       </div>
-      
-      
+
+
     </div>
   );
-  
-  
+
+
 };
 
 

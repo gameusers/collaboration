@@ -57,7 +57,6 @@ const useLayout = (initialStateObj) => {
   const [ISO8601, setISO8601] = useState(lodashGet(initialStateObj, ['ISO8601'], moment().utc().toISOString()));
 
   const [headerObj, setHeaderObj] = useState(lodashGet(initialStateObj, ['headerObj'], {}));
-  const [snackbarObj, setSnackbarObj] = useState({});
   const [dialogObj, setDialogOpen] = useState({ open: false });
   const [loadingObj, setLoadingObj] = useState({});
   const [videoObj, setVideoObj] = useState({});
@@ -79,79 +78,6 @@ const useLayout = (initialStateObj) => {
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-
-  // ---------------------------------------------
-  //   - Snackbar
-  // ---------------------------------------------
-
-  const handleSnackbarOpen = ({
-
-    variant,
-    messageID,
-    vertical,
-    horizontal,
-    autoHideDuration,
-    errorObj,
-
-  }) => {
-
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/@states/layout.js - handleSnackbarOpen
-    // `);
-
-    setSnackbarObj({
-
-      open: true,
-      variant,
-      messageID,
-      vertical,
-      horizontal,
-      autoHideDuration,
-      errorObj,
-
-    });
-
-  };
-
-
-  const handleSnackbarClose = (event, reason) => {
-
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    const clonedObj = lodashCloneDeep(snackbarObj);
-    clonedObj.open = false;
-
-
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/@states/layout.js - handleSnackbarClose
-    // `);
-
-    // console.log(`
-    //   ----- snackbarObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(snackbarObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- clonedObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(clonedObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    setSnackbarObj(clonedObj);
-
-    // setSnackbarObj({
-    //   open: false,
-    // });
-
-  };
-
-
-
 
   // ---------------------------------------------
   //   - Dialog
@@ -260,9 +186,7 @@ const useLayout = (initialStateObj) => {
   const handleVideoClose = () => {
 
     setVideoObj({
-
       open: false,
-
     });
 
   };
@@ -509,9 +433,7 @@ const useLayout = (initialStateObj) => {
 
 
   const handleDialogCardClose = () => {
-
     setDialogCardOpen(false);
-
   };
 
 
@@ -546,10 +468,6 @@ const useLayout = (initialStateObj) => {
 
     headerObj,
     setHeaderObj,
-
-    snackbarObj,
-    handleSnackbarOpen,
-    handleSnackbarClose,
 
     dialogObj,
     handleDialogOpen,

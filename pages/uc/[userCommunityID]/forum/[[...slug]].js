@@ -88,6 +88,8 @@ const ContainerLayout = (props) => {
   const { setForumThreadsForListObj, setForumThreadsObj, setForumCommentsObj, setForumRepliesObj } = stateForum;
 
 
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
@@ -113,7 +115,7 @@ const ContainerLayout = (props) => {
 
     handleScrollTo({
 
-      to: 'forumThreads',
+      to: 'elementForumThreads',
       duration: 0,
       delay: 0,
       smooth: 'easeInOutQuart',
@@ -331,6 +333,8 @@ export async function getServerSideProps({ req, res, query }) {
   const replyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
 
 
+
+
   // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
@@ -371,11 +375,15 @@ export async function getServerSideProps({ req, res, query }) {
   const forumRepliesObj = lodashGet(dataObj, ['forumRepliesObj'], {});
 
 
+
+
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
 
   let title = `フォーラム: Page ${threadPage} - ${userCommunityName}`;
+
+
 
 
   // --------------------------------------------------
@@ -443,12 +451,16 @@ export async function getServerSideProps({ req, res, query }) {
   ];
 
 
+
+
   // --------------------------------------------------
   //   recentAccessPage
   // --------------------------------------------------
 
   let recentAccessPageHref = `/uc/[userCommunityID]/forum/[[...slug]]`;
   let recentAccessPageAs = `/uc/${userCommunityID}`;
+
+
 
 
   // --------------------------------------------------
@@ -522,6 +534,8 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   }
+
+
 
 
   // ---------------------------------------------

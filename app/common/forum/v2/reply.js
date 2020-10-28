@@ -102,21 +102,19 @@ moment.locale('ja');
 
 
 
-
-
 // --------------------------------------------------
 //   Material UI Style Overrides
 //   https://material-ui.com/styles/basics/
 // --------------------------------------------------
 
 const useStyles = makeStyles({
-  
+
   input: {
     fontSize: '12px',
     color: '#666',
     padding: '6px 26px 6px 12px',
   },
-  
+
 });
 
 
@@ -132,14 +130,14 @@ const useStyles = makeStyles({
  * Reply
  */
 const Reply = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     urlID,
     gameCommunities_id,
     userCommunityID,
@@ -148,210 +146,209 @@ const Reply = (props) => {
     forumComments_id,
     forumReplies_id,
     enableAnonymity,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateLayout = ContainerStateLayout.useContainer();
   const stateCommunity = ContainerStateCommunity.useContainer();
   const stateForum = ContainerStateForum.useContainer();
-  
+
   const {
-    
+
     ISO8601,
-    // handleSnackbarOpen,
     handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
-    
+
   } = stateLayout;
-  
+
   const {
-    
+
     setGameCommunityObj,
     setUserCommunityObj,
-    
+
   } = stateCommunity;
-  
+
   const {
-    
+
     forumCommentsObj,
     forumRepliesObj,
     setForumRepliesObj,
     setReloadForceForumReply,
-    
+
   } = stateForum;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
   const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  
+
   const [showFormReply, setShowFormReply] = useState(false);
   const [showFormReplyNew, setShowFormReplyNew] = useState(false);
   const [goods, setGoods] = useState(lodashGet(forumCommentsObj, ['dataObj', forumComments_id, 'goods'], 0));
-  
-  
+
+
   useEffect(() => {
-    
+
     setButtonDisabled(false);
-    
+
   }, []);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   /**
    * 返信を削除する
    */
   const handleDelete = async () => {
-    
-    
+
+
     try {
-      
-      
+
+
       // ---------------------------------------------
       //   _id が存在しない場合エラー
       // ---------------------------------------------
-      
+
       if ((!gameCommunities_id && !userCommunities_id) || !forumThreads_id || !forumComments_id || !forumReplies_id) {
         throw new CustomError({ errorsArr: [{ code: 'cqD8ikZJ_', messageID: '1YJnibkmh' }] });
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Loading Open
       // ---------------------------------------------
-      
+
       handleLoadingOpen({});
-      
-      
+
+
       // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
-      
+
       setButtonDisabled(true);
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
-      
+
       const formDataObj = {
-        
+
         gameCommunities_id,
         userCommunities_id,
         forumThreads_id,
         forumComments_id,
         forumReplies_id,
-        
+
       };
-      
-      
+
+
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
-      
+
       let resultObj = {};
-      
+
       if (gameCommunities_id) {
-        
+
         resultObj = await fetchWrapper({
-          
+
           urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/delete-reply-gc`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
-          
+
         });
-        
+
       } else if (userCommunities_id) {
-        
+
         resultObj = await fetchWrapper({
-          
+
           urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/delete-reply-uc`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
-          
+
         });
-        
+
       }
-      
-      
+
+
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
-      
+
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Update - gameCommunityObj / userCommunityObj
       // ---------------------------------------------
-      
+
       if (gameCommunities_id) {
-        
+
         setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
-        
+
       } else {
-        
+
         setUserCommunityObj(lodashGet(resultObj, ['data', 'userCommunityObj'], {}));
-        
+
       }
-      
-      
+
+
       // ---------------------------------------------
       //   Delete Reply Data
       // ---------------------------------------------
-      
+
       const clonedObj = lodashCloneDeep(forumRepliesObj);
-      
+
       const dataObj = lodashGet(clonedObj, ['dataObj'], {});
       delete dataObj[forumReplies_id];
-      
+
       setForumRepliesObj(clonedObj);
-      
-      
+
+
       // ---------------------------------------------
       //   次回の読み込み時に強制リロード
       // ---------------------------------------------
-      
+
       setReloadForceForumReply(true);
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   Snackbar: Success
       // --------------------------------------------------
-      
+
       const experienceObj = lodashGet(resultObj, ['data', 'experienceObj'], {});
-      
+
       showSnackbar({
-        
+
         enqueueSnackbar,
         intl,
         experienceObj,
@@ -361,95 +358,84 @@ const Reply = (props) => {
             messageID: 'o4fiADvZR',
           },
         ]
-        
+
       });
-      
-      // ---------------------------------------------
-      //   Snackbar: Success
-      // ---------------------------------------------
-      
-      // handleSnackbarOpen({
-        
-      //   variant: 'success',
-      //   messageID: 'o4fiADvZR',
-        
-      // });
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   console.log
       // ---------------------------------------------
-      
+
       // console.log(`
       //   ----------------------------------------\n
       //   /app/common/forum/v2/components/thread.js - handleDelete
       // `);
-      
+
       // console.log(chalk`
       //   gameCommunities_id: {green ${gameCommunities_id}}
       //   userCommunities_id: {green ${userCommunities_id}}
       //   forumThreads_id: {green ${forumThreads_id}}
       // `);
-      
+
       // console.log(`
       //   ----- resultObj -----\n
       //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
+
+
     } catch (errorObj) {
-      
-      
+
+
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
-      
+
       showSnackbar({
-        
+
         enqueueSnackbar,
         intl,
         errorObj,
-        
+
       });
-      
-      
+
+
     } finally {
-      
-      
+
+
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
-      
+
       setButtonDisabled(false);
-      
-      
+
+
       // ---------------------------------------------
       //   Loading Close
       // ---------------------------------------------
-      
+
       handleLoadingClose();
-      
-      
+
+
     }
-    
-    
+
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/forum/v2/components/reply.js
   // `);
-  
+
   // console.log(chalk`
   //   urlID: {green ${urlID}}
   //   gameCommunities_id: {green ${gameCommunities_id}}
@@ -458,127 +444,127 @@ const Reply = (props) => {
   //   forumThreads_id: {green ${forumThreads_id}}
   //   enableAnonymity: {green ${enableAnonymity}}
   // `);
-  
+
   // console.log(chalk`
   //   page: {green ${page}}
   //   count: {green ${count}}
   //   limit: {green ${limit}}
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   dataObj
   // --------------------------------------------------
-  
+
   const dataObj = lodashGet(forumRepliesObj, ['dataObj', forumReplies_id], {});
-  
+
   if (Object.keys(dataObj).length === 0) {
     return null;
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   User Data
   // --------------------------------------------------
-  
+
   const imagesAndVideosThumbnailObj = lodashGet(dataObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
-  
+
   const cardPlayers_id = lodashGet(dataObj, ['cardPlayersObj', '_id'], '');
-  
+
   let name = lodashGet(dataObj, ['name'], '');
   const cardPlayers_name = lodashGet(dataObj, ['cardPlayersObj', 'name'], '');
-  
+
   if (cardPlayers_name) {
     name = cardPlayers_name;
   }
-  
+
   const status = lodashGet(dataObj, ['cardPlayersObj', 'status'], '');
-  
+
   const exp = lodashGet(dataObj, ['usersObj', 'exp'], 0);
   const accessDate = lodashGet(dataObj, ['usersObj', 'accessDate'], '');
   const userID = lodashGet(dataObj, ['usersObj', 'userID'], '');
-  
-  
+
+
   // --------------------------------------------------
   //   Comment
   // --------------------------------------------------
-  
+
   const comment = lodashGet(dataObj, ['comment'], '');
-  
-  
+
+
   // --------------------------------------------------
   //   Images and Videos
   // --------------------------------------------------
-  
+
   const imagesAndVideosObj = lodashGet(dataObj, ['imagesAndVideosObj'], {});
-  
-  
+
+
   // --------------------------------------------------
   //   Datetime
   // --------------------------------------------------
-  
+
   let datetimeCurrent = ISO8601;
   const datetimeUpdated = moment(dataObj.updatedDate);
-  
+
   if (datetimeUpdated.isAfter(datetimeCurrent)) {
     datetimeCurrent = datetimeUpdated;
   }
-  
+
   const datetimeFrom = datetimeUpdated.from(datetimeCurrent);
-  
-  
+
+
   // --------------------------------------------------
   //   Link
   // --------------------------------------------------
-  
+
   let linkHref = '';
   let linkAs = '';
-  
+
   if (urlID) {
-    
+
     linkHref = `/gc/[urlID]/forum/[[...slug]]`;
     linkAs = `/gc/${urlID}/forum/${forumReplies_id}`;
-    
+
   } else if (userCommunityID) {
-    
+
     linkHref = `/uc/[userCommunityID]/forum/[[...slug]]`;
     linkAs = `/uc/${userCommunityID}/forum/${forumReplies_id}`;
-    
+
   }
-  
-  
+
+
   // --------------------------------------------------
   //   Reply to
   // --------------------------------------------------
-  
+
   const replyToForumComments_id = lodashGet(dataObj, ['replyToForumComments_id'], '');
-  
+
   let replyToName = lodashGet(dataObj, ['replyToName'], '');
-  
+
   if (!replyToName) {
     replyToName = 'ななしさん';
   }
-  
+
   const replyTo = `${replyToName} | ${replyToForumComments_id}`;
-  
-  
+
+
   // --------------------------------------------------
   //   編集権限 - 編集ボタンを表示する
   // --------------------------------------------------
-  
+
   const editable = lodashGet(dataObj, ['editable'], false);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component
   // --------------------------------------------------
-  
+
   return (
     <Element
       css={css`
@@ -588,8 +574,8 @@ const Reply = (props) => {
       `}
       name={forumReplies_id}
     >
-      
-      
+
+
       {/* Form */}
       {showFormReply &&
         <FormReply
@@ -603,15 +589,15 @@ const Reply = (props) => {
           setShowForm={setShowFormReply}
         />
       }
-      
-      
-      
-      
+
+
+
+
       {/* Replies */}
       {!showFormReply &&
         <React.Fragment>
-          
-          
+
+
           {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
           <User
             imagesAndVideosThumbnailObj={imagesAndVideosThumbnailObj}
@@ -622,10 +608,10 @@ const Reply = (props) => {
             exp={exp}
             cardPlayers_id={cardPlayers_id}
           />
-          
-          
-          
-          
+
+
+
+
           {/* Images and Videos */}
           {Object.keys(imagesAndVideosObj).length > 0 &&
             <div
@@ -633,31 +619,31 @@ const Reply = (props) => {
                 margin: 12px 0 0 0;
               `}
             >
-              
+
               <ImageAndVideo
                 imagesAndVideosObj={imagesAndVideosObj}
               />
-              
+
             </div>
           }
-          
-          
-          
-          
+
+
+
+
           {/* Reply Container / Left Purple Line */}
           <div
             css={css`
               border-left: 4px solid #A9A9F5;
               margin: 10px 0 0 0;
               padding: 0 0 0 16px;
-              
+
               @media screen and (max-width: 480px) {
                 padding: 0 0 0 12px;
               }
             `}
           >
-            
-            
+
+
             {/* Reply To */}
             {replyToForumComments_id &&
               <div
@@ -679,30 +665,30 @@ const Reply = (props) => {
                 <p>{replyTo}</p>
               </div>
             }
-            
-            
-            
-            
+
+
+
+
             {/* Comment */}
             <Paragraph text={comment} />
-            
-            
-            
-            
+
+
+
+
             {/* Bottom Container */}
             <div
               css={css`
                 display: flex;
                 flex-flow: row wrap;
                 margin: 12px 0 0 0;
-                
+
                 @media screen and (max-width: 480px) {
                   flex-flow: column wrap;
                 }
               `}
             >
-              
-              
+
+
               {/* Good Button & Updated Date & forumComments_id */}
               <div
                 css={css`
@@ -710,40 +696,40 @@ const Reply = (props) => {
                   flex-flow: row nowrap;
                 `}
               >
-                
-                
+
+
                 {/* Good Button */}
                 <div
                   css={css`
                     && {
                       margin: 2px 12px 0 0;
-                      
+
                       @media screen and (max-width: 480px) {
                         margin: 2px 8px 0 0;
                       }
                     }
                   `}
                 >
-                  
+
                   <GoodButton
                     goods={goods}
                     setGoods={setGoods}
                     type="forumReply"
                     target_id={forumReplies_id}
                   />
-                  
+
                 </div>
-                
-                
-                
-                
+
+
+
+
                 {/* Updated Date */}
                 <div
                   css={css`
                     display: flex;
                     flex-flow: row nowrap;
                     margin: 4px 12px 0 0;
-                    
+
                     @media screen and (max-width: 480px) {
                       margin: 4px 8px 0 0;
                     }
@@ -757,7 +743,7 @@ const Reply = (props) => {
                       }
                     `}
                   />
-                  
+
                   <div
                     css={css`
                       font-size: 12px;
@@ -767,10 +753,10 @@ const Reply = (props) => {
                     {datetimeFrom}
                   </div>
                 </div>
-                
-                
-                
-                
+
+
+
+
                 {/* forumReplies_id */}
                 <div
                   css={css`
@@ -799,27 +785,27 @@ const Reply = (props) => {
                     </Link>
                   </div>
                 </div>
-                
-                
+
+
               </div>
-              
-              
-              
-              
+
+
+
+
               {/* Buttons */}
               <div
                 css={css`
                   display: flex;
                   flex-flow: row nowrap;
                   margin-left: auto;
-                  
+
                   @media screen and (max-width: 480px) {
                     margin-top: 12px;
                   }
                 `}
               >
-                
-                
+
+
                 {/* Reply Button */}
                 <Button
                   css={css`
@@ -829,7 +815,7 @@ const Reply = (props) => {
                       min-width: 54px;
                       min-height: 22px;
                       padding: 0 3px;
-                      
+
                       @media screen and (max-width: 480px) {
                         min-width: 36px;
                         min-height: 22px;
@@ -850,10 +836,10 @@ const Reply = (props) => {
                   />
                   返信
                 </Button>
-                
-                
-                
-                
+
+
+
+
                 {/* Delete Button */}
                 {editable &&
                   <Button
@@ -865,7 +851,7 @@ const Reply = (props) => {
                         min-height: 22px;
                         margin: 0 0 0 12px;
                         padding: 0 4px;
-                        
+
                         @media screen and (max-width: 480px) {
                           min-width: 36px;
                           min-height: 22px;
@@ -881,12 +867,12 @@ const Reply = (props) => {
                           () => {}
                         :
                           () => handleDialogOpen({
-                          
+
                             title: '返信削除',
                             description: '返信を削除しますか？',
                             handle: handleDelete,
                             argumentsObj: {},
-                            
+
                           })
                     }
                   >
@@ -901,10 +887,10 @@ const Reply = (props) => {
                     削除
                   </Button>
                 }
-                
-                
-                
-                
+
+
+
+
                 {/* Edit Button */}
                 {editable &&
                   <Button
@@ -916,7 +902,7 @@ const Reply = (props) => {
                         min-height: 22px;
                         margin: 0 0 0 12px;
                         padding: 0 4px;
-                        
+
                         @media screen and (max-width: 480px) {
                           min-width: 36px;
                           min-height: 22px;
@@ -939,16 +925,16 @@ const Reply = (props) => {
                     編集
                   </Button>
                 }
-                
-                
+
+
               </div>
-              
-              
+
+
             </div>
-            
-            
-            
-            
+
+
+
+
             {/* Form Reply */}
             {showFormReplyNew &&
               <FormReply
@@ -961,19 +947,19 @@ const Reply = (props) => {
                 setShowForm={setShowFormReplyNew}
               />
             }
-            
-            
+
+
           </div>
-          
-          
+
+
         </React.Fragment>
       }
-    
-    
+
+
     </Element>
   );
-  
-  
+
+
 };
 
 
@@ -983,14 +969,14 @@ const Reply = (props) => {
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     urlID,
     gameCommunities_id,
     userCommunityID,
@@ -998,59 +984,58 @@ const Component = (props) => {
     forumThreads_id,
     forumComments_id,
     enableAnonymity,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  
-  
+
+
   useEffect(() => {
-    
+
     setButtonDisabled(false);
-    
+
   }, []);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateLayout = ContainerStateLayout.useContainer();
   const stateCommunity = ContainerStateCommunity.useContainer();
   const stateForum = ContainerStateForum.useContainer();
-  
+
   const {
-    
-    ISO8601,
-    // handleSnackbarOpen,
+
+    // ISO8601,
     handleScrollTo,
-    
+
   } = stateLayout;
-  
+
   const {
-    
+
     gameCommunityObj,
     setGameCommunityObj,
-    
+
     userCommunityObj,
     setUserCommunityObj,
-    
+
   } = stateCommunity;
-  
+
   const {
-    
+
     forumThreadsObj,
     forumCommentsObj,
     forumRepliesObj,
@@ -1058,222 +1043,222 @@ const Component = (props) => {
     setReloadForceForumComment,
     reloadForceForumReply,
     setReloadForceForumReply,
-    
+
   } = stateForum;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Data
   // --------------------------------------------------
-  
+
   let updatedDate = '';
-  
-  
+
+
   // ---------------------------------------------
   //   - Game Community
   // ---------------------------------------------
-  
+
   if (urlID) {
-    
+
     updatedDate = lodashGet(gameCommunityObj, ['updatedDateObj', 'forum'], '0000-01-01T00:00:00Z');
-    
-    
+
+
   // ---------------------------------------------
   //   - User Community
   // ---------------------------------------------
-  
+
   } else if (userCommunityID) {
-    
+
     updatedDate = lodashGet(userCommunityObj, ['updatedDateObj', 'forum'], '0000-01-01T00:00:00Z');
-    
+
   }
-  
-  
-  
-  
-  
+
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   /**
    * 返信を読み込む
    * @param {number} page - 返信のページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
   const handleRead = async ({
-    
+
     page,
     changeLimit,
-    
+
   }) => {
-    
-    
+
+
     try {
-      
-      
+
+
       // ---------------------------------------------
       //   Property
       // ---------------------------------------------
-      
+
       const loadedDate = lodashGet(forumRepliesObj, [forumComments_id, `page${page}Obj`, 'loadedDate'], '');
       const arr = lodashGet(forumRepliesObj, [forumComments_id, `page${page}Obj`, 'arr'], []);
-      
+
       const commentLimit = parseInt((getCookie({ key: 'forumCommentLimit' }) || process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT), 10);
       let replyLimit = parseInt((getCookie({ key: 'forumReplyLimit' }) || process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT), 10);
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Change Limit
       // ---------------------------------------------
-      
+
       if (changeLimit) {
-        
-        
+
+
         replyLimit = changeLimit;
-        
-        
+
+
         // ---------------------------------------------
         //   Set Cookie - forumReplyLimit
         // ---------------------------------------------
-        
+
         Cookies.set('forumReplyLimit', changeLimit);
-        
-        
+
+
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   再読込するかどうか
       // ---------------------------------------------
-      
+
       let reload = false;
-      
-      
+
+
       // ---------------------------------------------
       //   1ページに表示する件数を変更した場合、再読込
       // ---------------------------------------------
-      
+
       if (changeLimit || reloadForceForumReply) {
-        
-        
+
+
         // ---------------------------------------------
         //   次回の読み込み時にコメントを強制リロード
         // ---------------------------------------------
-        
+
         setReloadForceForumComment(true);
-        
-        
+
+
         // ---------------------------------------------
         //   再読込
         // ---------------------------------------------
-        
+
         reload = true;
-        
-      
+
+
       // ---------------------------------------------
       //   最後の読み込み以降にフォーラムの更新があった場合
       //   または最後の読み込みからある程度時間（10分）が経っていた場合、再読込する
       // ---------------------------------------------
-        
+
       } else if (loadedDate) {
-        
+
         const datetimeLoaded = moment(loadedDate).utcOffset(0);
         const datetimeForumUpdated = moment(updatedDate).utcOffset(0);
         const datetimeNow = moment().utcOffset(0);
         const datetimeReloadLimit = moment(loadedDate).add(process.env.NEXT_PUBLIC_FORUM_RELOAD_MINUTES, 'm').utcOffset(0);
-        
+
         if (datetimeForumUpdated.isAfter(datetimeLoaded) || datetimeNow.isAfter(datetimeReloadLimit)) {
           reload = true;
         }
-        
+
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   すでにデータを読み込んでいる場合は、ストアのデータを表示する
       // ---------------------------------------------
-      
+
       if (!reload && arr.length > 0) {
-        
-        console.log('store');
-        
-        
+
+        // console.log('store');
+
+
         // ---------------------------------------------
         //   Set Page
         // ---------------------------------------------
-        
+
         const clonedObj = lodashCloneDeep(forumRepliesObj);
         lodashSet(clonedObj, [forumComments_id, 'page'], page);
         setForumRepliesObj(clonedObj);
-        
-        
+
+
         // ---------------------------------------------
         //   Return
         // ---------------------------------------------
-        
+
         return;
-        
-        
+
+
       }
-      
-      console.log('fetch');
-      
-      
-      
-      
+
+      // console.log('fetch');
+
+
+
+
       // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
-      
+
       setButtonDisabled(true);
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   forumComments_idsArr
       // ---------------------------------------------
-      
+
       let forumComments_idsArr = [forumComments_id];
-      
+
       // 表示件数を変更する場合は他の返信も一緒に更新するため、現在表示されているコメントのIDを取得する
       if (changeLimit) {
-        
+
         const forumThreadsPage = lodashGet(forumThreadsObj, ['page'], 1);
         const forumThreads_idsArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
-        
-        
+
+
         forumComments_idsArr = [];
-        
+
         for (let forumThreads_id of forumThreads_idsArr.values()) {
-          
+
           const forumCommentsPage = lodashGet(forumCommentsObj, [forumThreads_id, 'page'], 1);
           const tempForumComments_idArr = lodashGet(forumCommentsObj, [forumThreads_id, `page${forumCommentsPage}Obj`, 'arr'], []);
-          
+
           forumComments_idsArr = forumComments_idsArr.concat(tempForumComments_idArr);
-          
+
         }
-        
+
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
-      
+
       const formDataObj = {
-        
+
         gameCommunities_id,
         userCommunities_id,
         forumComments_idsArr,
@@ -1281,76 +1266,76 @@ const Component = (props) => {
         commentLimit,
         replyPage: page,
         replyLimit,
-        
+
       };
-      
-      
+
+
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
-      
+
       const resultObj = await fetchWrapper({
-        
+
         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/forum-comments/read-replies`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
-        
+
       });
-      
-      
+
+
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
-      
+
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Update - gameCommunityObj / userCommunityObj
       // ---------------------------------------------
-      
+
       if (gameCommunities_id) {
-        
+
         setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
-        
+
       } else {
-        
+
         setUserCommunityObj(lodashGet(resultObj, ['data', 'userCommunityObj'], {}));
-        
+
       }
-      
-      
+
+
       // ---------------------------------------------
       //   Update - forumRepliesObj
       // ---------------------------------------------
-      
+
       const forumRepliesNewObj = lodashGet(resultObj, ['data', 'forumRepliesObj'], {});
       const forumRepliesMergedObj = reload ? forumRepliesNewObj : lodashMerge(forumRepliesObj, forumRepliesNewObj);
       setForumRepliesObj(forumRepliesMergedObj);
-      
-      
+
+
       // ---------------------------------------------
       //   返信の強制リロード解除
       // ---------------------------------------------
-      
+
       setReloadForceForumReply(false);
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   console.log
       // ---------------------------------------------
-      
+
       // console.log(`
       //   ----------------------------------------\n
       //   /app/common/forum/v2/components/reply.js - handleRead
       // `);
-      
+
       // console.log(chalk`
       //   gameCommunities_id: {green ${gameCommunities_id}}
       //   userCommunities_id: {green ${userCommunities_id}}
@@ -1359,101 +1344,101 @@ const Component = (props) => {
       //   commentLimit: {green ${commentLimit}}
       //   replyLimit: {green ${replyLimit}}
       // `);
-      
+
       // console.log(`
       //   ----- forumComments_idsArr -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(forumComments_idsArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
+
       // console.log(chalk`
       //   reloadForceForumReply: {green ${reloadForceForumReply}}
       //   reload: {green ${reload}}
       // `);
-      
+
       // console.log(`
       //   ----- arr -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
+
       // console.log(`
       //   ----- resultObj -----\n
       //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
+
+
     } catch (errorObj) {
-      
-      
+
+
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
-      
+
       showSnackbar({
-        
+
         enqueueSnackbar,
         intl,
         errorObj,
-        
+
       });
-      
-      
+
+
     } finally {
-      
-      
+
+
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
-      
+
       setButtonDisabled(false);
-      
-      
+
+
       // ---------------------------------------------
       //   Scroll To
       // ---------------------------------------------
-      
+
       handleScrollTo({
-        
+
         to: `forumReplies-${forumComments_id}`,
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
         offset: -50,
-        
+
       });
-      
-      
+
+
     }
-    
-    
+
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   const page = lodashGet(forumRepliesObj, [forumComments_id, 'page'], 1);
   const count = lodashGet(forumRepliesObj, [forumComments_id, 'count'], 0);
   const limit = parseInt((forumRepliesObj.limit || process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT), 10);
   const arr = lodashGet(forumRepliesObj, [forumComments_id, `page${page}Obj`, 'arr'], []);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/forum/v2/components/reply.js
   // `);
-  
+
   // console.log(chalk`
   //   urlID: {green ${urlID}}
   //   gameCommunities_id: {green ${gameCommunities_id}}
@@ -1462,41 +1447,41 @@ const Component = (props) => {
   //   forumThreads_id: {green ${forumThreads_id}}
   //   enableAnonymity: {green ${enableAnonymity}}
   // `);
-  
+
   // console.log(chalk`
   //   page: {green ${page}}
   //   count: {green ${count}}
   //   limit: {green ${limit}}
   // `);
-  
+
   // console.log(`
   //   ----- arr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   配列が空の場合は、空のコンポーネントを返す
   // --------------------------------------------------
-  
+
   if (arr.length === 0) {
     return null;
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component - Comment & Reply
   // --------------------------------------------------
-  
+
   const componentArr = [];
-  
+
   for (let forumReplies_id of arr.values()) {
-    
+
     componentArr.push(
       <Reply
         key={forumReplies_id}
@@ -1510,43 +1495,43 @@ const Component = (props) => {
         enableAnonymity={enableAnonymity}
       />
     );
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Element
       name={`forumReplies-${forumComments_id}`}
     >
-      
-      
+
+
       {componentArr}
-      
-      
-      
-      
+
+
+
+
       {/* Pagination */}
       <div
         css={css`
           display: flex;
           flex-flow: row wrap;
-          
+
           border-top: 1px solid;
           border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
           border-image-slice: 1;
-          
+
           padding: 16px 0 0 0;
           margin: 24px 24px 0 0;
         `}
       >
-        
-        
+
+
         {/* Pagination */}
         <div
           css={css`
@@ -1565,10 +1550,10 @@ const Component = (props) => {
             locale={localeInfo}
           />
         </div>
-        
-        
-        
-        
+
+
+
+
         {/* Rows Per Page */}
         <FormControl
           css={css`
@@ -1576,7 +1561,7 @@ const Component = (props) => {
           `}
           variant="outlined"
         >
-          
+
           <Select
             value={limit}
             onChange={() => {}}
@@ -1598,17 +1583,17 @@ const Component = (props) => {
             <MenuItem value={20}>20</MenuItem>
             <MenuItem value={50}>50</MenuItem>
           </Select>
-          
+
         </FormControl>
-        
-        
+
+
       </div>
-      
-      
+
+
     </Element>
   );
-  
-  
+
+
 };
 
 

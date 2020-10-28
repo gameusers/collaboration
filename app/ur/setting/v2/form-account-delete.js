@@ -295,7 +295,7 @@ const Component = (props) => {
 
       handleScrollTo({
 
-        to: 'formDelete',
+        to: 'elementFormDelete',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -359,110 +359,110 @@ const Component = (props) => {
       css={css`
         margin: 16px 0 0 0;
       `}
-      name="formDelete"
+      name="elementFormDelete"
     >
 
 
-    <Panel
-      heading="アカウント削除"
-      defaultExpanded={defaultExpanded}
-    >
-
-
-      <p
-        css={css`
-          margin: 0 0 14px 0;
-        `}
+      <Panel
+        heading="アカウント削除"
+        defaultExpanded={defaultExpanded}
       >
-        アカウントを削除します。自分がオーナーになっているコミュニティも削除されますので、参加者がいる場合には、閉鎖することを通知してからアカウントを削除することをお勧めします。
-      </p>
-
-      <p>これまでフォーラムや募集に書き込んだ内容は自動的に削除されませんので、もし書き込みなどを削除したい場合は、必ずアカウントを削除する前に削除してください。一度アカウントを削除すると以後は削除できなくなります。</p>
 
 
-      <form>
-
-
-        {/* Delete */}
-        <div css={cssBox}>
-
-          <h3
-            css={css`
-              margin: 0 0 6px 0;
-            `}
-          >
-            削除
-          </h3>
-
-          <p
-            css={css`
-              margin: 0 0 8px 0;
-            `}
-          >
-            半角英字で delete と入力してください。
-          </p>
-
-
-          <div>
-            <TextField
-              css={css`
-                width: 400px;
-
-                @media screen and (max-width: 480px) {
-                  width: 100%;
-                }
-              `}
-              id="delete"
-              label="Textfield"
-              value={validationDeleteObj.value}
-              onChange={(eventObj) => setKeyword(eventObj.target.value)}
-              error={validationDeleteObj.error}
-              helperText={intl.formatMessage({ id: validationDeleteObj.messageID }, { numberOfCharacters: validationDeleteObj.numberOfCharacters })}
-              disabled={buttonDisabled}
-              margin="normal"
-              inputProps={{
-                maxLength: 6,
-              }}
-            />
-          </div>
-
-        </div>
-
-
-
-
-        {/* Submit Button */}
-        <div
+        <p
           css={css`
-            display: flex;
-            flex-flow: row wrap;
-            border-top: 1px dashed #848484;
-            margin: 24px 0 0 0;
-            padding: 24px 0 0 0;
+            margin: 0 0 14px 0;
           `}
         >
+          アカウントを削除します。自分がオーナーになっているコミュニティも同時に削除されますので、参加者がいる場合は、閉鎖することを通知してからアカウントを削除することをお勧めします。
+        </p>
 
-          <Button
-            variant="contained"
-            color="primary"
-            disabled={buttonDisabled}
-            onClick={() => handleDialogOpen({
-              title: 'アカウント削除',
-              description: 'アカウントを削除しますか？',
-              handle: handleSubmit,
-              argumentsObj: {},
-            })}
+        <p>ゲームコミュニティのフォーラムや募集に書き込んだ内容は削除されませんので、必ずアカウントを削除する前に削除してください。一度アカウントを削除すると以後は削除できなくなります。</p>
+
+
+        <form>
+
+
+          {/* Delete */}
+          <div css={cssBox}>
+
+            <h3
+              css={css`
+                margin: 0 0 6px 0;
+              `}
+            >
+              削除
+            </h3>
+
+            <p
+              css={css`
+                margin: 0 0 8px 0;
+              `}
+            >
+              半角英字で delete と入力してください。
+            </p>
+
+
+            <div>
+              <TextField
+                css={css`
+                  width: 400px;
+
+                  @media screen and (max-width: 480px) {
+                    width: 100%;
+                  }
+                `}
+                id="delete"
+                label="Textfield"
+                value={validationDeleteObj.value}
+                onChange={(eventObj) => setKeyword(eventObj.target.value)}
+                error={validationDeleteObj.error}
+                helperText={intl.formatMessage({ id: validationDeleteObj.messageID }, { numberOfCharacters: validationDeleteObj.numberOfCharacters })}
+                disabled={buttonDisabled}
+                margin="normal"
+                inputProps={{
+                  maxLength: 6,
+                }}
+              />
+            </div>
+
+          </div>
+
+
+
+
+          {/* Submit Button */}
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row wrap;
+              border-top: 1px dashed #848484;
+              margin: 24px 0 0 0;
+              padding: 24px 0 0 0;
+            `}
           >
-            削除する
-          </Button>
 
-        </div>
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={buttonDisabled}
+              onClick={() => handleDialogOpen({
+                title: 'アカウント削除',
+                description: 'アカウントを削除しますか？',
+                handle: handleSubmit,
+                argumentsObj: {},
+              })}
+            >
+              削除する
+            </Button>
+
+          </div>
 
 
-      </form>
+        </form>
 
 
-    </Panel>
+      </Panel>
 
 
     </Element>

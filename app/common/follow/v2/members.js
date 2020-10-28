@@ -504,7 +504,7 @@ const Component = (props) => {
 
       handleScrollTo({
 
-        to: 'followMembers',
+        to: 'elementFollowMembers',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -808,7 +808,6 @@ const Component = (props) => {
 
   const componentsArr = [];
 
-
   for (const [index, cardPlayers_id] of arr.entries()) {
 
 
@@ -1029,7 +1028,7 @@ const Component = (props) => {
 
   return (
     <Element
-      name="followMembers"
+      name="elementFollowMembers"
     >
 
 

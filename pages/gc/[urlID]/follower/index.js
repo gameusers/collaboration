@@ -200,6 +200,8 @@ export async function getServerSideProps({ req, res, query }) {
   const limit = getCookie({ key: 'followLimit', reqHeadersCookie });
 
 
+
+
   // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
@@ -234,11 +236,15 @@ export async function getServerSideProps({ req, res, query }) {
   const followMembersObj = lodashGet(dataObj, ['followMembersObj'], {});
 
 
+
+
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
 
   const title = `フォロワー - ${gameName}`;
+
+
 
 
   // --------------------------------------------------
@@ -314,12 +320,16 @@ export async function getServerSideProps({ req, res, query }) {
   ];
 
 
+
+
   // ---------------------------------------------
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
   res.cookie('recentAccessPageHref', '/gc/[urlID]/follower');
   res.cookie('recentAccessPageAs', `/gc/${urlID}/follower`);
+
+
 
 
   // --------------------------------------------------

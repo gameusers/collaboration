@@ -24,7 +24,6 @@ import lodashHas from 'lodash/has';
 // ---------------------------------------------
 
 import ModelUserCommunities from 'app/@database/user-communities/model.js';
-import ModelFeeds from 'app/@database/feeds/model.js';
 
 
 // ---------------------------------------------
@@ -169,20 +168,6 @@ export default async (req, res) => {
 
 
     returnObj.ucListObj = await ModelUserCommunities.findUserCommunitiesList(argumentsObj);
-
-
-
-
-    // --------------------------------------------------
-    //   DB find / Feed
-    // --------------------------------------------------
-
-    returnObj.feedObj = await ModelFeeds.findFeed({
-
-      localeObj,
-      arr: ['all'],
-
-    });
 
 
 

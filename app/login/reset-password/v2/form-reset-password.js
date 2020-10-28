@@ -16,6 +16,7 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
 import { GoogleReCaptchaProvider, GoogleReCaptcha } from 'react-google-recaptcha-v3';
 
@@ -50,6 +51,7 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -89,6 +91,7 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
   const [loginID, setLoginID] = useState(lodashGet(props, ['loginID'], ''));
@@ -113,7 +116,6 @@ const Component = (props) => {
 
   const {
 
-    handleSnackbarOpen,
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
@@ -244,10 +246,16 @@ const Component = (props) => {
       //   Snackbar: Success
       // ---------------------------------------------
 
-      handleSnackbarOpen({
+      showSnackbar({
 
-        variant: 'success',
-        messageID: 'WTynPDVob',
+        enqueueSnackbar,
+        intl,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'WTynPDVob',
+          },
+        ]
 
       });
 
@@ -290,9 +298,10 @@ const Component = (props) => {
       //   Snackbar: Error
       // ---------------------------------------------
 
-      handleSnackbarOpen({
+      showSnackbar({
 
-        variant: 'error',
+        enqueueSnackbar,
+        intl,
         errorObj,
 
       });
@@ -307,7 +316,7 @@ const Component = (props) => {
 
       handleScrollTo({
 
-        to: 'formResetPassword',
+        to: 'elementFormResetPassword',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -369,7 +378,7 @@ const Component = (props) => {
       css={css`
         margin: 14px 0 0 0;
       `}
-      name="formResetPassword"
+      name="elementFormResetPassword"
     >
 
 

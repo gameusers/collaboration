@@ -220,6 +220,8 @@ export async function getServerSideProps({ req, res, query }) {
   const limit = getCookie({ key: 'communityListLimit', reqHeadersCookie });
 
 
+
+
   // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
@@ -251,11 +253,15 @@ export async function getServerSideProps({ req, res, query }) {
   const hardwaresArr = lodashGet(dataObj, ['hardwaresArr'], []);
 
 
+
+
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
 
   let title = `ユーザーコミュニティ - Game Users`;
+
+
 
 
   // --------------------------------------------------
@@ -304,12 +310,16 @@ export async function getServerSideProps({ req, res, query }) {
   ];
 
 
+
+
   // --------------------------------------------------
   //   recentAccessPage
   // --------------------------------------------------
 
   let recentAccessPageHref = '/uc/list/[[...slug]]';
   let recentAccessPageAs = '/uc/list';
+
+
 
 
   // --------------------------------------------------
@@ -381,6 +391,8 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   }
+
+
 
 
   // ---------------------------------------------

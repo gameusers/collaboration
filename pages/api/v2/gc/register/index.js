@@ -27,7 +27,6 @@ import ModelGameCommunities from 'app/@database/game-communities/model.js';
 import ModelGamesTemps from 'app/@database/games-temps/model.js';
 import ModelGameGenres from 'app/@database/game-genres/model.js';
 import ModelHardwares from 'app/@database/hardwares/model.js';
-import ModelFeeds from 'app/@database/feeds/model.js';
 
 
 // ---------------------------------------------
@@ -215,20 +214,6 @@ export default async (req, res) => {
       }
 
     });
-
-
-
-
-    // --------------------------------------------------
-    //   DB find / Feed
-    // --------------------------------------------------
-
-    // returnObj.feedObj = await ModelFeeds.findFeed({
-
-    //   localeObj,
-    //   arr: ['all'],
-
-    // });
 
 
 

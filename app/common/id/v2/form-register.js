@@ -16,6 +16,7 @@ import util from 'util';
 
 import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
+import { useSnackbar } from 'notistack';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -45,18 +46,12 @@ import Select from '@material-ui/core/Select';
 
 
 // ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateLayout } from 'app/@states/layout.js';
-
-
-// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
+import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -88,202 +83,193 @@ import FormGame from 'app/common/game/v2/form.js';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     setDataArr,
     unselectedArr,
     setUnselectedArr,
     gamesLimit,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  
+
   const [platform, setPlatform] = useState('');
   const [label, setLabel] = useState('');
   const [id, setID] = useState('');
   const [publicSetting, setPublicSetting] = useState('');
   const [search, setSearch] = useState(true);
   const [gamesArr, setGamesArr] = useState([]);
-  
-  
+
+
   useEffect(() => {
-    
+
     setButtonDisabled(false);
-    
+
   }, []);
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-  
-  const stateLayout = ContainerStateLayout.useContainer();
-  
-  const {
-    
-    handleSnackbarOpen,
-    
-  } = stateLayout;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   /**
    * 登録フォームを送信する
    */
   const handleSubmit = async () => {
-    
-    
+
+
     try {
-      
-      
+
+
       // --------------------------------------------------
       //   Button Disable
       // --------------------------------------------------
-      
+
       setButtonDisabled(true);
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   フォームに必要な情報が入力されていない場合、エラー
       // --------------------------------------------------
-      
+
       if (!platform || !id || !publicSetting) {
         throw new CustomError({ errorsArr: [{ code: 'gk89EvTvH', messageID: 'uwHIKBy7c' }] });
       }
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   FormData
       // --------------------------------------------------
-      
+
       const formDataObj = {
-        
+
         platform,
         label,
         id,
         publicSetting,
         search,
-        
+
       };
-      
+
       if (gamesArr.length > 0) {
         formDataObj.gameCommunities_id = lodashGet(gamesArr, [0, 'gameCommunities_id'], '');
       }
-      
-      
+
+
       // --------------------------------------------------
       //   Fetch
       // --------------------------------------------------
-      
+
       const resultObj = await fetchWrapper({
-        
+
         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/ids/upsert`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
-        
+
       });
-      
-      
+
+
       // --------------------------------------------------
       //   Error
       // --------------------------------------------------
-      
+
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   データ更新
       // --------------------------------------------------
-      
+
       const tempDataArr = resultObj.data;
       setDataArr(tempDataArr);
-      
-      
-      
+
+
+
       // --------------------------------------------------
       //   未選択IDに追加 / _id のみでいい
       // --------------------------------------------------
-      
+
       unselectedArr.push(tempDataArr[tempDataArr.length - 1]._id);
       setUnselectedArr(lodashCloneDeep(unselectedArr));
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   フォームを空にする
       // --------------------------------------------------
-      
+
       setPlatform('');
       setLabel('');
       setID('');
       setPublicSetting('');
       setSearch(true);
       setGamesArr([]);
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   Snackbar: Success
       // --------------------------------------------------
-      
-      handleSnackbarOpen({
-        
-        variant: 'success',
-        messageID: 'As9-T8q9N',
-        horizontal: 'right',
-        
+
+      showSnackbar({
+
+        enqueueSnackbar,
+        intl,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'As9-T8q9N',
+          },
+        ]
+
       });
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   console.log
       // --------------------------------------------------
-      
+
       // console.log(`
       //   ----------------------------------------\n
       //   /app/common/id/v2/components/form-register.js - handleSubmit
       // `);
-      
+
       // console.log(`
       //   ----- formDataObj -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
+
       // console.log(chalk`
       //   platform: {green ${platform}}
       //   label: {green ${label}}
@@ -291,126 +277,127 @@ const Component = (props) => {
       //   publicSetting: {green ${publicSetting}}
       //   search: {green ${search}}
       // `);
-      
+
       // console.log(chalk`
       //   tempDataArr.length: {green ${tempDataArr.length}}
       // `);
-      
+
       // console.log(`
       //   ----- tempDataArr[tempDataArr.length - 1] -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(tempDataArr[tempDataArr.length - 1])), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
+
       // console.log(`
       //   ----- dataArr[dataArr.length] -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(dataArr[dataArr.length])), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
+
       // console.log(`
       //   ----- unselectedArr -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(unselectedArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
+
       // console.log(`
       //   ----- resultObj -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
+
+
     } catch (errorObj) {
-      
-      
+
+
       // --------------------------------------------------
       //   Snackbar: Error
       // --------------------------------------------------
-      
-      handleSnackbarOpen({
-        
-        variant: 'error',
+
+      showSnackbar({
+
+        enqueueSnackbar,
+        intl,
         errorObj,
-        
+
       });
-      
-      
+
+
     } finally {
-      
-      
+
+
       // --------------------------------------------------
       //   Button Enable
       // --------------------------------------------------
-      
+
       setButtonDisabled(false);
-      
-      
+
+
     }
-    
-    
+
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Validations
   // --------------------------------------------------
-  
+
   const validationPlatformObj = validationIDsPlatform({ value: platform });
   const validationLabelObj = validationIDsLabel({ value: label });
   const validationIDObj = validationIDsID({ value: id });
   const validationPublicSettingObj = validationIDsPublicSetting({ value: publicSetting });
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   ゲーム選択フォーム
   //   ゲーム選択フォームを表示するかどうかの真偽値　配列内のプラットフォームの場合、表示しない
   // --------------------------------------------------
-  
+
   const gameSelectForm = ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line'].indexOf(validationPlatformObj.value) === -1;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/id/v2/components/form-register.js
   // `);
-  
+
   // console.log(`
   //   ----- gamesArr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(chalk`
   //   _id: {green ${_id}}
   //   platform: {green ${platform}}
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <div
       css={css`
         padding: 8px 14px 16px 14px;
       `}
     >
-      
-      
+
+
       <p
         css={css`
           margin: 12px 0 0 0;
@@ -418,14 +405,14 @@ const Component = (props) => {
       >
         IDを登録する場合は、こちらのフォームに必要なデータを入力してから「登録する」ボタンを押してください。<span css={css`color: red;`}>IDは公開可能な情報であるため、パスワードなど、他の人に見せてはいけない情報は絶対に入力しないようにしてください。</span>
       </p>
-      
+
       <p>
         IDは「<strong>ラベル:</strong> ID」という並びで表示されます。ラベルが未入力の場合は、プラットフォームや選択したゲームの名前が代わりに表示されます。
       </p>
-      
-      
-      
-      
+
+
+
+
       {/* 登録フォーム */}
       <h4
         css={css`
@@ -435,22 +422,22 @@ const Component = (props) => {
       >
         [ 登録フォーム ]
       </h4>
-      
-      
+
+
       {/* プラットフォーム */}
       <div
         css={css`
           margin: 12px 0 0 0;
         `}
       >
-        
+
         <FormControl
           style={{ minWidth: 300 }}
           error={validationPlatformObj.error}
         >
-          
+
           <InputLabel id="platform">プラットフォーム</InputLabel>
-          
+
           <Select
             labelId="platform"
             value={validationPlatformObj.value}
@@ -470,16 +457,16 @@ const Component = (props) => {
             <MenuItem value={'Line'}>Line</MenuItem>
             <MenuItem value={'Other'}>その他</MenuItem>
           </Select>
-          
+
           <FormHelperText>{intl.formatMessage({ id: validationPlatformObj.messageID })}</FormHelperText>
-          
+
         </FormControl>
-        
+
       </div>
-      
-      
-      
-      
+
+
+
+
       {/* ゲーム選択 */}
       {gameSelectForm &&
         <FormGame
@@ -488,17 +475,17 @@ const Component = (props) => {
           gamesLimit={gamesLimit}
         />
       }
-      
-      
-      
-      
+
+
+
+
       {/* ラベル */}
       <div>
         <TextField
           css={css`
             && {
               width: 400px;
-              
+
               @media screen and (max-width: 480px) {
                 width: 100%;
               }
@@ -516,17 +503,17 @@ const Component = (props) => {
           }}
         />
       </div>
-      
-      
-      
-      
+
+
+
+
       {/* ID */}
       <div>
         <TextField
           css={css`
             && {
               width: 400px;
-              
+
               @media screen and (max-width: 480px) {
                 width: 100%;
               }
@@ -544,24 +531,24 @@ const Component = (props) => {
           }}
         />
       </div>
-      
-      
-      
-      
+
+
+
+
       {/* 公開設定 */}
       <div
         css={css`
           margin: 12px 0 0 0;
         `}
       >
-        
+
         <FormControl
           style={{ minWidth: 300 }}
           error={validationPublicSettingObj.error}
         >
-          
+
           <InputLabel id="publicSetting">IDの公開設定</InputLabel>
-          
+
           <Select
             labelId="publicSetting"
             value={validationPublicSettingObj.value}
@@ -573,16 +560,16 @@ const Component = (props) => {
             <MenuItem value={4}>相互フォローで公開</MenuItem>
             <MenuItem value={5}>自分以外には公開しない</MenuItem>
           </Select>
-          
+
           <FormHelperText>{intl.formatMessage({ id: validationPublicSettingObj.messageID })}</FormHelperText>
-          
+
         </FormControl>
-        
+
       </div>
-      
-      
-      
-      
+
+
+
+
       {/* 検索可能 */}
       <div
         css={css`
@@ -599,10 +586,10 @@ const Component = (props) => {
           label="このIDを検索可能にする"
         />
       </div>
-      
-      
-      
-      
+
+
+
+
       {/* 「登録する」ボタン */}
       <div
         css={css`
@@ -618,12 +605,12 @@ const Component = (props) => {
           登録する
         </Button>
       </div>
-      
-      
+
+
     </div>
   );
-  
-  
+
+
 };
 
 

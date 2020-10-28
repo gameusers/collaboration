@@ -160,8 +160,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
         acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
-        // exp: 0,
-        // achievementsArr: [],
         webPushes_id: '',
         role: 'administrator'
       },
@@ -200,16 +198,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
         acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
-        // exp: 999,
-        // achievementsArr: [// 実績用
-        //   {
-        //     _id: 'pFJEn_2MO',
-        //     createdDate: ISO8601,
-        //     updatedDate: ISO8601,
-        //     achievementID: 'MuK2dKVpn',
-        //     count: 1,
-        //   }
-        // ],
         webPushes_id: 'nOVilxpSk',
         role: 'user'
       },
@@ -235,8 +223,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
         acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
-        // exp: 10,
-        // achievementsArr: [],
         webPushes_id: '',
         role: 'user'
       },
@@ -262,8 +248,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
         acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
-        // exp: 0,
-        // achievementsArr: [],
         webPushes_id: '',
         role: 'user'
       },
@@ -527,6 +511,28 @@ router.post('/db', upload.none(), async (req, res, next) => {
           'GjGPfC8e1', 'MYLwdOLD1', 'oUikoyNw8'
         ],
         selectedTitles_idsArr: ['MuK2dKVpn', 'NwzUOqsiC', 'oUikoyNw8'],
+      },
+
+      {
+        _id: '8xKzQnrP2',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: 'P7UJMuUnx',
+        exp: 0,
+        historiesArr: [],
+        acquiredTitles_idsArr: [],
+        selectedTitles_idsArr: [],
+      },
+
+      {
+        _id: 'k74QD5YpO',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '6GWOpEcD3',
+        exp: 0,
+        historiesArr: [],
+        acquiredTitles_idsArr: [],
+        selectedTitles_idsArr: [],
       },
 
     ];

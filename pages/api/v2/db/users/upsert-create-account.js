@@ -147,8 +147,10 @@ export default async (req, res) => {
     // --------------------------------------------------
 
     if (req.isAuthenticated()) {
+
       statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Pc90koKsJ', messageID: 'V9vI1Cl1S' }] });
+
     }
 
 
@@ -185,7 +187,7 @@ export default async (req, res) => {
 
 
     // --------------------------------------------------
-    //   Update
+    //   Insert
     // --------------------------------------------------
 
     // ---------------------------------------------
@@ -208,11 +210,11 @@ export default async (req, res) => {
 
     const usersSaveObj = {
 
-      // _id: users_id,
       createdDate: ISO8601,
       updatedDate: ISO8601,
       accessDate: ISO8601,
       userID,
+      userIDInitial: shortid.generate(),
       pagesObj: {
         imagesAndVideos_id: '',
         arr: [],
@@ -223,17 +225,10 @@ export default async (req, res) => {
         value: encryptedEmail,
         confirmation: false,
       },
+      acceptLanguage,
       countriesArr: ['JP'],
       termsOfServiceConfirmedDate: ISO8601,
-      exp: 0,
-      achievementsArr: [],
-      webPushSubscriptionObj: {
-        endpoint: '',
-        keys: {
-          p256dh: '',
-          auth: ''
-        }
-      },
+      webPushes_id: '',
       role: 'user',
 
     };
@@ -301,137 +296,6 @@ export default async (req, res) => {
       linkArr: [],
       search: true,
 
-
-      // createdDate: ISO8601,
-      // updatedDate: ISO8601,
-      // users_id,
-      // language: 'ja',
-      // nameObj: {
-      //   value: 'Name',
-      //   search: true,
-      // },
-      // statusObj: {
-      //   value: 'Status',
-      //   search: true,
-      // },
-      // imagesAndVideos_id: '',
-      // imagesAndVideosThumbnail_id: '',
-      // commentObj: {
-      //   value: '',
-      //   search: true,
-      // },
-      // ageObj: {
-      //   value: '',
-      //   alternativeText: '',
-      //   search: true,
-      // },
-      // sexObj: {
-      //   value: '',
-      //   alternativeText: '',
-      //   search: true,
-      // },
-      // addressObj: {
-      //   value: '',
-      //   alternativeText: '',
-      //   search: true,
-      // },
-      // gamingExperienceObj: {
-      //   value: '',
-      //   alternativeText: '',
-      //   search: true,
-      // },
-      // hobbiesObj: {
-      //   valueArr: [],
-      //   search: true,
-      // },
-      // specialSkillsObj: {
-      //   valueArr: [],
-      //   search: true,
-      // },
-      // smartphoneObj: {
-      //   model: '',
-      //   comment: '',
-      //   search: true,
-      // },
-      // tabletObj: {
-      //   model: '',
-      //   comment: '',
-      //   search: true,
-      // },
-      // pcObj: {
-      //   model: '',
-      //   comment: '',
-      //   specsObj: {
-      //     os: '',
-      //     cpu: '',
-      //     cpuCooler: '',
-      //     motherboard: '',
-      //     memory: '',
-      //     storage: '',
-      //     graphicsCard: '',
-      //     opticalDrive: '',
-      //     powerSupply: '',
-      //     pcCase: '',
-      //     monitor: '',
-      //     mouse: '',
-      //     keyboard: ''
-      //   },
-      //   search: true,
-      // },
-      // hardwareActiveObj: {
-      //   valueArr: [],
-      //   search: true,
-      // },
-      // hardwareInactiveObj: {
-      //   valueArr: [],
-      //   search: true,
-      // },
-      // ids_idsArr: [],
-      // activityTimeObj: {
-      //   valueArr: [],
-      //   search: true,
-      // },
-      // lookingForFriendsObj: {
-      //   value: true,
-      //   icon: 'emoji_u263a',
-      //   comment: '',
-      //   search: true,
-      // },
-      // voiceChatObj: {
-      //   value: true,
-      //   comment: '',
-      //   search: true,
-      // },
-      // linkArr: [],
-
-    };
-
-
-    // ---------------------------------------------
-    //   - follows
-    // ---------------------------------------------
-
-    const followsConditionObj = {
-      _id: shortid.generate()
-    };
-
-    const followsSaveObj = {
-
-      // _id: shortid.generate(),
-      updatedDate: ISO8601,
-      gameCommunities_id: '',
-      userCommunities_id: '',
-      users_id,
-      approval: false,
-      followArr: [],
-      followCount: 0,
-      followedArr: [],
-      followedCount: 0,
-      approvalArr: [],
-      approvalCount: 0,
-      blockArr: [],
-      blockCount: 0,
-
     };
 
 
@@ -450,7 +314,6 @@ export default async (req, res) => {
 
       emailConfirmationsSaveObj = {
 
-        // _id: shortid.generate(),
         createdDate: ISO8601,
         users_id,
         emailConfirmationID,
@@ -458,12 +321,62 @@ export default async (req, res) => {
         email: encryptedEmail,
         count: 1,
         isSuccess: false,
-        ip: req.ip,
-        userAgent: lodashGet(req, ['headers', 'user-agent'], ''),
+        ip,
+        userAgent,
 
       };
 
     }
+
+
+    // ---------------------------------------------
+    //   - experiences
+    // ---------------------------------------------
+
+    const experiencesConditionObj = {
+      _id: shortid.generate()
+    };
+
+    const experiencesSaveObj = {
+
+      createdDate: ISO8601,
+      updatedDate: ISO8601,
+      users_id,
+      exp: 0,
+      historiesArr: [],
+      acquiredTitles_idsArr: [],
+      selectedTitles_idsArr: [],
+
+    };
+
+
+    // ---------------------------------------------
+    //   - follows
+    // ---------------------------------------------
+
+    const followsConditionObj = {
+      _id: shortid.generate()
+    };
+
+    const followsSaveObj = {
+
+      updatedDate: ISO8601,
+      gameCommunities_id: '',
+      userCommunities_id: '',
+      users_id,
+      approval: false,
+      followArr: [],
+      followCount: 0,
+      followedArr: [],
+      followedCount: 0,
+      approvalArr: [],
+      approvalCount: 0,
+      blockArr: [],
+      blockCount: 0,
+
+    };
+
+
 
 
     // ---------------------------------------------
@@ -476,10 +389,12 @@ export default async (req, res) => {
       usersSaveObj,
       cardPlayersConditionObj,
       cardPlayersSaveObj,
-      followsConditionObj,
-      followsSaveObj,
       emailConfirmationsConditionObj,
       emailConfirmationsSaveObj,
+      experiencesConditionObj,
+      experiencesSaveObj,
+      followsConditionObj,
+      followsSaveObj,
 
     });
 

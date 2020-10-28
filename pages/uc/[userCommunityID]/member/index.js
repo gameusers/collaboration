@@ -52,7 +52,6 @@ import { getCookie } from 'app/@modules/cookie.js';
 import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 import FeedSidebar from 'app/common/feed/v2/sidebar.js';
-// import FeedHorizontal from 'app/common/feed/v2/horizontal.js';
 
 import FollowMembers from 'app/common/follow/v2/members.js';
 
@@ -80,6 +79,8 @@ const ContainerLayout = (props) => {
   const stateCommunity = ContainerStateCommunity.useContainer();
 
   const { setUserCommunityObj } = stateCommunity;
+
+
 
 
   // --------------------------------------------------
@@ -254,6 +255,8 @@ export async function getServerSideProps({ req, res, query }) {
   const limit = getCookie({ key: 'followLimit', reqHeadersCookie });
 
 
+
+
   // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
@@ -290,11 +293,15 @@ export async function getServerSideProps({ req, res, query }) {
   const followMembersObj = lodashGet(dataObj, ['followMembersObj'], {});
 
 
+
+
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
 
   let title = `メンバー - ${userCommunityName}`;
+
+
 
 
   // --------------------------------------------------
@@ -361,6 +368,8 @@ export async function getServerSideProps({ req, res, query }) {
     },
 
   ];
+
+
 
 
   // ---------------------------------------------

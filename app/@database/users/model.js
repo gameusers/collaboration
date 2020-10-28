@@ -1437,10 +1437,12 @@ const transactionForEditAccount = async ({
  * @param {Object} usersSaveObj - DB users 保存データ
  * @param {Object} cardPlayersConditionObj - DB card-players 検索条件
  * @param {Object} cardPlayersSaveObj - DB card-players 保存データ
- * @param {Object} followsConditionObj - DB follows 検索条件
- * @param {Object} followsSaveObj - DB follows 保存データ
  * @param {Object} emailConfirmationsConditionObj - DB email-confirmations 検索条件
  * @param {Object} emailConfirmationsSaveObj - DB email-confirmations 保存データ
+ * @param {Object} experiencesConditionObj - DB experiences 検索条件
+ * @param {Object} experiencesSaveObj - DB experiences 保存データ
+ * @param {Object} followsConditionObj - DB follows 検索条件
+ * @param {Object} followsSaveObj - DB follows 保存データ
  * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
  * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
  * @param {Object} webPushesConditionObj - DB web-pushes 検索条件
@@ -1453,10 +1455,12 @@ const transactionForUpsert = async ({
   usersSaveObj,
   cardPlayersConditionObj = {},
   cardPlayersSaveObj = {},
-  followsConditionObj = {},
-  followsSaveObj = {},
   emailConfirmationsConditionObj = {},
   emailConfirmationsSaveObj = {},
+  experiencesConditionObj = {},
+  experiencesSaveObj = {},
+  followsConditionObj = {},
+  followsSaveObj = {},
   imagesAndVideosConditionObj = {},
   imagesAndVideosSaveObj = {},
   webPushesConditionObj = {},
@@ -1504,8 +1508,6 @@ const transactionForUpsert = async ({
     await SchemaUsers.updateOne(usersConditionObj, usersSaveObj, { session, upsert: true });
 
 
-
-
     // --------------------------------------------------
     //   card-players
     // --------------------------------------------------
@@ -1515,6 +1517,22 @@ const transactionForUpsert = async ({
     }
 
 
+    // --------------------------------------------------
+    //   email-confirmations
+    // --------------------------------------------------
+
+    if (Object.keys(emailConfirmationsConditionObj).length !== 0 && Object.keys(emailConfirmationsSaveObj).length !== 0) {
+      await SchemaEmailConfirmations.updateOne(emailConfirmationsConditionObj, emailConfirmationsSaveObj, { session, upsert: true });
+    }
+
+
+    // --------------------------------------------------
+    //   experiences
+    // --------------------------------------------------
+
+    if (Object.keys(experiencesConditionObj).length !== 0 && Object.keys(experiencesSaveObj).length !== 0) {
+      await SchemaExperiences.updateOne(experiencesConditionObj, experiencesSaveObj, { session, upsert: true });
+    }
 
 
     // --------------------------------------------------
@@ -1526,14 +1544,12 @@ const transactionForUpsert = async ({
     }
 
 
-
-
     // --------------------------------------------------
-    //   email-confirmations
+    //   web-pushes
     // --------------------------------------------------
 
-    if (Object.keys(emailConfirmationsConditionObj).length !== 0 && Object.keys(emailConfirmationsSaveObj).length !== 0) {
-      await SchemaEmailConfirmations.updateOne(emailConfirmationsConditionObj, emailConfirmationsSaveObj, { session, upsert: true });
+    if (Object.keys(webPushesConditionObj).length !== 0 && Object.keys(webPushesSaveObj).length !== 0) {
+      await SchemaWebPushes.updateOne(webPushesConditionObj, webPushesSaveObj, { session, upsert: true });
     }
 
 
@@ -1567,17 +1583,6 @@ const transactionForUpsert = async ({
 
       }
 
-    }
-
-
-
-
-    // --------------------------------------------------
-    //   web-pushes
-    // --------------------------------------------------
-
-    if (Object.keys(webPushesConditionObj).length !== 0 && Object.keys(webPushesSaveObj).length !== 0) {
-      await SchemaWebPushes.updateOne(webPushesConditionObj, webPushesSaveObj, { session, upsert: true });
     }
 
 
@@ -1629,18 +1634,6 @@ const transactionForUpsert = async ({
     // `);
 
     // console.log(`
-    //   ----- followsConditionObj -----\n
-    //   ${util.inspect(followsConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- followsSaveObj -----\n
-    //   ${util.inspect(followsSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
     //   ----- emailConfirmationsConditionObj -----\n
     //   ${util.inspect(emailConfirmationsConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
@@ -1653,6 +1646,30 @@ const transactionForUpsert = async ({
     // `);
 
     // console.log(`
+    //   ----- experiencesConditionObj -----\n
+    //   ${util.inspect(experiencesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- experiencesSaveObj -----\n
+    //   ${util.inspect(experiencesSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- followsConditionObj -----\n
+    //   ${util.inspect(followsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- followsSaveObj -----\n
+    //   ${util.inspect(followsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
     //   ----- imagesAndVideosConditionObj -----\n
     //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
@@ -1661,6 +1678,18 @@ const transactionForUpsert = async ({
     // console.log(`
     //   ----- imagesAndVideosSaveObj -----\n
     //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- webPushesConditionObj -----\n
+    //   ${util.inspect(webPushesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- webPushesSaveObj -----\n
+    //   ${util.inspect(webPushesSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 

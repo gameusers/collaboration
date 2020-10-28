@@ -211,6 +211,8 @@ export async function getServerSideProps({ req, res, query }) {
   const ISO8601 = moment().utc().toISOString();
 
 
+
+
   // ---------------------------------------------
   //   FormData
   // ---------------------------------------------
@@ -260,12 +262,16 @@ export async function getServerSideProps({ req, res, query }) {
   const webPushAvailable = lodashGet(dataObj, ['webPushAvailable'], false);
 
 
+
+
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
 
   const userName = lodashGet(headerObj, ['name'], '');
   const title = `ユーザー設定 - ${userName}`;
+
+
 
 
   // --------------------------------------------------

@@ -97,6 +97,7 @@ const Component = (props) => {
     forumThreads_id,
 
     setShowForm,
+    setPanelExpanded,
 
   } = props;
 
@@ -607,6 +608,15 @@ const Component = (props) => {
         ]
 
       });
+
+
+
+
+      // --------------------------------------------------
+      //   スレッド投稿フォームを閉じる
+      // --------------------------------------------------
+
+      setPanelExpanded(false);
 
 
 

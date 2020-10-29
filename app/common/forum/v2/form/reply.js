@@ -723,9 +723,10 @@ const Component = (props) => {
       //   Hide Form
       // ---------------------------------------------
 
-      if (forumReplies_id) {
-        setShowForm(false);
-      }
+      setShowForm(false);
+      // if (forumReplies_id) {
+      //   setShowForm(false);
+      // }
 
 
       // ---------------------------------------------

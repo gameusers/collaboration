@@ -132,6 +132,8 @@ const Component = (props) => {
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
+  const [panelExpanded, setPanelExpanded] = useState(true);
+
 
   useEffect(() => {
 
@@ -375,12 +377,14 @@ const Component = (props) => {
         <Panel
           heading="スレッド投稿フォーム"
           defaultExpanded={false}
+          panelExpanded={panelExpanded}
+          setPanelExpanded={setPanelExpanded}
         >
 
           <FormThread
             gameCommunities_id={gameCommunities_id}
             userCommunities_id={userCommunities_id}
-            forumThreads_id=""
+            setPanelExpanded={setPanelExpanded}
           />
 
         </Panel>

@@ -32,57 +32,57 @@ import Cookies from 'js-cookie';
  * @param {Boolean} decode - デコードする場合はtrue
  */
 const getCookie = ({ key, reqHeadersCookie = '', decode = false }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   データを取得する
   // --------------------------------------------------
-  
+
   let returnValue = Cookies.get(key) || ((reqHeadersCookie + ';').match(key + '=([^¥S;]*)')||[])[1];
-  
-  
+
+
   // --------------------------------------------------
   //   デコード
   // --------------------------------------------------
-  
-  if (decode) {
+
+  if (decode && returnValue) {
     returnValue = decodeURIComponent(returnValue);
   }
-  
-  
+
+
   // --------------------------------------------------
   //   returnValue
   // --------------------------------------------------
-  
+
   if (!returnValue) {
     returnValue = '';
   }
-  
-  
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/@modules/cookie.js - getCookie
   // `);
-  
+
   // console.log(chalk`
-  //   returnValue: {green ${returnValue}}
+  //   returnValue: {green ${returnValue} / ${typeof returnValue}}
   // `);
-  
+
   // console.log(chalk`
   //   key: {green ${key}}
   //   reqHeadersCookie: {green ${reqHeadersCookie}}
   // `);
-  
+
   // console.log(chalk`
   //   Cookies.get(key): {green ${Cookies.get(key)}}
   //   ((reqHeadersCookie + ';').match(key + '=([^¥S;]*)')||[])[1]: {green ${((reqHeadersCookie + ';').match(key + '=([^¥S;]*)')||[])[1]}}
   //   returnValue: {green ${returnValue}}
   // `);
-  
+
   // console.log(chalk`
   //   key: {green ${key}}
   //   reqHeadersCookie: {green ${reqHeadersCookie}}
@@ -90,15 +90,15 @@ const getCookie = ({ key, reqHeadersCookie = '', decode = false }) => {
   //   ((reqHeadersCookie + ';').match(key + '=([^¥S;]*)')||[])[1]: {green ${((reqHeadersCookie + ';').match(key + '=([^¥S;]*)')||[])[1]}}
   //   returnValue: {green ${returnValue}}
   // `);
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return returnValue;
-  
-  
+
+
 };
 
 
@@ -109,7 +109,7 @@ const getCookie = ({ key, reqHeadersCookie = '', decode = false }) => {
 // --------------------------------------------------
 
 module.exports = {
-  
+
   getCookie,
-  
+
 };

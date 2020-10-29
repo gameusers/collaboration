@@ -164,8 +164,8 @@ const Component = (props) => {
       eventObj.preventDefault();
 
       // console.log(chalk`
-      //   recentAccessPageHref: {green ${recentAccessPageHref}}
-      //   recentAccessPageAs: {green ${recentAccessPageAs}}
+      //   recentAccessPageHref: {green ${recentAccessPageHref} / ${typeof recentAccessPageHref}}
+      //   recentAccessPageAs: {green ${recentAccessPageAs} / ${typeof recentAccessPageAs}}
       // `);
 
 
@@ -279,7 +279,7 @@ const Component = (props) => {
       let as = recentAccessPageAs;
 
       if (!url || !as) {
-
+        // console.log('AAA');
         const userID = lodashGet(resultObj, ['data', 'userID'], '');
         url = `/ur/[userID]`;
         as = `/ur/${userID}`;

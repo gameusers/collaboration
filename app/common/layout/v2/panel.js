@@ -62,80 +62,79 @@ import IconExpandMore from '@material-ui/icons/ExpandMore';
 // --------------------------------------------------
 
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     heading,
     defaultExpanded = true,
     panelExpanded,
     setPanelExpanded,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
   const [panelExpandedChild, setPanelExpandedChild] = useState(defaultExpanded);
-  // const [panelExpanded, setPanelExpanded] = useState(defaultExpanded);
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  
-  
+
+
   useEffect(() => {
-    
+
     setButtonDisabled(false);
-    
+
   }, []);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   expanded & setExpanded
   // --------------------------------------------------
-  
+
   let expanded = panelExpandedChild;
   let setExpanded = setPanelExpandedChild;
-  
+
   if (setPanelExpanded) {
-    
+
     expanded = panelExpanded;
     setExpanded = setPanelExpanded;
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/layout/v2/components/panel.js
   // `);
-  
+
   // console.log(chalk`
   //   open: {green ${open}}
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Accordion
       css={css`
@@ -143,16 +142,16 @@ const Component = (props) => {
       `}
       expanded={expanded}
     >
-      
-      
+
+
       {/* Heading */}
       <AccordionSummary
         css={css`
           cursor: default !important;
         `}
       >
-        
-        
+
+
         <h2
           css={css`
             font-weight: bold;
@@ -161,8 +160,8 @@ const Component = (props) => {
         >
           {heading}
         </h2>
-        
-        
+
+
         {/* Expansion Button */}
         <div
           css={css`
@@ -189,13 +188,13 @@ const Component = (props) => {
             )}
           </IconButton>
         </div>
-        
-        
+
+
       </AccordionSummary>
-      
-      
-      
-      
+
+
+
+
       {/* Contents */}
       <AccordionDetails
         css={css`
@@ -203,19 +202,19 @@ const Component = (props) => {
           flex-flow: column wrap;
         `}
       >
-        
-        
+
+
         {/* Contents */}
         {props.children}
-        
-        
+
+
       </AccordionDetails>
-      
-      
+
+
     </Accordion>
   );
-  
-  
+
+
 };
 
 

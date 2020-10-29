@@ -2168,7 +2168,17 @@ const experienceCalculate = async ({
 
     if (!req.isAuthenticated()) {
       return {};
-      // throw new Error();
+    }
+
+
+    // --------------------------------------------------
+    //   Role - サイト運営
+    // --------------------------------------------------
+
+    const role = lodashGet(req, ['user', 'role'], 'user');
+
+    if (role === 'administrator') {
+      return {};
     }
 
 

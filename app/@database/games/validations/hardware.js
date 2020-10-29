@@ -120,8 +120,8 @@ const validationGamesHardwareArrServer = async ({ required = false, localeObj, v
 
     // const _id = lodashGet(valueObj, ['_id'], shortid.generate());
     const hardwareID = lodashGet(valueObj, ['hardwareID'], '');
-    const playersMin = lodashGet(valueObj, ['playersMin'], 1);
-    const playersMax = lodashGet(valueObj, ['playersMax'], 1);
+    const playersMin = parseInt(lodashGet(valueObj, ['playersMin'], 1), 10);
+    const playersMax = parseInt(lodashGet(valueObj, ['playersMax'], 1), 10);
     const publisherIDsArr = lodashGet(valueObj, ['publisherIDsArr'], []);
     const developerIDsArr = lodashGet(valueObj, ['developerIDsArr'], []);
 

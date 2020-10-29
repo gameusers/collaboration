@@ -15,7 +15,6 @@ const util = require('util');
 // ---------------------------------------------
 
 const express = require('express');
-// const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
@@ -30,14 +29,10 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-// const mobxReact = require('mobx-react');
 const mongoose = require('mongoose');
 
 const cron = require('node-cron');
 
-
-
-// const bcrypt = require('bcryptjs');
 
 // ---------------------------------------------
 //   Model
@@ -54,79 +49,6 @@ const ModelWebPushes = require('./app/@database/web-pushes/model.js');
 const routerApi = require('./app/@api/v1/');
 
 
-
-
-
-
-// --------------------------------------------------
-//   Import
-// --------------------------------------------------
-
-// ---------------------------------------------
-//   Console
-// ---------------------------------------------
-
-// import chalk from 'chalk';
-// import util from 'util';
-
-
-// // ---------------------------------------------
-// //   Node Packages
-// // ---------------------------------------------
-
-// import express from 'express';
-// import helmet from 'helmet';
-// import bodyParser from 'body-parser';
-// import cookieParser from 'cookie-parser';
-
-// import flash from 'connect-flash';
-// import passport from 'passport';
-// import session from 'express-session';
-// import * as connectMongo from 'connect-mongo';
-// const MongoStore = connectMongo(session);
-// // import MongoStore from 'connect-mongo')(session);
-
-// import next from 'next';
-
-// const port = parseInt(process.env.PORT, 10) || 8080;
-// const dev = process.env.NODE_ENV !== 'production';
-// const app = next({ dev });
-// const handle = app.getRequestHandler();
-
-// import mobxReact from 'mobx-react';
-// import mongoose from 'mongoose';
-
-// import cron from 'node-cron';
-
-
-
-// // import bcrypt from 'bcryptjs';
-
-// // ---------------------------------------------
-// //   Model
-// // ---------------------------------------------
-
-// import ModelNotifications from './app/@database/notifications/model.js';
-// import ModelWebPushes from './app/@database/web-pushes/model.js';
-
-
-// // ---------------------------------------------
-// //   API
-// // ---------------------------------------------
-
-// import routerApi from './app/@api/v1/';
-
-
-
-
-
-
-// --------------------------------------------------
-//   Server Side Rendering with useStaticRendering
-//   https://github.com/mobxjs/mobx-react#server-side-rendering-with-usestaticrendering
-// --------------------------------------------------
-
-// mobxReact.useStaticRendering(true);
 
 
 
@@ -153,8 +75,6 @@ app.prepare().then(() => {
   // --------------------------------------------------
   //   Middleware Settings
   // --------------------------------------------------
-
-  // server.use(helmet());
 
   // server.use(bodyParser.json({
   //   limit: '50mb'
@@ -237,7 +157,6 @@ app.prepare().then(() => {
   // cron.schedule('*/20 * * * * *', () => {
 
     ModelNotifications.send({});
-
   });
 
 
@@ -249,13 +168,10 @@ app.prepare().then(() => {
   cron.schedule('0 0 0 * * *', () => {
   // cron.schedule('0 30 18 * * *', () => {
   // cron.schedule('*/20 * * * * *', () => {
-
     ModelWebPushes.resetSendTodayCount({});
-
   });
 
 
-  // console.log(bcrypt.hashSync('sTXPyssv80', 10));
 
 
   // --------------------------------------------------
@@ -345,7 +261,7 @@ app.prepare().then(() => {
 
   server.use((err, req, res, next) => {
     // logger.error(`${err}`);
-    console.log(`Error: ${err}`);
+    // console.log(`Error: ${err}`);
 
     res.status(err.status || 500);
     res.send('Error');

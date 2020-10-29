@@ -45,13 +45,6 @@ import FormImage from 'app/common/image-and-video/v2/form-image.js';
 import FormVideo from 'app/common/image-and-video/v2/form-video.js';
 
 
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-// import { ContainerStateLayout } from 'app/@states/layout.js';
-
-
 
 
 
@@ -64,15 +57,14 @@ import FormVideo from 'app/common/image-and-video/v2/form-video.js';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
-    // type,
+
     showImageButton = true,
     showVideoButton = true,
     descriptionImage,
@@ -81,113 +73,99 @@ const Component = (props) => {
     limit,
     imagesAndVideosObj,
     setImagesAndVideosObj,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  
+
   const [showFormImage, setShowFormImage] = useState(false);
   const [showFormVideo, setShowFormVideo] = useState(false);
-  
-  
+
+
   useEffect(() => {
-    
+
     setButtonDisabled(false);
-    
+
   }, []);
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-  
-  // const stateLayout = ContainerStateLayout.useContainer();
-  
-  // const { loadingObj } = stateLayout;
-  
-  // const open = lodashGet(loadingObj, ['open'], false);
-  // const position = lodashGet(loadingObj, ['position'], 'left');
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   const handleShowFormImage = () => {
-    
+
     setShowFormImage(!showFormImage);
     setShowFormVideo(false);
-    
+
   };
-  
-  
+
+
   const handleShowFormVideo = () => {
-    
+
     setShowFormImage(false);
     setShowFormVideo(!showFormVideo);
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/image-and-video/components/form.js
   // `);
-  
+
   // console.log(`
   //   ----- pathArr -----\n
   //   ${util.inspect(pathArr, { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(chalk`
   //   type: {green ${type}}
   // `);
-  
+
   // console.log(`
   //   ----- imagesAndVideosObj -----\n
   //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <React.Fragment>
-      
-      
+
+
       {/* Preview */}
       <FormPreview
         imagesAndVideosObj={imagesAndVideosObj}
         setImagesAndVideosObj={setImagesAndVideosObj}
       />
-      
-      
-      
-      
+
+
+
+
       {/* Buttons */}
       <ButtonGroup
         css={css`
@@ -196,20 +174,20 @@ const Component = (props) => {
         color="primary"
         disabled={buttonDisabled}
       >
-        
+
         {showImageButton &&
           <Button onClick={() => handleShowFormImage()}>画像</Button>
         }
-        
+
         {showVideoButton &&
           <Button onClick={() => handleShowFormVideo()}>動画</Button>
         }
-        
+
       </ButtonGroup>
-      
-      
-      
-      
+
+
+
+
       {/* Form Image */}
       {showFormImage &&
         <div
@@ -217,7 +195,7 @@ const Component = (props) => {
             margin: 8px 0 0 0;
           `}
         >
-          
+
           <FormImage
             description={descriptionImage}
             showImageCaption={showImageCaption}
@@ -225,13 +203,13 @@ const Component = (props) => {
             imagesAndVideosObj={imagesAndVideosObj}
             setImagesAndVideosObj={setImagesAndVideosObj}
           />
-          
+
         </div>
       }
-      
-      
-      
-      
+
+
+
+
       {/* Form Video */}
       {showFormVideo &&
         <div
@@ -239,22 +217,22 @@ const Component = (props) => {
             margin: 8px 0 0 0;
           `}
         >
-          
+
           <FormVideo
             description={descriptionVideo}
             limit={limit}
             imagesAndVideosObj={imagesAndVideosObj}
             setImagesAndVideosObj={setImagesAndVideosObj}
           />
-          
+
         </div>
       }
-      
-      
+
+
     </React.Fragment>
   );
-  
-  
+
+
 };
 
 

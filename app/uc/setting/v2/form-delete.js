@@ -104,7 +104,7 @@ const Component = (props) => {
 
   const stateLayout = ContainerStateLayout.useContainer();
 
-  const { handleLoadingOpen, handleLoadingClose, handleScrollTo } = stateLayout;
+  const { handleDialogOpen, handleLoadingOpen, handleLoadingClose, handleScrollTo } = stateLayout;
 
 
   // --------------------------------------------------

@@ -14,8 +14,7 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
+import React from 'react';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -33,28 +32,14 @@ import lodashHas from 'lodash/has';
 //   Material UI
 // ---------------------------------------------
 
-import Card from '@material-ui/core/Card';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 
 
 // ---------------------------------------------
-//   Material UI / Icons
+//   States
 // ---------------------------------------------
 
-import IconSchedule from '@material-ui/icons/Schedule';
-import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
-import IconDescription from '@material-ui/icons/Description';
-import IconPermIdentity from '@material-ui/icons/PermIdentity';
-import IconEdit from '@material-ui/icons/Edit';
-
-
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
-import ImageAndVideo from 'app/common/image-and-video/v2/image-and-video.js';
+import { ContainerStateUser } from 'app/@states/user.js';
 
 
 
@@ -92,6 +77,17 @@ const Component = (props) => {
   if (Object.keys(obj).length === 0) {
     return null;
   }
+
+
+
+
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+
+  const stateUser = ContainerStateUser.useContainer();
+
+  const { login } = stateUser;
 
 
 
@@ -148,7 +144,7 @@ const Component = (props) => {
           margin: 12px 0 0 0;
         }
       `}
-      onClick={() => handleGetEditData({ games_id: _id })}
+      onClick={login ? () => handleGetEditData({ games_id: _id }) : () => {}}
     >
 
 

@@ -159,7 +159,7 @@ const Component = (props) => {
       <DialogContent
         css={css`
           && {
-            margin: 90px 0 0 0;
+            margin: 90px 0 24px 0;
           }
         `}
       >

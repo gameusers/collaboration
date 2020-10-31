@@ -107,6 +107,8 @@ const ServiceWorker = (props) => {
   const { Component, pageProps } = props;
 
 
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
@@ -116,6 +118,8 @@ const ServiceWorker = (props) => {
 
   const { setLogin, setLoginUsersObj, setServiceWorkerRegistrationObj } = stateUser;
   const { setISO8601, headerObj, setHeaderObj } = stateLayout;
+
+
 
 
   // --------------------------------------------------
@@ -289,6 +293,8 @@ const Component = (props) => {
   const { pageProps } = props;
 
 
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
@@ -308,6 +314,8 @@ const Component = (props) => {
 
 
   }, []);
+
+
 
 
   // --------------------------------------------------
@@ -346,11 +354,15 @@ const Component = (props) => {
   };
 
 
+
+
   // --------------------------------------------------
   //   Load Locale Data
   // --------------------------------------------------
 
   const localData = loadLocaleData({ local: localeObj.language });
+
+
 
 
   // --------------------------------------------------
@@ -366,6 +378,8 @@ const Component = (props) => {
   //   ISO8601: {green ${ISO8601}}
   //   login: {green ${login}}
   // `);
+
+
 
 
   // --------------------------------------------------

@@ -146,7 +146,15 @@ const Component = (props) => {
       setButtonDisabled(true);
 
 
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/web-push/v2/components/checkbox.js - handleCheck
+      // `);
 
+      // console.log(chalk`
+      //   process.env.NODE_ENV: {green ${process.env.NODE_ENV}}
+      //   process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY: {green ${process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY}}
+      // `);
 
       // ---------------------------------------------
       //   Subscribe
@@ -207,6 +215,7 @@ const Component = (props) => {
         } else {
 
 
+
           // ---------------------------------------------
           //   applicationServerKey を作成する
           // ---------------------------------------------
@@ -232,7 +241,9 @@ const Component = (props) => {
           const convertedVapidKey = urlBase64ToUint8Array(process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY);
 
 
-
+          // console.log(chalk`
+          //   convertedVapidKey: {green ${convertedVapidKey}}
+          // `);
 
           // ---------------------------------------------
           //   購読する
@@ -245,6 +256,11 @@ const Component = (props) => {
 
           });
 
+          // console.log(`
+          //   ----- newSubscriptionObj -----\n
+          //   ${util.inspect(JSON.parse(JSON.stringify(newSubscriptionObj)), { colors: true, depth: null })}\n
+          //   --------------------\n
+          // `);
 
 
           // ---------------------------------------------

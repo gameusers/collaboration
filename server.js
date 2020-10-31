@@ -51,6 +51,10 @@ const routerApi = require('./app/@api/v1/');
 
 
 
+// const webpush = require('web-push');
+
+
+
 
 
 // --------------------------------------------------
@@ -70,6 +74,15 @@ app.prepare().then(() => {
   // console.log('process.env.URL_API = ' + process.env.NEXT_PUBLIC_URL_API);
   // console.log('process.env.URL_MONGODB_DOCKER = ' + process.env.URL_MONGODB_DOCKER);
   // console.log('process.env.URL_MONGODB = ' + process.env.URL_MONGODB);
+
+
+  // const vapidKeys = webpush.generateVAPIDKeys();
+
+  // console.log(`
+  //   ----- vapidKeys -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(vapidKeys)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
 
 
   // --------------------------------------------------

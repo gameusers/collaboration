@@ -87,8 +87,8 @@ const formatIDsArr = ({
 
       admin ||
       valueObj.publicSetting === 1 ||
-      valueObj.publicSetting === 2 && followed ||
-      valueObj.publicSetting === 3 && follow ||
+      valueObj.publicSetting === 2 && follow ||
+      valueObj.publicSetting === 3 && followed ||
       valueObj.publicSetting === 4 && follow && followed
 
     ) {
@@ -144,6 +144,12 @@ const formatIDsArr = ({
   // console.log(chalk`
   //   userID: {green ${userID}}
   //   pathname: {green ${pathname}}
+  // `);
+
+  // console.log(`
+  //   ----- arr -----\n
+  //   ${util.inspect(arr, { colors: true, depth: null })}\n
+  //   --------------------\n
   // `);
 
   // console.log(`

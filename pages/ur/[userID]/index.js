@@ -73,6 +73,23 @@ const ContainerLayout = (props) => {
   const [cardPlayers_idsArr, setCardPlayers_idsArr] = useState(props.cardPlayers_idsArr);
 
 
+  useEffect(() => {
+
+
+    // --------------------------------------------------
+    //   Router.push でページを移動した際の処理
+    //   getServerSideProps でデータを取得してからデータを更新する
+    // --------------------------------------------------
+
+    setCardPlayersObj(props.cardPlayersObj);
+    setCardPlayers_idsArr(props.cardPlayers_idsArr);
+
+
+  }, [props.ISO8601]);
+
+
+
+
   // --------------------------------------------------
   //   Component - Card Player
   // --------------------------------------------------

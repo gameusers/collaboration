@@ -186,7 +186,10 @@ export async function getServerSideProps({ req, res, query }) {
   const recentAccessPageHref = getCookie({ key: 'recentAccessPageHref', reqHeadersCookie, decode: true });
   const recentAccessPageAs = getCookie({ key: 'recentAccessPageAs', reqHeadersCookie, decode: true });
 
-
+//   console.log(chalk`
+//   recentAccessPageHref: {green ${recentAccessPageHref}}
+//   recentAccessPageAs: {green ${recentAccessPageAs}}
+// `);
 
 
   // --------------------------------------------------

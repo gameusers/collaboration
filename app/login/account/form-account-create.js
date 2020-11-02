@@ -311,11 +311,16 @@ const Component = (props) => {
       //   Router.push = History API pushState()
       // ---------------------------------------------
 
-      const userID = lodashGet(resultLoginObj, ['data', 'userID'], '');
-      const url = '/ur/[userID]';
-      const as = `/ur/${userID}`;
+      if (resultLoginObj.data) {
 
-      Router.push(url, as);
+        const userID = lodashGet(resultLoginObj, ['data', 'userID'], '');
+        const url = '/ur/[userID]';
+        const as = `/ur/${userID}`;
+
+        Router.push(url, as);
+
+      }
+
 
 
 

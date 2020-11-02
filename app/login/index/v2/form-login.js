@@ -278,6 +278,11 @@ const Component = (props) => {
       let url = recentAccessPageHref;
       let as = recentAccessPageAs;
 
+      // console.log(chalk`
+      //   url: {green ${url}}
+      //   as: {green ${as}}
+      // `);
+
       if (!url || !as) {
         // console.log('AAA');
         const userID = lodashGet(resultObj, ['data', 'userID'], '');

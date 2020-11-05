@@ -300,13 +300,13 @@ export async function getServerSideProps({ req, res, query }) {
       type: 'gc/list',
       anchorText: '',
       href: '/gc/list/[[...slug]]',
-      as: `/gc/list`,
+      as: '/gc/list',
     },
 
     {
       type: 'gc/index',
       anchorText: gameName,
-      href: `/gc/[urlID]`,
+      href: '/gc/[urlID]',
       as: `/gc/${urlID}`,
     },
 

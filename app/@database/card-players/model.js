@@ -340,7 +340,11 @@ const findForCardPlayers = async ({
   cardPlayers_id,
 
 }) => {
-
+    // console.log(chalk`
+    // loginUsers_id: {green ${loginUsers_id}}
+    //   cardPlayers_id: {green ${cardPlayers_id}}
+    //   users_id：{green ${users_id}}
+    // `);
 
   // --------------------------------------------------
   //   Match Condition Array

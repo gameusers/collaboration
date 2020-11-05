@@ -37,7 +37,6 @@ const SchemaGames = require('../@database/games/model');
 const SchemaGamesTemps = require('../@database/games-temps/model');
 const SchemaIDs = require('../@database/ids/model');
 const SchemaCardPlayers = require('../@database/card-players/model');
-// const SchemaCardGames = require('../@database/card-games/model');
 const SchemaGameGenres = require('../@database/game-genres/model');
 const SchemaHardwares = require('../@database/hardwares/model');
 const SchemaDevelopersPublishers = require('../@database/developers-publishers/model');

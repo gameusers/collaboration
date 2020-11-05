@@ -92,7 +92,31 @@ const Component = (props) => {
 
   useEffect(() => {
 
-    setButtonDisabled(false);
+
+    // --------------------------------------------------
+    //   iOS & Mac OS はプッシュ通知が使えないのでチェックボックスは常に利用できない状態にする
+    // --------------------------------------------------
+
+    const userAgent = window.navigator.userAgent;
+    // const userAgent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0 Mobile/15E148 Safari/604.1';
+
+    // console.log(chalk`
+    //   userAgent: {green ${userAgent}}
+    //   userAgent.indexOf('iPhone'): {green ${userAgent.indexOf('iPhone')}}
+    //   userAgent.indexOf('iPad'): {green ${userAgent.indexOf('iPad')}}
+    //   userAgent.indexOf('Mac OS'): {green ${userAgent.indexOf('Mac OS')}}
+    // `);
+
+    if (
+
+      userAgent.indexOf('iPhone') === -1 &&
+      userAgent.indexOf('iPad') === -1 &&
+      userAgent.indexOf('Mac OS') === -1
+
+    ) {
+      setButtonDisabled(false);
+    }
+
 
   }, []);
 

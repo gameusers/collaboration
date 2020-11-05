@@ -118,48 +118,48 @@ const cssBox = css`
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     gameCommunities_id,
     recruitmentThreads_id,
-    
+
     setShowForm,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
   const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  
+
   const [hardwaresArr, setHardwaresArr] = useState([]);
   const [category, setCategory] = useState('');
   const [title, setTitle] = useState('');
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
   const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
-    
+
     _id: '',
     createdDate: '',
     updatedDate: '',
     users_id: '',
     type: 'recruitment',
     arr: [],
-    
+
   });
-  
+
   const [idsArr, setIDsArr] = useState([]);
   const [platform1, setPlatform1] = useState('Other');
   const [platform2, setPlatform2] = useState('Other');
@@ -178,232 +178,232 @@ const Component = (props) => {
   const [information4, setInformation4] = useState('');
   const [information5, setInformation5] = useState('');
   const [publicSetting, setPublicSetting] = useState(1);
-  
+
   const [deadlineDate, setDeadlineDate] = useState('');
-  
+
   const [webPushAvailable, setWebPushAvailable] = useState(false);
   const [webPushSubscriptionObj, setWebPushSubscriptionObj] = useState({});
-  
-  
+
+
   useEffect(() => {
-    
-    
+
+
     // --------------------------------------------------
     //   Button Enable
     // --------------------------------------------------
-    
+
     setButtonDisabled(false);
-    
-    
+
+
     // --------------------------------------------------
     //   編集用データを読み込む
     // --------------------------------------------------
-    
+
     if (recruitmentThreads_id) {
       handleGetEditData();
     }
-    
-    
+
+
   }, []);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
   const stateCommunity = ContainerStateCommunity.useContainer();
   const stateRecruitment = ContainerStateRecruitment.useContainer();
-  
+
   const {
-    
+
     localeObj,
-    
+
   } = stateUser;
-  
+
   const {
-    
+
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
-    
+
   } = stateLayout;
-  
+
   const {
-    
+
     setGameCommunityObj,
-    
+
   } = stateCommunity;
-  
+
   const {
-    
+
     setRecruitmentThreadsObj,
     setRecruitmentCommentsObj,
     setRecruitmentRepliesObj,
-    
+
   } = stateRecruitment;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   /**
    * 編集用データを読み込む
    */
   const handleGetEditData = async () => {
-    
-    
+
+
     try {
-      
-      
+
+
       // ---------------------------------------------
       //   recruitmentThreads_id が存在しない場合エラー
       // ---------------------------------------------
-      
+
       if (!recruitmentThreads_id) {
         throw new CustomError({ errorsArr: [{ code: '1sfB7JPUO', messageID: 'Error' }] });
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Loading Open
       // ---------------------------------------------
-      
+
       handleLoadingOpen({});
-      
-      
+
+
       // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
-      
+
       setButtonDisabled(true);
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Scroll To
       // ---------------------------------------------
-      
+
       handleScrollTo({
-        
+
         to: recruitmentThreads_id,
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
         offset: -50,
-        
+
       });
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
-      
+
       const formDataObj = {
-        
+
         recruitmentThreads_id,
-        
+
       };
-      
-      
+
+
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
-      
+
       const resultObj = await fetchWrapper({
-        
+
         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/get-edit-data`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
-        
+
       });
-      
-      
+
+
       // console.log(`
       //   ----- resultObj -----\n
       //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
+
+
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
-      
+
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
-      
+
       setButtonDisabled(false);
-      
-      
+
+
       // ---------------------------------------------
       //   Set Form Data
       // ---------------------------------------------
-      
+
       setHardwaresArr(lodashGet(resultObj, ['data', 'hardwaresArr'], []));
       setCategory(lodashGet(resultObj, ['data', 'category'], ''));
-      
-      
+
+
       const localesArr = lodashGet(resultObj, ['data', 'localesArr'], []);
-      
+
       const filteredArr = localesArr.filter((filterObj) => {
         return filterObj.language === localeObj.language;
       });
-      
+
       if (lodashHas(filteredArr, [0])) {
-        
+
         setTitle(lodashGet(filteredArr, [0, 'title'], ''));
         setName(lodashGet(filteredArr, [0, 'name'], ''));
         setComment(lodashGet(filteredArr, [0, 'comment'], ''));
-        
+
       } else {
-        
+
         setTitle(lodashGet(localesArr, [0, 'title'], ''));
         setName(lodashGet(localesArr, [0, 'name'], ''));
         setComment(lodashGet(localesArr, [0, 'comment'], ''));
-        
+
       }
-      
-      
+
+
       let tempImagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
-      
+
       if (Object.keys(tempImagesAndVideosObj).length === 0) {
-        
+
         tempImagesAndVideosObj = {
-          
+
           _id: '',
           createdDate: '',
           updatedDate: '',
           users_id: '',
           type: 'recruitment',
           arr: [],
-          
+
         };
-        
+
       }
-      
+
       setImagesAndVideosObj(tempImagesAndVideosObj);
-      
-      
+
+
       setIDsArr(lodashGet(resultObj, ['data', 'idsArr'], []));
       setPlatform1(lodashGet(resultObj, ['data', 'platform1'], 'Other'));
       setPlatform2(lodashGet(resultObj, ['data', 'platform2'], 'Other'));
@@ -425,90 +425,90 @@ const Component = (props) => {
       setDeadlineDate(lodashGet(resultObj, ['data', 'deadlineDate'], ''));
       setWebPushAvailable(lodashGet(resultObj, ['data', 'webPushAvailable'], false));
       setWebPushSubscriptionObj(lodashGet(resultObj, ['data', 'webPushesObj', 'subscriptionObj'], {}));
-      
-      
+
+
     } catch (errorObj) {
-      
-      
+
+
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
-      
+
       setButtonDisabled(false);
-      
-      
+
+
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
-      
+
       showSnackbar({
-        
+
         enqueueSnackbar,
         intl,
         errorObj,
-        
+
       });
-      
-      
+
+
     } finally {
-      
-      
+
+
       // ---------------------------------------------
       //   Loading Close
       // ---------------------------------------------
-      
+
       handleLoadingClose();
-      
-      
+
+
     }
-    
-    
+
+
   };
-  
-  
-  
-  
+
+
+
+
   /**
    * 募集を投稿する
    * @param {Object} eventObj - イベント
    */
   const handleSubmit = async ({
-    
+
     eventObj,
-    
+
   }) => {
-    
-    
+
+
     // ---------------------------------------------
     //   フォームの送信処理停止
     // ---------------------------------------------
-    
+
     eventObj.preventDefault();
-    
-    
+
+
     // ---------------------------------------------
     //   新規投稿時の recruitmentThreads_id
     // ---------------------------------------------
-    
+
     let newRecruitmentThreads_id = '';
-    
-    
-    
-    
+
+
+
+
     try {
-      
-      
+
+
       // console.log(chalk`
       //   platform1: {green ${platform1}}
       //   platform2: {green ${platform2}}
       //   platform3: {green ${platform3}}
       // `);
-      
-      
+
+
       // ---------------------------------------------
       //   Temp Data
       // ---------------------------------------------
-      
+
       // setHardwaresArr([ { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },  { hardwareID: '2yKF4qXAw', name: 'メガドライブ' } ]);
       // setCategory(1);
       // setTitle('テストタイトル');
@@ -524,104 +524,104 @@ const Component = (props) => {
       // setPublicSetting(1);
       // setDeadlineDate('');
       // setWebPushSubscriptionObj({
-        
+
       //   endpoint: 'https://fcm.googleapis.com/fcm/send/fStle9C5HJk:APA91bFMuBrN4DaT6QOVLhkXbaDJCTEM3q0hE8gM_FPqMqE7SgN6fkxylrFLfve3C8QA7O03Q-UWMXI2LQINSpCCveDrMV3FOpTfPfRhjabMbM43dsBVcKHJy4QcasADEW9KqA40Ea5y',
       //   keys: {
       //     p256dh: 'BCleeWTRP95hSeOXd3lTmcGInU2AFR4xEfy6W_kgzwd7IT_GMXzbhriEerFEFZDEXOQJNTGUFObhkol2P7qTMWw',
       //     auth: 'siDbUa9DCbg-n9AMsvWA1w'
       //   }
-        
+
       // });
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Property
       // ---------------------------------------------
-      
+
       const hardwareIDsArr = [];
-      
+
       for (let valueObj of hardwaresArr.values()) {
         hardwareIDsArr.push(valueObj.hardwareID);
       }
-      
+
       const threadLimit = parseInt((getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
       const commentLimit = parseInt((getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
       const replyLimit = parseInt((getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Validations
       // ---------------------------------------------
-      
+
       if (
-        
+
         validationRecruitmentThreadsCategory({ value: category }).error ||
-        
+
         validationRecruitmentThreadsTitle({ value: title }).error ||
         validationHandleName({ value: name }).error ||
         validationRecruitmentThreadsComment({ value: comment }).error ||
-        
+
         validationRecruitmentThreadsPlatform({ value: platform1 }).error ||
         validationRecruitmentThreadsPlatform({ value: platform2 }).error ||
         validationRecruitmentThreadsPlatform({ value: platform3 }).error ||
-        
+
         validationRecruitmentThreadsID({ value: id1 }).error ||
         validationRecruitmentThreadsID({ value: id2 }).error ||
         validationRecruitmentThreadsID({ value: id3 }).error ||
-        
+
         validationRecruitmentThreadsInformationTitle({ value: informationTitle1 }).error ||
         validationRecruitmentThreadsInformationTitle({ value: informationTitle2 }).error ||
         validationRecruitmentThreadsInformationTitle({ value: informationTitle3 }).error ||
         validationRecruitmentThreadsInformationTitle({ value: informationTitle4 }).error ||
         validationRecruitmentThreadsInformationTitle({ value: informationTitle5 }).error ||
-        
+
         validationRecruitmentThreadsInformation({ value: information1 }).error ||
         validationRecruitmentThreadsInformation({ value: information2 }).error ||
         validationRecruitmentThreadsInformation({ value: information3 }).error ||
         validationRecruitmentThreadsInformation({ value: information4 }).error ||
         validationRecruitmentThreadsInformation({ value: information5 }).error ||
-        
+
         validationRecruitmentThreadsPublicSetting({ value: publicSetting }).error ||
-        
+
         validationRecruitmentThreadsDeadlineDate({ value: deadlineDate }).error ||
-        
+
         validationBoolean({ value: webPushAvailable }).error
-        
+
       ) {
-        
+
         throw new CustomError({ errorsArr: [{ code: 'S0JRF6V5l', messageID: 'uwHIKBy7c' }] });
-        
+
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Loading Open
       // ---------------------------------------------
-      
+
       handleLoadingOpen({});
-      
-      
+
+
       // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
-      
+
       setButtonDisabled(true);
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
-      
+
       const formDataObj = {
-        
+
         gameCommunities_id,
         recruitmentThreads_id,
         hardwareIDsArr,
@@ -652,62 +652,62 @@ const Component = (props) => {
         threadLimit,
         commentLimit,
         replyLimit,
-        
+
       };
-      
+
       if (Object.keys(imagesAndVideosObj).length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
-      
+
       if (webPushAvailable && Object.keys(webPushSubscriptionObj).length !== 0) {
         formDataObj.webPushSubscriptionObj = webPushSubscriptionObj;
       }
-      
-      
+
+
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
-      
+
       const resultObj = await fetchWrapper({
-        
+
         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-threads/upsert`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
-        
+
       });
-      
-      
+
+
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
-      
+
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Reset Form
       // ---------------------------------------------
-      
+
       setHardwaresArr([]);
       setCategory('');
       setTitle('');
       setName('');
       setComment('');
       setImagesAndVideosObj({
-        
+
         _id: '',
         createdDate: '',
         updatedDate: '',
         users_id: '',
         type: 'recruitment',
         arr: [],
-        
+
       });
-      
+
       setIDsArr([]);
       setPlatform1('Other');
       setPlatform2('Other');
@@ -729,62 +729,62 @@ const Component = (props) => {
       setDeadlineDate('');
       setWebPushAvailable(false);
       setWebPushSubscriptionObj({});
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
-      
+
       setButtonDisabled(false);
-      
-      
+
+
       // --------------------------------------------------
       //   gameCommunityObj
       // --------------------------------------------------
-      
+
       setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
-      
-      
+
+
       // ---------------------------------------------
       //   forumThreadsObj
       // ---------------------------------------------
-      
+
       setRecruitmentThreadsObj(lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {}));
-      
-      
+
+
       // ---------------------------------------------
       //   forumCommentsObj
       // ---------------------------------------------
-      
+
       setRecruitmentCommentsObj(lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {}));
-      
-      
+
+
       // ---------------------------------------------
       //   forumRepliesObj
       // ---------------------------------------------
-      
+
       setRecruitmentRepliesObj(lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {}));
-      
-      
+
+
       // ---------------------------------------------
       //   新規投稿時の recruitmentThreads_id
       // ---------------------------------------------
-      
+
       newRecruitmentThreads_id = lodashGet(resultObj, ['data', 'recruitmentThreadsObj', 'page1Obj', 'arr', 0], '');
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   Snackbar: Success
       // --------------------------------------------------
-      
+
       const experienceObj = lodashGet(resultObj, ['data', 'experienceObj'], {});
-      
+
       showSnackbar({
-        
+
         enqueueSnackbar,
         intl,
         experienceObj,
@@ -794,194 +794,194 @@ const Component = (props) => {
             messageID: recruitmentThreads_id ? 'xM5NqhTq5' : 'B9Goe5scP',
           },
         ]
-        
+
       });
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   console.log
       // --------------------------------------------------
-      
+
       // console.log(`
       //   ----------------------------------------\n
       //   /app/gc/rec/v2/components/form/thread.js / handleSubmit
       // `);
-      
+
       // console.log(`
       //   ----- formDataObj -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
+
       // console.log(`
       //   ----- resultObj -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
+
       // console.log(chalk`
       //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
       //   newRecruitmentThreads_id: {green ${newRecruitmentThreads_id}}
       // `);
-      
-      
+
+
     } catch (errorObj) {
-      
-      
+
+
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
-      
+
       setButtonDisabled(false);
-      
-      
+
+
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
-      
+
       showSnackbar({
-        
+
         enqueueSnackbar,
         intl,
         errorObj,
-        
+
       });
-      
-      
+
+
     } finally {
-      
-      
+
+
       // ---------------------------------------------
       //   Hide Form
       // ---------------------------------------------
-      
+
       if (recruitmentThreads_id) {
         setShowForm(false);
       }
-      
-      
+
+
       // ---------------------------------------------
       //   Scroll
       // ---------------------------------------------
-      
+
       handleScrollTo({
-        
+
         to: recruitmentThreads_id || newRecruitmentThreads_id || 'recruitmentThreads',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
         offset: -50,
-        
+
       });
-      
-      
+
+
       // ---------------------------------------------
       //   Loading Close
       // ---------------------------------------------
-      
+
       handleLoadingClose();
-      
-      
+
+
     }
-    
-    
+
+
   };
-  
-  
-  
-  
+
+
+
+
   /**
    * フォームを閉じる
    */
   const handleClose = async () => {
-    
-    
+
+
     // ---------------------------------------------
     //   閉じる
     // ---------------------------------------------
-    
+
     setShowForm(false);
-      
-      
+
+
     // ---------------------------------------------
     //   Scroll To
     // ---------------------------------------------
-    
+
     handleScrollTo({
-      
+
       to: recruitmentThreads_id,
       duration: 0,
       delay: 0,
       smooth: 'easeInOutQuart',
       offset: -50,
-      
+
     });
-    
-    
+
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   const limitHardwares = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_HARDWARES_LIMIT, 10);
   const limitImagesAndVideos = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_IMAGES_AND_VIDEOS_LIMIT, 10);
-  
-  
+
+
   // --------------------------------------------------
   //   Validations
   // --------------------------------------------------
-  
+
   const validationRecruitmentThreadsTitleObj = validationRecruitmentThreadsTitle({ value: title });
-  
-  
+
+
   // --------------------------------------------------
   //   Element Name
   // --------------------------------------------------
-  
+
   const elementName = recruitmentThreads_id ? `${recruitmentThreads_id}-formThread` : `${gameCommunities_id}-formThread`;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/gc/rec/v2/components/form/thread.js
   // `);
-  
+
   // console.log(chalk`
   //   gameCommunities_id: {green ${gameCommunities_id}}
   //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
   // `);
-  
+
   // console.log(`
   //   ----- validationRecruitmentThreadsID1Obj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(validationRecruitmentThreadsID1Obj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Element
       name={elementName}
     >
-      
-      
+
+
       {/* Form */}
       <form
         name={elementName}
@@ -989,12 +989,12 @@ const Component = (props) => {
           eventObj,
         })}
       >
-        
-        
+
+
         {/* Heading & Explanation */}
         {recruitmentThreads_id &&
           <React.Fragment>
-          
+
             <h3
               css={css`
                 font-weight: bold;
@@ -1003,8 +1003,8 @@ const Component = (props) => {
             >
               募集編集フォーム
             </h3>
-            
-            
+
+
             <p
               css={css`
                 margin: 0 0 14px 0;
@@ -1012,11 +1012,11 @@ const Component = (props) => {
             >
               投稿済みの募集を編集できます。
             </p>
-            
+
           </React.Fragment>
         }
-        
-        
+
+
         {!recruitmentThreads_id &&
           <p
             css={css`
@@ -1026,13 +1026,13 @@ const Component = (props) => {
             募集を新しく投稿する場合、こちらのフォームを利用して投稿してください。ログインして投稿すると募集をいつでも編集できるようになり、ID・情報の公開相手を選ぶことができるようになります。
           </p>
         }
-        
-        
-        
-        
+
+
+
+
         {/* Form Hardware */}
         <div css={cssBox}>
-          
+
           <h3
             css={css`
               font-weight: bold;
@@ -1041,8 +1041,8 @@ const Component = (props) => {
           >
             ハードウェア
           </h3>
-          
-          
+
+
           <p
             css={css`
               margin: 0 0 14px 0;
@@ -1050,7 +1050,7 @@ const Component = (props) => {
           >
             募集に関係するハードウェアを選んでください（PC版、○○版などの情報です）
           </p>
-          
+
           <p
             css={css`
               margin: 0 0 14px 0;
@@ -1058,28 +1058,28 @@ const Component = (props) => {
           >
             ハードウェア名（またはSFC、N64などの略称）の一部を入力すると、入力フォームの下に一覧でハードウェアの正式名称が表示されます。一覧上でハードウェアをクリック（タップ）すると入力は完了です。この欄では複数のハードウェアを入力することが可能です。
           </p>
-          
+
           <p>
             ゲームのハードウェア名だけでなく、「Android」「iOS」「PC」などもハードウェアとして入力できます。
           </p>
-          
-          
-          
-          
+
+
+
+
           <FormHardwares
             hardwaresArr={hardwaresArr}
             setHardwaresArr={setHardwaresArr}
             limit={limitHardwares}
           />
-          
+
         </div>
-        
-        
-        
-        
+
+
+
+
         {/* Category */}
         <div css={cssBox}>
-          
+
           <h3
             css={css`
               font-weight: bold;
@@ -1088,7 +1088,7 @@ const Component = (props) => {
           >
             カテゴリー
           </h3>
-          
+
           <p
             css={css`
               margin: 0 0 24px 0;
@@ -1096,12 +1096,12 @@ const Component = (props) => {
           >
             当てはまるカテゴリーを選んでください。どのカテゴリーにも当てはまらない場合は「なし」を選んでください。
           </p>
-          
-          
+
+
           <FormControl>
-            
+
             <InputLabel shrink id="categoryLabel">募集のカテゴリー</InputLabel>
-            
+
             <Select
               css={css`
                 && {
@@ -1118,18 +1118,18 @@ const Component = (props) => {
               <MenuItem value={2}>メンバー募集</MenuItem>
               <MenuItem value={3}>売買・交換相手募集</MenuItem>
             </Select>
-            
+
           </FormControl>
-          
+
         </div>
-        
-        
-        
-        
+
+
+
+
         {/* Title & Handle Name & Comment */}
         <div css={cssBox}>
-          
-          
+
+
           {/* Title */}
           <TextField
             css={css`
@@ -1149,26 +1149,26 @@ const Component = (props) => {
               maxLength: 100,
             }}
           />
-          
-          
-          
-          
+
+
+
+
           {/* Name */}
           <FormName
             name={name}
             setName={setName}
           />
-          
-          
-          
-          
+
+
+
+
           {/* Comment */}
           <div
             css={css`
               margin: 12px 0 0 0;
             `}
           >
-            
+
             <TextareaAutosize
               css={css`
                 && {
@@ -1177,11 +1177,11 @@ const Component = (props) => {
                   box-sizing: border-box;
                   padding: 8px 12px;
                   line-height: 1.8;
-                  
+
                   &:focus {
                     outline: 1px #A9F5F2 solid;
                   }
-                  
+
                   resize: none;
                 }
               `}
@@ -1192,19 +1192,19 @@ const Component = (props) => {
               disabled={buttonDisabled}
               onChange={(eventObj) => setComment(eventObj.target.value)}
             />
-            
+
           </div>
-          
-          
-          
-          
+
+
+
+
           {/* Form Images & Videos */}
           <div
             css={css`
               margin: 12px 0 0 0;
             `}
           >
-            
+
             <FormImageAndVideo
               // type="recruitment"
               descriptionImage="募集に表示する画像をアップロードできます。"
@@ -1214,38 +1214,38 @@ const Component = (props) => {
               imagesAndVideosObj={imagesAndVideosObj}
               setImagesAndVideosObj={setImagesAndVideosObj}
             />
-            
+
           </div>
-          
-          
+
+
         </div>
-        
-        
-        
-        
+
+
+
+
         {/* ID & Other Information */}
         <div css={cssBox}>
-          
+
           <FormIDsInformations
             type="thread"
-            
+
             idsArr={idsArr}
             setIDsArr={setIDsArr}
-            
+
             platform1={platform1}
             setPlatform1={setPlatform1}
             platform2={platform2}
             setPlatform2={setPlatform2}
             platform3={platform3}
             setPlatform3={setPlatform3}
-            
+
             id1={id1}
             setID1={setID1}
             id2={id2}
             setID2={setID2}
             id3={id3}
             setID3={setID3}
-            
+
             informationTitle1={informationTitle1}
             setInformationTitle1={setInformationTitle1}
             informationTitle2={informationTitle2}
@@ -1256,7 +1256,7 @@ const Component = (props) => {
             setInformationTitle4={setInformationTitle4}
             informationTitle5={informationTitle5}
             setInformationTitle5={setInformationTitle5}
-            
+
             information1={information1}
             setInformation1={setInformation1}
             information2={information2}
@@ -1267,33 +1267,33 @@ const Component = (props) => {
             setInformation4={setInformation4}
             information5={information5}
             setInformation5={setInformation5}
-            
+
             publicSetting={publicSetting}
             setPublicSetting={setPublicSetting}
           />
-          
+
         </div>
-        
-        
-        
-        
+
+
+
+
         {/* Deadline */}
         <div css={cssBox}>
-          
+
           <FormDeadline
             deadlineDate={deadlineDate}
             setDeadlineDate={setDeadlineDate}
             recruitmentThreads_id={recruitmentThreads_id}
           />
-          
+
         </div>
-        
-        
-        
-        
+
+
+
+
         {/* プッシュ通知 */}
         <div css={cssBox}>
-          
+
           <h3
             css={css`
               font-weight: bold;
@@ -1302,7 +1302,7 @@ const Component = (props) => {
           >
             プッシュ通知
           </h3>
-          
+
           <p
             css={css`
               margin: 0 0 12px 0;
@@ -1310,15 +1310,15 @@ const Component = (props) => {
           >
             ブラウザで通知を受け取れるプッシュ通知の設定を行えます。プッシュ通知を許可すると、募集に返信があったときに通知を受け取れるのでおすすめです。
           </p>
-          
+
           <p
             css={css`
               margin: 0 0 12px 0;
             `}
           >
-            プッシュ通知に対応しているブラウザは最新の Chrome、Edge、Firefox、Opera です。
+            プッシュ通知に対応しているブラウザは最新の Chrome、Edge、Firefox、Opera です。<span css={css` color: red; `}>※ iOS / Mac OSでは利用できません。</span>
           </p>
-          
+
           <p
             css={css`
               margin: 0 0 12px 0;
@@ -1326,20 +1326,20 @@ const Component = (props) => {
           >
             過去にGame Usersからのプッシュ通知をブロックしたことがある方は、ブロックを解除しなければ通知を受けることができません。通知を受け取りたい場合は、ご使用のブラウザのブロック解除方法を調べて実行してください。
           </p>
-          
-          
+
+
           <WebPuchCheckbox
             webPushAvailable={webPushAvailable}
             setWebPushAvailable={setWebPushAvailable}
             webPushSubscriptionObj={webPushSubscriptionObj}
             setWebPushSubscriptionObj={setWebPushSubscriptionObj}
           />
-          
+
         </div>
-        
-        
-        
-        
+
+
+
+
         {/* Buttons */}
         <div
           css={css`
@@ -1350,8 +1350,8 @@ const Component = (props) => {
             padding: 36px 0 0 0;
           `}
         >
-          
-          
+
+
           {/* Submit */}
           <Button
             type="submit"
@@ -1361,10 +1361,10 @@ const Component = (props) => {
           >
             {recruitmentThreads_id ? '編集する' : '投稿する'}
           </Button>
-          
-          
-          
-          
+
+
+
+
           {/* Close */}
           {recruitmentThreads_id &&
             <div
@@ -1382,17 +1382,17 @@ const Component = (props) => {
               </Button>
             </div>
           }
-          
+
         </div>
-        
-        
+
+
       </form>
-      
-      
+
+
     </Element>
   );
-  
-  
+
+
 };
 
 

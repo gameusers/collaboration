@@ -258,8 +258,8 @@ export default async (req, res) => {
     // `);
 
     // console.log(`
-    //   ----- cardPlayersObj -----\n
-    //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
+    //   ----- resultCardPlayersObj -----\n
+    //   ${util.inspect(resultCardPlayersObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 

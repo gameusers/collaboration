@@ -1,7 +1,7 @@
 // --------------------------------------------------
 //   _document.jsについて：https://nextjs.org/docs/advanced-features/custom-document
 //   日本語の記事：https://qiita.com/tetsutaroendo/items/c7171286137d963cdecf
-//   
+//
 //   Next.jsでMaterial UIを利用する場合の_document.js
 //   参考：https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_document.js
 // --------------------------------------------------
@@ -26,62 +26,62 @@ import { ServerStyleSheets } from '@material-ui/core/styles';
 
 
 class MyDocument extends Document {
-  
+
   render() {
-    
+
     return (
-      <Html lang='ja'>
-        
+      <Html lang="ja">
+
         <Head>
-          <meta charSet='utf-8' />
-          {/*<meta name='viewport' content='width=device-width, initial-scale=1.0' />*/}
-          <meta name='description' content='Hello World!' />
-          <meta name='format-detection' content='telephone=no' />
-          
+          <meta charSet="utf-8" />
+          {/*<meta name="viewport" content="width=device-width, initial-scale=1.0" />*/}
+          <meta name="description" content="Game UsersはゲームユーザーのためのSNS・コミュニティサイトです。" />
+          <meta name="format-detection" content="telephone=no" />
+
           {/* iOS */}
-          <meta name='application-name' content='Game Users Dev' />
-          <meta name='apple-mobile-web-app-capable' content='yes' />
-          <meta name='apple-mobile-web-app-status-bar-style' content='default' />
-          <meta name='apple-mobile-web-app-title' content='Game Users Dev' />
-          
+          <meta name="application-name" content="Game Users" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+          <meta name="apple-mobile-web-app-title" content="Game Users" />
+
           {/* Android */}
-          <meta name='mobile-web-app-capable' content='yes' />
-          <meta name='theme-color' content='#000000' />
-          
+          <meta name="mobile-web-app-capable" content="yes" />
+          <meta name="theme-color" content="#000000" />
+
           {/* OGP */}
-          <meta property='og:title' content='Game Users Dev' />
-          <meta property='og:type' content='website' />
-          <meta property='og:description' content='Hello World!' />
-          <meta property='og:url' content='https://dev-1.gameusers.org/' />
-          <meta property='og:image' content='/img/common/social/ogp_image.jpg' />
-          <meta property='og:site_name' content='Game Users Dev' />
-          
+          <meta property="og:title" content="Game Users" />
+          <meta property="og:type" content="website" />
+          <meta property="og:description" content="Hello World!" />
+          <meta property="og:url" content="https://gameusers.org/" />
+          <meta property="og:image" content="/img/common/social/ogp_image.jpg" />
+          <meta property="og:site_name" content="Game Users" />
+
           {/* Twitter */}
-          <meta name='twitter:card' content='summary' />
-          <meta name='twitter:site' content='@gameusersorg' />
-          <meta name='twitter:image' content='/img/common/social/ogp_twitter.png' />
-          <meta name='twitter:title' content='Game Users' />
-          
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:site" content="@gameusersorg" />
+          <meta name="twitter:image" content="/img/common/social/ogp_twitter.png" />
+          <meta name="twitter:title" content="Game Users" />
+
           {/* Facebook */}
-          <meta property='fb:app_id' content='823267361107745' />
-          
+          <meta property="fb:app_id" content="823267361107745" />
+
           {/* link */}
-          <link rel='manifest' href='/manifest.json' />
+          <link rel="manifest" href="/manifest.json" />
           <link rel="icon" href="/favicon.ico" />
-          <link rel='apple-touch-icon' sizes='180x180' href='/img/common/icons/apple-touch-icon-180×180.png' />
+          <link rel="apple-touch-icon" sizes="180x180" href="/img/common/icons/apple-touch-icon-180×180.png" />
         </Head>
-        
-        
+
+
         <body>
           <Main />
           <NextScript />
         </body>
-        
+
       </Html>
     );
-    
+
   }
-  
+
 }
 
 

@@ -463,7 +463,7 @@ const Component = (props) => {
             margin: 0 0 12px 0;
           `}
         >
-          プッシュ通知に対応しているブラウザは最新の Chrome、Edge、Firefox、Opera です。
+          プッシュ通知に対応しているブラウザは最新の Chrome、Edge、Firefox、Opera です。<span css={css` color: red; `}>※ iOS / Mac OSでは利用できません。</span>
         </p>
 
         <p

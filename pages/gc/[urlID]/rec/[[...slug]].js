@@ -88,6 +88,8 @@ const ContainerLayout = (props) => {
   const { setRecruitmentThreadsObj, setRecruitmentCommentsObj, setRecruitmentRepliesObj } = stateRecruitment;
 
 
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
@@ -439,23 +441,23 @@ export async function getServerSideProps({ req, res, query }) {
   const breadcrumbsArr = [
 
     {
-      type: 'gc',
+      type: 'gc/list',
       anchorText: '',
-      href: `/gc/index`,
-      as: `/gc`,
+      href: '/gc/list/[[...slug]]',
+      as: '/gc/list',
     },
 
     {
       type: 'gc/index',
       anchorText: gameName,
-      href: `/gc/[urlID]`,
+      href: '/gc/[urlID]',
       as: `/gc/${urlID}`,
     },
 
     {
       type: 'gc/rec',
       anchorText: '',
-      href: `/gc/[urlID]/rec/[[...slug]]`,
+      href: '/gc/[urlID]/rec/[[...slug]]',
       as: `/gc/${urlID}/rec`,
     },
 

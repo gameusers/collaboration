@@ -19,6 +19,7 @@ desktop.ini
 /.c9/
 /.next/
 /__/
+/import/
 
 # データベース
 /db/mongodb/
@@ -43,3 +44,6 @@ desktop.ini
 
 # 一時的に複製したファイル
 __*.js
+
+# 旧データインポート用
+import-json.js

@@ -252,6 +252,127 @@ const ContainerLayout = (props) => {
 
 
   /**
+   * データをインポートする - IDを割り振る
+   */
+  const handleImportID = async () => {
+
+
+    try {
+
+
+      // ---------------------------------------------
+      //   Loading Open
+      // ---------------------------------------------
+
+      handleLoadingOpen({});
+
+
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+
+      setButtonDisabled(true);
+
+
+
+
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+
+      const formData = new FormData();
+
+
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+
+      const resultObj = await fetchWrapper({
+
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/common/import-id`,
+        methodType: 'POST',
+        formData,
+
+      });
+
+
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+
+
+
+      // --------------------------------------------------
+      //   Snackbar: Success
+      // --------------------------------------------------
+
+      showSnackbar({
+
+        enqueueSnackbar,
+        intl,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'dusYj_Gh3',
+          },
+        ]
+
+      });
+
+
+    } catch (errorObj) {
+
+
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+
+      showSnackbar({
+
+        enqueueSnackbar,
+        intl,
+        errorObj,
+
+      });
+
+
+    } finally {
+
+
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+
+      setButtonDisabled(false);
+
+
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
+
+      handleLoadingClose();
+
+
+    }
+
+
+  };
+
+
+
+
+  /**
    * データをインポートする
    */
   const handleImportJson = async () => {
@@ -416,6 +537,36 @@ const ContainerLayout = (props) => {
         onClick={handleInitializeDB}
       >
         データベース - データ挿入
+      </Button>
+
+
+      <br /><br />
+
+
+      <h1>インポート - _id を割り振る</h1>
+      <p>user_no や community_no に _id を割り振る。</p>
+
+      <Button
+        variant="contained"
+        disabled={buttonDisabled}
+        onClick={handleImportID}
+      >
+        _id を割り振る
+      </Button>
+
+
+      <br /><br />
+
+
+      <h1>インポート</h1>
+      <p>旧Game Usersのデータをインポートします。</p>
+
+      <Button
+        variant="contained"
+        disabled={buttonDisabled}
+        onClick={handleImportJson}
+      >
+        インポート
       </Button>
 
 

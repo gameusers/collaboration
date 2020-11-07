@@ -19,7 +19,6 @@ desktop.ini
 /.c9/
 /.next/
 /__/
-/import/
 
 # データベース
 /db/mongodb/
@@ -46,4 +45,7 @@ desktop.ini
 __*.js
 
 # 旧データインポート用
-import-json.js
+/import/json/
+# import-json.js
+# import-id.js
+# import.js

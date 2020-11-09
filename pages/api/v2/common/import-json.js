@@ -144,6 +144,8 @@ export default async (req, res) => {
     const ISO8601 = moment().utc().toISOString();
 
 
+
+
     // --------------------------------------------------
     //   Json
     // --------------------------------------------------
@@ -157,6 +159,14 @@ export default async (req, res) => {
     const communityJsonArr = JSON.parse(fs.readFileSync('import/json/community.json', 'utf8'));
     const communityDataArr = lodashGet(communityJsonArr, [2, 'data'], []);
 
+    const dataDeveloperJsonArr = JSON.parse(fs.readFileSync('import/json/data_developer.json', 'utf8'));
+    const dataDeveloperDataArr = lodashGet(dataDeveloperJsonArr, [2, 'data'], []);
+
+    const gameDataJsonArr = JSON.parse(fs.readFileSync('import/json/game_data.json', 'utf8'));
+    const gameDataDataArr = lodashGet(gameDataJsonArr, [2, 'data'], []);
+
+
+
 
     // --------------------------------------------------
     //   ID
@@ -166,7 +176,7 @@ export default async (req, res) => {
     const idsObj = {};
 
     for (let valueObj of idsArr.values()) {
-      idsObj[valueObj.key] = valueObj._id;
+      idsObj[valueObj.key] = valueObj.id;
     }
 
     // console.log(`
@@ -510,11 +520,6 @@ export default async (req, res) => {
     }
 
 
-    // console.log(chalk`
-    //   usersArr.length: {green ${usersArr.length}}
-    // `);
-
-
 
 
     // --------------------------------------------------
@@ -669,19 +674,1013 @@ export default async (req, res) => {
 
 
 
+    // --------------------------------------------------
+    //   developers-publishers
+    // --------------------------------------------------
+
+    const developersPublishersArr = [];
+
+
+    for (const [index, valueObj] of dataDeveloperDataArr.entries()) {
+
+
+      // --------------------------------------------------
+      //   _id が存在していない場合は処理しない
+      // --------------------------------------------------
+
+      const developer_no = lodashGet(valueObj, ['developer_no'], 0);
+
+      if (idsObj[`developer_no_${developer_no}`] === undefined) {
+        continue;
+      }
+
+
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
+
+      const name = lodashGet(valueObj, ['name'], 'Name');
+      const developerPublisherID = idsObj[`developer_no_${developer_no}`]
+
+
+
+
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
+
+      if (developer_no !== '18') {
+
+        developersPublishersArr.push(
+
+          {
+            _id: shortid.generate(),
+            createdDate: ISO8601,
+            updatedDate: ISO8601,
+            language: 'ja',
+            country: 'JP',
+            developerPublisherID,
+            urlID: shortid.generate(),
+            name,
+          }
+
+        );
+
+      }
+
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   hardwares
+    // --------------------------------------------------
+
+    const hardwaresArr = [
+
+      {
+        _id: 'R6uD6BzZ5',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'I-iu-WmkO',
+        urlID: 'Family-Computer',
+        name: 'ファミリーコンピュータ',
+        searchKeywordsArr: [
+          'ファミリーコンピューター',
+          'ファミコン',
+          'ふぁみりーこんぴゅーたー',
+          'ふぁみこん',
+          'Family Computer',
+          'FamilyComputer',
+          'Famicom',
+          'FC',
+        ]
+      },
+
+
+      {
+        _id: 'aOeQ04_vN',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'VFLNnniHr',
+        urlID: 'Family-Computer-Disk-System',
+        name: 'ファミリーコンピュータ ディスクシステム',
+        searchKeywordsArr: [
+          'ファミリーコンピューター ディスクシステム',
+          'ふぁみりーこんぴゅーたー でぃすくしすてむ',
+          'Family Computer Disk System',
+          'FamilyComputerDiskSystem',
+          'FCDS',
+        ]
+      },
+
+
+      {
+        _id: 'adzG1JLYu',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'KyOSlwcLk',
+        urlID: 'PC-Engine',
+        name: 'PCエンジン',
+        searchKeywordsArr: [
+          'PCエンジン',
+          'ピーシーエンジン',
+          'ぴーしーえんじん',
+          'PC Engine',
+          'PCEngine',
+          'PCE',
+        ]
+      },
+
+
+      {
+        _id: 'KVvkuvZF2',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: '2yKF4qXAw',
+        urlID: 'MEGA-DRIVE',
+        name: 'メガドライブ',
+        searchKeywordsArr: [
+          'メガドライブ',
+          'めがどらいぶ',
+          'MEGA DRIVE',
+          'MEGADRIVE',
+          'MD',
+        ]
+      },
+
+
+      {
+        _id: 'WOQKUSPPR',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'eKmDxi8lX',
+        urlID: 'SUPER-Famicom',
+        name: 'スーパーファミコン',
+        searchKeywordsArr: [
+          'スーパーファミコン',
+          'スーファミ',
+          'すーぱーふぁみこん',
+          'すーふぁみ',
+          'SUPER Famicom',
+          'SUPERFamicom',
+          'Super Family Computer',
+          'SuperFamilyComputer',
+          'SFC',
+        ]
+      },
+
+
+      {
+        _id: '8oGNQ2hMR',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'Z4R-SPN2-',
+        urlID: 'NEO-GEO',
+        name: 'ネオジオ',
+        searchKeywordsArr: [
+          'ネオジオ',
+          'ねおじお',
+          'NEO GEO',
+          'NEOGEO',
+          'NEO・GEO',
+          'NG',
+        ]
+      },
+
+
+      {
+        _id: '9zeb0m_13',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'lBSGQeGmx',
+        urlID: 'SEGA-SATURN',
+        name: 'セガサターン',
+        searchKeywordsArr: [
+          'セガサターン',
+          'せがさたーん',
+          'SEGA SATURN',
+          'SEGASATURN',
+          'SS',
+        ]
+      },
+
+
+      {
+        _id: 'zSvRzOp0V',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'zB4ivcsqM',
+        urlID: 'PlayStation',
+        name: 'PlayStation',
+        searchKeywordsArr: [
+          'プレイステーション',
+          'プレーステーション',
+          'プレステ',
+          'ぷれいすてーしょん',
+          'ぷれーすてーしょん',
+          'ぷれすて',
+          'Play Station',
+          'PlayStation',
+          'PS',
+        ]
+      },
+
+
+      {
+        _id: 'wlDy9Dqmv',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'o9bdsq5af',
+        urlID: 'VIRTUAL-BOY',
+        name: 'バーチャルボーイ',
+        searchKeywordsArr: [
+          'バーチャルボーイ',
+          'ばーちゃるぼーい',
+          'VIRTUAL BOY',
+          'VIRTUALBOY',
+          'VB',
+        ]
+      },
+
+
+      {
+        _id: 'N-V_maXNc',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: '45syCFviA',
+        urlID: 'NINTENDO-64',
+        name: 'NINTENDO64',
+        searchKeywordsArr: [
+          '任天堂64',
+          '任天堂６４',
+          'ニンテンドー64',
+          'ニンテンドウ64',
+          'ニンテンドオ64',
+          'ニンテンドー６４',
+          'ニンテンドウ６４',
+          'ニンテンドオ６４',
+          'ニンテンドーロクジュウヨン',
+          'ニンテンドウロクジュウヨン',
+          'ニンテンドオロクジュウヨン',
+          'ロクヨン',
+          'にんてんどー64',
+          'にんてんどう64',
+          'にんてんどお64',
+          'にんてんどー６４',
+          'にんてんどう６４',
+          'にんてんどお６４',
+          'にんてんどーろくじゅうよん',
+          'にんてんどうろくじゅうよん',
+          'にんてんどおろくじゅうよん',
+          'ろくよん',
+          'NINTENDO 64',
+          'NINTENDO64',
+          'N64',
+        ]
+      },
+
+
+      {
+        _id: 'iZ7MmkuQw',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'Kj_Djheqt',
+        urlID: 'Dreamcast',
+        name: 'ドリームキャスト',
+        searchKeywordsArr: [
+          'ドリームキャスト',
+          'ドリキャス',
+          'どりーむきゃすと',
+          'どりきゃす',
+          'Dreamcast',
+          'DC',
+        ]
+      },
+
+
+      {
+        _id: 'I2cKTLJNk',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: '8RERfeQQ9',
+        urlID: 'PlayStation-2',
+        name: 'PlayStation 2',
+        searchKeywordsArr: [
+          'プレイステーション2',
+          'プレーステーション2',
+          'プレステ2',
+          'プレイステーション２',
+          'プレーステーション２',
+          'プレステ２',
+          'プレイステーションツー',
+          'プレーステーションツー',
+          'プレステツー',
+          'ぷれいすてーしょん2',
+          'ぷれーすてーしょん2',
+          'ぷれすて2',
+          'ぷれいすてーしょん２',
+          'ぷれーすてーしょん２',
+          'ぷれすて２',
+          'ぷれいすてーしょんつー',
+          'ぷれーすてーしょんつー',
+          'ぷれすてつー',
+          'Play Station 2',
+          'PlayStation 2',
+          'PlayStation2',
+          'PS2',
+        ]
+      },
+
+
+      {
+        _id: 'PlRw2lxiy',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'XLUt628gr',
+        urlID: 'NINTENDO-GAMECUBE',
+        name: 'ニンテンドーゲームキューブ',
+        searchKeywordsArr: [
+          '任天堂ゲームキューブ',
+          'ニンテンドーゲームキューブ',
+          'ニンテンドウゲームキューブ',
+          'ニンテンドオゲームキューブ',
+          'にんてんどーげーむきゅーぶ',
+          'にんてんどうげーむきゅーぶ',
+          'にんてんどおげーむきゅーぶ',
+          'NINTENDO GAMECUBE',
+          'NINTENDOGAMECUBE',
+          'NGC',
+          'GC',
+        ]
+      },
+
+
+      {
+        _id: 'uQcBzP5cS',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: '78lc0hPjL',
+        urlID: 'Xbox',
+        name: 'Xbox',
+        searchKeywordsArr: [
+          'エックスボックス',
+          'えっくすぼっくす',
+          'Xbox',
+        ]
+      },
+
+
+      {
+        _id: 'NiozcDYe-',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: '08Qp5KxPA',
+        urlID: 'Xbox-360',
+        name: 'Xbox 360',
+        searchKeywordsArr: [
+          'エックスボックス360',
+          'エックスボックス３６０',
+          'エックスボックスサンロクマル',
+          'エックスボックスサンビャクロクジュウ',
+          'えっくすぼっくす360',
+          'えっくすぼっくす３６０',
+          'えっくすぼっくすさんろくまる',
+          'えっくすぼっくすさんびゃくろくじゅう',
+          'Xbox 360',
+          'Xbox360',
+          'X360'
+        ]
+      },
+
+
+      {
+        _id: '4iGMasHh4',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'YNZ6nb1Ki',
+        urlID: 'PlayStation-3',
+        name: 'PlayStation 3',
+        searchKeywordsArr: [
+          'プレイステーション3',
+          'プレーステーション3',
+          'プレステ3',
+          'プレイステーション３',
+          'プレーステーション３',
+          'プレステ３',
+          'プレイステーションスリー',
+          'プレーステーションスリー',
+          'プレステスリー',
+          'ぷれいすてーしょん3',
+          'ぷれーすてーしょん3',
+          'ぷれすて3',
+          'ぷれいすてーしょん３',
+          'ぷれーすてーしょん３',
+          'ぷれすて３',
+          'ぷれいすてーしょんすりー',
+          'ぷれーすてーしょんすりー',
+          'ぷれすてすりー',
+          'Play Station 3',
+          'PlayStation 3',
+          'PlayStation3',
+          'PS3',
+        ]
+      },
+
+
+      {
+        _id: '91N2yPx6B',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'n3wYKZ_ao',
+        urlID: 'Wii',
+        name: 'Wii',
+        searchKeywordsArr: [
+          'ウィー',
+          'ウイー',
+          'うぃー',
+          'ういー',
+          'Wii',
+          'We',
+        ]
+      },
+
+
+      {
+        _id: 'qX8WLLubQ',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'GTxWVd0z-',
+        urlID: 'Wii-U',
+        name: 'Wii U',
+        searchKeywordsArr: [
+          'ウィーユー',
+          'ウイーユー',
+          'うぃーゆー',
+          'ういーゆー',
+          'Wii U',
+          'Wi U',
+          'We U',
+          'WiiU',
+          'WiU',
+          'WeU',
+        ]
+      },
+
+
+      {
+        _id: 'FW76LaH_H',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'TdK3Oc-yV',
+        urlID: 'PlayStation-4',
+        name: 'PlayStation 4',
+        searchKeywordsArr: [
+          'プレイステーション4',
+          'プレーステーション4',
+          'プレステ4',
+          'プレイステーション４',
+          'プレーステーション４',
+          'プレステ４',
+          'プレイステーションフォー',
+          'プレーステーションフォー',
+          'プレステフォー',
+          'ぷれいすてーしょん4',
+          'ぷれーすてーしょん4',
+          'ぷれすて4',
+          'ぷれいすてーしょん４',
+          'ぷれーすてーしょん４',
+          'ぷれすて４',
+          'ぷれいすてーしょんふぉー',
+          'ぷれーすてーしょんふぉー',
+          'ぷれすてふぉー',
+          'Play Station 4',
+          'PlayStation 4',
+          'PlayStation4',
+          'PS4',
+        ]
+      },
+
+
+      {
+        _id: 'vk2kF94Ks',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'uPqoiXA_8',
+        urlID: 'Xbox-One',
+        name: 'Xbox One',
+        searchKeywordsArr: [
+          'エックスボックスワン',
+          'エックスボックスイチ',
+          'えっくすぼっくすわん',
+          'えっくすぼっくすいち',
+          'Xbox One',
+          'XboxOne',
+          'Xbox 1',
+          'Xbox1',
+          'XO'
+        ]
+      },
+
+
+      {
+        _id: 'Gu1hYjbv7',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'Zd_Ia4Hwm',
+        urlID: 'Nintendo-Switch',
+        name: 'Nintendo Switch',
+        searchKeywordsArr: [
+          '任天堂スイッチ',
+          '任天堂スウィッチ',
+          'ニンテンドースイッチ',
+          'ニンテンドースウィッチ',
+          'ニンテンドウスイッチ',
+          'ニンテンドウスウィッチ',
+          'ニンテンドオスイッチ',
+          'ニンテンドオスウィッチ',
+          'にんてんどーすいっち',
+          'にんてんどーすうぃっち',
+          'にんてんどうすいっち',
+          'にんてんどうすうぃっち',
+          'にんてんどおすいっち',
+          'にんてんどおすうぃっち',
+          'Nintendo Switch',
+          'NintendoSwitch',
+          'NS',
+        ]
+      },
+
+
+      {
+        _id: '_z4DBLYNi',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'XBKalRRW7',
+        urlID: 'Game-Boy',
+        name: 'ゲームボーイ',
+        searchKeywordsArr: [
+          'ゲームボーイ',
+          'げーむぼーい',
+          'Game Boy',
+          'GameBoy',
+          'GB',
+        ]
+      },
+
+
+      {
+        _id: '9Z6Wh_JJ2',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'sO2U2PzHl',
+        urlID: 'GAME-GEAR',
+        name: 'ゲームギア',
+        searchKeywordsArr: [
+          'ゲームギア',
+          'げーむぎあ',
+          'GAME GEAR',
+          'GAMEGEAR',
+          'GG',
+        ]
+      },
+
+
+      {
+        _id: 'QQtnx7FEN',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'qBsY8y0nO',
+        urlID: 'PC-Engine-GT',
+        name: 'PCエンジンGT',
+        searchKeywordsArr: [
+          'PCエンジンGT',
+          'ピーシーエンジンジーティー',
+          'ぴーしーえんじんじーてぃー',
+          'PC Engine GT',
+          'PCEngineGT',
+          'PCEGT',
+        ]
+      },
+
+
+      {
+        _id: 'IcH7HG2f7',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'u3SQqtJ-u',
+        urlID: 'NEOGEO-POCKET',
+        name: 'ネオジオポケット',
+        searchKeywordsArr: [
+          'ネオジオポケット',
+          'ねおじおぽけっと',
+          'NEO GEO POCKET',
+          'NEOGEO POCKET',
+          'NEOGEOPOCKET',
+          'NEO・GEO POCKET',
+          'NGP',
+        ]
+      },
+
+
+      {
+        _id: 'S2Q_3MrBo',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'PYIE0rv_e',
+        urlID: 'Wonder-Swan',
+        name: 'ワンダースワン',
+        searchKeywordsArr: [
+          'ワンダースワン',
+          'わんだーすわん',
+          'Wonder Swan',
+          'WonderSwan',
+          'WS',
+        ]
+      },
+
+
+      {
+        _id: '4OkTt-VSM',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'AIvzEgDCd',
+        urlID: 'GAMEBOY-ADVANCE',
+        name: 'ゲームボーイアドバンス',
+        searchKeywordsArr: [
+          'ゲームボーイアドバンス',
+          'げーむぼーいあどばんす',
+          'GAMEBOY ADVANCE',
+          'GAMEBOYADVANCE',
+          'GBA',
+        ]
+      },
+
+
+      {
+        _id: 'Uem6UalMW',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'HATpnt7sl',
+        urlID: 'Nintendo-DS',
+        name: 'ニンテンドーDS',
+        searchKeywordsArr: [
+          '任天堂DS',
+          '任天堂ディーエス',
+          'ニンテンドーDS',
+          'ニンテンドーディーエス',
+          'ニンテンドウDS',
+          'ニンテンドウディーエス',
+          'ニンテンドオDS',
+          'ニンテンドオディーエス',
+          'にんてんどーDS',
+          'にんてんどーでぃーえす',
+          'にんてんどうDS',
+          'にんてんどうでぃーえす',
+          'にんてんどおDS',
+          'にんてんどおでぃーえす',
+          'Nintendo DS',
+          'NintendoDS',
+          'NDS',
+        ]
+      },
+
+
+      {
+        _id: 'nMhdlLGm6',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'efIOgWs3N',
+        urlID: 'PlayStation-Portable',
+        name: 'PlayStation Portable',
+        searchKeywordsArr: [
+          'プレイステーション・ポータブル',
+          'プレイステーションポータブル',
+          'プレーステーション・ポータブル',
+          'プレーステーションポータブル',
+          'プレステポータブル',
+          'ぷれいすてーしょん・ぽーたぶる',
+          'ぷれいすてーしょんぽーたぶる',
+          'ぷれーすてーしょん・ぽーたぶる',
+          'ぷれーすてーしょんぽーたぶる',
+          'ぷれすて・ぽーたぶる',
+          'ぷれすてぽーたぶる',
+          'Play Station Portable',
+          'PlayStation Portable',
+          'PlayStationPortable',
+          'PS Portable',
+          'PSPortable',
+          'PSP',
+        ]
+      },
+
+
+      {
+        _id: 'YvgkE6inK',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'qk9DiUwN-',
+        urlID: 'Nintendo-3DS',
+        name: 'ニンテンドー3DS',
+        searchKeywordsArr: [
+          '任天堂3DS',
+          '任天堂スリーディーエス',
+          'ニンテンドー3DS',
+          'ニンテンドースリーディーエス',
+          'ニンテンドウ3DS',
+          'ニンテンドウスリーディーエス',
+          'ニンテンドオ3DS',
+          'ニンテンドオスリーディーエス',
+          'にんてんどー3DS',
+          'にんてんどーすりーでぃーえす',
+          'にんてんどう3DS',
+          'にんてんどうすりーでぃーえす',
+          'にんてんどお3DS',
+          'にんてんどおすりーでぃーえす',
+          'Nintendo 3DS',
+          'Nintendo3DS',
+          'N3DS',
+        ]
+      },
+
+
+      {
+        _id: '_3asC9ODV',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'mOpBZsQBm',
+        urlID: 'PlayStation-Vita',
+        name: 'PlayStation Vita',
+        searchKeywordsArr: [
+          'プレイステーション・ヴィータ',
+          'プレイステーションヴィータ',
+          'プレーステーション・ヴィータ',
+          'プレーステーションヴィータ',
+          'プレステヴィータ',
+          'プレイステーション・ビータ',
+          'プレイステーションビータ',
+          'プレーステーション・ビータ',
+          'プレーステーションビータ',
+          'プレステビータ',
+          'ぷれいすてーしょん・ゔぃーた',
+          'ぷれいすてーしょんゔぃーた',
+          'ぷれーすてーしょん・ゔぃーた',
+          'ぷれーすてーしょんゔぃーた',
+          'ぷれすて・ゔぃーた',
+          'ぷれすてゔぃーた',
+          'ぷれいすてーしょん・びーた',
+          'ぷれいすてーしょんびーた',
+          'ぷれーすてーしょん・びーた',
+          'ぷれーすてーしょんびーた',
+          'ぷれすて・びーた',
+          'ぷれすてびーた',
+          'Play Station Vita',
+          'PlayStation Vita',
+          'PlayStationVita',
+          'PS Vita',
+          'PSVita',
+          'PSV',
+        ]
+      },
+
+
+      {
+        _id: '8hmwbso_y',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'ehBtuyjma',
+        urlID: 'PC-FX',
+        name: 'PC-FX',
+        searchKeywordsArr: [
+          'PC-FX',
+          'ピーシーエフエックス',
+          'ぴーしーえふえっくす',
+          'PC FX',
+          'PCFX',
+        ]
+      },
+
+
+      {
+        _id: '0J3jIYcCN',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'si2_UYLdW',
+        urlID: '3DO',
+        name: '3DO',
+        searchKeywordsArr: [
+          '3DO',
+          'スリーディーオー',
+          'すりーでぃーおー',
+        ]
+      },
+
+
+      {
+        _id: 'pr6k8Jn6_',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'P0UG-LHOQ',
+        urlID: 'PC',
+        name: 'PC',
+        searchKeywordsArr: [
+          'ピーシー',
+          'パソコン',
+          'パーソナル・コンピューター',
+          'パーソナルコンピューター',
+          'ぴーしー',
+          'ぱーそなる・こんぴゅーたー',
+          'ぱーそなるこんぴゅーたー',
+          'Personal Computer',
+          'PersonalComputer',
+          'PC',
+        ]
+      },
+
+
+      {
+        _id: 'KN9AMVKP7',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'SXybALV1f',
+        urlID: 'Android',
+        name: 'Android',
+        searchKeywordsArr: [
+          'アンドロイド',
+          'あんどろいど',
+          'Android',
+        ]
+      },
+
+
+      {
+        _id: 'M7YVRglvr',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'o-f3Zxd49',
+        urlID: 'iOS',
+        name: 'iOS',
+        searchKeywordsArr: [
+          'アイオーエス',
+          'あいおーえす',
+          'iOS',
+        ]
+      },
+
+    ];
+
+
+
+
+    // --------------------------------------------------
+    //   games
+    // --------------------------------------------------
+
+    // const gamesArr = [];
+
+
+    // for (const [index, valueObj] of gameDataDataArr.entries()) {
+
+
+    //   // --------------------------------------------------
+    //   //   _id が存在していない場合は処理しない
+    //   // --------------------------------------------------
+
+    //   const game_no = lodashGet(valueObj, ['game_no'], 0);
+
+    //   if (idsObj[`game_no_${game_no}`] === undefined) {
+    //     continue;
+    //   }
+
+
+    //   // --------------------------------------------------
+    //   //   Data
+    //   // --------------------------------------------------
+
+    //   const name = lodashGet(valueObj, ['name'], 'Name');
+    //   const developerPublisherID = idsObj[`developer_no_${developer_no}`]
+
+
+
+
+    //   // --------------------------------------------------
+    //   //   push
+    //   // --------------------------------------------------
+
+    //   if (developer_no !== '18') {
+
+    //     developersPublishersArr.push(
+
+    //       {
+    //         _id: shortid.generate(),
+    //         createdDate: ISO8601,
+    //         updatedDate: ISO8601,
+    //         language: 'ja',
+    //         country: 'JP',
+    //         developerPublisherID,
+    //         urlID: shortid.generate(),
+    //         name,
+    //       }
+
+    //     );
+
+    //   }
+
+
+    // }
+
+
+
+
     // ---------------------------------------------
     //   transaction
     // ---------------------------------------------
 
-    // await transactionForInsert({
+    await dbInsert({
 
-    //   usersArr,
-    //   cardPlayersArr,
-    //   experiencesArr,
-    //   followsArr,
-    //   userCommunitiesArr,
+      usersArr,
+      cardPlayersArr,
+      experiencesArr,
+      followsArr,
+      userCommunitiesArr,
+      developersPublishersArr,
+      hardwaresArr,
 
-    // });
+    });
 
 
 
@@ -690,10 +1689,10 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
 
-    // console.log(`
-    //   ----------------------------------------\n
-    //   pages/api/v2/common/import-json.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      pages/api/v2/common/import-json.js
+    `);
 
     // console.log(`
     //   ----- usersArr -----\n
@@ -710,6 +1709,12 @@ export default async (req, res) => {
     // console.log(`
     //   ----- followsArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(followsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- developersPublishersArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(developersPublishersArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
@@ -782,13 +1787,15 @@ export default async (req, res) => {
  * @param {Object} webPushesSaveObj - DB web-pushes 保存データ
  * @return {Object}
  */
-const transactionForInsert = async ({
+const dbInsert = async ({
 
   usersArr,
   cardPlayersArr,
   experiencesArr,
   followsArr,
   userCommunitiesArr,
+  developersPublishersArr,
+  hardwaresArr,
 
 }) => {
 
@@ -800,11 +1807,22 @@ const transactionForInsert = async ({
   let returnObj = {};
 
 
+
+
+  // --------------------------------------------------
+  //   Delete
+  // --------------------------------------------------
+
+  // await SchemaHardwares.deleteMany();
+
+
+
+
   // --------------------------------------------------
   //   Transaction / Session
   // --------------------------------------------------
 
-  const session = await SchemaUsers.startSession();
+  // const session = await SchemaUsers.startSession();
 
 
 
@@ -820,7 +1838,7 @@ const transactionForInsert = async ({
     //   Transaction / Start
     // --------------------------------------------------
 
-    await session.startTransaction();
+    // await session.startTransaction();
 
 
 
@@ -829,40 +1847,57 @@ const transactionForInsert = async ({
     //   users
     // ---------------------------------------------
 
-    // await SchemaUsers.deleteMany({ reset: true });
-    await SchemaUsers.insertMany(usersArr, { session });
+    // await SchemaUsers.deleteMany();
+    await SchemaUsers.insertMany(usersArr);
 
 
     // ---------------------------------------------
     //   card-players
     // ---------------------------------------------
 
-    // await SchemaCardPlayers.deleteMany({ reset: true });
-    await SchemaCardPlayers.insertMany(cardPlayersArr, { session });
+    // await SchemaCardPlayers.deleteMany();
+    await SchemaCardPlayers.insertMany(cardPlayersArr);
 
 
     // ---------------------------------------------
     //   experiences
     // ---------------------------------------------
 
-    // await SchemaExperiences.deleteMany({ reset: true });
-    await SchemaExperiences.insertMany(experiencesArr, { session });
+    // await SchemaExperiences.deleteMany();
+    await SchemaExperiences.insertMany(experiencesArr);
 
 
     // ---------------------------------------------
     //   follows
     // ---------------------------------------------
 
-    // await SchemaFollows.deleteMany({ reset: true });
-    await SchemaFollows.insertMany(followsArr, { session });
+    // await SchemaFollows.deleteMany();
+    await SchemaFollows.insertMany(followsArr);
 
 
     // ---------------------------------------------
     //   user-communities
     // ---------------------------------------------
 
-    // await SchemaUserCommunities.deleteMany({ reset: true });
-    await SchemaUserCommunities.insertMany(userCommunitiesArr, { session });
+    // await SchemaUserCommunities.deleteMany();
+    await SchemaUserCommunities.insertMany(userCommunitiesArr);
+
+
+    // ---------------------------------------------
+    //   developers-publishers
+    // ---------------------------------------------
+
+    await SchemaDevelopersPublishers.deleteMany();
+    await SchemaDevelopersPublishers.insertMany(developersPublishersArr);
+
+
+    // ---------------------------------------------
+    //   hardwares
+    // ---------------------------------------------
+
+
+    // await SchemaHardwares.insertMany(hardwaresArr, { session });
+
 
 
 
@@ -951,10 +1986,10 @@ const transactionForInsert = async ({
     //   Transaction / Commit
     // --------------------------------------------------
 
-    await session.commitTransaction();
-    console.log('--------コミット-----------');
+    // await session.commitTransaction();
+    // console.log('--------コミット-----------');
 
-    session.endSession();
+    // session.endSession();
 
 
 
@@ -1081,10 +2116,10 @@ const transactionForInsert = async ({
     //   Transaction / Rollback
     // --------------------------------------------------
 
-    await session.abortTransaction();
-    console.log('--------ロールバック-----------');
+    // await session.abortTransaction();
+    // console.log('--------ロールバック-----------');
 
-    session.endSession();
+    // session.endSession();
 
 
     throw errorObj;

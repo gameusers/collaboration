@@ -4158,6 +4158,18 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
 
       {
+        _id: 'AvQtmnTCq',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        genreID: 'nFkN4IiIy',
+        urlID: 'Education',
+        name: '教育・学習'
+      },
+
+
+      {
         _id: 'bfxzmy3eib9',
         createdDate: ISO8601,
         updatedDate: ISO8601,
@@ -4231,6 +4243,25 @@ router.post('/db', upload.none(), async (req, res, next) => {
           'FamilyComputer',
           'Famicom',
           'FC',
+        ]
+      },
+
+
+      {
+        _id: 'aOeQ04_vN',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'VFLNnniHr',
+        urlID: 'Family-Computer-Disk-System',
+        name: 'ファミリーコンピュータ ディスクシステム',
+        searchKeywordsArr: [
+          'ファミリーコンピューター ディスクシステム',
+          'ふぁみりーこんぴゅーたー でぃすくしすてむ',
+          'Family Computer Disk System',
+          'FamilyComputerDiskSystem',
+          'FCDS',
         ]
       },
 
@@ -4499,7 +4530,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
 
       {
-        _id: 'XLUt628gr',
+        _id: 'uQcBzP5cS',
         createdDate: ISO8601,
         updatedDate: ISO8601,
         language: 'ja',
@@ -4958,6 +4989,42 @@ router.post('/db', upload.none(), async (req, res, next) => {
           'PS Vita',
           'PSVita',
           'PSV',
+        ]
+      },
+
+
+      {
+        _id: '8hmwbso_y',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'ehBtuyjma',
+        urlID: 'PC-FX',
+        name: 'PC-FX',
+        searchKeywordsArr: [
+          'PC-FX',
+          'ピーシーエフエックス',
+          'ぴーしーえふえっくす',
+          'PC FX',
+          'PCFX',
+        ]
+      },
+
+
+      {
+        _id: '0J3jIYcCN',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'si2_UYLdW',
+        urlID: '3DO',
+        name: '3DO',
+        searchKeywordsArr: [
+          '3DO',
+          'スリーディーオー',
+          'すりーでぃーおー',
         ]
       },
 

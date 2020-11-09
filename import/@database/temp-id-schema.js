@@ -12,6 +12,7 @@ const mongoose = require('mongoose');
 const schema = mongoose.Schema({
 
   _id: { type: String, required: true },
+  id: { type: String, required: true },
   key: { type: String, required: true },
 
 });

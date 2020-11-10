@@ -133,8 +133,9 @@ export default async (req, res) => {
 
     // 登録しなければならないデータ
     // 画像
-    // userCommunitiesArr gameCommunities_idsArr
-    // forumObj: { threadCount: 0 }
+    // userCommunitiesArr forumObj: { threadCount: 0 }
+    // gameCommunitiesArr.forumObj.threadCount
+    // gameCommunitiesArr.recruitmentObj.threadCount
 
 
     // --------------------------------------------------
@@ -164,6 +165,9 @@ export default async (req, res) => {
 
     const gameDataJsonArr = JSON.parse(fs.readFileSync('import/json/game_data.json', 'utf8'));
     const gameDataDataArr = lodashGet(gameDataJsonArr, [2, 'data'], []);
+
+    const dataLinkJsonArr = JSON.parse(fs.readFileSync('import/json/data_link.json', 'utf8'));
+    const dataLinkDataArr = lodashGet(dataLinkJsonArr, [2, 'data'], []);
 
 
 
@@ -564,11 +568,58 @@ export default async (req, res) => {
       const description = lodashGet(valueObj, ['description'], '');
       const descriptionShort = lodashGet(valueObj, ['description_mini'], '');
 
-      const game_list = lodashGet(valueObj, ['game_list'], '');
+      const users_id = idsObj[`user_no_${author_user_no}`];
+
       const top_image = lodashGet(valueObj, ['top_image'], '');
       const thumbnail = lodashGet(valueObj, ['thumbnail'], '0');
-      // const member = lodashGet(valueObj, ['member'], '');
 
+
+      // --------------------------------------------------
+      //   gameCommunities_idsArr
+      // --------------------------------------------------
+
+      const game_list = lodashGet(valueObj, ['game_list'], '');
+
+      let gameCommunities_idsArr = [];
+
+      if (game_list) {
+
+        let splitedArr = [];
+        splitedArr = game_list.split(',');
+
+        // console.log(`
+        //   ----- splitedArr -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(splitedArr)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+
+        splitedArr.shift();
+        splitedArr.pop();
+
+        for (let game_no of splitedArr.values()) {
+
+          if (idsObj[`game_no_${game_no}`] !== undefined) {
+            gameCommunities_idsArr.push(idsObj[`game_no_${game_no}`]);
+          }
+
+        }
+
+      }
+
+      // if (gameCommunities_idsArr.length !== 0) {
+
+      //   console.log(`
+      //     ----- gameCommunities_idsArr -----\n
+      //     ${util.inspect(JSON.parse(JSON.stringify(gameCommunities_idsArr)), { colors: true, depth: null })}\n
+      //     --------------------\n
+      //   `);
+
+      // }
+
+
+      // --------------------------------------------------
+      //   communityType
+      // --------------------------------------------------
 
       const open = lodashGet(valueObj, ['open'], '1');
 
@@ -579,6 +630,10 @@ export default async (req, res) => {
       }
 
 
+      // --------------------------------------------------
+      //   anonymity
+      // --------------------------------------------------
+
       const config = lodashGet(valueObj, ['config'], '');
 
       let anonymity = false;
@@ -588,7 +643,9 @@ export default async (req, res) => {
       }
 
 
-      const users_id = idsObj[`user_no_${author_user_no}`];
+      // --------------------------------------------------
+      //   follows
+      // --------------------------------------------------
 
       const followedArr = lodashGet(followedUCObj, [community_no], []);
       const followedCount = followedArr.length;
@@ -626,7 +683,7 @@ export default async (req, res) => {
             ],
             imagesAndVideos_id: '',
             imagesAndVideosThumbnail_id: '',
-            gameCommunities_idsArr: [],
+            gameCommunities_idsArr,
             forumObj: {
               threadCount: 0,
             },
@@ -1610,58 +1667,328 @@ export default async (req, res) => {
     //   games
     // --------------------------------------------------
 
-    // const gamesArr = [];
+    const gamesArr = [];
+    const gameCommunitiesArr = [];
 
 
-    // for (const [index, valueObj] of gameDataDataArr.entries()) {
+    for (const [index, valueObj] of gameDataDataArr.entries()) {
 
 
-    //   // --------------------------------------------------
-    //   //   _id が存在していない場合は処理しない
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   _id が存在していない場合は処理しない
+      // --------------------------------------------------
 
-    //   const game_no = lodashGet(valueObj, ['game_no'], 0);
+      const game_no = lodashGet(valueObj, ['game_no'], 0);
 
-    //   if (idsObj[`game_no_${game_no}`] === undefined) {
-    //     continue;
-    //   }
-
-
-    //   // --------------------------------------------------
-    //   //   Data
-    //   // --------------------------------------------------
-
-    //   const name = lodashGet(valueObj, ['name'], 'Name');
-    //   const developerPublisherID = idsObj[`developer_no_${developer_no}`]
+      if (idsObj[`game_no_${game_no}`] === undefined) {
+        continue;
+      }
 
 
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
+
+      const on_off = lodashGet(valueObj, ['on_off'], '0');
+      const createdDate = moment(lodashGet(valueObj, ['renewal_date'], '')).utc().toISOString();
+      const updatedDate = moment(lodashGet(valueObj, ['renewal_date'], '')).utc().toISOString();
+      const urlID = lodashGet(valueObj, ['id'], '');
+      const name = lodashGet(valueObj, ['name_ja'], '');
+      const subtitle = lodashGet(valueObj, ['subtitle'], '');
+      const sortKeyword = lodashGet(valueObj, ['kana'], '');
 
 
-    //   // --------------------------------------------------
-    //   //   push
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   searchKeywordsArr
+      // --------------------------------------------------
 
-    //   if (developer_no !== '18') {
+      const similarity_ja = lodashGet(valueObj, ['similarity_ja'], '');
+      let searchKeywordsArr = [];
 
-    //     developersPublishersArr.push(
+      if (similarity_ja) {
 
-    //       {
-    //         _id: shortid.generate(),
-    //         createdDate: ISO8601,
-    //         updatedDate: ISO8601,
-    //         language: 'ja',
-    //         country: 'JP',
-    //         developerPublisherID,
-    //         urlID: shortid.generate(),
-    //         name,
-    //       }
+        searchKeywordsArr = similarity_ja.split('\/-*-\/');
+        searchKeywordsArr.shift();
+        searchKeywordsArr.pop();
 
-    //     );
-
-    //   }
+      }
 
 
-    // }
+      // --------------------------------------------------
+      //   twitterHashtagsArr
+      // --------------------------------------------------
+
+      const twitter_hashtag_ja = lodashGet(valueObj, ['twitter_hashtag_ja'], '');
+
+      let twitterHashtagsArr = [];
+
+      if (twitter_hashtag_ja) {
+        twitterHashtagsArr = [twitter_hashtag_ja];
+      }
+
+
+
+      // --------------------------------------------------
+      //   genreArr
+      // --------------------------------------------------
+
+      const genre = lodashGet(valueObj, ['genre'], '');
+
+      let genreArr = [];
+
+      if (genre) {
+
+        let splitedArr = [];
+        splitedArr = genre.split(',');
+        splitedArr.shift();
+        splitedArr.pop();
+
+        for (let genre_no of splitedArr.values()) {
+
+          if (idsObj[`genre_no_${genre_no}`] !== undefined) {
+            genreArr.push(idsObj[`genre_no_${genre_no}`]);
+          }
+
+        }
+
+      }
+
+
+      // --------------------------------------------------
+      //   hardware
+      // --------------------------------------------------
+
+      const hardware = lodashGet(valueObj, ['hardware'], '');
+      const playersMax = parseInt(lodashGet(valueObj, ['players_max'], 1), 10);
+      const release_date_1 = lodashGet(valueObj, ['release_date_1'], '');
+      const release_date_2 = lodashGet(valueObj, ['release_date_2'], '');
+      const release_date_3 = lodashGet(valueObj, ['release_date_3'], '');
+      const release_date_4 = lodashGet(valueObj, ['release_date_4'], '');
+      const release_date_5 = lodashGet(valueObj, ['release_date_5'], '');
+      const developer = lodashGet(valueObj, ['developer'], '');
+
+      let hardwareArr = [];
+
+      if (hardware) {
+
+        let splitedHardwareArr = [];
+        splitedHardwareArr = hardware.split(',');
+        splitedHardwareArr.shift();
+        splitedHardwareArr.pop();
+
+
+        let splitedDeveloperArr = [];
+
+        if (developer) {
+          splitedDeveloperArr = developer.split(',');
+          splitedDeveloperArr.shift();
+          splitedDeveloperArr.pop();
+        }
+
+
+        for (const [index, hardware_no] of splitedHardwareArr.entries()) {
+
+          if (idsObj[`hardware_no_${hardware_no}`] !== undefined) {
+
+            let releaseDate = '';
+
+            if (index === 0) {
+
+              releaseDate = release_date_1;
+
+            } else if (index === 1) {
+
+              releaseDate = release_date_2;
+
+            } else if (index === 2) {
+
+              releaseDate = release_date_3;
+
+            } else if (index === 3) {
+
+              releaseDate = release_date_4;
+
+            } else if (index === 4) {
+
+              releaseDate = release_date_5;
+
+            }
+
+
+            let developerIDsArr = [];
+
+            for (let developer_no of splitedDeveloperArr.values()) {
+
+              if (idsObj[`developer_no_${developer_no}`] !== undefined) {
+                developerIDsArr.push(idsObj[`developer_no_${developer_no}`]);
+              }
+
+            }
+
+
+            hardwareArr.push({
+
+              _id: shortid.generate(),
+              hardwareID: idsObj[`hardware_no_${hardware_no}`],
+              releaseDate,
+              playersMin: 1,
+              playersMax,
+              publisherIDsArr: [],
+              developerIDsArr,
+
+            });
+
+          }
+
+        }
+
+      }
+
+
+
+      // --------------------------------------------------
+      //   link
+      // --------------------------------------------------
+
+      const linkArr = [];
+
+
+      for (const [index, value2Obj] of dataLinkDataArr.entries()) {
+
+
+        // --------------------------------------------------
+        //   _id が存在していない場合は処理しない
+        // --------------------------------------------------
+
+        if (value2Obj.game_no !== game_no) {
+          continue;
+        }
+
+
+        // --------------------------------------------------
+        //   Data
+        // --------------------------------------------------
+
+        let type = lodashGet(value2Obj, ['type'], '');
+
+        if (type === 'etc') {
+          type = 'Other';
+        }
+
+        const label = lodashGet(value2Obj, ['name'], '');
+        const url = lodashGet(value2Obj, ['url'], '');
+        const country = lodashGet(value2Obj, ['country'], '');
+
+
+        // --------------------------------------------------
+        //   push
+        // --------------------------------------------------
+
+        linkArr.push({
+
+          _id: shortid.generate(),
+          type,
+          label,
+          url,
+
+        });
+
+
+      }
+
+
+      // if (linkArr.length !== 0) {
+
+      //   console.log(`
+      //     ----- linkArr -----\n
+      //     ${util.inspect(JSON.parse(JSON.stringify(linkArr)), { colors: true, depth: null })}\n
+      //     --------------------\n
+      //   `);
+
+      // }
+
+
+
+
+
+
+      const thumbnail = lodashGet(valueObj, ['thumbnail'], '0');
+      const gameCommunities_id = shortid.generate();
+
+
+
+
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
+
+      if (on_off === '1') {
+
+        gamesArr.push(
+
+          {
+            _id: shortid.generate(),
+            createdDate,
+            updatedDate,
+            gameCommunities_id,
+            urlID,
+            language: 'ja',
+            country: 'JP',
+            imagesAndVideos_id: '',
+            imagesAndVideosThumbnail_id: '',
+            name,
+            subtitle,
+            sortKeyword,
+            searchKeywordsArr,
+            twitterHashtagsArr,
+            genreArr,
+            genreSubArr: [],
+            genreTagArr: [],
+            hardwareArr,
+            linkArr,
+          }
+
+        );
+
+
+        gameCommunitiesArr.push(
+
+          {
+            _id: gameCommunities_id,
+            createdDate: ISO8601,
+            updatedDate: ISO8601,
+            forumObj: {
+              threadCount: 0,
+            },
+            recruitmentObj: {
+              threadCount: 0,
+            },
+            updatedDateObj: {
+              forum: ISO8601,
+              recruitment: ISO8601,
+            },
+            anonymity: false,
+          }
+
+        );
+
+      }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1670,17 +1997,19 @@ export default async (req, res) => {
     //   transaction
     // ---------------------------------------------
 
-    await dbInsert({
+    // await dbInsert({
 
-      usersArr,
-      cardPlayersArr,
-      experiencesArr,
-      followsArr,
-      userCommunitiesArr,
-      developersPublishersArr,
-      hardwaresArr,
+    //   usersArr,
+    //   cardPlayersArr,
+    //   experiencesArr,
+    //   followsArr,
+    //   userCommunitiesArr,
+    //   developersPublishersArr,
+    //   hardwaresArr,
+    //   gamesArr,
+    //   gameCommunitiesArr,
 
-    });
+    // });
 
 
 
@@ -1796,6 +2125,8 @@ const dbInsert = async ({
   userCommunitiesArr,
   developersPublishersArr,
   hardwaresArr,
+  gamesArr,
+  gameCommunitiesArr,
 
 }) => {
 
@@ -1805,15 +2136,6 @@ const dbInsert = async ({
   // --------------------------------------------------
 
   let returnObj = {};
-
-
-
-
-  // --------------------------------------------------
-  //   Delete
-  // --------------------------------------------------
-
-  // await SchemaHardwares.deleteMany();
 
 
 
@@ -1895,56 +2217,28 @@ const dbInsert = async ({
     //   hardwares
     // ---------------------------------------------
 
-
-    // await SchemaHardwares.insertMany(hardwaresArr, { session });
-
-
+    await SchemaHardwares.deleteMany();
+    await SchemaHardwares.insertMany(hardwaresArr);
 
 
+    // ---------------------------------------------
+    //   games
+    // ---------------------------------------------
 
-    // --------------------------------------------------
-    //   card-players
-    // --------------------------------------------------
-
-    // if (Object.keys(cardPlayersConditionObj).length !== 0 && Object.keys(cardPlayersSaveObj).length !== 0) {
-    //   await SchemaCardPlayers.updateOne(cardPlayersConditionObj, cardPlayersSaveObj, { session, upsert: true });
-    // }
+    // await SchemaGames.deleteMany();
+    await SchemaGames.insertMany(gamesArr);
 
 
-    // // --------------------------------------------------
-    // //   email-confirmations
-    // // --------------------------------------------------
+    // ---------------------------------------------
+    //   game-communities
+    // ---------------------------------------------
 
-    // if (Object.keys(emailConfirmationsConditionObj).length !== 0 && Object.keys(emailConfirmationsSaveObj).length !== 0) {
-    //   await SchemaEmailConfirmations.updateOne(emailConfirmationsConditionObj, emailConfirmationsSaveObj, { session, upsert: true });
-    // }
-
-
-    // // --------------------------------------------------
-    // //   experiences
-    // // --------------------------------------------------
-
-    // if (Object.keys(experiencesConditionObj).length !== 0 && Object.keys(experiencesSaveObj).length !== 0) {
-    //   await SchemaExperiences.updateOne(experiencesConditionObj, experiencesSaveObj, { session, upsert: true });
-    // }
+    // await SchemaGameCommunities.deleteMany();
+    await SchemaGameCommunities.insertMany(gameCommunitiesArr);
 
 
-    // // --------------------------------------------------
-    // //   follows
-    // // --------------------------------------------------
-
-    // if (Object.keys(followsConditionObj).length !== 0 && Object.keys(followsSaveObj).length !== 0) {
-    //   await SchemaFollows.updateOne(followsConditionObj, followsSaveObj, { session, upsert: true });
-    // }
 
 
-    // // --------------------------------------------------
-    // //   web-pushes
-    // // --------------------------------------------------
-
-    // if (Object.keys(webPushesConditionObj).length !== 0 && Object.keys(webPushesSaveObj).length !== 0) {
-    //   await SchemaWebPushes.updateOne(webPushesConditionObj, webPushesSaveObj, { session, upsert: true });
-    // }
 
 
 

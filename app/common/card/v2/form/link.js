@@ -19,7 +19,7 @@ import { useIntl } from 'react-intl';
 import shortid from 'shortid';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -70,158 +70,158 @@ import { validationCardPlayersLinkArr } from 'app/@database/card-players/validat
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     linkArr,
     setLinkArr,
-    
+
   } = props;
-  
+
   const limit = parseInt(process.env.NEXT_PUBLIC_CARD_PLAYER_LINK_LIMIT, 10);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   /**
    * ウェブサイトの種類を選択する
    */
   const handleOnChangeType = ({ index, value }) => {
-    
+
     const clonedArr = lodashCloneDeep(linkArr);
     lodashSet(clonedArr, [index, 'type'], value);
     setLinkArr(clonedArr);
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   /**
    * Label を入力する
    */
   const handleOnChangeLabel = ({ index, value }) => {
-    
+
     const clonedArr = lodashCloneDeep(linkArr);
     lodashSet(clonedArr, [index, 'label'], value);
     setLinkArr(clonedArr);
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   /**
    * URL を入力する
    */
   const handleOnChangeURL = ({ index, value }) => {
-    
+
     const clonedArr = lodashCloneDeep(linkArr);
     lodashSet(clonedArr, [index, 'url'], value);
     setLinkArr(clonedArr);
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   /**
    * フォームを増やす
    */
   const handleAdd = () => {
-    
+
     if (linkArr.length < limit) {
-      
+
       const clonedArr = lodashCloneDeep(linkArr);
-      
+
       clonedArr.push({
-        
+
         _id: shortid.generate(),
         type: 'Other',
         label: '',
         url: '',
-        
+
       });
-      
+
       setLinkArr(clonedArr);
-      
+
     }
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   /**
    * フォームを減らす
    */
   const handleRemove = ({ index }) => {
-    
+
     const clonedArr = lodashCloneDeep(linkArr);
-    
+
     if (index) {
-      
+
       clonedArr.splice(index, 1);
-      
+
     } else if (linkArr.length > 0) {
-      
+
       clonedArr.pop();
-      
+
     }
-    
+
     setLinkArr(clonedArr);
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Validations
   // --------------------------------------------------
-  
+
   const validationObj = validationCardPlayersLinkArr({ valueArr: linkArr });
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component - Form
   // --------------------------------------------------
-  
+
   let componentsArr = [];
-  
+
   for (const [index, valueObj] of linkArr.entries()) {
-    
+
     const type = lodashGet(valueObj, ['type'], '');
-    
+
     const label = lodashGet(valueObj, ['label'], '');
     const labelError = lodashGet(validationObj, ['formArr', index, 'labelObj', 'error'], false);
     const labelMessageID = lodashGet(validationObj, ['formArr', index, 'labelObj', 'messageID'], 'sOgKU3gS9');
-    
+
     const url = lodashGet(valueObj, ['url'], '');
     const urlError = lodashGet(validationObj, ['formArr', index, 'urlObj', 'error'], false);
     const urlMessageID = lodashGet(validationObj, ['formArr', index, 'urlObj', 'messageID'], 'CAhUTCx7B');
-    
-    
+
+
     componentsArr.push(
       <div
         css={css`
@@ -230,19 +230,19 @@ const Component = (props) => {
         `}
         key={index}
       >
-        
-        
+
+
         {/* ウェブサイトの種類 */}
         <div
           css={css`
             margin: 12px 0 12px 0;
           `}
         >
-          
+
           <FormControl>
-            
+
             <InputLabel htmlFor="linkType">ウェブサイトの種類</InputLabel>
-            
+
             <Select
               css={css`
                 && {
@@ -265,12 +265,12 @@ const Component = (props) => {
               <MenuItem value={'Pinterest'}>Pinterest</MenuItem>
               <MenuItem value={'Other'}>その他</MenuItem>
             </Select>
-            
+
           </FormControl>
-          
-          
-          
-          
+
+
+
+
           {/* - ボタン */}
           <IconButton
             css={css`
@@ -282,19 +282,19 @@ const Component = (props) => {
           >
             <IconRemoveCircle />
           </IconButton>
-          
+
         </div>
-        
-        
-        
-        
+
+
+
+
         {/* リンクのタイトル */}
         {valueObj.type === 'Other' &&
           <TextField
             css={css`
               && {
                 width: 400px;
-                
+
                 @media screen and (max-width: 480px) {
                   width: 100%;
                 }
@@ -312,10 +312,10 @@ const Component = (props) => {
             }}
           />
         }
-        
-        
-        
-        
+
+
+
+
         {/* URL */}
         <TextField
           css={css`
@@ -334,24 +334,24 @@ const Component = (props) => {
             maxLength: 500,
           }}
         />
-        
+
       </div>
     );
-    
-    
+
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <React.Fragment>
-      
-      
+
+
       {/* Heading */}
       <h3
         css={css`
@@ -360,8 +360,8 @@ const Component = (props) => {
       >
         リンク
       </h3>
-      
-      
+
+
       <p
         css={css`
           margin: 0 0 0 0;
@@ -369,23 +369,23 @@ const Component = (props) => {
       >
         入力するとリンクが表示されます。
       </p>
-      
-      
-      
-      
+
+
+
+
       {/* Form */}
       {componentsArr}
-      
-      
-      
-      
+
+
+
+
       {/* フォーム追加・削除ボタン */}
       <div
         css={css`
           margin: 12px 0 0 0;
         `}
       >
-        
+
         {/* - ボタン */}
         <IconButton
           css={css`
@@ -397,22 +397,22 @@ const Component = (props) => {
         >
           <IconRemoveCircle />
         </IconButton>
-        
-        
+
+
         {/* + ボタン */}
         <IconButton
           onClick={() => handleAdd()}
         >
           <IconAddCircle />
         </IconButton>
-        
+
       </div>
-      
-        
+
+
     </React.Fragment>
   );
-  
-  
+
+
 };
 
 

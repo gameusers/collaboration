@@ -19,7 +19,7 @@ import { useIntl } from 'react-intl';
 import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------

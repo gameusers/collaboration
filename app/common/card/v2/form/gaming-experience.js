@@ -19,7 +19,7 @@ import { useIntl } from 'react-intl';
 import moment from 'moment';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -55,65 +55,65 @@ import { validationCardPlayersGamingExperience, validationCardPlayersGamingExper
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     gamingExperience,
     setGamingExperience,
-    
+
     gamingExperienceAlternativeText,
     setGamingExperienceAlternativeText,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Validations
   // --------------------------------------------------
-  
+
   const validationObj = validationCardPlayersGamingExperience({ value: gamingExperience });
   const validationAlternativeTextObj = validationCardPlayersGamingExperienceAlternativeText({ value: gamingExperienceAlternativeText });
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   日付のフォーマット
   // --------------------------------------------------
-  
+
   let formattedDate = '';
-  
+
   if (gamingExperience) {
     formattedDate = moment(gamingExperience).format('YYYY-MM-DD');
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <React.Fragment>
-      
-      
+
+
       {/* Heading */}
       <h3
         css={css`
@@ -122,8 +122,8 @@ const Component = (props) => {
       >
         ゲーム歴
       </h3>
-      
-      
+
+
       <p
         css={css`
           margin: 0 0 12px 0;
@@ -131,16 +131,16 @@ const Component = (props) => {
       >
         入力するとゲーム歴が表示されます。ゲームを始めた日か、ゲーム歴（固定値）のどちらかを入力してください。
       </p>
-      
-      
-      
-      
+
+
+
+
       {/* ゲームを始めた日 */}
       <TextField
         css={css`
           && {
             width: 400px;
-            
+
             @media screen and (max-width: 480px) {
               width: 100%;
             }
@@ -158,16 +158,16 @@ const Component = (props) => {
           shrink: true,
         }}
       />
-      
-      
-      
-      
+
+
+
+
       {/* ゲーム歴（固定値） */}
       <TextField
         css={css`
           && {
             width: 400px;
-            
+
             @media screen and (max-width: 480px) {
               width: 100%;
             }
@@ -184,12 +184,12 @@ const Component = (props) => {
           maxLength: 20,
         }}
       />
-      
-        
+
+
     </React.Fragment>
   );
-  
-  
+
+
 };
 
 

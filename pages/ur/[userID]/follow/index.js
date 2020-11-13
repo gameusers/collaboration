@@ -19,7 +19,7 @@ import Error from 'next/error';
 import moment from 'moment';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -63,12 +63,12 @@ import FollowMembers from 'app/common/follow/v2/members.js';
  * @param {Object} props - Props
  */
 const ContainerLayout = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Component - Sidebar
   // --------------------------------------------------
-  
+
   const componentSidebar =
     <React.Fragment>
 
@@ -79,19 +79,19 @@ const ContainerLayout = (props) => {
 
     </React.Fragment>
   ;
-  
-  
+
+
   // --------------------------------------------------
   //   Component - Contents
   // --------------------------------------------------
-  
-  const componentContent = 
+
+  const componentContent =
     <React.Fragment>
-      
+
       <Breadcrumbs
         arr={props.breadcrumbsArr}
       />
-      
+
       <FollowMembers
         pageType="ur"
         users_id={props.users_id}
@@ -99,27 +99,27 @@ const ContainerLayout = (props) => {
         cardPlayersObj={props.cardPlayersObj}
         followMembersObj={props.followMembersObj}
       />
-      
+
     </React.Fragment>
   ;
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Layout
       title={props.title}
       componentSidebar={componentSidebar}
       componentContent={componentContent}
-      
+
       headerObj={props.headerObj}
       headerNavMainArr={props.headerNavMainArr}
     />
   );
-  
-  
+
+
 };
 
 
@@ -130,25 +130,25 @@ const ContainerLayout = (props) => {
  * @param {Object} props - Props
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Error
   //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
   // --------------------------------------------------
-  
+
   if (props.statusCode !== 200) {
     return <Error statusCode={props.statusCode} />;
   }
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return <ContainerLayout {...props} />;
-  
-  
+
+
 };
 
 
@@ -161,117 +161,117 @@ const Component = (props) => {
  * @param {Object} query - クエリー
  */
 export async function getServerSideProps({ req, res, query }) {
-  
-  
+
+
   // --------------------------------------------------
   //   CSRF
   // --------------------------------------------------
-  
+
   createCsrfToken(req, res);
-  
-  
+
+
   // --------------------------------------------------
   //   Cookie & Accept Language
   // --------------------------------------------------
-  
+
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-  
-  
+
+
   // --------------------------------------------------
   //   Query
   // --------------------------------------------------
-  
+
   const userID = query.userID;
-  
-  
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   const ISO8601 = moment().utc().toISOString();
-  
-  
+
+
   // --------------------------------------------------
   //   Get Cookie Data & Temporary Data for Fetch
   // --------------------------------------------------
-  
+
   const page = 1;
   const limit = getCookie({ key: 'followLimit', reqHeadersCookie });
-  
-  
+
+
   // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
-  
+
   const resultObj = await fetchWrapper({
-    
+
     urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}/follow?page=${page}&limit=${limit}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
-    
+
   });
-  
+
   const statusCode = lodashGet(resultObj, ['statusCode'], 400);
   const dataObj = lodashGet(resultObj, ['data'], {});
-  
-  
+
+
   // --------------------------------------------------
   //   dataObj
   // --------------------------------------------------
-  
+
   const login = lodashGet(dataObj, ['login'], false);
   const loginUsersObj = lodashGet(dataObj, ['loginUsersObj'], {});
   const accessLevel = lodashGet(dataObj, ['accessLevel'], 1);
   const headerObj = lodashGet(dataObj, ['headerObj'], {});
   const experienceObj = lodashGet(dataObj, ['experienceObj'], {});
   const feedObj = lodashGet(dataObj, ['feedObj'], {});
-  
+
   const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
   const users_id = lodashGet(dataObj, ['users_id'], '');
   const cardPlayersObj = lodashGet(dataObj, ['cardPlayersObj'], {});
   const followMembersObj = lodashGet(dataObj, ['followMembersObj'], {});
-  
-  
+
+
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
-  
+
   const pagesObj = pagesArr.find((valueObj) => {
     return valueObj.type === 'follow';
   });
-  
+
   const pageTitle = lodashGet(pagesObj, ['title'], '');
-  
+
   const userName = lodashGet(headerObj, ['name'], '');
   const title = pageTitle ? pageTitle : `フォロー - ${userName}`;
-  
-  
+
+
   // --------------------------------------------------
   //   Header Navigation Link
   // --------------------------------------------------
-  
+
   const headerNavMainArr = [
-    
+
     {
       name: 'トップ',
       href: `/ur/[userID]`,
       as: `/ur/${userID}`,
       active: false,
     },
-    
+
     {
       name: 'フォロー',
       href: `/ur/[userID]/follow`,
       as: `/ur/${userID}/follow`,
       active: true,
     },
-    
+
   ];
-  
+
   if (accessLevel >= 50) {
-    
+
     headerNavMainArr.push(
       {
         name: '設定',
@@ -280,69 +280,69 @@ export async function getServerSideProps({ req, res, query }) {
         active: false,
       }
     );
-    
+
   }
-  
-  
+
+
   // --------------------------------------------------
   //   パンくずリスト
   // --------------------------------------------------
-  
+
   const breadcrumbsArr = [
-    
+
     {
       type: 'ur',
       anchorText: '',
       href: `/ur/[userID]`,
       as: `/ur/${userID}`,
     },
-    
+
     {
       type: 'ur/follow',
       anchorText: '',
       href: '',
       as: '',
     },
-    
+
   ];
-  
+
 
   // ---------------------------------------------
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
-  
+
   res.cookie('recentAccessPageHref', '/ur/[userID]/follow');
   res.cookie('recentAccessPageAs', `/ur/${userID}/follow`);
 
-  
+
 
 
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /pages/ur/[userID]/follow/index.js
   // `);
-  
+
   // console.log(`
   //   ----- resultObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
 
 
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
-  return { 
-    
+
+  return {
+
     props: {
-      
+
       reqAcceptLanguage,
       ISO8601,
       statusCode,
@@ -354,18 +354,18 @@ export async function getServerSideProps({ req, res, query }) {
       breadcrumbsArr,
       experienceObj,
       feedObj,
-      
+
       accessLevel,
       userID,
       users_id,
       cardPlayersObj,
       followMembersObj,
-      
+
     }
-    
+
   };
-  
-  
+
+
 }
 
 

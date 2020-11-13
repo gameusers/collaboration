@@ -17,7 +17,7 @@ import util from 'util';
 import Link from 'next/link';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------

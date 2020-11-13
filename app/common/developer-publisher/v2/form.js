@@ -20,7 +20,7 @@ import keycode from 'keycode';
 import { useSnackbar } from 'notistack';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------

@@ -19,7 +19,7 @@ import Link from 'next/link';
 import moment from 'moment';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -109,7 +109,7 @@ const cssTitleClosed = css`
 // --------------------------------------------------
 
 const useStyles = makeStyles({
-  
+
   tooltip: {
     backgroundColor: 'white',
     color: 'black',
@@ -119,7 +119,7 @@ const useStyles = makeStyles({
   arrow: {
     color: 'white',
   },
-  
+
 });
 
 
@@ -130,28 +130,28 @@ const useStyles = makeStyles({
 // --------------------------------------------------
 
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const classes = useStyles();
 
   const [open, setOpen] = useState(true);
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const { headerObj } = props;
-  
-  
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   const name = lodashGet(headerObj, ['name'], '');
   const createdDate = moment(lodashGet(headerObj, ['createdDate'], '')).format('YYYY/MM/DD');
   const userCommunities_id = lodashGet(headerObj, ['userCommunities_id'], '');
@@ -159,22 +159,22 @@ const Component = (props) => {
   const followedCount = lodashGet(headerObj, ['followsObj', 'followedCount'], 0);
   const approval = lodashGet(headerObj, ['followsObj', 'approval'], false);
   const communityType = lodashGet(headerObj, ['communityType'], 'open');
-  
-  
+
+
   // --------------------------------------------------
   //   関連するゲーム
   // --------------------------------------------------
-  
+
   const gamesArr = lodashGet(headerObj, ['gamesArr'], []);
-  
-  
+
+
   const codeGames = [];
-  
+
   for (const [index, valueObj] of gamesArr.entries()) {
-    
+
     const src = lodashGet(valueObj, ['imagesAndVideosThumbnailObj', 'arr', 0, 'src'], '/img/common/thumbnail/none-game.jpg');
     const srcSet = lodashGet(valueObj, ['imagesAndVideosThumbnailObj', 'arr', 0, 'srcSet'], '');
-    
+
     // console.log(`
     //   ----- valueObj -----\n
     //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
@@ -182,13 +182,13 @@ const Component = (props) => {
     // `);
 
     codeGames.push(
-      
+
       <Link
         href={'/gc/[urlID]'}
         as={`/gc/${valueObj.urlID}`}
         key={index}
       >
-        
+
         <a className="link">
 
           <Tooltip
@@ -228,30 +228,30 @@ const Component = (props) => {
           </Tooltip>
 
         </a>
-        
+
       </Link>
-        
+
     );
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component
   // --------------------------------------------------
-  
+
   let component = '';
-  
-  
+
+
   // --------------------------------------------------
   //   Open
   // --------------------------------------------------
-  
+
   if (open) {
-    
-    component = 
+
+    component =
       <div
         css={css`
           width: 280px;
@@ -259,18 +259,18 @@ const Component = (props) => {
           background-color: #000;
           background-color: rgba(0, 0, 0, 0.5);
           color: #fff;
-          
+
           position: absolute;
           right: 15px;
           bottom: 15px;
           padding: 0 0 6px 0;
         `}
       >
-        
+
         <div css={cssTitleBox}>
-          
+
           <div css={cssTitle}>{name}</div>
-          
+
           <IconButton
             css={css`
               && {
@@ -288,16 +288,16 @@ const Component = (props) => {
           >
             <IconKeyboardArrowUp />
           </IconButton>
-          
+
         </div>
-        
-        
+
+
         <p css={cssInfo}>開設日 | {createdDate}</p>
         <p css={cssInfo}>メンバー | {followedCount}人</p>
         <p css={cssInfo}>公開タイプ | {communityType === 'open' ? 'オープン' : 'クローズド'}</p>
         <p css={cssInfo}>参加方法 | {approval ? '承認制' : '誰でも参加可能'}</p>
 
-        
+
         <div
           css={css`
             display: flex;
@@ -307,49 +307,49 @@ const Component = (props) => {
         >
           {codeGames}
         </div>
-        
-        
+
+
         <FollowButton
           type="header"
           userCommunities_id={userCommunities_id}
           followsObj={followsObj}
         />
-        
-        
+
+
       </div>
     ;
-    
-    
+
+
   // --------------------------------------------------
   //   Closed
   // --------------------------------------------------
-    
+
   } else {
-    
-    component = 
+
+    component =
       <div
         css={css`
           display: flex;
           flex-flow: row nowrap;
           justify-content: center;
           align-items: center;
-          
+
           min-width: 150px;
           max-width: 300px;
           border-radius: 8px;
           background-color: #000;
           background-color: rgba(0, 0, 0, 0.5);
           color: #fff;
-          
+
           position: absolute;
           right: 15px;
           bottom: 15px;
           padding: 0 2px 0 0;
         `}
       >
-        
+
         <div css={cssTitleClosed}>{name}</div>
-        
+
         <IconButton
           css={css`
             && {
@@ -367,40 +367,40 @@ const Component = (props) => {
         >
           <IconKeyboardArrowDown />
         </IconButton>
-        
+
       </div>
     ;
-    
+
   }
-  
-  
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/layout/v2/header/data-uc.js
   // `);
-  
+
   // console.log(chalk`
   //   open: {green ${open}}
   // `);
-  
+
   // console.log(`
   //   ----- headerObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(headerObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return component;
-  
-  
+
+
 };
 
 

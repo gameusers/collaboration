@@ -19,7 +19,7 @@ import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -71,215 +71,215 @@ import { showSnackbar } from 'app/@modules/snackbar.js';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     goods,
     setGoods,
     type,
     target_id,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
   const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  
-  
+
+
   useEffect(() => {
-    
+
     setButtonDisabled(false);
-    
+
   }, []);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   /**
    * Good ボタンを押したときの処理
    * @param {string} type - タイプ [forumComment, forumReply, recruitmentComment, recruitmentReply]
    * @param {string} target_id - Goodボタンを押したコンテンツのID
    */
   const handleSubmit = async ({
-    
+
     type,
     target_id,
-    
+
   }) => {
-    
-    
+
+
     try {
-      
-      
+
+
       // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
-      
+
       setButtonDisabled(true);
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   console.log
       // ---------------------------------------------
-      
+
       // console.log(`
       //   ----------------------------------------\n
       //   /app/common/good/v2/button.js - handleSubmit
       // `);
-      
+
       // console.log(chalk`
       //   type: {green ${type}}
       //   target_id: {green ${target_id}}
       // `);
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
-      
+
       const formDataObj = {
-        
+
         type,
         target_id,
-        
+
       };
-      
-      
+
+
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
-      
+
       const resultObj = await fetchWrapper({
-        
+
         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/goods/upsert`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
-        
+
       });
-      
-      
+
+
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
-      
+
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
-      
-      
+
+
       // console.log(`
       //   ----- resultObj -----\n
       //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   result
       // ---------------------------------------------
-      
+
       const result = lodashGet(resultObj, ['data', 'result'], true);
-      
+
       if (result) {
-        
+
         setGoods(goods + 1);
-        
+
       } else {
-        
+
         setGoods(goods - 1);
-        
+
       }
-      
-      
+
+
       // --------------------------------------------------
       //   Snackbar: Success
       // --------------------------------------------------
-      
+
       showSnackbar({
-        
+
         enqueueSnackbar,
         intl,
         experienceObj: lodashGet(resultObj, ['data', 'experienceObj'], {}),
-        
+
       });
-      
-      
+
+
     } catch (errorObj) {
-      
-      
+
+
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
-      
+
       showSnackbar({
-        
+
         enqueueSnackbar,
         intl,
         errorObj,
-        
+
       });
-      
-      
+
+
     } finally {
-      
-      
+
+
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
-      
+
       setButtonDisabled(false);
-      
-      
+
+
     }
-    
-    
+
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/good/v2/button.js
   // `);
-  
+
   // console.log(chalk`
   //   goods: {green ${goods}}
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Button
       css={css`
@@ -313,8 +313,8 @@ const Component = (props) => {
       {goods}
     </Button>
   );
-  
-  
+
+
 };
 
 

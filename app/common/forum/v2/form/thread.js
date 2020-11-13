@@ -20,7 +20,7 @@ import { useSnackbar } from 'notistack';
 import TextareaAutosize from 'react-autosize-textarea';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------

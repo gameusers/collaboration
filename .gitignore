@@ -46,6 +46,5 @@ __*.js
 
 # 旧データインポート用
 /import/json/
-# import-json.js
-# import-id.js
-# import.js
+/import/img-old/
+/import/img-new/

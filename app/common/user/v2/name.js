@@ -21,7 +21,7 @@ import { useSnackbar } from 'notistack';
 import moment from 'moment';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -130,14 +130,14 @@ const cssIconLayers = css`
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     name,
     userID,
     status,
@@ -146,46 +146,46 @@ const Component = (props) => {
     // gameUrlID,
     exp,
     cardPlayers_id,
-    
+
   } = props;
-  
-  
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateLayout = ContainerStateLayout.useContainer();
-  
+
   const { ISO8601, handleDialogCardOpen } = stateLayout;
-  
-  
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
   const { enqueueSnackbar } = useSnackbar();
-  
+
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  
-  
+
+
   useEffect(() => {
-    
+
     setButtonDisabled(false);
-    
+
   }, []);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component - Name
   // --------------------------------------------------
-  
+
   let componentName = '';
-  
+
   if (name && userID) {
-    
+
     componentName =
       <div css={cssNameNoColor}>
         <Link
@@ -196,28 +196,28 @@ const Component = (props) => {
         </Link>
       </div>
     ;
-    
+
   } else if (name) {
-    
+
     componentName =
       <div css={cssNameNoColor}>
         {name}
       </div>
     ;
-    
+
   } else {
-    
+
     componentName = <div css={cssNameNoColor}>ななしさん</div>;
-    
+
   }
-  
-  
+
+
   // --------------------------------------------------
   //   Component - Status
   // --------------------------------------------------
-  
+
   let componentStatus = '';
-  
+
   if (status) {
     componentStatus =
       <div
@@ -226,7 +226,7 @@ const Component = (props) => {
           flex-flow: row wrap;
         `}
       >
-        
+
         <IconHealing
           css={css`
             && {
@@ -235,7 +235,7 @@ const Component = (props) => {
             }
           `}
         />
-        
+
         <div
           css={css`
             font-size: 14px;
@@ -244,37 +244,37 @@ const Component = (props) => {
         >
           {status}
         </div>
-        
+
       </div>
     ;
   }
-  
-  
+
+
   // --------------------------------------------------
   //   Component - Access Time
   // --------------------------------------------------
-  
+
   let componentAccessTime = '';
-  
+
   if (accessDate) {
-    
+
     // const datetimeNow = moment().utcOffset(0);
     const datetimeNow = moment(ISO8601).utc();
     let datetimeAccess = moment(accessDate).utc();
-    
+
     // 現在の日時がアクセス日時よりも前になってしまった場合は、同じ値にしておく
     if (datetimeNow.isBefore(datetimeAccess)) {
       datetimeAccess = datetimeNow;
     }
-    
+
     // console.log(chalk`
     //   datetimeNow.isBefore(datetimeAccess): {green ${datetimeNow.isBefore(datetimeAccess)}}
     // `);
-    
+
     // datetimeAccess = datetimeNow;
-    
+
     const accessTime = datetimeAccess.from(datetimeNow);
-    
+
     componentAccessTime =
       <div
         css={css`
@@ -282,7 +282,7 @@ const Component = (props) => {
           flex-flow: row wrap;
         `}
       >
-        
+
         <IconSchedule
           css={css`
             && {
@@ -291,7 +291,7 @@ const Component = (props) => {
             }
           `}
         />
-        
+
         <div
           css={css`
             font-size: 14px;
@@ -300,55 +300,55 @@ const Component = (props) => {
         >
           {accessTime}
         </div>
-        
+
       </div>
     ;
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   下段
   // --------------------------------------------------
-  
+
   let componentBottomArr = [];
-  
-  
+
+
   // --------------------------------------------------
   //   Component - Level
   // --------------------------------------------------
-  
+
   if (exp) {
-    
+
     const level = calculateLevel({ exp });
-    
+
     componentBottomArr.push(
       <div css={cssLevelBox} key="levelBox">
         <IconStars css={cssIconStars} />
         <div css={cssLevel}>Lv.{level}</div>
       </div>
     );
-    
+
   } else {
-    
+
     componentBottomArr.push(
       <div css={cssLevelBox} key="levelBox">
         <IconStars css={cssIconStars} />
         <div css={cssLevel}>Lv.0</div>
       </div>
     );
-    
+
   }
-  
-  
+
+
   // --------------------------------------------------
   //   Component - Button / Open Card Player
   // --------------------------------------------------
-  
+
   if (cardPlayers_id) {
-    
+
     componentBottomArr.push(
       <Button
         css={cssButton}
@@ -366,32 +366,32 @@ const Component = (props) => {
         Player
       </Button>
     );
-    
+
   }
-  
-  
+
+
   // --------------------------------------------------
   //   Button Card Game
   // --------------------------------------------------
-  
+
   // if (showCardGameButton && cardGames_id) {
-    
-    
+
+
   //   // --------------------------------------------------
   //   //   Button Disable - ロードが終わるまで使用禁止
   //   // --------------------------------------------------
-    
+
   //   let buttonDisabledCardGame = true;
-    
+
   //   if (`${cardGames_id}-card-game` in buttonDisabledObj) {
   //     buttonDisabledCardGame = buttonDisabledObj[`${cardGames_id}-card-game`];
   //   }
-    
-    
+
+
   //   // --------------------------------------------------
   //   //   Component
   //   // --------------------------------------------------
-    
+
   //   componentBottomArr.push(
   //     <Button
   //       css={cssButton}
@@ -404,40 +404,40 @@ const Component = (props) => {
   //       Game
   //     </Button>
   //   );
-    
+
   // }
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/user/v2/name.js
   // `);
-  
+
   // console.log(`
   //   ----- validationForumThreadsNameObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(validationForumThreadsNameObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(chalk`
   //   forumThreads_id: {green ${forumThreads_id}}
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <div
       css={css`
@@ -446,8 +446,8 @@ const Component = (props) => {
         line-height: 1.6em;
       `}
     >
-      
-      
+
+
       {/* 上段 */}
       <div
         css={css`
@@ -459,10 +459,10 @@ const Component = (props) => {
         {componentStatus}
         {componentAccessTime}
       </div>
-      
-      
-      
-      
+
+
+
+
       {/* 下段 */}
       <div
         css={css`
@@ -472,12 +472,12 @@ const Component = (props) => {
       >
         {componentBottomArr}
       </div>
-      
-      
+
+
     </div>
   );
-  
-  
+
+
 };
 
 

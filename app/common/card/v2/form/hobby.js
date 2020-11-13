@@ -18,7 +18,7 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -58,98 +58,98 @@ import IconRemoveCircle from '@material-ui/icons/RemoveCircle';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     hobbiesArr = [],
     setHobbiesArr,
-    
+
   } = props;
-  
+
   const limit = parseInt(process.env.NEXT_PUBLIC_CARD_PLAYER_HOBBY_LIMIT, 10);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   /**
    * <TextField /> に入力する
    */
   const handleOnChange = ({ index, value }) => {
-    
+
     const clonedArr = lodashCloneDeep(hobbiesArr);
     clonedArr[index] = value;
     setHobbiesArr(clonedArr);
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   /**
    * フォームを増やす
    */
   const handleAdd = () => {
-    
+
     if (hobbiesArr.length < limit) {
-      
+
       const clonedArr = lodashCloneDeep(hobbiesArr);
       clonedArr.push('');
       setHobbiesArr(clonedArr);
-      
+
     }
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   /**
    * フォームを減らす
    */
   const handleRemove = ({ index }) => {
-    
+
     const clonedArr = lodashCloneDeep(hobbiesArr);
     clonedArr.splice(index, 1);
     setHobbiesArr(clonedArr);
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component
   // --------------------------------------------------
-  
+
   const componentsArr = [];
-  
+
   for (const [index, value] of hobbiesArr.entries()) {
-    
+
     componentsArr.push(
       <TextField
         css={css`
           && {
             width: 48%;
             margin-right: 12px;
-            
+
             @media screen and (max-width: 480px) {
               width: 100%;
               margin-right: 0;
@@ -178,20 +178,20 @@ const Component = (props) => {
         }}
       />
     );
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <React.Fragment>
-      
-      
+
+
       {/* Heading */}
       <h3
         css={css`
@@ -200,8 +200,8 @@ const Component = (props) => {
       >
         趣味
       </h3>
-      
-      
+
+
       <p
         css={css`
           margin: 0 0 12px 0;
@@ -209,10 +209,10 @@ const Component = (props) => {
       >
         入力すると趣味が表示されます。
       </p>
-      
-      
-      
-      
+
+
+
+
       {/* 趣味 */}
       <div
         css={css`
@@ -221,29 +221,29 @@ const Component = (props) => {
           align-items: center;
         `}
       >
-        
-        
+
+
         {/* フォーム */}
         {componentsArr}
-        
-        
-        
-        
+
+
+
+
         {/* フォーム追加ボタン */}
         <IconButton
           onClick={handleAdd}
         >
           <IconAddCircle />
         </IconButton>
-        
-        
+
+
       </div>
-      
-        
+
+
     </React.Fragment>
   );
-  
-  
+
+
 };
 
 

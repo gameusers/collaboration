@@ -18,7 +18,7 @@ import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -62,14 +62,14 @@ import { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation 
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     loginPassword,
     setLoginPassword,
     loginPasswordConfirmation,
@@ -77,68 +77,68 @@ const Component = (props) => {
     loginID,
     strength = false,
     confirmation = false,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
+
   const [loginPasswordShow, setLoginPasswordShow] = useState(false);
   const [loginPasswordConfirmationShow, setLoginPasswordConfirmationShow] = useState(false);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Validations
   // --------------------------------------------------
-  
+
   const validationUsersLoginPasswordObj = validationUsersLoginPassword({ value: loginPassword, loginID });
   const validationUsersLoginPasswordConfirmationObj = validationUsersLoginPasswordConfirmation({ value: loginPasswordConfirmation, loginPassword });
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   パスワードの強度
   // --------------------------------------------------
-  
+
   const passwordColorArr = ['red', 'red', '#FF5F17', 'green', 'green'];
   const passwordStrengthArr = ['とても危険', '危険', '普通', '安全', 'とても安全'];
-  
+
   let passwordColor = passwordColorArr[validationUsersLoginPasswordObj.strengthScore];
   let passwordStrength = passwordStrengthArr[validationUsersLoginPasswordObj.strengthScore];
-  
+
   if (loginPassword === '') {
-    
+
     passwordColor = '#848484';
     passwordStrength = ' -';
-    
+
   }
-  
+
   let componentStrength = 'パスワード'
-  
+
   if (strength) {
     componentStrength = <div>パスワード<span css={css` color: ${passwordColor}; margin-left: 12px; `}>[強度: {passwordStrength}]</span></div>;
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <React.Fragment>
-      
-      
+
+
       {/* パスワード */}
       <TextField
         css={css`
@@ -176,10 +176,10 @@ const Component = (props) => {
           )
         }}
       />
-      
-      
-      
-      
+
+
+
+
       {/* パスワード確認 */}
       {confirmation &&
         <TextField
@@ -219,12 +219,12 @@ const Component = (props) => {
           }}
         />
       }
-      
-      
+
+
     </React.Fragment>
   );
-  
-  
+
+
 };
 
 

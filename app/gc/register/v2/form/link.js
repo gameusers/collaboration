@@ -19,7 +19,7 @@ import { useIntl } from 'react-intl';
 import shortid from 'shortid';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------

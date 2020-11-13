@@ -15,7 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -39,38 +39,38 @@ import PublicSetting from 'app/gc/rec/v2/public-setting.js';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     idsArr = [],
     publicIDsArr = [],
     publicInformationsArr = [],
     publicSetting,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component
   // --------------------------------------------------
-  
+
   const componentsArr = [];
   let count = 0;
-  
-  
+
+
   // ---------------------------------------------
   //   - ID
   // ---------------------------------------------
-  
+
   if (idsArr.length !== 0 || publicIDsArr.length !== 0) {
-    
+
     componentsArr.push(
       <div
         key="public-1"
@@ -81,18 +81,18 @@ const Component = (props) => {
         />
       </div>
     );
-    
+
     count += 1;
-    
+
   }
-  
-  
+
+
   // ---------------------------------------------
   //   - 情報
   // ---------------------------------------------
-  
+
   if (publicInformationsArr.length !== 0) {
-    
+
     componentsArr.push(
       <div
         css={css`
@@ -105,23 +105,23 @@ const Component = (props) => {
         />
       </div>
     );
-    
+
   }
-  
-  
+
+
   // --------------------------------------------------
   //   IDも情報も存在しない場合、空のコンポーネントを返す
   // --------------------------------------------------
-  
+
   if (componentsArr.length === 0) {
     return null;
   }
-  
-  
+
+
   // ---------------------------------------------
   //   - 公開設定
   // ---------------------------------------------
-  
+
   componentsArr.push(
     <div
       key="public-3"
@@ -131,51 +131,51 @@ const Component = (props) => {
       />
     </div>
   );
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/gc/rec/v2/components/public.js
   // `);
-  
+
   // console.log(`
   //   ----- idsArr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(`
   //   ----- publicIDsArr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(publicIDsArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <div
       css={css`
         margin: 16px 0;
       `}
     >
-      
+
       {componentsArr}
-      
+
     </div>
   );
-  
-  
+
+
 };
 
 

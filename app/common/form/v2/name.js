@@ -18,7 +18,7 @@ import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -63,67 +63,67 @@ import { validationHandleName } from 'app/@validations/name.js';
  * ハンドルネーム
  */
 const Name = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     name,
     setName,
-    
+
   } = props;
-  
-  
-  
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Validation
   // --------------------------------------------------
-  
+
   const validationHandleNameObj = validationHandleName({ value: name });
-  
+
   const {
-    
+
     value,
     error,
     messageID,
     numberOfCharacters,
-    
+
   } = validationHandleNameObj;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----- validationHandleNameObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(validationHandleNameObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log('AAA');
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <TextField
       css={css`
@@ -143,8 +143,8 @@ const Name = (props) => {
       }}
     />
   );
-  
-  
+
+
 };
 
 
@@ -154,26 +154,26 @@ const Name = (props) => {
  * 匿名
  */
 const Anonymity = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     anonymity,
     setAnonymity,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <div
       css={css`
@@ -191,8 +191,8 @@ const Anonymity = (props) => {
       />
     </div>
   );
-  
-  
+
+
 };
 
 
@@ -203,52 +203,52 @@ const Anonymity = (props) => {
  * ログインしていて enableAnonymity が true の場合は、ハンドルネームを匿名にすることができる
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     name,
     setName,
     anonymity,
     setAnonymity,
     enableAnonymity,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateUser = ContainerStateUser.useContainer();
-  
+
   const { login } = stateUser;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <React.Fragment>
-      
-      
+
+
       {!login &&
         <Name
           name={name}
           setName={setName}
         />
       }
-      
-      
+
+
       {/* Anonymity */}
       {(login && enableAnonymity) &&
         <Anonymity
@@ -256,12 +256,12 @@ const Component = (props) => {
           setAnonymity={setAnonymity}
         />
       }
-      
-      
+
+
     </React.Fragment>
   );
-  
-  
+
+
 };
 
 

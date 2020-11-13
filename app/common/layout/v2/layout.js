@@ -22,7 +22,7 @@ import Measure from 'react-measure';
 import { Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------

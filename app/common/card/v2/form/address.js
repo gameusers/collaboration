@@ -18,7 +18,7 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -54,48 +54,48 @@ import { validationCardPlayersAddressAlternativeText } from 'app/@database/card-
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     addressAlternativeText,
     setAddressAlternativeText,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Validations
   // --------------------------------------------------
-  
+
   const validationAlternativeTextObj = validationCardPlayersAddressAlternativeText({ value: addressAlternativeText });
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <React.Fragment>
-      
-      
+
+
       {/* Heading */}
       <h3
         css={css`
@@ -104,8 +104,8 @@ const Component = (props) => {
       >
         住所
       </h3>
-      
-      
+
+
       <p
         css={css`
           margin: 0 0 12px 0;
@@ -113,16 +113,16 @@ const Component = (props) => {
       >
         入力すると住所が表示されます。公開される情報なので、あまり詳しい情報は載せないようにしましょう。
       </p>
-      
-      
-      
-      
+
+
+
+
       {/* 住所 */}
       <TextField
         css={css`
           && {
             width: 400px;
-            
+
             @media screen and (max-width: 480px) {
               width: 100%;
             }
@@ -139,12 +139,12 @@ const Component = (props) => {
           maxLength: 20,
         }}
       />
-      
-        
+
+
     </React.Fragment>
   );
-  
-  
+
+
 };
 
 

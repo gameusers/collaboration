@@ -18,7 +18,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useIntl } from 'react-intl';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -89,168 +89,168 @@ const cssIcon = css`
 // --------------------------------------------------
 
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateLayout = ContainerStateLayout.useContainer();
-  
+
   const {
-    
+
     snackbarObj,
     handleSnackbarClose,
-    
+
   } = stateLayout;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   // key
   // const key = lodashGet(snackbarObj, ['key'], `snackbar-${new Date().getTime()}`);
-  
+
   // 開閉を切り替える真偽値
   const open = lodashGet(snackbarObj, ['open'], false);
-  
+
   // 色 [success / error / warning / info]
   const variant = lodashGet(snackbarObj, ['variant'], '');
-  
+
   // メッセージID qnWsuPcrJ
   let messageID = lodashGet(snackbarObj, ['messageID'], '');
-  
+
   // 表示位置 - 縦方向
   const vertical = lodashGet(snackbarObj, ['vertical'], 'bottom');
-  
+
   // 表示位置 - 横方向
   const horizontal = lodashGet(snackbarObj, ['horizontal'], 'left');
-  
+
   // 表示時間
   const autoHideDuration = lodashGet(snackbarObj, ['autoHideDuration'], 5000);
-  
+
   // Error Object
   const errorObj = lodashGet(snackbarObj, ['errorObj'], {});
-  
-  
-  
+
+
+
   // if (!messageID) {
   //   return;
   // }
-  
-  
-  
+
+
+
   // --------------------------------------------------
   //   Message
   // --------------------------------------------------
-  
+
   let errorMessage = '';
   let message = '';
-  
-  
+
+
   if (errorObj && Object.keys(errorObj).length !== 0) {
-    
+
     if (errorObj instanceof CustomError) {
-      
+
       errorMessage = lodashGet(errorObj, ['errorsArr', 0, 'code'], 'Error');
       messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
-      
+
     } else {
-      
+
       errorMessage = errorObj.message;
       messageID = 'Error';
-      
+
     }
-    
+
   }
-  
-  
+
+
   if (messageID === 'Error') {
-    
+
     message = `Error Message: ${errorMessage}`;
-    
+
   } else if (messageID) {
-    
+
     message = intl.formatMessage({ id: messageID });
-    
+
   }
-  
+
   // console.log(chalk`
   //   messageID: {green ${messageID}}
   //   message: {green ${message}}
   // `);
-  
-  
+
+
   // --------------------------------------------------
   //   Color & Icon
   // --------------------------------------------------
-  
+
   let backgroundColor = '';
   let icon = '';
-  
+
   if (variant === 'success') {
-    
+
     backgroundColor = '#43a047';
     icon = <IconCheckCircle css={cssIcon} />;
-    
+
   } else if (variant === 'error') {
-    
+
     backgroundColor = '#d32f2f';
     icon = <IconError css={cssIcon} />;
-    
+
   } else if (variant === 'warning') {
-    
+
     backgroundColor = '#ffa000';
     icon = <IconWarning css={cssIcon} />;
-    
+
   } else if (variant === 'info') {
-    
+
     backgroundColor = '#1976d2';
     icon = <IconInfo css={cssIcon} />;
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/layout/v2/components/snackbar.js
   // `);
-  
+
   // console.log(chalk`
   //   login: {green ${login}}
   // `);
-  
+
   // console.log(`
   //   ----- linkArr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(linkArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Snackbar
       // key={key}
@@ -262,7 +262,7 @@ const Component = (props) => {
       autoHideDuration={autoHideDuration}
       onClose={handleSnackbarClose}
     >
-      
+
       <SnackbarContent
         css={css`
           color: white;
@@ -293,11 +293,11 @@ const Component = (props) => {
           </IconButton>,
         ]}
       />
-      
+
     </Snackbar>
   );
-  
-  
+
+
 };
 
 

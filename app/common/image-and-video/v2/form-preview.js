@@ -18,7 +18,7 @@ import React, { useState, useEffect, useContext } from 'react';
 // import { useIntl } from 'react-intl';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -84,11 +84,11 @@ const cssPreviewBox = css`
 const cssPreviewRemoveFab = css`
   && {
     background-color: ${cyan[500]};
-    
+
     &:hover {
       background-color: ${cyan[700]};
     }
-    
+
     width: 24px;
     height: 24px;
     min-width: 24px;
@@ -113,212 +113,212 @@ const cssPreviewRemoveFab = css`
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateUser = ContainerStateUser.useContainer();
-  
+
   const { localeObj } = stateUser;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     imagesAndVideosObj,
     setImagesAndVideosObj,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateLayout = ContainerStateLayout.useContainer();
-  
+
   const { handleVideoOpen } = stateLayout;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   const formattedObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosObj });
-  
+
   const type = lodashGet(formattedObj, ['type'], '');
   const arr = lodashGet(formattedObj, ['arr'], []);
-  
-  
+
+
   // 画像を追加してもプレビューが更新されないときがある。これを読み込むと正常に更新される。ただいい方法ではない。
   // const imageType = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj', 'type'], '');
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   /**
    * プレビューを削除する
    * @param {number} index - 削除する配列のインデックスを数字で指定する
    */
   const handleRemovePreview = ({ index }) => {
-    
-    
+
+
     // ---------------------------------------------
     //   データ取得＆クローン
     // ---------------------------------------------
-    
+
     const clonedImagesAndVideosObj = lodashCloneDeep(imagesAndVideosObj);
-    
-    
+
+
     // ---------------------------------------------
     //   削除
     // ---------------------------------------------
-    
+
     clonedImagesAndVideosObj.arr.splice(index, 1);
-    
-    
+
+
     // ---------------------------------------------
     //   更新
     // ---------------------------------------------
-    
+
     setImagesAndVideosObj(clonedImagesAndVideosObj);
-    
-    
+
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/image-and-video/v2/components/form-preview.js
   // `);
-  
+
   // console.log(`
   //   ----- localeObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(`
   //   ----- imagesAndVideosObj -----\n
   //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(`
   //   ----- imagesAndVideosObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(`
   //   ----- formattedObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(chalk`
   //   type: {green ${type}}
   // `);
-  
+
   // console.log(`
   //   ----- arr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   必要なデータがない場合は処理停止
   // --------------------------------------------------
-  
+
   if (!type || arr.length === 0) {
     return null;
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component - Preview Thumbnail Image & Video
   // --------------------------------------------------
-  
+
   const componentsPreviewArr = [];
-  
-  
+
+
   for (const [index, valueObj] of arr.entries()) {
-    
-    
+
+
     // console.log(`
     //   ----- valueObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(valueObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
+
+
     // ---------------------------------------------
     //   画像
     // ---------------------------------------------
-    
+
     if (valueObj.type === 'image') {
-      
+
       const src = valueObj.src;
       const width = valueObj.width;
       const height = valueObj.height;
       const caption = lodashGet(valueObj, ['caption'], '');
-      
-      
+
+
       // ---------------------------------------------
       //   横幅・高さを計算する
       // ---------------------------------------------
-      
+
       const calculatedObj = imageCalculateSize({ width, height, specifiedHeight: 108 });
-      
-      
+
+
       // console.log(`
       //   ----- calculatedObj -----\n
       //   ${util.inspect(calculatedObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
+
       // console.log(chalk`
       //   src: {green ${src}}
       //   width: {green ${width}}
       //   height: {green ${height}}
       // `);
-      
-      
+
+
       // ---------------------------------------------
       //   普通の画像
       // ---------------------------------------------
-      
+
       if (src.indexOf('data:image/svg') === -1) {
-        
+
         componentsPreviewArr.push(
           <div css={cssPreviewBox} key={index}>
-            
+
             {/* Image */}
             <Tooltip title={caption}>
               <div>
@@ -328,7 +328,7 @@ const Component = (props) => {
                     height: 108px;
                     min-height: 108px;
                     max-height: 108px;
-                    
+
                     @media screen and (max-width: 480px) {
                       // width: 68px;
                       height: 68px;
@@ -343,8 +343,8 @@ const Component = (props) => {
                 />
               </div>
             </Tooltip>
-            
-            
+
+
             {/* Remove Button */}
             <Fab
               css={cssPreviewRemoveFab}
@@ -353,44 +353,44 @@ const Component = (props) => {
             >
               <IconClose />
             </Fab>
-            
+
           </div>
         );
-        
-        
+
+
       // ---------------------------------------------
       //   SVG
       // ---------------------------------------------
-        
+
       } else {
-        
+
         componentsPreviewArr.push(
           <div css={cssPreviewBox} key={index}>
-            
+
             {/* Image */}
             <Tooltip title={caption}>
-              
+
               <div
                 css={css`
                   background-repeat: no-repeat;
                   background-position: center center;
-                  
+
                   max-width: 108px;
                   max-height: 108px;
                   width: ${calculatedObj.width}px;
                   height: ${calculatedObj.height}px;
                   background-image: url(${src});
-                  
+
                   @media screen and (max-width: 480px) {
                     max-width: 68px;
                     max-height: 68px;
                   }
                 `}
               />
-              
+
             </Tooltip>
-            
-            
+
+
             {/* Remove Button */}
             <Fab
               css={cssPreviewRemoveFab}
@@ -399,36 +399,36 @@ const Component = (props) => {
             >
               <IconClose />
             </Fab>
-            
+
           </div>
         );
-        
+
       }
-      
-      
+
+
     // ---------------------------------------------
     //   動画
     // ---------------------------------------------
-    
+
     } else if (valueObj.type === 'video') {
-      
+
       componentsPreviewArr.push(
         <div css={cssPreviewBox} key={index}>
-          
+
           <div
             css={css`
               width: 192px;
               height: 108px;
               position: relative;
-              
+
               @media screen and (max-width: 480px) {
                 width: 120px;
                 height: 68px;
               }
             `}
           >
-            
-            
+
+
             {/* Image */}
             <img
               css={css`
@@ -436,8 +436,8 @@ const Component = (props) => {
               `}
               src={`https://img.youtube.com/vi/${valueObj.videoID}/mqdefault.jpg`}
             />
-            
-            
+
+
             {/* Play Button */}
             <div
               css={css`
@@ -459,16 +459,16 @@ const Component = (props) => {
                 	height: 1.4em;
                 	border: 0.1em solid white;
                 	border-radius: 100%;
-                	
+
                 	transition: 0.5s;
                 	&:hover {
                 	  opacity: 0.7;
                 	}
-                	
+
                   @media screen and (max-width: 480px) {
                     font-size: 18px;
                   }
-                	
+
                   &:before {
                     content: "";
                   	position: absolute;
@@ -483,8 +483,8 @@ const Component = (props) => {
                 `}
               />
             </div>
-            
-            
+
+
             {/* Remove Button */}
             <Fab
               css={cssPreviewRemoveFab}
@@ -493,24 +493,24 @@ const Component = (props) => {
             >
               <IconClose />
             </Fab>
-          
-          
+
+
           </div>
-          
+
         </div>
       );
-      
+
     }
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <div
       css={css`
@@ -519,13 +519,13 @@ const Component = (props) => {
         margin: 2px 0 0 0;
       `}
     >
-      
+
       {componentsPreviewArr}
-      
+
     </div>
   );
-  
-  
+
+
 };
 
 

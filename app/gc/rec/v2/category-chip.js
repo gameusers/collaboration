@@ -15,7 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -58,29 +58,29 @@ import IconDeal from '@material-ui/icons/MonetizationOn';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     category,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component
   // --------------------------------------------------
-  
+
   let component = '';
-  
+
   if (category === 1) {
-    
+
     component =
       <div
         css={css`
@@ -99,9 +99,9 @@ const Component = (props) => {
         />
       </div>
     ;
-    
+
   } else if (category === 2) {
-    
+
     component =
       <div
         css={css`
@@ -120,9 +120,9 @@ const Component = (props) => {
         />
       </div>
     ;
-    
+
   } else if (category === 3) {
-    
+
     component =
       <div
         css={css`
@@ -141,35 +141,35 @@ const Component = (props) => {
         />
       </div>
     ;
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/gc/rec/v2/components/category-chip.js
   // `);
-  
+
   // console.log(chalk`
   //   category: {green ${category}}
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return component;
-  
-  
+
+
 };
 
 

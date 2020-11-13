@@ -18,7 +18,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -118,59 +118,59 @@ const cssTitleClosed = css`
 // --------------------------------------------------
 
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const [open, setOpen] = useState(true);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     headerObj,
     heroImage,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   const name = lodashGet(headerObj, ['name'], '');
   const status = lodashGet(headerObj, ['status'], '');
-  
+
   const exp = lodashGet(headerObj, ['exp'], 0);
   const level = calculateLevel({ exp });
   const tnl = calculateToNextLevel({ exp });
-  
+
   const titlesArr = lodashGet(headerObj, ['titlesArr'], []);
-  
+
   const users_id = lodashGet(headerObj, ['users_id'], '');
   const followsObj = lodashGet(headerObj, ['followsObj'], {});
   const followCount = lodashGet(headerObj, ['followsObj', 'followCount'], 0);
   const followedCount = lodashGet(headerObj, ['followsObj', 'followedCount'], 0);
   const admin = lodashGet(followsObj, ['admin'], false);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component - Name
   // --------------------------------------------------
-  
+
   let componentName = '';
-  
+
   componentName =
     <div
       css={css`
@@ -178,7 +178,7 @@ const Component = (props) => {
         flex-flow: row wrap;
       `}
     >
-      
+
       <div
         css={css`
           font-size: 14px;
@@ -187,7 +187,7 @@ const Component = (props) => {
       >
         {name}
       </div>
-      
+
       <IconHealing
         css={css`
           && {
@@ -196,7 +196,7 @@ const Component = (props) => {
           }
         `}
       />
-      
+
       <div
         css={css`
           font-size: 14px;
@@ -205,21 +205,21 @@ const Component = (props) => {
       >
         {status}
       </div>
-      
+
     </div>
   ;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component - Achievement
   // --------------------------------------------------
-  
+
   const componentAchievementsArr = [];
-  
+
   for (const [index, valueObj] of titlesArr.entries()) {
-    
+
     componentAchievementsArr.push(
       <div
         css={css`
@@ -227,23 +227,23 @@ const Component = (props) => {
         `}
         key={index}
       >
-        
+
         <TitleChip
           _id={valueObj._id}
           urlID={valueObj.urlID}
           name={valueObj.name}
         />
-        
+
       </div>
     );
-    
+
   }
-  
-  
+
+
   let componentAchievement = '';
-  
+
   if (componentAchievementsArr.length > 0) {
-    
+
     componentAchievement =
       <div
         css={css`
@@ -252,38 +252,38 @@ const Component = (props) => {
           margin: 0 6px 0;
         `}
       >
-        
+
         {componentAchievementsArr}
-        
+
       </div>
     ;
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component
   // --------------------------------------------------
-  
+
   let component = '';
-  
-  
+
+
   // --------------------------------------------------
   //   Hero Image
   // --------------------------------------------------
-  
+
   if (heroImage) {
-    
-    
+
+
     // --------------------------------------------------
     //   Open
     // --------------------------------------------------
-    
+
     if (open) {
-      
-      component = 
+
+      component =
         <div
           css={css`
             width: 280px;
@@ -291,20 +291,20 @@ const Component = (props) => {
             background-color: #000;
             background-color: rgba(0, 0, 0, 0.5);
             color: #fff;
-            
+
             position: absolute;
             right: 15px;
             bottom: 15px;
             ${(admin && componentAchievement) ? 'padding: 0 0 12px 0;' : 'padding: 0 0 6px 0;'}
           `}
         >
-          
-          
+
+
           {/* Open Button */}
           <div css={cssTitleBox}>
-            
+
             <div css={cssTitle}>{componentName}</div>
-            
+
             <IconButton
               css={css`
                 && {
@@ -322,12 +322,12 @@ const Component = (props) => {
             >
               <IconKeyboardArrowUp />
             </IconButton>
-            
+
           </div>
-          
-          
-          
-          
+
+
+
+
           {/* Data */}
           <div
             css={css`
@@ -339,8 +339,8 @@ const Component = (props) => {
             <p css={cssInfo}>Lv. {level}</p>
             <p css={cssInfo}>次のレベルまで {tnl} Exp</p>
           </div>
-          
-          
+
+
           <div
             css={css`
               display: flex;
@@ -351,15 +351,15 @@ const Component = (props) => {
             <p css={cssInfo}>フォロー {followCount}人</p>
             <p css={cssInfo}>フォロワー {followedCount}人</p>
           </div>
-          
-          
-          
-          
+
+
+
+
           {componentAchievement}
-          
-          
-          
-          
+
+
+
+
           {/* Follow Button */}
           <FollowButton
             type="header"
@@ -367,44 +367,44 @@ const Component = (props) => {
             followsObj={followsObj}
             updateHeader={true}
           />
-        
-          
+
+
         </div>
       ;
-      
-      
+
+
     // --------------------------------------------------
     //   Closed
     // --------------------------------------------------
-      
+
     } else {
-      
-      component = 
+
+      component =
         <div
           css={css`
             display: flex;
             flex-flow: row nowrap;
             justify-content: center;
             align-items: center;
-            
+
             min-width: 150px;
             max-width: 300px;
             border-radius: 8px;
             background-color: #000;
             background-color: rgba(0, 0, 0, 0.5);
             color: #fff;
-            
+
             position: absolute;
             right: 15px;
             bottom: 15px;
             padding: 0 2px 0 0;
           `}
         >
-          
-          
+
+
           <div css={cssTitleClosed}>{componentName}</div>
-          
-          
+
+
           {/* Close Button */}
           <IconButton
             css={css`
@@ -423,50 +423,50 @@ const Component = (props) => {
           >
             <IconKeyboardArrowDown />
           </IconButton>
-          
-          
+
+
         </div>
       ;
-      
+
     }
-    
-    
+
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/layout/v2/components/header/data-ur.js
   // `);
-  
+
   // console.log(chalk`
   //   open: {green ${open}}
   //   name: {green ${name}}
   //   hardware: {green ${hardware}}
   // `);
-  
+
   // console.log(`
   //   ----- hardwareSortedArr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(hardwareSortedArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return component;
-  
-  
+
+
 };
 
 

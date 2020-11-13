@@ -19,7 +19,7 @@ import SwiperCore, { Pagination, Mousewheel, Autoplay } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------

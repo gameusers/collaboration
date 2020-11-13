@@ -18,7 +18,7 @@ import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -56,92 +56,92 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 // --------------------------------------------------
 
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateLayout = ContainerStateLayout.useContainer();
-  
+
   const {
-    
+
     dialogObj,
     handleDialogClose,
-    
+
   } = stateLayout;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const open = lodashGet(dialogObj, ['open'], false);
   const title = lodashGet(dialogObj, ['title'], '');
   const description = lodashGet(dialogObj, ['description'], '');
   const handle = lodashGet(dialogObj, ['handle'], () => {});
   const argumentsObj = lodashGet(dialogObj, ['argumentsObj'], {});
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   const handleClick = async ({
-    
+
     handle,
     argumentsObj,
-    
+
   }) => {
-    
+
     await handle(argumentsObj);
-    
+
     handleDialogClose();
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/layout/v2/components/dialog.js
   // `);
-  
+
   // console.log(chalk`
   //   open: {green ${open}}
   // `);
-  
+
   // console.log(`
   //   ----- argumentsObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(argumentsObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Dialog
       open={open}
@@ -149,20 +149,20 @@ const Component = (props) => {
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      
-      
+
+
       <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
-      
-      
+
+
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           {description}
         </DialogContentText>
       </DialogContent>
-      
-      
+
+
       <DialogActions>
-        
+
         <div
           css={css`
             margin: 0 auto 0 0;
@@ -179,22 +179,22 @@ const Component = (props) => {
             はい
           </Button>
         </div>
-        
-        
+
+
         <Button
           onClick={() => handleDialogClose()}
           color="primary"
         >
           いいえ
         </Button>
-        
+
       </DialogActions>
-      
-      
+
+
     </Dialog>
   );
-  
-  
+
+
 };
 
 

@@ -15,7 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -47,7 +47,7 @@ const cssHeading = css`
 
 const cssItem = css`
   margin: 0 20px 0 0;
-  
+
   @media screen and (max-width: 480px) {
     margin: 0;
   }
@@ -70,99 +70,99 @@ const cssSpanColor = css`
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     hardwareActiveArr = [],
     hardwareInactiveArr = [],
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   情報がない場合、空のコンポーネントを返す
   // --------------------------------------------------
-  
+
   if (
-    
+
     hardwareActiveArr.length === 0 &&
     hardwareInactiveArr.length === 0
-    
+
   ) {
-    
+
     return null;
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   見出し
   // --------------------------------------------------
-  
+
   const componentHeading = <h3 css={cssHeading}>所有ハードウェア<span css={cssSpanColor}>（昔所有）</span></h3>;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component - プロフィール項目（年齢、性別など）
   // --------------------------------------------------
-  
+
   const componentsArr = [];
   let tempArr = [];
-  
-  
+
+
   // ---------------------------------------------
   //   - 所有ハード
   // ---------------------------------------------
-  
+
   if (Array.isArray(hardwareActiveArr) && hardwareActiveArr.length > 0) {
-    
+
     for (let valueObj of hardwareActiveArr) {
       tempArr.push(valueObj.name);
     }
-    
+
     componentsArr.push(
       <div css={cssItem} key="hardwareActive">{tempArr.join(' / ')}</div>
     );
-    
+
   }
-  
-  
+
+
   // ---------------------------------------------
   //   - 非所有ハード
   // ---------------------------------------------
-  
+
   tempArr = [];
-  
+
   if (Array.isArray(hardwareInactiveArr) && hardwareInactiveArr.length > 0) {
-    
+
     for (let valueObj of hardwareInactiveArr) {
       tempArr.push(valueObj.name);
     }
-    
+
     componentsArr.push(
       <div css={cssItem} key="hardwareInactive"><span css={cssSpanColor}>{tempArr.join(' / ')}</span></div>
     );
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <div
       css={css`
@@ -171,8 +171,8 @@ const Component = (props) => {
         padding: 24px 0 0 0;
       `}
     >
-      
-      
+
+
       {/* Heading */}
       <div
         css={css`
@@ -181,7 +181,7 @@ const Component = (props) => {
           align-items: center;
         `}
       >
-        
+
         <IconGamepad
           css={css`
             && {
@@ -189,36 +189,36 @@ const Component = (props) => {
             }
           `}
         />
-        
+
         {componentHeading}
-        
+
       </div>
-      
-      
-      
-      
+
+
+
+
       {/* ハードウェア */}
       <div
         css={css`
           display: flex;
           flex-flow: row wrap;
           margin: 4px 0 0 0;
-          
+
           @media screen and (max-width: 480px) {
             flex-flow: column wrap;
           }
         `}
       >
-        
+
         {componentsArr}
-        
+
       </div>
-      
-      
+
+
     </div>
   );
-  
-  
+
+
 };
 
 

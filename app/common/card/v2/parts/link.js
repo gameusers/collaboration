@@ -17,7 +17,7 @@ import util from 'util';
 import SimpleIcons from 'simple-icons-react-component';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -53,42 +53,42 @@ import IconPublic from '@material-ui/icons/Public';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     arr,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   必要な情報がない場合、空のコンポーネントを返す
   // --------------------------------------------------
-  
+
   if (!Array.isArray(arr) || arr.length === 0) {
     return null;
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component
   // --------------------------------------------------
-  
+
   const componentsArr = [];
-  
+
   for (const [index, valueObj] of arr.entries()) {
-    
+
     if (valueObj.type === 'Other') {
-      
+
       componentsArr.push(
         <div
           css={css`
@@ -96,7 +96,7 @@ const Component = (props) => {
           `}
           key={index}
         >
-          
+
           <Button
             css={css`
               && {
@@ -114,12 +114,12 @@ const Component = (props) => {
           >
             {valueObj.label}
           </Button>
-          
+
         </div>
       );
-      
+
     } else if (valueObj.url) {
-      
+
       componentsArr.push(
         <div
           css={css`
@@ -127,7 +127,7 @@ const Component = (props) => {
           `}
           key={`link${index}`}
         >
-          
+
           <a href={valueObj.url} target="_blank">
             <div
               css={css`
@@ -138,23 +138,23 @@ const Component = (props) => {
               <SimpleIcons name={valueObj.type} />
             </div>
           </a>
-          
+
         </div>
       );
-      
+
     }
-    
+
   }
-  
-  
+
+
   // --------------------------------------------------
   //   Component
   // --------------------------------------------------
-  
+
   let component = '';
-  
+
   if (componentsArr.length > 0) {
-    
+
     component =
       <div
         css={css`
@@ -162,25 +162,25 @@ const Component = (props) => {
           flex-flow: row wrap;
         `}
       >
-        
+
         {componentsArr}
-        
+
       </div>
     ;
-    
+
   } else {
-    
+
     return null;
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <div
       css={css`
@@ -189,8 +189,8 @@ const Component = (props) => {
         padding: 24px 0 0 0;
       `}
     >
-      
-      
+
+
       {/* Heading */}
       <div
         css={css`
@@ -199,7 +199,7 @@ const Component = (props) => {
           align-items: center;
         `}
       >
-        
+
         <IconPublic
           css={css`
             && {
@@ -207,8 +207,8 @@ const Component = (props) => {
             }
           `}
         />
-        
-        
+
+
         <h3
           css={css`
             margin: 2px 0 0 4px;
@@ -216,20 +216,20 @@ const Component = (props) => {
         >
           リンク
         </h3>
-        
+
       </div>
-      
-      
-      
-      
+
+
+
+
       {/* Link */}
       {component}
-      
-      
+
+
     </div>
   );
-  
-  
+
+
 };
 
 

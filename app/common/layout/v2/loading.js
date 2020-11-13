@@ -15,7 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -46,59 +46,59 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateLayout = ContainerStateLayout.useContainer();
-  
+
   const { loadingObj } = stateLayout;
-  
+
   const open = lodashGet(loadingObj, ['open'], false);
   const position = lodashGet(loadingObj, ['position'], 'left');
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   ローディング中でない場合、空のコンポーネントを返す
   // --------------------------------------------------
-  
+
   if (!open) {
     return null;
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/layout/v2/components/sidebar.js
   // `);
-  
+
   // console.log(chalk`
   //   login: {green ${login}}
   // `);
-  
+
   // console.log(`
   //   ----- linkArr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(linkArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <div
       css={css`
@@ -109,7 +109,7 @@ const Component = (props) => {
       `}
       style={position === 'left' ? { left: '50px' } : { right: '50px' }}
     >
-      
+
       <div className="la-pacman">
       	<div />
       	<div />
@@ -118,11 +118,11 @@ const Component = (props) => {
       	<div />
       	<div />
       </div>
-      
+
     </div>
   );
-  
-  
+
+
 };
 
 

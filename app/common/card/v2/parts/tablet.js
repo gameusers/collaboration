@@ -15,7 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -51,59 +51,59 @@ import Paragraph from 'app/common/layout/v2/paragraph.js';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     tabletModel,
     tabletComment,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   情報がない場合、空のコンポーネントを返す
   // --------------------------------------------------
-  
+
   if (
-    
+
     !tabletModel &&
     !tabletComment
-    
+
   ) {
-    
+
     return null;
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component - モデル
   // --------------------------------------------------
-  
+
   let componentModel = 'タブレット';
-  
+
   if (tabletModel) {
     componentModel = `タブレット: ${tabletModel}`;
   }
-  
-  
+
+
   // --------------------------------------------------
   //   コンポーネント作成 - コメント
   // --------------------------------------------------
-  
+
   let componentComment = '';
-  
+
   if (tabletComment) {
-    
+
     componentComment =
       <div
         css={css`
@@ -113,16 +113,16 @@ const Component = (props) => {
         <Paragraph text={tabletComment} />
       </div>
     ;
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <div
       css={css`
@@ -131,8 +131,8 @@ const Component = (props) => {
         padding: 24px 0 0 0;
       `}
     >
-      
-      
+
+
       {/* Heading */}
       <div
         css={css`
@@ -141,7 +141,7 @@ const Component = (props) => {
           align-items: center;
         `}
       >
-        
+
         <IconTabletAndroid
           css={css`
             && {
@@ -149,29 +149,29 @@ const Component = (props) => {
             }
           `}
         />
-        
-        
+
+
         <h3
           css={css`
             margin: 0 0 0 4px;
           `}
         >
-          
+
           {componentModel}
-          
+
         </h3>
-        
+
       </div>
-      
-      
+
+
       {/* コメント */}
       {componentComment}
-      
-        
+
+
     </div>
   );
-  
-  
+
+
 };
 
 

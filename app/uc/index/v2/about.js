@@ -20,7 +20,7 @@ import { useIntl } from 'react-intl';
 import moment from 'moment';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------

@@ -33,6 +33,7 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import SchemaTempID from 'import/@database/temp-id-schema.js';
+import SchemaTempImageID from 'import/@database/temp-image-id-schema.js';
 
 
 // ---------------------------------------------
@@ -106,11 +107,6 @@ export default async (req, res) => {
   try {
 
 
-    // 登録しなければならないデータ
-    // 参加ユーザーコミュニティ
-    // experiencesArr
-
-
     // --------------------------------------------------
     //   ISO8601
     // --------------------------------------------------
@@ -142,6 +138,7 @@ export default async (req, res) => {
     // --------------------------------------------------
 
     const saveArr = [];
+    const saveImagesArr = [];
 
 
     for (const [index, valueObj] of usersDataDataArr.entries()) {
@@ -154,6 +151,7 @@ export default async (req, res) => {
       const user_no = lodashGet(valueObj, ['user_no'], 0);
       const on_off = lodashGet(valueObj, ['on_off'], '0');
       const access_date = lodashGet(valueObj, ['access_date'], '');
+      const thumbnail = lodashGet(valueObj, ['thumbnail'], '0');
 
 
       // --------------------------------------------------
@@ -180,6 +178,23 @@ export default async (req, res) => {
 
         );
 
+        if (thumbnail === '1') {
+
+          saveImagesArr.push(
+
+            {
+              _id: shortid.generate(),
+              id1: '',
+              id2Arr: [],
+              idThumbnail1: shortid.generate(),
+              idThumbnail2: shortid.generate(),
+              key: `user_no_${user_no}`,
+            }
+
+          );
+
+        }
+
       }
 
 
@@ -203,6 +218,7 @@ export default async (req, res) => {
 
       const community_no = parseInt(lodashGet(valueObj, ['community_no'], 0), 10);
       const on_off = lodashGet(valueObj, ['on_off'], '0');
+      const thumbnail = lodashGet(valueObj, ['thumbnail'], '0');
 
 
       // --------------------------------------------------
@@ -210,7 +226,7 @@ export default async (req, res) => {
       // --------------------------------------------------
 
       if (on_off === '1' && !bansUCArr.includes(community_no)) {
-        // console.log(community_no);
+
         saveArr.push(
 
           {
@@ -220,6 +236,23 @@ export default async (req, res) => {
           }
 
         );
+
+        if (thumbnail === '1') {
+
+          saveImagesArr.push(
+
+            {
+              _id: shortid.generate(),
+              id1: '',
+              id2Arr: [],
+              idThumbnail1: shortid.generate(),
+              idThumbnail2: shortid.generate(),
+              key: `community_no_${community_no}`,
+            }
+
+          );
+
+        }
 
       }
 
@@ -574,6 +607,7 @@ export default async (req, res) => {
 
       const game_no = parseInt(lodashGet(valueObj, ['game_no'], 0), 10);
       const on_off = lodashGet(valueObj, ['on_off'], '0');
+      const thumbnail = lodashGet(valueObj, ['thumbnail'], '0');
 
 
       // --------------------------------------------------
@@ -592,6 +626,29 @@ export default async (req, res) => {
 
         );
 
+        if (thumbnail === '1') {
+
+          const id2Arr = [];
+
+          for (let i = 0; i < 50; i++) {
+            id2Arr.push(shortid.generate());
+          }
+
+          saveImagesArr.push(
+
+            {
+              _id: shortid.generate(),
+              id1: shortid.generate(),
+              id2Arr,
+              idThumbnail1: shortid.generate(),
+              idThumbnail2: shortid.generate(),
+              key: `game_no_${game_no}`,
+            }
+
+          );
+
+        }
+
       }
 
 
@@ -608,22 +665,43 @@ export default async (req, res) => {
     await SchemaTempID.insertMany(saveArr);
 
 
+    const count = await SchemaTempImageID.countDocuments({}).exec();
+
+    // console.log(chalk`
+    //   count: {green ${count}}
+    // `);
+
+    if (count === 0) {
+
+      await SchemaTempImageID.deleteMany({});
+      await SchemaTempImageID.insertMany(saveImagesArr);
+
+    }
+
+
+
 
 
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
 
-    console.log(`
-      ----------------------------------------\n
-      pages/api/v2/common/import-json.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   pages/api/v2/common/import-json.js
+    // `);
 
-    console.log(`
-      ----- saveArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(saveArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- saveArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(saveArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- saveImagesArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(saveImagesArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
     // console.log(`
     //   ----- userCommunitiesArr -----\n

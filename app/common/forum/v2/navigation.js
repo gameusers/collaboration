@@ -22,7 +22,7 @@ import moment from 'moment';
 import Cookies from 'js-cookie';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------

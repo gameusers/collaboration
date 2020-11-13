@@ -19,7 +19,7 @@ import { useIntl } from 'react-intl';
 import TextareaAutosize from 'react-autosize-textarea';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -55,50 +55,50 @@ import { validationCardPlayersTabletModel } from 'app/@database/card-players/val
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     tabletModel,
     setTabletModel,
     tabletComment,
     setTabletComment,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Validations
   // --------------------------------------------------
-  
+
   const validationModelObj = validationCardPlayersTabletModel({ value: tabletModel });
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <React.Fragment>
-      
-      
+
+
       {/* Heading */}
       <h3
         css={css`
@@ -107,8 +107,8 @@ const Component = (props) => {
       >
         タブレット
       </h3>
-      
-      
+
+
       <p
         css={css`
           margin: 0 0 12px 0;
@@ -116,16 +116,16 @@ const Component = (props) => {
       >
         入力するとタブレットについての情報が表示されます。現在、利用しているタブレットの情報を入力してください。
       </p>
-      
-      
-      
-      
+
+
+
+
       {/* モデル・機種名 */}
       <TextField
         css={css`
           && {
             width: 400px;
-            
+
             @media screen and (max-width: 480px) {
               width: 100%;
             }
@@ -142,10 +142,10 @@ const Component = (props) => {
           maxLength: 50,
         }}
       />
-      
-      
-      
-      
+
+
+
+
       {/* コメント */}
       <TextareaAutosize
         css={css`
@@ -156,11 +156,11 @@ const Component = (props) => {
             line-height: 1.8;
             margin: 12px 0 0 0;
             padding: 8px 12px;
-            
+
             &:focus {
               outline: 1px #A9F5F2 solid;
             }
-            
+
             resize: none;
           }
         `}
@@ -170,12 +170,12 @@ const Component = (props) => {
         maxLength={3000}
         onChange={(eventObj) => setTabletComment(eventObj.target.value)}
       />
-      
-        
+
+
     </React.Fragment>
   );
-  
-  
+
+
 };
 
 

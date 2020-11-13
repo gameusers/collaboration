@@ -15,7 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -51,14 +51,14 @@ import Paragraph from 'app/common/layout/v2/paragraph.js';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     pcModel,
     pcComment,
     pcOs,
@@ -74,18 +74,18 @@ const Component = (props) => {
     pcMonitor,
     pcMouse,
     pcKeyboard,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   情報がない場合、空のコンポーネントを返す
   // --------------------------------------------------
-  
+
   if (
-    
+
     !pcModel &&
     !pcComment &&
     !pcOs &&
@@ -101,35 +101,35 @@ const Component = (props) => {
     !pcMonitor &&
     !pcMouse &&
     !pcKeyboard
-    
+
   ) {
-    
+
     return null;
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component - モデル
   // --------------------------------------------------
-  
+
   let componentModel = 'PC';
-  
+
   if (pcModel) {
     componentModel = `PC: ${pcModel}`;
   }
-  
-  
+
+
   // --------------------------------------------------
   //   Component - コメント
   // --------------------------------------------------
-  
+
   let componentComment = '';
-  
+
   if (pcComment) {
-    
+
     componentComment =
       <div
         css={css`
@@ -139,203 +139,203 @@ const Component = (props) => {
         <Paragraph text={pcComment} />
       </div>
     ;
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component - PCスペック
   // --------------------------------------------------
-  
+
   const componentsArr = [];
-  
-  
+
+
   // ---------------------------------------------
   //   - OS
   // ---------------------------------------------
-  
+
   if (pcOs) {
-    
+
     componentsArr.push(
       <li key="os"><strong>OS:</strong> {pcOs}</li>
     );
-    
+
   }
-  
-  
+
+
   // ---------------------------------------------
   //   - CPU
   // ---------------------------------------------
-  
+
   if (pcCpu) {
-    
+
     componentsArr.push(
       <li key="cpu"><strong>CPU:</strong> {pcCpu}</li>
     );
-    
+
   }
-  
-  
+
+
   // ---------------------------------------------
   //   - CPU Cooler
   // ---------------------------------------------
-  
+
   if (pcCpuCooler) {
-    
+
     componentsArr.push(
       <li key="cpuCooler"><strong>CPUクーラー:</strong> {pcCpuCooler}</li>
     );
-    
+
   }
-  
-  
+
+
   // ---------------------------------------------
   //   - マザーボード
   // ---------------------------------------------
-  
+
   if (pcMotherboard) {
-    
+
     componentsArr.push(
       <li key="motherboard"><strong>マザーボード:</strong> {pcMotherboard}</li>
     );
-    
+
   }
-  
-  
+
+
   // ---------------------------------------------
   //   - メモリ
   // ---------------------------------------------
-  
+
   if (pcMemory) {
-    
+
     componentsArr.push(
       <li key="memory"><strong>メモリ:</strong> {pcMemory}</li>
     );
-    
+
   }
-  
-  
+
+
   // ---------------------------------------------
   //   - ストレージ
   // ---------------------------------------------
-  
+
   if (pcStorage) {
-    
+
     componentsArr.push(
       <li key="storage"><strong>ストレージ:</strong> {pcStorage}</li>
     );
-    
+
   }
-  
-  
+
+
   // ---------------------------------------------
   //   - グラフィックス
   // ---------------------------------------------
-  
+
   if (pcGraphicsCard) {
-    
+
     componentsArr.push(
       <li key="graphicsCard"><strong>グラフィックス:</strong> {pcGraphicsCard}</li>
     );
-    
+
   }
-  
-  
+
+
   // ---------------------------------------------
   //   - 光学ドライブ
   // ---------------------------------------------
-  
+
   if (pcOpticalDrive) {
-    
+
     componentsArr.push(
       <li key="opticalDrive"><strong>光学ドライブ:</strong> {pcOpticalDrive}</li>
     );
-    
+
   }
-  
-  
+
+
   // ---------------------------------------------
   //   - 電源
   // ---------------------------------------------
-  
+
   if (pcPowerSupply) {
-    
+
     componentsArr.push(
       <li key="powerSupply"><strong>電源:</strong> {pcPowerSupply}</li>
     );
-    
+
   }
-  
-  
+
+
   // ---------------------------------------------
   //   - ケース
   // ---------------------------------------------
-  
+
   if (pcCase) {
-    
+
     componentsArr.push(
       <li key="pcCase"><strong>ケース:</strong> {pcCase}</li>
     );
-    
+
   }
-  
-  
+
+
   // ---------------------------------------------
   //   - モニター
   // ---------------------------------------------
-  
+
   if (pcMonitor) {
-    
+
     componentsArr.push(
       <li key="monitor"><strong>モニター:</strong> {pcMonitor}</li>
     );
-    
+
   }
-  
-  
+
+
   // ---------------------------------------------
   //   - マウス
   // ---------------------------------------------
-  
+
   if (pcMouse) {
-    
+
     componentsArr.push(
       <li key="mouse"><strong>マウス:</strong> {pcMouse}</li>
     );
-    
+
   }
-  
-  
+
+
   // ---------------------------------------------
   //   - キーボード
   // ---------------------------------------------
-  
+
   if (pcKeyboard) {
-    
+
     componentsArr.push(
       <li key="keyboard"><strong>キーボード:</strong> {pcKeyboard}</li>
     );
-    
+
   }
-  
-  
+
+
   // ---------------------------------------------
   //   Component
   // ---------------------------------------------
-  
+
   let componentSpecs = '';
-  
+
   if (componentsArr.length > 0) {
-    
+
     componentSpecs =
       <div
         css={css`
           margin: 16px 0 0 0;
         `}
       >
-        
+
         <p
           css={css`
             font-weight: bold;
@@ -343,34 +343,34 @@ const Component = (props) => {
         >
           スペック
         </p>
-        
+
         <ul
           css={css`
             list-style-type: disc;
             margin: 3px 0 0 20px;
           `}
         >
-          
+
           {componentsArr}
-          
+
         </ul>
-        
+
       </div>
     ;
-    
+
   } else {
-    
+
     return null;
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <div
       css={css`
@@ -379,8 +379,8 @@ const Component = (props) => {
         padding: 24px 0 0 0;
       `}
     >
-      
-      
+
+
       {/* Heading */}
       <div
         css={css`
@@ -389,7 +389,7 @@ const Component = (props) => {
           align-items: center;
         `}
       >
-        
+
         <IconLaptopMac
           css={css`
             && {
@@ -397,8 +397,8 @@ const Component = (props) => {
             }
           `}
         />
-        
-        
+
+
         <h3
           css={css`
             margin: 0 0 0 4px;
@@ -406,22 +406,22 @@ const Component = (props) => {
         >
           {componentModel}
         </h3>
-        
+
       </div>
-      
-      
+
+
       {/* コメント */}
       {componentComment}
-      
-      
+
+
       {/* PCスペック */}
       {componentSpecs}
-      
-      
+
+
     </div>
   );
-  
-  
+
+
 };
 
 

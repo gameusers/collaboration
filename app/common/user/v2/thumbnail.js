@@ -18,7 +18,7 @@ import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -40,35 +40,35 @@ import lodashGet from 'lodash/get';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     imagesAndVideosThumbnailObj,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   src & srcSet
   // --------------------------------------------------
-  
+
   const src = lodashGet(imagesAndVideosThumbnailObj, ['arr', 0, 'src'], '/img/common/thumbnail/none.svg');
   const srcSet = lodashGet(imagesAndVideosThumbnailObj, ['arr', 0, 'srcSet'], '');
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <img
       css={css`
@@ -79,8 +79,8 @@ const Component = (props) => {
       srcSet={srcSet}
     />
   );
-  
-  
+
+
 };
 
 

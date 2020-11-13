@@ -21,7 +21,7 @@ import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------

@@ -22,7 +22,7 @@ import { Element } from 'react-scroll';
 import SimpleIcons from 'simple-icons-react-component';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------

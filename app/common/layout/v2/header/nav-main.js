@@ -19,7 +19,7 @@ import Link from 'next/link';
 import { useSpring, animated } from 'react-spring';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -58,24 +58,24 @@ import IconMenu from '@material-ui/icons/Menu';
  * 参考：https://www.react-spring.io/
  */
 const Container = ({ children, lowerNavMain }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const props = useSpring({
-    
+
     transform: lowerNavMain ? 'translateY(53px)' : 'translateY(0px)',
     config: { duration: 250 },
-    
+
   });
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return <animated.nav
       css={css`
         width: 100%;
@@ -89,8 +89,8 @@ const Container = ({ children, lowerNavMain }) => {
     >
       {children}
     </animated.nav>;
-  
-  
+
+
 };
 
 
@@ -100,39 +100,39 @@ const Container = ({ children, lowerNavMain }) => {
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     lowerNavMain,
     headerNavMainArr,
-    
+
   } = props;
-  
-  
+
+
   // const drawerIconShow = lodashGet(stores, ['layout', 'drawerIconShow'], false);
   // const handleDrawerOpen = lodashGet(stores, ['layout', 'handleDrawerOpen'], () => {});
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component - Button
   // --------------------------------------------------
-  
+
   const componentsArr = [];
-  
-  
+
+
   if (headerNavMainArr.length > 0) {
-    
+
     for (const [index, valueObj] of headerNavMainArr.entries()) {
-      
+
       if (valueObj.active) {
-        
+
         componentsArr.push(
           <Button
             css={css`
@@ -148,9 +148,9 @@ const Component = (props) => {
             {valueObj.name}
           </Button>
         );
-        
+
       } else {
-        
+
         componentsArr.push(
           <Link
             href={valueObj.href}
@@ -173,38 +173,38 @@ const Component = (props) => {
             </a>
           </Link>
         );
-        
+
       }
-      
+
     }
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----- contextObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(contextObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Container
       lowerNavMain={lowerNavMain}
     >
-      
+
       <div
         css={css`
           display: flex;
@@ -212,20 +212,20 @@ const Component = (props) => {
           justify-content: center;
           align-items: center;
           padding: 0 12px;
-          
+
           @media screen and (max-width: 480px) {
             position: relative;
           }
         `}
       >
-        
-        
+
+
         {/* Drawer Menu */}
         {/*{drawerIconShow &&
           <div
             css={css`
               margin: 0 28px 0 0;
-              
+
               @media screen and (max-width: 480px) {
                 position: absolute;
                 left: 12px;
@@ -247,18 +247,18 @@ const Component = (props) => {
             </IconButton>
           </div>
         }*/}
-        
-        
+
+
         {/* Menu */}
         {componentsArr}
-        
-        
+
+
       </div>
-      
+
     </Container>
   );
-  
-  
+
+
 };
 
 

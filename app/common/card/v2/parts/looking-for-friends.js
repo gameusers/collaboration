@@ -15,7 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -44,47 +44,47 @@ import Paragraph from 'app/common/layout/v2/paragraph.js';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     value,
     icon,
     comment,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   必要な情報がない場合、空のコンポーネントを返す
   // --------------------------------------------------
-  
+
   if (!icon || !comment) {
     return null;
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   募集中 / 募集していません
   // --------------------------------------------------
-  
+
   const text = value ? '募集中' : '募集していません';
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <div
       css={css`
@@ -93,8 +93,8 @@ const Component = (props) => {
         padding: 24px 0 0 0;
       `}
     >
-      
-      
+
+
       {/* Heading */}
       <div
         css={css`
@@ -103,7 +103,7 @@ const Component = (props) => {
           align-items: center;
         `}
       >
-        
+
         <div>
           <img
             src={`/img/common/blob-emoji/${icon}.png`}
@@ -111,8 +111,8 @@ const Component = (props) => {
             height="26"
           />
         </div>
-        
-        
+
+
         <h3
           css={css`
             margin: 2px 0 0 4px;
@@ -120,28 +120,28 @@ const Component = (props) => {
         >
           フレンド: {text}
         </h3>
-        
+
       </div>
-      
-      
-      
-      
+
+
+
+
       {/* Comment */}
       <div
         css={css`
           margin: 6px 0 0 0;
         `}
       >
-        
+
         <Paragraph text={comment} />
-        
+
       </div>
-      
-      
+
+
     </div>
   );
-  
-  
+
+
 };
 
 

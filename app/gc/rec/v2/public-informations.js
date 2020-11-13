@@ -17,7 +17,7 @@ import util from 'util';
 import React from 'react';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -58,46 +58,46 @@ import IconInformation from '@material-ui/icons/MenuBook';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     publicInformationsArr = [],
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   必要な情報がない場合、空のコンポーネントを返す
   // --------------------------------------------------
-  
+
   if (!Array.isArray(publicInformationsArr) || publicInformationsArr.length === 0) {
     return null;
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component
   // --------------------------------------------------
-  
+
   const componentsArr = [];
-  
-  
+
+
   for (const [index, valueObj] of publicInformationsArr.entries()) {
-    
+
     const _id = lodashGet(valueObj, ['_id'], '');
     const title = lodashGet(valueObj, ['title'], '');
     const information = lodashGet(valueObj, ['information'], '');
-    
-    
+
+
     componentsArr.push(
       <div
         css={css`
@@ -111,8 +111,8 @@ const Component = (props) => {
         `}
         key={`publicInformations-${index}-${_id}`}
       >
-        
-        
+
+
         <Avatar
           css={css`
             && {
@@ -124,8 +124,8 @@ const Component = (props) => {
         >
           <IconInformation />
         </Avatar>
-        
-        
+
+
         <div
           css={css`
             display: flex;
@@ -135,7 +135,7 @@ const Component = (props) => {
             padding: 4px 14px 4px 6px;
           `}
         >
-          
+
           <span
             css={css`
               font-weight: bold;
@@ -144,46 +144,46 @@ const Component = (props) => {
           >
             {title}:
           </span>
-          
+
           <span>{information}</span>
-          
+
         </div>
-        
-      
+
+
       </div>
     );
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/gc/rec/v2/components/public-informations.js
   // `);
-  
+
   // console.log(`
   //   ----- publicInformationsArr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(publicInformationsArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <React.Fragment>
-      
-      
+
+
       {/* Heading */}
       <div
         css={css`
@@ -192,7 +192,7 @@ const Component = (props) => {
           align-items: center;
         `}
       >
-        
+
         <IconDescription
           css={css`
             && {
@@ -200,8 +200,8 @@ const Component = (props) => {
             }
           `}
         />
-        
-        
+
+
         <h3
           css={css`
             margin: 2px 0 0 4px;
@@ -209,19 +209,19 @@ const Component = (props) => {
         >
           情報
         </h3>
-        
+
       </div>
-      
-      
-      
-      
+
+
+
+
       {/* Informations */}
       <div
         css={css`
           display: flex;
           flex-flow: row wrap;
           margin: 4px 0 0 0;
-          
+
           @media screen and (max-width: 480px) {
             flex-flow: column wrap;
           }
@@ -229,12 +229,12 @@ const Component = (props) => {
       >
         {componentsArr}
       </div>
-      
-      
+
+
     </React.Fragment>
   );
-  
-  
+
+
 };
 
 

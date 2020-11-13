@@ -19,7 +19,7 @@ import util from 'util';
 import { animateScroll as scroll, scrollSpy, scroller, Events } from 'react-scroll';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------

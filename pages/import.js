@@ -22,7 +22,7 @@ import { useSnackbar } from 'notistack';
 import moment from 'moment';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -252,7 +252,7 @@ const ContainerLayout = (props) => {
 
 
   /**
-   * データをインポートする - IDを割り振る
+   * IDを割り振る
    */
   const handleImportID = async () => {
 
@@ -493,6 +493,127 @@ const ContainerLayout = (props) => {
 
 
 
+  /**
+   * 画像の処理
+   */
+  const handleImportImage = async () => {
+
+
+    try {
+
+
+      // ---------------------------------------------
+      //   Loading Open
+      // ---------------------------------------------
+
+      handleLoadingOpen({});
+
+
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+
+      setButtonDisabled(true);
+
+
+
+
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+
+      const formData = new FormData();
+
+
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+
+      const resultObj = await fetchWrapper({
+
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/common/import-image`,
+        methodType: 'POST',
+        formData,
+
+      });
+
+
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+
+
+
+      // --------------------------------------------------
+      //   Snackbar: Success
+      // --------------------------------------------------
+
+      showSnackbar({
+
+        enqueueSnackbar,
+        intl,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'dusYj_Gh3',
+          },
+        ]
+
+      });
+
+
+    } catch (errorObj) {
+
+
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+
+      showSnackbar({
+
+        enqueueSnackbar,
+        intl,
+        errorObj,
+
+      });
+
+
+    } finally {
+
+
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+
+      setButtonDisabled(false);
+
+
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
+
+      handleLoadingClose();
+
+
+    }
+
+
+  };
+
+
+
+
   // --------------------------------------------------
   //   urlBase
   // --------------------------------------------------
@@ -558,6 +679,21 @@ const ContainerLayout = (props) => {
       <br /><br />
 
 
+      <h1>画像</h1>
+      <p>画像を処理する。</p>
+
+      <Button
+        variant="contained"
+        disabled={buttonDisabled}
+        onClick={handleImportImage}
+      >
+        画像の処理
+      </Button>
+
+
+      <br /><br />
+
+
       <h1>インポート</h1>
       <p>旧Game Usersのデータをインポートします。</p>
 
@@ -568,6 +704,9 @@ const ContainerLayout = (props) => {
       >
         インポート
       </Button>
+
+
+
 
 
       <br /><br />

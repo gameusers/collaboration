@@ -18,7 +18,7 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -58,98 +58,98 @@ import IconRemoveCircle from '@material-ui/icons/RemoveCircle';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     specialSkillsArr = [],
     setSpecialSkillsArr,
-    
+
   } = props;
-  
+
   const limit = parseInt(process.env.NEXT_PUBLIC_CARD_PLAYER_SPECIAL_SKILL_LIMIT, 10);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   /**
    * <TextField /> に入力する
    */
   const handleOnChange = ({ index, value }) => {
-    
+
     const clonedArr = lodashCloneDeep(specialSkillsArr);
     clonedArr[index] = value;
     setSpecialSkillsArr(clonedArr);
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   /**
    * フォームを増やす
    */
   const handleAdd = () => {
-    
+
     if (specialSkillsArr.length < limit) {
-      
+
       const clonedArr = lodashCloneDeep(specialSkillsArr);
       clonedArr.push('');
       setSpecialSkillsArr(clonedArr);
-      
+
     }
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   /**
    * フォームを減らす
    */
   const handleRemove = ({ index }) => {
-    
+
     const clonedArr = lodashCloneDeep(specialSkillsArr);
     clonedArr.splice(index, 1);
     setSpecialSkillsArr(clonedArr);
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component
   // --------------------------------------------------
-  
+
   const componentsArr = [];
-  
+
   for (const [index, value] of specialSkillsArr.entries()) {
-    
+
     componentsArr.push(
       <TextField
         css={css`
           && {
             width: 48%;
             margin-right: 12px;
-            
+
             @media screen and (max-width: 480px) {
               width: 100%;
               margin-right: 0;
@@ -178,20 +178,20 @@ const Component = (props) => {
         }}
       />
     );
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <React.Fragment>
-      
-      
+
+
       {/* Heading */}
       <h3
         css={css`
@@ -200,8 +200,8 @@ const Component = (props) => {
       >
         特技
       </h3>
-      
-      
+
+
       <p
         css={css`
           margin: 0 0 12px 0;
@@ -209,10 +209,10 @@ const Component = (props) => {
       >
         入力すると特技が表示されます。
       </p>
-      
-      
-      
-      
+
+
+
+
       {/* 特技 */}
       <div
         css={css`
@@ -221,29 +221,29 @@ const Component = (props) => {
           align-items: center;
         `}
       >
-        
-        
+
+
         {/* フォーム */}
         {componentsArr}
-        
-        
-        
-        
+
+
+
+
         {/* フォーム追加ボタン */}
         <IconButton
           onClick={handleAdd}
         >
           <IconAddCircle />
         </IconButton>
-        
-        
+
+
       </div>
-      
-        
+
+
     </React.Fragment>
   );
-  
-  
+
+
 };
 
 

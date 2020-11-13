@@ -17,7 +17,7 @@ import util from 'util';
 import { useSpring, animated } from 'react-spring';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------

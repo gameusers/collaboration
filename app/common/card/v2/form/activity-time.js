@@ -19,7 +19,7 @@ import { useIntl } from 'react-intl';
 import shortid from 'shortid';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -71,197 +71,197 @@ import { validationCardPlayersActivityTimeArr } from 'app/@database/card-players
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     activityTimeArr,
     setActivityTimeArr,
-    
+
   } = props;
-  
+
   const limit = parseInt(process.env.NEXT_PUBLIC_CARD_PLAYER_ACTIVITY_TIME_LIMIT, 10);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   /**
    * 開始時間、終了時間を入力する
    */
   const handleOnChangeTime = ({ index, value, type }) => {
-    
+
     const clonedArr = lodashCloneDeep(activityTimeArr);
-    
+
     if (type === 'beginTime') {
-      
+
       lodashSet(clonedArr, [index, 'beginTime'], value);
-      
+
     } else {
-      
+
       lodashSet(clonedArr, [index, 'endTime'], value);
-      
+
     }
-    
+
     setActivityTimeArr(clonedArr);
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   /**
    * 曜日をチェックする
    */
   const handleOnChangeWeek = ({ index, value }) => {
-    
+
     const clonedArr = lodashCloneDeep(activityTimeArr);
     const weekArr = lodashGet(clonedArr, [index, 'weekArr'], []);
     const arrayIndex = weekArr.indexOf(value);
-    
+
     if (arrayIndex === -1) {
-      
+
       weekArr.push(value);
-      
+
     } else {
-      
+
       weekArr.splice(arrayIndex, 1);
-      
+
     }
-    
+
     weekArr.sort((a, b) => {
       return a - b;
     });
-    
+
     lodashSet(clonedArr, [index, 'weekArr'], weekArr);
     setActivityTimeArr(clonedArr);
-    
-    
+
+
     // console.log(`
     //   ----------------------------------------\n
     //   /app/common/card/v2/form/activity-time.js - handleOnChangeWeek
     // `);
-    
+
     // console.log(chalk`
     //   index: {green ${index}}
     //   value: {green ${value}}
     //   arrayIndex: {green ${arrayIndex}}
     // `);
-    
+
     // console.log(`
     //   ----- clonedArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(clonedArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   /**
    * フォームを増やす
    */
   const handleAdd = () => {
-    
+
     if (activityTimeArr.length < limit) {
-      
+
       const clonedArr = lodashCloneDeep(activityTimeArr);
-      
+
       clonedArr.push({
-        
+
         _id: shortid.generate(),
         beginTime: '',
         endTime: '',
         weekArr: [],
-        
+
       });
-      
+
       setActivityTimeArr(clonedArr);
-      
+
     }
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   /**
    * フォームを減らす
    */
   const handleRemove = () => {
-    
+
     if (activityTimeArr.length > 0) {
-      
+
       const clonedArr = lodashCloneDeep(activityTimeArr);
       clonedArr.pop();
       setActivityTimeArr(clonedArr);
-      
+
     }
-    
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Validations
   // --------------------------------------------------
-  
+
   const validationObj = validationCardPlayersActivityTimeArr({ valueArr: activityTimeArr });
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component
   // --------------------------------------------------
-  
+
   const componentsArr = [];
-  
+
   for (const [index, valueObj] of activityTimeArr.entries()) {
-    
+
     const beginTime = lodashGet(valueObj, ['beginTime'], '');
     const beginTimeError = lodashGet(validationObj, ['formArr', index, 'beginTimeObj', 'error'], false);
     const beginTimeMessageID = lodashGet(validationObj, ['formArr', index, 'beginTimeObj', 'messageID'], 'qnWsuPcrJ');
-    
+
     const endTime = lodashGet(valueObj, ['endTime'], '');
     const endTimeError = lodashGet(validationObj, ['formArr', index, 'endTimeObj', 'error'], false);
     const endTimeMessageID = lodashGet(validationObj, ['formArr', index, 'endTimeObj', 'messageID'], 'qnWsuPcrJ');
-    
+
     const weekArr = lodashGet(valueObj, ['weekArr'], '');
     const weekError = lodashGet(validationObj, ['formArr', index, 'weekObj', 'error'], false);
     const weekMessageID = lodashGet(validationObj, ['formArr', index, 'weekObj', 'messageID'], 'qnWsuPcrJ');
-    
-    
+
+
     componentsArr.push(
       <React.Fragment
         key={index}
       >
-        
-        
+
+
         <div
           css={css`
             margin: 12px 0 0 0;
           `}
         >
-          
+
           <TextField
             css={css`
               && {
@@ -280,8 +280,8 @@ const Component = (props) => {
               shrink: true,
             }}
           />
-          
-          
+
+
           <TextField
             css={css`
               && {
@@ -300,16 +300,16 @@ const Component = (props) => {
               shrink: true,
             }}
           />
-          
+
         </div>
-        
-        
-        
-        
+
+
+
+
         <FormControl required error={weekError} component="fieldset">
-          
+
           <FormGroup row>
-            
+
             <FormControlLabel
               control={
                 <Checkbox
@@ -320,7 +320,7 @@ const Component = (props) => {
               }
               label="日"
             />
-            
+
             <FormControlLabel
               control={
                 <Checkbox
@@ -331,7 +331,7 @@ const Component = (props) => {
               }
               label="月"
             />
-            
+
             <FormControlLabel
               control={
                 <Checkbox
@@ -342,7 +342,7 @@ const Component = (props) => {
               }
               label="火"
             />
-            
+
             <FormControlLabel
               control={
                 <Checkbox
@@ -353,7 +353,7 @@ const Component = (props) => {
               }
               label="水"
             />
-            
+
             <FormControlLabel
               control={
                 <Checkbox
@@ -364,7 +364,7 @@ const Component = (props) => {
               }
               label="木"
             />
-            
+
             <FormControlLabel
               control={
                 <Checkbox
@@ -375,7 +375,7 @@ const Component = (props) => {
               }
               label="金"
             />
-            
+
             <FormControlLabel
               control={
                 <Checkbox
@@ -386,30 +386,30 @@ const Component = (props) => {
               }
               label="土"
             />
-            
+
           </FormGroup>
-          
+
           <FormHelperText>{intl.formatMessage({ id: weekMessageID })}</FormHelperText>
-          
+
         </FormControl>
-        
-        
+
+
       </React.Fragment>
     );
-    
+
   }
-    
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <React.Fragment>
-      
-      
+
+
       {/* Heading */}
       <h3
         css={css`
@@ -418,8 +418,8 @@ const Component = (props) => {
       >
         活動時間
       </h3>
-      
-      
+
+
       <p
         css={css`
           margin: 0 0 12px 0;
@@ -427,23 +427,23 @@ const Component = (props) => {
       >
         入力すると活動時間が表示されます。開始時間と終了時間、曜日を入力してください。
       </p>
-      
-      
-      
-      
+
+
+
+
       {/* Form */}
       {componentsArr}
-      
-      
-      
-      
+
+
+
+
       {/* フォーム追加・削除ボタン */}
       <div
         css={css`
           margin: 12px 0 0 0;
         `}
       >
-        
+
         {/* - ボタン */}
         <IconButton
           css={css`
@@ -455,22 +455,22 @@ const Component = (props) => {
         >
           <IconRemoveCircle />
         </IconButton>
-        
-        
+
+
         {/* + ボタン */}
         <IconButton
           onClick={() => handleAdd()}
         >
           <IconAddCircle />
         </IconButton>
-        
+
       </div>
-      
-        
+
+
     </React.Fragment>
   );
-  
-  
+
+
 };
 
 

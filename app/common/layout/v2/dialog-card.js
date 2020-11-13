@@ -18,7 +18,7 @@ import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -57,48 +57,48 @@ import CardPlayer from 'app/common/card/v2/card-player.js';
 // --------------------------------------------------
 
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
-  
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateLayout = ContainerStateLayout.useContainer();
-  
+
   const { dialogCardObj, dialogCardOpen, handleDialogCardClose } = stateLayout;
-  
-  
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/layout/v2/dialog-card.js
   // `);
-  
+
   // console.log(chalk`
   //   open: {green ${open}}
   // `);
-  
+
   // console.log(`
   //   ----- dialogCardObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(dialogCardObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Dialog
       open={dialogCardOpen}
@@ -106,7 +106,7 @@ const Component = (props) => {
       onClose={() => handleDialogCardClose()}
       scroll='paper'
     >
-      
+
       <DialogContent
         css={css`
           && {
@@ -115,20 +115,20 @@ const Component = (props) => {
           }
         `}
       >
-        
+
         <CardPlayer
           obj={dialogCardObj}
           showFollowButton={true}
           showEditButton={false}
           defaultExpanded={true}
         />
-        
+
       </DialogContent>
-      
+
     </Dialog>
   );
-  
-  
+
+
 };
 
 

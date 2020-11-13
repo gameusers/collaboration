@@ -18,7 +18,7 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -55,51 +55,51 @@ import { validationCardPlayersStatus } from 'app/@database/card-players/validati
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     name,
     setName,
     status,
     setStatus,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Validations
   // --------------------------------------------------
-  
+
   const validationHandleNameObj = validationHandleName({ value: name });
   const validationCardPlayersStatusObj = validationCardPlayersStatus({ value: status });
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <React.Fragment>
-      
-      
+
+
       {/* Heading */}
       <h3
         css={css`
@@ -108,8 +108,8 @@ const Component = (props) => {
       >
         ハンドルネーム＆ステータス
       </h3>
-      
-      
+
+
       <p
         css={css`
           margin: 0 0 12px 0;
@@ -117,10 +117,10 @@ const Component = (props) => {
       >
         ハンドルネームは Game Users 内で利用する名前です。ステータスはハンドルネームの横に表示される肩書きのようなものです。例えばあなたの今の状態やゲーム内の職業など、なんでも好きな情報を入力してください。例）暇、戦士、魔法使い。<span css={css`color: red;`}>※ 空欄不可</span>
       </p>
-      
-      
-      
-      
+
+
+
+
       {/* ハンドルネーム */}
       <TextField
         css={css`
@@ -139,10 +139,10 @@ const Component = (props) => {
           maxLength: 50,
         }}
       />
-      
-      
-      
-      
+
+
+
+
       {/* ステータス */}
       <TextField
         css={css`
@@ -161,12 +161,12 @@ const Component = (props) => {
           maxLength: 50,
         }}
       />
-      
-        
+
+
     </React.Fragment>
   );
-  
-  
+
+
 };
 
 

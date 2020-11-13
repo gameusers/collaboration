@@ -19,7 +19,7 @@ import { useIntl } from 'react-intl';
 import TextareaAutosize from 'react-autosize-textarea';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -57,41 +57,41 @@ import IconHeadsetMic from '@material-ui/icons/HeadsetMic';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     voiceChat,
     setVoiceChat,
     voiceChatComment,
     setVoiceChatComment,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <React.Fragment>
-      
-      
+
+
       {/* Heading */}
       <h3
         css={css`
@@ -100,8 +100,8 @@ const Component = (props) => {
       >
         ボイスチャット
       </h3>
-      
-      
+
+
       <p
         css={css`
           margin: 0 0 12px 0;
@@ -109,10 +109,10 @@ const Component = (props) => {
       >
         入力するとボイスチャットについての情報が表示されます。
       </p>
-      
-      
-      
-      
+
+
+
+
       {/* 募集中かどうか */}
       <div
         css={css`
@@ -121,7 +121,7 @@ const Component = (props) => {
           margin: 24px 0 0 0;
         `}
       >
-      
+
         <div
           css={css`
             display: flex;
@@ -145,8 +145,8 @@ const Component = (props) => {
             ボイスチャット:
           </div>
         </div>
-      
-      
+
+
         <FormControl>
           <Select
             value={voiceChat}
@@ -160,19 +160,19 @@ const Component = (props) => {
             <MenuItem value={false}>できない</MenuItem>
           </Select>
         </FormControl>
-        
+
       </div>
-      
-      
-      
-      
+
+
+
+
       {/* コメント */}
       <div
         css={css`
           margin: 12px 0 0 0;
         `}
       >
-        
+
         <TextareaAutosize
           css={css`
             && {
@@ -181,11 +181,11 @@ const Component = (props) => {
               box-sizing: border-box;
               padding: 8px 12px;
               line-height: 1.8;
-              
+
               &:focus {
                 outline: 1px #A9F5F2 solid;
               }
-              
+
               resize: none;
             }
           `}
@@ -195,14 +195,14 @@ const Component = (props) => {
           maxLength={3000}
           onChange={(eventObj) => setVoiceChatComment(eventObj.target.value)}
         />
-        
+
       </div>
-      
-        
+
+
     </React.Fragment>
   );
-  
-  
+
+
 };
 
 

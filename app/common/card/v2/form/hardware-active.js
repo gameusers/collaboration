@@ -18,7 +18,7 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -47,41 +47,41 @@ import FormHardwares from 'app/common/hardware/v2/form.js';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     hardwaresArr,
     setHardwaresArr,
-    
+
   } = props;
-  
+
   const limit = parseInt(process.env.NEXT_PUBLIC_CARD_PLAYER_HARDWARES_LIMIT, 10);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <React.Fragment>
-      
-      
+
+
       {/* Heading */}
       <h3
         css={css`
@@ -90,8 +90,8 @@ const Component = (props) => {
       >
         所有ハードウェア
       </h3>
-      
-      
+
+
       <p
         css={css`
           margin: 0 0 12px 0;
@@ -99,7 +99,7 @@ const Component = (props) => {
       >
         入力すると所有ハードウェアが表示されます。
       </p>
-      
+
       <p
         css={css`
           margin: 0 0 12px 0;
@@ -107,7 +107,7 @@ const Component = (props) => {
       >
         ハードウェア名（またはSFC、N64などの略称）の一部を入力すると、入力フォームの下に一覧でハードウェアの正式名称が表示されます。一覧上でハードウェアをクリック（タップ）すると入力は完了です。この欄では複数のハードウェアを入力することが可能です。
       </p>
-      
+
       <p
         css={css`
           margin: 0 0 12px 0;
@@ -115,22 +115,22 @@ const Component = (props) => {
       >
         ゲームのハードウェア名だけでなく、「Android」「iOS」「PC」などもハードウェアとして入力できます。
       </p>
-      
-      
-      
-      
+
+
+
+
       {/* フォーム */}
       <FormHardwares
         hardwaresArr={hardwaresArr}
         setHardwaresArr={setHardwaresArr}
         limit={limit}
       />
-      
-        
+
+
     </React.Fragment>
   );
-  
-  
+
+
 };
 
 

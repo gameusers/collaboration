@@ -17,7 +17,6 @@ const util = require('util');
 const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
 const shortid = require('shortid');
-const lodashGet = require('lodash/get');
 const fs = require('fs');
 const Jimp = require('jimp');
 const imagemin = require('imagemin');
@@ -25,6 +24,13 @@ const imageminMozjpeg = require('imagemin-mozjpeg');
 const imageminPngquant = require('imagemin-pngquant');
 const imageminGifsicle = require('imagemin-gifsicle');
 const imageminSvgo = require('imagemin-svgo');
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+const lodashGet = require('lodash/get');
 
 
 // ---------------------------------------------

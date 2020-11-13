@@ -15,7 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -51,44 +51,44 @@ import IDChip from 'app/common/id/v2/chip.js';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     arr,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   必要な情報がない場合、空のコンポーネントを返す
   // --------------------------------------------------
-  
+
   if (!Array.isArray(arr) || arr.length === 0) {
     return null;
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component
   // --------------------------------------------------
-  
+
   const componentsArr = [];
-  
+
   for (const [index, valueObj] of arr.entries()) {
-    
+
     const games_id = lodashGet(valueObj, ['gamesObj', '_id'], '');
     const gamesName = lodashGet(valueObj, ['gamesObj', 'name'], '');
     const gamesImagesAndVideosThumbnailObj = lodashGet(valueObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
-    
+
     componentsArr.push(
       <IDChip
         key={index}
@@ -100,16 +100,16 @@ const Component = (props) => {
         gamesImagesAndVideosThumbnailObj={gamesImagesAndVideosThumbnailObj}
       />
     );
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <div
       css={css`
@@ -118,8 +118,8 @@ const Component = (props) => {
         padding: 24px 0 0 0;
       `}
     >
-      
-      
+
+
       {/* Heading */}
       <div
         css={css`
@@ -128,7 +128,7 @@ const Component = (props) => {
           align-items: center;
         `}
       >
-        
+
         <IconStyle
           css={css`
             && {
@@ -136,8 +136,8 @@ const Component = (props) => {
             }
           `}
         />
-        
-        
+
+
         <h3
           css={css`
             margin: 2px 0 0 4px;
@@ -145,34 +145,34 @@ const Component = (props) => {
         >
           ID
         </h3>
-        
+
       </div>
-      
-      
-      
-      
+
+
+
+
       {/* ID */}
       <div
         css={css`
           display: flex;
           flex-flow: row wrap;
           margin: 4px 0 0 0;
-          
+
           @media screen and (max-width: 480px) {
             flex-flow: column wrap;
           }
         `}
       >
-        
+
         {componentsArr}
-        
+
       </div>
-      
-      
+
+
     </div>
   );
-  
-  
+
+
 };
 
 

@@ -17,7 +17,7 @@ import util from 'util';
 import React, { useState, useEffect } from 'react';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -58,78 +58,78 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     notification,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const [showExplanation, setShowExplanation] = useState(false);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   必要な情報がない場合、空のコンポーネントを返す
   // --------------------------------------------------
-  
+
   if (notification === '') {
     return null;
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component
   // --------------------------------------------------
-  
+
   const component = `プッシュ通知`;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/gc/rec/v2/components/notification.js
   // `);
-  
+
   // console.log(chalk`
   //   notification: {green ${notification}}
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <div
       css={css`
         margin: 4px 0 0 0;
       `}
     >
-      
-      
+
+
       <div
         css={css`
           display: flex;
@@ -137,8 +137,8 @@ const Component = (props) => {
           align-items: center;
         `}
       >
-        
-        
+
+
         {/* Icon */}
         <IconAlarm
           css={css`
@@ -147,8 +147,8 @@ const Component = (props) => {
             }
           `}
         />
-        
-        
+
+
         {/* Heading */}
         <h3
           css={css`
@@ -157,8 +157,8 @@ const Component = (props) => {
         >
           通知方法:
         </h3>
-        
-        
+
+
         {/* 通知方法 */}
         <div
           css={css`
@@ -168,8 +168,8 @@ const Component = (props) => {
         >
           {component}
         </div>
-        
-        
+
+
         {/* ？アイコン */}
         <IconButton
           css={css`
@@ -184,13 +184,13 @@ const Component = (props) => {
         >
           <IconHelpOutline />
         </IconButton>
-        
-        
+
+
       </div>
-      
-      
-      
-      
+
+
+
+
       {/* 解説 */}
       {showExplanation &&
         <p
@@ -202,12 +202,12 @@ const Component = (props) => {
           この投稿者はプッシュ通知を許可しています。コメントや返信が書き込まれると投稿者に通知が届くため、書き込みに気づきやすくなります。
         </p>
       }
-      
-      
+
+
     </div>
   );
-  
-  
+
+
 };
 
 

@@ -21,7 +21,7 @@ import { Element } from 'react-scroll';
 import TextareaAutosize from 'react-autosize-textarea';
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -95,393 +95,393 @@ import FormImageAndVideo from 'app/common/image-and-video/v2/form.js';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     gameCommunities_id,
     recruitmentThreads_id,
     recruitmentComments_id,
     recruitmentReplies_id,
     replyToRecruitmentReplies_id,
-    
+
     setShowForm,
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
-  
+
   const intl = useIntl();
   const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  
+
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
   const [imagesAndVideosObj, setImagesAndVideosObj] = useState({
-    
+
     _id: '',
     createdDate: '',
     updatedDate: '',
     users_id: '',
     type: 'recruitment',
     arr: [],
-    
+
   });
-  
-  
+
+
   useEffect(() => {
-    
-    
+
+
     // --------------------------------------------------
     //   Button Enable
     // --------------------------------------------------
-    
+
     setButtonDisabled(false);
-    
-    
+
+
     // --------------------------------------------------
     //   編集用データを読み込む
     // --------------------------------------------------
-    
+
     if (recruitmentReplies_id) {
       handleGetEditData();
     }
-    
-    
+
+
   }, []);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
-  
+
   const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
   const stateCommunity = ContainerStateCommunity.useContainer();
   const stateRecruitment = ContainerStateRecruitment.useContainer();
-  
+
   const {
-    
+
     localeObj,
-    
+
   } = stateUser;
-  
+
   const {
-    
+
     handleLoadingOpen,
     handleLoadingClose,
     handleScrollTo,
-    
+
   } = stateLayout;
-  
+
   const {
-    
+
     setGameCommunityObj,
-    
+
   } = stateCommunity;
-  
+
   const {
-    
+
     recruitmentRepliesObj,
     setRecruitmentRepliesObj,
-    
+
   } = stateRecruitment;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-  
+
   /**
    * 編集用データを読み込む
    */
   const handleGetEditData = async () => {
-    
-    
+
+
     try {
-      
-      
+
+
       // ---------------------------------------------
       //   recruitmentReplies_id が存在しない場合エラー
       // ---------------------------------------------
-      
+
       if (!recruitmentReplies_id) {
         throw new CustomError({ errorsArr: [{ code: 'eryvlZc7N', messageID: 'Error' }] });
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Loading Open
       // ---------------------------------------------
-      
+
       handleLoadingOpen({});
-      
-      
+
+
       // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
-      
+
       setButtonDisabled(true);
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Scroll To
       // ---------------------------------------------
-      
+
       handleScrollTo({
-        
+
         to: recruitmentReplies_id,
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
         offset: -50,
-        
+
       });
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
-      
+
       const formDataObj = {
-        
+
         recruitmentReplies_id,
-        
+
       };
-      
-      
+
+
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
-      
+
       const resultObj = await fetchWrapper({
-        
+
         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-replies/get-edit-data`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
-        
+
       });
-      
-      
+
+
       // console.log(`
       //   ----- resultObj -----\n
       //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
+
+
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
-      
+
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
-      
+
       setButtonDisabled(false);
-      
-      
+
+
       // ---------------------------------------------
       //   Set Form Data
       // ---------------------------------------------
-      
+
       const localesArr = lodashGet(resultObj, ['data', 'localesArr'], []);
-      
+
       const filteredArr = localesArr.filter((filterObj) => {
         return filterObj.language === localeObj.language;
       });
-      
+
       if (lodashHas(filteredArr, [0])) {
-        
+
         setName(lodashGet(filteredArr, [0, 'name'], ''));
         setComment(lodashGet(filteredArr, [0, 'comment'], ''));
-        
+
       } else {
-        
+
         setName(lodashGet(localesArr, [0, 'name'], ''));
         setComment(lodashGet(localesArr, [0, 'comment'], ''));
-        
+
       }
-      
-      
+
+
       let tempImagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], {});
-      
+
       if (Object.keys(tempImagesAndVideosObj).length === 0) {
-        
+
         tempImagesAndVideosObj = {
-          
+
           _id: '',
           createdDate: '',
           updatedDate: '',
           users_id: '',
           type: 'recruitment',
           arr: [],
-          
+
         };
-        
+
       }
-      
+
       setImagesAndVideosObj(tempImagesAndVideosObj);
-      
-      
+
+
     } catch (errorObj) {
-      
-      
+
+
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
-      
+
       setButtonDisabled(false);
-      
-      
+
+
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
-      
+
       showSnackbar({
-        
+
         enqueueSnackbar,
         intl,
         errorObj,
-        
+
       });
-      
-      
+
+
     } finally {
-      
-      
+
+
       // ---------------------------------------------
       //   Loading Close
       // ---------------------------------------------
-      
+
       handleLoadingClose();
-      
-      
+
+
     }
-    
-    
+
+
   };
-  
-  
-  
-  
+
+
+
+
   /**
    * 返信を投稿する
    * @param {Object} eventObj - イベント
    */
   const handleSubmit = async ({
-    
+
     eventObj,
-    
+
   }) => {
-    
-    
+
+
     // ---------------------------------------------
     //   フォームの送信処理停止
     // ---------------------------------------------
-    
+
     eventObj.preventDefault();
-    
-    
+
+
     // ---------------------------------------------
     //   新規投稿時の recruitmentReplies_id
     // ---------------------------------------------
-    
+
     let newRecruitmentReplies_id = '';
-    
-    
-    
-    
+
+
+
+
     try {
-      
-      
+
+
       // ---------------------------------------------
       //   Temp Data
       // ---------------------------------------------
-      
+
       // setName('テストネーム');
       // setComment('テストコメント');
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Property
       // ---------------------------------------------
-      
+
       const threadLimit = parseInt((getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
       const commentLimit = parseInt((getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
       const replyLimit = parseInt((getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Validations
       // ---------------------------------------------
-      
+
       if (
-        
+
         validationHandleName({ value: name }).error ||
         validationRecruitmentThreadsComment({ value: comment }).error
-        
+
       ) {
-        
+
         throw new CustomError({ errorsArr: [{ code: 'gNEl9TZsF', messageID: 'uwHIKBy7c' }] });
-        
+
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Loading Open
       // ---------------------------------------------
-      
+
       handleLoadingOpen({});
-      
-      
+
+
       // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
-      
+
       setButtonDisabled(true);
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
-      
+
       const formDataObj = {
-        
+
         gameCommunities_id,
         recruitmentThreads_id,
         recruitmentComments_id,
@@ -492,95 +492,95 @@ const Component = (props) => {
         threadLimit,
         commentLimit,
         replyLimit,
-        
+
       };
-      
+
       if (Object.keys(imagesAndVideosObj).length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
-      
-      
+
+
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
-      
+
       const resultObj = await fetchWrapper({
-        
+
         urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-replies/upsert`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
-        
+
       });
-      
-      
+
+
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
-      
+
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
-      
-      
-      
-      
+
+
+
+
       // ---------------------------------------------
       //   Reset Form
       // ---------------------------------------------
-      
+
       setName('');
       setComment('');
       setImagesAndVideosObj({
-        
+
         _id: '',
         createdDate: '',
         updatedDate: '',
         users_id: '',
         type: 'recruitment',
         arr: [],
-        
+
       });
-      
-      
+
+
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
-      
+
       setButtonDisabled(false);
-      
-      
+
+
       // --------------------------------------------------
       //   gameCommunityObj
       // --------------------------------------------------
-      
+
       setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
-      
-      
+
+
       // ---------------------------------------------
       //   forumRepliesObj
       // ---------------------------------------------
-      
+
       setRecruitmentRepliesObj(lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {}));
-      
-      
+
+
       // ---------------------------------------------
       //   新規投稿時の recruitmentReplies_id
       // ---------------------------------------------
-      
+
       const page = lodashGet(resultObj, ['data', 'recruitmentRepliesObj', recruitmentComments_id, 'page'], 1);
       newRecruitmentReplies_id = lodashGet(resultObj, ['data', 'recruitmentRepliesObj', recruitmentComments_id, `page${page}Obj`, 'arr', 0], '');
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   Snackbar: Success
       // --------------------------------------------------
-      
+
       const experienceObj = lodashGet(resultObj, ['data', 'experienceObj'], {});
-      
+
       showSnackbar({
-        
+
         enqueueSnackbar,
         intl,
         experienceObj,
@@ -590,195 +590,195 @@ const Component = (props) => {
             messageID: recruitmentComments_id ? '0q0NzGlLb' : 'cuaQHE4lG',
           },
         ]
-        
+
       });
-      
-      
-      
-      
+
+
+
+
       // --------------------------------------------------
       //   console.log
       // --------------------------------------------------
-      
+
       // console.log(`
       //   ----------------------------------------\n
       //   /app/gc/rec/v2/components/form/comment.js / handleSubmit
       // `);
-      
+
       // console.log(`
       //   ----- formDataObj -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
+
       // console.log(`
       //   ----- resultObj -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
+
       // console.log(chalk`
       //   recruitmentComments_id: {green ${recruitmentComments_id}}
       //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
       //   replyToRecruitmentReplies_id:  {green ${replyToRecruitmentReplies_id}}
       //   newRecruitmentReplies_id: {green ${newRecruitmentReplies_id}}
       // `);
-      
-      
+
+
     } catch (errorObj) {
-      
-      
+
+
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
-      
+
       setButtonDisabled(false);
-      
-      
+
+
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
-      
+
       showSnackbar({
-        
+
         enqueueSnackbar,
         intl,
         errorObj,
-        
+
       });
-      
-      
+
+
     } finally {
-      
-      
+
+
       // ---------------------------------------------
       //   Hide Form
       // ---------------------------------------------
-      
+
       if (!replyToRecruitmentReplies_id) {
         setShowForm(false);
       }
-      
-      
+
+
       // ---------------------------------------------
       //   Scroll
       // ---------------------------------------------
-      
+
       handleScrollTo({
-        
+
         to: recruitmentReplies_id || newRecruitmentReplies_id || recruitmentComments_id || recruitmentThreads_id || 'recruitmentThreads',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
         offset: -50,
-        
+
       });
-      
-      
+
+
       // ---------------------------------------------
       //   Loading Close
       // ---------------------------------------------
-      
+
       handleLoadingClose();
-      
-      
+
+
     }
-    
-    
+
+
   };
-  
-  
-  
-  
+
+
+
+
   /**
    * フォームを閉じる
    */
   const handleClose = async () => {
-    
-    
+
+
     // ---------------------------------------------
     //   閉じる
     // ---------------------------------------------
-    
+
     setShowForm(false);
-      
-    
+
+
     // ---------------------------------------------
     //   Scroll To
     // ---------------------------------------------
-    
+
     handleScrollTo({
-      
+
       to: replyToRecruitmentReplies_id || recruitmentReplies_id || recruitmentComments_id || recruitmentThreads_id,
       duration: 0,
       delay: 0,
       smooth: 'easeInOutQuart',
       offset: -50,
-      
+
     });
-    
-    
+
+
   };
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   const limitImagesAndVideos = parseInt(process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_IMAGES_AND_VIDEOS_LIMIT, 10);
-  
-  
+
+
   // --------------------------------------------------
   //   Reply to
   // --------------------------------------------------
-  
+
   const dataObj = lodashGet(recruitmentRepliesObj, ['dataObj'], {});
-  
+
   let replyToName = '';
   let replyTo = '';
-  
+
   if (recruitmentReplies_id) {
-    
+
     replyToName = lodashGet(dataObj, [recruitmentReplies_id, 'replyToName'], '');
-    
+
   } else if (replyToRecruitmentReplies_id) {
-    
+
     const nonLoginUsersName = lodashGet(dataObj, [replyToRecruitmentReplies_id, 'name'], '');
     const loginUsersName = lodashGet(dataObj, [replyToRecruitmentReplies_id, 'cardPlayersObj', 'name'], '');
-    
+
     replyToName = loginUsersName || nonLoginUsersName;
-    
+
     if (!replyToName) {
       replyToName = 'ななしさん';
     }
-    
+
   }
-  
+
   if (replyToName) {
     replyTo = `${replyToName} | ${replyToRecruitmentReplies_id} への返信`;
   }
-  
-  
+
+
   // --------------------------------------------------
   //   Element Name
   // --------------------------------------------------
-  
+
   const elementName = recruitmentReplies_id ? `${recruitmentReplies_id}-formReply` : `${recruitmentComments_id}-formReply`;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/gc/rec/v2/components/form/reply.js
   // `);
-    
+
   // console.log(chalk`
   //   gameCommunities_id: {green ${gameCommunities_id}}
   //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
@@ -786,20 +786,20 @@ const Component = (props) => {
   //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
   //   replyToRecruitmentReplies_id: {green ${replyToRecruitmentReplies_id}}
   // `);
-  
+
   // console.log(`
   //   ----- dataObj -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <Element
       css={css`
@@ -813,8 +813,8 @@ const Component = (props) => {
       `}
       name={elementName}
     >
-      
-      
+
+
       {/* Form */}
       <form
         name={elementName}
@@ -822,8 +822,8 @@ const Component = (props) => {
           eventObj,
         })}
       >
-        
-        
+
+
         {/* Reply To */}
         {replyTo &&
           <div
@@ -845,26 +845,26 @@ const Component = (props) => {
             <p>{replyTo}</p>
           </div>
         }
-        
-        
-        
-        
+
+
+
+
         {/* Name */}
         <FormName
           name={name}
           setName={setName}
         />
-        
-        
-        
-        
+
+
+
+
         {/* Comment */}
         <div
           css={css`
             margin: 12px 0 0 0;
           `}
         >
-          
+
           <TextareaAutosize
             css={css`
               && {
@@ -873,11 +873,11 @@ const Component = (props) => {
                 box-sizing: border-box;
                 padding: 8px 12px;
                 line-height: 1.8;
-                
+
                 &:focus {
                   outline: 1px #A9F5F2 solid;
                 }
-                
+
                 resize: none;
               }
             `}
@@ -888,19 +888,19 @@ const Component = (props) => {
             disabled={buttonDisabled}
             onChange={(eventObj) => setComment(eventObj.target.value)}
           />
-          
+
         </div>
-        
-        
-        
-        
+
+
+
+
         {/* Form Images & Videos */}
         <div
           css={css`
             margin: 12px 0 0 0;
           `}
         >
-          
+
           <FormImageAndVideo
             descriptionImage="返信に表示する画像をアップロードできます。"
             descriptionVideo="返信に表示する動画を登録できます。"
@@ -909,12 +909,12 @@ const Component = (props) => {
             imagesAndVideosObj={imagesAndVideosObj}
             setImagesAndVideosObj={setImagesAndVideosObj}
           />
-          
+
         </div>
-        
-        
-        
-        
+
+
+
+
         {/* Buttons */}
         <div
           css={css`
@@ -925,8 +925,8 @@ const Component = (props) => {
             padding: 24px 0 0 0;
           `}
         >
-          
-          
+
+
           {/* Submit */}
           <Button
             type="submit"
@@ -936,10 +936,10 @@ const Component = (props) => {
           >
             {recruitmentReplies_id ? '編集する' : '投稿する'}
           </Button>
-          
-          
-          
-          
+
+
+
+
           {/* Close */}
           <div
             css={css`
@@ -955,18 +955,18 @@ const Component = (props) => {
               閉じる
             </Button>
           </div>
-          
-          
+
+
         </div>
-        
-        
+
+
       </form>
-      
-      
+
+
     </Element>
   );
-  
-  
+
+
 };
 
 

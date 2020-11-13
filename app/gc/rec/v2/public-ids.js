@@ -15,7 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/react';
 
 
 // ---------------------------------------------
@@ -55,41 +55,41 @@ import IDChip from 'app/common/id/v2/chip.js';
  * Export Component
  */
 const Component = (props) => {
-  
-  
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
-  
+
   const {
-    
+
     idsArr = [],
     publicIDsArr = [],
-    
+
   } = props;
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Component
   // --------------------------------------------------
-  
+
   const componentsArr = [];
-  
-  
+
+
   // ---------------------------------------------
   //   - idsArr / ログインしてIDを選択した場合
   // ---------------------------------------------
-  
+
   if (Array.isArray(idsArr) && idsArr.length > 0) {
-    
+
     for (const [index, valueObj] of idsArr.entries()) {
-      
+
       const games_id = lodashGet(valueObj, ['gamesObj', '_id'], '');
       const gamesName = lodashGet(valueObj, ['gamesObj', 'name'], '');
       const gamesImagesAndVideosThumbnailObj = lodashGet(valueObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
-      
+
       componentsArr.push(
         <IDChip
           key={index}
@@ -101,20 +101,20 @@ const Component = (props) => {
           gamesImagesAndVideosThumbnailObj={gamesImagesAndVideosThumbnailObj}
         />
       );
-      
+
     }
-    
-    
+
+
   // ---------------------------------------------
   //   - publicIDsArr / 非ログインでIDを入力した場合
   // ---------------------------------------------
-    
+
   } else if (Array.isArray(publicIDsArr) && publicIDsArr.length > 0) {
-    
+
     for (const [index, valueObj] of publicIDsArr.entries()) {
-      
+
       const label = valueObj.platform === 'Other' ? 'ID' : '';
-      
+
       componentsArr.push(
         <IDChip
           key={index}
@@ -123,55 +123,55 @@ const Component = (props) => {
           id={valueObj.id}
         />
       );
-      
+
     }
-    
-    
+
+
   // ---------------------------------------------
   //   - 必要な情報がない場合、空のコンポーネントを返す
   // ---------------------------------------------
-    
+
   } else {
-    
+
     return null;
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`
   //   ----------------------------------------\n
   //   /app/gc/rec/v2/components/public-ids.js
   // `);
-  
+
   // console.log(`
   //   ----- idsArr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
+
   // console.log(`
   //   ----- publicIDsArr -----\n
   //   ${util.inspect(JSON.parse(JSON.stringify(publicIDsArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
-  
+
+
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return (
     <React.Fragment>
-      
-      
+
+
       {/* Heading */}
       <div
         css={css`
@@ -180,7 +180,7 @@ const Component = (props) => {
           align-items: center;
         `}
       >
-        
+
         <IconStyle
           css={css`
             && {
@@ -188,8 +188,8 @@ const Component = (props) => {
             }
           `}
         />
-        
-        
+
+
         <h3
           css={css`
             margin: 2px 0 0 4px;
@@ -197,19 +197,19 @@ const Component = (props) => {
         >
           ID
         </h3>
-        
+
       </div>
-      
-      
-      
-      
+
+
+
+
       {/* ID */}
       <div
         css={css`
           display: flex;
           flex-flow: row wrap;
           margin: 4px 0 0 0;
-          
+
           @media screen and (max-width: 480px) {
             flex-flow: column wrap;
           }
@@ -217,12 +217,12 @@ const Component = (props) => {
       >
         {componentsArr}
       </div>
-      
-      
+
+
     </React.Fragment>
   );
-  
-  
+
+
 };
 
 

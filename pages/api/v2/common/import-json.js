@@ -58,6 +58,7 @@ import SchemaNotifications from 'app/@database/notifications/schema';
 import SchemaWebPushes from 'app/@database/web-pushes/schema';
 
 import SchemaTempID from 'import/@database/temp-id-schema.js';
+import SchemaTempImageID from 'import/@database/temp-image-id-schema.js';
 
 
 // ---------------------------------------------
@@ -169,6 +170,24 @@ export default async (req, res) => {
     const dataLinkJsonArr = JSON.parse(fs.readFileSync('import/json/data_link.json', 'utf8'));
     const dataLinkDataArr = lodashGet(dataLinkJsonArr, [2, 'data'], []);
 
+    const imageJsonArr = JSON.parse(fs.readFileSync('import/json/image.json', 'utf8'));
+    const imageDataArr = lodashGet(imageJsonArr, [2, 'data'], []);
+
+    const imageObj = {};
+
+    for (let valueObj of imageDataArr.values()) {
+      imageObj[valueObj.game_no] = valueObj.image_no;
+    }
+
+    const gameIDJsonArr = JSON.parse(fs.readFileSync('import/json/game_id.json', 'utf8'));
+    const gameIDDataArr = lodashGet(gameIDJsonArr, [2, 'data'], []);
+
+    const bbsThreadUCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_thread.json', 'utf8'));
+    const bbsThreadUCDataArr = lodashGet(bbsThreadUCJsonArr, [2, 'data'], []);
+
+    const bbsThreadGCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_thread_gc.json', 'utf8'));
+    const bbsThreadGCDataArr = lodashGet(bbsThreadGCJsonArr, [2, 'data'], []);
+
 
 
 
@@ -176,11 +195,28 @@ export default async (req, res) => {
     //   ID
     // --------------------------------------------------
 
-    const idsArr = await SchemaTempID.find().exec();
+    const tempIDsArr = await SchemaTempID.find().exec();
     const idsObj = {};
 
-    for (let valueObj of idsArr.values()) {
+    for (let valueObj of tempIDsArr.values()) {
       idsObj[valueObj.key] = valueObj.id;
+    }
+
+
+    const tempIDsImageArr = await SchemaTempImageID.find().exec();
+    const idsImageObj = {};
+
+    for (let valueObj of tempIDsImageArr.values()) {
+
+      idsImageObj[valueObj.key] = {
+
+        id1: valueObj.id1,
+        id2Arr: valueObj.id2Arr,
+        idThumbnail1: valueObj.idThumbnail1,
+        idThumbnail2: valueObj.idThumbnail2,
+
+      };
+
     }
 
     // console.log(`
@@ -346,6 +382,20 @@ export default async (req, res) => {
 
 
       // --------------------------------------------------
+      //   imagesAndVideosThumbnail_id
+      // --------------------------------------------------
+
+      const imagesAndVideosThumbnail_id = lodashGet(idsImageObj, [`user_no_${user_no}`, 'idThumbnail1'], '');
+
+      // console.log(chalk`
+      //   imagesAndVideosThumbnail_id: {green ${imagesAndVideosThumbnail_id}}
+      // `);
+
+
+
+
+
+      // --------------------------------------------------
       //   push
       // --------------------------------------------------
 
@@ -400,7 +450,7 @@ export default async (req, res) => {
             name,
             status,
             imagesAndVideos_id: '',
-            imagesAndVideosThumbnail_id: '',
+            imagesAndVideosThumbnail_id,
             comment,
             age: '',
             ageAlternativeText: '',
@@ -570,8 +620,8 @@ export default async (req, res) => {
 
       const users_id = idsObj[`user_no_${author_user_no}`];
 
-      const top_image = lodashGet(valueObj, ['top_image'], '');
-      const thumbnail = lodashGet(valueObj, ['thumbnail'], '0');
+      // const top_image = lodashGet(valueObj, ['top_image'], '');
+      // const thumbnail = lodashGet(valueObj, ['thumbnail'], '0');
 
 
       // --------------------------------------------------
@@ -587,12 +637,6 @@ export default async (req, res) => {
         let splitedArr = [];
         splitedArr = game_list.split(',');
 
-        // console.log(`
-        //   ----- splitedArr -----\n
-        //   ${util.inspect(JSON.parse(JSON.stringify(splitedArr)), { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-
         splitedArr.shift();
         splitedArr.pop();
 
@@ -605,16 +649,6 @@ export default async (req, res) => {
         }
 
       }
-
-      // if (gameCommunities_idsArr.length !== 0) {
-
-      //   console.log(`
-      //     ----- gameCommunities_idsArr -----\n
-      //     ${util.inspect(JSON.parse(JSON.stringify(gameCommunities_idsArr)), { colors: true, depth: null })}\n
-      //     --------------------\n
-      //   `);
-
-      // }
 
 
       // --------------------------------------------------
@@ -651,6 +685,13 @@ export default async (req, res) => {
       const followedCount = followedArr.length;
 
 
+      // --------------------------------------------------
+      //   imagesAndVideosThumbnail_id
+      // --------------------------------------------------
+
+      const imagesAndVideosThumbnail_id = lodashGet(idsImageObj, [`community_no_${community_no}`, 'idThumbnail1'], '');
+
+
 
 
       // --------------------------------------------------
@@ -682,7 +723,7 @@ export default async (req, res) => {
               }
             ],
             imagesAndVideos_id: '',
-            imagesAndVideosThumbnail_id: '',
+            imagesAndVideosThumbnail_id,
             gameCommunities_idsArr,
             forumObj: {
               threadCount: 0,
@@ -1897,23 +1938,47 @@ export default async (req, res) => {
       }
 
 
-      // if (linkArr.length !== 0) {
 
-      //   console.log(`
-      //     ----- linkArr -----\n
-      //     ${util.inspect(JSON.parse(JSON.stringify(linkArr)), { colors: true, depth: null })}\n
-      //     --------------------\n
-      //   `);
 
-      // }
+      // --------------------------------------------------
+      //   gameCommunities_id
+      // --------------------------------------------------
+
+      const gameCommunities_id = idsObj[`game_no_${game_no}`];
 
 
 
 
+      // --------------------------------------------------
+      //   imagesAndVideos_id & imagesAndVideosThumbnail_id
+      // --------------------------------------------------
 
+      let imagesAndVideos_id = '';
+
+      if (imageObj[game_no]) {
+        imagesAndVideos_id = lodashGet(idsImageObj, [`game_no_${game_no}`, 'id1'], '');
+      }
 
       const thumbnail = lodashGet(valueObj, ['thumbnail'], '0');
-      const gameCommunities_id = shortid.generate();
+
+      let imagesAndVideosThumbnail_id = '';
+
+      if (thumbnail === '1') {
+        imagesAndVideosThumbnail_id = lodashGet(idsImageObj, [`game_no_${game_no}`, 'idThumbnail1'], '');
+      }
+
+      // if (imagesAndVideos_id) {
+      //   console.log(chalk`
+      //     name: {green ${name}}
+      //   `);
+      // }
+
+      // if (imagesAndVideosThumbnail_id) {
+      //   console.log(chalk`
+      //     name: {green ${name}}
+      //   `);
+      // }
+
 
 
 
@@ -1934,8 +1999,8 @@ export default async (req, res) => {
             urlID,
             language: 'ja',
             country: 'JP',
-            imagesAndVideos_id: '',
-            imagesAndVideosThumbnail_id: '',
+            imagesAndVideos_id,
+            imagesAndVideosThumbnail_id,
             name,
             subtitle,
             sortKeyword,
@@ -1979,11 +2044,225 @@ export default async (req, res) => {
 
 
 
+    // --------------------------------------------------
+    //   ids
+    // --------------------------------------------------
+
+    const idsArr = [];
+
+
+    for (const [index, valueObj] of gameIDDataArr.entries()) {
+
+
+      // --------------------------------------------------
+      //   _id が存在していない場合は処理しない
+      // --------------------------------------------------
+
+      const game_id_no = parseInt(lodashGet(valueObj, ['game_id_no'], 0), 10);
+      const user_no = lodashGet(valueObj, ['user_no'], '');
+
+      if (idsObj[`game_id_no_${game_id_no}`] === undefined || idsObj[`user_no_${user_no}`] === undefined) {
+        continue;
+      }
+
+
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
+
+      const on_off = lodashGet(valueObj, ['on_off'], '0');
+      const game_no = lodashGet(valueObj, ['game_no'], '');
+      const hardware_no = lodashGet(valueObj, ['hardware_no'], '');
+      const id = lodashGet(valueObj, ['id'], '');
 
 
 
 
+      // --------------------------------------------------
+      //   users_id
+      // --------------------------------------------------
 
+      let users_id = '';
+
+      if (idsObj[`user_no_${user_no}`]) {
+        users_id = idsObj[`user_no_${user_no}`];
+      }
+
+
+      // --------------------------------------------------
+      //   gameCommunities_id
+      // --------------------------------------------------
+
+      let gameCommunities_id = '';
+
+      if (idsObj[`game_no_${game_no}`]) {
+        gameCommunities_id = idsObj[`game_no_${game_no}`];
+      }
+
+
+      // --------------------------------------------------
+      //   platform
+      // --------------------------------------------------
+
+      let platform = 'Other';
+
+      if (hardware_no === '1' || hardware_no === '7') {
+        platform = 'PlayStation';
+      }
+
+
+
+
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
+
+      if (on_off === '1') {
+
+        idsArr.push(
+
+          {
+            _id: idsObj[`game_id_no_${game_id_no}`],
+            createdDate: ISO8601,
+            updatedDate: ISO8601,
+            users_id,
+            gameCommunities_id,
+            platform,
+            label: '',
+            id,
+            publicSetting: 5,
+            search: false,
+          }
+
+        );
+
+      }
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   forum-threads
+    // --------------------------------------------------
+
+    const forumThreadsArr = [];
+
+
+    for (const [index, valueObj] of bbsThreadUCDataArr.entries()) {
+
+
+      // --------------------------------------------------
+      //   _id が存在していない場合は処理しない
+      // --------------------------------------------------
+
+      const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
+      const community_no = lodashGet(valueObj, ['community_no'], '');
+
+      if (idsObj[`bbs_thread_no_uc_${bbs_thread_no}`] === undefined || idsObj[`community_no_${community_no}`] === undefined) {
+        continue;
+      }
+
+
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
+
+      const on_off = lodashGet(valueObj, ['on_off'], '0');
+      const bbs_id = lodashGet(valueObj, ['bbs_id'], '');
+      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().toISOString();
+      const updatedDate = moment(lodashGet(valueObj, ['renewal_date'], '')).utc().toISOString();
+      const user_no = lodashGet(valueObj, ['user_no'], '');
+      const name = lodashGet(valueObj, ['title'], '');
+      const comment = lodashGet(valueObj, ['comment'], '');
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
+      const comments = lodashGet(valueObj, ['comment_total'], '');
+      const replies = lodashGet(valueObj, ['reply_total'], '');
+      const userAgent = lodashGet(valueObj, ['user_agent'], '');
+
+
+      // --------------------------------------------------
+      //   forumThreads_id
+      // --------------------------------------------------
+
+      const forumThreads_id = shortid.generate();
+
+
+      // --------------------------------------------------
+      //   users_id
+      // --------------------------------------------------
+
+      let users_id = '';
+
+      if (idsObj[`user_no_${user_no}`]) {
+        users_id = idsObj[`user_no_${user_no}`];
+      }
+
+
+      // --------------------------------------------------
+      //   userCommunities_id
+      // --------------------------------------------------
+
+      let userCommunities_id = '';
+
+      if (idsObj[`community_no_${community_no}`]) {
+        userCommunities_id = idsObj[`community_no_${community_no}`];
+      }
+
+
+      // --------------------------------------------------
+      //   imagesAndVideos_id
+      // --------------------------------------------------
+
+      let imagesAndVideos_id = '';
+
+      // if (imageObj[game_no]) {
+      //   imagesAndVideos_id = lodashGet(idsImageObj, [`bbs_thread_no_uc_${bbs_thread_no}`, 'id1'], '');
+      // }
+
+
+
+
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
+
+      if (on_off === '1') {
+
+        forumThreadsArr.push(
+
+          {
+            _id: forumThreads_id,
+            createdDate,
+            updatedDate,
+            gameCommunities_id: '',
+            userCommunities_id,
+            users_id,
+            localesArr: [
+              {
+                _id: shortid.generate(),
+                language: 'ja',
+                name,
+                comment,
+              }
+            ],
+            imagesAndVideos_id,
+            comments,
+            replies,
+            images: image ? 1 : 0,
+            videos: movie ? 1 : 0,
+            acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
+            ip: '192.168.1.0',
+            userAgent,
+          }
+
+        );
+
+      }
+
+    }
 
 
 
@@ -2008,6 +2287,7 @@ export default async (req, res) => {
     //   hardwaresArr,
     //   gamesArr,
     //   gameCommunitiesArr,
+    //   idsArr,
 
     // });
 
@@ -2030,6 +2310,12 @@ export default async (req, res) => {
     // `);
 
     // console.log(`
+    //   ----- cardPlayersArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(cardPlayersArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
     //   ----- userCommunitiesArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(userCommunitiesArr)), { colors: true, depth: null })}\n
     //   --------------------\n
@@ -2046,6 +2332,26 @@ export default async (req, res) => {
     //   ${util.inspect(JSON.parse(JSON.stringify(developersPublishersArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+
+    // console.log(`
+    //   ----- gamesArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    console.log(`
+      ----- forumThreadsArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(forumThreadsArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+
+
 
     // console.log(`
     //   ----- followedUCObj -----\n

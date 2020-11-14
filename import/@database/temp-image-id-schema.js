@@ -14,8 +14,8 @@ const schema = mongoose.Schema({
   _id: { type: String, required: true },
   id1: { type: String },
   id2Arr: [String],
-  idThumbnail1: { type: String, required: true },
-  idThumbnail2: { type: String, required: true },
+  idThumbnail1: { type: String },
+  idThumbnail2: { type: String },
   key: { type: String, required: true },
 
 });

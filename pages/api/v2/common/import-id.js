@@ -130,6 +130,15 @@ export default async (req, res) => {
     const gameDataJsonArr = JSON.parse(fs.readFileSync('import/json/game_data.json', 'utf8'));
     const gameDataDataArr = lodashGet(gameDataJsonArr, [2, 'data'], []);
 
+    const gameIDJsonArr = JSON.parse(fs.readFileSync('import/json/game_id.json', 'utf8'));
+    const gameIDDataArr = lodashGet(gameIDJsonArr, [2, 'data'], []);
+
+    const bbsThreadUCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_thread.json', 'utf8'));
+    const bbsThreadUCDataArr = lodashGet(bbsThreadUCJsonArr, [2, 'data'], []);
+
+    const bbsThreadGCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_thread_gc.json', 'utf8'));
+    const bbsThreadGCDataArr = lodashGet(bbsThreadGCJsonArr, [2, 'data'], []);
+
 
 
 
@@ -657,6 +666,162 @@ export default async (req, res) => {
 
 
 
+    // --------------------------------------------------
+    //   ids
+    // --------------------------------------------------
+
+    const banIDsArr = [2, 5, 8, 9, 14];
+
+    for (const [index, valueObj] of gameIDDataArr.entries()) {
+
+
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
+
+      const game_id_no = parseInt(lodashGet(valueObj, ['game_id_no'], 0), 10);
+
+
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
+
+      if (!banIDsArr.includes(game_id_no)) {
+
+        saveArr.push(
+
+          {
+            _id: shortid.generate(),
+            id: shortid.generate(),
+            key: `game_id_no_${game_id_no}`,
+          }
+
+        );
+
+      }
+
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   forum-threads UC
+    // --------------------------------------------------
+
+    for (const [index, valueObj] of bbsThreadUCDataArr.entries()) {
+
+
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
+
+      const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
+      const on_off = lodashGet(valueObj, ['on_off'], '0');
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
+
+
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
+
+      if (on_off === '1') {
+
+        saveArr.push(
+
+          {
+            _id: shortid.generate(),
+            id: shortid.generate(),
+            key: `bbs_thread_no_uc_${bbs_thread_no}`,
+          }
+
+        );
+
+        if (image || movie) {
+
+          saveImagesArr.push(
+
+            {
+              _id: shortid.generate(),
+              id1: shortid.generate(),
+              id2Arr: [shortid.generate()],
+              idThumbnail1: '',
+              idThumbnail2: '',
+              key: `bbs_thread_no_uc_${bbs_thread_no}`,
+            }
+
+          );
+
+        }
+
+      }
+
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   forum-threads GC
+    // --------------------------------------------------
+
+    for (const [index, valueObj] of bbsThreadGCDataArr.entries()) {
+
+
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
+
+      const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
+      const on_off = lodashGet(valueObj, ['on_off'], '0');
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
+
+
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
+
+      if (on_off === '1') {
+
+        saveArr.push(
+
+          {
+            _id: shortid.generate(),
+            id: shortid.generate(),
+            key: `bbs_thread_no_gc_${bbs_thread_no}`,
+          }
+
+        );
+
+        if (image || movie) {
+
+          saveImagesArr.push(
+
+            {
+              _id: shortid.generate(),
+              id1: shortid.generate(),
+              id2Arr: [shortid.generate()],
+              idThumbnail1: '',
+              idThumbnail2: '',
+              key: `bbs_thread_no_gc_${bbs_thread_no}`,
+            }
+
+          );
+
+        }
+
+      }
+
+
+    }
+
+
+
+
     // ---------------------------------------------
     //   Insert
     // ---------------------------------------------
@@ -671,12 +836,12 @@ export default async (req, res) => {
     //   count: {green ${count}}
     // `);
 
-    if (count === 0) {
+    // if (count === 0) {
 
       await SchemaTempImageID.deleteMany({});
       await SchemaTempImageID.insertMany(saveImagesArr);
 
-    }
+    // }
 
 
 

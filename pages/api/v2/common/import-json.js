@@ -134,8 +134,6 @@ export default async (req, res) => {
 
     // 登録しなければならないデータ
     // 画像
-    // userCommunitiesArr forumObj: { threadCount: 0 }
-    // gameCommunitiesArr.forumObj.threadCount
     // gameCommunitiesArr.recruitmentObj.threadCount
 
 
@@ -377,6 +375,7 @@ export default async (req, res) => {
       const created_at = lodashGet(usersLoginDataArr, [index, 'created_at'], 0);
       const createdDate = moment.unix(created_at).utc().toISOString();
       const loginID = lodashGet(usersLoginDataArr, [index, 'username'], '');
+      const group = lodashGet(usersLoginDataArr, [index, 'group'], '1');
 
 
 
@@ -429,7 +428,7 @@ export default async (req, res) => {
             countriesArr: ['JP'],
             termsOfServiceConfirmedDate: ISO8601,
             webPushes_id: '',
-            role: 'user'
+            role: group === '100' ? 'administrator' : 'user',
           }
 
         );
@@ -577,24 +576,61 @@ export default async (req, res) => {
 
 
     // --------------------------------------------------
-    //   user-communities
+    //   forum-threads UC
     // --------------------------------------------------
 
-    const userCommunitiesArr = [];
+    const forumThreadsArr = [];
+    const forumThreadCountUCObj = {};
 
 
-    for (const [index, valueObj] of communityDataArr.entries()) {
+    for (const [index, valueObj] of bbsThreadUCDataArr.entries()) {
 
 
       // --------------------------------------------------
       //   _id が存在していない場合は処理しない
       // --------------------------------------------------
 
-      const community_no = lodashGet(valueObj, ['community_no'], 0);
-      const author_user_no = lodashGet(valueObj, ['author_user_no'], 0);
+      const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
+      const on_off = lodashGet(valueObj, ['on_off'], '0');
+      const community_no = lodashGet(valueObj, ['community_no'], '');
 
-      if (idsObj[`community_no_${community_no}`] === undefined || idsObj[`user_no_${author_user_no}`] === undefined) {
+      if (idsObj[`bbs_thread_no_uc_${bbs_thread_no}`] === undefined || idsObj[`community_no_${community_no}`] === undefined || on_off !== '1') {
         continue;
+      }
+
+
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
+
+      const bbs_id = lodashGet(valueObj, ['bbs_id'], '');
+      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().toISOString();
+      const updatedDate = moment(lodashGet(valueObj, ['renewal_date'], '')).utc().toISOString();
+      const user_no = lodashGet(valueObj, ['user_no'], '');
+      const name = lodashGet(valueObj, ['title'], '');
+      const comment = lodashGet(valueObj, ['comment'], '');
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
+      const comments = parseInt(lodashGet(valueObj, ['comment_total'], ''), 10);
+      const replies = parseInt(lodashGet(valueObj, ['reply_total'], ''), 10);
+      const userAgent = lodashGet(valueObj, ['user_agent'], '');
+
+
+      // --------------------------------------------------
+      //   forumThreads_id
+      // --------------------------------------------------
+
+      const forumThreads_id = shortid.generate();
+
+
+      // --------------------------------------------------
+      //   users_id
+      // --------------------------------------------------
+
+      let users_id = '';
+
+      if (idsObj[`user_no_${user_no}`]) {
+        users_id = idsObj[`user_no_${user_no}`];
       }
 
 
@@ -602,193 +638,106 @@ export default async (req, res) => {
       //   userCommunities_id
       // --------------------------------------------------
 
-      const userCommunities_id = shortid.generate();
+      let userCommunities_id = '';
 
-
-      // --------------------------------------------------
-      //   Data
-      // --------------------------------------------------
-
-      const on_off = lodashGet(valueObj, ['on_off'], '0');
-      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().toISOString();
-      const updatedDate = moment(lodashGet(valueObj, ['renewal_date'], '')).utc().toISOString();
-      const userCommunityID = lodashGet(valueObj, ['community_id'], '');
-
-      const name = lodashGet(valueObj, ['name'], 'Name');
-      const description = lodashGet(valueObj, ['description'], '');
-      const descriptionShort = lodashGet(valueObj, ['description_mini'], '');
-
-      const users_id = idsObj[`user_no_${author_user_no}`];
-
-      // const top_image = lodashGet(valueObj, ['top_image'], '');
-      // const thumbnail = lodashGet(valueObj, ['thumbnail'], '0');
-
-
-      // --------------------------------------------------
-      //   gameCommunities_idsArr
-      // --------------------------------------------------
-
-      const game_list = lodashGet(valueObj, ['game_list'], '');
-
-      let gameCommunities_idsArr = [];
-
-      if (game_list) {
-
-        let splitedArr = [];
-        splitedArr = game_list.split(',');
-
-        splitedArr.shift();
-        splitedArr.pop();
-
-        for (let game_no of splitedArr.values()) {
-
-          if (idsObj[`game_no_${game_no}`] !== undefined) {
-            gameCommunities_idsArr.push(idsObj[`game_no_${game_no}`]);
-          }
-
-        }
-
+      if (idsObj[`community_no_${community_no}`]) {
+        userCommunities_id = idsObj[`community_no_${community_no}`];
       }
 
 
       // --------------------------------------------------
-      //   communityType
+      //   imagesAndVideos_id
       // --------------------------------------------------
 
-      const open = lodashGet(valueObj, ['open'], '1');
+      const imagesAndVideos_id = lodashGet(idsImageObj, [`bbs_thread_no_uc_${bbs_thread_no}`, 'id1'], '');
 
-      let communityType = 'open';
+      // if (imagesAndVideos_id) {
+      //   console.log(chalk`
+      //     name: {green ${name}}
+      //     imagesAndVideos_id: {green ${imagesAndVideos_id}}
+      //   `);
+      // }
 
-      if (open !== '1') {
-        communityType = 'closed';
+
+      // --------------------------------------------------
+      //   forumThreadCountObj
+      // --------------------------------------------------
+
+      if (forumThreadCountUCObj[community_no] !== undefined) {
+
+        forumThreadCountUCObj[community_no] += 1;
+
+      } else {
+
+        forumThreadCountUCObj[community_no] = 1;
+
       }
-
-
-      // --------------------------------------------------
-      //   anonymity
-      // --------------------------------------------------
-
-      const config = lodashGet(valueObj, ['config'], '');
-
-      let anonymity = false;
-
-      if (config.indexOf('anonymity\";b:1') !== -1) {
-        anonymity = true;
-      }
-
-
-      // --------------------------------------------------
-      //   follows
-      // --------------------------------------------------
-
-      const followedArr = lodashGet(followedUCObj, [community_no], []);
-      const followedCount = followedArr.length;
-
-
-      // --------------------------------------------------
-      //   imagesAndVideosThumbnail_id
-      // --------------------------------------------------
-
-      const imagesAndVideosThumbnail_id = lodashGet(idsImageObj, [`community_no_${community_no}`, 'idThumbnail1'], '');
-
-
 
 
       // --------------------------------------------------
       //   push
       // --------------------------------------------------
 
-      if (on_off === '1') {
+      forumThreadsArr.push(
 
+        {
+          _id: forumThreads_id,
+          createdDate,
+          updatedDate,
+          gameCommunities_id: '',
+          userCommunities_id,
+          users_id,
+          localesArr: [
+            {
+              _id: shortid.generate(),
+              language: 'ja',
+              name,
+              comment,
+            }
+          ],
+          imagesAndVideos_id,
+          comments,
+          replies,
+          images: image ? 1 : 0,
+          videos: movie ? 1 : 0,
+          acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
+          ip: '192.168.1.0',
+          userAgent,
+        }
 
-        // --------------------------------------------------
-        //   user-communities
-        // --------------------------------------------------
-
-        userCommunitiesArr.push(
-
-          {
-            _id: userCommunities_id,
-            createdDate,
-            updatedDate,
-            userCommunityID,
-            users_id,
-            localesArr: [
-              {
-                _id: shortid.generate(),
-                language: 'ja',
-                name,
-                description,
-                descriptionShort,
-              }
-            ],
-            imagesAndVideos_id: '',
-            imagesAndVideosThumbnail_id,
-            gameCommunities_idsArr,
-            forumObj: {
-              threadCount: 0,
-            },
-            updatedDateObj: {
-              forum: ISO8601,
-            },
-            communityType,
-            anonymity,
-          }
-
-        );
-
-
-        // --------------------------------------------------
-        //   follows
-        // --------------------------------------------------
-
-        followsArr.push(
-
-          {
-            _id: shortid.generate(),
-            updatedDate: ISO8601,
-            gameCommunities_id: '',
-            userCommunities_id,
-            users_id: '',
-            approval: false,
-            followArr: [],
-            followCount: 0,
-            followedArr,
-            followedCount,
-            approvalArr: [],
-            approvalCount: 0,
-            blockArr: [],
-            blockCount: 0,
-          }
-
-        );
-
-
-      }
+      );
 
 
     }
 
+    // console.log(`
+    //   ----- forumThreadCountUCObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadCountUCObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
 
 
 
     // --------------------------------------------------
-    //   developers-publishers
+    //   forum-threads GC
     // --------------------------------------------------
 
-    const developersPublishersArr = [];
+    const forumThreadCountGCObj = {};
 
 
-    for (const [index, valueObj] of dataDeveloperDataArr.entries()) {
+    for (const [index, valueObj] of bbsThreadGCDataArr.entries()) {
 
 
       // --------------------------------------------------
       //   _id が存在していない場合は処理しない
       // --------------------------------------------------
 
-      const developer_no = lodashGet(valueObj, ['developer_no'], 0);
+      const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
+      const on_off = lodashGet(valueObj, ['on_off'], '0');
+      const game_no = lodashGet(valueObj, ['game_no'], '');
 
-      if (idsObj[`developer_no_${developer_no}`] === undefined) {
+      if (idsObj[`bbs_thread_no_gc_${bbs_thread_no}`] === undefined || idsObj[`game_no_${game_no}`] === undefined || on_off !== '1') {
         continue;
       }
 
@@ -797,909 +746,1241 @@ export default async (req, res) => {
       //   Data
       // --------------------------------------------------
 
-      const name = lodashGet(valueObj, ['name'], 'Name');
-      const developerPublisherID = idsObj[`developer_no_${developer_no}`]
+      const bbs_id = lodashGet(valueObj, ['bbs_id'], '');
+      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().toISOString();
+      const updatedDate = moment(lodashGet(valueObj, ['renewal_date'], '')).utc().toISOString();
+      const name = lodashGet(valueObj, ['title'], '');
+      const comment = lodashGet(valueObj, ['comment'], '');
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
+      const comments = parseInt(lodashGet(valueObj, ['comment_total'], ''), 10);
+      const replies = parseInt(lodashGet(valueObj, ['reply_total'], ''), 10);
+      const userAgent = lodashGet(valueObj, ['user_agent'], '');
 
 
+      // --------------------------------------------------
+      //   forumThreads_id
+      // --------------------------------------------------
+
+      const forumThreads_id = shortid.generate();
+
+
+      // --------------------------------------------------
+      //   gameCommunities_id
+      // --------------------------------------------------
+
+      let gameCommunities_id = '';
+
+      if (idsObj[`game_no_${game_no}`]) {
+        gameCommunities_id = idsObj[`game_no_${game_no}`];
+      }
+
+
+      // --------------------------------------------------
+      //   imagesAndVideos_id
+      // --------------------------------------------------
+
+      const imagesAndVideos_id = lodashGet(idsImageObj, [`bbs_thread_no_gc_${bbs_thread_no}`, 'id1'], '');
+
+      // if (imagesAndVideos_id) {
+      //   console.log(chalk`
+      //     name: {green ${name}}
+      //     imagesAndVideos_id: {green ${imagesAndVideos_id}}
+      //   `);
+      // }
+
+
+      // --------------------------------------------------
+      //   forumThreadCountObj
+      // --------------------------------------------------
+
+      if (forumThreadCountGCObj[game_no] !== undefined) {
+
+        forumThreadCountGCObj[game_no] += 1;
+
+      } else {
+
+        forumThreadCountGCObj[game_no] = 1;
+
+      }
 
 
       // --------------------------------------------------
       //   push
       // --------------------------------------------------
 
-      if (developer_no !== '18') {
+      forumThreadsArr.push(
 
-        developersPublishersArr.push(
+        {
+          _id: forumThreads_id,
+          createdDate,
+          updatedDate,
+          gameCommunities_id,
+          userCommunities_id: '',
+          users_id: '',
+          localesArr: [
+            {
+              _id: shortid.generate(),
+              language: 'ja',
+              name,
+              comment,
+            }
+          ],
+          imagesAndVideos_id,
+          comments,
+          replies,
+          images: image ? 1 : 0,
+          videos: movie ? 1 : 0,
+          acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
+          ip: '192.168.1.0',
+          userAgent,
+        }
 
-          {
-            _id: shortid.generate(),
-            createdDate: ISO8601,
-            updatedDate: ISO8601,
-            language: 'ja',
-            country: 'JP',
-            developerPublisherID,
-            urlID: shortid.generate(),
-            name,
-          }
-
-        );
-
-      }
+      );
 
 
     }
 
+    // console.log(`
+    //   ----- forumThreadCountGCObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadCountGCObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
 
 
 
     // --------------------------------------------------
-    //   hardwares
+    //   user-communities
     // --------------------------------------------------
 
-    const hardwaresArr = [
-
-      {
-        _id: 'R6uD6BzZ5',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'I-iu-WmkO',
-        urlID: 'Family-Computer',
-        name: 'ファミリーコンピュータ',
-        searchKeywordsArr: [
-          'ファミリーコンピューター',
-          'ファミコン',
-          'ふぁみりーこんぴゅーたー',
-          'ふぁみこん',
-          'Family Computer',
-          'FamilyComputer',
-          'Famicom',
-          'FC',
-        ]
-      },
-
-
-      {
-        _id: 'aOeQ04_vN',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'VFLNnniHr',
-        urlID: 'Family-Computer-Disk-System',
-        name: 'ファミリーコンピュータ ディスクシステム',
-        searchKeywordsArr: [
-          'ファミリーコンピューター ディスクシステム',
-          'ふぁみりーこんぴゅーたー でぃすくしすてむ',
-          'Family Computer Disk System',
-          'FamilyComputerDiskSystem',
-          'FCDS',
-        ]
-      },
-
-
-      {
-        _id: 'adzG1JLYu',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'KyOSlwcLk',
-        urlID: 'PC-Engine',
-        name: 'PCエンジン',
-        searchKeywordsArr: [
-          'PCエンジン',
-          'ピーシーエンジン',
-          'ぴーしーえんじん',
-          'PC Engine',
-          'PCEngine',
-          'PCE',
-        ]
-      },
-
-
-      {
-        _id: 'KVvkuvZF2',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: '2yKF4qXAw',
-        urlID: 'MEGA-DRIVE',
-        name: 'メガドライブ',
-        searchKeywordsArr: [
-          'メガドライブ',
-          'めがどらいぶ',
-          'MEGA DRIVE',
-          'MEGADRIVE',
-          'MD',
-        ]
-      },
-
-
-      {
-        _id: 'WOQKUSPPR',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'eKmDxi8lX',
-        urlID: 'SUPER-Famicom',
-        name: 'スーパーファミコン',
-        searchKeywordsArr: [
-          'スーパーファミコン',
-          'スーファミ',
-          'すーぱーふぁみこん',
-          'すーふぁみ',
-          'SUPER Famicom',
-          'SUPERFamicom',
-          'Super Family Computer',
-          'SuperFamilyComputer',
-          'SFC',
-        ]
-      },
-
-
-      {
-        _id: '8oGNQ2hMR',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'Z4R-SPN2-',
-        urlID: 'NEO-GEO',
-        name: 'ネオジオ',
-        searchKeywordsArr: [
-          'ネオジオ',
-          'ねおじお',
-          'NEO GEO',
-          'NEOGEO',
-          'NEO・GEO',
-          'NG',
-        ]
-      },
-
-
-      {
-        _id: '9zeb0m_13',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'lBSGQeGmx',
-        urlID: 'SEGA-SATURN',
-        name: 'セガサターン',
-        searchKeywordsArr: [
-          'セガサターン',
-          'せがさたーん',
-          'SEGA SATURN',
-          'SEGASATURN',
-          'SS',
-        ]
-      },
-
-
-      {
-        _id: 'zSvRzOp0V',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'zB4ivcsqM',
-        urlID: 'PlayStation',
-        name: 'PlayStation',
-        searchKeywordsArr: [
-          'プレイステーション',
-          'プレーステーション',
-          'プレステ',
-          'ぷれいすてーしょん',
-          'ぷれーすてーしょん',
-          'ぷれすて',
-          'Play Station',
-          'PlayStation',
-          'PS',
-        ]
-      },
-
-
-      {
-        _id: 'wlDy9Dqmv',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'o9bdsq5af',
-        urlID: 'VIRTUAL-BOY',
-        name: 'バーチャルボーイ',
-        searchKeywordsArr: [
-          'バーチャルボーイ',
-          'ばーちゃるぼーい',
-          'VIRTUAL BOY',
-          'VIRTUALBOY',
-          'VB',
-        ]
-      },
-
-
-      {
-        _id: 'N-V_maXNc',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: '45syCFviA',
-        urlID: 'NINTENDO-64',
-        name: 'NINTENDO64',
-        searchKeywordsArr: [
-          '任天堂64',
-          '任天堂６４',
-          'ニンテンドー64',
-          'ニンテンドウ64',
-          'ニンテンドオ64',
-          'ニンテンドー６４',
-          'ニンテンドウ６４',
-          'ニンテンドオ６４',
-          'ニンテンドーロクジュウヨン',
-          'ニンテンドウロクジュウヨン',
-          'ニンテンドオロクジュウヨン',
-          'ロクヨン',
-          'にんてんどー64',
-          'にんてんどう64',
-          'にんてんどお64',
-          'にんてんどー６４',
-          'にんてんどう６４',
-          'にんてんどお６４',
-          'にんてんどーろくじゅうよん',
-          'にんてんどうろくじゅうよん',
-          'にんてんどおろくじゅうよん',
-          'ろくよん',
-          'NINTENDO 64',
-          'NINTENDO64',
-          'N64',
-        ]
-      },
-
-
-      {
-        _id: 'iZ7MmkuQw',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'Kj_Djheqt',
-        urlID: 'Dreamcast',
-        name: 'ドリームキャスト',
-        searchKeywordsArr: [
-          'ドリームキャスト',
-          'ドリキャス',
-          'どりーむきゃすと',
-          'どりきゃす',
-          'Dreamcast',
-          'DC',
-        ]
-      },
-
-
-      {
-        _id: 'I2cKTLJNk',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: '8RERfeQQ9',
-        urlID: 'PlayStation-2',
-        name: 'PlayStation 2',
-        searchKeywordsArr: [
-          'プレイステーション2',
-          'プレーステーション2',
-          'プレステ2',
-          'プレイステーション２',
-          'プレーステーション２',
-          'プレステ２',
-          'プレイステーションツー',
-          'プレーステーションツー',
-          'プレステツー',
-          'ぷれいすてーしょん2',
-          'ぷれーすてーしょん2',
-          'ぷれすて2',
-          'ぷれいすてーしょん２',
-          'ぷれーすてーしょん２',
-          'ぷれすて２',
-          'ぷれいすてーしょんつー',
-          'ぷれーすてーしょんつー',
-          'ぷれすてつー',
-          'Play Station 2',
-          'PlayStation 2',
-          'PlayStation2',
-          'PS2',
-        ]
-      },
-
-
-      {
-        _id: 'PlRw2lxiy',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'XLUt628gr',
-        urlID: 'NINTENDO-GAMECUBE',
-        name: 'ニンテンドーゲームキューブ',
-        searchKeywordsArr: [
-          '任天堂ゲームキューブ',
-          'ニンテンドーゲームキューブ',
-          'ニンテンドウゲームキューブ',
-          'ニンテンドオゲームキューブ',
-          'にんてんどーげーむきゅーぶ',
-          'にんてんどうげーむきゅーぶ',
-          'にんてんどおげーむきゅーぶ',
-          'NINTENDO GAMECUBE',
-          'NINTENDOGAMECUBE',
-          'NGC',
-          'GC',
-        ]
-      },
-
-
-      {
-        _id: 'uQcBzP5cS',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: '78lc0hPjL',
-        urlID: 'Xbox',
-        name: 'Xbox',
-        searchKeywordsArr: [
-          'エックスボックス',
-          'えっくすぼっくす',
-          'Xbox',
-        ]
-      },
-
-
-      {
-        _id: 'NiozcDYe-',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: '08Qp5KxPA',
-        urlID: 'Xbox-360',
-        name: 'Xbox 360',
-        searchKeywordsArr: [
-          'エックスボックス360',
-          'エックスボックス３６０',
-          'エックスボックスサンロクマル',
-          'エックスボックスサンビャクロクジュウ',
-          'えっくすぼっくす360',
-          'えっくすぼっくす３６０',
-          'えっくすぼっくすさんろくまる',
-          'えっくすぼっくすさんびゃくろくじゅう',
-          'Xbox 360',
-          'Xbox360',
-          'X360'
-        ]
-      },
-
-
-      {
-        _id: '4iGMasHh4',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'YNZ6nb1Ki',
-        urlID: 'PlayStation-3',
-        name: 'PlayStation 3',
-        searchKeywordsArr: [
-          'プレイステーション3',
-          'プレーステーション3',
-          'プレステ3',
-          'プレイステーション３',
-          'プレーステーション３',
-          'プレステ３',
-          'プレイステーションスリー',
-          'プレーステーションスリー',
-          'プレステスリー',
-          'ぷれいすてーしょん3',
-          'ぷれーすてーしょん3',
-          'ぷれすて3',
-          'ぷれいすてーしょん３',
-          'ぷれーすてーしょん３',
-          'ぷれすて３',
-          'ぷれいすてーしょんすりー',
-          'ぷれーすてーしょんすりー',
-          'ぷれすてすりー',
-          'Play Station 3',
-          'PlayStation 3',
-          'PlayStation3',
-          'PS3',
-        ]
-      },
-
-
-      {
-        _id: '91N2yPx6B',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'n3wYKZ_ao',
-        urlID: 'Wii',
-        name: 'Wii',
-        searchKeywordsArr: [
-          'ウィー',
-          'ウイー',
-          'うぃー',
-          'ういー',
-          'Wii',
-          'We',
-        ]
-      },
-
-
-      {
-        _id: 'qX8WLLubQ',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'GTxWVd0z-',
-        urlID: 'Wii-U',
-        name: 'Wii U',
-        searchKeywordsArr: [
-          'ウィーユー',
-          'ウイーユー',
-          'うぃーゆー',
-          'ういーゆー',
-          'Wii U',
-          'Wi U',
-          'We U',
-          'WiiU',
-          'WiU',
-          'WeU',
-        ]
-      },
-
-
-      {
-        _id: 'FW76LaH_H',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'TdK3Oc-yV',
-        urlID: 'PlayStation-4',
-        name: 'PlayStation 4',
-        searchKeywordsArr: [
-          'プレイステーション4',
-          'プレーステーション4',
-          'プレステ4',
-          'プレイステーション４',
-          'プレーステーション４',
-          'プレステ４',
-          'プレイステーションフォー',
-          'プレーステーションフォー',
-          'プレステフォー',
-          'ぷれいすてーしょん4',
-          'ぷれーすてーしょん4',
-          'ぷれすて4',
-          'ぷれいすてーしょん４',
-          'ぷれーすてーしょん４',
-          'ぷれすて４',
-          'ぷれいすてーしょんふぉー',
-          'ぷれーすてーしょんふぉー',
-          'ぷれすてふぉー',
-          'Play Station 4',
-          'PlayStation 4',
-          'PlayStation4',
-          'PS4',
-        ]
-      },
-
-
-      {
-        _id: 'vk2kF94Ks',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'uPqoiXA_8',
-        urlID: 'Xbox-One',
-        name: 'Xbox One',
-        searchKeywordsArr: [
-          'エックスボックスワン',
-          'エックスボックスイチ',
-          'えっくすぼっくすわん',
-          'えっくすぼっくすいち',
-          'Xbox One',
-          'XboxOne',
-          'Xbox 1',
-          'Xbox1',
-          'XO'
-        ]
-      },
-
-
-      {
-        _id: 'Gu1hYjbv7',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'Zd_Ia4Hwm',
-        urlID: 'Nintendo-Switch',
-        name: 'Nintendo Switch',
-        searchKeywordsArr: [
-          '任天堂スイッチ',
-          '任天堂スウィッチ',
-          'ニンテンドースイッチ',
-          'ニンテンドースウィッチ',
-          'ニンテンドウスイッチ',
-          'ニンテンドウスウィッチ',
-          'ニンテンドオスイッチ',
-          'ニンテンドオスウィッチ',
-          'にんてんどーすいっち',
-          'にんてんどーすうぃっち',
-          'にんてんどうすいっち',
-          'にんてんどうすうぃっち',
-          'にんてんどおすいっち',
-          'にんてんどおすうぃっち',
-          'Nintendo Switch',
-          'NintendoSwitch',
-          'NS',
-        ]
-      },
-
-
-      {
-        _id: '_z4DBLYNi',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'XBKalRRW7',
-        urlID: 'Game-Boy',
-        name: 'ゲームボーイ',
-        searchKeywordsArr: [
-          'ゲームボーイ',
-          'げーむぼーい',
-          'Game Boy',
-          'GameBoy',
-          'GB',
-        ]
-      },
-
-
-      {
-        _id: '9Z6Wh_JJ2',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'sO2U2PzHl',
-        urlID: 'GAME-GEAR',
-        name: 'ゲームギア',
-        searchKeywordsArr: [
-          'ゲームギア',
-          'げーむぎあ',
-          'GAME GEAR',
-          'GAMEGEAR',
-          'GG',
-        ]
-      },
-
-
-      {
-        _id: 'QQtnx7FEN',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'qBsY8y0nO',
-        urlID: 'PC-Engine-GT',
-        name: 'PCエンジンGT',
-        searchKeywordsArr: [
-          'PCエンジンGT',
-          'ピーシーエンジンジーティー',
-          'ぴーしーえんじんじーてぃー',
-          'PC Engine GT',
-          'PCEngineGT',
-          'PCEGT',
-        ]
-      },
-
-
-      {
-        _id: 'IcH7HG2f7',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'u3SQqtJ-u',
-        urlID: 'NEOGEO-POCKET',
-        name: 'ネオジオポケット',
-        searchKeywordsArr: [
-          'ネオジオポケット',
-          'ねおじおぽけっと',
-          'NEO GEO POCKET',
-          'NEOGEO POCKET',
-          'NEOGEOPOCKET',
-          'NEO・GEO POCKET',
-          'NGP',
-        ]
-      },
-
-
-      {
-        _id: 'S2Q_3MrBo',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'PYIE0rv_e',
-        urlID: 'Wonder-Swan',
-        name: 'ワンダースワン',
-        searchKeywordsArr: [
-          'ワンダースワン',
-          'わんだーすわん',
-          'Wonder Swan',
-          'WonderSwan',
-          'WS',
-        ]
-      },
-
-
-      {
-        _id: '4OkTt-VSM',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'AIvzEgDCd',
-        urlID: 'GAMEBOY-ADVANCE',
-        name: 'ゲームボーイアドバンス',
-        searchKeywordsArr: [
-          'ゲームボーイアドバンス',
-          'げーむぼーいあどばんす',
-          'GAMEBOY ADVANCE',
-          'GAMEBOYADVANCE',
-          'GBA',
-        ]
-      },
-
-
-      {
-        _id: 'Uem6UalMW',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'HATpnt7sl',
-        urlID: 'Nintendo-DS',
-        name: 'ニンテンドーDS',
-        searchKeywordsArr: [
-          '任天堂DS',
-          '任天堂ディーエス',
-          'ニンテンドーDS',
-          'ニンテンドーディーエス',
-          'ニンテンドウDS',
-          'ニンテンドウディーエス',
-          'ニンテンドオDS',
-          'ニンテンドオディーエス',
-          'にんてんどーDS',
-          'にんてんどーでぃーえす',
-          'にんてんどうDS',
-          'にんてんどうでぃーえす',
-          'にんてんどおDS',
-          'にんてんどおでぃーえす',
-          'Nintendo DS',
-          'NintendoDS',
-          'NDS',
-        ]
-      },
-
-
-      {
-        _id: 'nMhdlLGm6',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'efIOgWs3N',
-        urlID: 'PlayStation-Portable',
-        name: 'PlayStation Portable',
-        searchKeywordsArr: [
-          'プレイステーション・ポータブル',
-          'プレイステーションポータブル',
-          'プレーステーション・ポータブル',
-          'プレーステーションポータブル',
-          'プレステポータブル',
-          'ぷれいすてーしょん・ぽーたぶる',
-          'ぷれいすてーしょんぽーたぶる',
-          'ぷれーすてーしょん・ぽーたぶる',
-          'ぷれーすてーしょんぽーたぶる',
-          'ぷれすて・ぽーたぶる',
-          'ぷれすてぽーたぶる',
-          'Play Station Portable',
-          'PlayStation Portable',
-          'PlayStationPortable',
-          'PS Portable',
-          'PSPortable',
-          'PSP',
-        ]
-      },
-
-
-      {
-        _id: 'YvgkE6inK',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'qk9DiUwN-',
-        urlID: 'Nintendo-3DS',
-        name: 'ニンテンドー3DS',
-        searchKeywordsArr: [
-          '任天堂3DS',
-          '任天堂スリーディーエス',
-          'ニンテンドー3DS',
-          'ニンテンドースリーディーエス',
-          'ニンテンドウ3DS',
-          'ニンテンドウスリーディーエス',
-          'ニンテンドオ3DS',
-          'ニンテンドオスリーディーエス',
-          'にんてんどー3DS',
-          'にんてんどーすりーでぃーえす',
-          'にんてんどう3DS',
-          'にんてんどうすりーでぃーえす',
-          'にんてんどお3DS',
-          'にんてんどおすりーでぃーえす',
-          'Nintendo 3DS',
-          'Nintendo3DS',
-          'N3DS',
-        ]
-      },
-
-
-      {
-        _id: '_3asC9ODV',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'mOpBZsQBm',
-        urlID: 'PlayStation-Vita',
-        name: 'PlayStation Vita',
-        searchKeywordsArr: [
-          'プレイステーション・ヴィータ',
-          'プレイステーションヴィータ',
-          'プレーステーション・ヴィータ',
-          'プレーステーションヴィータ',
-          'プレステヴィータ',
-          'プレイステーション・ビータ',
-          'プレイステーションビータ',
-          'プレーステーション・ビータ',
-          'プレーステーションビータ',
-          'プレステビータ',
-          'ぷれいすてーしょん・ゔぃーた',
-          'ぷれいすてーしょんゔぃーた',
-          'ぷれーすてーしょん・ゔぃーた',
-          'ぷれーすてーしょんゔぃーた',
-          'ぷれすて・ゔぃーた',
-          'ぷれすてゔぃーた',
-          'ぷれいすてーしょん・びーた',
-          'ぷれいすてーしょんびーた',
-          'ぷれーすてーしょん・びーた',
-          'ぷれーすてーしょんびーた',
-          'ぷれすて・びーた',
-          'ぷれすてびーた',
-          'Play Station Vita',
-          'PlayStation Vita',
-          'PlayStationVita',
-          'PS Vita',
-          'PSVita',
-          'PSV',
-        ]
-      },
-
-
-      {
-        _id: '8hmwbso_y',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'ehBtuyjma',
-        urlID: 'PC-FX',
-        name: 'PC-FX',
-        searchKeywordsArr: [
-          'PC-FX',
-          'ピーシーエフエックス',
-          'ぴーしーえふえっくす',
-          'PC FX',
-          'PCFX',
-        ]
-      },
-
-
-      {
-        _id: '0J3jIYcCN',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'si2_UYLdW',
-        urlID: '3DO',
-        name: '3DO',
-        searchKeywordsArr: [
-          '3DO',
-          'スリーディーオー',
-          'すりーでぃーおー',
-        ]
-      },
-
-
-      {
-        _id: 'pr6k8Jn6_',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'P0UG-LHOQ',
-        urlID: 'PC',
-        name: 'PC',
-        searchKeywordsArr: [
-          'ピーシー',
-          'パソコン',
-          'パーソナル・コンピューター',
-          'パーソナルコンピューター',
-          'ぴーしー',
-          'ぱーそなる・こんぴゅーたー',
-          'ぱーそなるこんぴゅーたー',
-          'Personal Computer',
-          'PersonalComputer',
-          'PC',
-        ]
-      },
-
-
-      {
-        _id: 'KN9AMVKP7',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'SXybALV1f',
-        urlID: 'Android',
-        name: 'Android',
-        searchKeywordsArr: [
-          'アンドロイド',
-          'あんどろいど',
-          'Android',
-        ]
-      },
-
-
-      {
-        _id: 'M7YVRglvr',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'o-f3Zxd49',
-        urlID: 'iOS',
-        name: 'iOS',
-        searchKeywordsArr: [
-          'アイオーエス',
-          'あいおーえす',
-          'iOS',
-        ]
-      },
-
-    ];
+    // const userCommunitiesArr = [];
+
+
+    // for (const [index, valueObj] of communityDataArr.entries()) {
+
+
+    //   // --------------------------------------------------
+    //   //   _id が存在していない場合は処理しない
+    //   // --------------------------------------------------
+
+    //   const community_no = lodashGet(valueObj, ['community_no'], 0);
+    //   const author_user_no = lodashGet(valueObj, ['author_user_no'], 0);
+
+    //   if (idsObj[`community_no_${community_no}`] === undefined || idsObj[`user_no_${author_user_no}`] === undefined) {
+    //     continue;
+    //   }
+
+
+    //   // --------------------------------------------------
+    //   //   userCommunities_id
+    //   // --------------------------------------------------
+
+    //   const userCommunities_id = shortid.generate();
+
+
+    //   // --------------------------------------------------
+    //   //   Data
+    //   // --------------------------------------------------
+
+    //   const on_off = lodashGet(valueObj, ['on_off'], '0');
+    //   const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().toISOString();
+    //   const updatedDate = moment(lodashGet(valueObj, ['renewal_date'], '')).utc().toISOString();
+    //   const userCommunityID = lodashGet(valueObj, ['community_id'], '');
+
+    //   const name = lodashGet(valueObj, ['name'], 'Name');
+    //   const description = lodashGet(valueObj, ['description'], '');
+    //   const descriptionShort = lodashGet(valueObj, ['description_mini'], '');
+
+    //   const users_id = idsObj[`user_no_${author_user_no}`];
+
+    //   // const top_image = lodashGet(valueObj, ['top_image'], '');
+    //   // const thumbnail = lodashGet(valueObj, ['thumbnail'], '0');
+
+
+    //   // --------------------------------------------------
+    //   //   gameCommunities_idsArr
+    //   // --------------------------------------------------
+
+    //   const game_list = lodashGet(valueObj, ['game_list'], '');
+
+    //   let gameCommunities_idsArr = [];
+
+    //   if (game_list) {
+
+    //     let splitedArr = [];
+    //     splitedArr = game_list.split(',');
+
+    //     splitedArr.shift();
+    //     splitedArr.pop();
+
+    //     for (let game_no of splitedArr.values()) {
+
+    //       if (idsObj[`game_no_${game_no}`] !== undefined) {
+    //         gameCommunities_idsArr.push(idsObj[`game_no_${game_no}`]);
+    //       }
+
+    //     }
+
+    //   }
+
+
+    //   // --------------------------------------------------
+    //   //   communityType
+    //   // --------------------------------------------------
+
+    //   const open = lodashGet(valueObj, ['open'], '1');
+
+    //   let communityType = 'open';
+
+    //   if (open !== '1') {
+    //     communityType = 'closed';
+    //   }
+
+
+    //   // --------------------------------------------------
+    //   //   anonymity
+    //   // --------------------------------------------------
+
+    //   const config = lodashGet(valueObj, ['config'], '');
+
+    //   let anonymity = false;
+
+    //   if (config.indexOf('anonymity\";b:1') !== -1) {
+    //     anonymity = true;
+    //   }
+
+
+    //   // --------------------------------------------------
+    //   //   follows
+    //   // --------------------------------------------------
+
+    //   const followedArr = lodashGet(followedUCObj, [community_no], []);
+    //   const followedCount = followedArr.length;
+
+
+    //   // --------------------------------------------------
+    //   //   imagesAndVideosThumbnail_id
+    //   // --------------------------------------------------
+
+    //   const imagesAndVideosThumbnail_id = lodashGet(idsImageObj, [`community_no_${community_no}`, 'idThumbnail1'], '');
+
+
+    //   // --------------------------------------------------
+    //   //   threadCount
+    //   // --------------------------------------------------
+
+    //   const threadCount = lodashGet(forumThreadCountUCObj, [community_no], 0);
+
+
+
+
+    //   // --------------------------------------------------
+    //   //   push
+    //   // --------------------------------------------------
+
+    //   if (on_off === '1') {
+
+
+    //     // --------------------------------------------------
+    //     //   user-communities
+    //     // --------------------------------------------------
+
+    //     userCommunitiesArr.push(
+
+    //       {
+    //         _id: userCommunities_id,
+    //         createdDate,
+    //         updatedDate,
+    //         userCommunityID,
+    //         users_id,
+    //         localesArr: [
+    //           {
+    //             _id: shortid.generate(),
+    //             language: 'ja',
+    //             name,
+    //             description,
+    //             descriptionShort,
+    //           }
+    //         ],
+    //         imagesAndVideos_id: '',
+    //         imagesAndVideosThumbnail_id,
+    //         gameCommunities_idsArr,
+    //         forumObj: {
+    //           threadCount,
+    //         },
+    //         updatedDateObj: {
+    //           forum: ISO8601,
+    //         },
+    //         communityType,
+    //         anonymity,
+    //       }
+
+    //     );
+
+
+    //     // --------------------------------------------------
+    //     //   follows
+    //     // --------------------------------------------------
+
+    //     followsArr.push(
+
+    //       {
+    //         _id: shortid.generate(),
+    //         updatedDate: ISO8601,
+    //         gameCommunities_id: '',
+    //         userCommunities_id,
+    //         users_id: '',
+    //         approval: false,
+    //         followArr: [],
+    //         followCount: 0,
+    //         followedArr,
+    //         followedCount,
+    //         approvalArr: [],
+    //         approvalCount: 0,
+    //         blockArr: [],
+    //         blockCount: 0,
+    //       }
+
+    //     );
+
+
+    //   }
+
+
+    // }
+
+
+
+
+    // // --------------------------------------------------
+    // //   developers-publishers
+    // // --------------------------------------------------
+
+    // const developersPublishersArr = [];
+
+
+    // for (const [index, valueObj] of dataDeveloperDataArr.entries()) {
+
+
+    //   // --------------------------------------------------
+    //   //   _id が存在していない場合は処理しない
+    //   // --------------------------------------------------
+
+    //   const developer_no = lodashGet(valueObj, ['developer_no'], 0);
+
+    //   if (idsObj[`developer_no_${developer_no}`] === undefined) {
+    //     continue;
+    //   }
+
+
+    //   // --------------------------------------------------
+    //   //   Data
+    //   // --------------------------------------------------
+
+    //   const name = lodashGet(valueObj, ['name'], 'Name');
+    //   const developerPublisherID = idsObj[`developer_no_${developer_no}`]
+
+
+
+
+    //   // --------------------------------------------------
+    //   //   push
+    //   // --------------------------------------------------
+
+    //   if (developer_no !== '18') {
+
+    //     developersPublishersArr.push(
+
+    //       {
+    //         _id: shortid.generate(),
+    //         createdDate: ISO8601,
+    //         updatedDate: ISO8601,
+    //         language: 'ja',
+    //         country: 'JP',
+    //         developerPublisherID,
+    //         urlID: shortid.generate(),
+    //         name,
+    //       }
+
+    //     );
+
+    //   }
+
+
+    // }
+
+
+
+
+    // // --------------------------------------------------
+    // //   hardwares
+    // // --------------------------------------------------
+
+    // const hardwaresArr = [
+
+    //   {
+    //     _id: 'R6uD6BzZ5',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'I-iu-WmkO',
+    //     urlID: 'Family-Computer',
+    //     name: 'ファミリーコンピュータ',
+    //     searchKeywordsArr: [
+    //       'ファミリーコンピューター',
+    //       'ファミコン',
+    //       'ふぁみりーこんぴゅーたー',
+    //       'ふぁみこん',
+    //       'Family Computer',
+    //       'FamilyComputer',
+    //       'Famicom',
+    //       'FC',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'aOeQ04_vN',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'VFLNnniHr',
+    //     urlID: 'Family-Computer-Disk-System',
+    //     name: 'ファミリーコンピュータ ディスクシステム',
+    //     searchKeywordsArr: [
+    //       'ファミリーコンピューター ディスクシステム',
+    //       'ふぁみりーこんぴゅーたー でぃすくしすてむ',
+    //       'Family Computer Disk System',
+    //       'FamilyComputerDiskSystem',
+    //       'FCDS',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'adzG1JLYu',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'KyOSlwcLk',
+    //     urlID: 'PC-Engine',
+    //     name: 'PCエンジン',
+    //     searchKeywordsArr: [
+    //       'PCエンジン',
+    //       'ピーシーエンジン',
+    //       'ぴーしーえんじん',
+    //       'PC Engine',
+    //       'PCEngine',
+    //       'PCE',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'KVvkuvZF2',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: '2yKF4qXAw',
+    //     urlID: 'MEGA-DRIVE',
+    //     name: 'メガドライブ',
+    //     searchKeywordsArr: [
+    //       'メガドライブ',
+    //       'めがどらいぶ',
+    //       'MEGA DRIVE',
+    //       'MEGADRIVE',
+    //       'MD',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'WOQKUSPPR',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'eKmDxi8lX',
+    //     urlID: 'SUPER-Famicom',
+    //     name: 'スーパーファミコン',
+    //     searchKeywordsArr: [
+    //       'スーパーファミコン',
+    //       'スーファミ',
+    //       'すーぱーふぁみこん',
+    //       'すーふぁみ',
+    //       'SUPER Famicom',
+    //       'SUPERFamicom',
+    //       'Super Family Computer',
+    //       'SuperFamilyComputer',
+    //       'SFC',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: '8oGNQ2hMR',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'Z4R-SPN2-',
+    //     urlID: 'NEO-GEO',
+    //     name: 'ネオジオ',
+    //     searchKeywordsArr: [
+    //       'ネオジオ',
+    //       'ねおじお',
+    //       'NEO GEO',
+    //       'NEOGEO',
+    //       'NEO・GEO',
+    //       'NG',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: '9zeb0m_13',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'lBSGQeGmx',
+    //     urlID: 'SEGA-SATURN',
+    //     name: 'セガサターン',
+    //     searchKeywordsArr: [
+    //       'セガサターン',
+    //       'せがさたーん',
+    //       'SEGA SATURN',
+    //       'SEGASATURN',
+    //       'SS',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'zSvRzOp0V',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'zB4ivcsqM',
+    //     urlID: 'PlayStation',
+    //     name: 'PlayStation',
+    //     searchKeywordsArr: [
+    //       'プレイステーション',
+    //       'プレーステーション',
+    //       'プレステ',
+    //       'ぷれいすてーしょん',
+    //       'ぷれーすてーしょん',
+    //       'ぷれすて',
+    //       'Play Station',
+    //       'PlayStation',
+    //       'PS',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'wlDy9Dqmv',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'o9bdsq5af',
+    //     urlID: 'VIRTUAL-BOY',
+    //     name: 'バーチャルボーイ',
+    //     searchKeywordsArr: [
+    //       'バーチャルボーイ',
+    //       'ばーちゃるぼーい',
+    //       'VIRTUAL BOY',
+    //       'VIRTUALBOY',
+    //       'VB',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'N-V_maXNc',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: '45syCFviA',
+    //     urlID: 'NINTENDO-64',
+    //     name: 'NINTENDO64',
+    //     searchKeywordsArr: [
+    //       '任天堂64',
+    //       '任天堂６４',
+    //       'ニンテンドー64',
+    //       'ニンテンドウ64',
+    //       'ニンテンドオ64',
+    //       'ニンテンドー６４',
+    //       'ニンテンドウ６４',
+    //       'ニンテンドオ６４',
+    //       'ニンテンドーロクジュウヨン',
+    //       'ニンテンドウロクジュウヨン',
+    //       'ニンテンドオロクジュウヨン',
+    //       'ロクヨン',
+    //       'にんてんどー64',
+    //       'にんてんどう64',
+    //       'にんてんどお64',
+    //       'にんてんどー６４',
+    //       'にんてんどう６４',
+    //       'にんてんどお６４',
+    //       'にんてんどーろくじゅうよん',
+    //       'にんてんどうろくじゅうよん',
+    //       'にんてんどおろくじゅうよん',
+    //       'ろくよん',
+    //       'NINTENDO 64',
+    //       'NINTENDO64',
+    //       'N64',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'iZ7MmkuQw',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'Kj_Djheqt',
+    //     urlID: 'Dreamcast',
+    //     name: 'ドリームキャスト',
+    //     searchKeywordsArr: [
+    //       'ドリームキャスト',
+    //       'ドリキャス',
+    //       'どりーむきゃすと',
+    //       'どりきゃす',
+    //       'Dreamcast',
+    //       'DC',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'I2cKTLJNk',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: '8RERfeQQ9',
+    //     urlID: 'PlayStation-2',
+    //     name: 'PlayStation 2',
+    //     searchKeywordsArr: [
+    //       'プレイステーション2',
+    //       'プレーステーション2',
+    //       'プレステ2',
+    //       'プレイステーション２',
+    //       'プレーステーション２',
+    //       'プレステ２',
+    //       'プレイステーションツー',
+    //       'プレーステーションツー',
+    //       'プレステツー',
+    //       'ぷれいすてーしょん2',
+    //       'ぷれーすてーしょん2',
+    //       'ぷれすて2',
+    //       'ぷれいすてーしょん２',
+    //       'ぷれーすてーしょん２',
+    //       'ぷれすて２',
+    //       'ぷれいすてーしょんつー',
+    //       'ぷれーすてーしょんつー',
+    //       'ぷれすてつー',
+    //       'Play Station 2',
+    //       'PlayStation 2',
+    //       'PlayStation2',
+    //       'PS2',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'PlRw2lxiy',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'XLUt628gr',
+    //     urlID: 'NINTENDO-GAMECUBE',
+    //     name: 'ニンテンドーゲームキューブ',
+    //     searchKeywordsArr: [
+    //       '任天堂ゲームキューブ',
+    //       'ニンテンドーゲームキューブ',
+    //       'ニンテンドウゲームキューブ',
+    //       'ニンテンドオゲームキューブ',
+    //       'にんてんどーげーむきゅーぶ',
+    //       'にんてんどうげーむきゅーぶ',
+    //       'にんてんどおげーむきゅーぶ',
+    //       'NINTENDO GAMECUBE',
+    //       'NINTENDOGAMECUBE',
+    //       'NGC',
+    //       'GC',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'uQcBzP5cS',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: '78lc0hPjL',
+    //     urlID: 'Xbox',
+    //     name: 'Xbox',
+    //     searchKeywordsArr: [
+    //       'エックスボックス',
+    //       'えっくすぼっくす',
+    //       'Xbox',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'NiozcDYe-',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: '08Qp5KxPA',
+    //     urlID: 'Xbox-360',
+    //     name: 'Xbox 360',
+    //     searchKeywordsArr: [
+    //       'エックスボックス360',
+    //       'エックスボックス３６０',
+    //       'エックスボックスサンロクマル',
+    //       'エックスボックスサンビャクロクジュウ',
+    //       'えっくすぼっくす360',
+    //       'えっくすぼっくす３６０',
+    //       'えっくすぼっくすさんろくまる',
+    //       'えっくすぼっくすさんびゃくろくじゅう',
+    //       'Xbox 360',
+    //       'Xbox360',
+    //       'X360'
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: '4iGMasHh4',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'YNZ6nb1Ki',
+    //     urlID: 'PlayStation-3',
+    //     name: 'PlayStation 3',
+    //     searchKeywordsArr: [
+    //       'プレイステーション3',
+    //       'プレーステーション3',
+    //       'プレステ3',
+    //       'プレイステーション３',
+    //       'プレーステーション３',
+    //       'プレステ３',
+    //       'プレイステーションスリー',
+    //       'プレーステーションスリー',
+    //       'プレステスリー',
+    //       'ぷれいすてーしょん3',
+    //       'ぷれーすてーしょん3',
+    //       'ぷれすて3',
+    //       'ぷれいすてーしょん３',
+    //       'ぷれーすてーしょん３',
+    //       'ぷれすて３',
+    //       'ぷれいすてーしょんすりー',
+    //       'ぷれーすてーしょんすりー',
+    //       'ぷれすてすりー',
+    //       'Play Station 3',
+    //       'PlayStation 3',
+    //       'PlayStation3',
+    //       'PS3',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: '91N2yPx6B',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'n3wYKZ_ao',
+    //     urlID: 'Wii',
+    //     name: 'Wii',
+    //     searchKeywordsArr: [
+    //       'ウィー',
+    //       'ウイー',
+    //       'うぃー',
+    //       'ういー',
+    //       'Wii',
+    //       'We',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'qX8WLLubQ',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'GTxWVd0z-',
+    //     urlID: 'Wii-U',
+    //     name: 'Wii U',
+    //     searchKeywordsArr: [
+    //       'ウィーユー',
+    //       'ウイーユー',
+    //       'うぃーゆー',
+    //       'ういーゆー',
+    //       'Wii U',
+    //       'Wi U',
+    //       'We U',
+    //       'WiiU',
+    //       'WiU',
+    //       'WeU',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'FW76LaH_H',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'TdK3Oc-yV',
+    //     urlID: 'PlayStation-4',
+    //     name: 'PlayStation 4',
+    //     searchKeywordsArr: [
+    //       'プレイステーション4',
+    //       'プレーステーション4',
+    //       'プレステ4',
+    //       'プレイステーション４',
+    //       'プレーステーション４',
+    //       'プレステ４',
+    //       'プレイステーションフォー',
+    //       'プレーステーションフォー',
+    //       'プレステフォー',
+    //       'ぷれいすてーしょん4',
+    //       'ぷれーすてーしょん4',
+    //       'ぷれすて4',
+    //       'ぷれいすてーしょん４',
+    //       'ぷれーすてーしょん４',
+    //       'ぷれすて４',
+    //       'ぷれいすてーしょんふぉー',
+    //       'ぷれーすてーしょんふぉー',
+    //       'ぷれすてふぉー',
+    //       'Play Station 4',
+    //       'PlayStation 4',
+    //       'PlayStation4',
+    //       'PS4',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'vk2kF94Ks',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'uPqoiXA_8',
+    //     urlID: 'Xbox-One',
+    //     name: 'Xbox One',
+    //     searchKeywordsArr: [
+    //       'エックスボックスワン',
+    //       'エックスボックスイチ',
+    //       'えっくすぼっくすわん',
+    //       'えっくすぼっくすいち',
+    //       'Xbox One',
+    //       'XboxOne',
+    //       'Xbox 1',
+    //       'Xbox1',
+    //       'XO'
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'Gu1hYjbv7',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'Zd_Ia4Hwm',
+    //     urlID: 'Nintendo-Switch',
+    //     name: 'Nintendo Switch',
+    //     searchKeywordsArr: [
+    //       '任天堂スイッチ',
+    //       '任天堂スウィッチ',
+    //       'ニンテンドースイッチ',
+    //       'ニンテンドースウィッチ',
+    //       'ニンテンドウスイッチ',
+    //       'ニンテンドウスウィッチ',
+    //       'ニンテンドオスイッチ',
+    //       'ニンテンドオスウィッチ',
+    //       'にんてんどーすいっち',
+    //       'にんてんどーすうぃっち',
+    //       'にんてんどうすいっち',
+    //       'にんてんどうすうぃっち',
+    //       'にんてんどおすいっち',
+    //       'にんてんどおすうぃっち',
+    //       'Nintendo Switch',
+    //       'NintendoSwitch',
+    //       'NS',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: '_z4DBLYNi',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'XBKalRRW7',
+    //     urlID: 'Game-Boy',
+    //     name: 'ゲームボーイ',
+    //     searchKeywordsArr: [
+    //       'ゲームボーイ',
+    //       'げーむぼーい',
+    //       'Game Boy',
+    //       'GameBoy',
+    //       'GB',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: '9Z6Wh_JJ2',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'sO2U2PzHl',
+    //     urlID: 'GAME-GEAR',
+    //     name: 'ゲームギア',
+    //     searchKeywordsArr: [
+    //       'ゲームギア',
+    //       'げーむぎあ',
+    //       'GAME GEAR',
+    //       'GAMEGEAR',
+    //       'GG',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'QQtnx7FEN',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'qBsY8y0nO',
+    //     urlID: 'PC-Engine-GT',
+    //     name: 'PCエンジンGT',
+    //     searchKeywordsArr: [
+    //       'PCエンジンGT',
+    //       'ピーシーエンジンジーティー',
+    //       'ぴーしーえんじんじーてぃー',
+    //       'PC Engine GT',
+    //       'PCEngineGT',
+    //       'PCEGT',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'IcH7HG2f7',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'u3SQqtJ-u',
+    //     urlID: 'NEOGEO-POCKET',
+    //     name: 'ネオジオポケット',
+    //     searchKeywordsArr: [
+    //       'ネオジオポケット',
+    //       'ねおじおぽけっと',
+    //       'NEO GEO POCKET',
+    //       'NEOGEO POCKET',
+    //       'NEOGEOPOCKET',
+    //       'NEO・GEO POCKET',
+    //       'NGP',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'S2Q_3MrBo',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'PYIE0rv_e',
+    //     urlID: 'Wonder-Swan',
+    //     name: 'ワンダースワン',
+    //     searchKeywordsArr: [
+    //       'ワンダースワン',
+    //       'わんだーすわん',
+    //       'Wonder Swan',
+    //       'WonderSwan',
+    //       'WS',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: '4OkTt-VSM',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'AIvzEgDCd',
+    //     urlID: 'GAMEBOY-ADVANCE',
+    //     name: 'ゲームボーイアドバンス',
+    //     searchKeywordsArr: [
+    //       'ゲームボーイアドバンス',
+    //       'げーむぼーいあどばんす',
+    //       'GAMEBOY ADVANCE',
+    //       'GAMEBOYADVANCE',
+    //       'GBA',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'Uem6UalMW',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'HATpnt7sl',
+    //     urlID: 'Nintendo-DS',
+    //     name: 'ニンテンドーDS',
+    //     searchKeywordsArr: [
+    //       '任天堂DS',
+    //       '任天堂ディーエス',
+    //       'ニンテンドーDS',
+    //       'ニンテンドーディーエス',
+    //       'ニンテンドウDS',
+    //       'ニンテンドウディーエス',
+    //       'ニンテンドオDS',
+    //       'ニンテンドオディーエス',
+    //       'にんてんどーDS',
+    //       'にんてんどーでぃーえす',
+    //       'にんてんどうDS',
+    //       'にんてんどうでぃーえす',
+    //       'にんてんどおDS',
+    //       'にんてんどおでぃーえす',
+    //       'Nintendo DS',
+    //       'NintendoDS',
+    //       'NDS',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'nMhdlLGm6',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'efIOgWs3N',
+    //     urlID: 'PlayStation-Portable',
+    //     name: 'PlayStation Portable',
+    //     searchKeywordsArr: [
+    //       'プレイステーション・ポータブル',
+    //       'プレイステーションポータブル',
+    //       'プレーステーション・ポータブル',
+    //       'プレーステーションポータブル',
+    //       'プレステポータブル',
+    //       'ぷれいすてーしょん・ぽーたぶる',
+    //       'ぷれいすてーしょんぽーたぶる',
+    //       'ぷれーすてーしょん・ぽーたぶる',
+    //       'ぷれーすてーしょんぽーたぶる',
+    //       'ぷれすて・ぽーたぶる',
+    //       'ぷれすてぽーたぶる',
+    //       'Play Station Portable',
+    //       'PlayStation Portable',
+    //       'PlayStationPortable',
+    //       'PS Portable',
+    //       'PSPortable',
+    //       'PSP',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'YvgkE6inK',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'qk9DiUwN-',
+    //     urlID: 'Nintendo-3DS',
+    //     name: 'ニンテンドー3DS',
+    //     searchKeywordsArr: [
+    //       '任天堂3DS',
+    //       '任天堂スリーディーエス',
+    //       'ニンテンドー3DS',
+    //       'ニンテンドースリーディーエス',
+    //       'ニンテンドウ3DS',
+    //       'ニンテンドウスリーディーエス',
+    //       'ニンテンドオ3DS',
+    //       'ニンテンドオスリーディーエス',
+    //       'にんてんどー3DS',
+    //       'にんてんどーすりーでぃーえす',
+    //       'にんてんどう3DS',
+    //       'にんてんどうすりーでぃーえす',
+    //       'にんてんどお3DS',
+    //       'にんてんどおすりーでぃーえす',
+    //       'Nintendo 3DS',
+    //       'Nintendo3DS',
+    //       'N3DS',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: '_3asC9ODV',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'mOpBZsQBm',
+    //     urlID: 'PlayStation-Vita',
+    //     name: 'PlayStation Vita',
+    //     searchKeywordsArr: [
+    //       'プレイステーション・ヴィータ',
+    //       'プレイステーションヴィータ',
+    //       'プレーステーション・ヴィータ',
+    //       'プレーステーションヴィータ',
+    //       'プレステヴィータ',
+    //       'プレイステーション・ビータ',
+    //       'プレイステーションビータ',
+    //       'プレーステーション・ビータ',
+    //       'プレーステーションビータ',
+    //       'プレステビータ',
+    //       'ぷれいすてーしょん・ゔぃーた',
+    //       'ぷれいすてーしょんゔぃーた',
+    //       'ぷれーすてーしょん・ゔぃーた',
+    //       'ぷれーすてーしょんゔぃーた',
+    //       'ぷれすて・ゔぃーた',
+    //       'ぷれすてゔぃーた',
+    //       'ぷれいすてーしょん・びーた',
+    //       'ぷれいすてーしょんびーた',
+    //       'ぷれーすてーしょん・びーた',
+    //       'ぷれーすてーしょんびーた',
+    //       'ぷれすて・びーた',
+    //       'ぷれすてびーた',
+    //       'Play Station Vita',
+    //       'PlayStation Vita',
+    //       'PlayStationVita',
+    //       'PS Vita',
+    //       'PSVita',
+    //       'PSV',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: '8hmwbso_y',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'ehBtuyjma',
+    //     urlID: 'PC-FX',
+    //     name: 'PC-FX',
+    //     searchKeywordsArr: [
+    //       'PC-FX',
+    //       'ピーシーエフエックス',
+    //       'ぴーしーえふえっくす',
+    //       'PC FX',
+    //       'PCFX',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: '0J3jIYcCN',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'si2_UYLdW',
+    //     urlID: '3DO',
+    //     name: '3DO',
+    //     searchKeywordsArr: [
+    //       '3DO',
+    //       'スリーディーオー',
+    //       'すりーでぃーおー',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'pr6k8Jn6_',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'P0UG-LHOQ',
+    //     urlID: 'PC',
+    //     name: 'PC',
+    //     searchKeywordsArr: [
+    //       'ピーシー',
+    //       'パソコン',
+    //       'パーソナル・コンピューター',
+    //       'パーソナルコンピューター',
+    //       'ぴーしー',
+    //       'ぱーそなる・こんぴゅーたー',
+    //       'ぱーそなるこんぴゅーたー',
+    //       'Personal Computer',
+    //       'PersonalComputer',
+    //       'PC',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'KN9AMVKP7',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'SXybALV1f',
+    //     urlID: 'Android',
+    //     name: 'Android',
+    //     searchKeywordsArr: [
+    //       'アンドロイド',
+    //       'あんどろいど',
+    //       'Android',
+    //     ]
+    //   },
+
+
+    //   {
+    //     _id: 'M7YVRglvr',
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     language: 'ja',
+    //     country: 'JP',
+    //     hardwareID: 'o-f3Zxd49',
+    //     urlID: 'iOS',
+    //     name: 'iOS',
+    //     searchKeywordsArr: [
+    //       'アイオーエス',
+    //       'あいおーえす',
+    //       'iOS',
+    //     ]
+    //   },
+
+    // ];
 
 
 
@@ -1982,12 +2263,36 @@ export default async (req, res) => {
 
 
 
+      // --------------------------------------------------
+      //   threadCount
+      // --------------------------------------------------
+
+      const forumThreadCount = lodashGet(forumThreadCountGCObj, [game_no], 0);
+
+      // if (!forumThreadCount) {
+      //   console.log(chalk`
+      // game_no: {green ${game_no}}
+      // forumThreadCount: {green ${forumThreadCount}}
+      // `);
+      // }
+      // console.log(chalk`
+      // game_no: {green ${game_no}}
+      // forumThreadCount: {green ${forumThreadCount}}
+      // `);
+
+
+
 
       // --------------------------------------------------
       //   push
       // --------------------------------------------------
 
       if (on_off === '1') {
+
+
+        // --------------------------------------------------
+        //   games
+        // --------------------------------------------------
 
         gamesArr.push(
 
@@ -2016,6 +2321,10 @@ export default async (req, res) => {
         );
 
 
+        // --------------------------------------------------
+        //   game-communities
+        // --------------------------------------------------
+
         gameCommunitiesArr.push(
 
           {
@@ -2023,7 +2332,7 @@ export default async (req, res) => {
             createdDate: ISO8601,
             updatedDate: ISO8601,
             forumObj: {
-              threadCount: 0,
+              threadCount: forumThreadCount === 0 ? 1 : forumThreadCount,
             },
             recruitmentObj: {
               threadCount: 0,
@@ -2037,104 +2346,45 @@ export default async (req, res) => {
 
         );
 
-      }
 
-    }
+        // --------------------------------------------------
+        //   forum-threads
+        // --------------------------------------------------
 
+        if (forumThreadCount === 0) {
 
+          forumThreadsArr.push(
 
+            {
+              _id: shortid.generate(),
+              createdDate,
+              updatedDate,
+              gameCommunities_id,
+              userCommunities_id: '',
+              users_id: '',
+              localesArr: [
+                {
+                  _id: shortid.generate(),
+                  language: 'ja',
+                  title: `${name}について語ろう！`,
+                  comment: '雑談でもなんでもOK！\nみんなで語りましょう！！',
+                }
+              ],
+              imagesAndVideos_id: '',
+              comments: 0,
+              replies: 0,
+              images: 0,
+              videos: 0,
+              acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
+              ip: '192.168.1.0',
+              userAgent,
+            }
 
-    // --------------------------------------------------
-    //   ids
-    // --------------------------------------------------
+          );
 
-    const idsArr = [];
-
-
-    for (const [index, valueObj] of gameIDDataArr.entries()) {
-
-
-      // --------------------------------------------------
-      //   _id が存在していない場合は処理しない
-      // --------------------------------------------------
-
-      const game_id_no = parseInt(lodashGet(valueObj, ['game_id_no'], 0), 10);
-      const user_no = lodashGet(valueObj, ['user_no'], '');
-
-      if (idsObj[`game_id_no_${game_id_no}`] === undefined || idsObj[`user_no_${user_no}`] === undefined) {
-        continue;
-      }
-
-
-      // --------------------------------------------------
-      //   Data
-      // --------------------------------------------------
-
-      const on_off = lodashGet(valueObj, ['on_off'], '0');
-      const game_no = lodashGet(valueObj, ['game_no'], '');
-      const hardware_no = lodashGet(valueObj, ['hardware_no'], '');
-      const id = lodashGet(valueObj, ['id'], '');
-
-
+        }
 
 
-      // --------------------------------------------------
-      //   users_id
-      // --------------------------------------------------
-
-      let users_id = '';
-
-      if (idsObj[`user_no_${user_no}`]) {
-        users_id = idsObj[`user_no_${user_no}`];
-      }
-
-
-      // --------------------------------------------------
-      //   gameCommunities_id
-      // --------------------------------------------------
-
-      let gameCommunities_id = '';
-
-      if (idsObj[`game_no_${game_no}`]) {
-        gameCommunities_id = idsObj[`game_no_${game_no}`];
-      }
-
-
-      // --------------------------------------------------
-      //   platform
-      // --------------------------------------------------
-
-      let platform = 'Other';
-
-      if (hardware_no === '1' || hardware_no === '7') {
-        platform = 'PlayStation';
-      }
-
-
-
-
-      // --------------------------------------------------
-      //   push
-      // --------------------------------------------------
-
-      if (on_off === '1') {
-
-        idsArr.push(
-
-          {
-            _id: idsObj[`game_id_no_${game_id_no}`],
-            createdDate: ISO8601,
-            updatedDate: ISO8601,
-            users_id,
-            gameCommunities_id,
-            platform,
-            label: '',
-            id,
-            publicSetting: 5,
-            search: false,
-          }
-
-        );
 
       }
 
@@ -2143,128 +2393,101 @@ export default async (req, res) => {
 
 
 
-    // --------------------------------------------------
-    //   forum-threads
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   ids
+    // // --------------------------------------------------
 
-    const forumThreadsArr = [];
-
-
-    for (const [index, valueObj] of bbsThreadUCDataArr.entries()) {
+    // const idsArr = [];
 
 
-      // --------------------------------------------------
-      //   _id が存在していない場合は処理しない
-      // --------------------------------------------------
-
-      const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
-      const community_no = lodashGet(valueObj, ['community_no'], '');
-
-      if (idsObj[`bbs_thread_no_uc_${bbs_thread_no}`] === undefined || idsObj[`community_no_${community_no}`] === undefined) {
-        continue;
-      }
+    // for (const [index, valueObj] of gameIDDataArr.entries()) {
 
 
-      // --------------------------------------------------
-      //   Data
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   _id が存在していない場合は処理しない
+    //   // --------------------------------------------------
 
-      const on_off = lodashGet(valueObj, ['on_off'], '0');
-      const bbs_id = lodashGet(valueObj, ['bbs_id'], '');
-      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().toISOString();
-      const updatedDate = moment(lodashGet(valueObj, ['renewal_date'], '')).utc().toISOString();
-      const user_no = lodashGet(valueObj, ['user_no'], '');
-      const name = lodashGet(valueObj, ['title'], '');
-      const comment = lodashGet(valueObj, ['comment'], '');
-      const image = lodashGet(valueObj, ['image'], '');
-      const movie = lodashGet(valueObj, ['movie'], '');
-      const comments = lodashGet(valueObj, ['comment_total'], '');
-      const replies = lodashGet(valueObj, ['reply_total'], '');
-      const userAgent = lodashGet(valueObj, ['user_agent'], '');
+    //   const game_id_no = parseInt(lodashGet(valueObj, ['game_id_no'], 0), 10);
+    //   const user_no = lodashGet(valueObj, ['user_no'], '');
+
+    //   if (idsObj[`game_id_no_${game_id_no}`] === undefined || idsObj[`user_no_${user_no}`] === undefined) {
+    //     continue;
+    //   }
 
 
-      // --------------------------------------------------
-      //   forumThreads_id
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   Data
+    //   // --------------------------------------------------
 
-      const forumThreads_id = shortid.generate();
-
-
-      // --------------------------------------------------
-      //   users_id
-      // --------------------------------------------------
-
-      let users_id = '';
-
-      if (idsObj[`user_no_${user_no}`]) {
-        users_id = idsObj[`user_no_${user_no}`];
-      }
-
-
-      // --------------------------------------------------
-      //   userCommunities_id
-      // --------------------------------------------------
-
-      let userCommunities_id = '';
-
-      if (idsObj[`community_no_${community_no}`]) {
-        userCommunities_id = idsObj[`community_no_${community_no}`];
-      }
-
-
-      // --------------------------------------------------
-      //   imagesAndVideos_id
-      // --------------------------------------------------
-
-      let imagesAndVideos_id = '';
-
-      // if (imageObj[game_no]) {
-      //   imagesAndVideos_id = lodashGet(idsImageObj, [`bbs_thread_no_uc_${bbs_thread_no}`, 'id1'], '');
-      // }
+    //   const on_off = lodashGet(valueObj, ['on_off'], '0');
+    //   const game_no = lodashGet(valueObj, ['game_no'], '');
+    //   const hardware_no = lodashGet(valueObj, ['hardware_no'], '');
+    //   const id = lodashGet(valueObj, ['id'], '');
 
 
 
 
-      // --------------------------------------------------
-      //   push
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   users_id
+    //   // --------------------------------------------------
 
-      if (on_off === '1') {
+    //   let users_id = '';
 
-        forumThreadsArr.push(
-
-          {
-            _id: forumThreads_id,
-            createdDate,
-            updatedDate,
-            gameCommunities_id: '',
-            userCommunities_id,
-            users_id,
-            localesArr: [
-              {
-                _id: shortid.generate(),
-                language: 'ja',
-                name,
-                comment,
-              }
-            ],
-            imagesAndVideos_id,
-            comments,
-            replies,
-            images: image ? 1 : 0,
-            videos: movie ? 1 : 0,
-            acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
-            ip: '192.168.1.0',
-            userAgent,
-          }
-
-        );
-
-      }
-
-    }
+    //   if (idsObj[`user_no_${user_no}`]) {
+    //     users_id = idsObj[`user_no_${user_no}`];
+    //   }
 
 
+    //   // --------------------------------------------------
+    //   //   gameCommunities_id
+    //   // --------------------------------------------------
+
+    //   let gameCommunities_id = '';
+
+    //   if (idsObj[`game_no_${game_no}`]) {
+    //     gameCommunities_id = idsObj[`game_no_${game_no}`];
+    //   }
+
+
+    //   // --------------------------------------------------
+    //   //   platform
+    //   // --------------------------------------------------
+
+    //   let platform = 'Other';
+
+    //   if (hardware_no === '1' || hardware_no === '7') {
+    //     platform = 'PlayStation';
+    //   }
+
+
+
+
+    //   // --------------------------------------------------
+    //   //   push
+    //   // --------------------------------------------------
+
+    //   if (on_off === '1') {
+
+    //     idsArr.push(
+
+    //       {
+    //         _id: idsObj[`game_id_no_${game_id_no}`],
+    //         createdDate: ISO8601,
+    //         updatedDate: ISO8601,
+    //         users_id,
+    //         gameCommunities_id,
+    //         platform,
+    //         label: '',
+    //         id,
+    //         publicSetting: 5,
+    //         search: false,
+    //       }
+
+    //     );
+
+    //   }
+
+    // }
 
 
 
@@ -2316,6 +2539,12 @@ export default async (req, res) => {
     // `);
 
     // console.log(`
+    //   ----- forumThreadsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
     //   ----- userCommunitiesArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(userCommunitiesArr)), { colors: true, depth: null })}\n
     //   --------------------\n
@@ -2340,16 +2569,18 @@ export default async (req, res) => {
     // `);
 
     // console.log(`
+    //   ----- gameCommunitiesArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(gameCommunitiesArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
     //   ----- idsArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(idsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
-    console.log(`
-      ----- forumThreadsArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(forumThreadsArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+
 
 
 

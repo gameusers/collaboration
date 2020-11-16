@@ -679,8 +679,8 @@ const ContainerLayout = (props) => {
       <br /><br />
 
 
-      <h1>画像</h1>
-      <p>画像を処理する。</p>
+      <h1>画像と動画</h1>
+      <p>画像と動画を処理する。</p>
 
       <Button
         variant="contained"
@@ -834,7 +834,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Title
   // --------------------------------------------------
 
-  const title = 'Game Users Initialize';
+  const title = 'Game Users Import';
 
 
   // --------------------------------------------------

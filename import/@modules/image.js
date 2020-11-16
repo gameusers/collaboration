@@ -118,6 +118,7 @@ const saveImageAndVideo = async ({
   let maxHeight = 1080;
   let width = 0;
   let height = 0;
+  let w = '320w';
 
 
   // ---------------------------------------------
@@ -158,10 +159,16 @@ const saveImageAndVideo = async ({
     maxWidth = 320;
     maxHeight = 320;
 
+
+  // ---------------------------------------------
+  //   gc / heroImage
+  // ---------------------------------------------
+
+  } else if (type === 'gc' && heroImage) {
+
+    w = '1920w';
+
   }
-
-
-  let w = heroImage ? '1920w' : '320w';
 
 
 
@@ -194,8 +201,31 @@ const saveImageAndVideo = async ({
     //   リサイズする
     // ---------------------------------------------
 
+    if (type === 'forum') {
+
+      width = sourceWidth;
+      height = sourceheight;
+
+      if (width < 480) {
+
+        w = '320w';
+
+      } else if (width < 640) {
+
+        w = '480w';
+
+      } else if (width < 800) {
+
+        w = '640w';
+
+      } else {
+
+        w = '800w';
+
+      }
+
     // 画像が指定のサイズより大きい場合、リサイズする
-    if (!heroImage || sourceWidth > maxWidth || sourceheight > maxHeight) {
+    } else if (!heroImage || sourceWidth > maxWidth || sourceheight > maxHeight) {
 
       image.resize(maxWidth, maxHeight);
       buff = await image.getBufferAsync(mimeType);
@@ -232,8 +262,7 @@ const saveImageAndVideo = async ({
     // ---------------------------------------------
 
     const dirPath = `import/img-new/${type}/${id1}/${id2}`;
-
-    mkdirp.sync(dirPath);
+    // mkdirp.sync(dirPath);
 
 
     // ---------------------------------------------
@@ -241,7 +270,7 @@ const saveImageAndVideo = async ({
     // ---------------------------------------------
 
     const srcSetSrc = `import/img-new/${type}/${id1}/${id2}/${w}.${extension}`;
-    fs.writeFileSync(srcSetSrc, optimizedBuffer);
+    // fs.writeFileSync(srcSetSrc, optimizedBuffer);
 
 
     // ---------------------------------------------

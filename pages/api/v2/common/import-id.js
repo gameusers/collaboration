@@ -139,6 +139,18 @@ export default async (req, res) => {
     const bbsThreadGCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_thread_gc.json', 'utf8'));
     const bbsThreadGCDataArr = lodashGet(bbsThreadGCJsonArr, [2, 'data'], []);
 
+    const bbsCommentUCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_comment.json', 'utf8'));
+    const bbsCommentUCDataArr = lodashGet(bbsCommentUCJsonArr, [2, 'data'], []);
+
+    const bbsCommentGCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_comment_gc.json', 'utf8'));
+    const bbsCommentGCDataArr = lodashGet(bbsCommentGCJsonArr, [2, 'data'], []);
+
+    const bbsReplyUCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_reply.json', 'utf8'));
+    const bbsReplyUCDataArr = lodashGet(bbsReplyUCJsonArr, [2, 'data'], []);
+
+    const bbsReplyGCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_reply_gc.json', 'utf8'));
+    const bbsReplyGCDataArr = lodashGet(bbsReplyGCJsonArr, [2, 'data'], []);
+
 
 
 
@@ -148,6 +160,7 @@ export default async (req, res) => {
 
     const saveArr = [];
     const saveImagesArr = [];
+    const users_idsArr = [];
 
 
     for (const [index, valueObj] of usersDataDataArr.entries()) {
@@ -176,6 +189,8 @@ export default async (req, res) => {
       // --------------------------------------------------
 
       if (on_off === '1' && datetimeAccess.isAfter(datetimeLimit)) {
+
+        users_idsArr.push(user_no);
 
         saveArr.push(
 
@@ -227,6 +242,7 @@ export default async (req, res) => {
 
       const community_no = parseInt(lodashGet(valueObj, ['community_no'], 0), 10);
       const on_off = lodashGet(valueObj, ['on_off'], '0');
+      const author_user_no = lodashGet(valueObj, ['author_user_no'], '0');
       const thumbnail = lodashGet(valueObj, ['thumbnail'], '0');
 
 
@@ -234,7 +250,7 @@ export default async (req, res) => {
       //   push
       // --------------------------------------------------
 
-      if (on_off === '1' && !bansUCArr.includes(community_no)) {
+      if (on_off === '1' && !bansUCArr.includes(community_no) && users_idsArr.includes(author_user_no)) {
 
         saveArr.push(
 
@@ -808,6 +824,238 @@ export default async (req, res) => {
               idThumbnail1: '',
               idThumbnail2: '',
               key: `bbs_thread_no_gc_${bbs_thread_no}`,
+            }
+
+          );
+
+        }
+
+      }
+
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   forum-comments UC
+    // --------------------------------------------------
+
+    for (const [index, valueObj] of bbsCommentUCDataArr.entries()) {
+
+
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
+
+      const bbs_comment_no = parseInt(lodashGet(valueObj, ['bbs_comment_no'], 0), 10);
+      const on_off = lodashGet(valueObj, ['on_off'], '0');
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
+
+
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
+
+      if (on_off === '1') {
+
+        saveArr.push(
+
+          {
+            _id: shortid.generate(),
+            id: shortid.generate(),
+            key: `bbs_comment_no_uc_${bbs_comment_no}`,
+          }
+
+        );
+
+        if (image || movie) {
+
+          saveImagesArr.push(
+
+            {
+              _id: shortid.generate(),
+              id1: shortid.generate(),
+              id2Arr: [shortid.generate()],
+              idThumbnail1: '',
+              idThumbnail2: '',
+              key: `bbs_comment_no_uc_${bbs_comment_no}`,
+            }
+
+          );
+
+        }
+
+      }
+
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   forum-comments GC
+    // --------------------------------------------------
+
+    for (const [index, valueObj] of bbsCommentGCDataArr.entries()) {
+
+
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
+
+      const bbs_comment_no = parseInt(lodashGet(valueObj, ['bbs_comment_no'], 0), 10);
+      const on_off = lodashGet(valueObj, ['on_off'], '0');
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
+
+
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
+
+      if (on_off === '1') {
+
+        saveArr.push(
+
+          {
+            _id: shortid.generate(),
+            id: shortid.generate(),
+            key: `bbs_comment_no_gc_${bbs_comment_no}`,
+          }
+
+        );
+
+        if (image || movie) {
+
+          saveImagesArr.push(
+
+            {
+              _id: shortid.generate(),
+              id1: shortid.generate(),
+              id2Arr: [shortid.generate()],
+              idThumbnail1: '',
+              idThumbnail2: '',
+              key: `bbs_comment_no_gc_${bbs_comment_no}`,
+            }
+
+          );
+
+        }
+
+      }
+
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   forum-replies UC
+    // --------------------------------------------------
+
+    for (const [index, valueObj] of bbsReplyUCDataArr.entries()) {
+
+
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
+
+      const bbs_reply_no = parseInt(lodashGet(valueObj, ['bbs_reply_no'], 0), 10);
+      const on_off = lodashGet(valueObj, ['on_off'], '0');
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
+
+
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
+
+      if (on_off === '1') {
+
+        saveArr.push(
+
+          {
+            _id: shortid.generate(),
+            id: shortid.generate(),
+            key: `bbs_reply_no_uc_${bbs_reply_no}`,
+          }
+
+        );
+
+        if (image || movie) {
+
+          saveImagesArr.push(
+
+            {
+              _id: shortid.generate(),
+              id1: shortid.generate(),
+              id2Arr: [shortid.generate()],
+              idThumbnail1: '',
+              idThumbnail2: '',
+              key: `bbs_reply_no_uc_${bbs_reply_no}`,
+            }
+
+          );
+
+        }
+
+      }
+
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   forum-replies GC
+    // --------------------------------------------------
+
+    for (const [index, valueObj] of bbsReplyGCDataArr.entries()) {
+
+
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
+
+      const bbs_reply_no = parseInt(lodashGet(valueObj, ['bbs_reply_no'], 0), 10);
+      const on_off = lodashGet(valueObj, ['on_off'], '0');
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
+
+
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
+
+      if (on_off === '1') {
+
+        saveArr.push(
+
+          {
+            _id: shortid.generate(),
+            id: shortid.generate(),
+            key: `bbs_reply_no_gc_${bbs_reply_no}`,
+          }
+
+        );
+
+        if (image || movie) {
+
+          saveImagesArr.push(
+
+            {
+              _id: shortid.generate(),
+              id1: shortid.generate(),
+              id2Arr: [shortid.generate()],
+              idThumbnail1: '',
+              idThumbnail2: '',
+              key: `bbs_reply_no_gc_${bbs_reply_no}`,
             }
 
           );

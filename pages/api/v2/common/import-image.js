@@ -158,6 +158,12 @@ export default async (req, res) => {
     const bbsReplyGCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_reply_gc.json', 'utf8'));
     const bbsReplyGCDataArr = lodashGet(bbsReplyGCJsonArr, [2, 'data'], []);
 
+    const recruitmentJsonArr = JSON.parse(fs.readFileSync('import/json/recruitment.json', 'utf8'));
+    const recruitmentDataArr = lodashGet(recruitmentJsonArr, [2, 'data'], []);
+
+    const recruitmentReplyJsonArr = JSON.parse(fs.readFileSync('import/json/recruitment_reply.json', 'utf8'));
+    const recruitmentReplyDataArr = lodashGet(recruitmentReplyJsonArr, [2, 'data'], []);
+
 
 
 
@@ -1105,6 +1111,222 @@ export default async (req, res) => {
 
 
     // }
+
+
+
+
+    // --------------------------------------------------
+    //   recruitment-threads
+    // --------------------------------------------------
+
+    // for (const [index, valueObj] of recruitmentDataArr.entries()) {
+
+
+    //   // --------------------------------------------------
+    //   //   Data
+    //   // --------------------------------------------------
+
+    //   const recruitment_id = lodashGet(valueObj, ['recruitment_id'], '');
+    //   const game_no = lodashGet(valueObj, ['game_no'], '');
+
+    //   if (
+
+    //     idsObj[`recruitment_id_${recruitment_id}`] === undefined ||
+    //     idsObj[`game_no_${game_no}`] === undefined
+
+    //   ) {
+    //     continue;
+    //   }
+
+
+    //   const user_no = lodashGet(valueObj, ['user_no'], 0);
+    //   const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
+    //   const image = lodashGet(valueObj, ['image'], '');
+    //   const movie = lodashGet(valueObj, ['movie'], '');
+
+    //   const id1 = lodashGet(idsImageObj, [`recruitment_id_${recruitment_id}`, 'id1'], '');
+    //   const id2 = lodashGet(idsImageObj, [`recruitment_id_${recruitment_id}`, 'id2Arr', 0], '');
+
+
+    //   // --------------------------------------------------
+    //   //   push
+    //   // --------------------------------------------------
+
+    //   if (id1 && id2) {
+
+
+    //     let imagesAndVideosObj = {};
+
+
+    //     // --------------------------------------------------
+    //     //   画像を保存する
+    //     // --------------------------------------------------
+
+    //     if (image) {
+
+    //       imagesAndVideosObj = await saveImageAndVideo({
+
+    //         pass: `import/img-old/recruitment/recruitment/${recruitment_id}/image_1.jpg`,
+    //         type: 'recruitment',
+    //         id1,
+    //         id2,
+    //         users_id,
+    //         ISO8601,
+
+    //       });
+
+
+    //     // --------------------------------------------------
+    //     //   動画
+    //     // --------------------------------------------------
+
+    //     } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
+
+    //       let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
+    //       videoIDArr = videoIDArr[1].split('";}}');
+    //       const videoID = videoIDArr[0];
+
+    //       imagesAndVideosObj = {
+
+    //         _id: id1,
+    //         createdDate: ISO8601,
+    //         updatedDate: ISO8601,
+    //         users_id,
+    //         type: 'recruitment',
+    //         images: 0,
+    //         videos: 1,
+    //         arr: [
+    //           {
+    //             _id: id2,
+    //             type: 'video',
+    //             videoChannel: 'youtube',
+    //             videoID,
+    //           },
+    //         ],
+
+    //       };
+
+    //     }
+
+
+    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
+    //       imagesAndVideosArr.push(imagesAndVideosObj);
+    //     }
+
+
+    //   }
+
+
+    // }
+
+
+
+
+    // --------------------------------------------------
+    //   recruitment-comments
+    // --------------------------------------------------
+
+    for (const [index, valueObj] of recruitmentReplyDataArr.entries()) {
+
+
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
+
+      const recruitment_id = lodashGet(valueObj, ['recruitment_id'], '');
+      const recruitment_reply_id = lodashGet(valueObj, ['recruitment_reply_id'], '');
+      const game_no = lodashGet(valueObj, ['game_no'], '');
+
+      if (
+
+        idsObj[`recruitment_id_${recruitment_id}`] === undefined ||
+        idsObj[`recruitment_reply_id_${recruitment_reply_id}`] === undefined ||
+        idsObj[`game_no_${game_no}`] === undefined
+
+      ) {
+        continue;
+      }
+
+
+      const user_no = lodashGet(valueObj, ['user_no'], 0);
+      const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
+
+      const id1 = lodashGet(idsImageObj, [`recruitment_reply_id_${recruitment_reply_id}`, 'id1'], '');
+      const id2 = lodashGet(idsImageObj, [`recruitment_reply_id_${recruitment_reply_id}`, 'id2Arr', 0], '');
+
+
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
+
+      if (id1 && id2) {
+
+
+        let imagesAndVideosObj = {};
+
+
+        // --------------------------------------------------
+        //   画像を保存する
+        // --------------------------------------------------
+
+        if (image) {
+
+          imagesAndVideosObj = await saveImageAndVideo({
+
+            pass: `import/img-old/recruitment/reply/${recruitment_reply_id}/image_1.jpg`,
+            type: 'recruitment',
+            id1,
+            id2,
+            users_id,
+            ISO8601,
+
+          });
+
+
+        // --------------------------------------------------
+        //   動画
+        // --------------------------------------------------
+
+        } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
+
+          let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
+          videoIDArr = videoIDArr[1].split('";}}');
+          const videoID = videoIDArr[0];
+
+          imagesAndVideosObj = {
+
+            _id: id1,
+            createdDate: ISO8601,
+            updatedDate: ISO8601,
+            users_id,
+            type: 'recruitment',
+            images: 0,
+            videos: 1,
+            arr: [
+              {
+                _id: id2,
+                type: 'video',
+                videoChannel: 'youtube',
+                videoID,
+              },
+            ],
+
+          };
+
+        }
+
+
+        if (Object.keys(imagesAndVideosObj).length !== 0) {
+          imagesAndVideosArr.push(imagesAndVideosObj);
+        }
+
+
+      }
+
+
+    }
 
 
 

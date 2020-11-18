@@ -201,7 +201,7 @@ const saveImageAndVideo = async ({
     //   リサイズする
     // ---------------------------------------------
 
-    if (type === 'forum') {
+    if (type === 'forum' || type === 'recruitment') {
 
       width = sourceWidth;
       height = sourceheight;

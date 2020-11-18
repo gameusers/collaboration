@@ -151,6 +151,12 @@ export default async (req, res) => {
     const bbsReplyGCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_reply_gc.json', 'utf8'));
     const bbsReplyGCDataArr = lodashGet(bbsReplyGCJsonArr, [2, 'data'], []);
 
+    const recruitmentJsonArr = JSON.parse(fs.readFileSync('import/json/recruitment.json', 'utf8'));
+    const recruitmentDataArr = lodashGet(recruitmentJsonArr, [2, 'data'], []);
+
+    const recruitmentReplyJsonArr = JSON.parse(fs.readFileSync('import/json/recruitment_reply.json', 'utf8'));
+    const recruitmentReplyDataArr = lodashGet(recruitmentReplyJsonArr, [2, 'data'], []);
+
 
 
 
@@ -646,7 +652,7 @@ export default async (req, res) => {
           {
             _id: shortid.generate(),
             id: shortid.generate(),
-            key: `game_no_${game_no}`,
+            key: `game_no_${game_no}`,// gameCommunities_id
           }
 
         );
@@ -1056,6 +1062,170 @@ export default async (req, res) => {
               idThumbnail1: '',
               idThumbnail2: '',
               key: `bbs_reply_no_gc_${bbs_reply_no}`,
+            }
+
+          );
+
+        }
+
+      }
+
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   recruitment-threads
+    // --------------------------------------------------
+
+    recruitmentDataArr.sort((a, b) => {
+
+      const aDatetime = moment(a.regi_date).utcOffset(0);
+      const bDatetime = moment(b.regi_date).utcOffset(0);
+
+      if (aDatetime.isBefore(bDatetime)) {
+
+        return -1;
+
+      } else {
+
+        return 1;
+
+      }
+
+    });
+
+    // console.log(`
+    //   ----- recruitmentDataArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentDataArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
+    for (const [index, valueObj] of recruitmentDataArr.entries()) {
+
+
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
+
+      const recruitment_id = lodashGet(valueObj, ['recruitment_id'], 0);
+      const on_off = lodashGet(valueObj, ['on_off'], '0');
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
+
+
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
+
+      if (on_off === '1') {
+
+        saveArr.push(
+
+          {
+            _id: shortid.generate(),
+            id: shortid.generate(),
+            key: `recruitment_id_${recruitment_id}`,
+          }
+
+        );
+
+        if (image || movie) {
+
+          saveImagesArr.push(
+
+            {
+              _id: shortid.generate(),
+              id1: shortid.generate(),
+              id2Arr: [shortid.generate()],
+              idThumbnail1: '',
+              idThumbnail2: '',
+              key: `recruitment_id_${recruitment_id}`,
+            }
+
+          );
+
+        }
+
+      }
+
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   recruitment-comments
+    // --------------------------------------------------
+
+    recruitmentReplyDataArr.sort((a, b) => {
+
+      const aDatetime = moment(a.regi_date).utcOffset(0);
+      const bDatetime = moment(b.regi_date).utcOffset(0);
+
+      if (aDatetime.isBefore(bDatetime)) {
+
+        return -1;
+
+      } else {
+
+        return 1;
+
+      }
+
+    });
+
+    // console.log(`
+    //   ----- recruitmentReplyDataArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentReplyDataArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
+    for (const [index, valueObj] of recruitmentReplyDataArr.entries()) {
+
+
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
+
+      const recruitment_reply_id = lodashGet(valueObj, ['recruitment_reply_id'], 0);
+      const on_off = lodashGet(valueObj, ['on_off'], '0');
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
+
+
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
+
+      if (on_off === '1') {
+
+        saveArr.push(
+
+          {
+            _id: shortid.generate(),
+            id: shortid.generate(),
+            key: `recruitment_reply_id_${recruitment_reply_id}`,
+          }
+
+        );
+
+        if (image || movie) {
+
+          saveImagesArr.push(
+
+            {
+              _id: shortid.generate(),
+              id1: shortid.generate(),
+              id2Arr: [shortid.generate()],
+              idThumbnail1: '',
+              idThumbnail2: '',
+              key: `recruitment_reply_id_${recruitment_reply_id}`,
             }
 
           );

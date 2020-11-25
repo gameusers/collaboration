@@ -83,12 +83,6 @@ const Component = (props) => {
     heroImage = true;
   }
 
-  // console.log(`
-  //   ----- headerObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(headerObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-
 
 
 
@@ -196,27 +190,27 @@ const Component = (props) => {
         `}
       >
 
-        <div>
-        <img
-          css={css`
-            width: 128px;
-            border-radius: 8px;
-            box-shadow: 4px 4px 10px #383838;
-            margin: 0 15px 0 0;
+        {/* <div> */}
+          <img
+            css={css`
+              width: 128px;
+              border-radius: 8px;
+              box-shadow: 4px 4px 10px #383838;
+              margin: 0 15px 0 0;
 
-            @media screen and (max-width: 480px) {
-              width: 96px;
-            }
+              @media screen and (max-width: 480px) {
+                width: 96px;
+              }
 
-            @media screen and (max-width: 320px) {
-              width: 64px;
-            }
-          `}
-          src={src}
-          srcSet={srcSet}
-          alt={name}
-        />
-        </div>
+              @media screen and (max-width: 320px) {
+                width: 64px;
+              }
+            `}
+            src={src}
+            srcSet={srcSet}
+            alt={name}
+          />
+        {/* </div> */}
 
         {componentData}
 

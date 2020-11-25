@@ -215,7 +215,7 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const releaseData = lodashGet(hardwareSortedArr, [0, 'releaseDate'], '');
-  const formattedReleaseData = moment(releaseData).format('YYYY/MM/DD');
+  const formattedReleaseData = moment(releaseData).utc().format('YYYY/MM/DD');
 
 
   // --------------------------------------------------
@@ -275,9 +275,9 @@ const Component = (props) => {
             background-color: rgba(0, 0, 0, 0.5);
             color: #fff;
 
-            position: absolute;
-            right: 15px;
-            bottom: 15px;
+            // position: absolute;
+            // right: 15px;
+            // bottom: 15px;
             padding: 0 0 6px 0;
           `}
         >
@@ -342,9 +342,9 @@ const Component = (props) => {
             background-color: rgba(0, 0, 0, 0.5);
             color: #fff;
 
-            position: absolute;
-            right: 15px;
-            bottom: 15px;
+            // position: absolute;
+            // right: 15px;
+            // bottom: 15px;
             padding: 0 2px 0 0;
           `}
         >

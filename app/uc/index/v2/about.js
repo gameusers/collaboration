@@ -47,6 +47,8 @@ import Paragraph from 'app/common/layout/v2/paragraph.js';
 
 
 
+
+
 // --------------------------------------------------
 //   Function Components
 // --------------------------------------------------
@@ -95,22 +97,6 @@ const Component = (props) => {
   const description = lodashGet(userCommunityObj, ['description'], '');
 
 
-  // userCommunityObj: {
-  //   _id: 'cxO8tEGty',
-  //   forumObj: { threadCount: 6 },
-  //   createdDate: '2020-09-01T04:50:36.327Z',
-  //   users_id: 'jun-deE4J',
-  //   updatedDateObj: { forum: '2020-09-01T04:50:36.327Z' },
-  //   communityType: 'open',
-  //   anonymity: true,
-  //   name: 'User Community 1',
-  //   description: 'RPG好きが集まるコミュニティです。新旧問わず名作・駄作について話し合いましょう！\n' +
-  //     'ドラクエやファイナルファンタジーなど、有名なタイトルから誰も知らないようなタイトルまで、なんの話題でも大丈夫です。\n' +
-  //     '\n' +
-  //     'ぜひ気軽に参加してください！'
-  // },
-
-  // return null;
 
 
   // --------------------------------------------------
@@ -124,7 +110,7 @@ const Component = (props) => {
   //   開設日
   // --------------------------------------------------
 
-  const codeCreatedDate = moment(createdDate).format('YYYY/MM/DD');
+  const codeCreatedDate = moment(createdDate).utc().format('YYYY/MM/DD');
 
 
   // --------------------------------------------------
@@ -189,13 +175,9 @@ const Component = (props) => {
         />
 
 
-
-        <p>
-          <Link href={linkHref} as={linkAs}>
-            <a>{valueObj.name}</a>
-          </Link>
-        </p>
-
+        <Link href={linkHref} as={linkAs}>
+          <a>{valueObj.name}</a>
+        </Link>
 
       </div>
     );
@@ -212,6 +194,22 @@ const Component = (props) => {
   // console.log(`
   //   ----------------------------------------\n
   //   /app/uc/index/v2/about.js
+  // `);
+
+  // console.log(chalk`
+  //   moment(createdDate).utc().format('YYYY/MM/DD'): {green ${moment(createdDate).utc().format('YYYY/MM/DD')}}
+  // `);
+
+  // const ISO8601 = moment().utc().toISOString();
+
+  // console.log(chalk`
+  //   createdDate: {green ${createdDate}}
+  //   moment(createdDate): {green ${moment(createdDate)}}
+  //   moment(createdDate).format('YYYY/MM/DD'): {green ${moment(createdDate).format('YYYY/MM/DD')}}
+  //   moment(createdDate).utc().format('YYYY/MM/DD'): {green ${moment(createdDate).utc().format('YYYY/MM/DD')}}
+  //   ISO8601: {green ${ISO8601}}
+  //   moment(ISO8601): {green ${moment(ISO8601)}}
+  //   moment(ISO8601).utc(): {green ${moment(ISO8601).utc()}}
   // `);
 
   // console.log(chalk`

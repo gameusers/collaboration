@@ -133,14 +133,20 @@ const Component = (props) => {
   //   props
   // --------------------------------------------------
 
-  const {
+  const { headerObj } = props;
 
-    headerObj,
-    heroImage,
+  // const {
 
-  } = props;
+  //   headerObj,
+  //   heroImage,
 
+  // } = props;
 
+//   console.log(`
+//   ----- headerObj -----\n
+//   ${util.inspect(JSON.parse(JSON.stringify(headerObj)), { colors: true, depth: null })}\n
+//   --------------------\n
+// `);
 
 
   // --------------------------------------------------
@@ -271,141 +277,33 @@ const Component = (props) => {
 
 
   // --------------------------------------------------
-  //   Hero Image
+  //   Open
   // --------------------------------------------------
 
-  if (heroImage) {
+  if (open) {
+
+    component =
+      <div
+        css={css`
+          width: 280px;
+          border-radius: 8px;
+          background-color: #000;
+          background-color: rgba(0, 0, 0, 0.5);
+          color: #fff;
+
+          // position: absolute;
+          // right: 15px;
+          // bottom: 15px;
+          ${(admin && componentAchievement) ? 'padding: 0 0 12px 0;' : 'padding: 0 0 6px 0;'}
+        `}
+      >
 
 
-    // --------------------------------------------------
-    //   Open
-    // --------------------------------------------------
+        {/* Open Button */}
+        <div css={cssTitleBox}>
 
-    if (open) {
+          <div css={cssTitle}>{componentName}</div>
 
-      component =
-        <div
-          css={css`
-            width: 280px;
-            border-radius: 8px;
-            background-color: #000;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: #fff;
-
-            position: absolute;
-            right: 15px;
-            bottom: 15px;
-            ${(admin && componentAchievement) ? 'padding: 0 0 12px 0;' : 'padding: 0 0 6px 0;'}
-          `}
-        >
-
-
-          {/* Open Button */}
-          <div css={cssTitleBox}>
-
-            <div css={cssTitle}>{componentName}</div>
-
-            <IconButton
-              css={css`
-                && {
-                  font-size: 12px;
-                  width: 24px;
-                  height: 24px;
-                  min-width: 24px;
-                  min-height: 24px;
-                  margin: 2px auto 0;
-                  padding: 2px 0 0 0;
-                }
-              `}
-              color="secondary"
-              onClick={() => setOpen(false)}
-            >
-              <IconKeyboardArrowUp />
-            </IconButton>
-
-          </div>
-
-
-
-
-          {/* Data */}
-          <div
-            css={css`
-              display: flex;
-              flex-flow: row wrap;
-              margin: 0 0 2px 0;
-            `}
-          >
-            <p css={cssInfo}>Lv. {level}</p>
-            <p css={cssInfo}>次のレベルまで {tnl} Exp</p>
-          </div>
-
-
-          <div
-            css={css`
-              display: flex;
-              flex-flow: row wrap;
-              margin: 0 0 2px 0;
-            `}
-          >
-            <p css={cssInfo}>フォロー {followCount}人</p>
-            <p css={cssInfo}>フォロワー {followedCount}人</p>
-          </div>
-
-
-
-
-          {componentAchievement}
-
-
-
-
-          {/* Follow Button */}
-          <FollowButton
-            type="header"
-            users_id={users_id}
-            followsObj={followsObj}
-            updateHeader={true}
-          />
-
-
-        </div>
-      ;
-
-
-    // --------------------------------------------------
-    //   Closed
-    // --------------------------------------------------
-
-    } else {
-
-      component =
-        <div
-          css={css`
-            display: flex;
-            flex-flow: row nowrap;
-            justify-content: center;
-            align-items: center;
-
-            min-width: 150px;
-            max-width: 300px;
-            border-radius: 8px;
-            background-color: #000;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: #fff;
-
-            position: absolute;
-            right: 15px;
-            bottom: 15px;
-            padding: 0 2px 0 0;
-          `}
-        >
-
-
-          <div css={cssTitleClosed}>{componentName}</div>
-
-
-          {/* Close Button */}
           <IconButton
             css={css`
               && {
@@ -414,22 +312,120 @@ const Component = (props) => {
                 height: 24px;
                 min-width: 24px;
                 min-height: 24px;
-                margin: 2px 0 0 0;
-                padding: 0;
+                margin: 2px auto 0;
+                padding: 2px 0 0 0;
               }
             `}
             color="secondary"
-            onClick={() => setOpen(true)}
+            onClick={() => setOpen(false)}
           >
-            <IconKeyboardArrowDown />
+            <IconKeyboardArrowUp />
           </IconButton>
 
-
         </div>
-      ;
 
-    }
 
+
+
+        {/* Data */}
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            margin: 0 0 2px 0;
+          `}
+        >
+          <p css={cssInfo}>Lv. {level}</p>
+          <p css={cssInfo}>次のレベルまで {tnl} Exp</p>
+        </div>
+
+
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            margin: 0 0 2px 0;
+          `}
+        >
+          <p css={cssInfo}>フォロー {followCount}人</p>
+          <p css={cssInfo}>フォロワー {followedCount}人</p>
+        </div>
+
+
+
+
+        {componentAchievement}
+
+
+
+
+        {/* Follow Button */}
+        <FollowButton
+          type="header"
+          users_id={users_id}
+          followsObj={followsObj}
+          updateHeader={true}
+        />
+
+
+      </div>
+    ;
+
+
+  // --------------------------------------------------
+  //   Closed
+  // --------------------------------------------------
+
+  } else {
+
+    component =
+      <div
+        css={css`
+          display: flex;
+          flex-flow: row nowrap;
+          justify-content: center;
+          align-items: center;
+
+          min-width: 150px;
+          max-width: 300px;
+          border-radius: 8px;
+          background-color: #000;
+          background-color: rgba(0, 0, 0, 0.5);
+          color: #fff;
+
+          // position: absolute;
+          // right: 15px;
+          // bottom: 15px;
+          padding: 0 2px 0 0;
+        `}
+      >
+
+
+        <div css={cssTitleClosed}>{componentName}</div>
+
+
+        {/* Close Button */}
+        <IconButton
+          css={css`
+            && {
+              font-size: 12px;
+              width: 24px;
+              height: 24px;
+              min-width: 24px;
+              min-height: 24px;
+              margin: 2px 0 0 0;
+              padding: 0;
+            }
+          `}
+          color="secondary"
+          onClick={() => setOpen(true)}
+        >
+          <IconKeyboardArrowDown />
+        </IconButton>
+
+
+      </div>
+    ;
 
   }
 

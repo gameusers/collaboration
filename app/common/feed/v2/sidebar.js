@@ -41,8 +41,8 @@ import FeedCard from 'app/common/feed/v2/card.js';
 //   install Swiper components
 // ---------------------------------------------
 
-SwiperCore.use([Pagination, Mousewheel, Autoplay]);
-
+// SwiperCore.use([Pagination, Mousewheel, Autoplay]);
+SwiperCore.use([Autoplay]);
 
 
 
@@ -77,6 +77,7 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const feedDataObj = lodashGet(feedObj, ['allObj', 'dataObj'], {});
+  // const feedArr = lodashGet(feedObj, ['allObj', 'page1Obj', 'arr'], []);
   const feedArr = lodashGet(feedObj, ['sidebarRandomArr'], []);
 
 
@@ -179,16 +180,27 @@ const Component = (props) => {
       spaceBetween={14}
       autoHeight={true}
       slidesPerView={'auto'}
+      // freeMode={true}
       // centeredSlides={true}
       // initialSlide={initialSlide}
-      loop={true}
-      pagination={{ clickable: false }}
+      // loop={true}
+      // pagination={{ clickable: false }}
+      // pagination={{ clickable: true }}
       autoplay={{
-        delay: 30000,
+        delay: 3000,
         disableOnInteraction: false,
       }}
-      mousewheel={true}
+      // mousewheel={true}
     >
+      {/* {feedArr.map((_id, index) =>
+        <SwiperSlide
+          key={index}
+        >
+          <FeedCard
+            obj={feedDataObj[_id]}
+          />
+        </SwiperSlide>
+      )} */}
       {componentFeedsArr}
     </Swiper>
   );

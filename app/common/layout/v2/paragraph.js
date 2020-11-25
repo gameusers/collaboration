@@ -14,8 +14,17 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
+import Linkify from 'react-linkify';
+
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
+
+
+// ---------------------------------------------
+//   Lodash
+// ---------------------------------------------
+
+import lodashGet from 'lodash/get';
 
 
 
@@ -58,12 +67,37 @@ const Component = (props) => {
 
   for (const [index, value] of textArr.entries()) {
 
+    // const url = value.match('https?://([\w-]+\.)+[\w-]+(/[\w- .?%&=]*)?');
+    // const pattern = 'https?:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#\u3000-\u30FE\u4E00-\u9FA0\uFF01-\uFFE3]+';
+    // const regex = new RegExp(pattern);
+    // const text = value.replace(/(http(s)?:\/\/[a-zA-Z0-9-.!'()*;/?:@&=+$,%#]+)/gi, `<a href='$1' target='_blank'>$1</a>`);
+
+    // const regex = new RegExp('https?://([\w-]+\.)+[\w-]+(/[\w- .?%&=]*)?');
+    // const matchArr = value.match(regex);
+
+    // let url = '';
+
+    // if (matchArr) {
+    //   url = matchArr[0];
+    //   console.log(url);
+    // }
+
+    // console.log(resultMatchObj);
+
+
     // if (value === '') {
     if (!value.match(/\S/g)) {
 
       marginPx += 18;
 
     } else {
+
+      // let text = value;
+
+      // if (url) {
+      //   text = <a href="url" target="_blank"></a>
+      // }
+
 
       if (marginPx === 0) {
 
@@ -96,7 +130,7 @@ const Component = (props) => {
   //   Return
   // --------------------------------------------------
 
-  return componentsArr;
+  return <Linkify properties={{ target: '_blank' }}>{componentsArr}</Linkify>;
 
 
 };

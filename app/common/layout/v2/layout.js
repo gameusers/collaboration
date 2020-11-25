@@ -350,10 +350,13 @@ const Component = (props) => {
             css={css`
               width: 300px;
               margin: 0 16px 0 0;
+              // background-color: pink;
+              padding: 0 0 48px 0;
 
               @media screen and (max-width: 947px) {
                 width: auto;
                 margin: 0 0 16px 0;
+                padding: 0;
               }
             `}
           >

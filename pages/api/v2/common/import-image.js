@@ -202,254 +202,254 @@ export default async (req, res) => {
     //   users
     // --------------------------------------------------
 
-    // for (const [index, valueObj] of usersDataDataArr.entries()) {
+    for (const [index, valueObj] of usersDataDataArr.entries()) {
 
 
-    //   // --------------------------------------------------
-    //   //   Data
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
 
-    //   const user_no = lodashGet(valueObj, ['user_no'], 0);
+      const user_no = lodashGet(valueObj, ['user_no'], 0);
 
-    //   const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
-    //   const idThumbnail1 = lodashGet(idsImageObj, [`user_no_${user_no}`, 'idThumbnail1'], '');
-    //   const idThumbnail2 = lodashGet(idsImageObj, [`user_no_${user_no}`, 'idThumbnail2'], '');
+      const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
+      const idThumbnail1 = lodashGet(idsImageObj, [`user_no_${user_no}`, 'idThumbnail1'], '');
+      const idThumbnail2 = lodashGet(idsImageObj, [`user_no_${user_no}`, 'idThumbnail2'], '');
 
 
-    //   // --------------------------------------------------
-    //   //   push
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
 
-    //   if (users_id && idThumbnail1 && idThumbnail2) {
+      if (users_id && idThumbnail1 && idThumbnail2) {
 
 
-    //     // --------------------------------------------------
-    //     //   画像を保存する
-    //     // --------------------------------------------------
+        // --------------------------------------------------
+        //   画像を保存する
+        // --------------------------------------------------
 
-    //     const imagesAndVideosObj = await saveImageAndVideo({
+        const imagesAndVideosObj = await saveImageAndVideo({
 
-    //       pass: `import/img-old/user/${user_no}/thumbnail_original.jpg`,
-    //       type: 'ur',
-    //       id1: idThumbnail1,
-    //       id2: idThumbnail2,
-    //       users_id,
-    //       ISO8601,
+          pass: `import/img-old/user/${user_no}/thumbnail_original.jpg`,
+          type: 'ur',
+          id1: idThumbnail1,
+          id2: idThumbnail2,
+          users_id,
+          ISO8601,
 
-    //     });
+        });
 
-    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
-    //       imagesAndVideosArr.push(imagesAndVideosObj);
-    //     }
+        if (Object.keys(imagesAndVideosObj).length !== 0) {
+          imagesAndVideosArr.push(imagesAndVideosObj);
+        }
 
 
-    //   }
+      }
 
 
-    // }
+    }
 
 
 
 
-    // // --------------------------------------------------
-    // //   user-communities
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   user-communities
+    // --------------------------------------------------
 
-    // for (const [index, valueObj] of communityDataArr.entries()) {
+    for (const [index, valueObj] of communityDataArr.entries()) {
 
 
-    //   // --------------------------------------------------
-    //   //   Data
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
 
-    //   const community_no = parseInt(lodashGet(valueObj, ['community_no'], 0), 10);
-    //   const author_user_no = parseInt(lodashGet(valueObj, ['author_user_no'], 0), 10);
+      const community_no = parseInt(lodashGet(valueObj, ['community_no'], 0), 10);
+      const author_user_no = parseInt(lodashGet(valueObj, ['author_user_no'], 0), 10);
 
-    //   const users_id = lodashGet(idsObj, [`user_no_${author_user_no}`], '');
+      const users_id = lodashGet(idsObj, [`user_no_${author_user_no}`], '');
 
-    //   const idThumbnail1 = lodashGet(idsImageObj, [`community_no_${community_no}`, 'idThumbnail1'], '');
-    //   const idThumbnail2 = lodashGet(idsImageObj, [`community_no_${community_no}`, 'idThumbnail2'], '');
+      const idThumbnail1 = lodashGet(idsImageObj, [`community_no_${community_no}`, 'idThumbnail1'], '');
+      const idThumbnail2 = lodashGet(idsImageObj, [`community_no_${community_no}`, 'idThumbnail2'], '');
 
 
-    //   // --------------------------------------------------
-    //   //   push
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
 
-    //   if (users_id && idThumbnail1 && idThumbnail2) {
+      if (users_id && idThumbnail1 && idThumbnail2) {
 
 
-    //     // --------------------------------------------------
-    //     //   画像を保存する
-    //     // --------------------------------------------------
+        // --------------------------------------------------
+        //   画像を保存する
+        // --------------------------------------------------
 
-    //     const imagesAndVideosObj = await saveImageAndVideo({
+        const imagesAndVideosObj = await saveImageAndVideo({
 
-    //       pass: `import/img-old/community/${community_no}/thumbnail_original.jpg`,
-    //       type: 'uc',
-    //       id1: idThumbnail1,
-    //       id2: idThumbnail2,
-    //       users_id,
-    //       ISO8601,
+          pass: `import/img-old/community/${community_no}/thumbnail_original.jpg`,
+          type: 'uc',
+          id1: idThumbnail1,
+          id2: idThumbnail2,
+          users_id,
+          ISO8601,
 
-    //     });
+        });
 
-    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
-    //       imagesAndVideosArr.push(imagesAndVideosObj);
-    //     }
+        if (Object.keys(imagesAndVideosObj).length !== 0) {
+          imagesAndVideosArr.push(imagesAndVideosObj);
+        }
 
 
-    //   }
+      }
 
 
-    // }
+    }
 
 
 
 
-    // // --------------------------------------------------
-    // //   games - thumbnail
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   games - thumbnail
+    // --------------------------------------------------
 
-    // for (const [index, valueObj] of gameDataDataArr.entries()) {
+    for (const [index, valueObj] of gameDataDataArr.entries()) {
 
 
-    //   // --------------------------------------------------
-    //   //   Data
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
 
-    //   const game_no = parseInt(lodashGet(valueObj, ['game_no'], 0), 10);
+      const game_no = parseInt(lodashGet(valueObj, ['game_no'], 0), 10);
 
-    //   const idThumbnail1 = lodashGet(idsImageObj, [`game_no_${game_no}`, 'idThumbnail1'], '');
-    //   const idThumbnail2 = lodashGet(idsImageObj, [`game_no_${game_no}`, 'idThumbnail2'], '');
+      const idThumbnail1 = lodashGet(idsImageObj, [`game_no_${game_no}`, 'idThumbnail1'], '');
+      const idThumbnail2 = lodashGet(idsImageObj, [`game_no_${game_no}`, 'idThumbnail2'], '');
 
 
-    //   // --------------------------------------------------
-    //   //   push
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
 
-    //   if (idThumbnail1 && idThumbnail2) {
+      if (idThumbnail1 && idThumbnail2) {
 
 
-    //     // --------------------------------------------------
-    //     //   画像を保存する
-    //     // --------------------------------------------------
+        // --------------------------------------------------
+        //   画像を保存する
+        // --------------------------------------------------
 
-    //     const imagesAndVideosObj = await saveImageAndVideo({
+        const imagesAndVideosObj = await saveImageAndVideo({
 
-    //       pass: `import/img-old/game/${game_no}/thumbnail.jpg`,
-    //       type: 'gc',
-    //       id1: idThumbnail1,
-    //       id2: idThumbnail2,
-    //       users_id: '',
-    //       ISO8601,
+          pass: `import/img-old/game/${game_no}/thumbnail.jpg`,
+          type: 'gc',
+          id1: idThumbnail1,
+          id2: idThumbnail2,
+          users_id: '',
+          ISO8601,
 
-    //     });
+        });
 
-    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
-    //       imagesAndVideosArr.push(imagesAndVideosObj);
-    //     }
+        if (Object.keys(imagesAndVideosObj).length !== 0) {
+          imagesAndVideosArr.push(imagesAndVideosObj);
+        }
 
 
-    //   }
+      }
 
 
-    // }
+    }
 
 
 
 
-    // // --------------------------------------------------
-    // //   games - heroimage
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   games - heroimage
+    // --------------------------------------------------
 
-    // const id2Obj = {};
-    // const tempImagesAndVideosObj = {};
+    const id2Obj = {};
+    const tempImagesAndVideosObj = {};
 
-    // for (const [index, valueObj] of imageDataArr.entries()) {
+    for (const [index, valueObj] of imageDataArr.entries()) {
 
 
-    //   // --------------------------------------------------
-    //   //   Data
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
 
-    //   const game_no = parseInt(lodashGet(valueObj, ['game_no'], 0), 10);
-    //   const image_id = lodashGet(valueObj, ['image_id'], '');
-    //   const type = lodashGet(valueObj, ['type'], '');
+      const game_no = parseInt(lodashGet(valueObj, ['game_no'], 0), 10);
+      const image_id = lodashGet(valueObj, ['image_id'], '');
+      const type = lodashGet(valueObj, ['type'], '');
 
-    //   const id1 = lodashGet(idsImageObj, [`game_no_${game_no}`, 'id1'], '');
-    //   const id2Arr = lodashGet(idsImageObj, [`game_no_${game_no}`, 'id2Arr'], []);
+      const id1 = lodashGet(idsImageObj, [`game_no_${game_no}`, 'id1'], '');
+      const id2Arr = lodashGet(idsImageObj, [`game_no_${game_no}`, 'id2Arr'], []);
 
-    //   if (id2Obj[game_no] !== undefined) {
+      if (id2Obj[game_no] !== undefined) {
 
-    //     id2Obj[game_no] += 1;
+        id2Obj[game_no] += 1;
 
-    //   } else {
+      } else {
 
-    //     id2Obj[game_no] = 0;
+        id2Obj[game_no] = 0;
 
-    //   }
+      }
 
-    //   const id2 = id2Arr[id2Obj[game_no]];
+      const id2 = id2Arr[id2Obj[game_no]];
 
-    //   // console.log(chalk`
-    //   //   game_no: {green ${game_no}}
-    //   //   image_id: {green ${image_id}}
-    //   //   id1: {green ${id1}}
-    //   //   id2: {green ${id2}}
-    //   //   id2Obj[game_no]: {green ${id2Obj[game_no]}}
-    //   // `);
+      // console.log(chalk`
+      //   game_no: {green ${game_no}}
+      //   image_id: {green ${image_id}}
+      //   id1: {green ${id1}}
+      //   id2: {green ${id2}}
+      //   id2Obj[game_no]: {green ${id2Obj[game_no]}}
+      // `);
 
-    //   // console.log(`
-    //   //   ----- idsImageObj -----\n
-    //   //   ${util.inspect(JSON.parse(JSON.stringify(lodashGet(idsImageObj, [`game_no_${game_no}`], []))), { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
+      // console.log(`
+      //   ----- idsImageObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(lodashGet(idsImageObj, [`game_no_${game_no}`], []))), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
 
-    //   // console.log(`
-    //   //   ----- id2Arr -----\n
-    //   //   ${util.inspect(JSON.parse(JSON.stringify(id2Arr)), { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
+      // console.log(`
+      //   ----- id2Arr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(id2Arr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
 
 
-    //   // --------------------------------------------------
-    //   //   push
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
 
-    //   if (type === 'hero_game' && id1 && id2) {
+      if (type === 'hero_game' && id1 && id2) {
 
 
-    //     // --------------------------------------------------
-    //     //   画像を保存する
-    //     // --------------------------------------------------
+        // --------------------------------------------------
+        //   画像を保存する
+        // --------------------------------------------------
 
-    //     if (image_id !== 'mf29yqvx4wc1dvsv') {// なぜかこのIDの画像が存在していない
+        if (image_id !== 'mf29yqvx4wc1dvsv') {// なぜかこのIDの画像が存在していない
 
-    //       tempImagesAndVideosObj[game_no] = await saveImageAndVideo({
+          tempImagesAndVideosObj[game_no] = await saveImageAndVideo({
 
-    //         pass: `import/img-old/u/${image_id}.jpg`,
-    //         type: 'gc',
-    //         id1,
-    //         id2,
-    //         users_id: '',
-    //         ISO8601,
-    //         heroImage: true,
-    //         imagesAndVideosObj: tempImagesAndVideosObj[game_no],
+            pass: `import/img-old/u/${image_id}.jpg`,
+            type: 'gc',
+            id1,
+            id2,
+            users_id: '',
+            ISO8601,
+            heroImage: true,
+            imagesAndVideosObj: tempImagesAndVideosObj[game_no],
 
-    //       });
+          });
 
 
-    //     }
+        }
 
-    //   }
+      }
 
 
-    // }
+    }
 
 
-    // for (let valueObj of Object.values(tempImagesAndVideosObj)) {
-    //   imagesAndVideosArr.push(valueObj);
-    // }
+    for (let valueObj of Object.values(tempImagesAndVideosObj)) {
+      imagesAndVideosArr.push(valueObj);
+    }
 
 
     // console.log(`
@@ -465,110 +465,110 @@ export default async (req, res) => {
     //   forum-threads UC
     // --------------------------------------------------
 
-    // for (const [index, valueObj] of bbsThreadUCDataArr.entries()) {
+    for (const [index, valueObj] of bbsThreadUCDataArr.entries()) {
 
 
-    //   // --------------------------------------------------
-    //   //   Data
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
 
-    //   const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
-    //   const community_no = lodashGet(valueObj, ['community_no'], '');
+      const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
+      const community_no = lodashGet(valueObj, ['community_no'], '');
 
-    //   if (idsObj[`bbs_thread_no_uc_${bbs_thread_no}`] === undefined || idsObj[`community_no_${community_no}`] === undefined) {
-    //     continue;
-    //   }
-
-
-    //   const user_no = lodashGet(valueObj, ['user_no'], 0);
-    //   const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
-    //   const image = lodashGet(valueObj, ['image'], '');
-    //   const movie = lodashGet(valueObj, ['movie'], '');
-
-    //   const id1 = lodashGet(idsImageObj, [`bbs_thread_no_uc_${bbs_thread_no}`, 'id1'], '');
-    //   const id2 = lodashGet(idsImageObj, [`bbs_thread_no_uc_${bbs_thread_no}`, 'id2Arr', 0], '');
+      if (idsObj[`bbs_thread_no_uc_${bbs_thread_no}`] === undefined || idsObj[`community_no_${community_no}`] === undefined) {
+        continue;
+      }
 
 
-    //   // --------------------------------------------------
-    //   //   push
-    //   // --------------------------------------------------
+      const user_no = lodashGet(valueObj, ['user_no'], 0);
+      const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
 
-    //   if (id1 && id2) {
-
-
-    //     let imagesAndVideosObj = {};
-
-
-    //     // --------------------------------------------------
-    //     //   画像を保存する
-    //     // --------------------------------------------------
-
-    //     if (image) {
-
-    //       imagesAndVideosObj = await saveImageAndVideo({
-
-    //         pass: `import/img-old/bbs_uc/thread/${bbs_thread_no}/image_1.jpg`,
-    //         type: 'forum',
-    //         id1,
-    //         id2,
-    //         users_id,
-    //         ISO8601,
-
-    //       });
+      const id1 = lodashGet(idsImageObj, [`bbs_thread_no_uc_${bbs_thread_no}`, 'id1'], '');
+      const id2 = lodashGet(idsImageObj, [`bbs_thread_no_uc_${bbs_thread_no}`, 'id2Arr', 0], '');
 
 
-    //     // --------------------------------------------------
-    //     //   動画
-    //     // --------------------------------------------------
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
 
-    //     } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
-
-    //       let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
-    //       videoIDArr = videoIDArr[1].split('";}}');
-    //       const videoID = videoIDArr[0];
-
-    //       // console.log(`
-    //       //   ----- videoIDArr -----\n
-    //       //   ${util.inspect(JSON.parse(JSON.stringify(videoIDArr)), { colors: true, depth: null })}\n
-    //       //   --------------------\n
-    //       // `);
-
-    //       // console.log(chalk`
-    //       //   videoID: {green ${videoID}}
-    //       // `);
-
-    //       imagesAndVideosObj = {
-
-    //         _id: id1,
-    //         createdDate: ISO8601,
-    //         updatedDate: ISO8601,
-    //         users_id,
-    //         type: 'forum',
-    //         images: 0,
-    //         videos: 1,
-    //         arr: [
-    //           {
-    //             _id: id2,
-    //             type: 'video',
-    //             videoChannel: 'youtube',
-    //             videoID,
-    //           },
-    //         ],
-
-    //       };
-
-    //     }
+      if (id1 && id2) {
 
 
-    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
-    //       imagesAndVideosArr.push(imagesAndVideosObj);
-    //     }
+        let imagesAndVideosObj = {};
 
 
-    //   }
+        // --------------------------------------------------
+        //   画像を保存する
+        // --------------------------------------------------
+
+        if (image) {
+
+          imagesAndVideosObj = await saveImageAndVideo({
+
+            pass: `import/img-old/bbs_uc/thread/${bbs_thread_no}/image_1.jpg`,
+            type: 'forum',
+            id1,
+            id2,
+            users_id,
+            ISO8601,
+
+          });
 
 
-    // }
+        // --------------------------------------------------
+        //   動画
+        // --------------------------------------------------
+
+        } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
+
+          let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
+          videoIDArr = videoIDArr[1].split('";}}');
+          const videoID = videoIDArr[0];
+
+          // console.log(`
+          //   ----- videoIDArr -----\n
+          //   ${util.inspect(JSON.parse(JSON.stringify(videoIDArr)), { colors: true, depth: null })}\n
+          //   --------------------\n
+          // `);
+
+          // console.log(chalk`
+          //   videoID: {green ${videoID}}
+          // `);
+
+          imagesAndVideosObj = {
+
+            _id: id1,
+            createdDate: ISO8601,
+            updatedDate: ISO8601,
+            users_id,
+            type: 'forum',
+            images: 0,
+            videos: 1,
+            arr: [
+              {
+                _id: id2,
+                type: 'video',
+                videoChannel: 'youtube',
+                videoID,
+              },
+            ],
+
+          };
+
+        }
+
+
+        if (Object.keys(imagesAndVideosObj).length !== 0) {
+          imagesAndVideosArr.push(imagesAndVideosObj);
+        }
+
+
+      }
+
+
+    }
 
 
 
@@ -577,101 +577,101 @@ export default async (req, res) => {
     //   forum-threads GC
     // --------------------------------------------------
 
-    // for (const [index, valueObj] of bbsThreadGCDataArr.entries()) {
+    for (const [index, valueObj] of bbsThreadGCDataArr.entries()) {
 
 
-    //   // --------------------------------------------------
-    //   //   Data
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
 
-    //   const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
-    //   const game_no = lodashGet(valueObj, ['game_no'], '');
+      const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
+      const game_no = lodashGet(valueObj, ['game_no'], '');
 
-    //   if (idsObj[`bbs_thread_no_gc_${bbs_thread_no}`] === undefined || idsObj[`game_no_${game_no}`] === undefined) {
-    //     continue;
-    //   }
-
-
-    //   const image = lodashGet(valueObj, ['image'], '');
-    //   const movie = lodashGet(valueObj, ['movie'], '');
-
-    //   const id1 = lodashGet(idsImageObj, [`bbs_thread_no_gc_${bbs_thread_no}`, 'id1'], '');
-    //   const id2 = lodashGet(idsImageObj, [`bbs_thread_no_gc_${bbs_thread_no}`, 'id2Arr', 0], '');
+      if (idsObj[`bbs_thread_no_gc_${bbs_thread_no}`] === undefined || idsObj[`game_no_${game_no}`] === undefined) {
+        continue;
+      }
 
 
-    //   // --------------------------------------------------
-    //   //   push
-    //   // --------------------------------------------------
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
 
-    //   if (id1 && id2) {
-
-
-    //     let imagesAndVideosObj = {};
-
-    //       // console.log(chalk`
-    //       //   bbs_thread_no: {green ${bbs_thread_no}}
-    //       //   game_no: {green ${game_no}}
-    //       // `);
-    //     // --------------------------------------------------
-    //     //   画像を保存する
-    //     // --------------------------------------------------
-
-    //     if (image) {
-
-    //       imagesAndVideosObj = await saveImageAndVideo({
-
-    //         pass: `import/img-old/bbs_gc/thread/${bbs_thread_no}/image_1.jpg`,
-    //         type: 'forum',
-    //         id1,
-    //         id2,
-    //         users_id: '',
-    //         ISO8601,
-
-    //       });
+      const id1 = lodashGet(idsImageObj, [`bbs_thread_no_gc_${bbs_thread_no}`, 'id1'], '');
+      const id2 = lodashGet(idsImageObj, [`bbs_thread_no_gc_${bbs_thread_no}`, 'id2Arr', 0], '');
 
 
-    //     // --------------------------------------------------
-    //     //   動画
-    //     // --------------------------------------------------
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
 
-    //     } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
-
-    //       let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
-    //       videoIDArr = videoIDArr[1].split('";}}');
-    //       const videoID = videoIDArr[0];
-
-    //       imagesAndVideosObj = {
-
-    //         _id: id1,
-    //         createdDate: ISO8601,
-    //         updatedDate: ISO8601,
-    //         users_id: '',
-    //         type: 'forum',
-    //         images: 0,
-    //         videos: 1,
-    //         arr: [
-    //           {
-    //             _id: id2,
-    //             type: 'video',
-    //             videoChannel: 'youtube',
-    //             videoID,
-    //           },
-    //         ],
-
-    //       };
-
-    //     }
+      if (id1 && id2) {
 
 
-    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
-    //       imagesAndVideosArr.push(imagesAndVideosObj);
-    //     }
+        let imagesAndVideosObj = {};
+
+          // console.log(chalk`
+          //   bbs_thread_no: {green ${bbs_thread_no}}
+          //   game_no: {green ${game_no}}
+          // `);
+        // --------------------------------------------------
+        //   画像を保存する
+        // --------------------------------------------------
+
+        if (image) {
+
+          imagesAndVideosObj = await saveImageAndVideo({
+
+            pass: `import/img-old/bbs_gc/thread/${bbs_thread_no}/image_1.jpg`,
+            type: 'forum',
+            id1,
+            id2,
+            users_id: '',
+            ISO8601,
+
+          });
 
 
-    //   }
+        // --------------------------------------------------
+        //   動画
+        // --------------------------------------------------
+
+        } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
+
+          let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
+          videoIDArr = videoIDArr[1].split('";}}');
+          const videoID = videoIDArr[0];
+
+          imagesAndVideosObj = {
+
+            _id: id1,
+            createdDate: ISO8601,
+            updatedDate: ISO8601,
+            users_id: '',
+            type: 'forum',
+            images: 0,
+            videos: 1,
+            arr: [
+              {
+                _id: id2,
+                type: 'video',
+                videoChannel: 'youtube',
+                videoID,
+              },
+            ],
+
+          };
+
+        }
 
 
-    // }
+        if (Object.keys(imagesAndVideosObj).length !== 0) {
+          imagesAndVideosArr.push(imagesAndVideosObj);
+        }
+
+
+      }
+
+
+    }
 
 
 
@@ -680,123 +680,123 @@ export default async (req, res) => {
     //   forum-comments UC
     // --------------------------------------------------
 
-    // for (const [index, valueObj] of bbsCommentUCDataArr.entries()) {
+    for (const [index, valueObj] of bbsCommentUCDataArr.entries()) {
 
 
-    //   // --------------------------------------------------
-    //   //   Data
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
 
-    //   const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
-    //   const bbs_comment_no = parseInt(lodashGet(valueObj, ['bbs_comment_no'], 0), 10);
-    //   const community_no = lodashGet(valueObj, ['community_no'], '');
+      const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
+      const bbs_comment_no = parseInt(lodashGet(valueObj, ['bbs_comment_no'], 0), 10);
+      const community_no = lodashGet(valueObj, ['community_no'], '');
 
-    //   if (idsObj[`bbs_thread_no_uc_${bbs_thread_no}`] === undefined || idsObj[`bbs_comment_no_uc_${bbs_comment_no}`] === undefined || idsObj[`community_no_${community_no}`] === undefined) {
-    //     continue;
-    //   }
-
-
-    //   const user_no = lodashGet(valueObj, ['user_no'], 0);
-    //   const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
-    //   const image = lodashGet(valueObj, ['image'], '');
-    //   const movie = lodashGet(valueObj, ['movie'], '');
-
-    //   const id1 = lodashGet(idsImageObj, [`bbs_comment_no_uc_${bbs_comment_no}`, 'id1'], '');
-    //   const id2 = lodashGet(idsImageObj, [`bbs_comment_no_uc_${bbs_comment_no}`, 'id2Arr', 0], '');
+      if (idsObj[`bbs_thread_no_uc_${bbs_thread_no}`] === undefined || idsObj[`bbs_comment_no_uc_${bbs_comment_no}`] === undefined || idsObj[`community_no_${community_no}`] === undefined) {
+        continue;
+      }
 
 
-    //   // --------------------------------------------------
-    //   //   push
-    //   // --------------------------------------------------
+      const user_no = lodashGet(valueObj, ['user_no'], 0);
+      const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
 
-    //   if (id1 && id2) {
-
-
-    //     let imagesAndVideosObj = {};
-
-
-    //     // --------------------------------------------------
-    //     //   画像を保存する
-    //     // --------------------------------------------------
-
-    //     if (image) {
-
-    //       imagesAndVideosObj = await saveImageAndVideo({
-
-    //         pass: `import/img-old/bbs_uc/comment/${bbs_comment_no}/image_1.jpg`,
-    //         type: 'forum',
-    //         id1,
-    //         id2,
-    //         users_id,
-    //         ISO8601,
-
-    //       });
+      const id1 = lodashGet(idsImageObj, [`bbs_comment_no_uc_${bbs_comment_no}`, 'id1'], '');
+      const id2 = lodashGet(idsImageObj, [`bbs_comment_no_uc_${bbs_comment_no}`, 'id2Arr', 0], '');
 
 
-    //     // --------------------------------------------------
-    //     //   動画
-    //     // --------------------------------------------------
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
 
-    //     } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
-
-    //       // console.log(chalk`
-    //       // movie: {green ${movie}}
-    //       // `);
-
-    //       let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
-    //       videoIDArr = videoIDArr[1].split('";}}');
-    //       const videoID = videoIDArr[0];
-
-    //       // console.log(`
-    //       //   ----- videoIDArr -----\n
-    //       //   ${util.inspect(JSON.parse(JSON.stringify(videoIDArr)), { colors: true, depth: null })}\n
-    //       //   --------------------\n
-    //       // `);
-
-    //       // console.log(`
-    //       //   ----- videoIDArr -----\n
-    //       //   ${util.inspect(JSON.parse(JSON.stringify(videoIDArr)), { colors: true, depth: null })}\n
-    //       //   --------------------\n
-    //       // `);
-
-    //       // console.log(chalk`
-    //       //   videoID: {green ${videoID}}
-    //       // `);
+      if (id1 && id2) {
 
 
-  //         imagesAndVideosObj = {
-
-  //           _id: id1,
-  //           createdDate: ISO8601,
-  //           updatedDate: ISO8601,
-  //           users_id,
-  //           type: 'forum',
-  //           images: 0,
-  //           videos: 1,
-  //           arr: [
-  //             {
-  //               _id: id2,
-  //               type: 'video',
-  //               videoChannel: 'youtube',
-  //               videoID,
-  //             },
-  //           ],
-
-  //         };
+        let imagesAndVideosObj = {};
 
 
-    //     }
+        // --------------------------------------------------
+        //   画像を保存する
+        // --------------------------------------------------
+
+        if (image) {
+
+          imagesAndVideosObj = await saveImageAndVideo({
+
+            pass: `import/img-old/bbs_uc/comment/${bbs_comment_no}/image_1.jpg`,
+            type: 'forum',
+            id1,
+            id2,
+            users_id,
+            ISO8601,
+
+          });
 
 
-    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
-    //       imagesAndVideosArr.push(imagesAndVideosObj);
-    //     }
+        // --------------------------------------------------
+        //   動画
+        // --------------------------------------------------
+
+        } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
+
+          // console.log(chalk`
+          // movie: {green ${movie}}
+          // `);
+
+          let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
+          videoIDArr = videoIDArr[1].split('";}}');
+          const videoID = videoIDArr[0];
+
+          // console.log(`
+          //   ----- videoIDArr -----\n
+          //   ${util.inspect(JSON.parse(JSON.stringify(videoIDArr)), { colors: true, depth: null })}\n
+          //   --------------------\n
+          // `);
+
+          // console.log(`
+          //   ----- videoIDArr -----\n
+          //   ${util.inspect(JSON.parse(JSON.stringify(videoIDArr)), { colors: true, depth: null })}\n
+          //   --------------------\n
+          // `);
+
+          // console.log(chalk`
+          //   videoID: {green ${videoID}}
+          // `);
 
 
-    //   }
+          imagesAndVideosObj = {
+
+            _id: id1,
+            createdDate: ISO8601,
+            updatedDate: ISO8601,
+            users_id,
+            type: 'forum',
+            images: 0,
+            videos: 1,
+            arr: [
+              {
+                _id: id2,
+                type: 'video',
+                videoChannel: 'youtube',
+                videoID,
+              },
+            ],
+
+          };
 
 
-    // }
+        }
+
+
+        if (Object.keys(imagesAndVideosObj).length !== 0) {
+          imagesAndVideosArr.push(imagesAndVideosObj);
+        }
+
+
+      }
+
+
+    }
 
 
 
@@ -805,101 +805,101 @@ export default async (req, res) => {
     //   forum-comments GC
     // --------------------------------------------------
 
-    // for (const [index, valueObj] of bbsCommentGCDataArr.entries()) {
+    for (const [index, valueObj] of bbsCommentGCDataArr.entries()) {
 
 
-    //   // --------------------------------------------------
-    //   //   Data
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
 
-    //   const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
-    //   const bbs_comment_no = parseInt(lodashGet(valueObj, ['bbs_comment_no'], 0), 10);
-    //   const game_no = lodashGet(valueObj, ['game_no'], '');
+      const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
+      const bbs_comment_no = parseInt(lodashGet(valueObj, ['bbs_comment_no'], 0), 10);
+      const game_no = lodashGet(valueObj, ['game_no'], '');
 
-    //   if (idsObj[`bbs_thread_no_gc_${bbs_thread_no}`] === undefined || idsObj[`bbs_comment_no_gc_${bbs_comment_no}`] === undefined || idsObj[`game_no_${game_no}`] === undefined) {
-    //     continue;
-    //   }
-
-
-    //   const user_no = lodashGet(valueObj, ['user_no'], 0);
-    //   const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
-    //   const image = lodashGet(valueObj, ['image'], '');
-    //   const movie = lodashGet(valueObj, ['movie'], '');
-
-    //   const id1 = lodashGet(idsImageObj, [`bbs_comment_no_gc_${bbs_comment_no}`, 'id1'], '');
-    //   const id2 = lodashGet(idsImageObj, [`bbs_comment_no_gc_${bbs_comment_no}`, 'id2Arr', 0], '');
+      if (idsObj[`bbs_thread_no_gc_${bbs_thread_no}`] === undefined || idsObj[`bbs_comment_no_gc_${bbs_comment_no}`] === undefined || idsObj[`game_no_${game_no}`] === undefined) {
+        continue;
+      }
 
 
-    //   // --------------------------------------------------
-    //   //   push
-    //   // --------------------------------------------------
+      const user_no = lodashGet(valueObj, ['user_no'], 0);
+      const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
 
-    //   if (id1 && id2) {
-
-
-    //     let imagesAndVideosObj = {};
-
-
-    //     // --------------------------------------------------
-    //     //   画像を保存する
-    //     // --------------------------------------------------
-
-    //     if (image) {
-
-    //       imagesAndVideosObj = await saveImageAndVideo({
-
-    //         pass: `import/img-old/bbs_gc/comment/${bbs_comment_no}/image_1.jpg`,
-    //         type: 'forum',
-    //         id1,
-    //         id2,
-    //         users_id,
-    //         ISO8601,
-
-    //       });
+      const id1 = lodashGet(idsImageObj, [`bbs_comment_no_gc_${bbs_comment_no}`, 'id1'], '');
+      const id2 = lodashGet(idsImageObj, [`bbs_comment_no_gc_${bbs_comment_no}`, 'id2Arr', 0], '');
 
 
-    //     // --------------------------------------------------
-    //     //   動画
-    //     // --------------------------------------------------
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
 
-    //     } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
-
-    //       let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
-    //       videoIDArr = videoIDArr[1].split('";}}');
-    //       const videoID = videoIDArr[0];
-
-    //       imagesAndVideosObj = {
-
-    //         _id: id1,
-    //         createdDate: ISO8601,
-    //         updatedDate: ISO8601,
-    //         users_id,
-    //         type: 'forum',
-    //         images: 0,
-    //         videos: 1,
-    //         arr: [
-    //           {
-    //             _id: id2,
-    //             type: 'video',
-    //             videoChannel: 'youtube',
-    //             videoID,
-    //           },
-    //         ],
-
-    //       };
-
-    //     }
+      if (id1 && id2) {
 
 
-    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
-    //       imagesAndVideosArr.push(imagesAndVideosObj);
-    //     }
+        let imagesAndVideosObj = {};
 
 
-    //   }
+        // --------------------------------------------------
+        //   画像を保存する
+        // --------------------------------------------------
+
+        if (image) {
+
+          imagesAndVideosObj = await saveImageAndVideo({
+
+            pass: `import/img-old/bbs_gc/comment/${bbs_comment_no}/image_1.jpg`,
+            type: 'forum',
+            id1,
+            id2,
+            users_id,
+            ISO8601,
+
+          });
 
 
-    // }
+        // --------------------------------------------------
+        //   動画
+        // --------------------------------------------------
+
+        } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
+
+          let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
+          videoIDArr = videoIDArr[1].split('";}}');
+          const videoID = videoIDArr[0];
+
+          imagesAndVideosObj = {
+
+            _id: id1,
+            createdDate: ISO8601,
+            updatedDate: ISO8601,
+            users_id,
+            type: 'forum',
+            images: 0,
+            videos: 1,
+            arr: [
+              {
+                _id: id2,
+                type: 'video',
+                videoChannel: 'youtube',
+                videoID,
+              },
+            ],
+
+          };
+
+        }
+
+
+        if (Object.keys(imagesAndVideosObj).length !== 0) {
+          imagesAndVideosArr.push(imagesAndVideosObj);
+        }
+
+
+      }
+
+
+    }
 
 
 
@@ -908,105 +908,105 @@ export default async (req, res) => {
     //   forum-replys UC
     // --------------------------------------------------
 
-    // for (const [index, valueObj] of bbsReplyUCDataArr.entries()) {
+    for (const [index, valueObj] of bbsReplyUCDataArr.entries()) {
 
 
-    //   // --------------------------------------------------
-    //   //   Data
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
 
-    //   const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
-    //   const bbs_comment_no = parseInt(lodashGet(valueObj, ['bbs_comment_no'], 0), 10);
-    //   const bbs_reply_no = parseInt(lodashGet(valueObj, ['bbs_reply_no'], 0), 10);
-    //   const community_no = lodashGet(valueObj, ['community_no'], '');
+      const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
+      const bbs_comment_no = parseInt(lodashGet(valueObj, ['bbs_comment_no'], 0), 10);
+      const bbs_reply_no = parseInt(lodashGet(valueObj, ['bbs_reply_no'], 0), 10);
+      const community_no = lodashGet(valueObj, ['community_no'], '');
 
-    //   if (idsObj[`bbs_thread_no_uc_${bbs_thread_no}`] === undefined || idsObj[`bbs_comment_no_uc_${bbs_comment_no}`] === undefined || idsObj[`bbs_reply_no_uc_${bbs_reply_no}`] === undefined || idsObj[`community_no_${community_no}`] === undefined) {
-    //     continue;
-    //   }
-
-
-    //   const user_no = lodashGet(valueObj, ['user_no'], 0);
-    //   const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
-    //   const image = lodashGet(valueObj, ['image'], '');
-    //   const movie = lodashGet(valueObj, ['movie'], '');
-
-    //   const id1 = lodashGet(idsImageObj, [`bbs_reply_no_uc_${bbs_reply_no}`, 'id1'], '');
-    //   const id2 = lodashGet(idsImageObj, [`bbs_reply_no_uc_${bbs_reply_no}`, 'id2Arr', 0], '');
+      if (idsObj[`bbs_thread_no_uc_${bbs_thread_no}`] === undefined || idsObj[`bbs_comment_no_uc_${bbs_comment_no}`] === undefined || idsObj[`bbs_reply_no_uc_${bbs_reply_no}`] === undefined || idsObj[`community_no_${community_no}`] === undefined) {
+        continue;
+      }
 
 
-    //   // --------------------------------------------------
-    //   //   push
-    //   // --------------------------------------------------
+      const user_no = lodashGet(valueObj, ['user_no'], 0);
+      const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
 
-    //   if (id1 && id2) {
-
-
-    //     let imagesAndVideosObj = {};
-
-
-    //     // --------------------------------------------------
-    //     //   画像を保存する
-    //     // --------------------------------------------------
-
-    //     if (image) {
-
-    //       imagesAndVideosObj = await saveImageAndVideo({
-
-    //         pass: `import/img-old/bbs_uc/reply/${bbs_reply_no}/image_1.jpg`,
-    //         type: 'forum',
-    //         id1,
-    //         id2,
-    //         users_id,
-    //         ISO8601,
-
-    //       });
+      const id1 = lodashGet(idsImageObj, [`bbs_reply_no_uc_${bbs_reply_no}`, 'id1'], '');
+      const id2 = lodashGet(idsImageObj, [`bbs_reply_no_uc_${bbs_reply_no}`, 'id2Arr', 0], '');
 
 
-    //     // --------------------------------------------------
-    //     //   動画
-    //     // --------------------------------------------------
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
 
-    //     } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
-
-
-    //       let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
-    //       videoIDArr = videoIDArr[1].split('";}}');
-    //       const videoID = videoIDArr[0];
+      if (id1 && id2) {
 
 
-    //       imagesAndVideosObj = {
-
-    //         _id: id1,
-    //         createdDate: ISO8601,
-    //         updatedDate: ISO8601,
-    //         users_id,
-    //         type: 'forum',
-    //         images: 0,
-    //         videos: 1,
-    //         arr: [
-    //           {
-    //             _id: id2,
-    //             type: 'video',
-    //             videoChannel: 'youtube',
-    //             videoID,
-    //           },
-    //         ],
-
-    //       };
+        let imagesAndVideosObj = {};
 
 
-    //     }
+        // --------------------------------------------------
+        //   画像を保存する
+        // --------------------------------------------------
+
+        if (image) {
+
+          imagesAndVideosObj = await saveImageAndVideo({
+
+            pass: `import/img-old/bbs_uc/reply/${bbs_reply_no}/image_1.jpg`,
+            type: 'forum',
+            id1,
+            id2,
+            users_id,
+            ISO8601,
+
+          });
 
 
-    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
-    //       imagesAndVideosArr.push(imagesAndVideosObj);
-    //     }
+        // --------------------------------------------------
+        //   動画
+        // --------------------------------------------------
+
+        } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
 
 
-    //   }
+          let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
+          videoIDArr = videoIDArr[1].split('";}}');
+          const videoID = videoIDArr[0];
 
 
-    // }
+          imagesAndVideosObj = {
+
+            _id: id1,
+            createdDate: ISO8601,
+            updatedDate: ISO8601,
+            users_id,
+            type: 'forum',
+            images: 0,
+            videos: 1,
+            arr: [
+              {
+                _id: id2,
+                type: 'video',
+                videoChannel: 'youtube',
+                videoID,
+              },
+            ],
+
+          };
+
+
+        }
+
+
+        if (Object.keys(imagesAndVideosObj).length !== 0) {
+          imagesAndVideosArr.push(imagesAndVideosObj);
+        }
+
+
+      }
+
+
+    }
 
 
 
@@ -1015,102 +1015,102 @@ export default async (req, res) => {
     //   forum-replys GC
     // --------------------------------------------------
 
-    // for (const [index, valueObj] of bbsReplyGCDataArr.entries()) {
+    for (const [index, valueObj] of bbsReplyGCDataArr.entries()) {
 
 
-    //   // --------------------------------------------------
-    //   //   Data
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
 
-    //   const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
-    //   const bbs_comment_no = parseInt(lodashGet(valueObj, ['bbs_comment_no'], 0), 10);
-    //   const bbs_reply_no = parseInt(lodashGet(valueObj, ['bbs_reply_no'], 0), 10);
-    //   const game_no = lodashGet(valueObj, ['game_no'], '');
+      const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
+      const bbs_comment_no = parseInt(lodashGet(valueObj, ['bbs_comment_no'], 0), 10);
+      const bbs_reply_no = parseInt(lodashGet(valueObj, ['bbs_reply_no'], 0), 10);
+      const game_no = lodashGet(valueObj, ['game_no'], '');
 
-    //   if (idsObj[`bbs_thread_no_gc_${bbs_thread_no}`] === undefined || idsObj[`bbs_comment_no_gc_${bbs_comment_no}`] === undefined || idsObj[`bbs_reply_no_gc_${bbs_reply_no}`] === undefined || idsObj[`game_no_${game_no}`] === undefined) {
-    //     continue;
-    //   }
-
-
-    //   const user_no = lodashGet(valueObj, ['user_no'], 0);
-    //   const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
-    //   const image = lodashGet(valueObj, ['image'], '');
-    //   const movie = lodashGet(valueObj, ['movie'], '');
-
-    //   const id1 = lodashGet(idsImageObj, [`bbs_reply_no_gc_${bbs_reply_no}`, 'id1'], '');
-    //   const id2 = lodashGet(idsImageObj, [`bbs_reply_no_gc_${bbs_reply_no}`, 'id2Arr', 0], '');
+      if (idsObj[`bbs_thread_no_gc_${bbs_thread_no}`] === undefined || idsObj[`bbs_comment_no_gc_${bbs_comment_no}`] === undefined || idsObj[`bbs_reply_no_gc_${bbs_reply_no}`] === undefined || idsObj[`game_no_${game_no}`] === undefined) {
+        continue;
+      }
 
 
-    //   // --------------------------------------------------
-    //   //   push
-    //   // --------------------------------------------------
+      const user_no = lodashGet(valueObj, ['user_no'], 0);
+      const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
 
-    //   if (id1 && id2) {
-
-
-    //     let imagesAndVideosObj = {};
-
-
-    //     // --------------------------------------------------
-    //     //   画像を保存する
-    //     // --------------------------------------------------
-
-    //     if (image) {
-
-    //       imagesAndVideosObj = await saveImageAndVideo({
-
-    //         pass: `import/img-old/bbs_gc/reply/${bbs_reply_no}/image_1.jpg`,
-    //         type: 'forum',
-    //         id1,
-    //         id2,
-    //         users_id,
-    //         ISO8601,
-
-    //       });
+      const id1 = lodashGet(idsImageObj, [`bbs_reply_no_gc_${bbs_reply_no}`, 'id1'], '');
+      const id2 = lodashGet(idsImageObj, [`bbs_reply_no_gc_${bbs_reply_no}`, 'id2Arr', 0], '');
 
 
-    //     // --------------------------------------------------
-    //     //   動画
-    //     // --------------------------------------------------
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
 
-    //     } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
-
-    //       let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
-    //       videoIDArr = videoIDArr[1].split('";}}');
-    //       const videoID = videoIDArr[0];
-
-    //       imagesAndVideosObj = {
-
-    //         _id: id1,
-    //         createdDate: ISO8601,
-    //         updatedDate: ISO8601,
-    //         users_id,
-    //         type: 'forum',
-    //         images: 0,
-    //         videos: 1,
-    //         arr: [
-    //           {
-    //             _id: id2,
-    //             type: 'video',
-    //             videoChannel: 'youtube',
-    //             videoID,
-    //           },
-    //         ],
-
-    //       };
-
-    //     }
+      if (id1 && id2) {
 
 
-    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
-    //       imagesAndVideosArr.push(imagesAndVideosObj);
-    //     }
+        let imagesAndVideosObj = {};
 
 
-    //   }
+        // --------------------------------------------------
+        //   画像を保存する
+        // --------------------------------------------------
+
+        if (image) {
+
+          imagesAndVideosObj = await saveImageAndVideo({
+
+            pass: `import/img-old/bbs_gc/reply/${bbs_reply_no}/image_1.jpg`,
+            type: 'forum',
+            id1,
+            id2,
+            users_id,
+            ISO8601,
+
+          });
 
 
-    // }
+        // --------------------------------------------------
+        //   動画
+        // --------------------------------------------------
+
+        } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
+
+          let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
+          videoIDArr = videoIDArr[1].split('";}}');
+          const videoID = videoIDArr[0];
+
+          imagesAndVideosObj = {
+
+            _id: id1,
+            createdDate: ISO8601,
+            updatedDate: ISO8601,
+            users_id,
+            type: 'forum',
+            images: 0,
+            videos: 1,
+            arr: [
+              {
+                _id: id2,
+                type: 'video',
+                videoChannel: 'youtube',
+                videoID,
+              },
+            ],
+
+          };
+
+        }
+
+
+        if (Object.keys(imagesAndVideosObj).length !== 0) {
+          imagesAndVideosArr.push(imagesAndVideosObj);
+        }
+
+
+      }
+
+
+    }
 
 
 
@@ -1119,105 +1119,105 @@ export default async (req, res) => {
     //   recruitment-threads
     // --------------------------------------------------
 
-    // for (const [index, valueObj] of recruitmentDataArr.entries()) {
+    for (const [index, valueObj] of recruitmentDataArr.entries()) {
 
 
-    //   // --------------------------------------------------
-    //   //   Data
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
 
-    //   const recruitment_id = lodashGet(valueObj, ['recruitment_id'], '');
-    //   const game_no = lodashGet(valueObj, ['game_no'], '');
+      const recruitment_id = lodashGet(valueObj, ['recruitment_id'], '');
+      const game_no = lodashGet(valueObj, ['game_no'], '');
 
-    //   if (
+      if (
 
-    //     idsObj[`recruitment_id_${recruitment_id}`] === undefined ||
-    //     idsObj[`game_no_${game_no}`] === undefined
+        idsObj[`recruitment_id_${recruitment_id}`] === undefined ||
+        idsObj[`game_no_${game_no}`] === undefined
 
-    //   ) {
-    //     continue;
-    //   }
-
-
-    //   const user_no = lodashGet(valueObj, ['user_no'], 0);
-    //   const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
-    //   const image = lodashGet(valueObj, ['image'], '');
-    //   const movie = lodashGet(valueObj, ['movie'], '');
-
-    //   const id1 = lodashGet(idsImageObj, [`recruitment_id_${recruitment_id}`, 'id1'], '');
-    //   const id2 = lodashGet(idsImageObj, [`recruitment_id_${recruitment_id}`, 'id2Arr', 0], '');
+      ) {
+        continue;
+      }
 
 
-    //   // --------------------------------------------------
-    //   //   push
-    //   // --------------------------------------------------
+      const user_no = lodashGet(valueObj, ['user_no'], 0);
+      const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
+      const image = lodashGet(valueObj, ['image'], '');
+      const movie = lodashGet(valueObj, ['movie'], '');
 
-    //   if (id1 && id2) {
-
-
-    //     let imagesAndVideosObj = {};
-
-
-    //     // --------------------------------------------------
-    //     //   画像を保存する
-    //     // --------------------------------------------------
-
-    //     if (image) {
-
-    //       imagesAndVideosObj = await saveImageAndVideo({
-
-    //         pass: `import/img-old/recruitment/recruitment/${recruitment_id}/image_1.jpg`,
-    //         type: 'recruitment',
-    //         id1,
-    //         id2,
-    //         users_id,
-    //         ISO8601,
-
-    //       });
+      const id1 = lodashGet(idsImageObj, [`recruitment_id_${recruitment_id}`, 'id1'], '');
+      const id2 = lodashGet(idsImageObj, [`recruitment_id_${recruitment_id}`, 'id2Arr', 0], '');
 
 
-    //     // --------------------------------------------------
-    //     //   動画
-    //     // --------------------------------------------------
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
 
-    //     } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
-
-    //       let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
-    //       videoIDArr = videoIDArr[1].split('";}}');
-    //       const videoID = videoIDArr[0];
-
-    //       imagesAndVideosObj = {
-
-    //         _id: id1,
-    //         createdDate: ISO8601,
-    //         updatedDate: ISO8601,
-    //         users_id,
-    //         type: 'recruitment',
-    //         images: 0,
-    //         videos: 1,
-    //         arr: [
-    //           {
-    //             _id: id2,
-    //             type: 'video',
-    //             videoChannel: 'youtube',
-    //             videoID,
-    //           },
-    //         ],
-
-    //       };
-
-    //     }
+      if (id1 && id2) {
 
 
-    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
-    //       imagesAndVideosArr.push(imagesAndVideosObj);
-    //     }
+        let imagesAndVideosObj = {};
 
 
-    //   }
+        // --------------------------------------------------
+        //   画像を保存する
+        // --------------------------------------------------
+
+        if (image) {
+
+          imagesAndVideosObj = await saveImageAndVideo({
+
+            pass: `import/img-old/recruitment/recruitment/${recruitment_id}/image_1.jpg`,
+            type: 'recruitment',
+            id1,
+            id2,
+            users_id,
+            ISO8601,
+
+          });
 
 
-    // }
+        // --------------------------------------------------
+        //   動画
+        // --------------------------------------------------
+
+        } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
+
+          let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
+          videoIDArr = videoIDArr[1].split('";}}');
+          const videoID = videoIDArr[0];
+
+          imagesAndVideosObj = {
+
+            _id: id1,
+            createdDate: ISO8601,
+            updatedDate: ISO8601,
+            users_id,
+            type: 'recruitment',
+            images: 0,
+            videos: 1,
+            arr: [
+              {
+                _id: id2,
+                type: 'video',
+                videoChannel: 'youtube',
+                videoID,
+              },
+            ],
+
+          };
+
+        }
+
+
+        if (Object.keys(imagesAndVideosObj).length !== 0) {
+          imagesAndVideosArr.push(imagesAndVideosObj);
+        }
+
+
+      }
+
+
+    }
 
 
 
@@ -1351,23 +1351,11 @@ export default async (req, res) => {
       pages/api/v2/common/import-json.js
     `);
 
-    // console.log(`
-    //   ----- saveArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(saveArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
     console.log(`
       ----- imagesAndVideosArr -----\n
       ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosArr)), { colors: true, depth: null })}\n
       --------------------\n
     `);
-
-    // console.log(`
-    //   ----- userCommunitiesArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(userCommunitiesArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
 
 
 

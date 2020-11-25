@@ -161,6 +161,11 @@ const ContainerLayout = (props) => {
     componentSidebar =
       <React.Fragment>
 
+        <Breadcrumbs
+          arr={props.breadcrumbsArr}
+          showOnMobile={true}
+        />
+
         <ForumNavigation
           userCommunityID={props.userCommunityID}
           userCommunities_id={props.userCommunities_id}
@@ -185,6 +190,7 @@ const ContainerLayout = (props) => {
 
       <Breadcrumbs
         arr={props.breadcrumbsArr}
+        showOnPC={true}
       />
 
       {props.accessRightRead &&

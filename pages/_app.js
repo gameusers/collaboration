@@ -79,7 +79,8 @@ import { locale, loadLocaleData } from 'app/@locales/locale.js';
 // ---------------------------------------------
 
 import 'app/@css/reset.css';
-import 'swiper/swiper-bundle.css';
+// import 'swiper/swiper-bundle.css';
+import 'swiper/swiper-bundle.min.css';
 import 'rc-pagination/assets/index.css';
 import 'react-modal-video/css/modal-video.min.css';
 import 'nprogress/nprogress.css';
@@ -231,8 +232,11 @@ const ServiceWorker = (props) => {
     // --------------------------------------------------
     //   Header 更新 - データに変更があった場合のみステートを更新
     // --------------------------------------------------
-
+// console.log(chalk`
+// lodashIsEqual(headerObj, pageProps.headerObj): {green ${lodashIsEqual(headerObj, pageProps.headerObj)}}
+//     `);
     if (lodashIsEqual(headerObj, pageProps.headerObj) === false) {
+      // console.log('AAA');
       setHeaderObj(pageProps.headerObj);
     }
 

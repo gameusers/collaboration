@@ -84,8 +84,12 @@ const Component = (props) => {
   const {
 
     arr = [],
+    showOnPC = false,
+    showOnMobile = false,
 
   } = props;
+
+
 
 
   // --------------------------------------------------
@@ -274,17 +278,11 @@ const Component = (props) => {
           `}
         >
 
-          {valueObj.href && valueObj.as ?
+          {valueObj.as ?
 
-            <Link href={valueObj.href} as={valueObj.as}>
-              <a
-                css={css`
-                  color: rgba(0, 0, 0, 0.7);
-                  cursor: pointer;
-                `}
-              >
-                {anchorText}
-              </a>
+            // <Link href={valueObj.href} as={valueObj.as}>
+            <Link href={valueObj.as}>
+              <a className="link">{anchorText}</a>
             </Link>
 
           :
@@ -333,6 +331,22 @@ const Component = (props) => {
       css={css`
         margin: 0 0 16px 0;
         padding: 10px 12px;
+
+        ${showOnPC && `
+          display: inherit;
+
+          @media screen and (max-width: 947px) {
+            display: none;
+          }
+        `}
+
+        ${showOnMobile && `
+          display: none;
+
+          @media screen and (max-width: 947px) {
+            display: inherit;
+          }
+        `}
       `}
     >
 
@@ -358,14 +372,7 @@ const Component = (props) => {
           >
 
             <Link href={'/'} as={'/'}>
-              <a
-                css={css`
-                  color: rgba(0, 0, 0, 0.7);
-                  cursor: pointer;
-                `}
-              >
-                Game Users
-              </a>
+              <a className="link">Game Users</a>
             </Link>
 
           </div>

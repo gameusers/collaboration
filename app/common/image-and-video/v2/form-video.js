@@ -136,8 +136,8 @@ const Component = (props) => {
     // ---------------------------------------------
 
     const regex = new RegExp('(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})', 'i');
-    const resultMatchObj = url.match(regex);
-    const videoID = lodashGet(resultMatchObj, [1], '');
+    const matchArr = url.match(regex);
+    const videoID = lodashGet(matchArr, [1], '');
 
 
 

@@ -33,24 +33,6 @@ const imageminSvgo = require('imagemin-svgo');
 const lodashGet = require('lodash/get');
 
 
-// ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-const { imageCalculateSize } = require('../../app/@modules/image/calculate.js');
-const { CustomError } = require('../../app/@modules/error/custom.js');
-
-
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-// const { validationLanguage } = require('../../@validations/language.js');
-// const { validationInteger } = require('../../@validations/integer.js');
-// const { validationVideo } = require('../../@database/images-and-videos/validations/video.js');
-// const { validationType } = require('../../@database/images-and-videos/validations/type.js');
-
-
 
 
 

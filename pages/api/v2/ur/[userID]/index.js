@@ -252,6 +252,12 @@ export default async (req, res) => {
     // `);
 
     // console.log(`
+    //   ----- returnObj.headerObj -----\n
+    //   ${util.inspect(returnObj.headerObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
     //   ----- usersObj -----\n
     //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
     //   --------------------\n

@@ -81,14 +81,26 @@ const Container = ({ children, showNavTop, lowerSidebar }) => {
   return <animated.div
       css={css`
         width: 300px;
-        // margin: 0 0 50px 0;
+        height: 92vh;
+        min-height: 200px;
+        overflow-y: auto;
+
+        ::-webkit-scrollbar {
+          display:none;
+        }
+        scrollbar-width: none;
 
         position: sticky;
         top: 0;
 
+        padding: 0 0 2px 0;
+
         @media screen and (max-width: 947px) {
           width: 100%;
+          height: auto;
+          min-height: inherit;
           position: static;
+          overflow-y: visible;
           margin: 0;
         }
       `}
@@ -150,6 +162,7 @@ const Component = (props) => {
   // --------------------------------------------------
 
   return (
+
     <Container
       showNavTop={showNavTop}
       lowerSidebar={lowerSidebar}
@@ -161,6 +174,8 @@ const Component = (props) => {
 
 
     </Container>
+
+
   );
 
 

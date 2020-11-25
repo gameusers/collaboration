@@ -141,6 +141,8 @@ const Component = (props) => {
   const [open, setOpen] = useState(true);
 
 
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
@@ -148,17 +150,21 @@ const Component = (props) => {
   const { headerObj } = props;
 
 
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
 
   const name = lodashGet(headerObj, ['name'], '');
-  const createdDate = moment(lodashGet(headerObj, ['createdDate'], '')).format('YYYY/MM/DD');
+  const createdDate = moment(lodashGet(headerObj, ['createdDate'], '')).utc().format('YYYY/MM/DD');
   const userCommunities_id = lodashGet(headerObj, ['userCommunities_id'], '');
   const followsObj = lodashGet(headerObj, ['followsObj'], {});
   const followedCount = lodashGet(headerObj, ['followsObj', 'followedCount'], 0);
   const approval = lodashGet(headerObj, ['followsObj', 'approval'], false);
   const communityType = lodashGet(headerObj, ['communityType'], 'open');
+
+
 
 
   // --------------------------------------------------
@@ -260,9 +266,9 @@ const Component = (props) => {
           background-color: rgba(0, 0, 0, 0.5);
           color: #fff;
 
-          position: absolute;
-          right: 15px;
-          bottom: 15px;
+          // position: absolute;
+          // right: 15px;
+          // bottom: 15px;
           padding: 0 0 6px 0;
         `}
       >
@@ -341,9 +347,9 @@ const Component = (props) => {
           background-color: rgba(0, 0, 0, 0.5);
           color: #fff;
 
-          position: absolute;
-          right: 15px;
-          bottom: 15px;
+          // position: absolute;
+          // right: 15px;
+          // bottom: 15px;
           padding: 0 2px 0 0;
         `}
       >

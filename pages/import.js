@@ -68,7 +68,7 @@ import Layout from 'app/common/layout/v2/layout.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: http://localhost:8080/initialize
+//   URL: http://localhost:8080/import
 // --------------------------------------------------
 
 /**
@@ -76,19 +76,6 @@ import Layout from 'app/common/layout/v2/layout.js';
  * @param {Object} props - Props
  */
 const ContainerLayout = (props) => {
-
-
-  // --------------------------------------------------
-  //   props
-  // --------------------------------------------------
-
-  // const {
-
-  //   feedObj = {},
-
-  // } = props;
-
-
 
 
   // --------------------------------------------------
@@ -854,6 +841,21 @@ export async function getServerSideProps({ req, res, query }) {
     statusCode = 404;
   }
 
+
+
+
+   // --------------------------------------------------
+  //   Fetch
+  // --------------------------------------------------
+
+  await fetchWrapper({
+
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/common/initial-props`),
+    methodType: 'GET',
+    reqHeadersCookie,
+    reqAcceptLanguage,
+
+  });
 
 
 

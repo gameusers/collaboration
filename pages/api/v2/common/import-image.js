@@ -1335,8 +1335,8 @@ export default async (req, res) => {
     //   Insert
     // ---------------------------------------------
 
-    // await SchemaImagesAndVideos.deleteMany({});
-    // await SchemaImagesAndVideos.insertMany(imagesAndVideosArr);
+    await SchemaImagesAndVideos.deleteMany({});
+    await SchemaImagesAndVideos.insertMany(imagesAndVideosArr);
 
 
 

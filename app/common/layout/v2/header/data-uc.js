@@ -57,6 +57,8 @@ import FollowButton from 'app/common/follow/v2/follow-button.js';
 
 
 
+
+
 // --------------------------------------------------
 //   Emotion
 //   https://emotion.sh/docs/composition
@@ -125,6 +127,8 @@ const useStyles = makeStyles({
 
 
 
+
+
 // --------------------------------------------------
 //   Function Components
 // --------------------------------------------------
@@ -147,7 +151,12 @@ const Component = (props) => {
   //   props
   // --------------------------------------------------
 
-  const { headerObj } = props;
+  const {
+
+    headerObj,
+    heroImage,
+
+  } = props;
 
 
 
@@ -252,31 +261,126 @@ const Component = (props) => {
 
 
   // --------------------------------------------------
-  //   Open
+  //   Hero Image
   // --------------------------------------------------
 
-  if (open) {
+  if (heroImage) {
 
-    component =
-      <div
-        css={css`
-          width: 280px;
-          border-radius: 8px;
-          background-color: #000;
-          background-color: rgba(0, 0, 0, 0.5);
-          color: #fff;
 
-          // position: absolute;
-          // right: 15px;
-          // bottom: 15px;
-          padding: 0 0 6px 0;
-        `}
-      >
+    // --------------------------------------------------
+    //   Open
+    // --------------------------------------------------
 
-        <div css={cssTitleBox}>
+    if (open) {
 
-          <div css={cssTitle}>{name}</div>
+      component =
+        <div
+          css={css`
+            width: 280px;
+            border-radius: 8px;
+            background-color: #000;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
 
+            position: absolute;
+            right: 15px;
+            bottom: 15px;
+            padding: 0 0 6px 0;
+          `}
+        >
+
+
+          {/* Name & Open Button */}
+          <div css={cssTitleBox}>
+
+            <div css={cssTitle}>{name}</div>
+
+            <IconButton
+              css={css`
+                && {
+                  font-size: 12px;
+                  width: 24px;
+                  height: 24px;
+                  min-width: 24px;
+                  min-height: 24px;
+                  margin: 2px auto 0;
+                  padding: 2px 0 0 0;
+                }
+              `}
+              color="secondary"
+              onClick={() => setOpen(false)}
+            >
+              <IconKeyboardArrowUp />
+            </IconButton>
+
+          </div>
+
+
+          {/* Data */}
+          <p css={cssInfo}>開設日 | {createdDate}</p>
+          <p css={cssInfo}>メンバー | {followedCount}人</p>
+          <p css={cssInfo}>公開タイプ | {communityType === 'open' ? 'オープン' : 'クローズド'}</p>
+          <p css={cssInfo}>参加方法 | {approval ? '承認制' : '誰でも参加可能'}</p>
+
+
+          {/* Game */}
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row wrap;
+              margin: 12px 8px 2px;
+            `}
+          >
+            {codeGames}
+          </div>
+
+
+          {/* Follow Button */}
+          <FollowButton
+            type="header"
+            userCommunities_id={userCommunities_id}
+            followsObj={followsObj}
+          />
+
+
+        </div>
+      ;
+
+
+    // --------------------------------------------------
+    //   Closed
+    // --------------------------------------------------
+
+    } else {
+
+      component =
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: center;
+            align-items: center;
+
+            min-width: 150px;
+            max-width: 300px;
+            border-radius: 8px;
+            background-color: #000;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+
+            position: absolute;
+            right: 15px;
+            bottom: 15px;
+            padding: 0 2px 0 0;
+          `}
+        >
+
+
+          {/* Name */}
+          <div css={cssTitleClosed}>{name}</div>
+
+
+          {/* Open Button */}
           <IconButton
             css={css`
               && {
@@ -285,99 +389,164 @@ const Component = (props) => {
                 height: 24px;
                 min-width: 24px;
                 min-height: 24px;
-                margin: 2px auto 0;
-                padding: 2px 0 0 0;
+                margin: 2px 0 0 0;
+                padding: 0;
               }
             `}
             color="secondary"
-            onClick={() => setOpen(false)}
+            onClick={() => setOpen(true)}
           >
-            <IconKeyboardArrowUp />
+            <IconKeyboardArrowDown />
           </IconButton>
 
+
         </div>
+      ;
 
-
-        <p css={cssInfo}>開設日 | {createdDate}</p>
-        <p css={cssInfo}>メンバー | {followedCount}人</p>
-        <p css={cssInfo}>公開タイプ | {communityType === 'open' ? 'オープン' : 'クローズド'}</p>
-        <p css={cssInfo}>参加方法 | {approval ? '承認制' : '誰でも参加可能'}</p>
-
-
-        <div
-          css={css`
-            display: flex;
-            flex-flow: row wrap;
-            margin: 12px 8px 2px;
-          `}
-        >
-          {codeGames}
-        </div>
-
-
-        <FollowButton
-          type="header"
-          userCommunities_id={userCommunities_id}
-          followsObj={followsObj}
-        />
-
-
-      </div>
-    ;
+    }
 
 
   // --------------------------------------------------
-  //   Closed
+  //   Thumbnail
   // --------------------------------------------------
 
   } else {
 
-    component =
-      <div
-        css={css`
-          display: flex;
-          flex-flow: row nowrap;
-          justify-content: center;
-          align-items: center;
 
-          min-width: 150px;
-          max-width: 300px;
-          border-radius: 8px;
-          background-color: #000;
-          background-color: rgba(0, 0, 0, 0.5);
-          color: #fff;
+    // --------------------------------------------------
+    //   Open
+    // --------------------------------------------------
 
-          // position: absolute;
-          // right: 15px;
-          // bottom: 15px;
-          padding: 0 2px 0 0;
-        `}
-      >
+    if (open) {
 
-        <div css={cssTitleClosed}>{name}</div>
-
-        <IconButton
+      component =
+        <div
           css={css`
-            && {
-              font-size: 12px;
-              width: 24px;
-              height: 24px;
-              min-width: 24px;
-              min-height: 24px;
-              margin: 2px 0 0 0;
-              padding: 0;
-            }
+            min-width: 150px;
+            max-width: 300px;
+            border-radius: 8px;
+            background-color: #000;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            padding: 0 0 6px 0;
           `}
-          color="secondary"
-          onClick={() => setOpen(true)}
         >
-          <IconKeyboardArrowDown />
-        </IconButton>
 
-      </div>
-    ;
+
+          {/* Name & Open Button */}
+          <div css={cssTitleBox}>
+
+            <div css={cssTitle}>{name}</div>
+
+            <IconButton
+              css={css`
+                && {
+                  font-size: 12px;
+                  width: 24px;
+                  height: 24px;
+                  min-width: 24px;
+                  min-height: 24px;
+                  margin: 2px auto 0;
+                  padding: 2px 0 0 0;
+                }
+              `}
+              color="secondary"
+              onClick={() => setOpen(false)}
+            >
+              <IconKeyboardArrowUp />
+            </IconButton>
+
+          </div>
+
+
+          {/* Data */}
+          <p css={cssInfo}>開設日 | {createdDate}</p>
+          <p css={cssInfo}>メンバー | {followedCount}人</p>
+          <p css={cssInfo}>公開タイプ | {communityType === 'open' ? 'オープン' : 'クローズド'}</p>
+          <p css={cssInfo}>参加方法 | {approval ? '承認制' : '誰でも参加可能'}</p>
+
+
+          {/* Game */}
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row wrap;
+              margin: 12px 8px 2px;
+            `}
+            >
+            {codeGames}
+          </div>
+
+
+          {/* Follow Button */}
+          <FollowButton
+            type="header"
+            userCommunities_id={userCommunities_id}
+            followsObj={followsObj}
+          />
+
+
+        </div>
+      ;
+
+
+    // --------------------------------------------------
+    //   Closed
+    // --------------------------------------------------
+
+    } else {
+
+      component =
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: center;
+            align-items: center;
+
+            min-width: 150px;
+            max-width: 300px;
+            border-radius: 8px;
+            background-color: #000;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            padding: 0 2px 0 0;
+          `}
+        >
+
+
+          {/* Name */}
+          <div css={cssTitleClosed}>{name}</div>
+
+
+          {/* Open Button */}
+          <IconButton
+            css={css`
+              && {
+                font-size: 12px;
+                width: 24px;
+                height: 24px;
+                min-width: 24px;
+                min-height: 24px;
+                margin: 2px 0 0 0;
+                padding: 0;
+              }
+            `}
+            color="secondary"
+            onClick={() => setOpen(true)}
+          >
+            <IconKeyboardArrowDown />
+          </IconButton>
+
+
+        </div>
+      ;
+
+    }
 
   }
+
+
 
 
   // --------------------------------------------------
@@ -398,6 +567,8 @@ const Component = (props) => {
   //   ${util.inspect(JSON.parse(JSON.stringify(headerObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
+
+
 
 
   // --------------------------------------------------

@@ -275,13 +275,15 @@ const Component = (props) => {
             background-color: rgba(0, 0, 0, 0.5);
             color: #fff;
 
-            // position: absolute;
-            // right: 15px;
-            // bottom: 15px;
+            position: absolute;
+            right: 15px;
+            bottom: 15px;
             padding: 0 0 6px 0;
           `}
         >
 
+
+          {/* Name & Open Button */}
           <div css={cssTitleBox}>
             <div css={cssTitle}>{name}</div>
             <IconButton
@@ -303,19 +305,26 @@ const Component = (props) => {
             </IconButton>
           </div>
 
+
+          {/* Data */}
           <p css={cssInfo}>ハード | {hardware}</p>
           <p css={cssInfo}>ジャンル | {genre}</p>
           <p css={cssInfo}>プレイ人数 | {players}</p>
           <p css={cssInfo}>発売日 | {formattedReleaseData}</p>
           <p css={cssInfo}>開発・販売 | {developersPublishers}</p>
 
+
+          {/* Link */}
           <LinkIcons linkArr={linkArr} />
 
+
+          {/* Follow Button */}
           <FollowButton
             type="header"
             gameCommunities_id={gameCommunities_id}
             followsObj={followsObj}
           />
+
 
         </div>
       ;
@@ -342,15 +351,19 @@ const Component = (props) => {
             background-color: rgba(0, 0, 0, 0.5);
             color: #fff;
 
-            // position: absolute;
-            // right: 15px;
-            // bottom: 15px;
+            position: absolute;
+            right: 15px;
+            bottom: 15px;
             padding: 0 2px 0 0;
           `}
         >
 
+
+          {/* Name */}
           <div css={cssTitleClosed}>{name}</div>
 
+
+          {/* Open Button */}
           <IconButton
             css={css`
               && {
@@ -368,6 +381,7 @@ const Component = (props) => {
           >
             <IconKeyboardArrowDown />
           </IconButton>
+
 
         </div>
       ;
@@ -396,23 +410,32 @@ const Component = (props) => {
           `}
         >
 
+
+          {/* Name */}
           <div css={cssTitleBox}>
             <div css={cssTitle}>{name}</div>
           </div>
 
+
+          {/* Data */}
           <p css={cssInfo}>ハード | {hardware}</p>
           <p css={cssInfo}>ジャンル | {genre}</p>
           <p css={cssInfo}>プレイ人数 | {players}</p>
           <p css={cssInfo}>発売日 | {formattedReleaseData}</p>
           <p css={cssInfo}>開発・販売 | {developersPublishers}</p>
 
+
+          {/* Link */}
           <LinkIcons linkArr={linkArr} />
 
+
+          {/* Data */}
           <FollowButton
             type="header"
             gameCommunities_id={gameCommunities_id}
             followsObj={followsObj}
           />
+
 
         </div>
       ;
@@ -436,7 +459,12 @@ const Component = (props) => {
             padding: 0 2px 0 0;
           `}
         >
+
+
+          {/* Name */}
           <div css={cssTitleClosed}>{name}</div>
+
+
         </div>
       ;
 

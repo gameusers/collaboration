@@ -239,6 +239,127 @@ const ContainerLayout = (props) => {
 
 
   /**
+   * インデックスを削除する
+   */
+  const handleDropIndexes = async () => {
+
+
+    try {
+
+
+      // ---------------------------------------------
+      //   Loading Open
+      // ---------------------------------------------
+
+      handleLoadingOpen({});
+
+
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+
+      setButtonDisabled(true);
+
+
+
+
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+
+      const formData = new FormData();
+
+
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+
+      const resultObj = await fetchWrapper({
+
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v1/initialize/drop-indexes`,
+        methodType: 'POST',
+        formData,
+
+      });
+
+
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+
+
+
+      // --------------------------------------------------
+      //   Snackbar: Success
+      // --------------------------------------------------
+
+      showSnackbar({
+
+        enqueueSnackbar,
+        intl,
+        arr: [
+          {
+            variant: 'success',
+            messageID: 'dusYj_Gh3',
+          },
+        ]
+
+      });
+
+
+    } catch (errorObj) {
+
+
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+
+      showSnackbar({
+
+        enqueueSnackbar,
+        intl,
+        errorObj,
+
+      });
+
+
+    } finally {
+
+
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+
+      setButtonDisabled(false);
+
+
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
+
+      handleLoadingClose();
+
+
+    }
+
+
+  };
+
+
+
+
+  /**
    * IDを割り振る
    */
   const handleImportID = async () => {
@@ -651,6 +772,25 @@ const ContainerLayout = (props) => {
       <br /><br />
 
 
+
+
+      <h1>データベースのインデックスを削除する</h1>
+      <p>データベースのインデックスをすべて削除します。開発中不要なインデックスができてしまった場合、利用してください。</p>
+
+      <Button
+        variant="contained"
+        disabled={buttonDisabled}
+        onClick={handleDropIndexes}
+      >
+        データベース - インデックス削除
+      </Button>
+
+
+      <br /><br />
+
+
+
+
       <h1>インポート - _id を割り振る</h1>
       <p>user_no や community_no に _id を割り振る。</p>
 
@@ -664,6 +804,8 @@ const ContainerLayout = (props) => {
 
 
       <br /><br />
+
+
 
 
       <h1>画像と動画</h1>
@@ -681,6 +823,8 @@ const ContainerLayout = (props) => {
       <br /><br />
 
 
+
+
       <h1>インポート</h1>
       <p>旧Game Usersのデータをインポートします。</p>
 
@@ -693,10 +837,11 @@ const ContainerLayout = (props) => {
       </Button>
 
 
-
-
-
       <br /><br />
+
+
+
+
 
 
       <h1>開発中の主要ページ</h1>

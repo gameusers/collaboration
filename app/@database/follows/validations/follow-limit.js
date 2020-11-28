@@ -43,87 +43,87 @@ const { CustomError } = require('../../../@modules/error/custom.js');
  * @return {Object} バリデーション結果
  */
 const validationFollowLimit = ({ throwError = false, required = false, value }) => {
-  
-  
+
+
   // ---------------------------------------------
   //   Result Object
   // ---------------------------------------------
-  
+
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
-  
+
   const resultObj = {
-    
+
     value: data,
     numberOfCharacters,
     messageID: 'Error',
     error: false,
-    
+
   };
-  
-  
+
+
   try {
-    
-    
+
+
     // ---------------------------------------------
     //   空の場合、処理停止
     // ---------------------------------------------
-    
+
     if (validator.isEmpty(data)) {
-      
+
       if (required) {
         throw new CustomError({ level: 'warn', errorsArr: [{ code: 'F_v4oxbqv', messageID: 'cFbXmuFVh' }] });
       }
-      
+
       return resultObj;
-      
+
     }
-    
-    
+
+
     // ---------------------------------------------
     //   適切な値が選択されているかチェック
     // ---------------------------------------------
-    
-    if (!validator.isIn(data, ['1', '5', '10', '20', '50'])) {
+
+    if (!validator.isIn(data, ['5', '10', '20', '50'])) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'sh259rt4c', messageID: 'PH8jcw-VF' }] });
     }
-    
-    
+
+
   } catch (errorObj) {
-    
-    
+
+
     // ---------------------------------------------
     //   Throw Error
     // ---------------------------------------------
-    
+
     if (throwError) {
       throw errorObj;
     }
-    
-    
+
+
     // ---------------------------------------------
     //   Result Error
     // ---------------------------------------------
-    
+
     resultObj.error = true;
-    
+
     if (errorObj instanceof CustomError) {
       resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
     } else {
       resultObj.messageID = 'qnWsuPcrJ';
     }
-    
-    
+
+
   }
-  
-  
+
+
   // ---------------------------------------------
   //   Return
   // ---------------------------------------------
-  
+
   return resultObj;
-  
-  
+
+
 };
 
 
@@ -134,7 +134,7 @@ const validationFollowLimit = ({ throwError = false, required = false, value }) 
 // --------------------------------------------------
 
 module.exports = {
-  
+
   validationFollowLimit,
-  
+
 };

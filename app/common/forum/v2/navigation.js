@@ -97,6 +97,8 @@ import { CustomError } from 'app/@modules/error/custom.js';
 
 
 
+
+
 // --------------------------------------------------
 //   Emotion
 //   https://emotion.sh/docs/composition
@@ -642,7 +644,7 @@ const Component = (props) => {
         {/* Pagination */}
         <TablePagination
           component="div"
-          rowsPerPageOptions={[1, 5, 10, 20, 50]}
+          rowsPerPageOptions={[5, 10, 15, 20]}
           count={count}
           rowsPerPage={limit}
           page={page - 1}

@@ -642,25 +642,26 @@ const findForForum = async ({
     const intReplyLimit = parseInt(replyLimit, 10);
 
 
+
+    // console.time('threadCount & Match Condition Array');
     // --------------------------------------------------
-    //   threadCount
+    //   threadCount & Match Condition Array
     // --------------------------------------------------
 
     let threadCount = 0;
-
-
-    // --------------------------------------------------
-    //   Match Condition Array
-    // --------------------------------------------------
-
     let matchConditionArr = [];
 
 
-    // --------------------------------------------------
-    //   Game Community
-    // --------------------------------------------------
+    // ---------------------------------------------
+    //   - Game Community
+    // ---------------------------------------------
 
     if (gameCommunities_id) {
+
+
+      // -----------------------------------
+      //   - matchConditionArr
+      // -----------------------------------
 
       matchConditionArr = [
         {
@@ -684,9 +685,9 @@ const findForForum = async ({
       }
 
 
-      // --------------------------------------------------
-      //   Count
-      // --------------------------------------------------
+      // -----------------------------------
+      //   - threadCount
+      // -----------------------------------
 
       const gameCommunityArr = await ModelGameCommunities.find({
 
@@ -699,11 +700,16 @@ const findForForum = async ({
       threadCount = lodashGet(gameCommunityArr, [0, 'forumObj', 'threadCount'], 0);
 
 
-    // --------------------------------------------------
-    //   User Community
-    // --------------------------------------------------
+    // ---------------------------------------------
+    //   - User Community
+    // ---------------------------------------------
 
     } else if (userCommunities_id) {
+
+
+      // -----------------------------------
+      //   - matchConditionArr
+      // -----------------------------------
 
       matchConditionArr = [
         {
@@ -727,9 +733,9 @@ const findForForum = async ({
       }
 
 
-      // --------------------------------------------------
-      //   Count
-      // --------------------------------------------------
+      // -----------------------------------
+      //   - threadCount
+      // -----------------------------------
 
       const userCommunityArr = await ModelUserCommunities.find({
 
@@ -741,9 +747,12 @@ const findForForum = async ({
 
       threadCount = lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0);
 
+
     }
+    // console.timeEnd('threadCount & Match Condition Array');
 
 
+    // console.time('SchemaForumThreads.aggregate');
     // --------------------------------------------------
     //   Aggregation
     // --------------------------------------------------
@@ -756,6 +765,15 @@ const findForForum = async ({
       // --------------------------------------------------
 
       ...matchConditionArr,
+
+
+      // --------------------------------------------------
+      //   $sort / $skip / $limit
+      // --------------------------------------------------
+
+      { $sort: { updatedDate: -1 } },
+      { $skip: (threadPage - 1) * intThreadLimit },
+      { $limit: intThreadLimit },
 
 
       // --------------------------------------------------
@@ -809,24 +827,15 @@ const findForForum = async ({
       },
 
 
-      // --------------------------------------------------
-      //   $sort / $skip / $limit
-      // --------------------------------------------------
-
-      { $sort: { updatedDate: -1 } },
-      { $skip: (threadPage - 1) * intThreadLimit },
-      { $limit: intThreadLimit },
-
-
     ]).exec();
-
+    // console.timeEnd('SchemaForumThreads.aggregate');
 
 
 
     // --------------------------------------------------
     //   Format
     // --------------------------------------------------
-
+    // console.time('formatVer2');
     const formattedThreadsObj = formatVer2({
 
       req,
@@ -841,14 +850,14 @@ const findForForum = async ({
 
     const forumThreadsObj = lodashGet(formattedThreadsObj, ['forumThreadsObj'], {});
     const forumThreads_idsForCommentArr = lodashGet(formattedThreadsObj, ['forumThreads_idsForCommentArr'], []);
-
+    // console.timeEnd('formatVer2');
 
 
 
     // --------------------------------------------------
     //   DB find / Forum Comments & Replies
     // --------------------------------------------------
-
+    // console.time('ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr');
     const forumCommentsAndRepliesObj = await ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr({
 
       req,
@@ -865,7 +874,7 @@ const findForForum = async ({
 
     const forumCommentsObj = lodashGet(forumCommentsAndRepliesObj, ['forumCommentsObj'], {});
     const forumRepliesObj = lodashGet(forumCommentsAndRepliesObj, ['forumRepliesObj'], {});
-
+    // console.timeEnd('ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr');
 
 
 
@@ -1548,23 +1557,42 @@ const findForForumBy_forumID = async ({
 
     const resultArr = await SchemaForumThreads.aggregate([
 
+
+      // --------------------------------------------------
+      //   Match Condition Array
+      // --------------------------------------------------
+
       ...matchConditionArr,
 
 
-      // 画像と動画を取得
+      // --------------------------------------------------
+      //   $sort / $skip / $limit
+      // --------------------------------------------------
+
+      { $sort: { updatedDate: -1 } },
+      { $skip: (threadPage - 1) * intThreadLimit },
+      { $limit: intThreadLimit },
+
+
+      // --------------------------------------------------
+      //   images-and-videos
+      // --------------------------------------------------
+
       {
         $lookup:
           {
             from: 'images-and-videos',
             let: { forumThreadsImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$forumThreadsImagesAndVideos_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$forumThreadsImagesAndVideos_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -1579,23 +1607,21 @@ const findForForumBy_forumID = async ({
       {
         $unwind: {
           path: '$imagesAndVideosObj',
-          // includeArrayIndex: 'arrayIndex',
           preserveNullAndEmptyArrays: true,
         }
       },
 
 
-      { $project:
-        {
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+
+      {
+        $project: {
           imagesAndVideos_id: 0,
           __v: 0,
         }
       },
-
-
-      { $sort: { updatedDate: -1 } },
-      { $skip: (threadPage - 1) * intThreadLimit },
-      { $limit: intThreadLimit },
 
 
     ]).exec();
@@ -1634,8 +1660,6 @@ const findForForumBy_forumID = async ({
 
     const forumThreadsObj = lodashGet(formattedThreadsObj, ['forumThreadsObj'], {});
     const forumThreads_idsForCommentArr = lodashGet(formattedThreadsObj, ['forumThreads_idsForCommentArr'], []);
-
-
 
 
 
@@ -1772,7 +1796,6 @@ const findForForumBy_forumID = async ({
 
 
 
-
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
@@ -1833,12 +1856,12 @@ const findForForumBy_forumID = async ({
     //   Return
     // --------------------------------------------------
 
-    // return {};
-
     return {
+
       forumThreadsObj,
       forumCommentsObj,
       forumRepliesObj,
+
     };
 
 

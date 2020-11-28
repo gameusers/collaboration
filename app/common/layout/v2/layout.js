@@ -355,6 +355,7 @@ const Component = (props) => {
 
               @media screen and (max-width: 947px) {
                 width: auto;
+                // margin: 0;
                 margin: 0 0 16px 0;
                 padding: 0;
               }

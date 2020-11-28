@@ -183,8 +183,9 @@ export default async (req, res) => {
     }
 
 
+    // console.time('ModelGameCommunities.findGamesList');
     returnObj.gcListObj = await ModelGameCommunities.findGamesList(argumentsObj);
-
+    // console.timeEnd('ModelGameCommunities.findGamesList');
 
 
 
@@ -231,10 +232,10 @@ export default async (req, res) => {
     // `);
 
     // console.log(chalk`
-    // page: {green ${page}}
-    // limit: {green ${limit}}
-    // hardwares: {green ${hardwares}}
-    // keyword: {green ${keyword}}
+    //   page: {green ${page}}
+    //   limit: {green ${limit}}
+    //   hardwares: {green ${hardwares}}
+    //   keyword: {green ${keyword}}
     // `);
 
     // console.log(`

@@ -14,7 +14,7 @@ const schema = mongoose.Schema({
   _id: { type: String, required: true },
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
-  accessDate: { type: Date, required: true },
+  accessDate: { type: Date, required: true, index: true },
   userID: { type: String, required: true, unique: true },
   userIDInitial: { type: String, required: true, unique: true },
   pagesObj: {
@@ -41,6 +41,13 @@ const schema = mongoose.Schema({
   role: { type: String, enum: ['user', 'administrator'], required: true },
 
 });
+
+
+// --------------------------------------------------
+//   Index
+// --------------------------------------------------
+
+// schema.index({ accessDate: -1 });
 
 
 // --------------------------------------------------

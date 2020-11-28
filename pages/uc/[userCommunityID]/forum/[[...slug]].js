@@ -136,6 +136,11 @@ const ContainerLayout = (props) => {
   const componentSidebar =
     <React.Fragment>
 
+      <Breadcrumbs
+        arr={props.breadcrumbsArr}
+        sidebar={true}
+      />
+
       <ForumNavigation
         userCommunityID={props.userCommunityID}
         userCommunities_id={props.userCommunities_id}
@@ -394,8 +399,7 @@ export async function getServerSideProps({ req, res, query }) {
 
     {
       name: 'トップ',
-      href: `/uc/[userCommunityID]`,
-      as: `/uc/${userCommunityID}`,
+      href: `/uc/${userCommunityID}`,
       active: true,
     },
 
@@ -406,8 +410,7 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: 'メンバー',
-        href: `/uc/[userCommunityID]/member`,
-        as: `/uc/${userCommunityID}/member`,
+        href: `/uc/${userCommunityID}/member`,
         active: false,
       }
     );
@@ -419,8 +422,7 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: '設定',
-        href: `/uc/[userCommunityID]/setting`,
-        as: `/uc/${userCommunityID}/setting`,
+        href: `/uc/${userCommunityID}/setting`,
         active: false,
       }
     );
@@ -437,15 +439,13 @@ export async function getServerSideProps({ req, res, query }) {
     {
       type: 'uc/list',
       anchorText: '',
-      href: '/uc/list/[[...slug]]',
-      as: `/uc/list`,
+      href: `/uc/list`,
     },
 
     {
       type: 'uc/index',
       anchorText: userCommunityName,
-      href: `/uc/[userCommunityID]`,
-      as: `/uc/${userCommunityID}`,
+      href: `/uc/${userCommunityID}`,
     },
 
   ];
@@ -480,7 +480,6 @@ export async function getServerSideProps({ req, res, query }) {
         type: 'uc/forum',
         anchorText: '',
         href: '',
-        as: '',
       },
 
     );
@@ -513,7 +512,6 @@ export async function getServerSideProps({ req, res, query }) {
         type: 'uc/forum/individual',
         anchorText: forumName,
         href: '',
-        as: '',
       }
 
     );

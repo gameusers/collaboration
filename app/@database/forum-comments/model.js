@@ -408,6 +408,15 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
 
 
         // --------------------------------------------------
+        //   $sort / $skip / $limit
+        // --------------------------------------------------
+
+        { $sort: { updatedDate: -1 } },
+        { $skip: (commentPage - 1) * intCommentLimit },
+        { $limit: intCommentLimit },
+
+
+        // --------------------------------------------------
         //   card-players
         // --------------------------------------------------
 
@@ -620,6 +629,15 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                     }
                   }
                 },
+
+
+                // --------------------------------------------------
+                //   $sort / $skip / $limit
+                // --------------------------------------------------
+
+                { $sort: { createdDate: 1 } },
+                { $skip: (replyPage - 1) * intReplyLimit },
+                { $limit: intReplyLimit },
 
 
                 // --------------------------------------------------
@@ -907,15 +925,6 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                 },
 
 
-                // --------------------------------------------------
-                //   $sort / $skip / $limit
-                // --------------------------------------------------
-
-                { $sort: { createdDate: 1 } },
-                { $skip: (replyPage - 1) * intReplyLimit },
-                { $limit: intReplyLimit },
-
-
               ],
               as: 'forumRepliesArr'
             }
@@ -933,15 +942,6 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
             __v: 0,
           }
         },
-
-
-        // --------------------------------------------------
-        //   $sort / $skip / $limit
-        // --------------------------------------------------
-
-        { '$sort': { 'updatedDate': -1 } },
-        { $skip: (commentPage - 1) * intCommentLimit },
-        { $limit: intCommentLimit },
 
 
       ]).exec();
@@ -1153,6 +1153,15 @@ const findRepliesByForumComments_idsArr = async ({
 
 
       // --------------------------------------------------
+      //   $sort / $skip /$limit
+      // --------------------------------------------------
+
+      { $sort: { updatedDate: -1 } },
+      { $skip: (commentPage - 1) * intCommentLimit },
+      { $limit: intCommentLimit },
+
+
+      // --------------------------------------------------
       //   card-players
       // --------------------------------------------------
 
@@ -1252,7 +1261,6 @@ const findRepliesByForumComments_idsArr = async ({
                 $project: {
                   _id: 0,
                   accessDate: 1,
-                  // exp: 1,
                   userID: 1,
                 }
               }
@@ -1363,6 +1371,15 @@ const findRepliesByForumComments_idsArr = async ({
                   }
                 }
               },
+
+
+              // --------------------------------------------------
+              //   $sort / $skip / $limit
+              // --------------------------------------------------
+
+              { $sort: { createdDate: 1 } },
+              { $skip: (replyPage - 1) * intReplyLimit },
+              { $limit: intReplyLimit },
 
 
               // --------------------------------------------------
@@ -1649,15 +1666,6 @@ const findRepliesByForumComments_idsArr = async ({
               },
 
 
-              // --------------------------------------------------
-              //   $sort / $skip /$limit
-              // --------------------------------------------------
-
-              { $sort: { createdDate: 1 } },
-              { $skip: (replyPage - 1) * intReplyLimit },
-              { $limit: intReplyLimit },
-
-
             ],
             as: 'forumRepliesArr'
           }
@@ -1674,15 +1682,6 @@ const findRepliesByForumComments_idsArr = async ({
           __v: 0,
         }
       },
-
-
-      // --------------------------------------------------
-      //   $sort / $skip /$limit
-      // --------------------------------------------------
-
-      { $sort: { updatedDate: -1 } },
-      { $skip: (commentPage - 1) * intCommentLimit },
-      { $limit: intCommentLimit },
 
 
     ]).exec();
@@ -2272,8 +2271,8 @@ const getPage = async ({
       { $sort: { updatedDate: -1 } },
 
 
-      { $project:
-        {
+      {
+        $project: {
           _id: 1,
         }
       },
@@ -2331,8 +2330,8 @@ const getPage = async ({
         { $sort: { createdDate: 1 } },
 
 
-        { $project:
-          {
+        {
+          $project: {
             _id: 1,
           }
         },
@@ -2774,8 +2773,8 @@ const findRepliesForUpsert = async ({
         { $sort: { createdDate: 1 } },
 
 
-        { $project:
-          {
+        {
+          $project: {
             _id: 1,
           }
         },

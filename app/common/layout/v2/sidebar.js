@@ -81,8 +81,9 @@ const Container = ({ children, showNavTop, lowerSidebar }) => {
   return <animated.div
       css={css`
         width: 300px;
-        height: 92vh;
-        min-height: 200px;
+        // height: 100%;
+        // height: 92vh;
+        // min-height: 200px;
         overflow-y: auto;
 
         ::-webkit-scrollbar {

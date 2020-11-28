@@ -4,7 +4,7 @@
 
 const express = require('express');
 
-const initialize = require('../initialize');
+const initialize = require('./initialize');
 const login = require('./login');
 
 

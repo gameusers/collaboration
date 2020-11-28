@@ -67,6 +67,8 @@ import CardGc from 'app/common/community-list/v2/card-gc.js';
 
 
 
+
+
 // --------------------------------------------------
 //   Material UI Style Overrides
 //   https://material-ui.com/styles/basics/
@@ -108,6 +110,8 @@ const Component = (props) => {
   const {
 
     obj,
+    hardwaresArr,
+    keyword,
 
   } = props;
 
@@ -122,6 +126,8 @@ const Component = (props) => {
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
+  const [searchHardwaresArr, setSearchHardwaresArr] = useState(hardwaresArr);
+  const [searchKeyword, setSearchKeyword] = useState(keyword);
   const [anchorElEditMode, setAnchorElEditMode] = useState(null);
 
 
@@ -155,21 +161,39 @@ const Component = (props) => {
 
 
       // ---------------------------------------------
+      //   For Search
+      // ---------------------------------------------
+
+      const hardwareIDsArr = [];
+
+      for (let valueObj of searchHardwaresArr.values()) {
+        hardwareIDsArr.push(valueObj.hardwareID);
+      }
+
+
+      // ---------------------------------------------
       //   Router.push 用
       // ---------------------------------------------
 
-      let url = '';
-      let as = '';
+      const urlHardwares = hardwareIDsArr.length > 0 ? `hardwares=${hardwareIDsArr.join(',')}&` : '';
+      const urlKeyword = searchKeyword ? `keyword=${encodeURI(searchKeyword)}&` : '';
 
-      if (page === 1) {
+      let url = `/gc/list/[[...slug]]?${urlHardwares}${urlKeyword}page=${page}`;
+      let as = `/gc/list/search?${urlHardwares}${urlKeyword}page=${page}`;
 
-        url = `/gc/list/[[...slug]]`;
-        as ='/gc/list';
+      if (!urlHardwares && !urlKeyword) {
 
-      } else {
+        if (page === 1) {
 
-        url = '/gc/list/[[...slug]]';
-        as = `/gc/list/${page}`;
+          url = '/gc/list/[[...slug]]';
+          as = '/gc/list';
+
+        } else {
+
+          url = '/gc/list/[[...slug]]';
+          as = `/gc/list/${page}`;
+
+        }
 
       }
 
@@ -371,8 +395,6 @@ const Component = (props) => {
               />
             }
           >
-            <MenuItem value={1}>1</MenuItem>
-            <MenuItem value={3}>3</MenuItem>
             <MenuItem value={5}>5</MenuItem>
             <MenuItem value={10}>10</MenuItem>
             <MenuItem value={20}>20</MenuItem>

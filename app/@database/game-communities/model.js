@@ -1085,7 +1085,7 @@ const findGamesList = async ({
     // --------------------------------------------------
 
     let intLimit = parseInt(limit, 10);
-
+    // let intLimit = 3;
 
 
 
@@ -1119,10 +1119,19 @@ const findGamesList = async ({
 
     }
 
-    const pattern = new RegExp(`.*${keyword}.*`);
-
     if (keyword) {
-      lodashSet(conditionObj, ['searchKeywordsArr'], { $regex: pattern, $options: 'i' });
+
+      const pattern = new RegExp(`.*${keyword}.*`);
+
+      const orArr = [
+        { name: { $regex: pattern, $options: 'i' } },
+        { searchKeywordsArr: { $regex: pattern, $options: 'i' } }
+      ];
+      // lodashSet(conditionObj, ['name'], { $regex: pattern, $options: 'i' });
+      // lodashSet(conditionObj, ['searchKeywordsArr'], { $regex: pattern, $options: 'i' });
+
+      lodashSet(conditionObj, ['$or'], orArr);
+
     }
 
 
@@ -1142,6 +1151,51 @@ const findGamesList = async ({
       {
         $match: conditionObj
       },
+
+
+      // --------------------------------------------------
+      //   game-communities
+      // --------------------------------------------------
+
+      {
+        $lookup:
+          {
+            from: 'game-communities',
+            let: { letGameCommunities_id: '$gameCommunities_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letGameCommunities_id']
+                  },
+                }
+              },
+              {
+                $project: {
+                  _id: 0,
+                  updatedDate: 1,
+                }
+              }
+            ],
+            as: 'gameCommunitiesObj'
+          }
+      },
+
+      {
+        $unwind: {
+          path: '$gameCommunitiesObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+
+
+      // --------------------------------------------------
+      //   $sort / $skip / $limit
+      // --------------------------------------------------
+
+      { $sort: { 'gameCommunitiesObj.updatedDate': -1 } },
+      { $skip: (page - 1) * intLimit },
+      { $limit: intLimit },
 
 
       // --------------------------------------------------
@@ -1219,48 +1273,11 @@ const findGamesList = async ({
 
 
       // --------------------------------------------------
-      //   game-communities
-      // --------------------------------------------------
-
-      {
-        $lookup:
-          {
-            from: 'game-communities',
-            let: { letGameCommunities_id: '$gameCommunities_id' },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$_id', '$$letGameCommunities_id']
-                  },
-                }
-              },
-              {
-                $project: {
-                  _id: 0,
-                  updatedDate: 1,
-                }
-              }
-            ],
-            as: 'gameCommunitiesObj'
-          }
-      },
-
-      {
-        $unwind: {
-          path: '$gameCommunitiesObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
-
-
-      // --------------------------------------------------
       //   $project
       // --------------------------------------------------
 
       {
         $project: {
-          // _id: 0,
           gameCommunities_id: 1,
           urlID: 1,
           imagesAndVideosThumbnailObj: 1,
@@ -1271,15 +1288,6 @@ const findGamesList = async ({
           gameCommunitiesObj: 1,
         }
       },
-
-
-      // --------------------------------------------------
-      //   $sort / $skip / $limit
-      // --------------------------------------------------
-
-      { $sort: { 'gameCommunitiesObj.updatedDate': -1 } },
-      { $skip: (page - 1) * intLimit },
-      { $limit: intLimit },
 
 
     ]).exec();
@@ -1513,9 +1521,10 @@ const findGamesList = async ({
     // `);
 
     // console.log(chalk`
-    // page: {green ${page}}
-    // limit: {green ${limit}}
-    // keyword: {green ${keyword}}
+    //   page: {green ${page} / ${typeof page}}
+    //   intLimit: {green ${intLimit} / ${typeof intLimit}}
+    //   (page - 1) * intLimit: {green ${(page - 1) * intLimit} / ${typeof (page - 1) * intLimit}}
+    //   keyword: {green ${keyword} / ${typeof keyword}}
     // `);
 
     // console.log(`
@@ -1550,6 +1559,7 @@ const findGamesList = async ({
     // --------------------------------------------------
 
     return returnObj;
+    // return {};
 
 
   } catch (err) {

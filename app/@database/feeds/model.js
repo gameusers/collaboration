@@ -15,6 +15,7 @@ const util = require('util');
 // ---------------------------------------------
 
 const moment = require('moment');
+import shortid from 'shortid';
 
 
 // ---------------------------------------------
@@ -31,7 +32,7 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Model
 // ---------------------------------------------
 
-const SchemaForumThreads = require('../forum-threads/schema.js');
+// const SchemaForumThreads = require('../forum-threads/schema.js');
 const SchemaForumComments = require('../forum-comments/schema.js');
 const SchemaRecruitmentThreads = require('../recruitment-threads/schema.js');
 const SchemaRecruitmentComments = require('../recruitment-comments/schema.js');
@@ -57,7 +58,7 @@ const ModelForumThreads = require('../forum-threads/model.js');
 // ---------------------------------------------
 
 const { formatFeedsArr } = require('./format.js');
-const { formatImagesAndVideosObj } = require('../images-and-videos/format.js');
+// const { formatImagesAndVideosObj } = require('../images-and-videos/format.js');
 
 
 // ---------------------------------------------
@@ -87,7 +88,7 @@ const test = async ({
   try {
 
 
-    console.time('app/@database/feeds/model.js - test');
+    // console.time('app/@database/feeds/model.js - test');
 
     // --------------------------------------------------
     //   DB findOne / experiences
@@ -182,12 +183,12 @@ const test = async ({
 
 
       // --------------------------------------------------
-      //   $sort / $limit / $skip
+      //   $sort / $skip / $limit
       // --------------------------------------------------
 
       { $sort: { createdDate: -1 } },
-      { $limit: intLimit },
       { $skip: (page - 1) * intLimit },
+      { $limit: intLimit },
 
 
       // --------------------------------------------------
@@ -413,29 +414,26 @@ const test = async ({
       },
 
 
-      // --------------------------------------------------
-      //   $sort / $limit / $skip
-      // --------------------------------------------------
-
-      // { $sort: { createdDate: -1 } },
-      // { $limit: intLimit },
-      // { $skip: (page - 1) * intLimit },
-
-
     // ]).exec();
     ]).explain();
 
-    console.timeEnd('app/@database/feeds/model.js - test');
+    // console.timeEnd('app/@database/feeds/model.js - test');
+
+
 
 
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
 
-    console.log(`
-      ----------------------------------------\n
-      app/@database/feeds/model.js - test
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   app/@database/feeds/model.js - test
+    // `);
+
+    // for (let i = 0; i < 10; i++) {
+    //   console.log(`shortid.generate() = ${shortid.generate()}`);
+    // }
 
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
@@ -444,11 +442,11 @@ const test = async ({
     //   limit: {green ${limit}}
     // `);
 
-    console.log(`
-      ----- result -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(result)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- result -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(result)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 
@@ -527,22 +525,10 @@ const findFeed = async ({
 
 
     // --------------------------------------------------
-    //   Language & Country & Parse
-    // --------------------------------------------------
-
-    // const language = lodashGet(localeObj, ['language'], '');
-    // const country = lodashGet(localeObj, ['country'], '');
-    // const intLimit = parseInt(limit, 10);
-
-
-
-    // --------------------------------------------------
     //   returnObj
     // --------------------------------------------------
 
     const returnObj = {};
-
-
 
 
     // --------------------------------------------------
@@ -575,7 +561,7 @@ const findFeed = async ({
       //   配列を結合する
       // --------------------------------------------------
 
-      mergedArr = docForumsGcArr.concat(docRecruitmentsArr, docForumsUcArr);
+      const mergedArr = docForumsGcArr.concat(docRecruitmentsArr, docForumsUcArr);
 
 
       // --------------------------------------------------
@@ -876,12 +862,12 @@ const findForumGc = async ({
 
 
       // --------------------------------------------------
-      //   $sort / $limit / $skip
+      //   $sort / $skip / $limit
       // --------------------------------------------------
 
       { $sort: { createdDate: -1 } },
-      { $limit: intLimit },
       { $skip: (page - 1) * intLimit },
+      { $limit: intLimit },
 
 
       // --------------------------------------------------
@@ -1230,12 +1216,12 @@ const findRecruitment = async ({
 
 
       // --------------------------------------------------
-      //   $sort / $limit / $skip
+      //   $sort / $skip / $limit
       // --------------------------------------------------
 
       { $sort: { createdDate: -1 } },
-      { $limit: intLimit },
       { $skip: (page - 1) * intLimit },
+      { $limit: intLimit },
 
 
       // --------------------------------------------------
@@ -1468,12 +1454,12 @@ const findRecruitment = async ({
 
 
       // --------------------------------------------------
-      //   $sort / $limit / $skip
+      //   $sort / $skip / $limit
       // --------------------------------------------------
 
       { $sort: { createdDate: -1 } },
-      { $limit: intLimit },
       { $skip: (page - 1) * intLimit },
+      { $limit: intLimit },
 
 
       // --------------------------------------------------
@@ -1744,12 +1730,12 @@ const findRecruitment = async ({
 
 
       // --------------------------------------------------
-      //   $sort / $limit / $skip
+      //   $sort / $skip / $limit
       // --------------------------------------------------
 
       { $sort: { createdDate: -1 } },
-      { $limit: intLimit },
       { $skip: (page - 1) * intLimit },
+      { $limit: intLimit },
 
 
       // --------------------------------------------------
@@ -1974,7 +1960,7 @@ const findRecruitment = async ({
     //   配列を結合する
     // --------------------------------------------------
 
-    mergedArr = docThreadsArr.concat(docCommentsArr, docRepliesArr);
+    const mergedArr = docThreadsArr.concat(docCommentsArr, docRepliesArr);
 
 
     // --------------------------------------------------
@@ -2141,12 +2127,12 @@ const findForumUc = async ({
 
 
       // --------------------------------------------------
-      //   $sort / $limit / $skip
+      //   $sort / $skip / $limit
       // --------------------------------------------------
 
       { $sort: { createdDate: -1 } },
-      { $limit: intLimit },
       { $skip: (page - 1) * intLimit },
+      { $limit: intLimit },
 
 
       // --------------------------------------------------
@@ -2441,10 +2427,6 @@ const findForumUc = async ({
 
 
 };
-
-
-
-
 
 
 

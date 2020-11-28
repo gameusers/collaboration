@@ -73,6 +73,11 @@ const ContainerLayout = (props) => {
   const componentSidebar =
     <React.Fragment>
 
+      <Breadcrumbs
+        arr={props.breadcrumbsArr}
+        sidebar={true}
+      />
+
       <GcNavigation
         page={props.page}
         hardwaresArr={props.hardwaresArr}
@@ -100,6 +105,8 @@ const ContainerLayout = (props) => {
 
       <GcList
         obj={props.gcListObj}
+        hardwaresArr={props.hardwaresArr}
+        keyword={props.keyword}
       />
 
     </React.Fragment>
@@ -274,21 +281,18 @@ export async function getServerSideProps({ req, res, query }) {
     {
       name: 'トップ',
       href: `/`,
-      as: `/`,
       active: false,
     },
 
     {
       name: 'ゲームC',
-      href: '/gc/list/[[...slug]]',
-      as: '/gc/list',
+      href: '/gc/list',
       active: true,
     },
 
     {
       name: 'ユーザーC',
-      href: '/uc/list/[[...slug]]',
-      as: '/uc/list',
+      href: '/uc/list',
       active: false,
     }
 
@@ -305,7 +309,6 @@ export async function getServerSideProps({ req, res, query }) {
       type: 'gc/list',
       anchorText: '',
       href: '',
-      as: '',
     },
 
   ];
@@ -367,15 +370,13 @@ export async function getServerSideProps({ req, res, query }) {
       {
         type: 'gc/list',
         anchorText: '',
-        href: '/gc/list/[[...slug]]',
-        as: '/gc/list',
+        href: '/gc/list',
       },
 
       {
         type: 'gc/list/search',
         anchorText: '',
         href: '',
-        as: '',
       },
 
     ];

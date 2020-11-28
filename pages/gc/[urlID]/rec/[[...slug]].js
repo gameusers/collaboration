@@ -149,6 +149,11 @@ const ContainerLayout = (props) => {
   const componentSidebar =
     <React.Fragment>
 
+      <Breadcrumbs
+        arr={props.breadcrumbsArr}
+        sidebar={true}
+      />
+
       <RecruitmentNavigation
         urlID={props.urlID}
         gameCommunities_id={props.gameCommunities_id}
@@ -399,22 +404,19 @@ export async function getServerSideProps({ req, res, query }) {
 
     {
       name: 'トップ',
-      href: `/gc/[urlID]`,
-      as: `/gc/${urlID}`,
+      href: `/gc/${urlID}`,
       active: false,
     },
 
     {
       name: '募集',
-      href: `/gc/[urlID]/rec/[[...slug]]`,
-      as: `/gc/${urlID}/rec`,
+      href: `/gc/${urlID}/rec`,
       active: true,
     },
 
     {
       name: 'フォロワー',
-      href: `/gc/[urlID]/follower`,
-      as: `/gc/${urlID}/follower`,
+      href: `/gc/${urlID}/follower`,
       active: false,
     }
 
@@ -425,8 +427,7 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: '設定',
-        href: `/gc/[urlID]/settings`,
-        as: `/gc/${urlID}/settings`,
+        href: `/gc/${urlID}/settings`,
         active: false,
       }
     );
@@ -443,22 +444,19 @@ export async function getServerSideProps({ req, res, query }) {
     {
       type: 'gc/list',
       anchorText: '',
-      href: '/gc/list/[[...slug]]',
-      as: '/gc/list',
+      href: '/gc/list',
     },
 
     {
       type: 'gc/index',
       anchorText: gameName,
-      href: '/gc/[urlID]',
-      as: `/gc/${urlID}`,
+      href: `/gc/${urlID}`,
     },
 
     {
       type: 'gc/rec',
       anchorText: '',
-      href: '/gc/[urlID]/rec/[[...slug]]',
-      as: `/gc/${urlID}/rec`,
+      href: `/gc/${urlID}/rec`,
     },
 
   ];
@@ -538,7 +536,6 @@ export async function getServerSideProps({ req, res, query }) {
         type: 'gc/rec/individual',
         anchorText: recruitmentTitle,
         href: '',
-        as: '',
       }
 
     );
@@ -575,7 +572,6 @@ export async function getServerSideProps({ req, res, query }) {
         type: 'gc/rec/search',
         anchorText: '',
         href: '',
-        as: '',
       },
 
     );

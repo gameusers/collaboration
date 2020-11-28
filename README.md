@@ -4,7 +4,7 @@
 
 [![node](https://img.shields.io/badge/node-v12.18.3-lightgrey.svg)](https://nodejs.org/ja/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-v4.4.0-green.svg)](https://www.mongodb.com/)
-[![Docker](https://img.shields.io/badge/Docker-v19.03.12-blue.svg)](https://www.npmjs.com/)
+[![Docker](https://img.shields.io/badge/Docker-v19.03.13-blue.svg)](https://www.npmjs.com/)
 [![Docker Compose](https://img.shields.io/badge/Docker%20Compose-v1.26.2-blue.svg)](https://www.npmjs.com/)
 [![David](https://img.shields.io/david/expressjs/express.svg)]()
 [![license](https://img.shields.io/badge/license-Game%20Users%20Project-blue.svg)](https://github.com/gameusers/web/blob/master/LICENSE.txt)
@@ -49,7 +49,7 @@ Docker を利用します。起動していない場合は、以下のコマン�
     sudo service docker start
 <br />
 
-ディレクトリのルートに [docker.sh](https://github.com/gameusers/collaboration/blob/master/docker.sh) というファイルが用意されます。これは起動の処理をまとめたシェルスクリプトです。コンテナの起動、npm パッケージのインストール、MongoDB のレプリカセットの設定、MongoDB のユーザー追加、サーバーの起動までを行います。以下は例です。配置した場所に合わせてパスを変更して実行してください。
+ディレクトリのルートに [docker.sh](https://github.com/gameusers/collaboration/blob/master/docker.sh) というファイルが用意されます。これは起動の処理をまとめたシェルスクリプトです。コンテナの起動、MongoDB のレプリカセットの設定、MongoDB のユーザー追加、サーバーの起動までを行います。以下は例です。配置した場所に合わせてパスを変更して実行してください。
 
     bash /home/（ユーザー名）/gameusers/collaboration/docker.sh
 シェルスクリプトが問題なく実行されればサーバーが起動します。
@@ -84,7 +84,7 @@ Docker を利用します。起動していない場合は、以下のコマン�
 
 
 ## 4. サーバーがエラーで停止した場合
-開発を進めているとエラーでサーバーが停止することがあります（設定が悪いせいかもしれません）その場合は Cntl + C で一度停止して、以下のコマンドを入力してください。コンテナに入って npm run dev を実行するコマンドです。
+開発を進めているとエラーでサーバーが停止することがあります。その場合は Cntl + C で一度停止して、以下のコマンドを入力してください。コンテナに入って npm run dev を実行するコマンドです。
 
     docker exec -it gameusers-node npm run dev
 <br />
@@ -125,6 +125,25 @@ Docker を利用します。起動していない場合は、以下のコマン�
 
     # イメージを作成してコンテナを起動
     docker-compose up -d --build
+<br />
+
+
+## 6. docker-compose build でエラーが出る場合
+Docker でイメージを作成する際に以下のようなエラーが出る場合があります。
+
+    npm ERR! code EAI_AGAIN
+    npm ERR! errno EAI_AGAIN
+    npm ERR! request to https://registry.npmjs.org/yallist/-/yallist-4.0.0.tgz failed, reason: getaddrinfo EAI_AGAIN registry.npmjs.org
+
+これは名前解決が正常に行えないため、起きるエラーのようです。ネームサーバーを Google Public DNS に変更することで解決できますが、お使いの開発環境の設定を変更することになりますので、以下を実行する場合は自己責任で行ってください。
+
+    # resolv.conf ファイルを開く
+    sudo vi /etc/resolv.conf
+
+    # nameserver を 8.8.8.8 に変更して保存
+    nameserver ○.○.○.○
+    ↓
+    nameserver 8.8.8.8
 
 
 <br /><br />

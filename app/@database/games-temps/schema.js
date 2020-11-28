@@ -12,7 +12,7 @@ const mongoose = require('mongoose');
 const schema = mongoose.Schema({
 
   _id: { type: String, required: true },
-  createdDate: { type: Date, required: true },
+  createdDate: { type: Date, required: true, index: true },
   updatedDate: { type: Date, required: true },
   approval: { type: Boolean, required: true },
   users_id: { type: String, required: true },
@@ -20,8 +20,6 @@ const schema = mongoose.Schema({
   urlID: { type: String, required: true },
   language: { type: String, enum: ['en', 'ja'], required: true },
   country: { type: String, enum: ['US', 'JP'], required: true },
-  // imagesAndVideos_id: { type: String },
-  // imagesAndVideosThumbnail_id: { type: String },
   name: { type: String, required: true },
   subtitle: String,
   searchKeywordsArr: [String],

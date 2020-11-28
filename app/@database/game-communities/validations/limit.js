@@ -69,7 +69,7 @@ const validationCommunitiesListLimit = ({ throwError = false, required = false, 
     //   適切な値が選択されているかチェック
     // ---------------------------------------------
 
-    if (!validator.isIn(data, ['1', '3', '5', '10', '20', '50'])) {
+    if (!validator.isIn(data, ['5', '10', '20', '50'])) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: '7g7gXJzlz', messageID: 'PH8jcw-VF' }] });
     }
 

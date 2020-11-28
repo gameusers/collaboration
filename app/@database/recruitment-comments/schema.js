@@ -12,8 +12,8 @@ const mongoose = require('mongoose');
 const schema = mongoose.Schema({
 
   _id: { type: String, required: true },
-  createdDate: { type: Date, required: true },
-  updatedDate: { type: Date, required: true },
+  createdDate: { type: Date, required: true, index: true },
+  updatedDate: { type: Date, required: true, index: true },
   gameCommunities_id: { type: String, required: true },
   recruitmentThreads_id: { type: String, required: true },
   users_id: { type: String },
@@ -57,7 +57,7 @@ const schema = mongoose.Schema({
 //   Index
 // --------------------------------------------------
 
-schema.index({ createdDate: -1 });
+// schema.index({ createdDate: -1 });
 
 
 // --------------------------------------------------

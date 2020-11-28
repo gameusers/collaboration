@@ -72,6 +72,11 @@ const ContainerLayout = (props) => {
   const componentSidebar =
     <React.Fragment>
 
+      <Breadcrumbs
+        arr={props.breadcrumbsArr}
+        sidebar={true}
+      />
+
       <FeedSidebar
         feedObj={props.feedObj}
         top={true}
@@ -200,6 +205,8 @@ export async function getServerSideProps({ req, res, query }) {
   const limit = getCookie({ key: 'followLimit', reqHeadersCookie });
 
 
+
+
   // --------------------------------------------------
   //   Fetch
   // --------------------------------------------------
@@ -234,6 +241,8 @@ export async function getServerSideProps({ req, res, query }) {
   const followMembersObj = lodashGet(dataObj, ['followMembersObj'], {});
 
 
+
+
   // --------------------------------------------------
   //   Title
   // --------------------------------------------------
@@ -248,6 +257,8 @@ export async function getServerSideProps({ req, res, query }) {
   const title = pageTitle ? pageTitle : `フォロー - ${userName}`;
 
 
+
+
   // --------------------------------------------------
   //   Header Navigation Link
   // --------------------------------------------------
@@ -256,15 +267,13 @@ export async function getServerSideProps({ req, res, query }) {
 
     {
       name: 'トップ',
-      href: `/ur/[userID]`,
-      as: `/ur/${userID}`,
+      href: `/ur/${userID}`,
       active: false,
     },
 
     {
       name: 'フォロー',
-      href: `/ur/[userID]/follow`,
-      as: `/ur/${userID}/follow`,
+      href: `/ur/${userID}/follow`,
       active: true,
     },
 
@@ -275,8 +284,7 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: '設定',
-        href: `/ur/[userID]/setting`,
-        as: `/ur/${userID}/setting`,
+        href: `/ur/${userID}/setting`,
         active: false,
       }
     );
@@ -293,15 +301,13 @@ export async function getServerSideProps({ req, res, query }) {
     {
       type: 'ur',
       anchorText: '',
-      href: `/ur/[userID]`,
-      as: `/ur/${userID}`,
+      href: `/ur/${userID}`,
     },
 
     {
       type: 'ur/follow',
       anchorText: '',
       href: '',
-      as: '',
     },
 
   ];

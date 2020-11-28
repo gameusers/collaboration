@@ -347,8 +347,8 @@ export default async (req, res) => {
       const comment = lodashGet(valueObj, ['explanation'], '');
       const user_id = lodashGet(valueObj, ['user_id'], '');
 
-      const updatedDate = moment(renewal_date).utc().toISOString();
-      const accessDate = moment(access_date).utc().toISOString();
+      const updatedDate = moment(renewal_date).utc().add(-9, 'hours').toISOString();
+      const accessDate = moment(access_date).utc().add(-9, 'hours').toISOString();
 
       let userID = user_id;
       let userIDInitial = `${shortid.generate()}${shortid.generate()}${shortid.generate()}`;
@@ -432,7 +432,7 @@ export default async (req, res) => {
       // --------------------------------------------------
 
       const created_at = lodashGet(usersLoginDataArr, [index, 'created_at'], 0);
-      const createdDate = moment.unix(created_at).utc().toISOString();
+      const createdDate = moment.unix(created_at).utc().add(-9, 'hours').toISOString();
       const loginID = lodashGet(usersLoginDataArr, [index, 'username'], '');
       const group = lodashGet(usersLoginDataArr, [index, 'group'], '1');
 
@@ -676,8 +676,8 @@ export default async (req, res) => {
       // --------------------------------------------------
 
       const bbs_id = lodashGet(valueObj, ['bbs_id'], '');
-      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().toISOString();
-      const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().toISOString();
+      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().add(-9, 'hours').toISOString();
+      const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().add(-9, 'hours').toISOString();
       const user_no = lodashGet(valueObj, ['user_no'], '');
       let anonymity = valueObj.anonymity ? true : false;
 
@@ -872,8 +872,8 @@ export default async (req, res) => {
       // --------------------------------------------------
 
       const bbs_id = lodashGet(valueObj, ['bbs_id'], '');
-      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().toISOString();
-      const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().toISOString();
+      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().add(-9, 'hours').toISOString();
+      const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().add(-9, 'hours').toISOString();
       const user_no = lodashGet(valueObj, ['user_no'], '');
       let anonymity = valueObj.anonymity ? true : false;
 
@@ -1064,8 +1064,8 @@ export default async (req, res) => {
       // --------------------------------------------------
 
       const bbs_id = lodashGet(valueObj, ['bbs_id'], '');
-      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().toISOString();
-      const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().toISOString();
+      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().add(-9, 'hours').toISOString();
+      const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().add(-9, 'hours').toISOString();
       const user_no = lodashGet(valueObj, ['user_no'], '');
       let anonymity = valueObj.anonymity ? true : false;
 
@@ -1243,8 +1243,8 @@ export default async (req, res) => {
       // --------------------------------------------------
 
       const bbs_id = lodashGet(valueObj, ['bbs_id'], '');
-      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().toISOString();
-      const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().toISOString();
+      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().add(-9, 'hours').toISOString();
+      const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().add(-9, 'hours').toISOString();
       const user_no = lodashGet(valueObj, ['user_no'], '');
       let anonymity = valueObj.anonymity ? true : false;
 
@@ -1421,8 +1421,8 @@ export default async (req, res) => {
       // --------------------------------------------------
 
       const bbs_id = lodashGet(valueObj, ['bbs_id'], '');
-      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().toISOString();
-      const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().toISOString();
+      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().add(-9, 'hours').toISOString();
+      const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().add(-9, 'hours').toISOString();
       const user_no = lodashGet(valueObj, ['user_no'], '');
       const name = lodashGet(valueObj, ['title'], '');
       const comment = lodashGet(valueObj, ['comment'], '');
@@ -1579,8 +1579,8 @@ export default async (req, res) => {
       // --------------------------------------------------
 
       const bbs_id = lodashGet(valueObj, ['bbs_id'], '');
-      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().toISOString();
-      const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().toISOString();
+      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().add(-9, 'hours').toISOString();
+      const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().add(-9, 'hours').toISOString();
       const name = lodashGet(valueObj, ['title'], '');
       const comment = lodashGet(valueObj, ['comment'], '');
       const image = lodashGet(valueObj, ['image'], '');
@@ -1731,8 +1731,8 @@ export default async (req, res) => {
       //   Data
       // --------------------------------------------------
 
-      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().toISOString();
-      const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().toISOString();
+      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().add(-9, 'hours').toISOString();
+      const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().add(-9, 'hours').toISOString();
       const user_no = lodashGet(valueObj, ['user_no'], '');
 
       let name = lodashGet(valueObj, ['handle_name'], '');
@@ -2078,8 +2078,8 @@ export default async (req, res) => {
       //   Data
       // --------------------------------------------------
 
-      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().toISOString();
-      const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().toISOString();
+      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().add(-9, 'hours').toISOString();
+      const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().add(-9, 'hours').toISOString();
       const user_no = lodashGet(valueObj, ['user_no'], '');
       const type = lodashGet(valueObj, ['type'], '');
       let title = lodashGet(valueObj, ['etc_title'], '');
@@ -2218,7 +2218,7 @@ export default async (req, res) => {
       //   deadlineDate
       // --------------------------------------------------
 
-      const deadlineDate = moment(lodashGet(valueObj, ['limit_date'], '')).utc().toISOString();
+      const deadlineDate = moment(lodashGet(valueObj, ['limit_date'], '')).utc().add(-9, 'hours').toISOString();
 
 
       // --------------------------------------------------
@@ -2512,8 +2512,8 @@ export default async (req, res) => {
       // --------------------------------------------------
 
       const on_off = lodashGet(valueObj, ['on_off'], '0');
-      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().toISOString();
-      const updatedDate = moment(lodashGet(valueObj, ['renewal_date'], '')).utc().toISOString();
+      const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().add(-9, 'hours').toISOString();
+      const updatedDate = moment(lodashGet(valueObj, ['renewal_date'], '')).utc().add(-9, 'hours').toISOString();
       const userCommunityID = lodashGet(valueObj, ['community_id'], '');
 
       const name = lodashGet(valueObj, ['name'], 'Name');
@@ -3640,8 +3640,8 @@ export default async (req, res) => {
       // --------------------------------------------------
 
       const on_off = lodashGet(valueObj, ['on_off'], '0');
-      const createdDate = moment(lodashGet(valueObj, ['renewal_date'], '')).utc().toISOString();
-      const updatedDate = moment(lodashGet(valueObj, ['renewal_date'], '')).utc().toISOString();
+      const createdDate = moment(lodashGet(valueObj, ['renewal_date'], '')).utc().add(-9, 'hours').toISOString();
+      const updatedDate = moment(lodashGet(valueObj, ['renewal_date'], '')).utc().add(-9, 'hours').toISOString();
       const urlID = lodashGet(valueObj, ['id'], '');
       const name = lodashGet(valueObj, ['name_ja'], '');
       const subtitle = lodashGet(valueObj, ['subtitle'], '');
@@ -3963,8 +3963,8 @@ export default async (req, res) => {
 
           {
             _id: gameCommunities_id,
-            createdDate: ISO8601,
-            updatedDate: ISO8601,
+            createdDate,
+            updatedDate,
             forumObj: {
               threadCount: forumThreadCount === 0 ? 1 : forumThreadCount,
             },
@@ -3972,8 +3972,8 @@ export default async (req, res) => {
               threadCount: recruitmentThreadCount,
             },
             updatedDateObj: {
-              forum: ISO8601,
-              recruitment: ISO8601,
+              forum: updatedDate,
+              recruitment: updatedDate,
             },
             anonymity: false,
           }

@@ -1344,6 +1344,15 @@ const aggregate = async ({
 
 
       // --------------------------------------------------
+      //   $sort / $skip / $limit
+      // --------------------------------------------------
+
+      { $sort: { updatedDate: -1 } },
+      { $skip: (threadPage - 1) * intThreadLimit },
+      { $limit: intThreadLimit },
+
+
+      // --------------------------------------------------
       //   games
       // --------------------------------------------------
 
@@ -1353,10 +1362,10 @@ const aggregate = async ({
             from: 'games',
             let: { letGameCommunities_id: '$gameCommunities_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
                       { $eq: ['$language', language] },
                       { $eq: ['$country', country] },
                       { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
@@ -1366,8 +1375,8 @@ const aggregate = async ({
               },
 
 
-              { $project:
-                {
+              {
+                $project: {
                   _id: 0,
                   twitterHashtagsArr: 1,
                 }
@@ -1395,13 +1404,15 @@ const aggregate = async ({
             from: 'game-communities',
             let: { letGameCommunities_id: '$gameCommunities_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$letGameCommunities_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letGameCommunities_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   _id: 0,
                   recruitmentObj: 1,
                 }
@@ -1429,10 +1440,10 @@ const aggregate = async ({
             from: 'card-players',
             let: { letUsers_id: '$users_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
                       { $eq: ['$language', language] },
                       { $eq: ['$users_id', '$$letUsers_id'] },
                     ]
@@ -1451,13 +1462,15 @@ const aggregate = async ({
                     from: 'images-and-videos',
                     let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $eq: ['$_id', '$$letImagesAndVideosThumbnail_id'] },
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                          },
                         }
                       },
-                      { $project:
-                        {
+                      {
+                        $project: {
                           createdDate: 0,
                           updatedDate: 0,
                           users_id: 0,
@@ -1481,8 +1494,6 @@ const aggregate = async ({
                 $project: {
                   name: 1,
                   status: 1,
-                  // name: '$nameObj.value',
-                  // status: '$statusObj.value',
                   imagesAndVideosThumbnailObj: 1,
                 }
               }
@@ -1509,10 +1520,10 @@ const aggregate = async ({
             from: 'web-pushes',
             let: { letWebPushes_id: '$webPushes_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
                       { $eq: ['$_id', '$$letWebPushes_id'] },
                       { $lt: ['$errorCount', errorLimit] },
                     ]
@@ -1520,8 +1531,8 @@ const aggregate = async ({
 
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   _id: 1,
                   users_id: 1,
                   subscriptionObj: 1,
@@ -1551,15 +1562,17 @@ const aggregate = async ({
             from: 'users',
             let: { letUsers_id: '$users_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$letUsers_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letUsers_id']
+                  },
                 }
               },
 
 
-              { $project:
-                {
+              {
+                $project: {
                   _id: 0,
                   accessDate: 1,
                   exp: 1,
@@ -1589,13 +1602,15 @@ const aggregate = async ({
             from: 'images-and-videos',
             let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$letImagesAndVideos_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideos_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -1625,10 +1640,10 @@ const aggregate = async ({
             from: 'hardwares',
             let: { letHardwareIDsArr: '$hardwareIDsArr' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
                       { $eq: ['$language', language] },
                       { $eq: ['$country', country] },
                       { $in: ['$hardwareID', '$$letHardwareIDsArr'] }
@@ -1636,8 +1651,8 @@ const aggregate = async ({
                   },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   _id: 0,
                   hardwareID: 1,
                   name: 1,
@@ -1662,10 +1677,10 @@ const aggregate = async ({
               letUsers_id: '$users_id',
             },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
                       { $eq: ['$users_id', '$$letUsers_id'] },
                       { $in: ['$_id', '$$letIDs_idArr'] }
                     ]
@@ -1684,10 +1699,10 @@ const aggregate = async ({
                     from: 'games',
                     let: { letGameCommunities_id: '$gameCommunities_id' },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $and:
-                            [
+                      {
+                        $match: {
+                          $expr: {
+                            $and: [
                               { $eq: ['$language', language] },
                               { $eq: ['$country', country] },
                               { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
@@ -1707,13 +1722,15 @@ const aggregate = async ({
                             from: 'images-and-videos',
                             let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
                             pipeline: [
-                              { $match:
-                                { $expr:
-                                  { $eq: ['$_id', '$$letImagesAndVideosThumbnail_id'] },
+                              {
+                                $match: {
+                                  $expr: {
+                                    $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                                  },
                                 }
                               },
-                              { $project:
-                                {
+                              {
+                                $project: {
                                   createdDate: 0,
                                   updatedDate: 0,
                                   users_id: 0,
@@ -1733,8 +1750,8 @@ const aggregate = async ({
                       },
 
 
-                      { $project:
-                        {
+                      {
+                        $project: {
                           _id: 1,
                           gameCommunities_id: 1,
                           name: 1,
@@ -1755,8 +1772,8 @@ const aggregate = async ({
               },
 
 
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -1775,22 +1792,13 @@ const aggregate = async ({
       //   $project
       // --------------------------------------------------
 
-      { $project:
-        {
+      {
+        $project: {
           imagesAndVideos_id: 0,
           webPushes_id: 0,
           __v: 0,
         }
       },
-
-
-      // --------------------------------------------------
-      //   $sort / $skip / $limit
-      // --------------------------------------------------
-
-      { $sort: { updatedDate: -1 } },
-      { $skip: (threadPage - 1) * intThreadLimit },
-      { $limit: intThreadLimit },
 
 
     ]).exec();

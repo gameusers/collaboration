@@ -365,13 +365,11 @@ const Component = (props) => {
                 classes={{
                   input: classes.input
                 }}
-                name="gc-limit-pagination"
+                name="uc-limit-pagination"
                 id="outlined-rows-per-page"
               />
             }
           >
-            <MenuItem value={1}>1</MenuItem>
-            <MenuItem value={3}>3</MenuItem>
             <MenuItem value={5}>5</MenuItem>
             <MenuItem value={10}>10</MenuItem>
             <MenuItem value={20}>20</MenuItem>

@@ -252,9 +252,9 @@ const ContainerLayout = (props) => {
 
 
   /**
-   * データをインポートする
+   * インデックスを削除する
    */
-  const handleImportJson = async () => {
+  const handleDropIndexes = async () => {
 
 
     try {
@@ -289,7 +289,7 @@ const ContainerLayout = (props) => {
 
       const resultObj = await fetchWrapper({
 
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/common/import-json`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v1/initialize/drop-indexes`,
         methodType: 'POST',
         formData,
 
@@ -420,6 +420,25 @@ const ContainerLayout = (props) => {
 
 
       <br /><br />
+
+
+
+
+      <h1>データベースのインデックスを削除する</h1>
+      <p>データベースのインデックスをすべて削除します。開発中不要なインデックスができてしまった場合、利用してください。</p>
+
+      <Button
+        variant="contained"
+        disabled={buttonDisabled}
+        onClick={handleDropIndexes}
+      >
+        データベース - インデックス削除
+      </Button>
+
+
+      <br /><br />
+
+
 
 
       <h1>開発中の主要ページ</h1>

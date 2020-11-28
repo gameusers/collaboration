@@ -148,6 +148,11 @@ const ContainerLayout = (props) => {
   let componentSidebar =
     <React.Fragment>
 
+      <Breadcrumbs
+        arr={props.breadcrumbsArr}
+        sidebar={true}
+      />
+
       <FeedSidebar
         feedObj={props.feedObj}
         top={true}
@@ -163,7 +168,7 @@ const ContainerLayout = (props) => {
 
         <Breadcrumbs
           arr={props.breadcrumbsArr}
-          showOnMobile={true}
+          sidebar={true}
         />
 
         <ForumNavigation
@@ -190,7 +195,6 @@ const ContainerLayout = (props) => {
 
       <Breadcrumbs
         arr={props.breadcrumbsArr}
-        showOnPC={true}
       />
 
       {props.accessRightRead &&
@@ -402,8 +406,7 @@ export async function getServerSideProps({ req, res, query }) {
 
     {
       name: 'トップ',
-      href: `/uc/[userCommunityID]`,
-      as: `/uc/${userCommunityID}`,
+      href: `/uc/${userCommunityID}`,
       active: true,
     },
 
@@ -414,8 +417,7 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: 'メンバー',
-        href: `/uc/[userCommunityID]/member`,
-        as: `/uc/${userCommunityID}/member`,
+        href: `/uc/${userCommunityID}/member`,
         active: false,
       }
     );
@@ -427,8 +429,7 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: '設定',
-        href: `/uc/[userCommunityID]/setting`,
-        as: `/uc/${userCommunityID}/setting`,
+        href: `/uc/${userCommunityID}/setting`,
         active: false,
       }
     );
@@ -445,15 +446,13 @@ export async function getServerSideProps({ req, res, query }) {
     {
       type: 'uc/list',
       anchorText: '',
-      href: '/uc/list/[[...slug]]',
-      as: `/uc/list`,
+      href: `/uc/list`,
     },
 
     {
       type: 'uc/index',
       anchorText: userCommunityName,
       href: '',
-      as: '',
     },
 
   ];

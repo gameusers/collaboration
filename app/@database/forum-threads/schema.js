@@ -13,7 +13,7 @@ const schema = mongoose.Schema({
 
   _id: { type: String, required: true },
   createdDate: { type: Date, required: true },
-  updatedDate: { type: Date, required: true },
+  updatedDate: { type: Date, required: true, index: true },
   gameCommunities_id: { type: String },
   userCommunities_id: { type: String },
   users_id: { type: String },

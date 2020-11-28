@@ -154,7 +154,6 @@ const Component = (props) => {
         componentsArr.push(
           <Link
             href={valueObj.href}
-            as={valueObj.as}
             key={index}
           >
             <a className="link">

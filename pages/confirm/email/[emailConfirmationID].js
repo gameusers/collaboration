@@ -68,10 +68,19 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
 
   const componentSidebar =
-    <FeedSidebar
-      feedObj={props.feedObj}
-      top={true}
-    />
+    <React.Fragment>
+
+      <Breadcrumbs
+        arr={props.breadcrumbsArr}
+        sidebar={true}
+      />
+
+      <FeedSidebar
+        feedObj={props.feedObj}
+        top={true}
+      />
+
+    </React.Fragment>
   ;
 
 
@@ -85,7 +94,6 @@ const ContainerLayout = (props) => {
       <Breadcrumbs
         arr={props.breadcrumbsArr}
       />
-
 
       <Panel
         heading="メールアドレス登録完了"
@@ -239,7 +247,7 @@ export async function getServerSideProps({ req, res, query }) {
     {
       name: 'メールアドレス確認',
       href: `/confirm/email/${emailConfirmationID}?emailConfirmationID=${emailConfirmationID}`,
-      as: `/confirm/email/${emailConfirmationID}`,
+      // as: `/confirm/email/${emailConfirmationID}`,
       active: true,
     },
 
@@ -256,7 +264,6 @@ export async function getServerSideProps({ req, res, query }) {
       type: 'confirm/email',
       anchorText: '',
       href: '',
-      as: '',
     },
 
   ];

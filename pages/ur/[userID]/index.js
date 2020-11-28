@@ -120,6 +120,11 @@ const ContainerLayout = (props) => {
   const componentSidebar =
     <React.Fragment>
 
+      <Breadcrumbs
+        arr={props.breadcrumbsArr}
+        sidebar={true}
+      />
+
       <FeedSidebar
         feedObj={props.feedObj}
         top={true}
@@ -299,15 +304,13 @@ export async function getServerSideProps({ req, res, query }) {
 
     {
       name: 'トップ',
-      href: `/ur/[userID]`,
-      as: `/ur/${userID}`,
+      href: `/ur/${userID}`,
       active: true,
     },
 
     {
       name: 'フォロー',
-      href: `/ur/[userID]/follow`,
-      as: `/ur/${userID}/follow`,
+      href: `/ur/${userID}/follow`,
       active: false,
     },
 
@@ -318,8 +321,7 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: '設定',
-        href: `/ur/[userID]/setting`,
-        as: `/ur/${userID}/setting`,
+        href: `/ur/${userID}/setting`,
         active: false,
       }
     );
@@ -337,7 +339,6 @@ export async function getServerSideProps({ req, res, query }) {
       type: 'ur',
       anchorText: '',
       href: '',
-      as: '',
     },
 
   ];

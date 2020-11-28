@@ -84,8 +84,7 @@ const Component = (props) => {
   const {
 
     arr = [],
-    showOnPC = false,
-    showOnMobile = false,
+    sidebar = false,
 
   } = props;
 
@@ -278,10 +277,9 @@ const Component = (props) => {
           `}
         >
 
-          {valueObj.as ?
+          {valueObj.href ?
 
-            // <Link href={valueObj.href} as={valueObj.as}>
-            <Link href={valueObj.as}>
+            <Link href={valueObj.href}>
               <a className="link">{anchorText}</a>
             </Link>
 
@@ -332,21 +330,25 @@ const Component = (props) => {
         margin: 0 0 16px 0;
         padding: 10px 12px;
 
-        ${showOnPC && `
-          display: inherit;
+        ${sidebar
+          ?
+            `
+              display: none;
 
-          @media screen and (max-width: 947px) {
-            display: none;
-          }
-        `}
+              @media screen and (max-width: 947px) {
+                margin: 0;
+                display: inherit;
+              }
+            `
+          :
+            `
+              display: inherit;
 
-        ${showOnMobile && `
-          display: none;
-
-          @media screen and (max-width: 947px) {
-            display: inherit;
-          }
-        `}
+              @media screen and (max-width: 947px) {
+                display: none;
+              }
+            `
+        }
       `}
     >
 

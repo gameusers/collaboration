@@ -1,8 +1,4 @@
 // --------------------------------------------------
-//   File ID: Mv7RFeKQ1
-// --------------------------------------------------
-
-// --------------------------------------------------
 //   Require
 // --------------------------------------------------
 
@@ -26,33 +22,72 @@ const moment = require('moment');
 
 
 // ---------------------------------------------
-//   Schema
+//   Lodash
 // ---------------------------------------------
 
-const SchemaUsers = require('../@database/users/model');
-const SchemaExperiences = require('../@database/experiences/model');
-const SchemaAchievements = require('../@database/achievements/model');
-const SchemaTitles = require('../@database/titles/model');
-const SchemaGames = require('../@database/games/model');
-const SchemaGamesTemps = require('../@database/games-temps/model');
-const SchemaIDs = require('../@database/ids/model');
-const SchemaCardPlayers = require('../@database/card-players/model');
-const SchemaGameGenres = require('../@database/game-genres/model');
-const SchemaHardwares = require('../@database/hardwares/model');
-const SchemaDevelopersPublishers = require('../@database/developers-publishers/model');
-const SchemaEmailConfirmations = require('../@database/email-confirmations/model');
-const SchemaImagesAndVideos = require('../@database/images-and-videos/model');
-const SchemaGameCommunities = require('../@database/game-communities/model');
-const SchemaUserCommunities = require('../@database/user-communities/model');
-const SchemaForumThreads = require('../@database/forum-threads/model');
-const SchemaForumComments = require('../@database/forum-comments/model');
-const SchemaRecruitmentThreads = require('../@database/recruitment-threads/model');
-const SchemaRecruitmentComments = require('../@database/recruitment-comments/model');
-const SchemaRecruitmentReplies = require('../@database/recruitment-replies/model');
-const SchemaFollows = require('../@database/follows/model');
-const SchemaGoods = require('../@database/goods/model');
-const SchemaNotifications = require('../@database/notifications/model');
-const SchemaWebPushes = require('../@database/web-pushes/model');
+const lodashGet = require('lodash/get');
+
+
+// ---------------------------------------------
+//   Model
+// ---------------------------------------------
+
+const SchemaUsers = require('../../@database/users/schema');
+const SchemaExperiences = require('../../@database/experiences/schema');
+const SchemaAchievements = require('../../@database/achievements/schema');
+const SchemaTitles = require('../../@database/titles/schema');
+const SchemaGames = require('../../@database/games/schema');
+const SchemaGamesTemps = require('../../@database/games-temps/schema');
+const SchemaGameGenres = require('../../@database/game-genres/schema');
+const SchemaHardwares = require('../../@database/hardwares/schema');
+const SchemaDevelopersPublishers = require('../../@database/developers-publishers/schema');
+const SchemaIDs = require('../../@database/ids/schema');
+const SchemaCardPlayers = require('../../@database/card-players/schema');
+const SchemaEmailConfirmations = require('../../@database/email-confirmations/schema');
+const SchemaImagesAndVideos = require('../../@database/images-and-videos/schema');
+const SchemaGameCommunities = require('../../@database/game-communities/schema');
+const SchemaUserCommunities = require('../../@database/user-communities/schema');
+const SchemaForumThreads = require('../../@database/forum-threads/schema');
+const SchemaForumComments = require('../../@database/forum-comments/schema');
+const SchemaRecruitmentThreads = require('../../@database/recruitment-threads/schema');
+const SchemaRecruitmentComments = require('../../@database/recruitment-comments/schema');
+const SchemaRecruitmentReplies = require('../../@database/recruitment-replies/schema');
+const SchemaFollows = require('../../@database/follows/schema');
+const SchemaGoods = require('../../@database/goods/schema');
+const SchemaNotifications = require('../../@database/notifications/schema');
+const SchemaWebPushes = require('../../@database/web-pushes/schema');
+
+const ModelUsers = require('../../@database/users/model');
+const ModelExperiences = require('../../@database/experiences/model');
+const ModelAchievements = require('../../@database/achievements/model');
+const ModelTitles = require('../../@database/titles/model');
+const ModelGames = require('../../@database/games/model');
+const ModelGamesTemps = require('../../@database/games-temps/model');
+const ModelGameGenres = require('../../@database/game-genres/model');
+const ModelHardwares = require('../../@database/hardwares/model');
+const ModelDevelopersPublishers = require('../../@database/developers-publishers/model');
+const ModelIDs = require('../../@database/ids/model');
+const ModelCardPlayers = require('../../@database/card-players/model');
+const ModelEmailConfirmations = require('../../@database/email-confirmations/model');
+const ModelImagesAndVideos = require('../../@database/images-and-videos/model');
+const ModelGameCommunities = require('../../@database/game-communities/model');
+const ModelUserCommunities = require('../../@database/user-communities/model');
+const ModelForumThreads = require('../../@database/forum-threads/model');
+const ModelForumComments = require('../../@database/forum-comments/model');
+const ModelRecruitmentThreads = require('../../@database/recruitment-threads/model');
+const ModelRecruitmentComments = require('../../@database/recruitment-comments/model');
+const ModelRecruitmentReplies = require('../../@database/recruitment-replies/model');
+const ModelFollows = require('../../@database/follows/model');
+const ModelGoods = require('../../@database/goods/model');
+const ModelNotifications = require('../../@database/notifications/model');
+const ModelWebPushes = require('../../@database/web-pushes/model');
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { returnErrorsArr } = require('../../@modules/log/log.js');
 
 
 // --------------------------------------------------
@@ -62,46 +97,43 @@ const SchemaWebPushes = require('../@database/web-pushes/model');
 const router = express.Router();
 
 
-// ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-const { errorCodeIntoErrorObj } = require('../@modules/error/error-obj');
 
 
 
 
 // --------------------------------------------------
-//   Status Code & Error Arguments Object
+//   Drop Indexes / endpointID: qF4NmVYqO
 // --------------------------------------------------
 
-let statusCode = 400;
-
-let errorArgumentsObj = {
-  fileID: 'Mv7RFeKQ1',
-  functionID: '',
-  errorCodeArr: [],
-  errorObj: {},
-  loginUsers_id: ''
-};
+router.post('/drop-indexes', upload.none(), async (req, res, next) => {
 
 
+  console.log('initialize/drop-indexes');
 
 
+  // --------------------------------------------------
+  //   Status Code
+  // --------------------------------------------------
 
-
-// --------------------------------------------------
-//   Initial Props / endpointID: gUwZx1hDG
-// --------------------------------------------------
-
-router.post('/db', upload.none(), async (req, res, next) => {
+  let statusCode = 400;
 
 
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
 
-  errorArgumentsObj.functionID = 'gUwZx1hDG';
+  let returnObj = {};
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+
+
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+
+  const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
 
 
 
@@ -118,13 +150,285 @@ router.post('/db', upload.none(), async (req, res, next) => {
     }
 
 
+
+
     // --------------------------------------------------
-    //   Property
+    //   Users
     // --------------------------------------------------
 
-    let returnObj = {};
-    let saveArr = [];
-    const ISO8601 = moment().utc().toISOString();
+    SchemaUsers.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Experiences
+    // --------------------------------------------------
+
+    SchemaExperiences.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Achievements
+    // --------------------------------------------------
+
+    SchemaAchievements.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Titles
+    // --------------------------------------------------
+
+    SchemaTitles.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Games
+    // --------------------------------------------------
+
+    SchemaGames.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Games Temps
+    // --------------------------------------------------
+
+    SchemaGamesTemps.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Game Genres
+    // --------------------------------------------------
+
+    SchemaGameGenres.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Hardwares
+    // --------------------------------------------------
+
+    SchemaHardwares.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Developers Publishers
+    // --------------------------------------------------
+
+    SchemaDevelopersPublishers.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   IDs
+    // --------------------------------------------------
+
+    SchemaIDs.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Card Players
+    // --------------------------------------------------
+
+    SchemaCardPlayers.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Email Confirmations
+    // --------------------------------------------------
+
+    SchemaEmailConfirmations.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Images and Videos
+    // --------------------------------------------------
+
+    SchemaImagesAndVideos.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Game Communities
+    // --------------------------------------------------
+
+    SchemaGameCommunities.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   User Communities
+    // --------------------------------------------------
+
+    SchemaUserCommunities.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Forum Threads
+    // --------------------------------------------------
+
+    SchemaForumThreads.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Forum Comments
+    // --------------------------------------------------
+
+    SchemaForumComments.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Recruitment Threads
+    // --------------------------------------------------
+
+    SchemaRecruitmentThreads.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Recruitment Comments
+    // --------------------------------------------------
+
+    SchemaRecruitmentComments.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Recruitment Replies
+    // --------------------------------------------------
+
+    SchemaRecruitmentReplies.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Follows
+    // --------------------------------------------------
+
+    SchemaFollows.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Goods
+    // --------------------------------------------------
+
+    SchemaGoods.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Notifications
+    // --------------------------------------------------
+
+    SchemaNotifications.collection.dropIndexes();
+
+
+    // --------------------------------------------------
+    //   Web Pushes
+    // --------------------------------------------------
+
+    SchemaWebPushes.collection.dropIndexes();
+
+
+
+
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+
+    // console.log(chalk`
+    //   users_id: {green ${users_id}}
+    // `);
+
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
+
+
+    // ---------------------------------------------
+    //   Return Json Object / Success
+    // ---------------------------------------------
+
+    return res.status(200).json(returnObj);
+
+
+  } catch (errorObj) {
+
+
+    // ---------------------------------------------
+    //   Log
+    // ---------------------------------------------
+
+    const resultErrorObj = returnErrorsArr({
+
+      errorObj,
+      endpointID: 'qF4NmVYqO',
+      users_id: loginUsers_id,
+      ip,
+      userAgent,
+      requestParametersObj,
+
+    });
+
+
+    // --------------------------------------------------
+    //   Return JSON Object / Error
+    // --------------------------------------------------
+
+    return res.status(statusCode).json(resultErrorObj);
+
+
+  }
+
+});
+
+
+
+
+// --------------------------------------------------
+//   Initialize / endpointID: HWYkugpzh
+// --------------------------------------------------
+
+router.post('/db', upload.none(), async (req, res, next) => {
+
+
+  console.log('initialize/db');
+
+
+  // --------------------------------------------------
+  //   Status Code
+  // --------------------------------------------------
+
+  let statusCode = 400;
+
+
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+
+  let returnObj = {};
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+
+  let saveArr = [];
+  const ISO8601 = moment().utc().toISOString();
+
+
+  // --------------------------------------------------
+  //   Language & IP & User Agent
+  // --------------------------------------------------
+
+  const acceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
+
+
+
+
+  try {
+
+
+    // --------------------------------------------------
+    //   Development Check
+    // --------------------------------------------------
+
+    if (process.env.NODE_ENV !== 'development') {
+      throw new Error();
+    }
 
 
 
@@ -134,7 +438,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -255,11 +559,11 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
 
     // ---------------------------------------------
-    //   Upsert
+    //   Delete & Insert
     // ---------------------------------------------
 
-    await SchemaUsers.deleteMany({ reset: true });
-    returnObj = await SchemaUsers.insertMany({ saveArr });
+    await ModelUsers.deleteMany({ reset: true });
+    await ModelUsers.insertMany({ saveArr });
 
 
 
@@ -269,7 +573,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -538,11 +842,11 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
 
     // ---------------------------------------------
-    //   Upsert
+    //   Delete & Insert
     // ---------------------------------------------
 
-    await SchemaExperiences.deleteMany({ reset: true });
-    returnObj = await SchemaExperiences.insertMany({ saveArr });
+    await ModelExperiences.deleteMany({ reset: true });
+    await ModelExperiences.insertMany({ saveArr });
 
 
 
@@ -552,7 +856,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -1892,11 +2196,11 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
 
     // ---------------------------------------------
-    //   Upsert
+    //   Delete & Insert
     // ---------------------------------------------
 
-    await SchemaAchievements.deleteMany({ reset: true });
-    returnObj = await SchemaAchievements.insertMany({ saveArr });
+    await ModelAchievements.deleteMany({ reset: true });
+    await ModelAchievements.insertMany({ saveArr });
 
 
 
@@ -1906,7 +2210,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -3277,11 +3581,11 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
 
     // ---------------------------------------------
-    //   Upsert
+    //   Delete & Insert
     // ---------------------------------------------
 
-    await SchemaTitles.deleteMany({ reset: true });
-    returnObj = await SchemaTitles.insertMany({ saveArr });
+    await ModelTitles.deleteMany({ reset: true });
+    await ModelTitles.insertMany({ saveArr });
 
 
 
@@ -3291,7 +3595,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -3700,11 +4004,11 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
 
     // ---------------------------------------------
-    //   Upsert
+    //   Delete & Insert
     // ---------------------------------------------
 
-    await SchemaGames.deleteMany({ reset: true });
-    returnObj = await SchemaGames.insertMany({ saveArr });
+    await ModelGames.deleteMany({ reset: true });
+    await ModelGames.insertMany({ saveArr });
 
 
 
@@ -3714,7 +4018,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -3875,11 +4179,11 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
 
     // ---------------------------------------------
-    //   Upsert
+    //   Delete & Insert
     // ---------------------------------------------
 
-    await SchemaGamesTemps.deleteMany({ reset: true });
-    returnObj = await SchemaGamesTemps.insertMany({ saveArr });
+    await ModelGamesTemps.deleteMany({ reset: true });
+    await ModelGamesTemps.insertMany({ saveArr });
 
 
 
@@ -3889,7 +4193,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Arr
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -4193,21 +4497,21 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
 
     // --------------------------------------------------
-    //   insertMany
+    //   Delete & Insert
     // --------------------------------------------------
 
-    await SchemaGameGenres.deleteMany({ reset: true });
-    returnObj = await SchemaGameGenres.insertMany({ saveArr });
+    await ModelGameGenres.deleteMany({ reset: true });
+    await ModelGameGenres.insertMany({ saveArr });
 
 
 
 
     // --------------------------------------------------
-    //   DB / Hardware
+    //   DB / Hardwares
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Arr
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -5090,11 +5394,11 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
 
     // --------------------------------------------------
-    //   insertMany
+    //   Delete & Insert
     // --------------------------------------------------
 
-    await SchemaHardwares.deleteMany({ reset: true });
-    returnObj = await SchemaHardwares.insertMany({ saveArr });
+    await ModelHardwares.deleteMany({ reset: true });
+    await ModelHardwares.insertMany({ saveArr });
 
 
 
@@ -5104,7 +5408,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Arr
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -5162,11 +5466,11 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
 
     // --------------------------------------------------
-    //   insertMany
+    //   Delete & Insert
     // --------------------------------------------------
 
-    await SchemaDevelopersPublishers.deleteMany({ reset: true });
-    returnObj = await SchemaDevelopersPublishers.insertMany({ saveArr });
+    await ModelDevelopersPublishers.deleteMany({ reset: true });
+    await ModelDevelopersPublishers.insertMany({ saveArr });
 
 
 
@@ -5176,7 +5480,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -5376,11 +5680,11 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
 
     // --------------------------------------------------
-    //   insertMany
+    //   Delete & Insert
     // --------------------------------------------------
 
-    await SchemaIDs.deleteMany({ reset: true });
-    returnObj = await SchemaIDs.insertMany({ saveArr });
+    await ModelIDs.deleteMany({ reset: true });
+    await ModelIDs.insertMany({ saveArr });
 
 
 
@@ -5390,7 +5694,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -5748,11 +6052,11 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
 
     // --------------------------------------------------
-    //   insertMany
+    //   Delete & Insert
     // --------------------------------------------------
 
-    await SchemaCardPlayers.deleteMany({ reset: true });
-    returnObj = await SchemaCardPlayers.insertMany({ saveArr });
+    await ModelCardPlayers.deleteMany({ reset: true });
+    await ModelCardPlayers.insertMany({ saveArr });
 
 
 
@@ -5762,10 +6066,10 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
 
     // --------------------------------------------------
-    //   deleteMany
+    //   Delete
     // --------------------------------------------------
 
-    await SchemaEmailConfirmations.deleteMany({ reset: true });
+    await ModelEmailConfirmations.deleteMany({ reset: true });
 
 
 
@@ -5775,7 +6079,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -6569,21 +6873,21 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
 
     // ---------------------------------------------
-    //   Insert
+    //   Delete & Insert
     // ---------------------------------------------
 
-    await SchemaImagesAndVideos.deleteMany({ reset: true });
-    returnObj = await SchemaImagesAndVideos.insertMany({ saveArr });
+    await ModelImagesAndVideos.deleteMany({ reset: true });
+    await ModelImagesAndVideos.insertMany({ saveArr });
 
 
 
 
     // --------------------------------------------------
-    //   DB / Game Community
+    //   DB / Game Communities
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -6661,21 +6965,21 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
 
     // ---------------------------------------------
-    //   Insert
+    //   Delete & Insert
     // ---------------------------------------------
 
-    await SchemaGameCommunities.deleteMany({ reset: true });
-    returnObj = await SchemaGameCommunities.insertMany({ saveArr });
+    await ModelGameCommunities.deleteMany({ reset: true });
+    await ModelGameCommunities.insertMany({ saveArr });
 
 
 
 
     // --------------------------------------------------
-    //   DB / User Community
+    //   DB / User Communities
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -6738,11 +7042,11 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
 
     // ---------------------------------------------
-    //   Insert
+    //   Delete & Insert
     // ---------------------------------------------
 
-    await SchemaUserCommunities.deleteMany({ reset: true });
-    returnObj = await SchemaUserCommunities.insertMany({ saveArr });
+    await ModelUserCommunities.deleteMany({ reset: true });
+    await ModelUserCommunities.insertMany({ saveArr });
 
 
 
@@ -6752,7 +7056,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     // スレッド　userCommunities_id: 'cxO8tEGty'で検索
@@ -6997,11 +7301,11 @@ emotion: https://emotion.sh/docs/introduction`,
 
 
     // ---------------------------------------------
-    //   Insert
+    //   Delete & Insert
     // ---------------------------------------------
 
-    await SchemaForumThreads.deleteMany({ reset: true });
-    returnObj = await SchemaForumThreads.insertMany({ saveArr });
+    await ModelForumThreads.deleteMany({ reset: true });
+    await ModelForumThreads.insertMany({ saveArr });
 
 
 
@@ -7011,7 +7315,7 @@ emotion: https://emotion.sh/docs/introduction`,
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -7383,11 +7687,11 @@ emotion: https://emotion.sh/docs/introduction`,
 
 
     // ---------------------------------------------
-    //   Insert
+    //   Delete & Insert
     // ---------------------------------------------
 
-    await SchemaForumComments.deleteMany({ reset: true });
-    returnObj = await SchemaForumComments.insertMany({ saveArr });
+    await ModelForumComments.deleteMany({ reset: true });
+    await ModelForumComments.insertMany({ saveArr });
 
 
 
@@ -7397,7 +7701,7 @@ emotion: https://emotion.sh/docs/introduction`,
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -7585,11 +7889,11 @@ emotion: https://emotion.sh/docs/introduction`,
 
 
     // ---------------------------------------------
-    //   Insert
+    //   Delete & Insert
     // ---------------------------------------------
 
-    await SchemaRecruitmentThreads.deleteMany({ reset: true });
-    returnObj = await SchemaRecruitmentThreads.insertMany({ saveArr });
+    await ModelRecruitmentThreads.deleteMany({ reset: true });
+    await ModelRecruitmentThreads.insertMany({ saveArr });
 
 
 
@@ -7599,7 +7903,7 @@ emotion: https://emotion.sh/docs/introduction`,
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -7749,11 +8053,11 @@ emotion: https://emotion.sh/docs/introduction`,
 
 
     // ---------------------------------------------
-    //   Insert
+    //   Delete & Insert
     // ---------------------------------------------
 
-    await SchemaRecruitmentComments.deleteMany({ reset: true });
-    returnObj = await SchemaRecruitmentComments.insertMany({ saveArr });
+    await ModelRecruitmentComments.deleteMany({ reset: true });
+    await ModelRecruitmentComments.insertMany({ saveArr });
 
 
 
@@ -7763,7 +8067,7 @@ emotion: https://emotion.sh/docs/introduction`,
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -7950,11 +8254,11 @@ emotion: https://emotion.sh/docs/introduction`,
 
 
     // ---------------------------------------------
-    //   Insert
+    //   Delete & Insert
     // ---------------------------------------------
 
-    await SchemaRecruitmentReplies.deleteMany({ reset: true });
-    returnObj = await SchemaRecruitmentReplies.insertMany({ saveArr });
+    await ModelRecruitmentReplies.deleteMany({ reset: true });
+    await ModelRecruitmentReplies.insertMany({ saveArr });
 
 
 
@@ -7964,7 +8268,7 @@ emotion: https://emotion.sh/docs/introduction`,
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -8132,11 +8436,11 @@ emotion: https://emotion.sh/docs/introduction`,
 
 
     // ---------------------------------------------
-    //   Insert
+    //   Delete & Insert
     // ---------------------------------------------
 
-    await SchemaFollows.deleteMany({ reset: true });
-    returnObj = await SchemaFollows.insertMany({ saveArr });
+    await ModelFollows.deleteMany({ reset: true });
+    await ModelFollows.insertMany({ saveArr });
 
 
 
@@ -8146,10 +8450,10 @@ emotion: https://emotion.sh/docs/introduction`,
     // --------------------------------------------------
 
     // --------------------------------------------------
-    //   deleteMany
+    //   Delete
     // --------------------------------------------------
 
-    await SchemaGoods.deleteMany({ reset: true });
+    await ModelGoods.deleteMany({ reset: true });
 
 
 
@@ -8159,7 +8463,7 @@ emotion: https://emotion.sh/docs/introduction`,
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -8277,21 +8581,21 @@ emotion: https://emotion.sh/docs/introduction`,
 
 
     // ---------------------------------------------
-    //   Insert
+    //   Delete & Insert
     // ---------------------------------------------
 
-    await SchemaNotifications.deleteMany({ reset: true });
-    returnObj = await SchemaNotifications.insertMany({ saveArr });
+    await ModelNotifications.deleteMany({ reset: true });
+    await ModelNotifications.insertMany({ saveArr });
 
 
 
 
     // --------------------------------------------------
-    //   DB / Web Push
+    //   DB / Web Pushs
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   Save Object
+    //   Save Array
     // ---------------------------------------------
 
     saveArr = [
@@ -8357,11 +8661,11 @@ emotion: https://emotion.sh/docs/introduction`,
 
 
     // ---------------------------------------------
-    //   Insert
+    //   Delete & Insert
     // ---------------------------------------------
 
-    await SchemaWebPushes.deleteMany({ reset: true });
-    returnObj = await SchemaWebPushes.insertMany({ saveArr });
+    await ModelWebPushes.deleteMany({ reset: true });
+    await ModelWebPushes.insertMany({ saveArr });
 
 
 
@@ -8381,6 +8685,8 @@ emotion: https://emotion.sh/docs/introduction`,
     // `);
 
 
+
+
     // ---------------------------------------------
     //   Return Json Object / Success
     // ---------------------------------------------
@@ -8392,11 +8698,19 @@ emotion: https://emotion.sh/docs/introduction`,
 
 
     // ---------------------------------------------
-    //   Error Object
+    //   Log
     // ---------------------------------------------
 
-    errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj(errorArgumentsObj);
+    const resultErrorObj = returnErrorsArr({
+
+      errorObj,
+      endpointID: 'HWYkugpzh',
+      users_id: loginUsers_id,
+      ip,
+      userAgent,
+      requestParametersObj,
+
+    });
 
 
     // --------------------------------------------------
@@ -8409,6 +8723,8 @@ emotion: https://emotion.sh/docs/introduction`,
   }
 
 });
+
+
 
 
 module.exports = router;

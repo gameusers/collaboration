@@ -70,10 +70,19 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
 
   const componentSidebar =
-    <FeedSidebar
-      feedObj={props.feedObj}
-      top={true}
-    />
+    <React.Fragment>
+
+      <Breadcrumbs
+        arr={props.breadcrumbsArr}
+        sidebar={true}
+      />
+
+      <FeedSidebar
+        feedObj={props.feedObj}
+        top={true}
+      />
+
+    </React.Fragment>
   ;
 
 
@@ -224,7 +233,6 @@ export async function getServerSideProps({ req, res, query }) {
     {
       name: 'ログアウト',
       href: '/logout',
-      as: '/logout',
       active: true,
     },
 
@@ -241,7 +249,6 @@ export async function getServerSideProps({ req, res, query }) {
       type: 'logout',
       anchorText: '',
       href: '',
-      as: '',
     },
 
   ];

@@ -69,10 +69,19 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
 
   const componentSidebar =
-    <FeedSidebar
-      feedObj={props.feedObj}
-      top={true}
-    />
+    <React.Fragment>
+
+      <Breadcrumbs
+        arr={props.breadcrumbsArr}
+        sidebar={true}
+      />
+
+      <FeedSidebar
+        feedObj={props.feedObj}
+        top={true}
+      />
+
+    </React.Fragment>
   ;
 
 
@@ -86,7 +95,6 @@ const ContainerLayout = (props) => {
       <Breadcrumbs
         arr={props.breadcrumbsArr}
       />
-
 
       <FormResetPassword
         emailConfirmationID={props.emailConfirmationID}
@@ -231,7 +239,7 @@ export async function getServerSideProps({ req, res, query }) {
     {
       name: 'パスワード再設定',
       href: `/confirm/reset-password/${emailConfirmationID}?emailConfirmationID=${emailConfirmationID}`,
-      as: `/confirm/reset-password/${emailConfirmationID}`,
+      // as: `/confirm/reset-password/${emailConfirmationID}`,
       active: true,
     },
 
@@ -248,7 +256,6 @@ export async function getServerSideProps({ req, res, query }) {
       type: 'confirm/reset-password',
       anchorText: '',
       href: '',
-      as: '',
     },
 
   ];

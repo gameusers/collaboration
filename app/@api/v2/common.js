@@ -34,6 +34,8 @@ import { updateAccessDate } from 'app/@modules/access-date.js';
 
 
 
+
+
 // --------------------------------------------------
 //   function
 // --------------------------------------------------
@@ -45,66 +47,66 @@ import { updateAccessDate } from 'app/@modules/access-date.js';
  * @param {Boolean} getHeroImage - ヒーローイメージを取得する場合、true
  */
 const initialProps = async ({ req, localeObj, getHeroImage = false }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
-  
+
   const returnObj = {
 
     login: false,
     experienceObj: {},
 
   };
-  
-  
+
+
   // --------------------------------------------------
   //   ログインしているユーザー情報＆ログインチェック
   // --------------------------------------------------
-  
+
   if (req.isAuthenticated() && req.user) {
-    
+
     returnObj.loginUsersObj = req.user;
     returnObj.login = true;
-    
+
   }
-  
+
 
   // --------------------------------------------------
   //   Update Access Date & Login Count
   // --------------------------------------------------
-  
+
   const loginUsers_id = lodashGet(returnObj, ['loginUsersObj', '_id'], '');
-  
+
   if (loginUsers_id) {
 
     const accessDate = lodashGet(returnObj, ['loginUsersObj', 'accessDate'], '');
 
     const resultUpdatedAccessDateObj = await updateAccessDate({
-    
+
       req,
       localeObj,
       loginUsers_id,
       accessDate,
-      
+
     });
-    
+
     returnObj.experienceObj = lodashGet(resultUpdatedAccessDateObj, ['experienceObj'], {});
     const updatedAccessDate = lodashGet(resultUpdatedAccessDateObj, ['updatedAccessDate'], '');
-    
+
     if (updatedAccessDate) {
       lodashSet(returnObj, ['loginUsersObj', 'accessDate'], updatedAccessDate);
     }
 
   }
 
-  
+
   // --------------------------------------------------
   //   データ取得 / Games
   //   ヘッダーヒーローイメージ用
   // --------------------------------------------------
-  
+
   if (getHeroImage) {
 
     returnObj.headerObj = await ModelGames.findForHeroImage({
@@ -113,14 +115,14 @@ const initialProps = async ({ req, localeObj, getHeroImage = false }) => {
 
   }
 
-  
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
-  
+
   return returnObj;
-  
-  
+
+
 };
 
 
@@ -131,7 +133,7 @@ const initialProps = async ({ req, localeObj, getHeroImage = false }) => {
 // --------------------------------------------------
 
 module.exports = {
-  
+
   initialProps,
-  
+
 };

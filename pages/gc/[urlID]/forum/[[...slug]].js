@@ -136,6 +136,11 @@ const ContainerLayout = (props) => {
   const componentSidebar =
     <React.Fragment>
 
+      <Breadcrumbs
+        arr={props.breadcrumbsArr}
+        sidebar={true}
+      />
+
       <ForumNavigation
         urlID={props.urlID}
         forumID={props.forumID}
@@ -391,22 +396,19 @@ export async function getServerSideProps({ req, res, query }) {
 
     {
       name: 'トップ',
-      href: `/gc/[urlID]`,
-      as: `/gc/${urlID}`,
+      href: `/gc/${urlID}`,
       active: true,
     },
 
     {
       name: '募集',
-      href: `/gc/[urlID]/rec/[[...slug]]`,
-      as: `/gc/${urlID}/rec`,
+      href: `/gc/${urlID}/rec`,
       active: false,
     },
 
     {
       name: 'フォロワー',
-      href: `/gc/[urlID]/follower`,
-      as: `/gc/${urlID}/follower`,
+      href: `/gc/${urlID}/follower`,
       active: false,
     }
 
@@ -417,8 +419,7 @@ export async function getServerSideProps({ req, res, query }) {
     headerNavMainArr.push(
       {
         name: '設定',
-        href: `/gc/[urlID]/setting`,
-        as: `/gc/${urlID}/setting`,
+        href: `/gc/${urlID}/setting`,
         active: false,
       }
     );
@@ -435,15 +436,13 @@ export async function getServerSideProps({ req, res, query }) {
     {
       type: 'gc/list',
       anchorText: '',
-      href: '/gc/list/[[...slug]]',
-      as: '/gc/list',
+      href: '/gc/list',
     },
 
     {
       type: 'gc/index',
       anchorText: gameName,
-      href: '/gc/[urlID]',
-      as: `/gc/${urlID}`,
+      href: `/gc/${urlID}`,
     },
 
   ];
@@ -478,7 +477,6 @@ export async function getServerSideProps({ req, res, query }) {
         type: 'gc/forum',
         anchorText: '',
         href: '',
-        as: '',
       },
 
     );
@@ -520,7 +518,6 @@ export async function getServerSideProps({ req, res, query }) {
         type: 'gc/forum/individual',
         anchorText: forumName,
         href: '',
-        as: '',
       }
 
     );
@@ -549,6 +546,8 @@ export async function getServerSideProps({ req, res, query }) {
 
   res.cookie('recentAccessPageHref', recentAccessPageHref);
   res.cookie('recentAccessPageAs', recentAccessPageAs);
+
+
 
 
   // --------------------------------------------------
@@ -585,6 +584,8 @@ export async function getServerSideProps({ req, res, query }) {
   // console.log(chalk`
   //   reqAcceptLanguage: {green ${reqAcceptLanguage}}
   // `);
+
+
 
 
   // --------------------------------------------------

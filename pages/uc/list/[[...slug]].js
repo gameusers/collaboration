@@ -73,6 +73,11 @@ const ContainerLayout = (props) => {
   const componentSidebar =
     <React.Fragment>
 
+      <Breadcrumbs
+        arr={props.breadcrumbsArr}
+        sidebar={true}
+      />
+
       <UcNavigation
         page={props.page}
         hardwaresArr={props.hardwaresArr}
@@ -272,22 +277,19 @@ export async function getServerSideProps({ req, res, query }) {
 
     {
       name: 'トップ',
-      href: `/`,
-      as: `/`,
+      href: '/',
       active: false,
     },
 
     {
       name: 'ゲームC',
-      href: '/gc/list/[[...slug]]',
-      as: '/gc/list',
+      href: '/gc/list',
       active: false,
     },
 
     {
       name: 'ユーザーC',
-      href: '/uc/list/[[...slug]]',
-      as: '/uc/list',
+      href: '/uc/list',
       active: true,
     }
 
@@ -304,7 +306,6 @@ export async function getServerSideProps({ req, res, query }) {
       type: 'uc/list',
       anchorText: '',
       href: '',
-      as: '',
     },
 
   ];
@@ -366,15 +367,13 @@ export async function getServerSideProps({ req, res, query }) {
       {
         type: 'uc/list',
         anchorText: '',
-        href: '/uc/list/[[...slug]]',
-        as: '/uc/list',
+        href: '/uc/list',
       },
 
       {
         type: 'uc/list/search',
         anchorText: '',
         href: '',
-        as: '',
       },
 
     );

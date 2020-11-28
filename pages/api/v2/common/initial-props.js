@@ -107,14 +107,14 @@ export default async (req, res) => {
     // --------------------------------------------------
     //   DB find / Feed
     // --------------------------------------------------
-    console.time('pages/api/v2/common/initial-props.js');
+    // console.time('pages/api/v2/common/initial-props.js');
     returnObj.feedObj = await ModelFeeds.findFeed({
 
       localeObj,
       arr: ['all'],
 
     });
-    console.timeEnd('pages/api/v2/common/initial-props.js');
+    // console.timeEnd('pages/api/v2/common/initial-props.js');
 
 
 

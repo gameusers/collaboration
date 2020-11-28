@@ -57,6 +57,8 @@ SwiperCore.use([Pagination]);
 
 
 
+
+
 // --------------------------------------------------
 //   Emotion
 //   https://emotion.sh/docs/composition
@@ -86,6 +88,8 @@ const cardCategory = css`
 
   pointer-events: none;
 `;
+
+
 
 
 
@@ -464,19 +468,16 @@ export async function getServerSideProps({ req, res, query }) {
     {
       name: 'トップ',
       href: '/',
-      as: '/',
       active: true,
     },
     {
       name: 'ゲームC',
-      href: '/gc/list/[[...slug]]',
-      as: `/gc/list`,
+      href: `/gc/list`,
       active: false,
     },
     {
       name: 'ユーザーC',
-      href: '/uc/list/[[...slug]]',
-      as: `/uc/list`,
+      href: `/uc/list`,
       active: false,
     },
 

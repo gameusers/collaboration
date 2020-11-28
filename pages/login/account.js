@@ -71,10 +71,19 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
 
   const componentSidebar =
-    <FeedSidebar
-      feedObj={props.feedObj}
-      top={true}
-    />
+    <React.Fragment>
+
+      <Breadcrumbs
+        arr={props.breadcrumbsArr}
+        sidebar={true}
+      />
+
+      <FeedSidebar
+        feedObj={props.feedObj}
+        top={true}
+      />
+
+    </React.Fragment>
   ;
 
 
@@ -225,14 +234,12 @@ export async function getServerSideProps({ req, res, query }) {
     {
       name: 'ログイン',
       href: '/login',
-      as: '/login',
       active: false,
     },
 
     {
       name: 'アカウント作成',
       href: '/login/account',
-      as: '/login/account',
       active: true,
     }
 
@@ -249,7 +256,6 @@ export async function getServerSideProps({ req, res, query }) {
       type: 'login/account',
       anchorText: '',
       href: '',
-      as: '',
     },
 
   ];

@@ -10,10 +10,10 @@ const mongoose = require('mongoose');
 // --------------------------------------------------
 
 const schema = mongoose.Schema({
-  
+
   _id: { type: String, required: true },
   createdDate: { type: Date, required: true },
-  updatedDate: { type: Date, required: true },
+  updatedDate: { type: Date, required: true, index: true },
   forumObj: {
     threadCount: { type: Number, default: 0, required: true },
   },
@@ -25,7 +25,7 @@ const schema = mongoose.Schema({
     recruitment: { type: Date, required: true },
   },
   anonymity: { type: Boolean, required: true }
-  
+
 });
 
 

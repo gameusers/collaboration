@@ -454,6 +454,15 @@ const aggregateAndFormat = async ({
 
 
       // --------------------------------------------------
+      //   $sort / $skip / $limit
+      // --------------------------------------------------
+
+      { $sort: { accessDate: -1 } },
+      { $skip: (intPage - 1) * intLimit },
+      { $limit: intLimit },
+
+
+      // --------------------------------------------------
       //   card-players
       // --------------------------------------------------
 
@@ -824,15 +833,6 @@ const aggregateAndFormat = async ({
           experiencesObj: 1,
         }
       },
-
-
-      // --------------------------------------------------
-      //   $sort / $skip / $limit
-      // --------------------------------------------------
-
-      { $sort: { accessDate: -1 } },
-      { $skip: (intPage - 1) * intLimit },
-      { $limit: intLimit },
 
 
     ]).exec();

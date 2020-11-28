@@ -463,7 +463,6 @@ const Component = (props) => {
               <MenuItem value={5}>5</MenuItem>
               <MenuItem value={10}>10</MenuItem>
               <MenuItem value={20}>20</MenuItem>
-              <MenuItem value={50}>50</MenuItem>
             </Select>
 
           </FormControl>

@@ -1545,6 +1545,15 @@ const findUserCommunitiesList = async ({
 
 
       // --------------------------------------------------
+      //   $sort / $skip / $limit
+      // --------------------------------------------------
+
+      { $sort: { updatedDate: -1 } },
+      { $skip: (page - 1) * intLimit },
+      { $limit: intLimit },
+
+
+      // --------------------------------------------------
       //   games - 関連するゲーム
       // --------------------------------------------------
 
@@ -1710,22 +1719,12 @@ const findUserCommunitiesList = async ({
           userCommunityID: 1,
           localesArr: 1,
           communityType: 1,
-          // anonymity: 1,
           gameCommunities_idsArr: 1,
           gamesArr: 1,
           imagesAndVideosThumbnailObj: 1,
           followsObj: 1,
         }
       },
-
-
-      // --------------------------------------------------
-      //   $sort / $skip / $limit
-      // --------------------------------------------------
-
-      { $sort: { updatedDate: -1 } },
-      { $skip: (page - 1) * intLimit },
-      { $limit: intLimit },
 
 
     ]).exec();

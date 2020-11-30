@@ -6869,6 +6869,170 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
       },
 
+
+
+      // other - ヒーローイメージが存在しない場合に利用する
+      {
+
+        _id: 'CYBV5uEL7',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '',
+        type: 'other',
+        images: 1,
+        videos: 0,
+        arr: [
+
+          {
+            _id: 'BrhMB9ieu',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'ymHghwM9n',
+                w: '320w',
+                width: 320,
+                height: 213,
+              },
+              {
+                _id: '4F7FiLqpu',
+                w: '480w',
+                width: 480,
+                height: 320,
+              },
+              {
+                _id: 'WSi6pNd-q',
+                w: '640w',
+                width: 640,
+                height: 426,
+              },
+              {
+                _id: 'Kqe9TUqpm',
+                w: '800w',
+                width: 800,
+                height: 533,
+              },
+              {
+                _id: 'lkXL68rWu',
+                w: '1920w',
+                width: 1920,
+                height: 1278,
+              }
+            ]
+          },
+
+        ]
+
+      },
+
+
+      {
+
+        _id: 'AHqqHmZuQ',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '',
+        type: 'other',
+        images: 1,
+        videos: 0,
+        arr: [
+
+          {
+            _id: '9_2jKiGoU',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'q39NZSD70',
+                w: '320w',
+                width: 320,
+                height: 201,
+              },
+              {
+                _id: '7noDaA3Lg',
+                w: '480w',
+                width: 480,
+                height: 302,
+              },
+              {
+                _id: 'RjwJKXrbc',
+                w: '640w',
+                width: 640,
+                height: 402,
+              },
+              {
+                _id: 'HakFFEAkM',
+                w: '800w',
+                width: 800,
+                height: 503,
+              },
+              {
+                _id: '8w9-XE44q',
+                w: '1920w',
+                width: 1920,
+                height: 1206,
+              }
+            ]
+          },
+
+        ]
+
+      },
+
+
+      {
+
+        _id: 'iJtSWSHU4',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '',
+        type: 'other',
+        images: 1,
+        videos: 0,
+        arr: [
+
+          {
+            _id: 'S4CQDBdZB',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'q01DxisdG',
+                w: '320w',
+                width: 320,
+                height: 194,
+              },
+              {
+                _id: 'VTaFCqw-n',
+                w: '480w',
+                width: 480,
+                height: 292,
+              },
+              {
+                _id: 'P-bziIrGv',
+                w: '640w',
+                width: 640,
+                height: 389,
+              },
+              {
+                _id: 'XcWv7ezUk',
+                w: '800w',
+                width: 800,
+                height: 486,
+              },
+              {
+                _id: 'lua_hAZbB',
+                w: '1920w',
+                width: 1920,
+                height: 1166,
+              }
+            ]
+          },
+
+        ]
+
+      },
+
     ];
 
 

@@ -52,6 +52,13 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
 // ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
+
+
+// ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
@@ -93,6 +100,23 @@ const Component = (props) => {
   } = props;
 
 
+
+
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+
+  const stateLayout = ContainerStateLayout.useContainer();
+
+  const {
+
+    handleScrollTo,
+
+  } = stateLayout;
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
@@ -120,7 +144,6 @@ const Component = (props) => {
 
   /**
    * 検索する
-   * @param {number} page - ページ
    */
   const handleSearch = () => {
 
@@ -146,8 +169,8 @@ const Component = (props) => {
       const urlHardwares = hardwareIDsArr.length > 0 ? `hardwares=${hardwareIDsArr.join(',')}&` : '';
       const urlKeyword = searchKeyword ? `keyword=${encodeURI(searchKeyword)}&` : '';
 
-      let url = `/gc/list/[[...slug]]?${urlHardwares}${urlKeyword}page=${page}`;
-      let as = `/gc/list/search?${urlHardwares}${urlKeyword}page=${page}`;
+      let url = `/gc/list/[[...slug]]?${urlHardwares}${urlKeyword}page=1`;
+      let as = `/gc/list/search?${urlHardwares}${urlKeyword}page=1`;
 
       if (!urlHardwares && !urlKeyword) {
 
@@ -164,6 +187,21 @@ const Component = (props) => {
         }
 
       }
+
+
+      // ---------------------------------------------
+      //   Scroll To
+      // ---------------------------------------------
+
+      handleScrollTo({
+
+        to: 'gcList',
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+
+      });
 
 
 

@@ -60,10 +60,19 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
 // ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
+
+
+// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
 import CardUc from 'app/common/community-list/v2/card-uc.js';
+
+
 
 
 
@@ -111,6 +120,23 @@ const Component = (props) => {
     obj,
 
   } = props;
+
+
+
+
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+
+  const stateLayout = ContainerStateLayout.useContainer();
+
+  const {
+
+    handleScrollTo,
+
+  } = stateLayout;
+
+
 
 
   // --------------------------------------------------
@@ -180,6 +206,23 @@ const Component = (props) => {
       if (changeLimit) {
         Cookies.set('communityListLimit', changeLimit);
       }
+
+
+      // ---------------------------------------------
+      //   Scroll To
+      // ---------------------------------------------
+
+      handleScrollTo({
+
+        to: 'ucList',
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+
+      });
+
+
 
 
       // ---------------------------------------------

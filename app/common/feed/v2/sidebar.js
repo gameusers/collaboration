@@ -187,7 +187,7 @@ const Component = (props) => {
       // pagination={{ clickable: false }}
       // pagination={{ clickable: true }}
       autoplay={{
-        delay: 3000,
+        delay: 30000,
         disableOnInteraction: false,
       }}
       // mousewheel={true}

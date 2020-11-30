@@ -59,6 +59,13 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
 // ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
+
+
+// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
@@ -119,6 +126,21 @@ const Component = (props) => {
 
 
   // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+
+  const stateLayout = ContainerStateLayout.useContainer();
+
+  const {
+
+    handleScrollTo,
+
+  } = stateLayout;
+
+
+
+
+  // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
 
@@ -126,8 +148,6 @@ const Component = (props) => {
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
-  const [searchHardwaresArr, setSearchHardwaresArr] = useState(hardwaresArr);
-  const [searchKeyword, setSearchKeyword] = useState(keyword);
   const [anchorElEditMode, setAnchorElEditMode] = useState(null);
 
 
@@ -166,7 +186,7 @@ const Component = (props) => {
 
       const hardwareIDsArr = [];
 
-      for (let valueObj of searchHardwaresArr.values()) {
+      for (let valueObj of hardwaresArr.values()) {
         hardwareIDsArr.push(valueObj.hardwareID);
       }
 
@@ -176,7 +196,7 @@ const Component = (props) => {
       // ---------------------------------------------
 
       const urlHardwares = hardwareIDsArr.length > 0 ? `hardwares=${hardwareIDsArr.join(',')}&` : '';
-      const urlKeyword = searchKeyword ? `keyword=${encodeURI(searchKeyword)}&` : '';
+      const urlKeyword = keyword ? `keyword=${encodeURI(keyword)}&` : '';
 
       let url = `/gc/list/[[...slug]]?${urlHardwares}${urlKeyword}page=${page}`;
       let as = `/gc/list/search?${urlHardwares}${urlKeyword}page=${page}`;
@@ -205,6 +225,21 @@ const Component = (props) => {
       if (changeLimit) {
         Cookies.set('communityListLimit', changeLimit);
       }
+
+
+      // ---------------------------------------------
+      //   Scroll To
+      // ---------------------------------------------
+
+      handleScrollTo({
+
+        to: 'gcList',
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+
+      });
 
 
       // ---------------------------------------------
@@ -324,7 +359,7 @@ const Component = (props) => {
 
   return (
     <Element
-      name="GcList"
+      name="gcList"
     >
 
 

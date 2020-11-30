@@ -131,7 +131,7 @@ export default async (req, res) => {
     //   Common Initial Props
     // --------------------------------------------------
 
-    const returnObj = await initialProps({ req, localeObj, getHeroImage: true });
+    const returnObj = await initialProps({ req, localeObj });
 
 
 

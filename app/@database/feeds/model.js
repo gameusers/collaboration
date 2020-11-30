@@ -75,397 +75,397 @@ moment.locale('ja');
 /**
  * test用
  */
-const test = async ({
+// const test = async ({
 
-  localeObj,
-  gameCommunities_id,
-  page = 1,
-  limit = 20,
+//   localeObj,
+//   gameCommunities_id,
+//   page = 1,
+//   limit = 20,
 
-}) => {
+// }) => {
 
 
-  try {
+//   try {
 
 
-    // console.time('app/@database/feeds/model.js - test');
+//     // console.time('app/@database/feeds/model.js - test');
 
-    // --------------------------------------------------
-    //   DB findOne / experiences
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   DB findOne / experiences
+//     // --------------------------------------------------
 
-    // const result = await ModelForumThreads.find({
+//     // const result = await ModelForumThreads.find({
 
-    //   conditionObj: {
-    //     users_id: 'W4Ci_ua-ag'
-    //   }
+//     //   conditionObj: {
+//     //     users_id: 'W4Ci_ua-ag'
+//     //   }
 
-    // });
+//     // });
 
 
-    // --------------------------------------------------
-    //   Property
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Property
+//     // --------------------------------------------------
 
-    // const keyword = 'スレッド';
-    // const pattern = new RegExp(`.*${keyword}.*`);
-    // const language = lodashGet(localeObj, ['language'], '');
-    // const country = lodashGet(localeObj, ['country'], '');
+//     // const keyword = 'スレッド';
+//     // const pattern = new RegExp(`.*${keyword}.*`);
+//     // const language = lodashGet(localeObj, ['language'], '');
+//     // const country = lodashGet(localeObj, ['country'], '');
 
 
-    const gameCommunities_id = '';
-    // const gameCommunities_id = 'rLChOf7T5Smtu';
+//     const gameCommunities_id = '';
+//     // const gameCommunities_id = 'rLChOf7T5Smtu';
 
 
 
-    // --------------------------------------------------
-    //   Language & Country & Parse
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Language & Country & Parse
+//     // --------------------------------------------------
 
-    const language = lodashGet(localeObj, ['language'], '');
-    const country = lodashGet(localeObj, ['country'], '');
-    const intLimit = parseInt(limit, 10);
+//     const language = lodashGet(localeObj, ['language'], '');
+//     const country = lodashGet(localeObj, ['country'], '');
+//     const intLimit = parseInt(limit, 10);
 
 
 
 
-    // --------------------------------------------------
-    //   Comments & Replies
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Comments & Replies
+//     // --------------------------------------------------
 
-    // ---------------------------------------------
-    //   - Match Condition Array
-    // ---------------------------------------------
+//     // ---------------------------------------------
+//     //   - Match Condition Array
+//     // ---------------------------------------------
 
-    let matchConditionArr = [];
+//     let matchConditionArr = [];
 
-    if (gameCommunities_id) {
+//     if (gameCommunities_id) {
 
-      matchConditionArr = [
-        {
-          $match: {
-            gameCommunities_id,
-            userCommunities_id: ''
-          }
-        },
-      ];
+//       matchConditionArr = [
+//         {
+//           $match: {
+//             gameCommunities_id,
+//             userCommunities_id: ''
+//           }
+//         },
+//       ];
 
-    } else {
+//     } else {
 
-      matchConditionArr = [
-        {
-          $match: {
-            $and: [
-              { gameCommunities_id: { $exists: true } },
-              { gameCommunities_id: { $ne: null }},
-              { gameCommunities_id: { $ne: ''} },
-              { userCommunities_id: '' }
-            ]
-          }
-        },
-      ];
+//       matchConditionArr = [
+//         {
+//           $match: {
+//             $and: [
+//               { gameCommunities_id: { $exists: true } },
+//               { gameCommunities_id: { $ne: null }},
+//               { gameCommunities_id: { $ne: ''} },
+//               { userCommunities_id: '' }
+//             ]
+//           }
+//         },
+//       ];
 
-    }
+//     }
 
 
-    // ---------------------------------------------
-    //   - Aggregation
-    // ---------------------------------------------
+//     // ---------------------------------------------
+//     //   - Aggregation
+//     // ---------------------------------------------
 
-    const result = await SchemaForumComments.aggregate([
+//     const result = await SchemaForumComments.aggregate([
 
 
-      // --------------------------------------------------
-      //   Match Condition Array
-      // --------------------------------------------------
-
-      ...matchConditionArr,
-
-
-      // --------------------------------------------------
-      //   $sort / $skip / $limit
-      // --------------------------------------------------
-
-      { $sort: { createdDate: -1 } },
-      { $skip: (page - 1) * intLimit },
-      { $limit: intLimit },
-
-
-      // --------------------------------------------------
-      //   images-and-videos
-      // --------------------------------------------------
-
-      // {
-      //   $lookup:
-      //     {
-      //       from: "images-and-videos",
-      //       localField: "imagesAndVideos_id",
-      //       foreignField: "_id",
-      //       as: "inventory_docs"
-      //     }
-      // },
-
-      {
-        $lookup:
-          {
-            from: 'images-and-videos',
-            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$_id', '$$letImagesAndVideos_id']
-                  },
-                }
-              },
-              {
-                $project: {
-                  createdDate: 0,
-                  updatedDate: 0,
-                  users_id: 0,
-                  __v: 0,
-                }
-              }
-            ],
-            as: 'imagesAndVideosObj'
-          }
-      },
-
-      {
-        $unwind: {
-          path: '$imagesAndVideosObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
-
-
-      // --------------------------------------------------
-      //   games
-      // --------------------------------------------------
-
-      {
-        $lookup:
-          {
-            from: 'games',
-            let: { letGameCommunities_id: '$gameCommunities_id' },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ['$language', language] },
-                      { $eq: ['$country', country] },
-                      { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
-                    ]
-                  },
-                }
-              },
-
-
-              // --------------------------------------------------
-              //   games / images-and-videos / メイン画像
-              // --------------------------------------------------
-
-              {
-                $lookup:
-                  {
-                    from: 'images-and-videos',
-                    let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $eq: ['$_id', '$$letImagesAndVideos_id']
-                          },
-                        }
-                      },
-                      {
-                        $project: {
-                          createdDate: 0,
-                          updatedDate: 0,
-                          users_id: 0,
-                          __v: 0,
-                        }
-                      }
-                    ],
-                    as: 'imagesAndVideosObj'
-                  }
-              },
-
-              {
-                $unwind: {
-                  path: '$imagesAndVideosObj',
-                  preserveNullAndEmptyArrays: true,
-                }
-              },
-
-
-              // --------------------------------------------------
-              //   games / images-and-videos / サムネイル画像
-              // --------------------------------------------------
-
-              {
-                $lookup:
-                  {
-                    from: 'images-and-videos',
-                    let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
-                          },
-                        }
-                      },
-                      {
-                        $project: {
-                          createdDate: 0,
-                          updatedDate: 0,
-                          users_id: 0,
-                          __v: 0,
-                        }
-                      }
-                    ],
-                    as: 'imagesAndVideosThumbnailObj'
-                  }
-              },
-
-              {
-                $unwind: {
-                  path: '$imagesAndVideosThumbnailObj',
-                  preserveNullAndEmptyArrays: true,
-                }
-              },
-
-              {
-                $project: {
-                  _id: 0,
-                  urlID: 1,
-                  name: 1,
-                  imagesAndVideosObj: 1,
-                  imagesAndVideosThumbnailObj: 1,
-                }
-              }
-            ],
-            as: 'gamesObj'
-          }
-      },
-
-      {
-        $unwind: {
-          path: '$gamesObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
-
-
-      // --------------------------------------------------
-      //   forum-threads
-      // --------------------------------------------------
-
-      {
-        $lookup:
-          {
-            from: 'forum-threads',
-            let: { letForumThreads_id: '$forumThreads_id' },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$_id', '$$letForumThreads_id']
-                  },
-                }
-              },
-              {
-                $project: {
-                  localesArr: 1,
-                  comments: 1,
-                  replies: 1,
-                }
-              }
-            ],
-            as: 'forumThreadsObj'
-          }
-      },
-
-      {
-        $unwind: {
-          path: '$forumThreadsObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
-
-
-      // --------------------------------------------------
-      //   $project
-      // --------------------------------------------------
-
-      {
-        $project: {
-          type: 'forumCommentsAndRepliesGc',
-          createdDate: 1,
-          comments: 1,
-          replies: 1,
-          localesArr: 1,
-          imagesAndVideosObj: 1,
-          gamesObj: 1,
-          forumThreadsObj: 1,
-        }
-      },
-
-
-    // ]).exec();
-    ]).explain();
-
-    // console.timeEnd('app/@database/feeds/model.js - test');
-
-
-
-
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-
-    // console.log(`
-    //   ----------------------------------------\n
-    //   app/@database/feeds/model.js - test
-    // `);
-
-    // for (let i = 0; i < 10; i++) {
-    //   console.log(`shortid.generate() = ${shortid.generate()}`);
-    // }
-
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   userCommunities_id: {green ${userCommunities_id}}
-    //   page: {green ${page}}
-    //   limit: {green ${limit}}
-    // `);
-
-    // console.log(`
-    //   ----- result -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(result)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-
-
-
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-
-    // return mergedArr;
-
-
-  } catch (err) {
-
-    throw err;
-
-  }
-
-
-};
+//       // --------------------------------------------------
+//       //   Match Condition Array
+//       // --------------------------------------------------
+
+//       ...matchConditionArr,
+
+
+//       // --------------------------------------------------
+//       //   $sort / $skip / $limit
+//       // --------------------------------------------------
+
+//       { $sort: { createdDate: -1 } },
+//       { $skip: (page - 1) * intLimit },
+//       { $limit: intLimit },
+
+
+//       // --------------------------------------------------
+//       //   images-and-videos
+//       // --------------------------------------------------
+
+//       // {
+//       //   $lookup:
+//       //     {
+//       //       from: "images-and-videos",
+//       //       localField: "imagesAndVideos_id",
+//       //       foreignField: "_id",
+//       //       as: "inventory_docs"
+//       //     }
+//       // },
+
+//       {
+//         $lookup:
+//           {
+//             from: 'images-and-videos',
+//             let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $eq: ['$_id', '$$letImagesAndVideos_id']
+//                   },
+//                 }
+//               },
+//               {
+//                 $project: {
+//                   createdDate: 0,
+//                   updatedDate: 0,
+//                   users_id: 0,
+//                   __v: 0,
+//                 }
+//               }
+//             ],
+//             as: 'imagesAndVideosObj'
+//           }
+//       },
+
+//       {
+//         $unwind: {
+//           path: '$imagesAndVideosObj',
+//           preserveNullAndEmptyArrays: true,
+//         }
+//       },
+
+
+//       // --------------------------------------------------
+//       //   games
+//       // --------------------------------------------------
+
+//       {
+//         $lookup:
+//           {
+//             from: 'games',
+//             let: { letGameCommunities_id: '$gameCommunities_id' },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $and: [
+//                       { $eq: ['$language', language] },
+//                       { $eq: ['$country', country] },
+//                       { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
+//                     ]
+//                   },
+//                 }
+//               },
+
+
+//               // --------------------------------------------------
+//               //   games / images-and-videos / メイン画像
+//               // --------------------------------------------------
+
+//               {
+//                 $lookup:
+//                   {
+//                     from: 'images-and-videos',
+//                     let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
+//                     pipeline: [
+//                       {
+//                         $match: {
+//                           $expr: {
+//                             $eq: ['$_id', '$$letImagesAndVideos_id']
+//                           },
+//                         }
+//                       },
+//                       {
+//                         $project: {
+//                           createdDate: 0,
+//                           updatedDate: 0,
+//                           users_id: 0,
+//                           __v: 0,
+//                         }
+//                       }
+//                     ],
+//                     as: 'imagesAndVideosObj'
+//                   }
+//               },
+
+//               {
+//                 $unwind: {
+//                   path: '$imagesAndVideosObj',
+//                   preserveNullAndEmptyArrays: true,
+//                 }
+//               },
+
+
+//               // --------------------------------------------------
+//               //   games / images-and-videos / サムネイル画像
+//               // --------------------------------------------------
+
+//               {
+//                 $lookup:
+//                   {
+//                     from: 'images-and-videos',
+//                     let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+//                     pipeline: [
+//                       {
+//                         $match: {
+//                           $expr: {
+//                             $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+//                           },
+//                         }
+//                       },
+//                       {
+//                         $project: {
+//                           createdDate: 0,
+//                           updatedDate: 0,
+//                           users_id: 0,
+//                           __v: 0,
+//                         }
+//                       }
+//                     ],
+//                     as: 'imagesAndVideosThumbnailObj'
+//                   }
+//               },
+
+//               {
+//                 $unwind: {
+//                   path: '$imagesAndVideosThumbnailObj',
+//                   preserveNullAndEmptyArrays: true,
+//                 }
+//               },
+
+//               {
+//                 $project: {
+//                   _id: 0,
+//                   urlID: 1,
+//                   name: 1,
+//                   imagesAndVideosObj: 1,
+//                   imagesAndVideosThumbnailObj: 1,
+//                 }
+//               }
+//             ],
+//             as: 'gamesObj'
+//           }
+//       },
+
+//       {
+//         $unwind: {
+//           path: '$gamesObj',
+//           preserveNullAndEmptyArrays: true,
+//         }
+//       },
+
+
+//       // --------------------------------------------------
+//       //   forum-threads
+//       // --------------------------------------------------
+
+//       {
+//         $lookup:
+//           {
+//             from: 'forum-threads',
+//             let: { letForumThreads_id: '$forumThreads_id' },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $eq: ['$_id', '$$letForumThreads_id']
+//                   },
+//                 }
+//               },
+//               {
+//                 $project: {
+//                   localesArr: 1,
+//                   comments: 1,
+//                   replies: 1,
+//                 }
+//               }
+//             ],
+//             as: 'forumThreadsObj'
+//           }
+//       },
+
+//       {
+//         $unwind: {
+//           path: '$forumThreadsObj',
+//           preserveNullAndEmptyArrays: true,
+//         }
+//       },
+
+
+//       // --------------------------------------------------
+//       //   $project
+//       // --------------------------------------------------
+
+//       {
+//         $project: {
+//           type: 'forumCommentsAndRepliesGc',
+//           createdDate: 1,
+//           comments: 1,
+//           replies: 1,
+//           localesArr: 1,
+//           imagesAndVideosObj: 1,
+//           gamesObj: 1,
+//           forumThreadsObj: 1,
+//         }
+//       },
+
+
+//     // ]).exec();
+//     ]).explain();
+
+//     // console.timeEnd('app/@database/feeds/model.js - test');
+
+
+
+
+//     // --------------------------------------------------
+//     //   console.log
+//     // --------------------------------------------------
+
+//     // console.log(`
+//     //   ----------------------------------------\n
+//     //   app/@database/feeds/model.js - test
+//     // `);
+
+//     // for (let i = 0; i < 10; i++) {
+//     //   console.log(`shortid.generate() = ${shortid.generate()}`);
+//     // }
+
+//     // console.log(chalk`
+//     //   loginUsers_id: {green ${loginUsers_id}}
+//     //   userCommunities_id: {green ${userCommunities_id}}
+//     //   page: {green ${page}}
+//     //   limit: {green ${limit}}
+//     // `);
+
+//     // console.log(`
+//     //   ----- result -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(result)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+
+
+
+
+//     // --------------------------------------------------
+//     //   Return
+//     // --------------------------------------------------
+
+//     // return mergedArr;
+
+
+//   } catch (err) {
+
+//     throw err;
+
+//   }
+
+
+// };
 
 
 
@@ -2440,6 +2440,6 @@ const findForumUc = async ({
 module.exports = {
 
   findFeed,
-  test,
+  // test,
 
 };

@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect, useContext } from 'react';
+import Link from 'next/link';
 import moment from 'moment';
 
 /** @jsx jsx */
@@ -136,6 +137,8 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const name = lodashGet(headerObj, ['name'], '');
+  const urlID = lodashGet(headerObj, ['urlID'], '');
+  const linkHref = `/gc/${urlID}`;
   const gameCommunities_id = lodashGet(headerObj, ['gameCommunities_id'], '');
   const followsObj = lodashGet(headerObj, ['followsObj'], {});
 
@@ -285,7 +288,11 @@ const Component = (props) => {
 
           {/* Name & Open Button */}
           <div css={cssTitleBox}>
-            <div css={cssTitle}>{name}</div>
+            <div css={cssTitle}>
+              <Link href={linkHref}>
+                <a style={{ color: 'white' }}>{name}</a>
+              </Link>
+            </div>
             <IconButton
               css={css`
                 && {

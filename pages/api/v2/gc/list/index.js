@@ -130,7 +130,7 @@ export default async (req, res) => {
     //   Common Initial Props
     // --------------------------------------------------
 
-    const returnObj = await initialProps({ req, localeObj, getHeroImage: true });
+    const returnObj = await initialProps({ req, localeObj });
 
 
 
@@ -183,9 +183,7 @@ export default async (req, res) => {
     }
 
 
-    // console.time('ModelGameCommunities.findGamesList');
     returnObj.gcListObj = await ModelGameCommunities.findGamesList(argumentsObj);
-    // console.timeEnd('ModelGameCommunities.findGamesList');
 
 
 
@@ -214,11 +212,6 @@ export default async (req, res) => {
 
     });
 
-    // console.log(`
-    //   ----- returnObj.hardwaresArr -----\n
-    //   ${util.inspect(returnObj.hardwaresArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
 
 
 

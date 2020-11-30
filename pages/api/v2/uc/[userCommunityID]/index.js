@@ -138,21 +138,13 @@ export default async (req, res) => {
     //   Common Initial Props
     // --------------------------------------------------
 
-    // console.time('await initialProps');
-    const returnObj = await initialProps({ req, localeObj, getHeroImage: true });
-    // console.timeEnd('await initialProps');
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    const returnObj = await initialProps({ req, localeObj, type: 'other' });
 
 
     // --------------------------------------------------
     //   DB find / User Community
     // --------------------------------------------------
 
-    // console.time('ModelUserCommunities.findForUserCommunity');
     const userCommunityObj = await ModelUserCommunities.findForUserCommunity({
 
       localeObj,
@@ -160,7 +152,6 @@ export default async (req, res) => {
       userCommunityID,
 
     });
-    // console.timeEnd('ModelUserCommunities.findForUserCommunity');
 
 
     // ---------------------------------------------
@@ -242,14 +233,12 @@ export default async (req, res) => {
     //   DB find / Feed
     // --------------------------------------------------
 
-    // console.time('ModelFeeds.findFeed');
     returnObj.feedObj = await ModelFeeds.findFeed({
 
       localeObj,
       arr: ['all'],
 
     });
-    // console.timeEnd('ModelFeeds.findFeed');
 
 
 
@@ -368,9 +357,9 @@ export default async (req, res) => {
       if (await validationForumThreadsListLimit({ throwError: false, required: true, value: threadListLimit }).error === false) {
         argumentsObj.limit = threadListLimit;
       }
-      // console.time('ModelForumThreads.findForThreadsList');
+
       returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList(argumentsObj);
-      // console.timeEnd('ModelForumThreads.findForThreadsList');
+
 
       // --------------------------------------------------
       //   フォーラムのデータ取得
@@ -421,18 +410,18 @@ export default async (req, res) => {
       // --------------------------------------------------
 
       if (forumID) {
-        // console.time('ModelForumThreads.findForumByforumID');
+
         forumObj = await ModelForumThreads.findForumByforumID(argumentsObj);
-        // console.timeEnd('ModelForumThreads.findForumByforumID');
+
 
       // --------------------------------------------------
       //   DB find / Forum
       // --------------------------------------------------
 
       } else {
-        // console.time('ModelForumThreads.findForForum');
+
         forumObj = await ModelForumThreads.findForForum(argumentsObj);
-        // console.timeEnd('ModelForumThreads.findForForum');
+
       }
 
 
@@ -446,26 +435,6 @@ export default async (req, res) => {
 
 
     }
-
-
-    // console.log(`
-    //   ----- forumObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // ---------------------------------------------
-    //   スレッドのデータがない場合はエラー
-    // ---------------------------------------------
-
-    // const forumThreadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
-
-    // if (Object.keys(forumThreadsDataObj).length === 0) {
-
-    //   statusCode = 404;
-    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'aDeKgfO_U', messageID: 'Error' }] });
-
-    // }
 
 
 

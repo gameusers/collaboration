@@ -23,6 +23,7 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import ModelGames from 'app/@database/games/model.js';
+import ModelImagesAndVideos from 'app/@database/images-and-videos/model.js';
 
 
 // ---------------------------------------------
@@ -46,7 +47,13 @@ import { updateAccessDate } from 'app/@modules/access-date.js';
  * @param {Object} res - レスポンス
  * @param {Boolean} getHeroImage - ヒーローイメージを取得する場合、true
  */
-const initialProps = async ({ req, localeObj, getHeroImage = false }) => {
+const initialProps = async ({
+
+  req,
+  localeObj,
+  type,
+
+}) => {
 
 
   // --------------------------------------------------
@@ -103,15 +110,20 @@ const initialProps = async ({ req, localeObj, getHeroImage = false }) => {
 
 
   // --------------------------------------------------
-  //   データ取得 / Games
-  //   ヘッダーヒーローイメージ用
+  //   データ取得：ヘッダーヒーローイメージ用
   // --------------------------------------------------
 
-  if (getHeroImage) {
+  // ランダム画像
+  if (type === 'other') {
 
-    returnObj.headerObj = await ModelGames.findForHeroImage({
-      localeObj,
-    });
+    const imagesAndVideosObj = await ModelImagesAndVideos.findHeroImage({ localeObj });
+    lodashSet(returnObj, ['headerObj', 'imagesAndVideosObj'], imagesAndVideosObj);
+
+  // ゲーム画像
+  } else {
+
+    const headerObj = await ModelGames.findForHeroImage({ localeObj });
+    lodashSet(returnObj, ['headerObj'], headerObj);
 
   }
 

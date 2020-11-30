@@ -42,6 +42,13 @@ import TextField from '@material-ui/core/TextField';
 
 
 // ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateLayout } from 'app/@states/layout.js';
+
+
+// ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
@@ -81,6 +88,23 @@ const Component = (props) => {
   } = props;
 
 
+
+
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+
+  const stateLayout = ContainerStateLayout.useContainer();
+
+  const {
+
+    handleScrollTo,
+
+  } = stateLayout;
+
+
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
@@ -106,7 +130,6 @@ const Component = (props) => {
 
   /**
    * 検索する
-   * @param {number} page - ページ
    */
   const handleSearch = () => {
 
@@ -120,10 +143,10 @@ const Component = (props) => {
 
       const urlKeyword = searchKeyword ? `keyword=${encodeURI(searchKeyword)}&` : '';
 
-      let url = `/uc/list/[[...slug]]?${urlKeyword}page=${page}`;
-      let as = `/uc/list/search?${urlKeyword}page=${page}`;
+      let url = `/uc/list/[[...slug]]?${urlKeyword}page=1`;
+      let as = `/uc/list/search?${urlKeyword}page=1`;
 
-      if (!urlHardwares && !urlKeyword) {
+      if (!urlKeyword) {
 
         if (page === 1) {
 
@@ -139,6 +162,20 @@ const Component = (props) => {
 
       }
 
+
+      // ---------------------------------------------
+      //   Scroll To
+      // ---------------------------------------------
+
+      handleScrollTo({
+
+        to: 'ucList',
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+
+      });
 
 
 
@@ -293,7 +330,7 @@ const Component = (props) => {
       >
 
         <Button
-          type="submit"
+          type="button"
           variant="contained"
           color="primary"
           disabled={buttonDisabled}

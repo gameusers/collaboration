@@ -80,7 +80,6 @@ const ContainerLayout = (props) => {
 
       <UcNavigation
         page={props.page}
-        hardwaresArr={props.hardwaresArr}
         keyword={props.keyword}
       />
 
@@ -255,7 +254,6 @@ export async function getServerSideProps({ req, res, query }) {
   const feedObj = lodashGet(dataObj, ['feedObj'], {});
 
   const ucListObj = lodashGet(dataObj, ['ucListObj'], {});
-  const hardwaresArr = lodashGet(dataObj, ['hardwaresArr'], []);
 
 
 
@@ -383,10 +381,9 @@ export async function getServerSideProps({ req, res, query }) {
     //   - recentAccessPage
     // --------------------------------------------------
 
-    const urlHardwares = hardwares ? `hardwares=${hardwares}&` : '';
     const urlKeyword = keyword ? `keyword=${encodeURI(keyword)}&` : '';
 
-    recentAccessPageAs = `/uc/list/search?${urlHardwares}${urlKeyword}page=${page}`;
+    recentAccessPageAs = `/uc/list/search?${urlKeyword}page=${page}`;
 
 
   }
@@ -449,7 +446,6 @@ export async function getServerSideProps({ req, res, query }) {
 
       page,
       ucListObj,
-      hardwaresArr,
       keyword,
 
     }

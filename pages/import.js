@@ -481,9 +481,9 @@ const ContainerLayout = (props) => {
 
 
   /**
-   * データをインポートする
+   * 画像の処理
    */
-  const handleImportJson = async () => {
+  const handleImportImage = async () => {
 
 
     try {
@@ -518,7 +518,7 @@ const ContainerLayout = (props) => {
 
       const resultObj = await fetchWrapper({
 
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/common/import-json`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/common/import-image`,
         methodType: 'POST',
         formData,
 
@@ -602,9 +602,9 @@ const ContainerLayout = (props) => {
 
 
   /**
-   * 画像の処理
+   * データをインポートする
    */
-  const handleImportImage = async () => {
+  const handleImportJson = async () => {
 
 
     try {
@@ -639,7 +639,7 @@ const ContainerLayout = (props) => {
 
       const resultObj = await fetchWrapper({
 
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/common/import-image`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/common/import-json`,
         methodType: 'POST',
         formData,
 

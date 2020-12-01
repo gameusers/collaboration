@@ -43,10 +43,10 @@ const { formatImagesAndVideosObj } = require('../images-and-videos/format.js');
 // --------------------------------------------------
 
 /**
- * DB から取得したデータをフォーマットする
+ * フィード用フォーマット
  * @param {Object} localeObj - ロケール
  * @param {Array} arr - 配列
- * @param {number} page - コページ
+ * @param {number} page - ページ
  * @param {number} limit - リミット
  * @return {Object} フォーマット後のデータ
  */
@@ -208,6 +208,10 @@ const formatFeedsArr = ({
 
         lodashSet(clonedObj, ['gamesObj', 'imagesAndVideosObj'], imagesAndVideosObj);
 
+      } else {
+
+        delete clonedObj.gamesObj.imagesAndVideosObj;
+
       }
 
 
@@ -220,6 +224,10 @@ const formatFeedsArr = ({
       if (Object.keys(imagesAndVideosThumbnailObj).length !== 0) {
 
         lodashSet(clonedObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], imagesAndVideosThumbnailObj);
+
+      } else {
+
+        delete clonedObj.gamesObj.imagesAndVideosThumbnailObj;
 
       }
 
@@ -244,6 +252,10 @@ const formatFeedsArr = ({
         imagesAndVideosObj.arr = [randomArr[Math.floor(Math.random() * randomArr.length)]];
 
         lodashSet(clonedObj, ['userCommunitiesObj', 'imagesAndVideosObj'], imagesAndVideosObj);
+
+      } else {
+
+        delete clonedObj.userCommunitiesObj.imagesAndVideosObj;
 
       }
 

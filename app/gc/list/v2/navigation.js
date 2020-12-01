@@ -484,7 +484,7 @@ const Component = (props) => {
       >
 
         <Button
-          type="submit"
+          type="button"
           variant="contained"
           color="primary"
           disabled={buttonDisabled}

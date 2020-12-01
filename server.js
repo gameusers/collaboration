@@ -165,8 +165,8 @@ app.prepare().then(() => {
   //   - Notifications / 1分ごとに通知をチェックする
   // ---------------------------------------------
 
-  cron.schedule('* * * * *', () => {
-  // cron.schedule('*/20 * * * * *', () => {
+  // cron.schedule('* * * * *', () => {
+  cron.schedule('*/20 * * * * *', () => {
 
     ModelNotifications.send({});
   });

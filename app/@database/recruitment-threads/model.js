@@ -38,6 +38,7 @@ const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
 const SchemaGameCommunities = require('../game-communities/schema.js');
 const SchemaWebPushes = require('../web-pushes/schema.js');
 const SchemaUsers = require('../users/schema.js');
+const SchemaNotifications = require('../notifications/schema.js');
 
 const ModelRecruitmentComments = require('../recruitment-comments/model.js');
 const ModelRecruitmentReplies = require('../recruitment-replies/model.js');
@@ -2819,15 +2820,15 @@ const findForNotification = async ({
         $lookup:
           {
             from: 'games',
-            let: { idsGameCommunities_id: '$gameCommunities_id' },
+            let: { letGameCommunities_id: '$gameCommunities_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
                       { $eq: ['$language', language] },
                       { $eq: ['$country', country] },
-                      { $eq: ['$gameCommunities_id', '$$idsGameCommunities_id'] }
+                      { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
                     ]
                   },
                 }
@@ -2842,15 +2843,17 @@ const findForNotification = async ({
                 $lookup:
                   {
                     from: 'images-and-videos',
-                    let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                    let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                          },
                         }
                       },
-                      { $project:
-                        {
+                      {
+                        $project: {
                           createdDate: 0,
                           updatedDate: 0,
                           users_id: 0,
@@ -2870,8 +2873,8 @@ const findForNotification = async ({
               },
 
 
-              { $project:
-                {
+              {
+                $project: {
                   _id: 1,
                   gameCommunities_id: 1,
                   urlID: 1,
@@ -2903,10 +2906,10 @@ const findForNotification = async ({
             from: 'web-pushes',
             let: { letWebPushes_id: '$webPushes_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
                       { $eq: ['$_id', '$$letWebPushes_id'] },
                       { $lt: ['$errorCount', errorLimit] },
                     ]
@@ -2914,8 +2917,8 @@ const findForNotification = async ({
 
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   _id: 1,
                   users_id: 1,
                   subscriptionObj: 1,
@@ -3088,6 +3091,385 @@ const findForNotification = async ({
 
 
 
+/**
+ * 通知用のデータ取得 / Twitter投稿用
+ * @param {string} _id - DB recruitment-threads _id / スレッドID
+ * @return {Array} 取得データ
+ */
+const findNotificationForTwitter = async ({
+
+  _id,
+
+}) => {
+
+
+  try {
+
+
+    // --------------------------------------------------
+    //   recruitmentThreadsObj / Locale 用
+    // --------------------------------------------------
+
+    const recruitmentThreadsObj = await findOne({
+
+      conditionObj: {
+        _id
+      }
+
+    });
+
+
+    // --------------------------------------------------
+    //   Locale
+    // --------------------------------------------------
+
+    const localeObj = locale({
+      acceptLanguage: lodashGet(recruitmentThreadsObj, ['language'], '')
+    });
+
+
+    // --------------------------------------------------
+    //   Language & Country
+    // --------------------------------------------------
+
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+
+
+    // // --------------------------------------------------
+    // //   Error Limit
+    // // --------------------------------------------------
+
+    // const errorLimit = parseInt(process.env.WEB_PUSH_ERROR_LIMIT, 10);
+
+    // console.log(chalk`
+    //   errorLimit: {green ${errorLimit}}
+    // `);
+
+
+
+    // --------------------------------------------------
+    //   Aggregation
+    // --------------------------------------------------
+
+    const docArr = await SchemaRecruitmentThreads.aggregate([
+
+
+      // --------------------------------------------------
+      //   Match Condition
+      // --------------------------------------------------
+
+      {
+        $match: { _id }
+      },
+
+
+      // --------------------------------------------------
+      //   images-and-videos
+      // --------------------------------------------------
+
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideos_id']
+                  },
+                }
+              },
+              {
+                $project: {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+
+
+      // --------------------------------------------------
+      //   games
+      // --------------------------------------------------
+
+      {
+        $lookup:
+          {
+            from: 'games',
+            let: { letGameCommunities_id: '$gameCommunities_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$language', language] },
+                      { $eq: ['$country', country] },
+                      { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
+                    ]
+                  },
+                }
+              },
+
+
+              // --------------------------------------------------
+              //   games / images-and-videos / サムネイル用
+              // --------------------------------------------------
+
+              // {
+              //   $lookup:
+              //     {
+              //       from: 'images-and-videos',
+              //       let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+              //       pipeline: [
+              //         {
+              //           $match: {
+              //             $expr: {
+              //               $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+              //             },
+              //           }
+              //         },
+              //         {
+              //           $project: {
+              //             createdDate: 0,
+              //             updatedDate: 0,
+              //             users_id: 0,
+              //             __v: 0,
+              //           }
+              //         }
+              //       ],
+              //       as: 'imagesAndVideosThumbnailObj'
+              //     }
+              // },
+
+              // {
+              //   $unwind: {
+              //     path: '$imagesAndVideosThumbnailObj',
+              //     preserveNullAndEmptyArrays: true,
+              //   }
+              // },
+
+
+              {
+                $project: {
+                  _id: 1,
+                  gameCommunities_id: 1,
+                  urlID: 1,
+                  name: 1,
+                  twitterHashtagsArr: 1,
+                  // imagesAndVideosThumbnailObj: 1,
+                }
+              }
+            ],
+            as: 'gamesObj'
+          }
+      },
+
+      {
+        $unwind:
+          {
+            path: '$gamesObj',
+            preserveNullAndEmptyArrays: true
+          }
+      },
+
+
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+
+      {
+        $project: {
+          localesArr: 1,
+          gamesObj: 1,
+        }
+      },
+
+
+    ]).exec();
+
+
+
+
+    // --------------------------------------------------
+    //   Return Object
+    // --------------------------------------------------
+
+    const returnObj = {
+      _id
+    };
+
+    const docObj = lodashGet(docArr, [0], {});
+
+
+
+
+    // --------------------------------------------------
+    //   データが存在しない場合は処理停止
+    // --------------------------------------------------
+
+    if (Object.keys(docObj).length === 0) {
+      return {};
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   投稿用テキスト作成
+    // --------------------------------------------------
+
+    const title = lodashGet(docObj, ['localesArr', 0, 'title'], '');
+    let comment = lodashGet(docObj, ['localesArr', 0, 'comment'], '');
+    const urlID = lodashGet(docObj, ['gamesObj', 'urlID'], '');
+    const twitterHashtagsArr = lodashGet(docObj, ['gamesObj', 'twitterHashtagsArr'], []);
+
+    if (comment.length > 50) {
+      comment = comment.substr(0, 50) + '…';
+    }
+
+    let twitterHashtags = '';
+
+    for (const [index, value] of twitterHashtagsArr.entries()) {
+
+      if (index === 0) {
+        twitterHashtags += `#${value}`;
+      } else {
+        twitterHashtags += ` #${value}`;
+      }
+
+    }
+
+    let twitterText = `${title}\n`;
+    twitterText += `${comment}\n`;
+
+    if (twitterHashtags) {
+      twitterText += `${twitterHashtags}\n`;
+    }
+
+    twitterText += `${process.env.NEXT_PUBLIC_URL_BASE}gc/${urlID}/rec/${_id}`;
+
+
+
+
+    // // --------------------------------------------------
+    // //   subscriptionObj
+    // // --------------------------------------------------
+
+    // const webPushAvailable = lodashGet(recruitmentThreadsObj, ['webPushAvailable'], false);
+
+    // if (webPushAvailable) {
+
+    //   returnObj.webPushes_id = lodashGet(docObj, ['webPushesObj', '_id'], '');
+    //   returnObj.users_id = lodashGet(docObj, ['webPushesObj', 'users_id'], '');
+    //   returnObj.subscriptionObj = lodashGet(docObj, ['webPushesObj', 'subscriptionObj'], {});
+    //   returnObj.sendTodayCount = lodashGet(docObj, ['webPushesObj', 'sendTodayCount'], 0);
+
+    // }
+
+
+    // // --------------------------------------------------
+    // //   Title
+    // // --------------------------------------------------
+
+    // const filteredArr = docObj.localesArr.filter((filterObj) => {
+    //   return filterObj.language === language;
+    // });
+
+
+    // if (lodashHas(filteredArr, [0])) {
+
+    //   returnObj.title = lodashGet(filteredArr, [0, 'title'], '');
+
+    // } else {
+
+    //   returnObj.title = lodashGet(docObj, ['localesArr', 0, 'title'], '');
+
+    // }
+
+
+    // // --------------------------------------------------
+    // //   Format - サムネイル画像
+    // // --------------------------------------------------
+
+    // const imagesAndVideosThumbnailObj = lodashGet(docObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
+
+    // const formattedThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosThumbnailObj });
+
+    // if (Object.keys(formattedThumbnailObj).length !== 0) {
+    //   returnObj.icon = lodashGet(formattedThumbnailObj, ['arr', 0, 'src'], '');
+    // }
+
+
+
+
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+
+    console.log(`
+      ----------------------------------------\n
+      /app/@database/recruitment-threads/model.js - findNotificationForTwitter
+    `);
+
+    console.log(chalk`
+      _id: {green ${_id}}
+      twitterText: {green ${twitterText}}
+    `);
+
+    // console.log(`
+    //   ----- recruitmentThreadsObj -----\n
+    //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    console.log(`
+      ----- docArr -----\n
+      ${util.inspect(docArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
+
+
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+
+    return twitterText;
+
+
+  } catch (err) {
+
+    throw err;
+
+  }
+
+
+};
+
+
+
+
 
 
 // --------------------------------------------------
@@ -3107,6 +3489,8 @@ const findForNotification = async ({
  * @param {Object} webPushesSaveObj - DB web-pushes 保存データ
  * @param {Object} usersConditionObj - DB users 検索条件
  * @param {Object} usersSaveObj - DB users 保存データ
+ * @param {Object} notificationsConditionObj - DB notifications 検索条件
+ * @param {Object} notificationsSaveObj - DB notifications 保存データ
  * @return {Object}
  */
 const transactionForUpsert = async ({
@@ -3121,6 +3505,8 @@ const transactionForUpsert = async ({
   webPushesSaveObj = {},
   usersConditionObj = {},
   usersSaveObj = {},
+  notificationsConditionObj = {},
+  notificationsSaveObj = {},
 
 }) => {
 
@@ -3224,6 +3610,17 @@ const transactionForUpsert = async ({
     if (Object.keys(usersConditionObj).length !== 0 && Object.keys(usersSaveObj).length !== 0) {
 
       await SchemaUsers.updateOne(usersConditionObj, usersSaveObj, { session });
+
+    }
+
+
+    // ---------------------------------------------
+    //   - notifications
+    // ---------------------------------------------
+
+    if (Object.keys(notificationsConditionObj).length !== 0 && Object.keys(notificationsSaveObj).length !== 0) {
+
+      await SchemaNotifications.updateOne(notificationsConditionObj, notificationsSaveObj, { session, upsert: true });
 
     }
 
@@ -3571,6 +3968,7 @@ module.exports = {
   findOneForEdit,
   findForDelete,
   findForNotification,
+  findNotificationForTwitter,
 
   transactionForUpsert,
   transactionForDelete,

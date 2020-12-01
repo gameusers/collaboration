@@ -159,7 +159,8 @@ const formatImagesAndVideosObj = ({ localeObj = {}, obj, maxWidth = 1920 }) => {
   // --------------------------------------------------
 
   const returnArr = [];
-  const returnObj = {
+
+  let returnObj = {
     _id,
     type,
   };
@@ -176,6 +177,15 @@ const formatImagesAndVideosObj = ({ localeObj = {}, obj, maxWidth = 1920 }) => {
   //   --------------------\n
   // `);
   // return null;
+
+
+  // if (_id === 'ymd-ldMa6odPm') {
+  //   console.log(chalk`
+  //     _id: {green ${_id}}
+  //     type: {green ${type}}
+  //     maxWidth: {green ${maxWidth}}
+  //   `);
+  // }
 
 
 
@@ -261,14 +271,19 @@ const formatImagesAndVideosObj = ({ localeObj = {}, obj, maxWidth = 1920 }) => {
       // --------------------------------------------------
 
       const srcSet2Arr = [];
+      const imageCount = 0;
 
       for (let value2Obj of srcSetArr.values()) {
 
-        // console.log(`
-        //   ----- value2Obj -----\n
-        //   ${util.inspect(JSON.parse(JSON.stringify(value2Obj)), { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
+        // if (_id === 'ymd-ldMa6odPm') {
+        //   console.log(`
+        //     ----- value2Obj -----\n
+        //     ${util.inspect(JSON.parse(JSON.stringify(value2Obj)), { colors: true, depth: null })}\n
+        //     --------------------\n
+        //   `);
+        // }
+
+
 
 
         // --------------------------------------------------
@@ -340,19 +355,21 @@ const formatImagesAndVideosObj = ({ localeObj = {}, obj, maxWidth = 1920 }) => {
 
         }
 
+
       }
 
 
       // --------------------------------------------------
-      //   srcsetの配列をCSV形式の文字列に変換
+      //   srcsetの配列をCSV形式の文字列に変換 & 配列に追加
       // --------------------------------------------------
 
       if (srcSet2Arr.length > 0) {
+
         tempObj.srcSet = srcSet2Arr.join(', ');
+
+        returnArr.push(tempObj);
+
       }
-
-
-      returnArr.push(tempObj);
 
 
     // --------------------------------------------------
@@ -376,12 +393,33 @@ const formatImagesAndVideosObj = ({ localeObj = {}, obj, maxWidth = 1920 }) => {
   //   Return
   // --------------------------------------------------
 
-  returnObj.arr = returnArr;
+  if (returnArr.length > 0) {
+
+    returnObj.arr = returnArr;
+
+  } else {
+
+    returnObj = {};
+
+  }
 
 
-  // console.log(`\n---------- returnObj ----------\n`);
-  // console.dir(JSON.parse(JSON.stringify(returnObj)));
-  // console.log(`\n-----------------------------------\n`);
+  // if (_id === 'ymd-ldMa6odPm') {
+
+  //   console.log(`
+  //     ----- returnArr -----\n
+  //     ${util.inspect(JSON.parse(JSON.stringify(returnArr)), { colors: true, depth: null })}\n
+  //     --------------------\n
+  //   `);
+
+  //   console.log(`
+  //     ----- returnObj -----\n
+  //     ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+  //     --------------------\n
+  //   `);
+
+  // }
+
 
 
   return returnObj;
@@ -404,12 +442,14 @@ const returnNewObj = ({  }) => {
   // --------------------------------------------------
 
   const returnObj = {
+
     _id: shortid.generate(),
     createdDate: '',
     updatedDate: '',
     users_id: '',
     type: '',
     arr: [],
+
   };
 
 

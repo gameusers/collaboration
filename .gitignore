@@ -43,6 +43,7 @@ desktop.ini
 
 # 一時的に複製したファイル
 __*.js
+/public/img2/
 
 # 旧データインポート用
 /import/json/

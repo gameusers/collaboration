@@ -46,6 +46,8 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
 
+
+
 // --------------------------------------------------
 //   Emotion
 //   https://emotion.sh/docs/composition
@@ -85,6 +87,8 @@ const Component = (props) => {
   } = props;
 
 
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
@@ -98,6 +102,8 @@ const Component = (props) => {
     handleNavigationForLightboxHide,
 
   } = stateLayout;
+
+
 
 
   // --------------------------------------------------

@@ -1094,13 +1094,15 @@ const findForumByforumID = async ({
             from: 'images-and-videos',
             let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$letImagesAndVideos_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideos_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -1177,6 +1179,8 @@ const findForumByforumID = async ({
     }
 
     const threadCount = lodashGet(communityArr, [0, 'forumObj', 'threadCount'], 0);
+
+
 
 
     // --------------------------------------------------
@@ -1257,8 +1261,8 @@ const findForumByforumID = async ({
         forumThreads_id,
         forumComments_id,
         forumReplies_id,
-        commentLimit,
-        replyLimit,
+        commentLimit: intCommentLimit,
+        replyLimit: intReplyLimit,
 
       });
 
@@ -1306,11 +1310,12 @@ const findForumByforumID = async ({
         forumThreads_id,
         forumComments_id,
         forumReplies_id,
-        commentLimit,
-        replyLimit,
+        commentLimit: intCommentLimit,
+        replyLimit: intReplyLimit,
 
       });
 
+      // const newCommentPage = 1;
       const newCommentPage = lodashGet(pageObj, ['commentPage'], 1);
       const newReplyPage = lodashGet(pageObj, ['replyPage'], 1);
 
@@ -1335,6 +1340,13 @@ const findForumByforumID = async ({
 
       forumCommentsObj = lodashGet(forumCommentsAndRepliesObj, ['forumCommentsObj'], {});
       forumRepliesObj = lodashGet(forumCommentsAndRepliesObj, ['forumRepliesObj'], {});
+
+
+      // console.log(`
+      //   ----- pageObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pageObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
 
 
     }

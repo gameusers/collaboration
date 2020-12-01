@@ -108,7 +108,9 @@ const Component = (props) => {
   const gameUrlID = lodashGet(obj, ['gamesObj', 'urlID'], '');
   const gameName = lodashGet(obj, ['gamesObj', 'name'], '');
   const gameImagesAndVideosObj = lodashGet(obj, ['gamesObj', 'imagesAndVideosObj'], {});
+  // const gameImagesAndVideosArr = lodashGet(obj, ['gamesObj', 'imagesAndVideosObj', 'arr'], []);
   const gameImagesAndVideosThumbnailObj = lodashGet(obj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
+  // const gameImagesAndVideosThumbnailArr = lodashGet(obj, ['gamesObj', 'imagesAndVideosThumbnailObj', 'arr'], []);
 
 
   // --------------------------------------------------
@@ -143,7 +145,7 @@ const Component = (props) => {
   if (lodashHas(obj, ['imagesAndVideosObj'])) {
 
     imagesAndVideosObj = lodashGet(obj, ['imagesAndVideosObj'], {});
-    maxHeight = '';
+    maxHeight = 192;
 
     const imagesAndVideosType = lodashGet(obj, ['imagesAndVideosObj', 'arr', 0, 'type'], '');
 
@@ -156,6 +158,7 @@ const Component = (props) => {
   //   - ゲームのヒーローイメージ
   // ---------------------------------------------
 
+  // } else if (gameImagesAndVideosArr.length !== 0) {
   } else if (Object.keys(gameImagesAndVideosObj).length !== 0) {
 
     imagesAndVideosObj = gameImagesAndVideosObj;
@@ -166,6 +169,7 @@ const Component = (props) => {
   //   - ゲームのサムネイル
   // ---------------------------------------------
 
+  // } else if (gameImagesAndVideosThumbnailArr.length !== 0) {
   } else if (Object.keys(gameImagesAndVideosThumbnailObj).length !== 0) {
 
     imagesAndVideosObj = gameImagesAndVideosThumbnailObj;
@@ -192,30 +196,6 @@ const Component = (props) => {
     maxHeight = '128';
 
   }
-
-
-  // ---------------------------------------------
-  //   - Thumbnail None
-  // ---------------------------------------------
-
-  // const thumbnailNone =
-  //   <img
-  //     css={css`
-  //       // max-width: 100%;
-  //       // // min-height: 180px;
-  //       // max-height: ${maxHeight ? `${maxHeight}px` : 'none'};
-  //       // object-fit: contain;
-  //       // // object-fit: cover;
-  //       // margin: 0 auto;
-  //     `}
-  //     src="/img/common/thumbnail/none.svg"
-  //     // srcSet={valueObj.srcSet}
-  //     // alt={valueObj.caption}
-  //     width="128"
-  //   />
-  // ;
-
-  // const thumbnailSrc = '/img/common/thumbnail/none.svg';
 
 
 
@@ -257,16 +237,21 @@ const Component = (props) => {
   //   console.log
   // --------------------------------------------------
 
-  // console.log(`
-  //   ----------------------------------------\n
-  //   app/common/feed/card.js
-  // `);
+  // if (title === 'PC版R6Sクランメンバー募集') {
 
-  // console.log(`
-  //   ----- obj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(obj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  //   console.log(`
+  //     ----------------------------------------\n
+  //     app/common/feed/card.js
+  //   `);
+
+  //   console.log(`
+  //     ----- obj -----\n
+  //     ${util.inspect(JSON.parse(JSON.stringify(obj)), { colors: true, depth: null })}\n
+  //     --------------------\n
+  //   `);
+
+  // }
+
 
   // console.log(chalk`
   //   showEditButton: {green ${showEditButton}}

@@ -2220,9 +2220,9 @@ const formatVer2 = ({
  */
 const getPage = async ({
 
-  req,
-  localeObj,
-  loginUsers_id,
+  // req,
+  // localeObj,
+  // loginUsers_id,
   forumThreads_id,
   forumComments_id,
   forumReplies_id,
@@ -2231,13 +2231,6 @@ const getPage = async ({
 
 }) => {
 
-  // console.log(chalk`
-  //   ----- findForForumCommentsAndReplies -----
-  //   commentPage: {green ${commentPage}}
-  //   commentLimit: {green ${commentLimit}}
-  //   replyPage: {green ${replyPage}}
-  //   replyLimit: {green ${replyLimit}}
-  // `);
 
   try {
 
@@ -2282,18 +2275,15 @@ const getPage = async ({
 
 
     // --------------------------------------------------
-    //   Format
+    //   page 計算
     // --------------------------------------------------
 
     const commentIndex = comment_idsArr.findIndex((valueObj) => {
       return valueObj._id === forumComments_id;
     });
 
-    let commentPage = Math.ceil(commentIndex / commentLimit) + 1;
+    const commentPage = Math.ceil((commentIndex + 1) / commentLimit);
 
-    if (commentPage === 0) {
-      commentPage = 1;
-    }
 
 
 
@@ -2341,18 +2331,18 @@ const getPage = async ({
 
 
       // --------------------------------------------------
-      //   Format
+      //   page 計算
       // --------------------------------------------------
 
       const replyIndex = reply_idsArr.findIndex((valueObj) => {
         return valueObj._id === forumReplies_id;
       });
 
-      replyPage = Math.ceil(replyIndex / replyLimit) + 1;
+      replyPage = Math.ceil((replyIndex + 1) / replyLimit);
 
-      if (replyPage === 0) {
-        replyPage = 1;
-      }
+      // if (replyPage === 0) {
+      //   replyPage = 1;
+      // }
 
       // console.log(chalk`
       //   replyIndex: {green ${replyIndex}}
@@ -2372,27 +2362,14 @@ const getPage = async ({
 
 
 
-
-
-
-    // console.log(chalk`
-    //   Math.ceil(10 / 1): {green ${Math.ceil(10 / 1)}}
-    //   Math.ceil(10 / 2): {green ${Math.ceil(10 / 2)}}
-    //   Math.ceil(10 / 3): {green ${Math.ceil(10 / 3)}}
-    //   Math.ceil(10 / 4): {green ${Math.ceil(10 / 4)}}
-    //   Math.ceil(10 / 5): {green ${Math.ceil(10 / 5)}}
-    //   Math.ceil(10 / 6): {green ${Math.ceil(10 / 6)}}
-    //   Math.ceil(10 / 7): {green ${Math.ceil(10 / 7)}}
-    //   Math.ceil(10 / 8): {green ${Math.ceil(10 / 8)}}
-    //   Math.ceil(10 / 9): {green ${Math.ceil(10 / 9)}}
-    //   Math.ceil(10 / 10): {green ${Math.ceil(10 / 10)}}
-    //   Math.ceil(10 / 11): {green ${Math.ceil(10 / 11)}}
-    // `);
-
-
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
+
+    // console.log(`
+    //   ----------------------------------------\n
+    //   app/@database/forum-comments/model.js - getPage
+    // `);
 
     // console.log(chalk`
     //   forumThreads_id: {green ${forumThreads_id}}
@@ -2404,6 +2381,28 @@ const getPage = async ({
 
     // console.log(chalk`
     //   commentIndex: {green ${commentIndex}}
+    //   commentPage: {green ${commentPage}}
+    // `);
+
+    // for (let i = 1; i <= 20; i++) {
+
+    //   for (let j = 1; j <= 20; j++) {
+
+    //     const index = j;
+    //     const limit = i;
+
+    //     console.log('index: ' + index, 'limit: ' + limit, 'result: ' + Math.ceil(index / limit));
+
+    //   }
+
+    // }
+
+    // console.log(chalk`
+    //   commentIndex + 1: {green ${commentIndex + 1}}
+    //   commentIndex: {green ${commentIndex} / ${typeof commentIndex}}
+    //   commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
+    //   Math.ceil(commentIndex + 1 / commentLimit): {green ${Math.ceil((commentIndex + 1) / commentLimit)}}
+    //   Math.ceil(commentIndex + 1 / commentLimit): {green ${Math.ceil(5 / 10)}}
     //   commentPage: {green ${commentPage}}
     // `);
 
@@ -2427,8 +2426,10 @@ const getPage = async ({
     // --------------------------------------------------
 
     return {
+
       commentPage,
       replyPage,
+
     };
 
 

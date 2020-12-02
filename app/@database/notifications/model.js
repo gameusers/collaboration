@@ -44,6 +44,7 @@ const ModelWebPushes = require('../web-pushes/model.js');
 // ---------------------------------------------
 
 const { sendNotifications }  = require('../../@modules/web-push.js');
+const { tweet } = require('../../@modules/twitter.js');
 
 
 
@@ -410,11 +411,11 @@ const send = async ({}) => {
     ]).exec();
 
 
-    console.log(`
-      ----- docNotificationsArr -----\n
-      ${util.inspect(docNotificationsArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- docNotificationsArr -----\n
+    //   ${util.inspect(docNotificationsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
     // return;
 
@@ -460,20 +461,18 @@ const send = async ({}) => {
 
       if (type === 'recruitment-threads') {
 
-        const _id = lodashGet(docNotificationsArr, [0, 'arr', 0, '_id'], '');
-        const twitterText = await ModelRecruitmentThreads.findNotificationForTwitter({ _id });
+        const _id = lodashGet(arr, [0, '_id'], '');
 
+        if (_id) {
 
+          const twitterText = await ModelRecruitmentThreads.findNotificationForTwitter({ _id });
+          tweet({ twitterText });
 
-        // console.log(`
-        //   ----- recruitmentThreadsObj -----\n
-        //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
+        }
 
 
       // --------------------------------------------------
-      //   Recruitment - 募集へのコメント or 返信 / Web Push 送信
+      //   Recruitment - 募集へのコメント or 返信 / Push通知送信
       // --------------------------------------------------
 
       } else if (type === 'recruitment-comments' || type === 'recruitment-replies') {
@@ -680,76 +679,77 @@ const send = async ({}) => {
 
 
 
+    // --------------------------------------------------
+    //   Push通知送信
+    // --------------------------------------------------
+
+    if (notificationsArr.length > 0) {
+
+      const resultObj = await sendNotifications({ arr: notificationsArr });
+
+      // const resultObj = {
+
+      //   successesArr: ['nOVilxpSk', 'CLza57t8J', 'L4D5QB9p4'],
+      //   failuresArr: [],
+
+      // };
+
+      // const resultObj = {
+
+      //   successesArr: [],
+      //   failuresArr: ['nOVilxpSk', 'CLza57t8J', 'L4D5QB9p4'],
+
+      // };
+
+      const successesArr = lodashGet(resultObj, ['successesArr'], []);
+      const failuresArr = lodashGet(resultObj, ['failuresArr'], []);
+
+
+      // --------------------------------------------------
+      //   送信後の処理
+      //   成功した行は errorCount を 0 に戻し、失敗した行は errorCount を +1 する
+      // --------------------------------------------------
+
+      await ModelWebPushes.successAndFailure({
+
+        successesArr,
+        failuresArr,
+
+      });
+
+
+    }
+
+
 
 
     // --------------------------------------------------
-    //   送信
+    //   Notifications / done: true / 通知を処理済みにする
     // --------------------------------------------------
 
-    // const resultObj = await sendNotifications({ arr: notificationsArr });
+    if (notifications_idsArr.length > 0) {
 
-    // // const resultObj = {
+      const resultArr = await updateMany({
 
-    // //   successesArr: ['nOVilxpSk', 'CLza57t8J', 'L4D5QB9p4'],
-    // //   failuresArr: [],
+        conditionObj: {
+          _id: { $in: notifications_idsArr }
+        },
 
-    // // };
+        saveObj: {
+          $set: {
+            done: true,
+          },
+        },
 
-    // // const resultObj = {
+      });
 
-    // //   successesArr: [],
-    // //   failuresArr: ['nOVilxpSk', 'CLza57t8J', 'L4D5QB9p4'],
+      // console.log(`
+      //   ----- resultArr -----\n
+      //   ${util.inspect(resultArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
 
-    // // };
-
-    // const successesArr = lodashGet(resultObj, ['successesArr'], []);
-    // const failuresArr = lodashGet(resultObj, ['failuresArr'], []);
-
-
-
-
-    // // --------------------------------------------------
-    // //   送信後の処理
-    // //   成功した行は errorCount を 0 に戻し、失敗した行は errorCount を +1 する
-    // // --------------------------------------------------
-
-    // await ModelWebPushes.successAndFailure({
-
-    //   successesArr,
-    //   failuresArr,
-
-    // });
-
-
-
-
-    // // --------------------------------------------------
-    // //   Notifications / done: true / 通知を処理済みにする
-    // // --------------------------------------------------
-
-    // if (notifications_idsArr.length > 0) {
-
-    //   const resultArr = await updateMany({
-
-    //     conditionObj: {
-    //       _id: { $in: notifications_idsArr }
-    //     },
-
-    //     saveObj: {
-    //       $set: {
-    //         done: true,
-    //       },
-    //     },
-
-    //   });
-
-    //   // console.log(`
-    //   //   ----- resultArr -----\n
-    //   //   ${util.inspect(resultArr, { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
-
-    // }
+    }
 
 
 

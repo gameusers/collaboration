@@ -3136,16 +3136,6 @@ const findNotificationForTwitter = async ({
     const country = lodashGet(localeObj, ['country'], '');
 
 
-    // // --------------------------------------------------
-    // //   Error Limit
-    // // --------------------------------------------------
-
-    // const errorLimit = parseInt(process.env.WEB_PUSH_ERROR_LIMIT, 10);
-
-    // console.log(chalk`
-    //   errorLimit: {green ${errorLimit}}
-    // `);
-
 
 
     // --------------------------------------------------
@@ -3224,45 +3214,6 @@ const findNotificationForTwitter = async ({
                 }
               },
 
-
-              // --------------------------------------------------
-              //   games / images-and-videos / サムネイル用
-              // --------------------------------------------------
-
-              // {
-              //   $lookup:
-              //     {
-              //       from: 'images-and-videos',
-              //       let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-              //       pipeline: [
-              //         {
-              //           $match: {
-              //             $expr: {
-              //               $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
-              //             },
-              //           }
-              //         },
-              //         {
-              //           $project: {
-              //             createdDate: 0,
-              //             updatedDate: 0,
-              //             users_id: 0,
-              //             __v: 0,
-              //           }
-              //         }
-              //       ],
-              //       as: 'imagesAndVideosThumbnailObj'
-              //     }
-              // },
-
-              // {
-              //   $unwind: {
-              //     path: '$imagesAndVideosThumbnailObj',
-              //     preserveNullAndEmptyArrays: true,
-              //   }
-              // },
-
-
               {
                 $project: {
                   _id: 1,
@@ -3270,7 +3221,6 @@ const findNotificationForTwitter = async ({
                   urlID: 1,
                   name: 1,
                   twitterHashtagsArr: 1,
-                  // imagesAndVideosThumbnailObj: 1,
                 }
               }
             ],
@@ -3293,6 +3243,7 @@ const findNotificationForTwitter = async ({
 
       {
         $project: {
+          category: 1,
           localesArr: 1,
           gamesObj: 1,
         }
@@ -3305,12 +3256,8 @@ const findNotificationForTwitter = async ({
 
 
     // --------------------------------------------------
-    //   Return Object
+    //   docObj
     // --------------------------------------------------
-
-    const returnObj = {
-      _id
-    };
 
     const docObj = lodashGet(docArr, [0], {});
 
@@ -3332,18 +3279,42 @@ const findNotificationForTwitter = async ({
     //   投稿用テキスト作成
     // --------------------------------------------------
 
+    const categoryNo = lodashGet(docObj, ['category'], '');
     const title = lodashGet(docObj, ['localesArr', 0, 'title'], '');
     let comment = lodashGet(docObj, ['localesArr', 0, 'comment'], '');
-    const urlID = lodashGet(docObj, ['gamesObj', 'urlID'], '');
-    const twitterHashtagsArr = lodashGet(docObj, ['gamesObj', 'twitterHashtagsArr'], []);
+    const gameUrlID = lodashGet(docObj, ['gamesObj', 'urlID'], '');
+    const gameName = lodashGet(docObj, ['gamesObj', 'name'], '');
+    const gameTwitterHashtagsArr = lodashGet(docObj, ['gamesObj', 'twitterHashtagsArr'], []);
 
-    if (comment.length > 50) {
-      comment = comment.substr(0, 50) + '…';
+
+    // ---------------------------------------------
+    //   - category
+    // ---------------------------------------------
+
+    let category = `[${gameName}]\n`;
+
+    if (categoryNo === 1) {
+
+      category = `[${gameName} / フレンド募集]`;
+
+    } else if (categoryNo === 2) {
+
+      category = `[${gameName} / メンバー募集]`;
+
+    } else if (categoryNo === 3) {
+
+      category = `[${gameName} / 売買・交換相手募集]`;
+
     }
+
+
+    // ---------------------------------------------
+    //   - twitter hashtags
+    // ---------------------------------------------
 
     let twitterHashtags = '';
 
-    for (const [index, value] of twitterHashtagsArr.entries()) {
+    for (const [index, value] of gameTwitterHashtagsArr.entries()) {
 
       if (index === 0) {
         twitterHashtags += `#${value}`;
@@ -3353,65 +3324,39 @@ const findNotificationForTwitter = async ({
 
     }
 
-    let twitterText = `${title}\n`;
-    twitterText += `${comment}\n`;
 
-    if (twitterHashtags) {
-      twitterText += `${twitterHashtags}\n`;
+    // ---------------------------------------------
+    //   - comment
+    // ---------------------------------------------
+
+    // URLは22文字とカウントされる
+    const length = title.length + category.length + twitterHashtags.length + 22;
+    const limit = 130 - length;
+
+    comment = comment.replace(/\r?\n/g, '');
+
+    if (comment.length > limit) {
+      comment = comment.substr(0, limit) + '…';
     }
 
-    twitterText += `${process.env.NEXT_PUBLIC_URL_BASE}gc/${urlID}/rec/${_id}`;
 
+    // ---------------------------------------------
+    //   - twitter text
+    // ---------------------------------------------
 
+    let twitterText = `${title}\n${comment}`;
 
+    if (twitterHashtags) {
+      twitterText += ` ${twitterHashtags}\n`;
+    }
 
-    // // --------------------------------------------------
-    // //   subscriptionObj
-    // // --------------------------------------------------
+    twitterText += `${category}\n`;
 
-    // const webPushAvailable = lodashGet(recruitmentThreadsObj, ['webPushAvailable'], false);
+    // console.log(chalk`
+    //   twitterText.length + 22: {green ${twitterText.length + 22}}
+    // `);
 
-    // if (webPushAvailable) {
-
-    //   returnObj.webPushes_id = lodashGet(docObj, ['webPushesObj', '_id'], '');
-    //   returnObj.users_id = lodashGet(docObj, ['webPushesObj', 'users_id'], '');
-    //   returnObj.subscriptionObj = lodashGet(docObj, ['webPushesObj', 'subscriptionObj'], {});
-    //   returnObj.sendTodayCount = lodashGet(docObj, ['webPushesObj', 'sendTodayCount'], 0);
-
-    // }
-
-
-    // // --------------------------------------------------
-    // //   Title
-    // // --------------------------------------------------
-
-    // const filteredArr = docObj.localesArr.filter((filterObj) => {
-    //   return filterObj.language === language;
-    // });
-
-
-    // if (lodashHas(filteredArr, [0])) {
-
-    //   returnObj.title = lodashGet(filteredArr, [0, 'title'], '');
-
-    // } else {
-
-    //   returnObj.title = lodashGet(docObj, ['localesArr', 0, 'title'], '');
-
-    // }
-
-
-    // // --------------------------------------------------
-    // //   Format - サムネイル画像
-    // // --------------------------------------------------
-
-    // const imagesAndVideosThumbnailObj = lodashGet(docObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
-
-    // const formattedThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosThumbnailObj });
-
-    // if (Object.keys(formattedThumbnailObj).length !== 0) {
-    //   returnObj.icon = lodashGet(formattedThumbnailObj, ['arr', 0, 'src'], '');
-    // }
+    twitterText += `${process.env.NEXT_PUBLIC_URL_BASE}gc/${gameUrlID}/rec/${_id}`;
 
 
 
@@ -3420,31 +3365,21 @@ const findNotificationForTwitter = async ({
     //   console.log
     // --------------------------------------------------
 
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/recruitment-threads/model.js - findNotificationForTwitter
-    `);
-
-    console.log(chalk`
-      _id: {green ${_id}}
-      twitterText: {green ${twitterText}}
-    `);
-
     // console.log(`
-    //   ----- recruitmentThreadsObj -----\n
-    //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
+    //   ----------------------------------------\n
+    //   /app/@database/recruitment-threads/model.js - findNotificationForTwitter
     // `);
 
-    console.log(`
-      ----- docArr -----\n
-      ${util.inspect(docArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    //   twitterText: {green ${twitterText}}
+    //   length: {green ${length}}
+    //   limit: {green ${limit}}
+    // `);
 
     // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   ----- docObj -----\n
+    //   ${util.inspect(docObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 

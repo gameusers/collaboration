@@ -536,6 +536,7 @@ export default async (req, res) => {
       //   Data
       // --------------------------------------------------
 
+      const on_off = lodashGet(valueObj, ['on_off'], '');
       const game_no = parseInt(lodashGet(valueObj, ['game_no'], 0), 10);
       const image_id = lodashGet(valueObj, ['image_id'], '');
       const type = lodashGet(valueObj, ['type'], '');
@@ -580,14 +581,15 @@ export default async (req, res) => {
       //   push
       // --------------------------------------------------
 
-      if (type === 'hero_game' && id1 && id2) {
+      // game_no = 6 image_id = mf29yqvx4wc1dvsv 削除済みで画像が存在していない
+      if (on_off === '1' && type === 'hero_game' && id1 && id2) {
 
 
         // --------------------------------------------------
         //   画像を保存する
         // --------------------------------------------------
 
-        if (image_id !== 'mf29yqvx4wc1dvsv') {// なぜかこのIDの画像が存在していない
+        // if (image_id !== 'mf29yqvx4wc1dvsv') {// なぜかこのIDの画像が存在していない
 
           tempImagesAndVideosObj[game_no] = await saveImageAndVideo({
 
@@ -603,7 +605,7 @@ export default async (req, res) => {
           });
 
 
-        }
+        // }
 
       }
 

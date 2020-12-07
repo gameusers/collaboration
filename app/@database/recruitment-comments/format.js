@@ -239,7 +239,7 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     //
     //   1. 誰にでも公開
     //   2. 募集者だけに公開
-    //   3. 募集者が自分に公開した場合
+    //   3. 募集者が自分に公開した場合（相互公開）
     // --------------------------------------------------
 
     let publicIDsAndInformations = false;
@@ -247,7 +247,7 @@ const formatRecruitmentCommentsAndRepliesArr = ({
     if (
 
       publicSetting === 1 ||
-      (publicSetting === 2 && loginUsers_id === threadUsers_id) ||
+      (publicSetting === 2 && (loginUsers_id && threadUsers_id && loginUsers_id === threadUsers_id)) ||
       (publicSetting === 3 && threadPublicSetting === 3 && threadPublicApprovalUsers_idsArrr.includes(users_id))
 
     ) {
@@ -338,7 +338,7 @@ const formatRecruitmentCommentsAndRepliesArr = ({
       //   伏せ字にする
       // --------------------------------------------------
 
-      if (!publicIDsAndInformations) {
+      if (loginUsers_id !== users_id && !publicIDsAndInformations) {
         tempObj.id = '*****';
       }
 

@@ -218,7 +218,11 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const releaseData = lodashGet(hardwareSortedArr, [0, 'releaseDate'], '');
-  const formattedReleaseData = moment(releaseData).utc().format('YYYY/MM/DD');
+  let formattedReleaseData = '';
+
+  if (releaseData) {
+    formattedReleaseData = moment(releaseData).utc().format('YYYY/MM/DD');
+  }
 
 
   // --------------------------------------------------

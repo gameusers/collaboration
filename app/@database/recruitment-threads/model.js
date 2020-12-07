@@ -815,6 +815,12 @@ const findRecruitmentByRecruitmentID = async ({
 
       });
 
+    //   console.log(`
+    //   ----- formattedCommentsAndRepliesObj -----\n
+    //   ${util.inspect(formattedCommentsAndRepliesObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
 
     // --------------------------------------------------
     //   recruitmentID が返信の場合

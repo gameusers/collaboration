@@ -635,6 +635,7 @@ const Comment = (props) => {
 
             {/* ID & 情報 & 公開設定 */}
             <Public
+              type="comment"
               idsArr={idsArr}
               publicIDsArr={publicIDsArr}
               publicInformationsArr={publicInformationsArr}

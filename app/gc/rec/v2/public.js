@@ -47,6 +47,7 @@ const Component = (props) => {
 
   const {
 
+    type,
     idsArr = [],
     publicIDsArr = [],
     publicInformationsArr = [],
@@ -127,6 +128,7 @@ const Component = (props) => {
       key="public-3"
     >
       <PublicSetting
+        type={type}
         publicSetting={publicSetting}
       />
     </div>

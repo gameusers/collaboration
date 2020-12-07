@@ -124,7 +124,7 @@ const formatRecruitmentThreadsArr = ({
 
     const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
 
-    // const users_id = lodashGet(valueObj, ['users_id'], '');
+    const users_id = lodashGet(valueObj, ['users_id'], '');
 
     // const webPush = lodashGet(valueObj, ['webPush'], false);
     // const webPushEndpoint = lodashGet(valueObj, ['webPushSubscriptionObj', 'endpoint'], '');
@@ -280,7 +280,7 @@ const formatRecruitmentThreadsArr = ({
       //   伏せ字にする
       // --------------------------------------------------
 
-      if (!publicIDsAndInformations) {
+      if (loginUsers_id !== users_id && !publicIDsAndInformations) {
         tempObj.id = '*****';
       }
 

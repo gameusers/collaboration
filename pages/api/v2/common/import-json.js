@@ -341,10 +341,12 @@ export default async (req, res) => {
         status = 'Status'
       }
 
-      const top_image = lodashGet(valueObj, ['top_image'], '');
-      const thumbnail = lodashGet(valueObj, ['thumbnail'], '0');
+      let comment = lodashGet(valueObj, ['explanation'], '');
 
-      const comment = lodashGet(valueObj, ['explanation'], '');
+      if (comment) {
+        comment = comment.replace(/\r\n/g, '\n');
+      }
+
       const user_id = lodashGet(valueObj, ['user_id'], '');
 
       const updatedDate = moment(renewal_date).utc().add(-9, 'hours').toISOString();
@@ -687,7 +689,12 @@ export default async (req, res) => {
         name = '';
       }
 
-      const comment = lodashGet(valueObj, ['comment'], '');
+      let comment = lodashGet(valueObj, ['comment'], '');
+
+      if (comment) {
+        comment = comment.replace(/\r\n/g, '\n');
+      }
+
       const image = lodashGet(valueObj, ['image'], '');
       const movie = lodashGet(valueObj, ['movie'], '');
       const goods = parseInt(lodashGet(valueObj, ['good'], 0), 10);
@@ -883,7 +890,12 @@ export default async (req, res) => {
         name = '';
       }
 
-      const comment = lodashGet(valueObj, ['comment'], '');
+      let comment = lodashGet(valueObj, ['comment'], '');
+
+      if (comment) {
+        comment = comment.replace(/\r\n/g, '\n');
+      }
+
       const image = lodashGet(valueObj, ['image'], '');
       const movie = lodashGet(valueObj, ['movie'], '');
       const goods = parseInt(lodashGet(valueObj, ['good'], 0), 10);
@@ -1075,7 +1087,12 @@ export default async (req, res) => {
         name = '';
       }
 
-      const comment = lodashGet(valueObj, ['comment'], '');
+      let comment = lodashGet(valueObj, ['comment'], '');
+
+      if (comment) {
+        comment = comment.replace(/\r\n/g, '\n');
+      }
+
       const image = lodashGet(valueObj, ['image'], '');
       const movie = lodashGet(valueObj, ['movie'], '');
       const goods = parseInt(lodashGet(valueObj, ['good'], 0), 10);
@@ -1254,7 +1271,12 @@ export default async (req, res) => {
         name = '';
       }
 
-      const comment = lodashGet(valueObj, ['comment'], '');
+      let comment = lodashGet(valueObj, ['comment'], '');
+
+      if (comment) {
+        comment = comment.replace(/\r\n/g, '\n');
+      }
+
       const image = lodashGet(valueObj, ['image'], '');
       const movie = lodashGet(valueObj, ['movie'], '');
       const goods = parseInt(lodashGet(valueObj, ['good'], 0), 10);
@@ -1425,7 +1447,13 @@ export default async (req, res) => {
       const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().add(-9, 'hours').toISOString();
       const user_no = lodashGet(valueObj, ['user_no'], '');
       const name = lodashGet(valueObj, ['title'], '');
-      const comment = lodashGet(valueObj, ['comment'], '');
+
+      let comment = lodashGet(valueObj, ['comment'], '');
+
+      if (comment) {
+        comment = comment.replace(/\r\n/g, '\n');
+      }
+
       const image = lodashGet(valueObj, ['image'], '');
       const movie = lodashGet(valueObj, ['movie'], '');
       const comments = lodashGet(forumCommentCountUCObj, [bbs_thread_no], 0);
@@ -1582,7 +1610,13 @@ export default async (req, res) => {
       const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().add(-9, 'hours').toISOString();
       const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().add(-9, 'hours').toISOString();
       const name = lodashGet(valueObj, ['title'], '');
-      const comment = lodashGet(valueObj, ['comment'], '');
+
+      let comment = lodashGet(valueObj, ['comment'], '');
+
+      if (comment) {
+        comment = comment.replace(/\r\n/g, '\n');
+      }
+
       const image = lodashGet(valueObj, ['image'], '');
       const movie = lodashGet(valueObj, ['movie'], '');
       const comments = lodashGet(forumCommentCountGCObj, [bbs_thread_no], 0);
@@ -1700,6 +1734,7 @@ export default async (req, res) => {
     const recruitmentCommentCountObj = {};
     const recruitmentImagesCountForThreadObj = {};
     const recruitmentVideosCountForThreadObj = {};
+    const publicCommentsUsers_idsObj = {};
 
     const gameNoCountObj = {};
 
@@ -2588,7 +2623,12 @@ export default async (req, res) => {
         name = '';
       }
 
-      const comment = lodashGet(valueObj, ['comment'], '');
+      let comment = lodashGet(valueObj, ['comment'], '');
+
+      if (comment) {
+        comment = comment.replace(/\r\n/g, '\n');
+      }
+
       const image = lodashGet(valueObj, ['image'], '');
       const movie = lodashGet(valueObj, ['movie'], '');
       const id_hardware_no_1 = lodashGet(valueObj, ['id_hardware_no_1'], '');
@@ -2647,6 +2687,22 @@ export default async (req, res) => {
         }
 
       }
+
+
+      // --------------------------------------------------
+      //   publicCommentsUsers_idsObj
+      // --------------------------------------------------
+
+      if (users_id) {
+
+        if (publicCommentsUsers_idsObj[recruitmentThreads_id]) {
+          publicCommentsUsers_idsObj[recruitmentThreads_id].push(users_id);
+        } else {
+          publicCommentsUsers_idsObj[recruitmentThreads_id] = [users_id];
+        }
+
+      }
+
 
 
       // --------------------------------------------------
@@ -2929,11 +2985,11 @@ export default async (req, res) => {
     }
 
 
-    console.log(`
-      ----- gameNoCountObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(gameNoCountObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gameNoCountObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(gameNoCountObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 
@@ -3003,7 +3059,12 @@ export default async (req, res) => {
         name = '';
       }
 
-      const comment = lodashGet(valueObj, ['comment'], '');
+      let comment = lodashGet(valueObj, ['comment'], '');
+
+      if (comment) {
+        comment = comment.replace(/\r\n/g, '\n');
+      }
+
       const image = lodashGet(valueObj, ['image'], '');
       const movie = lodashGet(valueObj, ['movie'], '');
       const id_hardware_no_1 = lodashGet(valueObj, ['id_hardware_no_1'], '');
@@ -3047,10 +3108,6 @@ export default async (req, res) => {
       // --------------------------------------------------
 
       const recruitmentThreads_id = idsObj[`recruitment_id_${recruitment_id}`];
-      // const recruitmentComments_id = idsObj[`recruitment_reply_id_${recruitment_reply_id}`];
-      // const hardwareID1 = idsObj[`hardware_no_${id_hardware_no_1}`];
-      // const hardwareID2 = idsObj[`hardware_no_${id_hardware_no_2}`];
-      // const hardwareID3 = idsObj[`hardware_no_${id_hardware_no_3}`];
       const gameCommunities_id = idsObj[`game_no_${game_no}`];
 
 
@@ -3126,35 +3183,53 @@ export default async (req, res) => {
 
 
       // --------------------------------------------------
+      //   publicCommentsUsers_idsArr
+      // --------------------------------------------------
+
+      let publicCommentsUsers_idsArr = publicCommentsUsers_idsObj[recruitmentThreads_id];
+      publicCommentsUsers_idsArr = Array.from(new Set(publicCommentsUsers_idsArr));
+
+
+      // --------------------------------------------------
       //   publicApprovalUsers_idsArrr
       // --------------------------------------------------
 
-      const publicApprovalUsers_idsArrr = [];
-      const approval_users = lodashGet(valueObj, ['approval_users'], '');
+      let publicApprovalUsers_idsArrr = [];
 
-      if (approval_users) {
-
-        let approvalUsersArr = approval_users.split('a:1:{i:0;s:3:\"');
-        approvalUsersArr = approvalUsersArr[1].split('";}');
-        approvalUsersArr.pop();
-
-        if (idsObj[`user_no_${approvalUsersArr[0]}`]) {
-          publicApprovalUsers_idsArrr.push(idsObj[`user_no_${approvalUsersArr[0]}`]);
-        }
-
-        // console.log(`
-        //   ----- approvalUsersArr -----\n
-        //   ${util.inspect(JSON.parse(JSON.stringify(approvalUsersArr)), { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-
-        // console.log(`
-        //   ----- publicApprovalUsers_idsArrr -----\n
-        //   ${util.inspect(JSON.parse(JSON.stringify(publicApprovalUsers_idsArrr)), { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-
+      if (recruitment_id === 'cp55xdtmafcczqcp') {
+        // publicApprovalUsers_idsArrr = [idsObj['user_no_937'], idsObj['user_no_939']];
       }
+
+      if (recruitment_id === 'pp2bgvbnfw73udd1') {
+        publicApprovalUsers_idsArrr = [idsObj['user_no_937'], idsObj['user_no_939']];
+      }
+
+
+      // const approval_users = lodashGet(valueObj, ['approval_users'], '');
+
+      // if (approval_users) {
+
+      //   let approvalUsersArr = approval_users.split('a:1:{i:0;s:3:\"');
+      //   approvalUsersArr = approvalUsersArr[1].split('";}');
+      //   approvalUsersArr.pop();
+
+      //   if (idsObj[`user_no_${approvalUsersArr[0]}`]) {
+      //     publicApprovalUsers_idsArrr.push(idsObj[`user_no_${approvalUsersArr[0]}`]);
+      //   }
+
+      //   // console.log(`
+      //   //   ----- approvalUsersArr -----\n
+      //   //   ${util.inspect(JSON.parse(JSON.stringify(approvalUsersArr)), { colors: true, depth: null })}\n
+      //   //   --------------------\n
+      //   // `);
+
+      //   // console.log(`
+      //   //   ----- publicApprovalUsers_idsArrr -----\n
+      //   //   ${util.inspect(JSON.parse(JSON.stringify(publicApprovalUsers_idsArrr)), { colors: true, depth: null })}\n
+      //   //   --------------------\n
+      //   // `);
+
+      // }
 
 
 
@@ -3166,35 +3241,39 @@ export default async (req, res) => {
       let ids_idsArr = [];
       let publicIDsArr = [];
 
-      if (gameIDsObj[id_1]) {
+      if (users_id) {
 
-        const gameIDs_id = lodashGet(gameIDsObj, [id_1, '_id'], '');
-        const gameIDsUser_no = lodashGet(gameIDsObj, [id_1, 'user_no'], '');
+        if (gameIDsObj[id_1]) {
 
-        if (gameIDsUser_no === user_no) {
-          ids_idsArr.push(gameIDs_id);
+          const gameIDs_id = lodashGet(gameIDsObj, [id_1, '_id'], '');
+          const gameIDsUser_no = lodashGet(gameIDsObj, [id_1, 'user_no'], '');
+
+          if (gameIDsUser_no === user_no) {
+            ids_idsArr.push(gameIDs_id);
+          }
+
         }
 
-      }
+        if (gameIDsObj[id_2]) {
 
-      if (gameIDsObj[id_2]) {
+          const gameIDs_id = lodashGet(gameIDsObj, [id_2, '_id'], '');
+          const gameIDsUser_no = lodashGet(gameIDsObj, [id_2, 'user_no'], '');
 
-        const gameIDs_id = lodashGet(gameIDsObj, [id_2, '_id'], '');
-        const gameIDsUser_no = lodashGet(gameIDsObj, [id_2, 'user_no'], '');
+          if (gameIDsUser_no === user_no) {
+            ids_idsArr.push(gameIDs_id);
+          }
 
-        if (gameIDsUser_no === user_no) {
-          ids_idsArr.push(gameIDs_id);
         }
 
-      }
+        if (gameIDsObj[id_3]) {
 
-      if (gameIDsObj[id_3]) {
+          const gameIDs_id = lodashGet(gameIDsObj, [id_3, '_id'], '');
+          const gameIDsUser_no = lodashGet(gameIDsObj, [id_3, 'user_no'], '');
 
-        const gameIDs_id = lodashGet(gameIDsObj, [id_3, '_id'], '');
-        const gameIDsUser_no = lodashGet(gameIDsObj, [id_3, 'user_no'], '');
+          if (gameIDsUser_no === user_no) {
+            ids_idsArr.push(gameIDs_id);
+          }
 
-        if (gameIDsUser_no === user_no) {
-          ids_idsArr.push(gameIDs_id);
         }
 
       }
@@ -3332,6 +3411,8 @@ export default async (req, res) => {
       const videos = lodashGet(recruitmentVideosCountForThreadObj, [recruitment_id], 0);
 
 
+
+
       // --------------------------------------------------
       //   push
       // --------------------------------------------------
@@ -3360,7 +3441,7 @@ export default async (req, res) => {
           publicIDsArr,
           publicInformationsArr,
           publicSetting,
-          publicCommentsUsers_idsArr: [],
+          publicCommentsUsers_idsArr,
           publicApprovalUsers_idsArrr,
           deadlineDate,
           webPushAvailable: false,
@@ -3421,8 +3502,18 @@ export default async (req, res) => {
       const userCommunityID = lodashGet(valueObj, ['community_id'], '');
 
       const name = lodashGet(valueObj, ['name'], 'Name');
-      const description = lodashGet(valueObj, ['description'], '');
-      const descriptionShort = lodashGet(valueObj, ['description_mini'], '');
+
+      let description = lodashGet(valueObj, ['description'], '');
+
+      if (description) {
+        description = description.replace(/\r\n/g, '\n');
+      }
+
+      let descriptionShort = lodashGet(valueObj, ['description_mini'], '');
+
+      if (descriptionShort) {
+        descriptionShort = descriptionShort.replace(/\r\n/g, '\n');
+      }
 
       const users_id = idsObj[`user_no_${author_user_no}`];
 
@@ -4998,6 +5089,17 @@ export default async (req, res) => {
       }
 
 
+      // --------------------------------------------------
+      //   label
+      // --------------------------------------------------
+
+      let label = '';
+
+      if (platform === 'Other') {
+        label = 'ID';
+      }
+
+
 
 
       // --------------------------------------------------
@@ -5015,7 +5117,7 @@ export default async (req, res) => {
             users_id,
             gameCommunities_id,
             platform,
-            label: '',
+            label,
             id,
             publicSetting: 5,
             search: false,

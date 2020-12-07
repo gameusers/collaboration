@@ -45,6 +45,7 @@ const Component = (props) => {
 
   const {
 
+    type = 'thread',
     publicSetting,
 
   } = props;
@@ -69,13 +70,21 @@ const Component = (props) => {
 
   let text = '';
 
-  if (publicSetting === 2) {
+  if (publicSetting === 2 && type === 'thread') {
 
-    text = 'ログインして返信した方のみ、ID・情報を閲覧することができます。';
+    text = 'ログインしてコメントした方のみ、閲覧することができます。';
 
-  } else if (publicSetting === 3) {
+  } else if (publicSetting === 2 && type === 'comment') {
 
-    text = 'ログインして返信した方の中から、募集者がID・情報を公開する相手を選びます。';
+    text = '募集者だけに公開されます。';
+
+  } else if (publicSetting === 3 && type === 'thread') {
+
+    text = 'ログインしてコメントした方の中から、募集者が公開する相手を選びます。';
+
+  } else if (publicSetting === 3 && type === 'comment') {
+
+    text = '募集者がこのコメントをした方に公開すると、お互いが閲覧できるようになります。相互公開。';
 
   }
 

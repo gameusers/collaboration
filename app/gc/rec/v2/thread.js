@@ -531,6 +531,7 @@ const Component = (props) => {
             && {
               cursor: default !important;
               background-color: white !important;
+              user-select: auto;
 
               @media screen and (max-width: 480px) {
                 padding: 0 16px;
@@ -826,6 +827,7 @@ const Component = (props) => {
 
                   {/* ID & 情報 & 公開設定 */}
                   <Public
+                    type="thread"
                     idsArr={idsArr}
                     publicIDsArr={publicIDsArr}
                     publicInformationsArr={publicInformationsArr}

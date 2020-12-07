@@ -1333,14 +1333,14 @@ const getPage = async ({
 
     });
 
+    const commentPage = Math.ceil((commentIndex + 1) / commentLimit);
+    // let commentPage = Math.ceil(commentIndex / commentLimit) + 1;
 
-    let commentPage = Math.ceil(commentIndex / commentLimit) + 1;
+    // if (commentPage === 0) {
 
-    if (commentPage === 0) {
+    //   commentPage = 1;
 
-      commentPage = 1;
-
-    }
+    // }
 
 
 
@@ -1379,19 +1379,17 @@ const getPage = async ({
     // --------------------------------------------------
 
     const replyIndex = recruitmentReplies_idsArr.findIndex((valueObj) => {
-
       return valueObj._id === recruitmentReplies_id;
-
     });
 
+    const replyPage = Math.ceil((replyIndex + 1) / replyLimit);
+    // let replyPage = Math.ceil(replyIndex / replyLimit) + 1;
 
-    let replyPage = Math.ceil(replyIndex / replyLimit) + 1;
+    // if (replyPage === 0) {
 
-    if (replyPage === 0) {
+    //   replyPage = 1;
 
-      replyPage = 1;
-
-    }
+    // }
 
 
 

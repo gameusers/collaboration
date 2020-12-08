@@ -145,6 +145,7 @@ const Reply = (props) => {
     recruitmentThreads_id,
     recruitmentComments_id,
     recruitmentReplies_id,
+    editableThread,
 
   } = props;
 
@@ -769,7 +770,7 @@ const Reply = (props) => {
 
 
                 {/* Delete Button */}
-                {editable &&
+                {(editable || editableThread) &&
                   <Button
                     css={css`
                       && {
@@ -915,6 +916,7 @@ const Component = (props) => {
     gameCommunities_id,
     recruitmentThreads_id,
     recruitmentComments_id,
+    editableThread,
 
   } = props;
 
@@ -1376,6 +1378,7 @@ const Component = (props) => {
         recruitmentThreads_id={recruitmentThreads_id}
         recruitmentComments_id={recruitmentComments_id}
         recruitmentReplies_id={recruitmentReplies_id}
+        editableThread={editableThread}
       />
     );
 

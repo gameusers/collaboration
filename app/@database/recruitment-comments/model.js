@@ -1228,13 +1228,15 @@ const findOneForEdit = async ({
             from: 'images-and-videos',
             let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$letImagesAndVideos_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideos_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -1267,10 +1269,10 @@ const findOneForEdit = async ({
               letIDs_idArr: '$ids_idsArr',
             },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
                       { $eq: ['$users_id', '$$letUsers_id'] },
                       { $in: ['$_id', '$$letIDs_idArr'] }
                     ]
@@ -1289,10 +1291,10 @@ const findOneForEdit = async ({
                     from: 'games',
                     let: { letGameCommunities_id: '$gameCommunities_id' },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $and:
-                            [
+                      {
+                        $match: {
+                          $expr: {
+                            $and: [
                               { $eq: ['$language', language] },
                               { $eq: ['$country', country] },
                               { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
@@ -1312,13 +1314,15 @@ const findOneForEdit = async ({
                             from: 'images-and-videos',
                             let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
                             pipeline: [
-                              { $match:
-                                { $expr:
-                                  { $eq: ['$_id', '$$letImagesAndVideosThumbnail_id'] },
+                              {
+                                $match: {
+                                  $expr: {
+                                    $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                                  },
                                 }
                               },
-                              { $project:
-                                {
+                              {
+                                $project: {
                                   createdDate: 0,
                                   updatedDate: 0,
                                   users_id: 0,
@@ -1338,8 +1342,8 @@ const findOneForEdit = async ({
                       },
 
 
-                      { $project:
-                        {
+                      {
+                        $project: {
                           _id: 1,
                           gameCommunities_id: 1,
                           name: 1,
@@ -1360,8 +1364,8 @@ const findOneForEdit = async ({
               },
 
 
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -1379,8 +1383,8 @@ const findOneForEdit = async ({
       //   $project
       // --------------------------------------------------
 
-      { $project:
-        {
+      {
+        $project: {
           createdDate: 0,
           imagesAndVideos_id: 0,
           ids_idsArr: 0,
@@ -1577,6 +1581,7 @@ const findOneForEdit = async ({
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} recruitmentComments_id - DB recruitment-comments _id / スレッドID
+ * @param {string} type - 編集か削除か edit / delete
  * @return {Array} 取得データ
  */
 const findForDelete = async ({
@@ -1585,6 +1590,7 @@ const findForDelete = async ({
   localeObj,
   loginUsers_id,
   recruitmentComments_id,
+  type = 'edit',
 
 }) => {
 
@@ -1618,13 +1624,15 @@ const findForDelete = async ({
             from: 'images-and-videos',
             let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$letImagesAndVideos_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideos_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -1655,9 +1663,11 @@ const findForDelete = async ({
             let: { let_id: '$_id' },
             pipeline: [
 
-              { $match:
-                { $expr:
-                  { $eq: ['$recruitmentComments_id', '$$let_id'] }
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$recruitmentComments_id', '$$let_id']
+                  }
                 }
               },
 
@@ -1672,13 +1682,15 @@ const findForDelete = async ({
                     from: 'images-and-videos',
                     let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
                     pipeline: [
-                      { $match:
-                        { $expr:
-                          { $eq: ['$_id', '$$letImagesAndVideos_id'] },
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$_id', '$$letImagesAndVideos_id']
+                          },
                         }
                       },
-                      { $project:
-                        {
+                      {
+                        $project: {
                           createdDate: 0,
                           updatedDate: 0,
                           users_id: 0,
@@ -1712,6 +1724,42 @@ const findForDelete = async ({
 
 
       // --------------------------------------------------
+      //   recruitment-threads
+      // --------------------------------------------------
+
+      {
+        $lookup:
+          {
+            from: 'recruitment-threads',
+            let: { letRecruitmentThreads_id: '$recruitmentThreads_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letRecruitmentThreads_id']
+                  },
+                }
+              },
+              {
+                $project: {
+                  createdDate: 1,
+                  users_id: 1,
+                }
+              }
+            ],
+            as: 'recruitmentThreadsObj'
+          }
+      },
+
+      {
+        $unwind: {
+          path: '$recruitmentThreadsObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+
+
+      // --------------------------------------------------
       //   $project
       // --------------------------------------------------
 
@@ -1725,6 +1773,7 @@ const findForDelete = async ({
           imagesAndVideos_id: 1,
           imagesAndVideosObj: 1,
           recruitmentRepliesArr: 1,
+          recruitmentThreadsObj: 1,
         }
       },
 
@@ -1761,15 +1810,33 @@ const findForDelete = async ({
     //   編集権限がない場合は処理停止
     // --------------------------------------------------
 
-    const editable = verifyAuthority({
+    let editable = false;
 
-      req,
-      users_id: lodashGet(docCommentObj, ['users_id'], ''),
-      loginUsers_id,
-      ISO8601: lodashGet(docCommentObj, ['createdDate'], ''),
-      _id: lodashGet(docCommentObj, ['_id'], '')
+    if (type === 'delete') {
 
-    });
+      editable = verifyAuthority({
+
+        req,
+        users_id: lodashGet(docCommentObj, ['recruitmentThreadsObj', 'users_id'], ''),
+        loginUsers_id,
+        ISO8601: lodashGet(docCommentObj, ['recruitmentThreadsObj', 'createdDate'], ''),
+        _id: lodashGet(docCommentObj, ['recruitmentThreadsObj', '_id'], '')
+
+      });
+
+    } else {
+
+      editable = verifyAuthority({
+
+        req,
+        users_id: lodashGet(docCommentObj, ['users_id'], ''),
+        loginUsers_id,
+        ISO8601: lodashGet(docCommentObj, ['createdDate'], ''),
+        _id: lodashGet(docCommentObj, ['_id'], '')
+
+      });
+
+    }
 
     if (!editable) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: 'Y5gWhUpcc', messageID: 'DSRlEoL29' }] });
@@ -1832,6 +1899,8 @@ const findForDelete = async ({
     //   images: {green ${images} / ${typeof images}}
     //   videos: {green ${videos} / ${typeof videos}}
     // `);
+
+
 
 
     // --------------------------------------------------

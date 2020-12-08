@@ -1130,6 +1130,7 @@ const Component = (props) => {
                   urlID={urlID}
                   gameCommunities_id={gameCommunities_id}
                   recruitmentThreads_id={recruitmentThreads_id}
+                  editableThread={editable}
                 />
 
 

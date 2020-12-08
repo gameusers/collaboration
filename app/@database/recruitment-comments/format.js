@@ -418,7 +418,7 @@ const formatRecruitmentCommentsAndRepliesArr = ({
 
 
     // --------------------------------------------------
-    //   編集権限
+    //   編集権限＆このユーザーを承認したかどうか
     // --------------------------------------------------
 
     clonedObj.editable = verifyAuthority({
@@ -430,6 +430,17 @@ const formatRecruitmentCommentsAndRepliesArr = ({
       _id: valueObj._id,
 
     });
+
+
+    // --------------------------------------------------
+    //   このユーザーにID・情報を見せるために承認したかどうか
+    // --------------------------------------------------
+
+    clonedObj.approval = false;
+
+    if (publicSetting === 3 && threadPublicSetting === 3 && threadPublicApprovalUsers_idsArrr.includes(users_id)) {
+      clonedObj.approval = true;
+    }
 
 
 

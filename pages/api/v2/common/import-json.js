@@ -3197,39 +3197,12 @@ export default async (req, res) => {
       let publicApprovalUsers_idsArrr = [];
 
       if (recruitment_id === 'cp55xdtmafcczqcp') {
-        // publicApprovalUsers_idsArrr = [idsObj['user_no_937'], idsObj['user_no_939']];
+        publicApprovalUsers_idsArrr = [idsObj['user_no_259']];
       }
 
       if (recruitment_id === 'pp2bgvbnfw73udd1') {
         publicApprovalUsers_idsArrr = [idsObj['user_no_937'], idsObj['user_no_939']];
       }
-
-
-      // const approval_users = lodashGet(valueObj, ['approval_users'], '');
-
-      // if (approval_users) {
-
-      //   let approvalUsersArr = approval_users.split('a:1:{i:0;s:3:\"');
-      //   approvalUsersArr = approvalUsersArr[1].split('";}');
-      //   approvalUsersArr.pop();
-
-      //   if (idsObj[`user_no_${approvalUsersArr[0]}`]) {
-      //     publicApprovalUsers_idsArrr.push(idsObj[`user_no_${approvalUsersArr[0]}`]);
-      //   }
-
-      //   // console.log(`
-      //   //   ----- approvalUsersArr -----\n
-      //   //   ${util.inspect(JSON.parse(JSON.stringify(approvalUsersArr)), { colors: true, depth: null })}\n
-      //   //   --------------------\n
-      //   // `);
-
-      //   // console.log(`
-      //   //   ----- publicApprovalUsers_idsArrr -----\n
-      //   //   ${util.inspect(JSON.parse(JSON.stringify(publicApprovalUsers_idsArrr)), { colors: true, depth: null })}\n
-      //   //   --------------------\n
-      //   // `);
-
-      // }
 
 
 

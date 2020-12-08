@@ -1095,6 +1095,7 @@ const findRepliesForUpsert = async ({
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} recruitmentReplies_id - DB recruitment-replies _id / 返信ID
+ * @param {string} type - 編集か削除か edit / delete
  * @return {Array} 取得データ
  */
 const findOneForEdit = async ({
@@ -1103,6 +1104,7 @@ const findOneForEdit = async ({
   localeObj,
   loginUsers_id,
   recruitmentReplies_id,
+  type = 'edit',
 
 }) => {
 
@@ -1136,13 +1138,15 @@ const findOneForEdit = async ({
             from: 'images-and-videos',
             let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$letImagesAndVideos_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideos_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -1163,12 +1167,48 @@ const findOneForEdit = async ({
 
 
       // --------------------------------------------------
+      //   recruitment-threads
+      // --------------------------------------------------
+
+      {
+        $lookup:
+          {
+            from: 'recruitment-threads',
+            let: { letRecruitmentThreads_id: '$recruitmentThreads_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letRecruitmentThreads_id']
+                  },
+                }
+              },
+              {
+                $project: {
+                  createdDate: 1,
+                  users_id: 1,
+                }
+              }
+            ],
+            as: 'recruitmentThreadsObj'
+          }
+      },
+
+      {
+        $unwind: {
+          path: '$recruitmentThreadsObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+
+
+      // --------------------------------------------------
       //   $project
       // --------------------------------------------------
 
-      { $project:
-        {
-          createdDate: 0,
+      {
+        $project: {
+          // createdDate: 0,
           imagesAndVideos_id: 0,
           ip: 0,
           userAgent: 0,
@@ -1194,31 +1234,49 @@ const findOneForEdit = async ({
 
 
     // --------------------------------------------------
+    //   returnObj
+    // --------------------------------------------------
+
+    const returnObj = lodashGet(docRecruitmentRepliesArr, [0], {});
+
+
+
+
+    // --------------------------------------------------
     //   編集権限がない場合は処理停止
     // --------------------------------------------------
 
-    const editable = verifyAuthority({
+    let editable = false;
 
-      req,
-      users_id: lodashGet(docRecruitmentRepliesArr, [0, 'users_id'], ''),
-      loginUsers_id,
-      ISO8601: lodashGet(docRecruitmentRepliesArr, [0, 'createdDate'], ''),
-      _id: lodashGet(docRecruitmentRepliesArr, [0, '_id'], '')
+    if (type === 'delete') {
 
-    });
+      editable = verifyAuthority({
+
+        req,
+        users_id: lodashGet(returnObj, ['recruitmentThreadsObj', 'users_id'], ''),
+        loginUsers_id,
+        ISO8601: lodashGet(returnObj, ['recruitmentThreadsObj', 'createdDate'], ''),
+        _id: lodashGet(returnObj, ['recruitmentThreadsObj', '_id'], '')
+
+      });
+
+    } else {
+
+      editable = verifyAuthority({
+
+        req,
+        users_id: lodashGet(returnObj, ['users_id'], ''),
+        loginUsers_id,
+        ISO8601: lodashGet(returnObj, ['createdDate'], ''),
+        _id: lodashGet(returnObj, ['_id'], '')
+
+      });
+
+    }
 
     if (!editable) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: '_IC6Tou9F', messageID: 'DSRlEoL29' }] });
     }
-
-
-
-
-    // --------------------------------------------------
-    //   Format
-    // --------------------------------------------------
-
-    const returnObj = docRecruitmentRepliesArr[0];
 
 
 

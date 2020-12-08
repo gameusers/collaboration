@@ -60,6 +60,8 @@ import IconUpdate from '@material-ui/icons/Update';
 import IconDelete from '@material-ui/icons/Delete';
 import IconEdit from '@material-ui/icons/Edit';
 import IconReply from '@material-ui/icons/Reply';
+import IconLock from '@material-ui/icons/Lock';
+import IconLockOpen from '@material-ui/icons/LockOpen';
 
 
 // ---------------------------------------------
@@ -150,6 +152,7 @@ const Comment = (props) => {
     recruitmentThreads_id,
     recruitmentComments_id,
     publicSettingThread,
+    editableThread,
 
   } = props;
 
@@ -181,8 +184,11 @@ const Comment = (props) => {
 
   const {
 
+    recruitmentThreadsObj,
+    setRecruitmentThreadsObj,
     recruitmentCommentsObj,
     setRecruitmentCommentsObj,
+    setRecruitmentRepliesObj,
     setReloadForceRecruitmentComment,
 
   } = stateRecruitment;
@@ -401,6 +407,187 @@ const Comment = (props) => {
 
 
 
+  /**
+   * ID・情報の公開相手を選択する
+   */
+  const handleApproval = async () => {
+
+
+    try {
+
+
+      // ---------------------------------------------
+      //   _id が存在しない場合エラー
+      // ---------------------------------------------
+
+      if (!recruitmentComments_id) {
+        throw new CustomError({ errorsArr: [{ code: 'v4bgeWSoV', messageID: '1YJnibkmh' }] });
+      }
+
+
+
+
+      // ---------------------------------------------
+      //   Loading Open
+      // ---------------------------------------------
+
+      handleLoadingOpen({});
+
+
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+
+      setButtonDisabled(true);
+
+
+
+
+      // ---------------------------------------------
+      //   Property
+      // ---------------------------------------------
+
+      const threadPage = lodashGet(recruitmentThreadsObj, ['page'], 1);
+
+      const threadLimit = parseInt((getCookie({ key: 'recruitmentThreadLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
+      const commentLimit = parseInt((getCookie({ key: 'recruitmentCommentLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT), 10);
+      const replyLimit = parseInt((getCookie({ key: 'recruitmentReplyLimit' }) || process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT), 10);
+
+
+
+
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+
+      const formDataObj = {
+
+        recruitmentComments_id,
+        threadPage,
+        threadLimit,
+        commentLimit,
+        replyLimit,
+
+      };
+
+
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+
+      const resultObj = await fetchWrapper({
+
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/recruitment-comments/approval`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
+
+      });
+
+
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+
+
+
+
+      // --------------------------------------------------
+      //   gameCommunityObj
+      // --------------------------------------------------
+
+      setGameCommunityObj(lodashGet(resultObj, ['data', 'gameCommunityObj'], {}));
+
+
+      // ---------------------------------------------
+      //   recruitmentThreadsObj
+      // ---------------------------------------------
+
+      setRecruitmentThreadsObj(lodashGet(resultObj, ['data', 'recruitmentThreadsObj'], {}));
+
+
+      // ---------------------------------------------
+      //   recruitmentCommentsObj
+      // ---------------------------------------------
+
+      setRecruitmentCommentsObj(lodashGet(resultObj, ['data', 'recruitmentCommentsObj'], {}));
+
+
+      // ---------------------------------------------
+      //   recruitmentRepliesObj
+      // ---------------------------------------------
+
+      setRecruitmentRepliesObj(lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {}));
+
+
+
+
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/gc/rec/v2/components/comment.js - handleApproval
+      // `);
+
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+      // `);
+
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+    } catch (errorObj) {
+
+
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+
+      showSnackbar({
+
+        enqueueSnackbar,
+        intl,
+        errorObj,
+
+      });
+
+
+    } finally {
+
+
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+
+      setButtonDisabled(false);
+
+
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
+
+      handleLoadingClose();
+
+
+    }
+
+
+  };
+
+
+
+
   // --------------------------------------------------
   //   dataObj
   // --------------------------------------------------
@@ -496,6 +683,59 @@ const Comment = (props) => {
   const editable = lodashGet(dataObj, ['editable'], false);
 
 
+  // --------------------------------------------------
+  //   ID・情報を公開する - 公開ボタンを表示する
+  // --------------------------------------------------
+
+  const approval = lodashGet(dataObj, ['approval'], false);
+
+  // let approvalLabel = '公開';
+  // let approvalTitle = 'ID・情報公開';
+  // let approvalDescription = 'このユーザーにID・情報を公開しますか？';
+
+  // let approvalIcon =
+  //   <IconLockOpen
+  //     css={css`
+  //       && {
+  //         font-size: 16px;
+  //         margin: 0 2px 1px 0;
+  //       }
+  //     `}
+  //   />
+  // ;
+
+  // if (approval) {
+
+  //   approvalLabel = '公開取消';
+  //   approvalTitle = 'ID・情報公開取り消し';
+  //   approvalDescription = 'このユーザーにID・情報を公開するのをやめますか？';
+
+  //   approvalIcon =
+  //     <IconLock
+  //       css={css`
+  //         && {
+  //           font-size: 16px;
+  //           margin: 0 2px 1px 0;
+  //         }
+  //       `}
+  //     />
+  //   ;
+
+  // }
+
+
+
+
+
+  // console.log(chalk`
+  //   approval: {green ${approval}}
+  // `);
+
+  // console.log(`
+  // ----- dataObj -----\n
+  // ${util.inspect(dataObj, { colors: true, depth: null })}\n
+  // --------------------\n
+  // `);
 
 
   // --------------------------------------------------
@@ -793,6 +1033,57 @@ const Comment = (props) => {
               >
 
 
+                {/* Approval Button */}
+                {(publicSetting === 3 && editableThread && !approval) &&
+                  <Button
+                    css={css`
+                      && {
+                        font-size: 12px;
+                        height: 22px;
+                        min-width: 54px;
+                        min-height: 22px;
+                        margin: 0 0 0 12px;
+                        padding: 0 4px;
+
+                        @media screen and (max-width: 480px) {
+                          min-width: 36px;
+                          min-height: 22px;
+                        }
+                      }
+                    `}
+                    variant="outlined"
+                    color="primary"
+                    disabled={buttonDisabled}
+                    onClick={
+                      buttonDisabled
+                        ?
+                          () => {}
+                        :
+                          () => handleDialogOpen({
+
+                            title: 'ID・情報公開',
+                            description: 'このユーザーにID・情報を公開しますか？　※ 一度、相手に公開すると、以降は非公開状態に戻すことはできなくなります。',
+                            handle: handleApproval,
+                            argumentsObj: {},
+
+                          })
+                    }
+                  >
+                    <IconLockOpen
+                      css={css`
+                        && {
+                          font-size: 16px;
+                          margin: 0 2px 1px 0;
+                        }
+                      `}
+                    />
+                    公開
+                  </Button>
+                }
+
+
+
+
                 {/* Reply Button */}
                 <Button
                   css={css`
@@ -801,6 +1092,7 @@ const Comment = (props) => {
                       height: 22px;
                       min-width: 54px;
                       min-height: 22px;
+                      ${editableThread && 'margin: 0 0 0 12px;'}
                       padding: 0 3px;
 
                       @media screen and (max-width: 480px) {
@@ -828,7 +1120,7 @@ const Comment = (props) => {
 
 
                 {/* Delete Button */}
-                {editable &&
+                {(editable || editableThread) &&
                   <Button
                     css={css`
                       && {
@@ -858,11 +1150,7 @@ const Comment = (props) => {
                             title: 'コメント削除',
                             description: 'コメントを削除しますか？',
                             handle: handleDelete,
-                            argumentsObj: {
-                              gameCommunities_id,
-                              recruitmentThreads_id,
-                              recruitmentComments_id,
-                            },
+                            argumentsObj: {},
 
                           })
                     }
@@ -953,6 +1241,7 @@ const Comment = (props) => {
               gameCommunities_id={gameCommunities_id}
               recruitmentThreads_id={recruitmentThreads_id}
               recruitmentComments_id={recruitmentComments_id}
+              editableThread={editableThread}
             />
 
 
@@ -987,6 +1276,7 @@ const Component = (props) => {
     urlID,
     gameCommunities_id,
     recruitmentThreads_id,
+    editableThread,
 
   } = props;
 
@@ -1502,6 +1792,7 @@ const Component = (props) => {
         recruitmentThreads_id={recruitmentThreads_id}
         recruitmentComments_id={recruitmentComments_id}
         publicSettingThread={publicSettingThread}
+        editableThread={editableThread}
       />
     );
 

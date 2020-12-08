@@ -466,6 +466,12 @@ export default async (req, res) => {
     // `);
 
     // console.log(`
+    //   ----- returnObj.recruitmentThreadsObj -----\n
+    //   ${util.inspect(returnObj.recruitmentThreadsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n

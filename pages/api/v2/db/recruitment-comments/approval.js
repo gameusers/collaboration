@@ -50,6 +50,11 @@ import { experienceCalculate } from 'app/@modules/experience.js';
 // ---------------------------------------------
 
 import { validationIP } from 'app/@validations/ip.js';
+import { validationInteger } from 'app/@validations/integer.js';
+
+import { validationRecruitmentThreadsLimit } from 'app/@database/recruitment-threads/validations/limit.js';
+import { validationRecruitmentCommentsLimit } from 'app/@database/recruitment-comments/validations/limit.js';
+import { validationRecruitmentRepliesLimit } from 'app/@database/recruitment-replies/validations/limit.js';
 
 
 // ---------------------------------------------
@@ -64,7 +69,7 @@ import { locale } from 'app/@locales/locale.js';
 
 
 // --------------------------------------------------
-//   endpointID: RSY182oR_
+//   endpointID: 6ADaP7iPi
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -118,6 +123,10 @@ export default async (req, res) => {
     const {
 
       recruitmentComments_id,
+      threadPage,
+      threadLimit,
+      commentLimit,
+      replyLimit,
 
     } = bodyObj;
 
@@ -134,6 +143,16 @@ export default async (req, res) => {
     verifyCsrfToken(req, res);
 
 
+    // --------------------------------------------------
+    //   Login Check
+    // --------------------------------------------------
+
+    if (!req.isAuthenticated()) {
+
+      statusCode = 403;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: '5WMnTPCRk', messageID: 'xLLNIpo6a' }] });
+
+    }
 
 
     // --------------------------------------------------
@@ -142,69 +161,89 @@ export default async (req, res) => {
 
     await validationIP({ throwError: true, value: ip });
 
+    // Thread Page & Limit
+    await validationInteger({ throwError: true, required: true, value: threadPage });
+    await validationRecruitmentThreadsLimit({ throwError: true, required: true, value: threadLimit });
+
+    // Comment Limit
+    await validationRecruitmentCommentsLimit({ throwError: true, required: true, value: commentLimit });
+
+    // Reply Limit
+    await validationRecruitmentRepliesLimit({ throwError: true, required: true, value: replyLimit });
+
 
 
 
     // --------------------------------------------------
     //   データ取得
-    //   データが存在しない、編集権限がない場合はエラーが投げられる
     // --------------------------------------------------
 
-    const docObj = await ModelRecruitmentComments.findForDelete({
+    // recruitment-comments
+    const docCommentsObj = await ModelRecruitmentComments.findOne({
 
-      req,
-      localeObj,
-      loginUsers_id,
-      recruitmentComments_id,
-      type: 'delete',
+      conditionObj: {
+        _id: recruitmentComments_id
+      }
 
     });
 
-    const gameCommunities_id = lodashGet(docObj, ['gameCommunities_id'], '');
-    const recruitmentThreads_id = lodashGet(docObj, ['recruitmentThreads_id'], '');
-    const replies = lodashGet(docObj, ['replies'], 0);
-    const imagesAndVideos_idsArr = lodashGet(docObj, ['imagesAndVideos_idsArr'], []);
-    const images = lodashGet(docObj, ['images'], 0);
-    const videos = lodashGet(docObj, ['videos'], 0);
+    const gameCommunities_id = lodashGet(docCommentsObj, ['gameCommunities_id'], '');
+    const recruitmentThreads_id = lodashGet(docCommentsObj, ['recruitmentThreads_id'], '');
+    const users_id = lodashGet(docCommentsObj, ['users_id'], '');
+
+
+    // recruitment-threads
+    const docThreadsObj = await ModelRecruitmentThreads.findOne({
+
+      conditionObj: {
+        _id: recruitmentThreads_id,
+        users_id: loginUsers_id,
+      }
+
+    });
+
+    const publicApprovalUsers_idsArrr = lodashGet(docThreadsObj, ['publicApprovalUsers_idsArrr'], []);
 
 
 
 
     // --------------------------------------------------
-    //   console.log
+    //   データが空の場合は処理停止
     // --------------------------------------------------
 
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/db/recruitment-comments/delete.js
-    // `);
+    if (!docThreadsObj) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'K9GOSRWbN', messageID: 'cvS0qSAlE' }] });
+    }
 
-    // console.log(chalk`
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   recruitmentComments_id: {green ${recruitmentComments_id}}
-    //   threadLimit: {green ${threadLimit}}
-    //   commentLimit: {green ${commentLimit}}
-    //   replyLimit: {green ${replyLimit}}
-    // `);
 
-    // console.log(`
-    //   ----- docObj -----\n
-    //   ${util.inspect(docObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
 
-    // console.log(chalk`
-    //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-    //   replies: {green ${replies}}
-    //   images: {green ${images}}
-    //   videos: {green ${videos}}
-    // `);
 
-    // console.log(`
-    //   ----- imagesAndVideos_idsArr -----\n
-    //   ${util.inspect(imagesAndVideos_idsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    // --------------------------------------------------
+    //   配列にユーザーを追加・削減する
+    // --------------------------------------------------
+
+    // const arrayIndex = publicApprovalUsers_idsArrr.indexOf(users_id);
+
+    // if (arrayIndex === -1) {
+    //   publicApprovalUsers_idsArrr.push(users_id);
+    // } else {
+    //   publicApprovalUsers_idsArrr.splice(arrayIndex, 1);
+    // }
+
+
+    // --------------------------------------------------
+    //   配列にユーザーを追加する、すでに追加されている場合はエラー
+    // --------------------------------------------------
+
+    if (publicApprovalUsers_idsArrr.includes(users_id)) {
+
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'AXpO0iGpq', messageID: '3mDvfqZHV' }] });
+
+    } else {
+
+      publicApprovalUsers_idsArrr.push(users_id);
+
+    }
 
 
 
@@ -218,17 +257,12 @@ export default async (req, res) => {
 
 
 
-
-
-
-
-
     // --------------------------------------------------
-    //   Delete
+    //   Approval
     // --------------------------------------------------
 
     // ---------------------------------------------
-    //   - recruitment-threads / 更新日時の変更 & コメント数 - 1 & 返信数 - ○○ & 画像数と動画数の変更
+    //   - recruitment-threads / 更新日時の変更 & publicApprovalUsers_idsArrr
     // ---------------------------------------------
 
     const recruitmentThreadsConditionObj = {
@@ -236,92 +270,14 @@ export default async (req, res) => {
     };
 
 
-    let recruitmentThreadsSaveObj = {
-      updatedDate: ISO8601,
-      $inc: { comments: -1, replies, images, videos }
-    };
+    const recruitmentThreadsSaveObj = {
 
-
-    // ---------------------------------------------
-    //   - publicCommentsUsers_idsArr
-    // ---------------------------------------------
-
-    // ログインしている場合
-    if (loginUsers_id) {
-
-      const count = await ModelRecruitmentComments.count({
-
-        conditionObj: {
-          users_id: loginUsers_id
-        }
-
-      });
-
-      if ((count - 1) === 0) {
-
-        const recruitmentThreadsObj = await ModelRecruitmentThreads.findOne({
-
-          conditionObj: {
-            _id: recruitmentThreads_id
-          }
-
-        });
-
-        const publicCommentsUsers_idsArr = lodashGet(recruitmentThreadsObj, ['publicCommentsUsers_idsArr'], []);
-
-        const arrayIndex = publicCommentsUsers_idsArr.indexOf(loginUsers_id);
-
-        if (arrayIndex !== -1) {
-
-          publicCommentsUsers_idsArr.splice(arrayIndex, 1);
-          recruitmentThreadsSaveObj.publicCommentsUsers_idsArr = publicCommentsUsers_idsArr;
-
-        }
-
-        // console.log(chalk`
-        //   count: {green ${count}}
-        // `);
-
-        // console.log(`
-        //   ----- publicCommentsUsers_idsArr -----\n
-        //   ${util.inspect(publicCommentsUsers_idsArr, { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-
+      $set: {
+        updatedDate: ISO8601,
+        publicApprovalUsers_idsArrr,
       }
 
-    }
-
-
-    // ---------------------------------------------
-    //   - recruitment-comments / コメント削除
-    // ---------------------------------------------
-
-    const recruitmentCommentsConditionObj = {
-      _id: recruitmentComments_id,
     };
-
-
-    // ---------------------------------------------
-    //   - recruitment-replies / 返信削除
-    // ---------------------------------------------
-
-    const recruitmentRepliesConditionObj = {
-      recruitmentComments_id,
-    };
-
-
-    // ---------------------------------------------
-    //   - images-and-videos / 削除
-    // ---------------------------------------------
-
-    let imagesAndVideosConditionObj = {};
-
-    if (imagesAndVideos_idsArr.length > 0) {
-      imagesAndVideosConditionObj = {
-        _id: { $in: imagesAndVideos_idsArr }
-      };
-    }
 
 
     // ---------------------------------------------
@@ -334,8 +290,11 @@ export default async (req, res) => {
 
 
     const gameCommunitiesSaveObj = {
-      updatedDate: ISO8601,
-      'updatedDateObj.recruitment': ISO8601,
+
+      $set: {
+        updatedDate: ISO8601,
+      }
+
     };
 
 
@@ -345,13 +304,10 @@ export default async (req, res) => {
     //   DB insert Transaction
     // --------------------------------------------------
 
-    await ModelRecruitmentComments.transactionForDelete({
+    await ModelRecruitmentThreads.transactionForUpsert({
 
       recruitmentThreadsConditionObj,
       recruitmentThreadsSaveObj,
-      recruitmentCommentsConditionObj,
-      recruitmentRepliesConditionObj,
-      imagesAndVideosConditionObj,
       gameCommunitiesConditionObj,
       gameCommunitiesSaveObj,
 
@@ -360,24 +316,28 @@ export default async (req, res) => {
 
 
 
-    // ---------------------------------------------
-    //   画像を削除する
-    // ---------------------------------------------
+    // --------------------------------------------------
+    //   DB find / Recruitments
+    // --------------------------------------------------
 
-    for (let value of imagesAndVideos_idsArr.values()) {
+    const recruitmentObj = await ModelRecruitmentThreads.findRecruitments({
 
-      const dirPath = `public/img/recruitment/${value}`;
-      // console.log(dirPath);
+      req,
+      localeObj,
+      loginUsers_id,
+      gameCommunities_id,
+      threadPage,
+      threadLimit,
+      commentPage: 1,
+      commentLimit,
+      replyPage: 1,
+      replyLimit,
 
-      rimraf(dirPath, (err) => {
-        if (err) {
-          throw new CustomError({ level: 'error', errorsArr: [{ code: '7eE0VckQr', messageID: 'Error' }] });
-        }
-      });
+    });
 
-    }
-
-
+    returnObj.recruitmentThreadsObj = recruitmentObj.recruitmentThreadsObj;
+    returnObj.recruitmentCommentsObj = recruitmentObj.recruitmentCommentsObj;
+    returnObj.recruitmentRepliesObj = recruitmentObj.recruitmentRepliesObj;
 
 
     // --------------------------------------------------
@@ -394,24 +354,39 @@ export default async (req, res) => {
 
 
     // --------------------------------------------------
-    //   experience
+    //   console.log
     // --------------------------------------------------
 
-    const experienceObj = await experienceCalculate({
+    console.log(`
+      ----------------------------------------\n
+      pages/api/v2/db/recruitment-comments/approval.js
+    `);
 
-      req,
-      localeObj,
-      loginUsers_id,
-      arr: [{
-        type: 'recruitment-count-post',
-        calculation: 'subtraction',
-      }],
+    console.log(chalk`
+      recruitmentComments_id: {green ${recruitmentComments_id}}
+      threadPage: {green ${threadPage}}
+      threadLimit: {green ${threadLimit}}
+      commentLimit: {green ${commentLimit}}
+      replyLimit: {green ${replyLimit}}
+    `);
 
-    });
+    // console.log(`
+    //   ----- docCommentsObj -----\n
+    //   ${util.inspect(docCommentsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    if (Object.keys(experienceObj).length !== 0) {
-      returnObj.experienceObj = experienceObj;
-    }
+    // console.log(`
+    //   ----- docThreadsObj -----\n
+    //   ${util.inspect(docThreadsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- publicApprovalUsers_idsArrr -----\n
+    //   ${util.inspect(publicApprovalUsers_idsArrr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 
@@ -433,7 +408,7 @@ export default async (req, res) => {
     const resultErrorObj = returnErrorsArr({
 
       errorObj,
-      endpointID: 'RSY182oR_',
+      endpointID: '6ADaP7iPi',
       users_id: loginUsers_id,
       ip,
       userAgent,

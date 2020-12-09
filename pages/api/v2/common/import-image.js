@@ -582,7 +582,7 @@ export default async (req, res) => {
       // --------------------------------------------------
 
       // game_no = 6 image_id = mf29yqvx4wc1dvsv 削除済みで画像が存在していない
-      if (on_off === '1' && type === 'hero_game' && id1 && id2) {
+      if (on_off === '1' && game_no !== 6 && type === 'hero_game' && id1 && id2) {
 
 
         // --------------------------------------------------

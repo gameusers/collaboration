@@ -42,14 +42,14 @@ const lodashGet = require('lodash/get');
  * @param {string} text - メール本文
  */
 const sendMail = async ({ from, to, bcc, subject, text }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   必要な情報がない場合、処理停止
   // --------------------------------------------------
-  
+
   if (
-    
+
     !process.env.EMAIL_SMTP_HOST ||
     !process.env.EMAIL_SMTP_PORT ||
     !process.env.EMAIL_SMTP_USER ||
@@ -58,18 +58,18 @@ const sendMail = async ({ from, to, bcc, subject, text }) => {
     (!to && !bcc) ||
     !subject ||
     !text
-    
+
   ) {
     return;
   }
-  
-  
+
+
   // --------------------------------------------------
   //   create reusable transporter object using the default SMTP transport
   // --------------------------------------------------
-  
+
   const smtpObj = {
-    
+
     host: process.env.EMAIL_SMTP_HOST,
     port: process.env.EMAIL_SMTP_PORT,
     secure: process.env.EMAIL_SMTP_PORT === 465 ? true : false, // true for 465, false for other ports
@@ -77,45 +77,45 @@ const sendMail = async ({ from, to, bcc, subject, text }) => {
       user: process.env.EMAIL_SMTP_USER,
       pass: process.env.EMAIL_SMTP_PASSWORD
     }
-    
+
   };
-  
+
   const transporter = nodemailer.createTransport(smtpObj);
-  
-  
+
+
   // --------------------------------------------------
   //   send mail with defined transport object
   // --------------------------------------------------
-  
+
   const messageObj = {
-    
+
     from,
     subject,
     text,
-    
+
   };
-  
+
   if (to) {
-    
+
     messageObj.to = to;
-    
+
   } else {
-    
+
     messageObj.bcc = bcc;
-    
+
   }
-  
+
   const infoObj = await transporter.sendMail(messageObj);
-  
-  
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(`\n---------- infoObj ----------\n`);
   // console.dir(infoObj);
   // console.log(`\n-----------------------------------\n`);
-  
+
   // console.log(chalk`
   //   sendMail
   //   process.env.EMAIL_SMTP_HOST: {green ${process.env.EMAIL_SMTP_HOST}}
@@ -128,8 +128,8 @@ const sendMail = async ({ from, to, bcc, subject, text }) => {
   //   subject: {green ${subject}}
   //   text: {green ${text}}
   // `);
-  
-  
+
+
 };
 
 
@@ -141,14 +141,14 @@ const sendMail = async ({ from, to, bcc, subject, text }) => {
  * @param {string} emailConfirmationID - メール確認ID
  */
 const sendMailConfirmation = async ({ to, emailConfirmationID }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Send Mail
   // --------------------------------------------------
-  
+
   sendMail({
-    
+
     from: process.env.EMAIL_CONFIRMATION_ADDRESS,
     to,
     subject: '[Game Users] メールアドレス確認',
@@ -170,21 +170,21 @@ ${process.env.NEXT_PUBLIC_URL_BASE}confirm/email/${emailConfirmationID}
 　URL: https://gameusers.org/
 
 ＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/`,
-    
+
   });
-  
-  
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(chalk`
   //   process.env.EMAIL_MESSAGE_FROM: {green ${process.env.EMAIL_MESSAGE_FROM}}
   //   to: {green ${to}}
   //   emailConfirmationID: {green ${emailConfirmationID}}
   // `);
-  
-  
+
+
 };
 
 
@@ -196,14 +196,14 @@ ${process.env.NEXT_PUBLIC_URL_BASE}confirm/email/${emailConfirmationID}
  * @param {string} emailConfirmationID - メール確認ID
  */
 const sendMailResetPassword = async ({ to, emailConfirmationID }) => {
-  
-  
+
+
   // --------------------------------------------------
   //   Send Mail
   // --------------------------------------------------
-  
+
   sendMail({
-    
+
     from: process.env.EMAIL_CONFIRMATION_ADDRESS,
     to,
     subject: '[Game Users] パスワード再設定',
@@ -226,21 +226,158 @@ ${process.env.NEXT_PUBLIC_URL_BASE}confirm/reset-password/${emailConfirmationID}
 　URL: https://gameusers.org/
 
 ＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/`,
-    
+
   });
-  
-  
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
+
   // console.log(chalk`
   //   process.env.EMAIL_MESSAGE_FROM: {green ${process.env.EMAIL_MESSAGE_FROM}}
   //   to: {green ${to}}
   //   emailConfirmationID: {green ${emailConfirmationID}}
   // `);
-  
-  
+
+
+};
+
+
+
+
+/**
+ * お問い合わせフォームを送信する
+ * @param {string} name - 名前（ハンドルネーム）
+ * @param {string} email - メールアドレス
+ * @param {string} text - メール本文
+ * @param {string} loginUsers_id - DB users _id
+ * @param {string} ip - 送信者のIP
+ * @param {string} userAgent - 送信者のユーザーエージェント
+ */
+const sendMailForm = async ({ name, email, text, loginUsers_id, ip, userAgent }) => {
+
+
+  // --------------------------------------------------
+  //   Send Mail
+  // --------------------------------------------------
+
+  sendMail({
+
+    from: process.env.EMAIL_CONTACT_ADDRESS,
+    to: process.env.EMAIL_CONTACT_ADDRESS,
+    subject: 'お問い合わせフォーム',
+    text:
+    `${text}
+
+＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/
+
+　送信者情報
+
+  Name: ${name}
+  E-Mail: ${email}
+  loginUsers_id: ${loginUsers_id}
+　IP: ${ip}
+　User Agent: ${userAgent}
+
+＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/`,
+
+  });
+
+
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+
+  // console.log(chalk`
+  //   process.env.EMAIL_MESSAGE_FROM: {green ${process.env.EMAIL_MESSAGE_FROM}}
+  //   to: {green ${to}}
+  //   emailConfirmationID: {green ${emailConfirmationID}}
+  // `);
+
+
+};
+
+
+
+
+/**
+ * アカウント移行フォームを送信する
+ * @param {string} name - 名前（ハンドルネーム）
+ * @param {string} email - メールアドレス
+ * @param {string} url - ユーザーページのURL
+ * @param {string} loginID - ログインID
+ * @param {string} social - ソーシャルサイト名
+ * @param {string} provider - プロバイダー
+ * @param {string} device - 端末
+ * @param {string} browser - ブラウザ
+ * @param {string} comment - コメント
+ * @param {string} loginUsers_id - DB users _id
+ * @param {string} ip - 送信者のIP
+ * @param {string} userAgent - 送信者のユーザーエージェント
+ */
+const sendMailAccount = async ({
+
+  name,
+  email,
+  url,
+  loginID,
+  social,
+  provider,
+  device,
+  browser,
+  comment,
+  loginUsers_id,
+  ip,
+  userAgent,
+
+}) => {
+
+
+  // --------------------------------------------------
+  //   Send Mail
+  // --------------------------------------------------
+
+  sendMail({
+
+    from: process.env.EMAIL_CONTACT_ADDRESS,
+    to: process.env.EMAIL_CONTACT_ADDRESS,
+    subject: 'アカウント移行フォーム',
+    text:
+    `ユーザーページのURL: ${url}
+ログインID: ${loginID}
+ソーシャルサイト名: ${social}
+プロバイダー: ${provider}
+端末: ${device}
+ブラウザ: ${browser}
+コメント: ${comment}
+
+＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/
+
+　送信者情報
+
+  Name: ${name}
+  E-Mail: ${email}
+  loginUsers_id: ${loginUsers_id}
+　IP: ${ip}
+　User Agent: ${userAgent}
+
+＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/`,
+
+  });
+
+
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+
+  // console.log(chalk`
+  //   process.env.EMAIL_MESSAGE_FROM: {green ${process.env.EMAIL_MESSAGE_FROM}}
+  //   to: {green ${to}}
+  //   emailConfirmationID: {green ${emailConfirmationID}}
+  // `);
+
+
 };
 
 
@@ -251,9 +388,11 @@ ${process.env.NEXT_PUBLIC_URL_BASE}confirm/reset-password/${emailConfirmationID}
 // --------------------------------------------------
 
 module.exports = {
-  
+
   sendMail,
   sendMailConfirmation,
   sendMailResetPassword,
-  
+  sendMailForm,
+  sendMailAccount,
+
 };

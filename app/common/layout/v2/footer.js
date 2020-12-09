@@ -15,7 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 // import React from 'react';
-// import Link from 'next/link';
+import Link from 'next/link';
 import { animateScroll as scroll, scrollSpy, scroller, Events } from 'react-scroll';
 
 /** @jsx jsx */
@@ -186,11 +186,11 @@ const Component = (props) => {
             }
           `}
         >
-          <div css={cssMenu}>公式コミュニティ</div>
+          <div css={cssMenu}><Link href="/uc/official"><a className="link-white">公式コミュニティ</a></Link></div>
           <div css={cssMenuVerticalBar}>|</div>
-          <div css={cssMenu}>お問い合わせ</div>
+          <div css={cssMenu}><Link href="/inquiry/form"><a className="link-white">お問い合わせ</a></Link></div>
           <div css={cssMenuVerticalBar}>|</div>
-          <div css={cssMenu}>Twitter</div>
+          <div css={cssMenu}><Link href="https://twitter.com/gameusersorg"><a className="link-white">Twitter</a></Link></div>
         </nav>
 
 

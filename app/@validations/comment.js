@@ -28,7 +28,7 @@ const lodashGet = require('lodash/get');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../@modules/error/custom.js');
+const { CustomError } = require('../@modules/error/custom');
 
 
 
@@ -36,13 +36,13 @@ const { CustomError } = require('../@modules/error/custom.js');
 
 
 /**
- * Keyword
+ * Comment
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {boolean} required - 必須 true / 必須でない false
- * @param {boolean} value - 値
+ * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationKeyword = ({ throwError = false, required = false, value }) => {
+const validationComment = ({ throwError = false, required = false, value }) => {
 
 
   // ---------------------------------------------
@@ -50,7 +50,7 @@ const validationKeyword = ({ throwError = false, required = false, value }) => {
   // ---------------------------------------------
 
   const minLength = 1;
-  const maxLength = 100;
+  const maxLength = 3000;
 
 
   // ---------------------------------------------
@@ -64,7 +64,7 @@ const validationKeyword = ({ throwError = false, required = false, value }) => {
 
     value: data,
     numberOfCharacters,
-    messageID: 'Uh3rnK7Dk',
+    messageID: 'Error',
     error: false,
 
   };
@@ -80,7 +80,7 @@ const validationKeyword = ({ throwError = false, required = false, value }) => {
     if (validator.isEmpty(data)) {
 
       if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Sg7H_-dXL', messageID: 'cFbXmuFVh' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'RxyeoLs4y', messageID: 'cFbXmuFVh' }] });
       }
 
       return resultObj;
@@ -93,7 +93,7 @@ const validationKeyword = ({ throwError = false, required = false, value }) => {
     // ---------------------------------------------
 
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'jprJiUFPU', messageID: 'Uh3rnK7Dk' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'mcvX39rTa', messageID: 'pLES2ZGM2' }] });
     }
 
 
@@ -143,6 +143,6 @@ const validationKeyword = ({ throwError = false, required = false, value }) => {
 
 module.exports = {
 
-  validationKeyword,
+  validationComment,
 
 };

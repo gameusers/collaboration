@@ -30,6 +30,15 @@ a.link:hover {
   text-decoration: none;
 }
 
+a.link-white {
+  text-decoration: none;
+  color: white;
+}
+
+a.link-white:hover {
+  text-decoration: underline;
+}
+
 
 /* コンテンツが少ないときもフッターをページ一番下に固定するために必要 */
 #__next {

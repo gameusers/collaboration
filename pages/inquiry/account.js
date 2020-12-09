@@ -15,7 +15,6 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-import Router from 'next/router';
 import Error from 'next/error';
 import moment from 'moment';
 
@@ -36,7 +35,6 @@ import lodashGet from 'lodash/get';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
-import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
@@ -47,7 +45,7 @@ import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 
-import FormAccountCreate from 'app/login/account/v2/form-account-create.js';
+import FormAccount from 'app/inquiry/form/v2/form-account.js';
 
 
 
@@ -56,7 +54,7 @@ import FormAccountCreate from 'app/login/account/v2/form-account-create.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: http://localhost:8080/login/account
+//   URL: http://localhost:8080/inquiry/account
 // --------------------------------------------------
 
 /**
@@ -98,7 +96,7 @@ const ContainerLayout = (props) => {
         arr={props.breadcrumbsArr}
       />
 
-      <FormAccountCreate />
+      <FormAccount />
 
     </React.Fragment>
   ;
@@ -220,7 +218,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Title
   // --------------------------------------------------
 
-  const title = `アカウント作成 - Game Users`;
+  const title = `アカウント移行フォーム - Game Users`;
 
 
 
@@ -232,14 +230,14 @@ export async function getServerSideProps({ req, res, query }) {
   const headerNavMainArr = [
 
     {
-      name: 'ログイン',
-      href: '/login',
+      name: 'お問い合わせ',
+      href: '/inquiry/form',
       active: false,
     },
 
     {
-      name: 'アカウント作成',
-      href: '/login/account',
+      name: 'アカウント移行',
+      href: '/inquiry/account',
       active: true,
     }
 
@@ -253,7 +251,7 @@ export async function getServerSideProps({ req, res, query }) {
   const breadcrumbsArr = [
 
     {
-      type: 'login/account',
+      type: 'inquiry/account',
       anchorText: '',
       href: '',
     },
@@ -264,39 +262,12 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
-  //   ログインしている場合はログアウトページにリダイレクト
-  // --------------------------------------------------
-
-  if (login) {
-
-    const isServer = !process.browser;
-
-    if (isServer && res) {
-
-      res.writeHead(302, {
-        Location: '/logout'
-      });
-
-      res.end();
-
-    } else {
-
-      Router.replace('/logout');
-
-    }
-
-  }
-
-
-
-
-  // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
 
   // console.log(`
   //   ----------------------------------------\n
-  //   pages/login/index.js
+  //   pages/inquiry/account.js
   // `);
 
   // console.log(`

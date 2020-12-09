@@ -15,7 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import moment from 'moment';
-import rimraf from 'rimraf';
+// import rimraf from 'rimraf';
 
 
 // ---------------------------------------------
@@ -42,7 +42,7 @@ import ModelRecruitmentComments from 'app/@database/recruitment-comments/model.j
 import { verifyCsrfToken } from 'app/@modules/csrf.js';
 import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-import { experienceCalculate } from 'app/@modules/experience.js';
+// import { experienceCalculate } from 'app/@modules/experience.js';
 
 
 // ---------------------------------------------
@@ -357,18 +357,18 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
 
-    console.log(`
-      ----------------------------------------\n
-      pages/api/v2/db/recruitment-comments/approval.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   pages/api/v2/db/recruitment-comments/approval.js
+    // `);
 
-    console.log(chalk`
-      recruitmentComments_id: {green ${recruitmentComments_id}}
-      threadPage: {green ${threadPage}}
-      threadLimit: {green ${threadLimit}}
-      commentLimit: {green ${commentLimit}}
-      replyLimit: {green ${replyLimit}}
-    `);
+    // console.log(chalk`
+    //   recruitmentComments_id: {green ${recruitmentComments_id}}
+    //   threadPage: {green ${threadPage}}
+    //   threadLimit: {green ${threadLimit}}
+    //   commentLimit: {green ${commentLimit}}
+    //   replyLimit: {green ${replyLimit}}
+    // `);
 
     // console.log(`
     //   ----- docCommentsObj -----\n

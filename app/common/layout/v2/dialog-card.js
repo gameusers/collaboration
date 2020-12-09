@@ -52,6 +52,8 @@ import CardPlayer from 'app/common/card/v2/card-player.js';
 
 
 
+
+
 // --------------------------------------------------
 //   Components
 // --------------------------------------------------
@@ -66,6 +68,8 @@ const Component = (props) => {
   const intl = useIntl();
 
 
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
@@ -73,6 +77,8 @@ const Component = (props) => {
   const stateLayout = ContainerStateLayout.useContainer();
 
   const { dialogCardObj, dialogCardOpen, handleDialogCardClose } = stateLayout;
+
+
 
 
   // --------------------------------------------------
@@ -95,6 +101,8 @@ const Component = (props) => {
   // `);
 
 
+
+
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
@@ -111,7 +119,7 @@ const Component = (props) => {
         css={css`
           && {
             margin: 0;
-            padding: 0;
+            padding: 0 !important;
           }
         `}
       >

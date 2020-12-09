@@ -1034,6 +1034,53 @@ const Comment = (props) => {
 
 
                 {/* Approval Button */}
+                {(publicSetting === 3 && editableThread && approval) &&
+                  <Button
+                    css={css`
+                      && {
+                        font-size: 12px;
+                        height: 22px;
+                        min-width: 54px;
+                        min-height: 22px;
+                        margin: 0 0 0 12px;
+                        padding: 0 4px;
+
+                        @media screen and (max-width: 480px) {
+                          min-width: 36px;
+                          min-height: 22px;
+                        }
+                      }
+                    `}
+                    variant="outlined"
+                    color="primary"
+                    disabled={buttonDisabled}
+                    // onClick={
+                    //   buttonDisabled
+                    //     ?
+                    //       () => {}
+                    //     :
+                    //       () => handleDialogOpen({
+
+                    //         title: 'ID・情報公開',
+                    //         description: 'このユーザーにID・情報を公開しています。　※ 一度、相手に公開すると、以降は非公開状態に戻すことはできません。',
+                    //         handle: () => {},
+                    //         argumentsObj: {},
+
+                    //       })
+                    // }
+                  >
+                    <IconLock
+                      css={css`
+                        && {
+                          font-size: 16px;
+                          margin: 0 2px 1px 0;
+                        }
+                      `}
+                    />
+                    公開中
+                  </Button>
+                }
+
                 {(publicSetting === 3 && editableThread && !approval) &&
                   <Button
                     css={css`

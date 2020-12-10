@@ -227,32 +227,32 @@ const saveImageAndVideo = async ({
     //   圧縮する
     // ---------------------------------------------
 
-    const optimizedBuffer = await imagemin.buffer(buff, {
+    // const optimizedBuffer = await imagemin.buffer(buff, {
 
-      plugins: [
-        imageminMozjpeg({ quality: 80 }),
-        imageminPngquant({ quality: [0.5, 0.7] }),
-        imageminGifsicle(),
-        imageminSvgo()
-      ]
+    //   plugins: [
+    //     imageminMozjpeg({ quality: 80 }),
+    //     imageminPngquant({ quality: [0.5, 0.7] }),
+    //     imageminGifsicle(),
+    //     imageminSvgo()
+    //   ]
 
-    });
-
-
-    // ---------------------------------------------
-    //   ディレクトリ作成　【チェック時は要コメントアウト】
-    // ---------------------------------------------
-
-    const dirPath = `import/img-new/${type}/${id1}/${id2}`;
-    mkdirp.sync(dirPath);
+    // });
 
 
-    // ---------------------------------------------
-    //   ファイル保存　【チェック時は要コメントアウト】
-    // ---------------------------------------------
+    // // ---------------------------------------------
+    // //   ディレクトリ作成　【チェック時は要コメントアウト】
+    // // ---------------------------------------------
 
-    const srcSetSrc = `import/img-new/${type}/${id1}/${id2}/${w}.${extension}`;
-    fs.writeFileSync(srcSetSrc, optimizedBuffer);
+    // const dirPath = `import/img-new/${type}/${id1}/${id2}`;
+    // mkdirp.sync(dirPath);
+
+
+    // // ---------------------------------------------
+    // //   ファイル保存　【チェック時は要コメントアウト】
+    // // ---------------------------------------------
+
+    // const srcSetSrc = `import/img-new/${type}/${id1}/${id2}/${w}.${extension}`;
+    // fs.writeFileSync(srcSetSrc, optimizedBuffer);
 
 
     // ---------------------------------------------

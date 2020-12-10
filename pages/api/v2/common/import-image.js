@@ -198,31 +198,31 @@ export default async (req, res) => {
                 _id: 'q39NZSD70',
                 w: '320w',
                 width: 320,
-                height: 201,
+                height: 213,
               },
               {
                 _id: '7noDaA3Lg',
                 w: '480w',
                 width: 480,
-                height: 302,
+                height: 320,
               },
               {
                 _id: 'RjwJKXrbc',
                 w: '640w',
                 width: 640,
-                height: 402,
+                height: 427,
               },
               {
                 _id: 'HakFFEAkM',
                 w: '800w',
                 width: 800,
-                height: 503,
+                height: 533,
               },
               {
                 _id: '8w9-XE44q',
                 w: '1920w',
                 width: 1920,
-                height: 1206,
+                height: 1280,
               }
             ]
           },
@@ -285,6 +285,763 @@ export default async (req, res) => {
 
       },
 
+
+      {
+
+        _id: '798CUkKIF',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '',
+        type: 'other',
+        images: 1,
+        videos: 0,
+        arr: [
+
+          {
+            _id: 'VUA2gMZ77',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'nc9xkFj4e',
+                w: '320w',
+                width: 320,
+                height: 213,
+              },
+              {
+                _id: '65fkmNA_j',
+                w: '480w',
+                width: 480,
+                height: 319,
+              },
+              {
+                _id: '2jefk6V-5',
+                w: '640w',
+                width: 640,
+                height: 425,
+              },
+              {
+                _id: 'GA7-8PTej',
+                w: '800w',
+                width: 800,
+                height: 531,
+              },
+              {
+                _id: 'Cc6CeRCqv',
+                w: '1920w',
+                width: 1920,
+                height: 1275,
+              }
+            ]
+          },
+
+        ]
+
+      },
+
+
+      {
+
+        _id: 'SQXH_oIko',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '',
+        type: 'other',
+        images: 1,
+        videos: 0,
+        arr: [
+
+          {
+            _id: '97dtqiJE1',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: '6bwxsgMj5',
+                w: '320w',
+                width: 320,
+                height: 213,
+              },
+              {
+                _id: 'P0oFknmUD',
+                w: '480w',
+                width: 480,
+                height: 320,
+              },
+              {
+                _id: 'YVm8w55cW',
+                w: '640w',
+                width: 640,
+                height: 427,
+              },
+              {
+                _id: '9IRKMb8Pw',
+                w: '800w',
+                width: 800,
+                height: 533,
+              },
+              {
+                _id: 'JVD9c0_M6',
+                w: '1920w',
+                width: 1920,
+                height: 1280,
+              }
+            ]
+          },
+
+        ]
+
+      },
+
+
+      {
+
+        _id: 'kuqyjX5Xb',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '',
+        type: 'other',
+        images: 1,
+        videos: 0,
+        arr: [
+
+          {
+            _id: 'JFJPBRUnQ',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'N3QlRLAhO',
+                w: '320w',
+                width: 320,
+                height: 213,
+              },
+              {
+                _id: 'EBk3rQFF1',
+                w: '480w',
+                width: 480,
+                height: 320,
+              },
+              {
+                _id: '9M_hggVO2',
+                w: '640w',
+                width: 640,
+                height: 427,
+              },
+              {
+                _id: 'I2tTweXHf',
+                w: '800w',
+                width: 800,
+                height: 533,
+              },
+              {
+                _id: 'ClAiQccHY',
+                w: '1920w',
+                width: 1920,
+                height: 1280,
+              }
+            ]
+          },
+
+        ]
+
+      },
+
+
+      {
+
+        _id: '5DXPjjjqC',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '',
+        type: 'other',
+        images: 1,
+        videos: 0,
+        arr: [
+
+          {
+            _id: 'DkTHRsHFJ',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'y0zsWNrpQ',
+                w: '320w',
+                width: 320,
+                height: 212,
+              },
+              {
+                _id: 'i0qpD86ML',
+                w: '480w',
+                width: 480,
+                height: 318,
+              },
+              {
+                _id: 'i0qpD86ML',
+                w: '640w',
+                width: 640,
+                height: 424,
+              },
+              {
+                _id: 'Cwzv_rxjp',
+                w: '800w',
+                width: 800,
+                height: 530,
+              },
+              {
+                _id: '1jt0jMNdJ',
+                w: '1920w',
+                width: 1920,
+                height: 1271,
+              }
+            ]
+          },
+
+        ]
+
+      },
+
+
+      {
+
+        _id: 'ISYQO_4XN',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '',
+        type: 'other',
+        images: 1,
+        videos: 0,
+        arr: [
+
+          {
+            _id: 'G12hg6dP7',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'vu8W-wxp_',
+                w: '320w',
+                width: 320,
+                height: 213,
+              },
+              {
+                _id: 'YJFUSYV_0',
+                w: '480w',
+                width: 480,
+                height: 320,
+              },
+              {
+                _id: '22FVZFxCM',
+                w: '640w',
+                width: 640,
+                height: 427,
+              },
+              {
+                _id: 'bOe0T0eIR',
+                w: '800w',
+                width: 800,
+                height: 533,
+              },
+              {
+                _id: 'iOZY6WyE4',
+                w: '1920w',
+                width: 1920,
+                height: 1280,
+              }
+            ]
+          },
+
+        ]
+
+      },
+
+
+      {
+
+        _id: '6VWTr_o4U',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '',
+        type: 'other',
+        images: 1,
+        videos: 0,
+        arr: [
+
+          {
+            _id: 'KqY7txENh',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'Om8aFUiM7',
+                w: '320w',
+                width: 320,
+                height: 213,
+              },
+              {
+                _id: 'SvPHc0Di_',
+                w: '480w',
+                width: 480,
+                height: 320,
+              },
+              {
+                _id: '_J_gMQpy1',
+                w: '640w',
+                width: 640,
+                height: 427,
+              },
+              {
+                _id: 'lccsn0BMC',
+                w: '800w',
+                width: 800,
+                height: 533,
+              },
+              {
+                _id: 'QKHiB3sjo',
+                w: '1920w',
+                width: 1920,
+                height: 1280,
+              }
+            ]
+          },
+
+        ]
+
+      },
+
+
+      {
+
+        _id: 'gm5xo7SRy',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '',
+        type: 'other',
+        images: 1,
+        videos: 0,
+        arr: [
+
+          {
+            _id: 'B_MjqDpgo',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'Hhmb7_-6B',
+                w: '320w',
+                width: 320,
+                height: 213,
+              },
+              {
+                _id: '7IdDS2f9I',
+                w: '480w',
+                width: 480,
+                height: 320,
+              },
+              {
+                _id: 'PKLwMyJ0T',
+                w: '640w',
+                width: 640,
+                height: 427,
+              },
+              {
+                _id: 'UaVd0pasV',
+                w: '800w',
+                width: 800,
+                height: 533,
+              },
+              {
+                _id: 'zm5JV9g8L',
+                w: '1920w',
+                width: 1920,
+                height: 1280,
+              }
+            ]
+          },
+
+        ]
+
+      },
+
+
+      {
+
+        _id: '5NnCMKcSG',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '',
+        type: 'other',
+        images: 1,
+        videos: 0,
+        arr: [
+
+          {
+            _id: 'cqazi_7LD',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: '-WWgQAxnZ',
+                w: '320w',
+                width: 320,
+                height: 213,
+              },
+              {
+                _id: 'JnRKo6gyp',
+                w: '480w',
+                width: 480,
+                height: 320,
+              },
+              {
+                _id: 'ln4l_4LcI',
+                w: '640w',
+                width: 640,
+                height: 427,
+              },
+              {
+                _id: 'K2XVerW8j',
+                w: '800w',
+                width: 800,
+                height: 533,
+              },
+              {
+                _id: '6baMWeeSZ',
+                w: '1920w',
+                width: 1920,
+                height: 1280,
+              }
+            ]
+          },
+
+        ]
+
+      },
+
+
+      {
+
+        _id: 'zoNgQk7X7',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '',
+        type: 'other',
+        images: 1,
+        videos: 0,
+        arr: [
+
+          {
+            _id: 'I8lACR_CA',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'ZVbZyhXBR',
+                w: '320w',
+                width: 320,
+                height: 213,
+              },
+              {
+                _id: '_nsudqv6d',
+                w: '480w',
+                width: 480,
+                height: 320,
+              },
+              {
+                _id: 'arqcXWPBJ',
+                w: '640w',
+                width: 640,
+                height: 427,
+              },
+              {
+                _id: 'SnDYG7QuE',
+                w: '800w',
+                width: 800,
+                height: 533,
+              },
+              {
+                _id: 'BfaaNxgCT',
+                w: '1920w',
+                width: 1920,
+                height: 1280,
+              }
+            ]
+          },
+
+        ]
+
+      },
+
+
+      {
+
+        _id: 'g48PruzVs',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '',
+        type: 'other',
+        images: 1,
+        videos: 0,
+        arr: [
+
+          {
+            _id: '2YgpxkKl0',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'ZoA49tVWW',
+                w: '320w',
+                width: 320,
+                height: 213,
+              },
+              {
+                _id: 'JLuCATgGa',
+                w: '480w',
+                width: 480,
+                height: 320,
+              },
+              {
+                _id: 'ltgGEJsd9',
+                w: '640w',
+                width: 640,
+                height: 427,
+              },
+              {
+                _id: 'ZN_cxaCpA',
+                w: '800w',
+                width: 800,
+                height: 533,
+              },
+              {
+                _id: 'KFc5lXhH9',
+                w: '1920w',
+                width: 1920,
+                height: 1280,
+              }
+            ]
+          },
+
+        ]
+
+      },
+
+
+      {
+
+        _id: 'EJL60YRwB',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '',
+        type: 'other',
+        images: 1,
+        videos: 0,
+        arr: [
+
+          {
+            _id: 'w_glQC_Yj',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'fK8DUUU0z',
+                w: '320w',
+                width: 320,
+                height: 240,
+              },
+              {
+                _id: 'U4neysnEV',
+                w: '480w',
+                width: 480,
+                height: 360,
+              },
+              {
+                _id: 'DXwASd2Iy',
+                w: '640w',
+                width: 640,
+                height: 480,
+              },
+              {
+                _id: '-8eR2auFh',
+                w: '800w',
+                width: 800,
+                height: 600,
+              },
+              {
+                _id: 'MwOfGTgp2',
+                w: '1920w',
+                width: 1920,
+                height: 1440,
+              }
+            ]
+          },
+
+        ]
+
+      },
+
+
+      {
+
+        _id: '5vHZrTU66',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '',
+        type: 'other',
+        images: 1,
+        videos: 0,
+        arr: [
+
+          {
+            _id: 'f8TzyFAih',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'Kcyp42FSC',
+                w: '320w',
+                width: 320,
+                height: 213,
+              },
+              {
+                _id: 'qOos29kGf',
+                w: '480w',
+                width: 480,
+                height: 319,
+              },
+              {
+                _id: 'wsG9Ahs5A',
+                w: '640w',
+                width: 640,
+                height: 425,
+              },
+              {
+                _id: 'gpW8dEx50',
+                w: '800w',
+                width: 800,
+                height: 531,
+              },
+              {
+                _id: 'bmFPizS2Q',
+                w: '1920w',
+                width: 1920,
+                height: 1275,
+              }
+            ]
+          },
+
+        ]
+
+      },
+
+
+      {
+
+        _id: 'o_6-i26Hv',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '',
+        type: 'other',
+        images: 1,
+        videos: 0,
+        arr: [
+
+          {
+            _id: '1J3TnalFQ',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'CXD_ICOv_',
+                w: '320w',
+                width: 320,
+                height: 168,
+              },
+              {
+                _id: 'hydQZ0BpN',
+                w: '480w',
+                width: 480,
+                height: 252,
+              },
+              {
+                _id: 'hxEp0d5MD',
+                w: '640w',
+                width: 640,
+                height: 336,
+              },
+              {
+                _id: '4n5D9Mulj',
+                w: '800w',
+                width: 800,
+                height: 420,
+              },
+              {
+                _id: 'gnD2LIvbP',
+                w: '1920w',
+                width: 1920,
+                height: 1008,
+              }
+            ]
+          },
+
+        ]
+
+      },
+
+
+      {
+
+        _id: '8I6WkcWAw',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: '',
+        type: 'other',
+        images: 1,
+        videos: 0,
+        arr: [
+
+          {
+            _id: 'w7i-dqiAt',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'TI_3BIEeV',
+                w: '320w',
+                width: 320,
+                height: 180,
+              },
+              {
+                _id: '7zUMiP_RB',
+                w: '480w',
+                width: 480,
+                height: 270,
+              },
+              {
+                _id: 'soLF8gXUf',
+                w: '640w',
+                width: 640,
+                height: 360,
+              },
+              {
+                _id: 'UmQvN_9K5',
+                w: '800w',
+                width: 800,
+                height: 450,
+              },
+              {
+                _id: 'KAnQkyq9B',
+                w: '1920w',
+                width: 1920,
+                height: 1080,
+              }
+            ]
+          },
+
+        ]
+
+      },
+
+
     ];
 
 
@@ -292,1207 +1049,1207 @@ export default async (req, res) => {
     //   Json
     // --------------------------------------------------
 
-    const usersDataJsonArr = JSON.parse(fs.readFileSync('import/json/users_data.json', 'utf8'));
-    const usersDataDataArr = lodashGet(usersDataJsonArr, [2, 'data'], []);
+    // const usersDataJsonArr = JSON.parse(fs.readFileSync('import/json/users_data.json', 'utf8'));
+    // const usersDataDataArr = lodashGet(usersDataJsonArr, [2, 'data'], []);
 
-    const communityJsonArr = JSON.parse(fs.readFileSync('import/json/community.json', 'utf8'));
-    const communityDataArr = lodashGet(communityJsonArr, [2, 'data'], []);
+    // const communityJsonArr = JSON.parse(fs.readFileSync('import/json/community.json', 'utf8'));
+    // const communityDataArr = lodashGet(communityJsonArr, [2, 'data'], []);
 
-    const gameDataJsonArr = JSON.parse(fs.readFileSync('import/json/game_data.json', 'utf8'));
-    const gameDataDataArr = lodashGet(gameDataJsonArr, [2, 'data'], []);
+    // const gameDataJsonArr = JSON.parse(fs.readFileSync('import/json/game_data.json', 'utf8'));
+    // const gameDataDataArr = lodashGet(gameDataJsonArr, [2, 'data'], []);
 
-    const imageJsonArr = JSON.parse(fs.readFileSync('import/json/image.json', 'utf8'));
-    const imageDataArr = lodashGet(imageJsonArr, [2, 'data'], []);
+    // const imageJsonArr = JSON.parse(fs.readFileSync('import/json/image.json', 'utf8'));
+    // const imageDataArr = lodashGet(imageJsonArr, [2, 'data'], []);
 
-    const bbsThreadUCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_thread.json', 'utf8'));
-    const bbsThreadUCDataArr = lodashGet(bbsThreadUCJsonArr, [2, 'data'], []);
+    // const bbsThreadUCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_thread.json', 'utf8'));
+    // const bbsThreadUCDataArr = lodashGet(bbsThreadUCJsonArr, [2, 'data'], []);
 
-    const bbsThreadGCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_thread_gc.json', 'utf8'));
-    const bbsThreadGCDataArr = lodashGet(bbsThreadGCJsonArr, [2, 'data'], []);
+    // const bbsThreadGCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_thread_gc.json', 'utf8'));
+    // const bbsThreadGCDataArr = lodashGet(bbsThreadGCJsonArr, [2, 'data'], []);
 
-    const bbsCommentUCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_comment.json', 'utf8'));
-    const bbsCommentUCDataArr = lodashGet(bbsCommentUCJsonArr, [2, 'data'], []);
+    // const bbsCommentUCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_comment.json', 'utf8'));
+    // const bbsCommentUCDataArr = lodashGet(bbsCommentUCJsonArr, [2, 'data'], []);
 
-    const bbsCommentGCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_comment_gc.json', 'utf8'));
-    const bbsCommentGCDataArr = lodashGet(bbsCommentGCJsonArr, [2, 'data'], []);
+    // const bbsCommentGCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_comment_gc.json', 'utf8'));
+    // const bbsCommentGCDataArr = lodashGet(bbsCommentGCJsonArr, [2, 'data'], []);
 
-    const bbsReplyUCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_reply.json', 'utf8'));
-    const bbsReplyUCDataArr = lodashGet(bbsReplyUCJsonArr, [2, 'data'], []);
+    // const bbsReplyUCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_reply.json', 'utf8'));
+    // const bbsReplyUCDataArr = lodashGet(bbsReplyUCJsonArr, [2, 'data'], []);
 
-    const bbsReplyGCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_reply_gc.json', 'utf8'));
-    const bbsReplyGCDataArr = lodashGet(bbsReplyGCJsonArr, [2, 'data'], []);
+    // const bbsReplyGCJsonArr = JSON.parse(fs.readFileSync('import/json/bbs_reply_gc.json', 'utf8'));
+    // const bbsReplyGCDataArr = lodashGet(bbsReplyGCJsonArr, [2, 'data'], []);
 
-    const recruitmentJsonArr = JSON.parse(fs.readFileSync('import/json/recruitment.json', 'utf8'));
-    const recruitmentDataArr = lodashGet(recruitmentJsonArr, [2, 'data'], []);
+    // const recruitmentJsonArr = JSON.parse(fs.readFileSync('import/json/recruitment.json', 'utf8'));
+    // const recruitmentDataArr = lodashGet(recruitmentJsonArr, [2, 'data'], []);
 
-    const recruitmentReplyJsonArr = JSON.parse(fs.readFileSync('import/json/recruitment_reply.json', 'utf8'));
-    const recruitmentReplyDataArr = lodashGet(recruitmentReplyJsonArr, [2, 'data'], []);
+    // const recruitmentReplyJsonArr = JSON.parse(fs.readFileSync('import/json/recruitment_reply.json', 'utf8'));
+    // const recruitmentReplyDataArr = lodashGet(recruitmentReplyJsonArr, [2, 'data'], []);
 
 
 
 
-    // --------------------------------------------------
-    //   ID
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   ID
+    // // --------------------------------------------------
 
-    const idsArr = await SchemaTempID.find().exec();
-    const idsObj = {};
+    // const idsArr = await SchemaTempID.find().exec();
+    // const idsObj = {};
 
-    for (let valueObj of idsArr.values()) {
-      idsObj[valueObj.key] = valueObj.id;
-    }
+    // for (let valueObj of idsArr.values()) {
+    //   idsObj[valueObj.key] = valueObj.id;
+    // }
 
 
-    const idsImageArr = await SchemaTempImageID.find().exec();
-    const idsImageObj = {};
+    // const idsImageArr = await SchemaTempImageID.find().exec();
+    // const idsImageObj = {};
 
-    for (let valueObj of idsImageArr.values()) {
+    // for (let valueObj of idsImageArr.values()) {
 
-      idsImageObj[valueObj.key] = {
+    //   idsImageObj[valueObj.key] = {
 
-        id1: valueObj.id1,
-        id2Arr: valueObj.id2Arr,
-        idThumbnail1: valueObj.idThumbnail1,
-        idThumbnail2: valueObj.idThumbnail2,
+    //     id1: valueObj.id1,
+    //     id2Arr: valueObj.id2Arr,
+    //     idThumbnail1: valueObj.idThumbnail1,
+    //     idThumbnail2: valueObj.idThumbnail2,
 
-      };
+    //   };
 
-    }
+    // }
 
 
 
 
-    // --------------------------------------------------
-    //   users
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   users
+    // // --------------------------------------------------
 
-    for (const [index, valueObj] of usersDataDataArr.entries()) {
+    // for (const [index, valueObj] of usersDataDataArr.entries()) {
 
 
-      // --------------------------------------------------
-      //   Data
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   Data
+    //   // --------------------------------------------------
 
-      const user_no = lodashGet(valueObj, ['user_no'], 0);
+    //   const user_no = lodashGet(valueObj, ['user_no'], 0);
 
-      const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
-      const idThumbnail1 = lodashGet(idsImageObj, [`user_no_${user_no}`, 'idThumbnail1'], '');
-      const idThumbnail2 = lodashGet(idsImageObj, [`user_no_${user_no}`, 'idThumbnail2'], '');
+    //   const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
+    //   const idThumbnail1 = lodashGet(idsImageObj, [`user_no_${user_no}`, 'idThumbnail1'], '');
+    //   const idThumbnail2 = lodashGet(idsImageObj, [`user_no_${user_no}`, 'idThumbnail2'], '');
 
 
-      // --------------------------------------------------
-      //   push
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   push
+    //   // --------------------------------------------------
 
-      if (users_id && idThumbnail1 && idThumbnail2) {
+    //   if (users_id && idThumbnail1 && idThumbnail2) {
 
 
-        // --------------------------------------------------
-        //   画像を保存する
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   画像を保存する
+    //     // --------------------------------------------------
 
-        const imagesAndVideosObj = await saveImageAndVideo({
+    //     const imagesAndVideosObj = await saveImageAndVideo({
 
-          pass: `import/img-old/user/${user_no}/thumbnail_original.jpg`,
-          type: 'ur',
-          id1: idThumbnail1,
-          id2: idThumbnail2,
-          users_id,
-          ISO8601,
+    //       pass: `import/img-old/user/${user_no}/thumbnail_original.jpg`,
+    //       type: 'ur',
+    //       id1: idThumbnail1,
+    //       id2: idThumbnail2,
+    //       users_id,
+    //       ISO8601,
 
-        });
+    //     });
 
-        if (Object.keys(imagesAndVideosObj).length !== 0) {
-          imagesAndVideosArr.push(imagesAndVideosObj);
-        }
+    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
+    //       imagesAndVideosArr.push(imagesAndVideosObj);
+    //     }
 
 
-      }
+    //   }
 
 
-    }
+    // }
 
 
 
 
-    // --------------------------------------------------
-    //   user-communities
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   user-communities
+    // // --------------------------------------------------
 
-    for (const [index, valueObj] of communityDataArr.entries()) {
+    // for (const [index, valueObj] of communityDataArr.entries()) {
 
 
-      // --------------------------------------------------
-      //   Data
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   Data
+    //   // --------------------------------------------------
 
-      const community_no = parseInt(lodashGet(valueObj, ['community_no'], 0), 10);
-      const author_user_no = parseInt(lodashGet(valueObj, ['author_user_no'], 0), 10);
+    //   const community_no = parseInt(lodashGet(valueObj, ['community_no'], 0), 10);
+    //   const author_user_no = parseInt(lodashGet(valueObj, ['author_user_no'], 0), 10);
 
-      const users_id = lodashGet(idsObj, [`user_no_${author_user_no}`], '');
+    //   const users_id = lodashGet(idsObj, [`user_no_${author_user_no}`], '');
 
-      const idThumbnail1 = lodashGet(idsImageObj, [`community_no_${community_no}`, 'idThumbnail1'], '');
-      const idThumbnail2 = lodashGet(idsImageObj, [`community_no_${community_no}`, 'idThumbnail2'], '');
+    //   const idThumbnail1 = lodashGet(idsImageObj, [`community_no_${community_no}`, 'idThumbnail1'], '');
+    //   const idThumbnail2 = lodashGet(idsImageObj, [`community_no_${community_no}`, 'idThumbnail2'], '');
 
 
-      // --------------------------------------------------
-      //   push
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   push
+    //   // --------------------------------------------------
 
-      if (users_id && idThumbnail1 && idThumbnail2) {
+    //   if (users_id && idThumbnail1 && idThumbnail2) {
 
 
-        // --------------------------------------------------
-        //   画像を保存する
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   画像を保存する
+    //     // --------------------------------------------------
 
-        const imagesAndVideosObj = await saveImageAndVideo({
+    //     const imagesAndVideosObj = await saveImageAndVideo({
 
-          pass: `import/img-old/community/${community_no}/thumbnail_original.jpg`,
-          type: 'uc',
-          id1: idThumbnail1,
-          id2: idThumbnail2,
-          users_id,
-          ISO8601,
+    //       pass: `import/img-old/community/${community_no}/thumbnail_original.jpg`,
+    //       type: 'uc',
+    //       id1: idThumbnail1,
+    //       id2: idThumbnail2,
+    //       users_id,
+    //       ISO8601,
 
-        });
+    //     });
 
-        if (Object.keys(imagesAndVideosObj).length !== 0) {
-          imagesAndVideosArr.push(imagesAndVideosObj);
-        }
+    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
+    //       imagesAndVideosArr.push(imagesAndVideosObj);
+    //     }
 
 
-      }
+    //   }
 
 
-    }
+    // }
 
 
 
 
-    // --------------------------------------------------
-    //   games - thumbnail
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   games - thumbnail
+    // // --------------------------------------------------
 
-    for (const [index, valueObj] of gameDataDataArr.entries()) {
+    // for (const [index, valueObj] of gameDataDataArr.entries()) {
 
 
-      // --------------------------------------------------
-      //   Data
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   Data
+    //   // --------------------------------------------------
 
-      const game_no = parseInt(lodashGet(valueObj, ['game_no'], 0), 10);
+    //   const game_no = parseInt(lodashGet(valueObj, ['game_no'], 0), 10);
 
-      const idThumbnail1 = lodashGet(idsImageObj, [`game_no_${game_no}`, 'idThumbnail1'], '');
-      const idThumbnail2 = lodashGet(idsImageObj, [`game_no_${game_no}`, 'idThumbnail2'], '');
+    //   const idThumbnail1 = lodashGet(idsImageObj, [`game_no_${game_no}`, 'idThumbnail1'], '');
+    //   const idThumbnail2 = lodashGet(idsImageObj, [`game_no_${game_no}`, 'idThumbnail2'], '');
 
 
-      // --------------------------------------------------
-      //   push
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   push
+    //   // --------------------------------------------------
 
-      if (idThumbnail1 && idThumbnail2) {
+    //   if (idThumbnail1 && idThumbnail2) {
 
 
-        // --------------------------------------------------
-        //   画像を保存する
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   画像を保存する
+    //     // --------------------------------------------------
 
-        const imagesAndVideosObj = await saveImageAndVideo({
+    //     const imagesAndVideosObj = await saveImageAndVideo({
 
-          pass: `import/img-old/game/${game_no}/thumbnail.jpg`,
-          type: 'gc',
-          id1: idThumbnail1,
-          id2: idThumbnail2,
-          users_id: '',
-          ISO8601,
+    //       pass: `import/img-old/game/${game_no}/thumbnail.jpg`,
+    //       type: 'gc',
+    //       id1: idThumbnail1,
+    //       id2: idThumbnail2,
+    //       users_id: '',
+    //       ISO8601,
 
-        });
+    //     });
 
-        if (Object.keys(imagesAndVideosObj).length !== 0) {
-          imagesAndVideosArr.push(imagesAndVideosObj);
-        }
+    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
+    //       imagesAndVideosArr.push(imagesAndVideosObj);
+    //     }
 
 
-      }
+    //   }
 
 
-    }
+    // }
 
 
 
 
-    // --------------------------------------------------
-    //   games - heroimage
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   games - heroimage
+    // // --------------------------------------------------
 
-    const id2Obj = {};
-    const tempImagesAndVideosObj = {};
+    // const id2Obj = {};
+    // const tempImagesAndVideosObj = {};
 
-    for (const [index, valueObj] of imageDataArr.entries()) {
+    // for (const [index, valueObj] of imageDataArr.entries()) {
 
 
-      // --------------------------------------------------
-      //   Data
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   Data
+    //   // --------------------------------------------------
 
-      const on_off = lodashGet(valueObj, ['on_off'], '');
-      const game_no = parseInt(lodashGet(valueObj, ['game_no'], 0), 10);
-      const image_id = lodashGet(valueObj, ['image_id'], '');
-      const type = lodashGet(valueObj, ['type'], '');
+    //   const on_off = lodashGet(valueObj, ['on_off'], '');
+    //   const game_no = parseInt(lodashGet(valueObj, ['game_no'], 0), 10);
+    //   const image_id = lodashGet(valueObj, ['image_id'], '');
+    //   const type = lodashGet(valueObj, ['type'], '');
 
-      const id1 = lodashGet(idsImageObj, [`game_no_${game_no}`, 'id1'], '');
-      const id2Arr = lodashGet(idsImageObj, [`game_no_${game_no}`, 'id2Arr'], []);
+    //   const id1 = lodashGet(idsImageObj, [`game_no_${game_no}`, 'id1'], '');
+    //   const id2Arr = lodashGet(idsImageObj, [`game_no_${game_no}`, 'id2Arr'], []);
 
-      if (id2Obj[game_no] !== undefined) {
+    //   if (id2Obj[game_no] !== undefined) {
 
-        id2Obj[game_no] += 1;
+    //     id2Obj[game_no] += 1;
 
-      } else {
+    //   } else {
 
-        id2Obj[game_no] = 0;
+    //     id2Obj[game_no] = 0;
 
-      }
+    //   }
 
-      const id2 = id2Arr[id2Obj[game_no]];
+    //   const id2 = id2Arr[id2Obj[game_no]];
 
-      // console.log(chalk`
-      //   game_no: {green ${game_no}}
-      //   image_id: {green ${image_id}}
-      //   id1: {green ${id1}}
-      //   id2: {green ${id2}}
-      //   id2Obj[game_no]: {green ${id2Obj[game_no]}}
-      // `);
+    //   // console.log(chalk`
+    //   //   game_no: {green ${game_no}}
+    //   //   image_id: {green ${image_id}}
+    //   //   id1: {green ${id1}}
+    //   //   id2: {green ${id2}}
+    //   //   id2Obj[game_no]: {green ${id2Obj[game_no]}}
+    //   // `);
 
-      // console.log(`
-      //   ----- idsImageObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(lodashGet(idsImageObj, [`game_no_${game_no}`], []))), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+    //   // console.log(`
+    //   //   ----- idsImageObj -----\n
+    //   //   ${util.inspect(JSON.parse(JSON.stringify(lodashGet(idsImageObj, [`game_no_${game_no}`], []))), { colors: true, depth: null })}\n
+    //   //   --------------------\n
+    //   // `);
 
-      // console.log(`
-      //   ----- id2Arr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(id2Arr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+    //   // console.log(`
+    //   //   ----- id2Arr -----\n
+    //   //   ${util.inspect(JSON.parse(JSON.stringify(id2Arr)), { colors: true, depth: null })}\n
+    //   //   --------------------\n
+    //   // `);
 
 
-      // --------------------------------------------------
-      //   push
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   push
+    //   // --------------------------------------------------
 
-      // game_no = 6 image_id = mf29yqvx4wc1dvsv 削除済みで画像が存在していない
-      if (on_off === '1' && game_no !== 6 && type === 'hero_game' && id1 && id2) {
+    //   // game_no = 6 image_id = mf29yqvx4wc1dvsv 削除済みで画像が存在していない
+    //   if (on_off === '1' && game_no !== 6 && type === 'hero_game' && id1 && id2) {
 
 
-        // --------------------------------------------------
-        //   画像を保存する
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   画像を保存する
+    //     // --------------------------------------------------
 
-        // if (image_id !== 'mf29yqvx4wc1dvsv') {// なぜかこのIDの画像が存在していない
+    //     // if (image_id !== 'mf29yqvx4wc1dvsv') {// なぜかこのIDの画像が存在していない
 
-          tempImagesAndVideosObj[game_no] = await saveImageAndVideo({
+    //       tempImagesAndVideosObj[game_no] = await saveImageAndVideo({
 
-            pass: `import/img-old/u/${image_id}.jpg`,
-            type: 'gc',
-            id1,
-            id2,
-            users_id: '',
-            ISO8601,
-            heroImage: true,
-            imagesAndVideosObj: tempImagesAndVideosObj[game_no],
+    //         pass: `import/img-old/u/${image_id}.jpg`,
+    //         type: 'gc',
+    //         id1,
+    //         id2,
+    //         users_id: '',
+    //         ISO8601,
+    //         heroImage: true,
+    //         imagesAndVideosObj: tempImagesAndVideosObj[game_no],
 
-          });
+    //       });
 
 
-        // }
+    //     // }
 
-      }
+    //   }
 
 
-    }
+    // }
 
 
-    for (let valueObj of Object.values(tempImagesAndVideosObj)) {
-      imagesAndVideosArr.push(valueObj);
-    }
+    // for (let valueObj of Object.values(tempImagesAndVideosObj)) {
+    //   imagesAndVideosArr.push(valueObj);
+    // }
 
 
-    // console.log(`
-    //   ----- tempImagesAndVideosObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(tempImagesAndVideosObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    // // console.log(`
+    // //   ----- tempImagesAndVideosObj -----\n
+    // //   ${util.inspect(JSON.parse(JSON.stringify(tempImagesAndVideosObj)), { colors: true, depth: null })}\n
+    // //   --------------------\n
+    // // `);
 
 
 
 
-    // --------------------------------------------------
-    //   forum-threads UC
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   forum-threads UC
+    // // --------------------------------------------------
 
-    for (const [index, valueObj] of bbsThreadUCDataArr.entries()) {
+    // for (const [index, valueObj] of bbsThreadUCDataArr.entries()) {
 
 
-      // --------------------------------------------------
-      //   Data
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   Data
+    //   // --------------------------------------------------
 
-      const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
-      const community_no = lodashGet(valueObj, ['community_no'], '');
+    //   const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
+    //   const community_no = lodashGet(valueObj, ['community_no'], '');
 
-      if (idsObj[`bbs_thread_no_uc_${bbs_thread_no}`] === undefined || idsObj[`community_no_${community_no}`] === undefined) {
-        continue;
-      }
+    //   if (idsObj[`bbs_thread_no_uc_${bbs_thread_no}`] === undefined || idsObj[`community_no_${community_no}`] === undefined) {
+    //     continue;
+    //   }
 
 
-      const user_no = lodashGet(valueObj, ['user_no'], 0);
-      const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
-      const image = lodashGet(valueObj, ['image'], '');
-      const movie = lodashGet(valueObj, ['movie'], '');
+    //   const user_no = lodashGet(valueObj, ['user_no'], 0);
+    //   const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
+    //   const image = lodashGet(valueObj, ['image'], '');
+    //   const movie = lodashGet(valueObj, ['movie'], '');
 
-      const id1 = lodashGet(idsImageObj, [`bbs_thread_no_uc_${bbs_thread_no}`, 'id1'], '');
-      const id2 = lodashGet(idsImageObj, [`bbs_thread_no_uc_${bbs_thread_no}`, 'id2Arr', 0], '');
+    //   const id1 = lodashGet(idsImageObj, [`bbs_thread_no_uc_${bbs_thread_no}`, 'id1'], '');
+    //   const id2 = lodashGet(idsImageObj, [`bbs_thread_no_uc_${bbs_thread_no}`, 'id2Arr', 0], '');
 
 
-      // --------------------------------------------------
-      //   push
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   push
+    //   // --------------------------------------------------
 
-      if (id1 && id2) {
+    //   if (id1 && id2) {
 
 
-        let imagesAndVideosObj = {};
+    //     let imagesAndVideosObj = {};
 
 
-        // --------------------------------------------------
-        //   画像を保存する
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   画像を保存する
+    //     // --------------------------------------------------
 
-        if (image) {
+    //     if (image) {
 
-          imagesAndVideosObj = await saveImageAndVideo({
+    //       imagesAndVideosObj = await saveImageAndVideo({
 
-            pass: `import/img-old/bbs_uc/thread/${bbs_thread_no}/image_1.jpg`,
-            type: 'forum',
-            id1,
-            id2,
-            users_id,
-            ISO8601,
+    //         pass: `import/img-old/bbs_uc/thread/${bbs_thread_no}/image_1.jpg`,
+    //         type: 'forum',
+    //         id1,
+    //         id2,
+    //         users_id,
+    //         ISO8601,
 
-          });
+    //       });
 
 
-        // --------------------------------------------------
-        //   動画
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   動画
+    //     // --------------------------------------------------
 
-        } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
+    //     } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
 
-          let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
-          videoIDArr = videoIDArr[1].split('";}}');
-          const videoID = videoIDArr[0];
+    //       let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
+    //       videoIDArr = videoIDArr[1].split('";}}');
+    //       const videoID = videoIDArr[0];
 
-          // console.log(`
-          //   ----- videoIDArr -----\n
-          //   ${util.inspect(JSON.parse(JSON.stringify(videoIDArr)), { colors: true, depth: null })}\n
-          //   --------------------\n
-          // `);
+    //       // console.log(`
+    //       //   ----- videoIDArr -----\n
+    //       //   ${util.inspect(JSON.parse(JSON.stringify(videoIDArr)), { colors: true, depth: null })}\n
+    //       //   --------------------\n
+    //       // `);
 
-          // console.log(chalk`
-          //   videoID: {green ${videoID}}
-          // `);
+    //       // console.log(chalk`
+    //       //   videoID: {green ${videoID}}
+    //       // `);
 
-          imagesAndVideosObj = {
+    //       imagesAndVideosObj = {
 
-            _id: id1,
-            createdDate: ISO8601,
-            updatedDate: ISO8601,
-            users_id,
-            type: 'forum',
-            images: 0,
-            videos: 1,
-            arr: [
-              {
-                _id: id2,
-                type: 'video',
-                videoChannel: 'youtube',
-                videoID,
-              },
-            ],
+    //         _id: id1,
+    //         createdDate: ISO8601,
+    //         updatedDate: ISO8601,
+    //         users_id,
+    //         type: 'forum',
+    //         images: 0,
+    //         videos: 1,
+    //         arr: [
+    //           {
+    //             _id: id2,
+    //             type: 'video',
+    //             videoChannel: 'youtube',
+    //             videoID,
+    //           },
+    //         ],
 
-          };
+    //       };
 
-        }
+    //     }
 
 
-        if (Object.keys(imagesAndVideosObj).length !== 0) {
-          imagesAndVideosArr.push(imagesAndVideosObj);
-        }
+    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
+    //       imagesAndVideosArr.push(imagesAndVideosObj);
+    //     }
 
 
-      }
+    //   }
 
 
-    }
+    // }
 
 
 
 
-    // --------------------------------------------------
-    //   forum-threads GC
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   forum-threads GC
+    // // --------------------------------------------------
 
-    for (const [index, valueObj] of bbsThreadGCDataArr.entries()) {
+    // for (const [index, valueObj] of bbsThreadGCDataArr.entries()) {
 
 
-      // --------------------------------------------------
-      //   Data
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   Data
+    //   // --------------------------------------------------
 
-      const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
-      const game_no = lodashGet(valueObj, ['game_no'], '');
+    //   const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
+    //   const game_no = lodashGet(valueObj, ['game_no'], '');
 
-      if (idsObj[`bbs_thread_no_gc_${bbs_thread_no}`] === undefined || idsObj[`game_no_${game_no}`] === undefined) {
-        continue;
-      }
+    //   if (idsObj[`bbs_thread_no_gc_${bbs_thread_no}`] === undefined || idsObj[`game_no_${game_no}`] === undefined) {
+    //     continue;
+    //   }
 
 
-      const image = lodashGet(valueObj, ['image'], '');
-      const movie = lodashGet(valueObj, ['movie'], '');
+    //   const image = lodashGet(valueObj, ['image'], '');
+    //   const movie = lodashGet(valueObj, ['movie'], '');
 
-      const id1 = lodashGet(idsImageObj, [`bbs_thread_no_gc_${bbs_thread_no}`, 'id1'], '');
-      const id2 = lodashGet(idsImageObj, [`bbs_thread_no_gc_${bbs_thread_no}`, 'id2Arr', 0], '');
+    //   const id1 = lodashGet(idsImageObj, [`bbs_thread_no_gc_${bbs_thread_no}`, 'id1'], '');
+    //   const id2 = lodashGet(idsImageObj, [`bbs_thread_no_gc_${bbs_thread_no}`, 'id2Arr', 0], '');
 
 
-      // --------------------------------------------------
-      //   push
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   push
+    //   // --------------------------------------------------
 
-      if (id1 && id2) {
+    //   if (id1 && id2) {
 
 
-        let imagesAndVideosObj = {};
+    //     let imagesAndVideosObj = {};
 
-          // console.log(chalk`
-          //   bbs_thread_no: {green ${bbs_thread_no}}
-          //   game_no: {green ${game_no}}
-          // `);
-        // --------------------------------------------------
-        //   画像を保存する
-        // --------------------------------------------------
+    //       // console.log(chalk`
+    //       //   bbs_thread_no: {green ${bbs_thread_no}}
+    //       //   game_no: {green ${game_no}}
+    //       // `);
+    //     // --------------------------------------------------
+    //     //   画像を保存する
+    //     // --------------------------------------------------
 
-        if (image) {
+    //     if (image) {
 
-          imagesAndVideosObj = await saveImageAndVideo({
+    //       imagesAndVideosObj = await saveImageAndVideo({
 
-            pass: `import/img-old/bbs_gc/thread/${bbs_thread_no}/image_1.jpg`,
-            type: 'forum',
-            id1,
-            id2,
-            users_id: '',
-            ISO8601,
+    //         pass: `import/img-old/bbs_gc/thread/${bbs_thread_no}/image_1.jpg`,
+    //         type: 'forum',
+    //         id1,
+    //         id2,
+    //         users_id: '',
+    //         ISO8601,
 
-          });
+    //       });
 
 
-        // --------------------------------------------------
-        //   動画
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   動画
+    //     // --------------------------------------------------
 
-        } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
+    //     } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
 
-          let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
-          videoIDArr = videoIDArr[1].split('";}}');
-          const videoID = videoIDArr[0];
+    //       let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
+    //       videoIDArr = videoIDArr[1].split('";}}');
+    //       const videoID = videoIDArr[0];
 
-          imagesAndVideosObj = {
+    //       imagesAndVideosObj = {
 
-            _id: id1,
-            createdDate: ISO8601,
-            updatedDate: ISO8601,
-            users_id: '',
-            type: 'forum',
-            images: 0,
-            videos: 1,
-            arr: [
-              {
-                _id: id2,
-                type: 'video',
-                videoChannel: 'youtube',
-                videoID,
-              },
-            ],
+    //         _id: id1,
+    //         createdDate: ISO8601,
+    //         updatedDate: ISO8601,
+    //         users_id: '',
+    //         type: 'forum',
+    //         images: 0,
+    //         videos: 1,
+    //         arr: [
+    //           {
+    //             _id: id2,
+    //             type: 'video',
+    //             videoChannel: 'youtube',
+    //             videoID,
+    //           },
+    //         ],
 
-          };
+    //       };
 
-        }
+    //     }
 
 
-        if (Object.keys(imagesAndVideosObj).length !== 0) {
-          imagesAndVideosArr.push(imagesAndVideosObj);
-        }
+    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
+    //       imagesAndVideosArr.push(imagesAndVideosObj);
+    //     }
 
 
-      }
+    //   }
 
 
-    }
+    // }
 
 
 
 
-    // --------------------------------------------------
-    //   forum-comments UC
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   forum-comments UC
+    // // --------------------------------------------------
 
-    for (const [index, valueObj] of bbsCommentUCDataArr.entries()) {
+    // for (const [index, valueObj] of bbsCommentUCDataArr.entries()) {
 
 
-      // --------------------------------------------------
-      //   Data
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   Data
+    //   // --------------------------------------------------
 
-      const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
-      const bbs_comment_no = parseInt(lodashGet(valueObj, ['bbs_comment_no'], 0), 10);
-      const community_no = lodashGet(valueObj, ['community_no'], '');
+    //   const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
+    //   const bbs_comment_no = parseInt(lodashGet(valueObj, ['bbs_comment_no'], 0), 10);
+    //   const community_no = lodashGet(valueObj, ['community_no'], '');
 
-      if (idsObj[`bbs_thread_no_uc_${bbs_thread_no}`] === undefined || idsObj[`bbs_comment_no_uc_${bbs_comment_no}`] === undefined || idsObj[`community_no_${community_no}`] === undefined) {
-        continue;
-      }
+    //   if (idsObj[`bbs_thread_no_uc_${bbs_thread_no}`] === undefined || idsObj[`bbs_comment_no_uc_${bbs_comment_no}`] === undefined || idsObj[`community_no_${community_no}`] === undefined) {
+    //     continue;
+    //   }
 
 
-      const user_no = lodashGet(valueObj, ['user_no'], 0);
-      const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
-      const image = lodashGet(valueObj, ['image'], '');
-      const movie = lodashGet(valueObj, ['movie'], '');
+    //   const user_no = lodashGet(valueObj, ['user_no'], 0);
+    //   const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
+    //   const image = lodashGet(valueObj, ['image'], '');
+    //   const movie = lodashGet(valueObj, ['movie'], '');
 
-      const id1 = lodashGet(idsImageObj, [`bbs_comment_no_uc_${bbs_comment_no}`, 'id1'], '');
-      const id2 = lodashGet(idsImageObj, [`bbs_comment_no_uc_${bbs_comment_no}`, 'id2Arr', 0], '');
+    //   const id1 = lodashGet(idsImageObj, [`bbs_comment_no_uc_${bbs_comment_no}`, 'id1'], '');
+    //   const id2 = lodashGet(idsImageObj, [`bbs_comment_no_uc_${bbs_comment_no}`, 'id2Arr', 0], '');
 
 
-      // --------------------------------------------------
-      //   push
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   push
+    //   // --------------------------------------------------
 
-      if (id1 && id2) {
+    //   if (id1 && id2) {
 
 
-        let imagesAndVideosObj = {};
+    //     let imagesAndVideosObj = {};
 
 
-        // --------------------------------------------------
-        //   画像を保存する
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   画像を保存する
+    //     // --------------------------------------------------
 
-        if (image) {
+    //     if (image) {
 
-          imagesAndVideosObj = await saveImageAndVideo({
+    //       imagesAndVideosObj = await saveImageAndVideo({
 
-            pass: `import/img-old/bbs_uc/comment/${bbs_comment_no}/image_1.jpg`,
-            type: 'forum',
-            id1,
-            id2,
-            users_id,
-            ISO8601,
+    //         pass: `import/img-old/bbs_uc/comment/${bbs_comment_no}/image_1.jpg`,
+    //         type: 'forum',
+    //         id1,
+    //         id2,
+    //         users_id,
+    //         ISO8601,
 
-          });
+    //       });
 
 
-        // --------------------------------------------------
-        //   動画
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   動画
+    //     // --------------------------------------------------
 
-        } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
+    //     } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
 
-          // console.log(chalk`
-          // movie: {green ${movie}}
-          // `);
+    //       // console.log(chalk`
+    //       // movie: {green ${movie}}
+    //       // `);
 
-          let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
-          videoIDArr = videoIDArr[1].split('";}}');
-          const videoID = videoIDArr[0];
+    //       let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
+    //       videoIDArr = videoIDArr[1].split('";}}');
+    //       const videoID = videoIDArr[0];
 
-          // console.log(`
-          //   ----- videoIDArr -----\n
-          //   ${util.inspect(JSON.parse(JSON.stringify(videoIDArr)), { colors: true, depth: null })}\n
-          //   --------------------\n
-          // `);
+    //       // console.log(`
+    //       //   ----- videoIDArr -----\n
+    //       //   ${util.inspect(JSON.parse(JSON.stringify(videoIDArr)), { colors: true, depth: null })}\n
+    //       //   --------------------\n
+    //       // `);
 
-          // console.log(`
-          //   ----- videoIDArr -----\n
-          //   ${util.inspect(JSON.parse(JSON.stringify(videoIDArr)), { colors: true, depth: null })}\n
-          //   --------------------\n
-          // `);
+    //       // console.log(`
+    //       //   ----- videoIDArr -----\n
+    //       //   ${util.inspect(JSON.parse(JSON.stringify(videoIDArr)), { colors: true, depth: null })}\n
+    //       //   --------------------\n
+    //       // `);
 
-          // console.log(chalk`
-          //   videoID: {green ${videoID}}
-          // `);
+    //       // console.log(chalk`
+    //       //   videoID: {green ${videoID}}
+    //       // `);
 
 
-          imagesAndVideosObj = {
+    //       imagesAndVideosObj = {
 
-            _id: id1,
-            createdDate: ISO8601,
-            updatedDate: ISO8601,
-            users_id,
-            type: 'forum',
-            images: 0,
-            videos: 1,
-            arr: [
-              {
-                _id: id2,
-                type: 'video',
-                videoChannel: 'youtube',
-                videoID,
-              },
-            ],
+    //         _id: id1,
+    //         createdDate: ISO8601,
+    //         updatedDate: ISO8601,
+    //         users_id,
+    //         type: 'forum',
+    //         images: 0,
+    //         videos: 1,
+    //         arr: [
+    //           {
+    //             _id: id2,
+    //             type: 'video',
+    //             videoChannel: 'youtube',
+    //             videoID,
+    //           },
+    //         ],
 
-          };
+    //       };
 
 
-        }
+    //     }
 
 
-        if (Object.keys(imagesAndVideosObj).length !== 0) {
-          imagesAndVideosArr.push(imagesAndVideosObj);
-        }
+    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
+    //       imagesAndVideosArr.push(imagesAndVideosObj);
+    //     }
 
 
-      }
+    //   }
 
 
-    }
+    // }
 
 
 
 
-    // --------------------------------------------------
-    //   forum-comments GC
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   forum-comments GC
+    // // --------------------------------------------------
 
-    for (const [index, valueObj] of bbsCommentGCDataArr.entries()) {
+    // for (const [index, valueObj] of bbsCommentGCDataArr.entries()) {
 
 
-      // --------------------------------------------------
-      //   Data
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   Data
+    //   // --------------------------------------------------
 
-      const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
-      const bbs_comment_no = parseInt(lodashGet(valueObj, ['bbs_comment_no'], 0), 10);
-      const game_no = lodashGet(valueObj, ['game_no'], '');
+    //   const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
+    //   const bbs_comment_no = parseInt(lodashGet(valueObj, ['bbs_comment_no'], 0), 10);
+    //   const game_no = lodashGet(valueObj, ['game_no'], '');
 
-      if (idsObj[`bbs_thread_no_gc_${bbs_thread_no}`] === undefined || idsObj[`bbs_comment_no_gc_${bbs_comment_no}`] === undefined || idsObj[`game_no_${game_no}`] === undefined) {
-        continue;
-      }
+    //   if (idsObj[`bbs_thread_no_gc_${bbs_thread_no}`] === undefined || idsObj[`bbs_comment_no_gc_${bbs_comment_no}`] === undefined || idsObj[`game_no_${game_no}`] === undefined) {
+    //     continue;
+    //   }
 
 
-      const user_no = lodashGet(valueObj, ['user_no'], 0);
-      const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
-      const image = lodashGet(valueObj, ['image'], '');
-      const movie = lodashGet(valueObj, ['movie'], '');
+    //   const user_no = lodashGet(valueObj, ['user_no'], 0);
+    //   const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
+    //   const image = lodashGet(valueObj, ['image'], '');
+    //   const movie = lodashGet(valueObj, ['movie'], '');
 
-      const id1 = lodashGet(idsImageObj, [`bbs_comment_no_gc_${bbs_comment_no}`, 'id1'], '');
-      const id2 = lodashGet(idsImageObj, [`bbs_comment_no_gc_${bbs_comment_no}`, 'id2Arr', 0], '');
+    //   const id1 = lodashGet(idsImageObj, [`bbs_comment_no_gc_${bbs_comment_no}`, 'id1'], '');
+    //   const id2 = lodashGet(idsImageObj, [`bbs_comment_no_gc_${bbs_comment_no}`, 'id2Arr', 0], '');
 
 
-      // --------------------------------------------------
-      //   push
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   push
+    //   // --------------------------------------------------
 
-      if (id1 && id2) {
+    //   if (id1 && id2) {
 
 
-        let imagesAndVideosObj = {};
+    //     let imagesAndVideosObj = {};
 
 
-        // --------------------------------------------------
-        //   画像を保存する
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   画像を保存する
+    //     // --------------------------------------------------
 
-        if (image) {
+    //     if (image) {
 
-          imagesAndVideosObj = await saveImageAndVideo({
+    //       imagesAndVideosObj = await saveImageAndVideo({
 
-            pass: `import/img-old/bbs_gc/comment/${bbs_comment_no}/image_1.jpg`,
-            type: 'forum',
-            id1,
-            id2,
-            users_id,
-            ISO8601,
+    //         pass: `import/img-old/bbs_gc/comment/${bbs_comment_no}/image_1.jpg`,
+    //         type: 'forum',
+    //         id1,
+    //         id2,
+    //         users_id,
+    //         ISO8601,
 
-          });
+    //       });
 
 
-        // --------------------------------------------------
-        //   動画
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   動画
+    //     // --------------------------------------------------
 
-        } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
+    //     } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
 
-          let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
-          videoIDArr = videoIDArr[1].split('";}}');
-          const videoID = videoIDArr[0];
+    //       let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
+    //       videoIDArr = videoIDArr[1].split('";}}');
+    //       const videoID = videoIDArr[0];
 
-          imagesAndVideosObj = {
+    //       imagesAndVideosObj = {
 
-            _id: id1,
-            createdDate: ISO8601,
-            updatedDate: ISO8601,
-            users_id,
-            type: 'forum',
-            images: 0,
-            videos: 1,
-            arr: [
-              {
-                _id: id2,
-                type: 'video',
-                videoChannel: 'youtube',
-                videoID,
-              },
-            ],
+    //         _id: id1,
+    //         createdDate: ISO8601,
+    //         updatedDate: ISO8601,
+    //         users_id,
+    //         type: 'forum',
+    //         images: 0,
+    //         videos: 1,
+    //         arr: [
+    //           {
+    //             _id: id2,
+    //             type: 'video',
+    //             videoChannel: 'youtube',
+    //             videoID,
+    //           },
+    //         ],
 
-          };
+    //       };
 
-        }
+    //     }
 
 
-        if (Object.keys(imagesAndVideosObj).length !== 0) {
-          imagesAndVideosArr.push(imagesAndVideosObj);
-        }
+    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
+    //       imagesAndVideosArr.push(imagesAndVideosObj);
+    //     }
 
 
-      }
+    //   }
 
 
-    }
+    // }
 
 
 
 
-    // --------------------------------------------------
-    //   forum-replys UC
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   forum-replys UC
+    // // --------------------------------------------------
 
-    for (const [index, valueObj] of bbsReplyUCDataArr.entries()) {
+    // for (const [index, valueObj] of bbsReplyUCDataArr.entries()) {
 
 
-      // --------------------------------------------------
-      //   Data
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   Data
+    //   // --------------------------------------------------
 
-      const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
-      const bbs_comment_no = parseInt(lodashGet(valueObj, ['bbs_comment_no'], 0), 10);
-      const bbs_reply_no = parseInt(lodashGet(valueObj, ['bbs_reply_no'], 0), 10);
-      const community_no = lodashGet(valueObj, ['community_no'], '');
+    //   const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
+    //   const bbs_comment_no = parseInt(lodashGet(valueObj, ['bbs_comment_no'], 0), 10);
+    //   const bbs_reply_no = parseInt(lodashGet(valueObj, ['bbs_reply_no'], 0), 10);
+    //   const community_no = lodashGet(valueObj, ['community_no'], '');
 
-      if (idsObj[`bbs_thread_no_uc_${bbs_thread_no}`] === undefined || idsObj[`bbs_comment_no_uc_${bbs_comment_no}`] === undefined || idsObj[`bbs_reply_no_uc_${bbs_reply_no}`] === undefined || idsObj[`community_no_${community_no}`] === undefined) {
-        continue;
-      }
+    //   if (idsObj[`bbs_thread_no_uc_${bbs_thread_no}`] === undefined || idsObj[`bbs_comment_no_uc_${bbs_comment_no}`] === undefined || idsObj[`bbs_reply_no_uc_${bbs_reply_no}`] === undefined || idsObj[`community_no_${community_no}`] === undefined) {
+    //     continue;
+    //   }
 
 
-      const user_no = lodashGet(valueObj, ['user_no'], 0);
-      const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
-      const image = lodashGet(valueObj, ['image'], '');
-      const movie = lodashGet(valueObj, ['movie'], '');
+    //   const user_no = lodashGet(valueObj, ['user_no'], 0);
+    //   const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
+    //   const image = lodashGet(valueObj, ['image'], '');
+    //   const movie = lodashGet(valueObj, ['movie'], '');
 
-      const id1 = lodashGet(idsImageObj, [`bbs_reply_no_uc_${bbs_reply_no}`, 'id1'], '');
-      const id2 = lodashGet(idsImageObj, [`bbs_reply_no_uc_${bbs_reply_no}`, 'id2Arr', 0], '');
+    //   const id1 = lodashGet(idsImageObj, [`bbs_reply_no_uc_${bbs_reply_no}`, 'id1'], '');
+    //   const id2 = lodashGet(idsImageObj, [`bbs_reply_no_uc_${bbs_reply_no}`, 'id2Arr', 0], '');
 
 
-      // --------------------------------------------------
-      //   push
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   push
+    //   // --------------------------------------------------
 
-      if (id1 && id2) {
+    //   if (id1 && id2) {
 
 
-        let imagesAndVideosObj = {};
+    //     let imagesAndVideosObj = {};
 
 
-        // --------------------------------------------------
-        //   画像を保存する
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   画像を保存する
+    //     // --------------------------------------------------
 
-        if (image) {
+    //     if (image) {
 
-          imagesAndVideosObj = await saveImageAndVideo({
+    //       imagesAndVideosObj = await saveImageAndVideo({
 
-            pass: `import/img-old/bbs_uc/reply/${bbs_reply_no}/image_1.jpg`,
-            type: 'forum',
-            id1,
-            id2,
-            users_id,
-            ISO8601,
+    //         pass: `import/img-old/bbs_uc/reply/${bbs_reply_no}/image_1.jpg`,
+    //         type: 'forum',
+    //         id1,
+    //         id2,
+    //         users_id,
+    //         ISO8601,
 
-          });
+    //       });
 
 
-        // --------------------------------------------------
-        //   動画
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   動画
+    //     // --------------------------------------------------
 
-        } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
+    //     } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
 
 
-          let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
-          videoIDArr = videoIDArr[1].split('";}}');
-          const videoID = videoIDArr[0];
+    //       let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
+    //       videoIDArr = videoIDArr[1].split('";}}');
+    //       const videoID = videoIDArr[0];
 
 
-          imagesAndVideosObj = {
+    //       imagesAndVideosObj = {
 
-            _id: id1,
-            createdDate: ISO8601,
-            updatedDate: ISO8601,
-            users_id,
-            type: 'forum',
-            images: 0,
-            videos: 1,
-            arr: [
-              {
-                _id: id2,
-                type: 'video',
-                videoChannel: 'youtube',
-                videoID,
-              },
-            ],
+    //         _id: id1,
+    //         createdDate: ISO8601,
+    //         updatedDate: ISO8601,
+    //         users_id,
+    //         type: 'forum',
+    //         images: 0,
+    //         videos: 1,
+    //         arr: [
+    //           {
+    //             _id: id2,
+    //             type: 'video',
+    //             videoChannel: 'youtube',
+    //             videoID,
+    //           },
+    //         ],
 
-          };
+    //       };
 
 
-        }
+    //     }
 
 
-        if (Object.keys(imagesAndVideosObj).length !== 0) {
-          imagesAndVideosArr.push(imagesAndVideosObj);
-        }
+    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
+    //       imagesAndVideosArr.push(imagesAndVideosObj);
+    //     }
 
 
-      }
+    //   }
 
 
-    }
+    // }
 
 
 
 
-    // --------------------------------------------------
-    //   forum-replys GC
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   forum-replys GC
+    // // --------------------------------------------------
 
-    for (const [index, valueObj] of bbsReplyGCDataArr.entries()) {
+    // for (const [index, valueObj] of bbsReplyGCDataArr.entries()) {
 
 
-      // --------------------------------------------------
-      //   Data
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   Data
+    //   // --------------------------------------------------
 
-      const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
-      const bbs_comment_no = parseInt(lodashGet(valueObj, ['bbs_comment_no'], 0), 10);
-      const bbs_reply_no = parseInt(lodashGet(valueObj, ['bbs_reply_no'], 0), 10);
-      const game_no = lodashGet(valueObj, ['game_no'], '');
+    //   const bbs_thread_no = parseInt(lodashGet(valueObj, ['bbs_thread_no'], 0), 10);
+    //   const bbs_comment_no = parseInt(lodashGet(valueObj, ['bbs_comment_no'], 0), 10);
+    //   const bbs_reply_no = parseInt(lodashGet(valueObj, ['bbs_reply_no'], 0), 10);
+    //   const game_no = lodashGet(valueObj, ['game_no'], '');
 
-      if (idsObj[`bbs_thread_no_gc_${bbs_thread_no}`] === undefined || idsObj[`bbs_comment_no_gc_${bbs_comment_no}`] === undefined || idsObj[`bbs_reply_no_gc_${bbs_reply_no}`] === undefined || idsObj[`game_no_${game_no}`] === undefined) {
-        continue;
-      }
+    //   if (idsObj[`bbs_thread_no_gc_${bbs_thread_no}`] === undefined || idsObj[`bbs_comment_no_gc_${bbs_comment_no}`] === undefined || idsObj[`bbs_reply_no_gc_${bbs_reply_no}`] === undefined || idsObj[`game_no_${game_no}`] === undefined) {
+    //     continue;
+    //   }
 
 
-      const user_no = lodashGet(valueObj, ['user_no'], 0);
-      const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
-      const image = lodashGet(valueObj, ['image'], '');
-      const movie = lodashGet(valueObj, ['movie'], '');
+    //   const user_no = lodashGet(valueObj, ['user_no'], 0);
+    //   const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
+    //   const image = lodashGet(valueObj, ['image'], '');
+    //   const movie = lodashGet(valueObj, ['movie'], '');
 
-      const id1 = lodashGet(idsImageObj, [`bbs_reply_no_gc_${bbs_reply_no}`, 'id1'], '');
-      const id2 = lodashGet(idsImageObj, [`bbs_reply_no_gc_${bbs_reply_no}`, 'id2Arr', 0], '');
+    //   const id1 = lodashGet(idsImageObj, [`bbs_reply_no_gc_${bbs_reply_no}`, 'id1'], '');
+    //   const id2 = lodashGet(idsImageObj, [`bbs_reply_no_gc_${bbs_reply_no}`, 'id2Arr', 0], '');
 
 
-      // --------------------------------------------------
-      //   push
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   push
+    //   // --------------------------------------------------
 
-      if (id1 && id2) {
+    //   if (id1 && id2) {
 
 
-        let imagesAndVideosObj = {};
+    //     let imagesAndVideosObj = {};
 
 
-        // --------------------------------------------------
-        //   画像を保存する
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   画像を保存する
+    //     // --------------------------------------------------
 
-        if (image) {
+    //     if (image) {
 
-          imagesAndVideosObj = await saveImageAndVideo({
+    //       imagesAndVideosObj = await saveImageAndVideo({
 
-            pass: `import/img-old/bbs_gc/reply/${bbs_reply_no}/image_1.jpg`,
-            type: 'forum',
-            id1,
-            id2,
-            users_id,
-            ISO8601,
+    //         pass: `import/img-old/bbs_gc/reply/${bbs_reply_no}/image_1.jpg`,
+    //         type: 'forum',
+    //         id1,
+    //         id2,
+    //         users_id,
+    //         ISO8601,
 
-          });
+    //       });
 
 
-        // --------------------------------------------------
-        //   動画
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   動画
+    //     // --------------------------------------------------
 
-        } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
+    //     } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
 
-          let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
-          videoIDArr = videoIDArr[1].split('";}}');
-          const videoID = videoIDArr[0];
+    //       let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
+    //       videoIDArr = videoIDArr[1].split('";}}');
+    //       const videoID = videoIDArr[0];
 
-          imagesAndVideosObj = {
+    //       imagesAndVideosObj = {
 
-            _id: id1,
-            createdDate: ISO8601,
-            updatedDate: ISO8601,
-            users_id,
-            type: 'forum',
-            images: 0,
-            videos: 1,
-            arr: [
-              {
-                _id: id2,
-                type: 'video',
-                videoChannel: 'youtube',
-                videoID,
-              },
-            ],
+    //         _id: id1,
+    //         createdDate: ISO8601,
+    //         updatedDate: ISO8601,
+    //         users_id,
+    //         type: 'forum',
+    //         images: 0,
+    //         videos: 1,
+    //         arr: [
+    //           {
+    //             _id: id2,
+    //             type: 'video',
+    //             videoChannel: 'youtube',
+    //             videoID,
+    //           },
+    //         ],
 
-          };
+    //       };
 
-        }
+    //     }
 
 
-        if (Object.keys(imagesAndVideosObj).length !== 0) {
-          imagesAndVideosArr.push(imagesAndVideosObj);
-        }
+    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
+    //       imagesAndVideosArr.push(imagesAndVideosObj);
+    //     }
 
 
-      }
+    //   }
 
 
-    }
+    // }
 
 
 
 
-    // --------------------------------------------------
-    //   recruitment-threads
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   recruitment-threads
+    // // --------------------------------------------------
 
-    for (const [index, valueObj] of recruitmentDataArr.entries()) {
+    // for (const [index, valueObj] of recruitmentDataArr.entries()) {
 
 
-      // --------------------------------------------------
-      //   Data
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   Data
+    //   // --------------------------------------------------
 
-      const recruitment_id = lodashGet(valueObj, ['recruitment_id'], '');
-      const game_no = lodashGet(valueObj, ['game_no'], '');
+    //   const recruitment_id = lodashGet(valueObj, ['recruitment_id'], '');
+    //   const game_no = lodashGet(valueObj, ['game_no'], '');
 
-      if (
+    //   if (
 
-        idsObj[`recruitment_id_${recruitment_id}`] === undefined ||
-        idsObj[`game_no_${game_no}`] === undefined
+    //     idsObj[`recruitment_id_${recruitment_id}`] === undefined ||
+    //     idsObj[`game_no_${game_no}`] === undefined
 
-      ) {
-        continue;
-      }
+    //   ) {
+    //     continue;
+    //   }
 
 
-      const user_no = lodashGet(valueObj, ['user_no'], 0);
-      const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
-      const image = lodashGet(valueObj, ['image'], '');
-      const movie = lodashGet(valueObj, ['movie'], '');
+    //   const user_no = lodashGet(valueObj, ['user_no'], 0);
+    //   const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
+    //   const image = lodashGet(valueObj, ['image'], '');
+    //   const movie = lodashGet(valueObj, ['movie'], '');
 
-      const id1 = lodashGet(idsImageObj, [`recruitment_id_${recruitment_id}`, 'id1'], '');
-      const id2 = lodashGet(idsImageObj, [`recruitment_id_${recruitment_id}`, 'id2Arr', 0], '');
+    //   const id1 = lodashGet(idsImageObj, [`recruitment_id_${recruitment_id}`, 'id1'], '');
+    //   const id2 = lodashGet(idsImageObj, [`recruitment_id_${recruitment_id}`, 'id2Arr', 0], '');
 
 
-      // --------------------------------------------------
-      //   push
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   push
+    //   // --------------------------------------------------
 
-      if (id1 && id2) {
+    //   if (id1 && id2) {
 
 
-        let imagesAndVideosObj = {};
+    //     let imagesAndVideosObj = {};
 
 
-        // --------------------------------------------------
-        //   画像を保存する
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   画像を保存する
+    //     // --------------------------------------------------
 
-        if (image) {
+    //     if (image) {
 
-          imagesAndVideosObj = await saveImageAndVideo({
+    //       imagesAndVideosObj = await saveImageAndVideo({
 
-            pass: `import/img-old/recruitment/recruitment/${recruitment_id}/image_1.jpg`,
-            type: 'recruitment',
-            id1,
-            id2,
-            users_id,
-            ISO8601,
+    //         pass: `import/img-old/recruitment/recruitment/${recruitment_id}/image_1.jpg`,
+    //         type: 'recruitment',
+    //         id1,
+    //         id2,
+    //         users_id,
+    //         ISO8601,
 
-          });
+    //       });
 
 
-        // --------------------------------------------------
-        //   動画
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   動画
+    //     // --------------------------------------------------
 
-        } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
+    //     } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
 
-          let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
-          videoIDArr = videoIDArr[1].split('";}}');
-          const videoID = videoIDArr[0];
+    //       let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
+    //       videoIDArr = videoIDArr[1].split('";}}');
+    //       const videoID = videoIDArr[0];
 
-          imagesAndVideosObj = {
+    //       imagesAndVideosObj = {
 
-            _id: id1,
-            createdDate: ISO8601,
-            updatedDate: ISO8601,
-            users_id,
-            type: 'recruitment',
-            images: 0,
-            videos: 1,
-            arr: [
-              {
-                _id: id2,
-                type: 'video',
-                videoChannel: 'youtube',
-                videoID,
-              },
-            ],
+    //         _id: id1,
+    //         createdDate: ISO8601,
+    //         updatedDate: ISO8601,
+    //         users_id,
+    //         type: 'recruitment',
+    //         images: 0,
+    //         videos: 1,
+    //         arr: [
+    //           {
+    //             _id: id2,
+    //             type: 'video',
+    //             videoChannel: 'youtube',
+    //             videoID,
+    //           },
+    //         ],
 
-          };
+    //       };
 
-        }
+    //     }
 
 
-        if (Object.keys(imagesAndVideosObj).length !== 0) {
-          imagesAndVideosArr.push(imagesAndVideosObj);
-        }
+    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
+    //       imagesAndVideosArr.push(imagesAndVideosObj);
+    //     }
 
 
-      }
+    //   }
 
 
-    }
+    // }
 
 
 
 
-    // --------------------------------------------------
-    //   recruitment-comments
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   recruitment-comments
+    // // --------------------------------------------------
 
-    for (const [index, valueObj] of recruitmentReplyDataArr.entries()) {
+    // for (const [index, valueObj] of recruitmentReplyDataArr.entries()) {
 
 
-      // --------------------------------------------------
-      //   Data
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   Data
+    //   // --------------------------------------------------
 
-      const recruitment_id = lodashGet(valueObj, ['recruitment_id'], '');
-      const recruitment_reply_id = lodashGet(valueObj, ['recruitment_reply_id'], '');
-      const game_no = lodashGet(valueObj, ['game_no'], '');
+    //   const recruitment_id = lodashGet(valueObj, ['recruitment_id'], '');
+    //   const recruitment_reply_id = lodashGet(valueObj, ['recruitment_reply_id'], '');
+    //   const game_no = lodashGet(valueObj, ['game_no'], '');
 
-      if (
+    //   if (
 
-        idsObj[`recruitment_id_${recruitment_id}`] === undefined ||
-        idsObj[`recruitment_reply_id_${recruitment_reply_id}`] === undefined ||
-        idsObj[`game_no_${game_no}`] === undefined
+    //     idsObj[`recruitment_id_${recruitment_id}`] === undefined ||
+    //     idsObj[`recruitment_reply_id_${recruitment_reply_id}`] === undefined ||
+    //     idsObj[`game_no_${game_no}`] === undefined
 
-      ) {
-        continue;
-      }
+    //   ) {
+    //     continue;
+    //   }
 
 
-      const user_no = lodashGet(valueObj, ['user_no'], 0);
-      const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
-      const image = lodashGet(valueObj, ['image'], '');
-      const movie = lodashGet(valueObj, ['movie'], '');
+    //   const user_no = lodashGet(valueObj, ['user_no'], 0);
+    //   const users_id = lodashGet(idsObj, [`user_no_${user_no}`], '');
+    //   const image = lodashGet(valueObj, ['image'], '');
+    //   const movie = lodashGet(valueObj, ['movie'], '');
 
-      const id1 = lodashGet(idsImageObj, [`recruitment_reply_id_${recruitment_reply_id}`, 'id1'], '');
-      const id2 = lodashGet(idsImageObj, [`recruitment_reply_id_${recruitment_reply_id}`, 'id2Arr', 0], '');
+    //   const id1 = lodashGet(idsImageObj, [`recruitment_reply_id_${recruitment_reply_id}`, 'id1'], '');
+    //   const id2 = lodashGet(idsImageObj, [`recruitment_reply_id_${recruitment_reply_id}`, 'id2Arr', 0], '');
 
 
-      // --------------------------------------------------
-      //   push
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   push
+    //   // --------------------------------------------------
 
-      if (id1 && id2) {
+    //   if (id1 && id2) {
 
 
-        let imagesAndVideosObj = {};
+    //     let imagesAndVideosObj = {};
 
 
-        // --------------------------------------------------
-        //   画像を保存する
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   画像を保存する
+    //     // --------------------------------------------------
 
-        if (image) {
+    //     if (image) {
 
-          imagesAndVideosObj = await saveImageAndVideo({
+    //       imagesAndVideosObj = await saveImageAndVideo({
 
-            pass: `import/img-old/recruitment/reply/${recruitment_reply_id}/image_1.jpg`,
-            type: 'recruitment',
-            id1,
-            id2,
-            users_id,
-            ISO8601,
+    //         pass: `import/img-old/recruitment/reply/${recruitment_reply_id}/image_1.jpg`,
+    //         type: 'recruitment',
+    //         id1,
+    //         id2,
+    //         users_id,
+    //         ISO8601,
 
-          });
+    //       });
 
 
-        // --------------------------------------------------
-        //   動画
-        // --------------------------------------------------
+    //     // --------------------------------------------------
+    //     //   動画
+    //     // --------------------------------------------------
 
-        } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
+    //     } else if (movie && movie.indexOf('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"') !== -1) {
 
-          let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
-          videoIDArr = videoIDArr[1].split('";}}');
-          const videoID = videoIDArr[0];
+    //       let videoIDArr = movie.split('a:1:{i:0;a:1:{s:7:\"youtube\";s:11:\"');
+    //       videoIDArr = videoIDArr[1].split('";}}');
+    //       const videoID = videoIDArr[0];
 
-          imagesAndVideosObj = {
+    //       imagesAndVideosObj = {
 
-            _id: id1,
-            createdDate: ISO8601,
-            updatedDate: ISO8601,
-            users_id,
-            type: 'recruitment',
-            images: 0,
-            videos: 1,
-            arr: [
-              {
-                _id: id2,
-                type: 'video',
-                videoChannel: 'youtube',
-                videoID,
-              },
-            ],
+    //         _id: id1,
+    //         createdDate: ISO8601,
+    //         updatedDate: ISO8601,
+    //         users_id,
+    //         type: 'recruitment',
+    //         images: 0,
+    //         videos: 1,
+    //         arr: [
+    //           {
+    //             _id: id2,
+    //             type: 'video',
+    //             videoChannel: 'youtube',
+    //             videoID,
+    //           },
+    //         ],
 
-          };
+    //       };
 
-        }
+    //     }
 
 
-        if (Object.keys(imagesAndVideosObj).length !== 0) {
-          imagesAndVideosArr.push(imagesAndVideosObj);
-        }
+    //     if (Object.keys(imagesAndVideosObj).length !== 0) {
+    //       imagesAndVideosArr.push(imagesAndVideosObj);
+    //     }
 
 
-      }
+    //   }
 
 
-    }
+    // }
 
 
 

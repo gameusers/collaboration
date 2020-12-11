@@ -72,8 +72,8 @@ app.prepare().then(() => {
 
   // console.log('process.env.NODE_ENV = ' + process.env.NODE_ENV);
   // console.log('process.env.URL_API = ' + process.env.NEXT_PUBLIC_URL_API);
-  // console.log('process.env.URL_MONGODB_DOCKER = ' + process.env.URL_MONGODB_DOCKER);
-  // console.log('process.env.URL_MONGODB = ' + process.env.URL_MONGODB);
+  // console.log('process.env.DB_URL_DOCKER = ' + process.env.DB_URL_DOCKER);
+  // console.log('process.env.DB_URL = ' + process.env.DB_URL);
 
 
   // const vapidKeys = webpush.generateVAPIDKeys();
@@ -83,6 +83,8 @@ app.prepare().then(() => {
   //   ${util.inspect(JSON.parse(JSON.stringify(vapidKeys)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
+
+
 
 
   // --------------------------------------------------
@@ -132,16 +134,33 @@ app.prepare().then(() => {
   //   参考：https://mongoosejs.com/docs/connections.html
   // --------------------------------------------------
 
-  let urlMongoDB = `mongodb://${process.env.URL_MONGODB}/gameusers`;
+  let dbUserPass = '';
 
-  if (process.env.URL_MONGODB_DOCKER) {
-    urlMongoDB = `mongodb://${process.env.URL_MONGODB_DOCKER}/gameusers?replicaSet=rs0`;
+  if (process.env.DB_USER && process.env.DB_PASSWORD) {
+    dbUserPass = `${process.env.DB_USER}:${process.env.DB_PASSWORD}@`;
   }
 
-  // const urlMongoDB = `mongodb://root:password@mongo1:27017`;
+
+  let dbUrl = `mongodb://${dbUserPass}${process.env.DB_URL}/gameusers?replicaSet=rs0`;
+
+  if (process.env.DB_URL_DOCKER) {
+    dbUrl = `mongodb://${dbUserPass}${process.env.DB_URL_DOCKER}/gameusers?replicaSet=rs0`;
+  }
+
+  // const dbUrl = `mongodb://root:password@mongo1:27017`;
+  // const dbUrl = 'mongodb://root:password@mongo1:27017,mongo2:27017,mongo3:27017';
+  // const dbUrl = `mongodb://root:password@mongo1:27017,mongo2:27017,mongo3:27017/gameusers?replicaSet=rs0`;
+
+  // const dbUrl = 'mongodb://gameusers:password@mongo1:27017,mongo2:27017,mongo3:27017';
+  // const dbUrl = 'mongodb://gameusers:password@mongo1:27017,mongo2:27017,mongo3:27017/gameusers?replicaSet=rs0';
+
+  // console.log('process.env.DB_USER = ' + process.env.DB_USER);
+  // console.log('process.env.DB_PASSWORD = ' + process.env.DB_PASSWORD);
+  // console.log('dbUrl = ' + dbUrl);
+
 
   // mongoose.connect('mongodb://localhost:27017/gameusers', {
-  mongoose.connect(urlMongoDB, {
+  mongoose.connect(dbUrl, {
     useCreateIndex: true,
     useUnifiedTopology: true,
     useNewUrlParser: true,

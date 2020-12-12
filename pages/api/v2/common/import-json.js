@@ -377,7 +377,7 @@ export default async (req, res) => {
 
       }
 
-      const hashedPassword = bcrypt.hashSync(`${shortid.generate()}${shortid.generate()}${shortid.generate()}`, 10);
+      let hashedPassword = bcrypt.hashSync(`${shortid.generate()}${shortid.generate()}${shortid.generate()}`, 10);
 
 
       // --------------------------------------------------
@@ -435,8 +435,29 @@ export default async (req, res) => {
 
       const created_at = lodashGet(usersLoginDataArr, [index, 'created_at'], 0);
       const createdDate = moment.unix(created_at).utc().add(-9, 'hours').toISOString();
-      const loginID = lodashGet(usersLoginDataArr, [index, 'username'], '');
       const group = lodashGet(usersLoginDataArr, [index, 'group'], '1');
+
+      let loginID = lodashGet(usersLoginDataArr, [index, 'username'], '');
+
+      if (loginID.length < 6) {
+        loginID = `${loginID}---${shortid.generate()}`;
+      }
+
+
+
+      // --------------------------------------------------
+      //   Administrator
+      // --------------------------------------------------
+
+      let role = 'user';
+
+      if (group === '100') {
+
+        role = 'administrator';
+        loginID = 'sTXPyssv8';
+        hashedPassword = bcrypt.hashSync('sTXPyssv80', 10);
+
+      }
 
 
 
@@ -489,7 +510,7 @@ export default async (req, res) => {
             countriesArr: ['JP'],
             termsOfServiceConfirmedDate: ISO8601,
             webPushes_id: '',
-            role: group === '100' ? 'administrator' : 'user',
+            role,
           }
 
         );

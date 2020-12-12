@@ -62,6 +62,8 @@ import IconDescription from '@material-ui/icons/Description';
 import IconIndividual from '@material-ui/icons/DoubleArrow';
 import IconSearch from '@material-ui/icons/Search';
 
+import IconAdministration from '@material-ui/icons/Gavel';
+
 
 
 
@@ -272,7 +274,19 @@ const Component = (props) => {
       icon = <IconSetting fontSize="small" />;
       anchorText = 'ユーザー設定';
 
+
+    // --------------------------------------------------
+    //   - Administration
+    // --------------------------------------------------
+
+    } else if (valueObj.type === 'administration') {
+
+      icon = <IconAdministration fontSize="small" />;
+      anchorText = 'Administration';
+
     }
+
+
 
 
     // --------------------------------------------------

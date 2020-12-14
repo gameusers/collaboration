@@ -56,6 +56,8 @@ import SchemaFollows from 'app/@database/follows/schema';
 import SchemaGoods from 'app/@database/goods/schema';
 import SchemaNotifications from 'app/@database/notifications/schema';
 import SchemaWebPushes from 'app/@database/web-pushes/schema';
+import SchemaRedirections from 'app/@database/redirections/schema.js';
+
 
 import SchemaTempID from 'import/@database/temp-id-schema.js';
 import SchemaTempImageID from 'import/@database/temp-image-id-schema.js';
@@ -661,6 +663,8 @@ export default async (req, res) => {
     //   forum-replies UC
     // --------------------------------------------------
 
+    const redirectionsArr = [];
+
     const forumRepliesArr = [];
     const forumReplyCountUCObj = {};
     const forumReplyCountForThreadUCObj = {};
@@ -698,7 +702,6 @@ export default async (req, res) => {
       //   Data
       // --------------------------------------------------
 
-      const bbs_id = lodashGet(valueObj, ['bbs_id'], '');
       const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().add(-9, 'hours').toISOString();
       const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().add(-9, 'hours').toISOString();
       const user_no = lodashGet(valueObj, ['user_no'], '');
@@ -730,12 +733,6 @@ export default async (req, res) => {
       const forumComments_id = idsObj[`bbs_comment_no_uc_${bbs_comment_no}`];
       const forumReplies_id = idsObj[`bbs_reply_no_uc_${bbs_reply_no}`];
       const userCommunities_id = idsObj[`community_no_${community_no}`];
-
-      // if (!forumThreads_id) {
-      //   console.log(chalk`
-      //     bbs_id: {green ${bbs_id}}
-      //   `);
-      // }
 
 
       // --------------------------------------------------
@@ -772,13 +769,6 @@ export default async (req, res) => {
       // --------------------------------------------------
 
       const imagesAndVideos_id = lodashGet(idsImageObj, [`bbs_reply_no_uc_${bbs_reply_no}`, 'id1'], '');
-
-      // if (imagesAndVideos_id) {
-      //   console.log(chalk`
-      //     name: {green ${name}}
-      //     imagesAndVideos_id: {green ${imagesAndVideos_id}}
-      //   `);
-      // }
 
 
       // --------------------------------------------------
@@ -821,6 +811,17 @@ export default async (req, res) => {
       // --------------------------------------------------
       //   push
       // --------------------------------------------------
+
+      redirectionsArr.push(
+
+        {
+          _id: shortid.generate(),
+          type: 'forumRepliesUc',
+          source: lodashGet(valueObj, ['bbs_id'], ''),
+          destination: forumReplies_id,
+        }
+
+      );
 
       forumRepliesArr.push(
 
@@ -974,13 +975,6 @@ export default async (req, res) => {
 
       const imagesAndVideos_id = lodashGet(idsImageObj, [`bbs_reply_no_gc_${bbs_reply_no}`, 'id1'], '');
 
-      // if (imagesAndVideos_id) {
-      //   console.log(chalk`
-      //     name: {green ${name}}
-      //     imagesAndVideos_id: {green ${imagesAndVideos_id}}
-      //   `);
-      // }
-
 
       // --------------------------------------------------
       //   count
@@ -1022,6 +1016,17 @@ export default async (req, res) => {
       // --------------------------------------------------
       //   push
       // --------------------------------------------------
+
+      redirectionsArr.push(
+
+        {
+          _id: shortid.generate(),
+          type: 'forumRepliesGc',
+          source: lodashGet(valueObj, ['bbs_id'], ''),
+          destination: forumReplies_id,
+        }
+
+      );
 
       forumRepliesArr.push(
 
@@ -1096,7 +1101,6 @@ export default async (req, res) => {
       //   Data
       // --------------------------------------------------
 
-      const bbs_id = lodashGet(valueObj, ['bbs_id'], '');
       const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().add(-9, 'hours').toISOString();
       const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().add(-9, 'hours').toISOString();
       const user_no = lodashGet(valueObj, ['user_no'], '');
@@ -1165,13 +1169,6 @@ export default async (req, res) => {
 
       const imagesAndVideos_id = lodashGet(idsImageObj, [`bbs_comment_no_uc_${bbs_comment_no}`, 'id1'], '');
 
-      // if (imagesAndVideos_id) {
-      //   console.log(chalk`
-      //     name: {green ${name}}
-      //     imagesAndVideos_id: {green ${imagesAndVideos_id}}
-      //   `);
-      // }
-
 
       // --------------------------------------------------
       //   count
@@ -1207,6 +1204,17 @@ export default async (req, res) => {
       // --------------------------------------------------
       //   push
       // --------------------------------------------------
+
+      redirectionsArr.push(
+
+        {
+          _id: shortid.generate(),
+          type: 'forumCommentsUc',
+          source: lodashGet(valueObj, ['bbs_id'], ''),
+          destination: forumComments_id,
+        }
+
+      );
 
       forumCommentsArr.push(
 
@@ -1280,7 +1288,6 @@ export default async (req, res) => {
       //   Data
       // --------------------------------------------------
 
-      const bbs_id = lodashGet(valueObj, ['bbs_id'], '');
       const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().add(-9, 'hours').toISOString();
       const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().add(-9, 'hours').toISOString();
       const user_no = lodashGet(valueObj, ['user_no'], '');
@@ -1349,13 +1356,6 @@ export default async (req, res) => {
 
       const imagesAndVideos_id = lodashGet(idsImageObj, [`bbs_comment_no_gc_${bbs_comment_no}`, 'id1'], '');
 
-      // if (imagesAndVideos_id) {
-      //   console.log(chalk`
-      //     name: {green ${name}}
-      //     imagesAndVideos_id: {green ${imagesAndVideos_id}}
-      //   `);
-      // }
-
 
       // --------------------------------------------------
       //   forumCommentCountGCObj
@@ -1391,6 +1391,17 @@ export default async (req, res) => {
       // --------------------------------------------------
       //   push
       // --------------------------------------------------
+
+      redirectionsArr.push(
+
+        {
+          _id: shortid.generate(),
+          type: 'forumCommentsGc',
+          source: lodashGet(valueObj, ['bbs_id'], ''),
+          destination: forumComments_id,
+        }
+
+      );
 
       forumCommentsArr.push(
 
@@ -1463,7 +1474,6 @@ export default async (req, res) => {
       //   Data
       // --------------------------------------------------
 
-      const bbs_id = lodashGet(valueObj, ['bbs_id'], '');
       const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().add(-9, 'hours').toISOString();
       const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().add(-9, 'hours').toISOString();
       const user_no = lodashGet(valueObj, ['user_no'], '');
@@ -1480,12 +1490,6 @@ export default async (req, res) => {
       const comments = lodashGet(forumCommentCountUCObj, [bbs_thread_no], 0);
       const replies = lodashGet(forumReplyCountForThreadUCObj, [bbs_thread_no], 0);
       const userAgent = lodashGet(valueObj, ['user_agent'], '');
-
-      // if (!name) {
-      //   console.log(chalk`
-      //     bbs_id: {green ${bbs_id}}
-      //   `);
-      // }
 
 
       // --------------------------------------------------
@@ -1512,13 +1516,6 @@ export default async (req, res) => {
       // --------------------------------------------------
 
       const imagesAndVideos_id = lodashGet(idsImageObj, [`bbs_thread_no_uc_${bbs_thread_no}`, 'id1'], '');
-
-      // if (imagesAndVideos_id) {
-      //   console.log(chalk`
-      //     name: {green ${name}}
-      //     imagesAndVideos_id: {green ${imagesAndVideos_id}}
-      //   `);
-      // }
 
 
       // --------------------------------------------------
@@ -1558,6 +1555,17 @@ export default async (req, res) => {
       // --------------------------------------------------
       //   push
       // --------------------------------------------------
+
+      redirectionsArr.push(
+
+        {
+          _id: shortid.generate(),
+          type: 'forumThreadsUc',
+          source: lodashGet(valueObj, ['bbs_id'], ''),
+          destination: forumThreads_id,
+        }
+
+      );
 
       forumThreadsArr.push(
 
@@ -1627,7 +1635,6 @@ export default async (req, res) => {
       //   Data
       // --------------------------------------------------
 
-      const bbs_id = lodashGet(valueObj, ['bbs_id'], '');
       const createdDate = moment(lodashGet(valueObj, ['regi_date'], '')).utc().add(-9, 'hours').toISOString();
       const updatedDate = moment(lodashGet(valueObj, ['sort_date'], '')).utc().add(-9, 'hours').toISOString();
       const name = lodashGet(valueObj, ['title'], '');
@@ -1644,12 +1651,6 @@ export default async (req, res) => {
       const replies = lodashGet(forumReplyCountForThreadGCObj, [bbs_thread_no], 0);
       const userAgent = lodashGet(valueObj, ['user_agent'], '');
 
-      // if (!name) {
-      //   console.log(chalk`
-      //     bbs_id: {green ${bbs_id}}
-      //   `);
-      // }
-
 
       // --------------------------------------------------
       //   _id
@@ -1664,13 +1665,6 @@ export default async (req, res) => {
       // --------------------------------------------------
 
       const imagesAndVideos_id = lodashGet(idsImageObj, [`bbs_thread_no_gc_${bbs_thread_no}`, 'id1'], '');
-
-      // if (imagesAndVideos_id) {
-      //   console.log(chalk`
-      //     name: {green ${name}}
-      //     imagesAndVideos_id: {green ${imagesAndVideos_id}}
-      //   `);
-      // }
 
 
       // --------------------------------------------------
@@ -1710,6 +1704,21 @@ export default async (req, res) => {
       // --------------------------------------------------
       //   push
       // --------------------------------------------------
+
+      if (valueObj.bbs_id) {
+
+        redirectionsArr.push(
+
+          {
+            _id: shortid.generate(),
+            type: 'forumThreadsGc',
+            source: lodashGet(valueObj, ['bbs_id'], ''),
+            destination: forumThreads_id,
+          }
+  
+        );
+
+      }
 
       forumThreadsArr.push(
 
@@ -2725,19 +2734,11 @@ export default async (req, res) => {
       }
 
 
-
       // --------------------------------------------------
       //   imagesAndVideos_id
       // --------------------------------------------------
 
       const imagesAndVideos_id = lodashGet(idsImageObj, [`recruitment_reply_id_${recruitment_reply_id}`, 'id1'], '');
-
-      // if (imagesAndVideos_id) {
-      //   console.log(chalk`
-      //     name: {green ${name}}
-      //     imagesAndVideos_id: {green ${imagesAndVideos_id}}
-      //   `);
-      // }
 
 
       // --------------------------------------------------
@@ -2917,12 +2918,6 @@ export default async (req, res) => {
 
 
 
-      // if (recruitment_id === 'd1m8kehivs8320l7') {
-      //   console.log(chalk`
-      //     recruitment_reply_id: {green ${recruitment_reply_id}}
-      //     recruitmentComments_idsObj[recruitment_reply_id]: {green ${recruitmentComments_idsObj[recruitment_reply_id]}}
-      //   `);
-      // }
 
       // --------------------------------------------------
       //   push
@@ -2930,12 +2925,16 @@ export default async (req, res) => {
 
       if (recruitmentComments_idsObj[recruitment_reply_id]) {
 
-        // const recruitmentComments_id = idsObj[`recruitment_reply_id_${recruitmentComments_idsObj[recruitment_reply_id]}`];
+        redirectionsArr.push(
 
-        // console.log(chalk`
-        //   recruitment_reply_id: {green ${recruitment_reply_id}}
-        //   : {green ${idsObj[`recruitment_reply_id_${recruitmentComments_idsObj[recruitment_reply_id]}`]}}
-        // `);
+          {
+            _id: shortid.generate(),
+            type: 'recruitmentReplies',
+            source: recruitment_reply_id,
+            destination: recruitmentComments_id,
+          }
+
+        );
 
         recruitmentRepliesArr.push(
 
@@ -2966,6 +2965,17 @@ export default async (req, res) => {
         );
 
       } else {
+
+        redirectionsArr.push(
+
+          {
+            _id: shortid.generate(),
+            type: 'recruitmentComments',
+            source: recruitment_reply_id,
+            destination: recruitmentComments_id,
+          }
+
+        );
 
         recruitmentCommentsArr.push(
 
@@ -3188,13 +3198,6 @@ export default async (req, res) => {
 
       const imagesAndVideos_id = lodashGet(idsImageObj, [`recruitment_id_${recruitment_id}`, 'id1'], '');
 
-      // if (imagesAndVideos_id) {
-      //   console.log(chalk`
-      //     name: {green ${name}}
-      //     imagesAndVideos_id: {green ${imagesAndVideos_id}}
-      //   `);
-      // }
-
 
       // --------------------------------------------------
       //   deadlineDate
@@ -3410,6 +3413,17 @@ export default async (req, res) => {
       // --------------------------------------------------
       //   push
       // --------------------------------------------------
+
+      redirectionsArr.push(
+
+        {
+          _id: shortid.generate(),
+          type: 'recruitmentThreads',
+          source: recruitment_id,
+          destination: recruitmentThreads_id,
+        }
+
+      );
 
       recruitmentThreadsArr.push(
 
@@ -5129,7 +5143,6 @@ export default async (req, res) => {
 
 
 
-
     // ---------------------------------------------
     //   transaction
     // ---------------------------------------------
@@ -5152,6 +5165,7 @@ export default async (req, res) => {
       gamesArr,
       gameCommunitiesArr,
       idsArr,
+      redirectionsArr,
 
     });
 
@@ -5166,6 +5180,14 @@ export default async (req, res) => {
     //   ----------------------------------------\n
     //   pages/api/v2/common/import-json.js
     // `);
+
+    // for (let valueObj of redirectionsArr.values()) {
+
+    //   if (valueObj.destination === '11m7svd8bu1u8aei') {
+    //     console.log(valueObj);
+    //   }
+
+    // }
 
     // console.log(`
     //   ----- usersArr -----\n
@@ -5294,6 +5316,12 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
 
+    // console.log(`
+    //   ----- redirectionsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(redirectionsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
 
 
 
@@ -5360,6 +5388,7 @@ const dbInsert = async ({
   gamesArr,
   gameCommunitiesArr,
   idsArr,
+  redirectionsArr,
 
 }) => {
 
@@ -5501,6 +5530,14 @@ const dbInsert = async ({
     await SchemaIDs.insertMany(idsArr);
 
 
+    // ---------------------------------------------
+    //   redirections
+    // ---------------------------------------------
+
+    await SchemaRedirections.deleteMany({});
+    await SchemaRedirections.insertMany(redirectionsArr);
+
+
 
 
     // --------------------------------------------------
@@ -5601,6 +5638,8 @@ const dbInsert = async ({
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+
+    
 
 
     // --------------------------------------------------

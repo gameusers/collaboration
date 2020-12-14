@@ -67,6 +67,24 @@ module.exports = withOffline({
       },
     ],
   },
+
+
+
+
+  // --------------------------------------------------
+  //   redirect
+  //   https://nextjs.org/docs/api-reference/next.config.js/redirects
+  // --------------------------------------------------
+  
+  async redirects() {
+    return [
+      {
+        source: '/pl/:slug*',
+        destination: '/ur/:slug*', // Matched parameters can be used in the destination
+        permanent: true,
+      },
+    ]
+  },
   
   
 });

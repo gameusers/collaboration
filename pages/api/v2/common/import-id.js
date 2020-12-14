@@ -1247,8 +1247,11 @@ export default async (req, res) => {
     await SchemaTempID.deleteMany({});
     await SchemaTempID.insertMany(saveArr);
 
+    await SchemaTempImageID.deleteMany({});
+    await SchemaTempImageID.insertMany(saveImagesArr);
 
-    const count = await SchemaTempImageID.countDocuments({}).exec();
+
+    // const count = await SchemaTempImageID.countDocuments({}).exec();
 
     // console.log(chalk`
     //   count: {green ${count}}
@@ -1256,8 +1259,8 @@ export default async (req, res) => {
 
     // if (count === 0) {
 
-      await SchemaTempImageID.deleteMany({});
-      await SchemaTempImageID.insertMany(saveImagesArr);
+      // await SchemaTempImageID.deleteMany({});
+      // await SchemaTempImageID.insertMany(saveImagesArr);
 
     // }
 

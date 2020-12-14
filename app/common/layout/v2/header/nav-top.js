@@ -60,6 +60,7 @@ import IconSearch from '@material-ui/icons/Search';
 import IconPerson from '@material-ui/icons/Person';
 import IconEject from '@material-ui/icons/Eject';
 import IconAchievement from '@material-ui/icons/EmojiEvents';
+import IconGavel from '@material-ui/icons/Gavel';
 
 
 // ---------------------------------------------
@@ -77,6 +78,8 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
 import { showSnackbar } from 'app/@modules/snackbar.js';
+
+
 
 
 
@@ -228,6 +231,10 @@ const Component = (props) => {
     setDialogAchievementSelectedTitles_idsArr,
 
   } = stateLayout;
+
+
+  const role = lodashGet(loginUsersObj, ['role'], '');
+  const administrator = role === 'administrator' ? true : false;
 
 
 
@@ -727,6 +734,38 @@ const Component = (props) => {
         >
 
 
+          {/* 管理 */}
+          {administrator &&
+            <MenuItem
+              onClick={() => setLoginMenuOpen(false)}
+            >
+
+              <ListItemIcon>
+                <IconGavel />
+              </ListItemIcon>
+
+
+              <Link
+                href={`/administration`}
+              >
+                <a className="link">
+                  <ListItemText
+                    css={css`
+                      && {
+                        margin: 0 8px 0 0;
+                      }
+                    `}
+                    primary="管理"
+                  />
+                </a>
+              </Link>
+
+            </MenuItem>
+          }
+
+
+
+
           {/* ユーザー */}
           <MenuItem
             onClick={() => setLoginMenuOpen(false)}
@@ -738,8 +777,7 @@ const Component = (props) => {
 
 
             <Link
-              href={`/ur/[userID]`}
-              as={`/ur/${userID}`}
+              href={`/ur/${userID}`}
             >
               <a className="link">
                 <ListItemText

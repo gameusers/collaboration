@@ -86,6 +86,8 @@ import TitleChip from 'app/common/title/v2/chip.js';
 
 
 
+
+
 // --------------------------------------------------
 //   Emotion
 //   https://emotion.sh/docs/composition
@@ -172,6 +174,7 @@ const useStyles = makeStyles({
 
   root: {
     minHeight: 'inherit !important',
+    backgroundColor: '#4169e1',
   },
 
   content: {
@@ -263,14 +266,15 @@ const ComponentPanel = (props) => {
         css={cssHeadingBlue}
         classes={{
           root: classes.root,
-          expanded: classes.expanded,
           content: classes.content,
+          expanded: classes.expanded,
         }}
       >
 
 
         <h2
           css={css`
+            color: white;
             padding-top: 2px;
           `}
         >
@@ -317,7 +321,6 @@ const ComponentPanel = (props) => {
         css={css`
           display: flex;
           flex-flow: column wrap;
-          padding: 0 0 12px 12px;
         `}
       >
 
@@ -894,7 +897,9 @@ const Component = (props) => {
       // --------------------------------------------------
 
       componentConditionsArr.push(
-        <Step key={index2}>
+        <Step
+          key={index2}
+        >
 
           <StepLabel>
 
@@ -1028,7 +1033,7 @@ const Component = (props) => {
 
         <Stepper
           css={css`
-            padding: 24px 0 6px 6px;
+            padding: 24px 0 0 0 !important;
           `}
           activeStep={activeStep}
           orientation="vertical"

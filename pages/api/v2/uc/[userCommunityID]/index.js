@@ -26,6 +26,7 @@ import lodashHas from 'lodash/has';
 import ModelUserCommunities from 'app/@database/user-communities/model.js';
 import ModelForumThreads from 'app/@database/forum-threads/model.js';
 import ModelFeeds from 'app/@database/feeds/model.js';
+import ModelRedirections from 'app/@database/redirections/model.js';
 
 
 // ---------------------------------------------
@@ -339,7 +340,7 @@ export default async (req, res) => {
 
 
       // --------------------------------------------------
-      //   DB find / Forum Threads For List
+      //   DB find / スレッド一覧取得
       // --------------------------------------------------
 
       let argumentsObj = {
@@ -359,6 +360,8 @@ export default async (req, res) => {
       }
 
       returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList(argumentsObj);
+
+
 
 
       // --------------------------------------------------
@@ -406,21 +409,104 @@ export default async (req, res) => {
 
 
       // --------------------------------------------------
-      //   DB find / Forum by forumID
+      //   forumIDでデータを取得
+      //   この形式のURL http://localhost:8080/uc/community1/forum/o7PT5QCC6GwD
       // --------------------------------------------------
 
       if (forumID) {
 
+
+        // --------------------------------------------------
+        //   DB find / Forum by forumID
+        // --------------------------------------------------
+
         forumObj = await ModelForumThreads.findForumByforumID(argumentsObj);
 
+        // console.log(`
+        //   ----- forumObj -----\n
+        //   ${util.inspect(forumObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+
+
+        // ---------------------------------------------
+        //   フォーラムのデータがない場合はリダイレクト先があるか調べる
+        // ---------------------------------------------
+
+        const threadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
+
+        if (Object.keys(threadsDataObj).length === 0) {
+
+          const redirectionsObj = await ModelRedirections.findOne({
+
+            conditionObj: {
+              source: forumID
+            }
+  
+          });
+  
+          // console.log(`
+          //   ----- redirectionsObj -----\n
+          //   ${util.inspect(redirectionsObj, { colors: true, depth: null })}\n
+          //   --------------------\n
+          // `);
+
+
+          // ---------------------------------------------
+          //   リダイレクト先がない場合は、404エラー
+          // ---------------------------------------------
+
+          if (!redirectionsObj) {
+
+            statusCode = 404;
+            throw new CustomError({ level: 'warn', errorsArr: [{ code: 'moIaMhxro', messageID: 'Error' }] });
+
+          }
+
+
+          // ---------------------------------------------
+          //   リダイレクト先
+          // ---------------------------------------------
+
+          lodashSet(returnObj, ['redirectObj', 'forumID'], lodashGet(redirectionsObj, ['destination'], ''));
+
+          // console.log(`
+          //   ----- returnObj.redirectObj -----\n
+          //   ${util.inspect(returnObj.redirectObj, { colors: true, depth: null })}\n
+          //   --------------------\n
+          // `);
+
+
+        }
+        
 
       // --------------------------------------------------
-      //   DB find / Forum
+      //   フォーラムをページで取得
       // --------------------------------------------------
 
       } else {
 
+
+        // ---------------------------------------------
+        //   DB find / forum
+        // ---------------------------------------------
+
         forumObj = await ModelForumThreads.findForForum(argumentsObj);
+
+
+        // ---------------------------------------------
+        //   スレッドのデータがない場合はエラー
+        // ---------------------------------------------
+
+        const threadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
+
+        if (threadPage !== 1 && Object.keys(threadsDataObj).length === 0) {
+
+          statusCode = 404;
+          throw new CustomError({ level: 'warn', errorsArr: [{ code: 'zbbRej-eH', messageID: 'Error' }] });
+
+        }
+
 
       }
 

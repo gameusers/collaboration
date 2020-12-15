@@ -376,6 +376,9 @@ export async function getServerSideProps({ req, res, query }) {
   const forumCommentsObj = lodashGet(dataObj, ['forumCommentsObj'], {});
   const forumRepliesObj = lodashGet(dataObj, ['forumRepliesObj'], {});
 
+  const redirectUrlID = lodashGet(dataObj, ['redirectObj', 'urlID'], '');
+  const redirectForumID = lodashGet(dataObj, ['redirectObj', 'forumID'], '');
+
 
 
 
@@ -540,6 +543,8 @@ export async function getServerSideProps({ req, res, query }) {
   }
 
 
+
+
   // ---------------------------------------------
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
@@ -547,6 +552,36 @@ export async function getServerSideProps({ req, res, query }) {
   res.cookie('recentAccessPageHref', recentAccessPageHref);
   res.cookie('recentAccessPageAs', recentAccessPageAs);
 
+
+
+
+  // --------------------------------------------------
+  //   リダイレクト
+  // --------------------------------------------------
+
+  if (redirectUrlID || redirectForumID) {
+
+    const isServer = !process.browser;
+    const desUrlID = redirectUrlID || urlID;
+    const desForumID = redirectForumID || forumID;
+
+    let destination = `/gc/${desUrlID}/forum/${desForumID}`;
+
+    if (isServer && res) {
+
+      res.writeHead(301, {
+        Location: destination
+      });
+
+      res.end();
+
+    } else {
+
+      Router.replace(destination);
+
+    }
+
+  }
 
 
 

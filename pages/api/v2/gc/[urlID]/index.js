@@ -26,6 +26,7 @@ import lodashHas from 'lodash/has';
 import ModelGameCommunities from 'app/@database/game-communities/model.js';
 import ModelForumThreads from 'app/@database/forum-threads/model.js';
 import ModelFeeds from 'app/@database/feeds/model.js';
+import ModelRedirections from 'app/@database/redirections/model.js';
 
 
 // ---------------------------------------------
@@ -162,13 +163,54 @@ export default async (req, res) => {
     // `);
 
     // ---------------------------------------------
-    //   - コミュニティのデータがない場合はエラー
+    //   - コミュニティのデータがない場合
     // ---------------------------------------------
 
     if (!lodashHas(gameCommunityObj, ['gameCommunitiesObj', '_id'])) {
 
-      statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'mb7-816Fu', messageID: 'Error' }] });
+
+      // ---------------------------------------------
+      //   リダイレクト先があるか調べる
+      // ---------------------------------------------
+
+      const redirectionsObj = await ModelRedirections.findOne({
+
+        conditionObj: {
+          source: urlID
+        }
+
+      });
+
+      // console.log(`
+      //   ----- redirectionsObj -----\n
+      //   ${util.inspect(redirectionsObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // ---------------------------------------------
+      //   リダイレクト先がない場合は、404エラー
+      // ---------------------------------------------
+
+      if (!redirectionsObj) {
+
+        statusCode = 404;
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'RbzC0csz0', messageID: 'Error' }] });
+
+      }
+
+
+      // ---------------------------------------------
+      //   リダイレクト先
+      // ---------------------------------------------
+
+      lodashSet(returnObj, ['redirectObj', 'urlID'], lodashGet(redirectionsObj, ['destination'], ''));
+
+      // console.log(`
+      //   ----- returnObj.redirectObj -----\n
+      //   ${util.inspect(returnObj.redirectObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
 
     }
 
@@ -337,24 +379,100 @@ export default async (req, res) => {
 
 
     // --------------------------------------------------
-    //   DB find / Forum by forumID
+    //   forumIDでデータを取得
+    //   この形式のURL http://localhost:8080/gc/Rainbow-Six-Siege/forum/LnmmG7AyXbkhe
     // --------------------------------------------------
 
     let forumObj = {};
 
-
     if (forumID) {
+
+
+      // --------------------------------------------------
+      //   DB find / Forum by forumID
+      // --------------------------------------------------
 
       forumObj = await ModelForumThreads.findForumByforumID(argumentsObj);
 
 
+      // ---------------------------------------------
+      //   フォーラムのデータがない場合はリダイレクト先があるか調べる
+      // ---------------------------------------------
+
+      const threadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
+
+      if (Object.keys(threadsDataObj).length === 0) {
+
+        const redirectionsObj = await ModelRedirections.findOne({
+
+          conditionObj: {
+            source: forumID
+          }
+
+        });
+
+        // console.log(`
+        //   ----- redirectionsObj -----\n
+        //   ${util.inspect(redirectionsObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+
+
+        // ---------------------------------------------
+        //   リダイレクト先がない場合は、404エラー
+        // ---------------------------------------------
+
+        if (!redirectionsObj) {
+
+          statusCode = 404;
+          throw new CustomError({ level: 'warn', errorsArr: [{ code: 'shtzTPKn0', messageID: 'Error' }] });
+
+        }
+
+
+        // ---------------------------------------------
+        //   リダイレクト先
+        // ---------------------------------------------
+
+        lodashSet(returnObj, ['redirectObj', 'forumID'], lodashGet(redirectionsObj, ['destination'], ''));
+
+        // console.log(`
+        //   ----- returnObj.redirectObj -----\n
+        //   ${util.inspect(returnObj.redirectObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+
+
+      }
+
+
     // --------------------------------------------------
-    //   DB find / Forum
+    //   フォーラムをページで取得
     // --------------------------------------------------
 
     } else {
 
+
+      // ---------------------------------------------
+      //   DB find / forum
+      // ---------------------------------------------
+
       forumObj = await ModelForumThreads.findForForum(argumentsObj);
+
+
+      // ---------------------------------------------
+      //   スレッドのデータがない場合はエラー
+      // ---------------------------------------------
+
+      const threadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
+
+      if (threadPage !== 1 && Object.keys(threadsDataObj).length === 0) {
+
+        statusCode = 404;
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'bq9lBcsBi', messageID: 'Error' }] });
+
+      }
+
 
     }
 
@@ -374,20 +492,20 @@ export default async (req, res) => {
     //   スレッドのデータがない場合はエラー
     // ---------------------------------------------
 
-    const threadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
+    // const threadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
 
-    // console.log(`
-    //   ----- forumThreadsDataObj -----\n
-    //   ${util.inspect(forumThreadsDataObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    // // console.log(`
+    // //   ----- forumThreadsDataObj -----\n
+    // //   ${util.inspect(forumThreadsDataObj, { colors: true, depth: null })}\n
+    // //   --------------------\n
+    // // `);
 
-    if ((threadPage !== 1 || forumID) && Object.keys(threadsDataObj).length === 0) {
+    // if ((threadPage !== 1 || forumID) && Object.keys(threadsDataObj).length === 0) {
 
-      statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CwFmCVEZJ', messageID: 'Error' }] });
+    //   statusCode = 404;
+    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CwFmCVEZJ', messageID: 'Error' }] });
 
-    }
+    // }
 
 
 

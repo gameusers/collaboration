@@ -13,6 +13,7 @@ const schema = mongoose.Schema({
   
   _id: { type: String, required: true },
   type: { type: String, required: true },
+  statusCode: { type: Number, required: true },
   source: { type: String, required: true, unique: true },
   destination: { type: String, required: true, unique: true },
   

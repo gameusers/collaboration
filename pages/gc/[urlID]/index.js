@@ -349,6 +349,8 @@ export async function getServerSideProps({ req, res, query }) {
   const forumCommentsObj = lodashGet(dataObj, ['forumCommentsObj'], {});
   const forumRepliesObj = lodashGet(dataObj, ['forumRepliesObj'], {});
 
+  const redirectUrlID = lodashGet(dataObj, ['redirectObj', 'urlID'], '');
+
 
 
 
@@ -421,12 +423,43 @@ export async function getServerSideProps({ req, res, query }) {
   ];
 
 
+
+
   // ---------------------------------------------
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
   res.cookie('recentAccessPageHref', '/gc/[urlID]');
   res.cookie('recentAccessPageAs', `/gc/${urlID}`);
+
+
+
+
+  // --------------------------------------------------
+  //   リダイレクト
+  // --------------------------------------------------
+
+  if (redirectUrlID) {
+
+    const isServer = !process.browser;
+
+    let destination = `/gc/${redirectUrlID}`;
+
+    if (isServer && res) {
+
+      res.writeHead(301, {
+        Location: destination
+      });
+
+      res.end();
+
+    } else {
+
+      Router.replace(destination);
+
+    }
+
+  }
 
 
 

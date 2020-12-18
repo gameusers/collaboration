@@ -298,7 +298,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   } else {
 
-    forumID = slugsArr[0];
+    forumID = slugsArr[0] || '';
     pageType = 'individual';
 
   }
@@ -353,7 +353,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   });
 
-  const statusCode = lodashGet(resultObj, ['statusCode'], 400);
+  let statusCode = lodashGet(resultObj, ['statusCode'], 400);
   const dataObj = lodashGet(resultObj, ['data'], {});
 
 
@@ -565,7 +565,28 @@ export async function getServerSideProps({ req, res, query }) {
     const desUrlID = redirectUrlID || urlID;
     const desForumID = redirectForumID || forumID;
 
-    let destination = `/gc/${desUrlID}/forum/${desForumID}`;
+    // let destination = '';
+
+    // if (pageType === 'forum') {
+
+    //   destination = `/gc/${desUrlID}/forum/${threadPage}`;
+
+    // } else if (pageType === 'individual') {
+
+    //   destination = `/gc/${desUrlID}/forum/${desForumID}`;
+
+    // } else {
+
+    //   destination = `/gc/${desUrlID}`;
+
+    // }
+
+    const destination = pageType === 'forum'? `/gc/${desUrlID}/forum/${threadPage}` : `/gc/${desUrlID}/forum/${desForumID}`;
+
+    // console.log(chalk`
+    // pageType: {green ${pageType}}
+    // destination: {green ${destination}}
+    // `);
 
     if (isServer && res) {
 
@@ -584,6 +605,19 @@ export async function getServerSideProps({ req, res, query }) {
   }
 
 
+
+
+  // --------------------------------------------------
+  //   以下の URL でアクセスした場合、404
+  //   http://localhost:8080/gc/***/forum
+  // --------------------------------------------------
+
+  if (slugsArr.length === 0) {
+    statusCode = 404;
+  }
+
+
+  
 
   // --------------------------------------------------
   //   console.log

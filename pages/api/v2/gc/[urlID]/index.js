@@ -132,6 +132,30 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
     lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
 
+    // console.log(chalk`
+    // urlID: {green ${urlID}}
+    // forumID: {green ${forumID} / ${typeof forumID}}
+    // threadPage: {green ${threadPage}}
+    // `);
+
+
+
+    // ---------------------------------------------
+    //   必要なデータがない場合は、404エラー
+    // ---------------------------------------------
+
+    // if (!forumID) {
+    //   console.log('forumID');
+    // }
+
+    // if (threadPage === 1 && !forumID) {
+    // // if (!forumID) {
+    //   console.log('AAAAA');
+    //   statusCode = 404;
+    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'KnRH2r3hv', messageID: 'Error' }] });
+
+    // }
+    // console.log('BBBBB');
 
 
 
@@ -394,6 +418,12 @@ export default async (req, res) => {
 
       forumObj = await ModelForumThreads.findForumByforumID(argumentsObj);
 
+      // console.log(`
+      //   ----- forumObj -----\n
+      //   ${util.inspect(forumObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
 
       // ---------------------------------------------
       //   フォーラムのデータがない場合はリダイレクト先があるか調べる
@@ -450,7 +480,7 @@ export default async (req, res) => {
     //   フォーラムをページで取得
     // --------------------------------------------------
 
-    } else {
+    } else if (gameCommunities_id) {
 
 
       // ---------------------------------------------
@@ -458,6 +488,12 @@ export default async (req, res) => {
       // ---------------------------------------------
 
       forumObj = await ModelForumThreads.findForForum(argumentsObj);
+
+      // console.log(`
+      //   ----- forumObj -----\n
+      //   ${util.inspect(forumObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
 
 
       // ---------------------------------------------
@@ -488,28 +524,6 @@ export default async (req, res) => {
 
 
 
-    // ---------------------------------------------
-    //   スレッドのデータがない場合はエラー
-    // ---------------------------------------------
-
-    // const threadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
-
-    // // console.log(`
-    // //   ----- forumThreadsDataObj -----\n
-    // //   ${util.inspect(forumThreadsDataObj, { colors: true, depth: null })}\n
-    // //   --------------------\n
-    // // `);
-
-    // if ((threadPage !== 1 || forumID) && Object.keys(threadsDataObj).length === 0) {
-
-    //   statusCode = 404;
-    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CwFmCVEZJ', messageID: 'Error' }] });
-
-    // }
-
-
-
-
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
@@ -522,6 +536,12 @@ export default async (req, res) => {
     // console.log(chalk`
     //   urlID: {green ${urlID}}
     //   gameCommunities_id: {green ${gameCommunities_id}}
+    // `);
+
+    // console.log(`
+    //   ----- returnObj.redirectObj -----\n
+    //   ${util.inspect(returnObj.redirectObj, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
 
     // console.log(`

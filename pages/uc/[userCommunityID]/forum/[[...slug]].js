@@ -298,7 +298,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   } else {
 
-    forumID = slugsArr[0];
+    forumID = slugsArr[0] || '';
     pageType = 'individual';
 
   }
@@ -353,7 +353,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   });
 
-  const statusCode = lodashGet(resultObj, ['statusCode'], 400);
+  let statusCode = lodashGet(resultObj, ['statusCode'], 400);
   const dataObj = lodashGet(resultObj, ['data'], {});
 
 
@@ -571,6 +571,18 @@ export async function getServerSideProps({ req, res, query }) {
 
     }
 
+  }
+
+
+
+
+  // --------------------------------------------------
+  //   以下の URL でアクセスした場合、404
+  //   http://localhost:8080/uc/***/forum
+  // --------------------------------------------------
+
+  if (slugsArr.length === 0) {
+    statusCode = 404;
   }
 
 

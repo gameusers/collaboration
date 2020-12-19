@@ -320,7 +320,7 @@ export async function getServerSideProps({ req, res, query }) {
   } else if (slugsArr[0] !== 'search') {
 
     pageType = 'individual';
-    recruitmentID = slugsArr[0];
+    recruitmentID = slugsArr[0] || '';
 
   } else if (slugsArr[0] === 'search') {
 
@@ -383,6 +383,9 @@ export async function getServerSideProps({ req, res, query }) {
   const recruitmentRepliesObj = lodashGet(dataObj, ['recruitmentRepliesObj'], {});
 
   const hardwaresArr = lodashGet(dataObj, ['hardwaresArr'], []);
+
+  const redirectUrlID = lodashGet(dataObj, ['redirectObj', 'urlID'], '');
+  const redirectRecruitmentID = lodashGet(dataObj, ['redirectObj', 'recruitmentID'], '');
 
 
 
@@ -605,12 +608,50 @@ export async function getServerSideProps({ req, res, query }) {
   }
 
 
+
+
   // ---------------------------------------------
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
   res.cookie('recentAccessPageHref', recentAccessPageHref);
   res.cookie('recentAccessPageAs', recentAccessPageAs);
+
+
+
+
+  // --------------------------------------------------
+  //   リダイレクト
+  // --------------------------------------------------
+
+  if (redirectUrlID || redirectRecruitmentID) {
+
+    const isServer = !process.browser;
+    const desUrlID = redirectUrlID || urlID;
+    const desRecruitmentID = redirectRecruitmentID || recruitmentID;
+
+    const destination = pageType === 'page'? `/gc/${desUrlID}/rec/${threadPage}` : `/gc/${desUrlID}/rec/${desRecruitmentID}`;
+
+    // console.log(chalk`
+    // pageType: {green ${pageType}}
+    // destination: {green ${destination}}
+    // `);
+
+    if (isServer && res) {
+
+      res.writeHead(301, {
+        Location: destination
+      });
+
+      res.end();
+
+    } else {
+
+      Router.replace(destination);
+
+    }
+
+  }
 
 
 

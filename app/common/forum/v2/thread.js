@@ -91,6 +91,8 @@ import Comment from 'app/common/forum/v2/comment.js';
 
 
 
+
+
 // --------------------------------------------------
 //   Material UI Style Overrides
 //   https://material-ui.com/styles/basics/
@@ -559,6 +561,7 @@ const Component = (props) => {
             && {
               cursor: default !important;
               background-color: white !important;
+              user-select: auto;
 
               @media screen and (max-width: 480px) {
                 padding: 0 16px;

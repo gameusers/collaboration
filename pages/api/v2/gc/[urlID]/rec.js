@@ -27,6 +27,7 @@ import ModelGameCommunities from 'app/@database/game-communities/model.js';
 import ModelHardwares from 'app/@database/hardwares/model.js';
 import ModelRecruitmentThreads from 'app/@database/recruitment-threads/model.js';
 import ModelFeeds from 'app/@database/feeds/model.js';
+import ModelRedirections from 'app/@database/redirections/model.js';
 
 
 // ---------------------------------------------
@@ -163,13 +164,93 @@ export default async (req, res) => {
 
 
     // ---------------------------------------------
-    //   - コミュニティのデータがない場合はエラー
+    //   - コミュニティのデータがない場合
     // ---------------------------------------------
 
     if (!lodashHas(gameCommunityObj, ['gameCommunitiesObj', '_id'])) {
 
-      statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'cHpRTr4cy', messageID: 'Error' }] });
+
+      // ---------------------------------------------
+      //   リダイレクト先があるか調べる
+      // ---------------------------------------------
+
+      const redirectionsArr = await ModelRedirections.find({
+
+        conditionObj: {
+          source: { $in: [urlID, recruitmentID] }
+        }
+
+      });
+
+      let redirectionsGameUrl = '';
+      let redirectionsRecruitmentID = '';
+      let redirectionsType = '';
+
+      for (let valueObj of redirectionsArr.values()) {
+
+        if (valueObj.type === 'gameUrlID') {
+
+          redirectionsGameUrl = valueObj.destination;
+
+        } else {
+
+          redirectionsType = valueObj.type;
+          redirectionsRecruitmentID = valueObj.destination;
+
+        }
+
+      }
+
+      // console.log(chalk`
+      // redirectionsGameUrl: {green ${redirectionsGameUrl}}
+      // redirectionsRecruitmentID: {green ${redirectionsRecruitmentID}}
+      // redirectionsType: {green ${redirectionsType}}
+      // `);
+      
+      // console.log(`
+      //   ----- redirectionsArr -----\n
+      //   ${util.inspect(redirectionsArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // ---------------------------------------------
+      //   リダイレクト先がない場合は、404エラー
+      // ---------------------------------------------
+
+      const permittedTypesArr = ['recruitmentThreads', 'recruitmentComments', 'recruitmentReplies'];
+
+      if (
+        
+        !redirectionsGameUrl ||
+        (recruitmentID && !redirectionsRecruitmentID) ||
+        (redirectionsType && !permittedTypesArr.includes(redirectionsType))
+        
+      ) {
+
+        statusCode = 404;
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'vGmoi82nh', messageID: 'Error' }] });
+
+      }
+
+
+      // ---------------------------------------------
+      //   リダイレクト先
+      // ---------------------------------------------
+
+      returnObj.redirectObj = {
+
+        urlID: redirectionsGameUrl,
+        recruitmentID: redirectionsRecruitmentID,
+
+      }
+
+      // console.log(`
+      //   ----- returnObj.redirectObj -----\n
+      //   ${util.inspect(returnObj.redirectObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
 
     }
 
@@ -361,10 +442,23 @@ export default async (req, res) => {
 
     let recruitmentObj = {};
 
-
     if (recruitmentID) {
 
       recruitmentObj = await ModelRecruitmentThreads.findRecruitmentByRecruitmentID(argumentsObj);
+
+
+      // ---------------------------------------------
+      //   スレッドのデータがない場合はエラー
+      // ---------------------------------------------
+
+      const threadsDataObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj', 'dataObj'], {});
+
+      if (Object.keys(threadsDataObj).length === 0) {
+
+        statusCode = 404;
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: '_eQCIVSDe', messageID: 'Error' }] });
+
+      }
 
 
     // --------------------------------------------------
@@ -384,6 +478,21 @@ export default async (req, res) => {
 
       recruitmentObj = await ModelRecruitmentThreads.findRecruitments(argumentsObj);
 
+
+      // ---------------------------------------------
+      //   スレッドのデータがない場合はエラー
+      // ---------------------------------------------
+
+      const threadsDataObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj', 'dataObj'], {});
+
+      if (Object.keys(threadsDataObj).length === 0) {
+
+        statusCode = 404;
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'oiWf5BWnc', messageID: 'Error' }] });
+
+      }
+
+
     }
 
 
@@ -398,24 +507,25 @@ export default async (req, res) => {
 
 
 
-    // ---------------------------------------------
-    //   スレッドのデータがない場合はエラー
-    // ---------------------------------------------
+    // // ---------------------------------------------
+    // //   スレッドのデータがない場合はエラー
+    // // ---------------------------------------------
 
-    const threadsDataObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj', 'dataObj'], {});
+    // const threadsDataObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj', 'dataObj'], {});
 
-    // console.log(`
-    //   ----- threadsDataObj -----\n
-    //   ${util.inspect(threadsDataObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    // // console.log(`
+    // //   ----- threadsDataObj -----\n
+    // //   ${util.inspect(threadsDataObj, { colors: true, depth: null })}\n
+    // //   --------------------\n
+    // // `);
 
-    if ((threadPage !== 1 || recruitmentID) && Object.keys(threadsDataObj).length === 0) {
+    // // if ((threadPage !== 1 || recruitmentID) && Object.keys(threadsDataObj).length === 0) {
+    // if (!returnObj.redirectObj && Object.keys(threadsDataObj).length === 0) {
 
-      statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'RbKO6Ym7L', messageID: 'Error' }] });
+    //   statusCode = 404;
+    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'RbKO6Ym7L', messageID: 'Error' }] });
 
-    }
+    // }
 
 
 

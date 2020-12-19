@@ -289,17 +289,18 @@ export async function getServerSideProps({ req, res, query }) {
   const slugsArr = lodashGet(query, ['slug'], []);
 
   let threadPage = lodashGet(query, ['page'], 1);
+  let pageType = '';
   let forumID = '';
-  let pageType = 'forum';
 
   if (Math.sign(slugsArr[0]) === 1) {
 
+    pageType = 'forum';
     threadPage = slugsArr[0];
 
   } else {
 
-    forumID = slugsArr[0] || '';
     pageType = 'individual';
+    forumID = slugsArr[0] || '';
 
   }
 
@@ -564,22 +565,6 @@ export async function getServerSideProps({ req, res, query }) {
     const isServer = !process.browser;
     const desUrlID = redirectUrlID || urlID;
     const desForumID = redirectForumID || forumID;
-
-    // let destination = '';
-
-    // if (pageType === 'forum') {
-
-    //   destination = `/gc/${desUrlID}/forum/${threadPage}`;
-
-    // } else if (pageType === 'individual') {
-
-    //   destination = `/gc/${desUrlID}/forum/${desForumID}`;
-
-    // } else {
-
-    //   destination = `/gc/${desUrlID}`;
-
-    // }
 
     const destination = pageType === 'forum'? `/gc/${desUrlID}/forum/${threadPage}` : `/gc/${desUrlID}/forum/${desForumID}`;
 

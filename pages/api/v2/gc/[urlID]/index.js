@@ -140,24 +140,6 @@ export default async (req, res) => {
 
 
 
-    // ---------------------------------------------
-    //   必要なデータがない場合は、404エラー
-    // ---------------------------------------------
-
-    // if (!forumID) {
-    //   console.log('forumID');
-    // }
-
-    // if (threadPage === 1 && !forumID) {
-    // // if (!forumID) {
-    //   console.log('AAAAA');
-    //   statusCode = 404;
-    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'KnRH2r3hv', messageID: 'Error' }] });
-
-    // }
-    // console.log('BBBBB');
-
-
 
     // --------------------------------------------------
     //   Common Initial Props
@@ -197,17 +179,42 @@ export default async (req, res) => {
       //   リダイレクト先があるか調べる
       // ---------------------------------------------
 
-      const redirectionsObj = await ModelRedirections.findOne({
+      const redirectionsArr = await ModelRedirections.find({
 
         conditionObj: {
-          source: urlID
+          source: { $in: [urlID, forumID] }
         }
 
       });
 
+      let redirectionsGameUrl = '';
+      let redirectionsForumID = '';
+      let redirectionsType = '';
+
+      for (let valueObj of redirectionsArr.values()) {
+
+        if (valueObj.type === 'gameUrlID') {
+
+          redirectionsGameUrl = valueObj.destination;
+
+        } else {
+
+          redirectionsType = valueObj.type;
+          redirectionsForumID = valueObj.destination;
+
+        }
+
+      }
+
+      // console.log(chalk`
+      // redirectionsGameUrl: {green ${redirectionsGameUrl}}
+      // redirectionsForumID: {green ${redirectionsForumID}}
+      // redirectionsType: {green ${redirectionsType}}
+      // `);
+      
       // console.log(`
-      //   ----- redirectionsObj -----\n
-      //   ${util.inspect(redirectionsObj, { colors: true, depth: null })}\n
+      //   ----- redirectionsArr -----\n
+      //   ${util.inspect(redirectionsArr, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
 
@@ -216,10 +223,18 @@ export default async (req, res) => {
       //   リダイレクト先がない場合は、404エラー
       // ---------------------------------------------
 
-      if (!redirectionsObj) {
+      const permittedTypesArr = ['forumThreadsGc', 'forumCommentsGc', 'forumRepliesGc'];
+
+      if (
+        
+        !redirectionsGameUrl ||
+        (forumID && !redirectionsForumID) ||
+        (redirectionsType && !permittedTypesArr.includes(redirectionsType))
+        
+      ) {
 
         statusCode = 404;
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'RbzC0csz0', messageID: 'Error' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'ZttxcVhNj', messageID: 'Error' }] });
 
       }
 
@@ -228,13 +243,19 @@ export default async (req, res) => {
       //   リダイレクト先
       // ---------------------------------------------
 
-      lodashSet(returnObj, ['redirectObj', 'urlID'], lodashGet(redirectionsObj, ['destination'], ''));
+      returnObj.redirectObj = {
+
+        urlID: redirectionsGameUrl,
+        forumID: redirectionsForumID,
+
+      }
 
       // console.log(`
       //   ----- returnObj.redirectObj -----\n
       //   ${util.inspect(returnObj.redirectObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
+
 
     }
 
@@ -418,63 +439,6 @@ export default async (req, res) => {
 
       forumObj = await ModelForumThreads.findForumByforumID(argumentsObj);
 
-      // console.log(`
-      //   ----- forumObj -----\n
-      //   ${util.inspect(forumObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
-
-      // ---------------------------------------------
-      //   フォーラムのデータがない場合はリダイレクト先があるか調べる
-      // ---------------------------------------------
-
-      const threadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
-
-      if (Object.keys(threadsDataObj).length === 0) {
-
-        const redirectionsObj = await ModelRedirections.findOne({
-
-          conditionObj: {
-            source: forumID
-          }
-
-        });
-
-        // console.log(`
-        //   ----- redirectionsObj -----\n
-        //   ${util.inspect(redirectionsObj, { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-
-
-        // ---------------------------------------------
-        //   リダイレクト先がない場合は、404エラー
-        // ---------------------------------------------
-
-        if (!redirectionsObj) {
-
-          statusCode = 404;
-          throw new CustomError({ level: 'warn', errorsArr: [{ code: 'shtzTPKn0', messageID: 'Error' }] });
-
-        }
-
-
-        // ---------------------------------------------
-        //   リダイレクト先
-        // ---------------------------------------------
-
-        lodashSet(returnObj, ['redirectObj', 'forumID'], lodashGet(redirectionsObj, ['destination'], ''));
-
-        // console.log(`
-        //   ----- returnObj.redirectObj -----\n
-        //   ${util.inspect(returnObj.redirectObj, { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-
-
-      }
-
 
     // --------------------------------------------------
     //   フォーラムをページで取得
@@ -520,6 +484,22 @@ export default async (req, res) => {
     returnObj.forumThreadsObj = forumObj.forumThreadsObj;
     returnObj.forumCommentsObj = forumObj.forumCommentsObj;
     returnObj.forumRepliesObj = forumObj.forumRepliesObj;
+
+
+
+
+    // ---------------------------------------------
+    //   スレッドのデータがない場合はエラー
+    // ---------------------------------------------
+
+    // const threadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
+
+    // if (!returnObj.redirectObj && Object.keys(threadsDataObj).length === 0) {
+
+    //   statusCode = 404;
+    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'sF-4dYmdJ', messageID: 'Error' }] });
+
+    // }
 
 
 

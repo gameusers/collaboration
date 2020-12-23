@@ -153,7 +153,7 @@ const ContainerLayout = (props) => {
 
   return (
     <Layout
-      title={props.title}
+      metaObj={props.metaObj}
       componentSidebar={componentSidebar}
       componentContent={componentContent}
 
@@ -238,6 +238,8 @@ export async function getServerSideProps({ req, res, query }) {
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
 
 
+
+
   // --------------------------------------------------
   //   Query
   // --------------------------------------------------
@@ -301,10 +303,25 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
-  //   Title
+  //   metaObj
   // --------------------------------------------------
 
-  let title = `メンバー - ${userCommunityName}`;
+  const metaObj = {
+
+    title: `メンバー - ${userCommunityName}`,
+    description: `${userCommunityName}の参加メンバーです。`,
+    type: 'article',
+    url: `${process.env.NEXT_PUBLIC_URL_BASE}uc/${userCommunityID}/member`,
+    image: '',
+
+  }
+
+  // アップロードされた画像がある場合は、OGPの画像に設定する
+  const imageSrc = lodashGet(headerObj, ['imagesAndVideosObj', 'arr', 0, 'src'], '');
+  
+  if (imageSrc.indexOf('/img/uc/') !== -1) {
+    metaObj.image = `${process.env.NEXT_PUBLIC_URL_BASE}${imageSrc}`.replace('//img', '/img');
+  }
 
 
 
@@ -375,8 +392,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
-  res.cookie('recentAccessPageHref', '/uc/[userCommunityID]/member');
-  res.cookie('recentAccessPageAs', `/uc/${userCommunityID}/member`);
+  res.cookie('recentAccessPageUrl', `/uc/${userCommunityID}/member`);
 
 
 
@@ -437,7 +453,7 @@ export async function getServerSideProps({ req, res, query }) {
       statusCode,
       login,
       loginUsersObj,
-      title,
+      metaObj,
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,

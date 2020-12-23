@@ -109,7 +109,7 @@ const ContainerLayout = (props) => {
 
   return (
     <Layout
-      title={props.title}
+      metaObj={props.metaObj}
       componentSidebar={componentSidebar}
       componentContent={componentContent}
 
@@ -177,6 +177,8 @@ export async function getServerSideProps({ req, res, query }) {
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
 
 
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
@@ -216,10 +218,18 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
-  //   Title
+  //   metaObj
   // --------------------------------------------------
 
-  const title = `パスワード再設定 - Game Users`;
+  const metaObj = {
+
+    title: 'パスワード再設定 - Game Users',
+    description: 'ログインパスワードの再設定はこちらから行ってください。',
+    type: 'article',
+    url: `${process.env.NEXT_PUBLIC_URL_BASE}login/reset-password`,
+    image: '',
+
+  }
 
 
 
@@ -326,7 +336,7 @@ export async function getServerSideProps({ req, res, query }) {
       statusCode,
       login,
       loginUsersObj,
-      title,
+      metaObj,
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,

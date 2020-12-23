@@ -93,6 +93,8 @@ const Component = (props) => {
   } = props;
 
 
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
@@ -146,21 +148,14 @@ const Component = (props) => {
       const urlHardwares = hardwareIDsArr.length > 0 ? `hardwares=${hardwareIDsArr.join(',')}&` : '';
       const urlKeyword = searchKeyword ? `keyword=${encodeURI(searchKeyword)}&` : '';
 
-      let url = `/gc/register/[[...slug]]?${urlHardwares}${urlKeyword}page=${page}`;
-      let as = `/gc/register/search?${urlHardwares}${urlKeyword}page=${page}`;
+      let url = `/gc/register/search?${urlHardwares}${urlKeyword}page=${page}`;
 
       if (!urlHardwares && !urlKeyword) {
 
         if (page === 1) {
-
-          url = '/gc/register/[[...slug]]';
-          as = '/gc/register';
-
+          url = '/gc/register';
         } else {
-
-          url = '/gc/register/[[...slug]]';
-          as = `/gc/register/${page}`;
-
+          url = `/gc/register/${page}`;
         }
 
       }
@@ -174,7 +169,7 @@ const Component = (props) => {
 
       // console.log(`
       //   ----------------------------------------\n
-      //   app/gc/list/v2/navigation.js - handleSearch
+      //   app/gc/register/v2/navigation.js - handleSearch
       // `);
 
       // console.log(chalk`
@@ -201,7 +196,7 @@ const Component = (props) => {
       //   Router.push = History API pushState()
       // ---------------------------------------------
 
-      Router.push(url, as);
+      Router.push(url);
 
 
     } catch (errorObj) {}

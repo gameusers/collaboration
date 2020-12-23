@@ -326,12 +326,12 @@ const Component = (props) => {
         const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
 
         if (pageTransition) {
-          Router.push('/uc/[userCommunityID]/setting', `/uc/${userCommunityID}/setting`);
+          Router.push(`/uc/${userCommunityID}/setting`);
         }
 
       } else {
 
-        Router.push('/uc/[userCommunityID]', `/uc/${userCommunityID}`);
+        Router.push(`/uc/${userCommunityID}`);
 
       }
 
@@ -767,7 +767,7 @@ const Component = (props) => {
               margin: 0 0 8px 0;
             `}
           >
-            このコミュニティに関連するゲームを選択してください。ユーザーコミュニティを検索した際に、そのゲームに関連するコミュニティとして表示されます。
+            このコミュニティに関連するゲームを選択してください。ユーザーコミュニティを検索した際に、そのゲームに関連するコミュニティとして表示されます。関連するゲームが見つからない場合でも、とりあえずひとつは選択してください。
           </p>
 
 

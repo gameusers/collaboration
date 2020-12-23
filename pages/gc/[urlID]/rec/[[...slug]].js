@@ -198,7 +198,7 @@ const ContainerLayout = (props) => {
 
   return (
     <Layout
-      title={props.title}
+      metaObj={props.metaObj}
       componentSidebar={componentSidebar}
       componentContent={componentContent}
 
@@ -304,7 +304,7 @@ export async function getServerSideProps({ req, res, query }) {
   const page = lodashGet(query, ['page'], 1);
   const slugsArr = lodashGet(query, ['slug'], []);
 
-  let threadPage = 1;
+  let threadPage = page;
   let pageType = '';
   let recruitmentID = '';
 
@@ -327,6 +327,19 @@ export async function getServerSideProps({ req, res, query }) {
     pageType = 'search';
 
   }
+  
+
+  // console.log(`
+  //   ----- query -----\n
+  //   ${util.inspect(query, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+
+  // console.log(`
+  //   ----- slugsArr -----\n
+  //   ${util.inspect(slugsArr, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
 
 
   // --------------------------------------------------
@@ -344,7 +357,9 @@ export async function getServerSideProps({ req, res, query }) {
   const commentLimit = getCookie({ key: 'recruitmentCommentLimit', reqHeadersCookie });
   const replyLimit = getCookie({ key: 'recruitmentReplyLimit', reqHeadersCookie });
 
-
+  // console.log(chalk`
+  //   threadPage: {green ${threadPage}}
+  // `);
 
 
   // --------------------------------------------------
@@ -391,10 +406,18 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
-  //   Title
+  //   metaObj
   // --------------------------------------------------
 
-  let title = '';
+  const metaObj = {
+
+    title: '',
+    description: `${gameName}の募集です。フレンド募集、メンバー募集などに利用してください。`,
+    type: 'article',
+    url: `${process.env.NEXT_PUBLIC_URL_BASE}gc/${urlID}/rec`,
+    image: '',
+
+  }
 
 
 
@@ -471,8 +494,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   recentAccessPage
   // --------------------------------------------------
 
-  let recentAccessPageHref = `/gc/[urlID]/rec/[[...slug]]`;
-  let recentAccessPageAs = `/gc/${urlID}/rec`;
+  let recentAccessPageUrl = `/gc/${urlID}/rec`;
 
 
 
@@ -485,10 +507,10 @@ export async function getServerSideProps({ req, res, query }) {
 
 
     // ---------------------------------------------
-    //   - Title
+    //   - metaObj.title
     // ---------------------------------------------
 
-    title = `募集 - ${gameName}`;
+    metaObj.title = `募集 - ${gameName}`;
 
 
   // --------------------------------------------------
@@ -499,17 +521,17 @@ export async function getServerSideProps({ req, res, query }) {
 
 
     // ---------------------------------------------
-    //   - Title
+    //   - metaObj.title
     // ---------------------------------------------
 
-    title = `募集: Page ${threadPage} - ${gameName}`;
+    metaObj.title = `募集: Page ${threadPage} - ${gameName}`;
 
 
     // --------------------------------------------------
     //   - recentAccessPage
     // --------------------------------------------------
 
-    recentAccessPageAs = `/gc/${urlID}/rec/${threadPage}`;
+    recentAccessPageUrl = `/gc/${urlID}/rec/${threadPage}`;
 
 
   // --------------------------------------------------
@@ -520,13 +542,12 @@ export async function getServerSideProps({ req, res, query }) {
 
 
     // ---------------------------------------------
-    //   - Title
+    //   - metaObj.title
     // ---------------------------------------------
 
     const recruitmentThreadsArr = lodashGet(dataObj, ['recruitmentThreadsObj', 'page1Obj', 'arr'], []);
-    const recruitmentTitle = lodashGet(dataObj, ['recruitmentThreadsObj', 'dataObj', recruitmentThreadsArr[0], 'title'], '');
-
-    title = `${recruitmentTitle} - ${gameName}`;
+    const recruitmentDataObj = lodashGet(dataObj, ['recruitmentThreadsObj', 'dataObj', recruitmentThreadsArr[0]], {});
+    const recruitmentTitle = lodashGet(recruitmentDataObj, ['title'], '');
 
 
     // ---------------------------------------------
@@ -548,7 +569,30 @@ export async function getServerSideProps({ req, res, query }) {
     //   - recentAccessPage
     // --------------------------------------------------
 
-    recentAccessPageAs = `/gc/${urlID}/rec/${recruitmentID}`;
+    recentAccessPageUrl = `/gc/${urlID}/rec/${recruitmentID}`;
+
+
+    // ---------------------------------------------
+    //   - metaObj
+    // ---------------------------------------------
+
+    // console.log(`
+    //   ----- recruitmentDataObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(recruitmentDataObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    const src = lodashGet(recruitmentDataObj, ['imagesAndVideosObj', 'arr', 0, 'src'], '');
+    let comment = lodashGet(recruitmentDataObj, ['comment'], '');
+
+    if (comment.length > 79) {
+      comment = comment.substr(0, 79) + '…';
+    }
+
+    metaObj.title = `${recruitmentTitle} - ${gameName}`;
+    metaObj.description = comment;
+    metaObj.url = `${process.env.NEXT_PUBLIC_URL_BASE}gc/${urlID}/rec/${recruitmentID}`;
+    metaObj.image = `${process.env.NEXT_PUBLIC_URL_BASE}${src}`.replace('//img', '/img');
 
 
   // --------------------------------------------------
@@ -559,10 +603,10 @@ export async function getServerSideProps({ req, res, query }) {
 
 
     // ---------------------------------------------
-    //   - Title
+    //   - metaObj.title
     // ---------------------------------------------
 
-    title = `検索 - ${gameName}`;
+    metaObj.title = `検索 - ${gameName}`;
 
 
     // ---------------------------------------------
@@ -588,17 +632,17 @@ export async function getServerSideProps({ req, res, query }) {
     const urlCategories = categories ? `categories=${categories}&` : '';
     const urlKeyword = keyword ? `keyword=${encodeURI(keyword)}&` : '';
 
-    recentAccessPageAs = `/gc/${urlID}/rec/search?${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
+    recentAccessPageUrl = `/gc/${urlID}/rec/search?${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
 
     if (!urlHardwares && !urlCategories && !urlKeyword) {
 
       if (page === 1) {
 
-        recentAccessPageAs = `/gc/${urlID}/rec`;
+        recentAccessPageUrl = `/gc/${urlID}/rec`;
 
       } else {
 
-        recentAccessPageAs = `/gc/${urlID}/rec/${page}`;
+        recentAccessPageUrl = `/gc/${urlID}/rec/${page}`;
 
       }
 
@@ -614,8 +658,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
-  res.cookie('recentAccessPageHref', recentAccessPageHref);
-  res.cookie('recentAccessPageAs', recentAccessPageAs);
+  res.cookie('recentAccessPageUrl', recentAccessPageUrl);
 
 
 
@@ -706,7 +749,7 @@ export async function getServerSideProps({ req, res, query }) {
       statusCode,
       login,
       loginUsersObj,
-      title,
+      metaObj,
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,

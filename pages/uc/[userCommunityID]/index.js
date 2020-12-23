@@ -225,7 +225,7 @@ const ContainerLayout = (props) => {
 
   return (
     <Layout
-      title={props.title}
+      metaObj={props.metaObj}
       componentSidebar={componentSidebar}
       componentContent={componentContent}
 
@@ -318,6 +318,8 @@ export async function getServerSideProps({ req, res, query }) {
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
 
 
+
+
   // --------------------------------------------------
   //   Query
   // --------------------------------------------------
@@ -377,6 +379,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   const userCommunities_id = lodashGet(dataObj, ['userCommunityObj', '_id'], '');
   const userCommunityName = lodashGet(dataObj, ['userCommunityObj', 'name'], '');
+  const userCommunityDescriptionShort = lodashGet(dataObj, ['userCommunityObj', 'descriptionShort'], '');
   const enableAnonymity = lodashGet(dataObj, ['userCommunityObj', 'anonymity'], false);
   const accessRightRead = lodashGet(dataObj, ['accessRightRead'], false);
 
@@ -390,10 +393,38 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
-  //   Title
+  //   metaObj
   // --------------------------------------------------
 
-  const title = `${userCommunityName}`;
+  const metaObj = {
+
+    title: `${userCommunityName}`,
+    description: userCommunityDescriptionShort,
+    type: 'article',
+    url: `${process.env.NEXT_PUBLIC_URL_BASE}uc/${userCommunityID}`,
+    image: '',
+
+  }
+
+  // アップロードされた画像がある場合は、OGPの画像に設定する
+  const imageSrc = lodashGet(headerObj, ['imagesAndVideosObj', 'arr', 0, 'src'], '');
+  
+  if (imageSrc.indexOf('/img/uc/') !== -1) {
+    metaObj.image = `${process.env.NEXT_PUBLIC_URL_BASE}${imageSrc}`.replace('//img', '/img');
+  }
+
+
+  // console.log(`
+  //   ----- headerObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(headerObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+
+  // console.log(`
+  //   ----- metaObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(metaObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
 
 
 
@@ -464,8 +495,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
-  res.cookie('recentAccessPageHref', '/uc/[userCommunityID]');
-  res.cookie('recentAccessPageAs', `/uc/${userCommunityID}`);
+  res.cookie('recentAccessPageUrl', `/uc/${userCommunityID}`);
 
 
 
@@ -511,7 +541,7 @@ export async function getServerSideProps({ req, res, query }) {
       statusCode,
       login,
       loginUsersObj,
-      title,
+      metaObj,
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,

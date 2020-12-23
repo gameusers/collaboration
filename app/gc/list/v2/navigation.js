@@ -169,21 +169,14 @@ const Component = (props) => {
       const urlHardwares = hardwareIDsArr.length > 0 ? `hardwares=${hardwareIDsArr.join(',')}&` : '';
       const urlKeyword = searchKeyword ? `keyword=${encodeURI(searchKeyword)}&` : '';
 
-      let url = `/gc/list/[[...slug]]?${urlHardwares}${urlKeyword}page=1`;
-      let as = `/gc/list/search?${urlHardwares}${urlKeyword}page=1`;
+      let url = `/gc/list/search?${urlHardwares}${urlKeyword}page=1`;
 
       if (!urlHardwares && !urlKeyword) {
 
         if (page === 1) {
-
-          url = '/gc/list/[[...slug]]';
-          as = '/gc/list';
-
+          url = '/gc/list';
         } else {
-
-          url = '/gc/list/[[...slug]]';
-          as = `/gc/list/${page}`;
-
+          url = `/gc/list/${page}`;
         }
 
       }
@@ -239,7 +232,7 @@ const Component = (props) => {
       //   Router.push = History API pushState()
       // ---------------------------------------------
 
-      Router.push(url, as);
+      Router.push(url);
 
 
     } catch (errorObj) {}

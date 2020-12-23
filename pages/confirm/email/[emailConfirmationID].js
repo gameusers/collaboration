@@ -116,7 +116,7 @@ const ContainerLayout = (props) => {
 
   return (
     <Layout
-      title={props.title}
+      metaObj={props.metaObj}
       componentSidebar={componentSidebar}
       componentContent={componentContent}
 
@@ -184,6 +184,8 @@ export async function getServerSideProps({ req, res, query }) {
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
 
 
+
+
   // --------------------------------------------------
   //   Query
   // --------------------------------------------------
@@ -230,10 +232,18 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
-  //   Title
+  //   metaObj
   // --------------------------------------------------
 
-  const title = 'メールアドレス確認 - Game Users';
+  const metaObj = {
+
+    title: 'メールアドレス確認 - Game Users',
+    description: '',
+    type: 'article',
+    url: '',
+    image: '',
+
+  }
 
 
 
@@ -247,7 +257,6 @@ export async function getServerSideProps({ req, res, query }) {
     {
       name: 'メールアドレス確認',
       href: `/confirm/email/${emailConfirmationID}?emailConfirmationID=${emailConfirmationID}`,
-      // as: `/confirm/email/${emailConfirmationID}`,
       active: true,
     },
 
@@ -302,7 +311,7 @@ export async function getServerSideProps({ req, res, query }) {
       statusCode,
       login,
       loginUsersObj,
-      title,
+      metaObj,
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,

@@ -23,7 +23,7 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Head from 'next/head';
 import { IntlProvider, useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
@@ -74,12 +74,13 @@ import { locale, loadLocaleData } from 'app/@locales/locale.js';
 
 
 
+
+
 // ---------------------------------------------
 //   CSS
 // ---------------------------------------------
 
 import 'app/@css/reset.css';
-// import 'swiper/swiper-bundle.css';
 import 'swiper/swiper-bundle.min.css';
 import 'rc-pagination/assets/index.css';
 import 'react-modal-video/css/modal-video.min.css';
@@ -129,8 +130,6 @@ const ServiceWorker = (props) => {
 
   useEffect(() => {
 
-    // console.log('useEffect / ServiceWorker 1');
-
 
     // --------------------------------------------------
     //   Service Worker
@@ -146,11 +145,7 @@ const ServiceWorker = (props) => {
       if (process.env.NODE_ENV === 'production') {
 
         navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then((registrationObj) => {
-
-          // console.log('SW registered: ', registrationObj);
-
           setServiceWorkerRegistrationObj(registrationObj);
-
         });
 
 
@@ -184,7 +179,6 @@ const ServiceWorker = (props) => {
 
       const datetimeCurrent = moment().utc().toISOString();
       setISO8601(datetimeCurrent);
-      // console.log(`setIntervalDatetimeCurrent - ${datetimeCurrent}`);
 
     }, 1000 * 60);
 
@@ -192,12 +186,6 @@ const ServiceWorker = (props) => {
 
 
   }, []);
-
-
-  // console.log(chalk`
-  //   pageProps.ISO8601: {green ${pageProps.ISO8601}}
-  //   pageProps.login: {green ${pageProps.login}}
-  // `);
 
 
 
@@ -232,11 +220,8 @@ const ServiceWorker = (props) => {
     // --------------------------------------------------
     //   Header 更新 - データに変更があった場合のみステートを更新
     // --------------------------------------------------
-// console.log(chalk`
-// lodashIsEqual(headerObj, pageProps.headerObj): {green ${lodashIsEqual(headerObj, pageProps.headerObj)}}
-//     `);
+
     if (lodashIsEqual(headerObj, pageProps.headerObj) === false) {
-      // console.log('AAA');
       setHeaderObj(pageProps.headerObj);
     }
 
@@ -305,7 +290,7 @@ const Component = (props) => {
 
   useEffect(() => {
 
-    // console.log('useEffect / Component');
+    
     // --------------------------------------------------
     //   Remove the server-side injected CSS.
     // --------------------------------------------------
@@ -392,12 +377,6 @@ const Component = (props) => {
 
   return (
     <React.Fragment>
-
-
-      <Head>
-        <title>Game Users</title>
-        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-      </Head>
 
 
       {/* Unstated Next States */}

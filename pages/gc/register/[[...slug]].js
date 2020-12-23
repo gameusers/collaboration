@@ -107,6 +107,8 @@ const ContainerLayout = (props) => {
 
       <GcRegister
         gcListObj={props.gcListObj}
+        hardwaresArr={props.hardwaresArr}
+        keyword={props.keyword}
         gcTempsListObj={props.gcTempsListObj}
         gameGenresArr={props.gameGenresArr}
       />
@@ -121,7 +123,7 @@ const ContainerLayout = (props) => {
 
   return (
     <Layout
-      title={props.title}
+      metaObj={props.metaObj}
       componentSidebar={componentSidebar}
       componentContent={componentContent}
 
@@ -193,6 +195,8 @@ export async function getServerSideProps({ req, res, query }) {
 
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+
+
 
 
   // --------------------------------------------------
@@ -274,10 +278,18 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
-  //   Title
+  //   metaObj
   // --------------------------------------------------
 
-  let title = `ゲーム登録 - Game Users`;
+  const metaObj = {
+
+    title: 'ゲーム登録 - Game Users',
+    description: 'Game Usersにゲームを登録することができます。',
+    type: 'article',
+    url: `${process.env.NEXT_PUBLIC_URL_BASE}gc/register`,
+    image: '',
+
+  }
 
 
 
@@ -330,8 +342,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   recentAccessPage
   // --------------------------------------------------
 
-  let recentAccessPageHref = '/gc/register/[[...slug]]';
-  let recentAccessPageAs = '/gc/register';
+  let recentAccessPageUrl = '/gc/register';
 
 
 
@@ -344,17 +355,17 @@ export async function getServerSideProps({ req, res, query }) {
 
 
     // ---------------------------------------------
-    //   - Title
+    //   - metaObj.title
     // ---------------------------------------------
 
-    title = `ゲーム登録: Page ${page} - Game Users`;
+    metaObj.title = `ゲーム登録: Page ${page} - Game Users`;
 
 
     // --------------------------------------------------
     //   - recentAccessPage
     // --------------------------------------------------
 
-    recentAccessPageAs = `/gc/register/${page}`;
+    recentAccessPageUrl = `/gc/register/${page}`;
 
 
   // --------------------------------------------------
@@ -365,10 +376,10 @@ export async function getServerSideProps({ req, res, query }) {
 
 
     // ---------------------------------------------
-    //   - Title
+    //   - metaObj.title
     // ---------------------------------------------
 
-    title = `ゲーム登録 / 検索 - Game Users`;
+    metaObj.title = `ゲーム登録 / 検索 - Game Users`;
 
 
     // ---------------------------------------------
@@ -399,7 +410,7 @@ export async function getServerSideProps({ req, res, query }) {
     const urlHardwares = hardwares ? `hardwares=${hardwares}&` : '';
     const urlKeyword = keyword ? `keyword=${encodeURI(keyword)}&` : '';
 
-    recentAccessPageAs = `/gc/register/search?${urlHardwares}${urlKeyword}page=${page}`;
+    recentAccessPageUrl = `/gc/register/search?${urlHardwares}${urlKeyword}page=${page}`;
 
 
   }
@@ -411,8 +422,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
-  res.cookie('recentAccessPageHref', recentAccessPageHref);
-  res.cookie('recentAccessPageAs', recentAccessPageAs);
+  res.cookie('recentAccessPageUrl', recentAccessPageUrl);
 
 
 
@@ -453,7 +463,7 @@ export async function getServerSideProps({ req, res, query }) {
       statusCode,
       login,
       loginUsersObj,
-      title,
+      metaObj,
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,

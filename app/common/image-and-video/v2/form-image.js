@@ -70,6 +70,24 @@ const Component = (props) => {
 
 
   // --------------------------------------------------
+  //   props
+  // --------------------------------------------------
+
+  const {
+
+    heading,
+    description,
+    showImageCaption = false,
+    limit = 1,
+    imagesAndVideosObj,
+    setImagesAndVideosObj,
+
+  } = props;
+
+
+
+
+  // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
 
@@ -90,25 +108,7 @@ const Component = (props) => {
     setButtonDisabled(false);
 
   }, []);
-
-
-
-
-  // --------------------------------------------------
-  //   props
-  // --------------------------------------------------
-
-  const {
-
-    heading,
-    description,
-    showImageCaption = false,
-    limit = 1,
-    imagesAndVideosObj,
-    setImagesAndVideosObj,
-
-  } = props;
-
+  
 
 
 
@@ -421,9 +421,15 @@ const Component = (props) => {
     //   console.log
     // --------------------------------------------------
 
-    // console.log(chalk`
-    //   /app/common/image-and-video/v2/components/form-image.js - handleAddImage
-    // `);
+    console.log(chalk`
+      /app/common/image-and-video/v2/components/form-image.js - handleAddImage
+    `);
+
+    console.log(`
+      ----- clonedImagesAndVideosObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(clonedImagesAndVideosObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
 
     // console.log(`
     //   ----- imagesAndVideosObj -----\n

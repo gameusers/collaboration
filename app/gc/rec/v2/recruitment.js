@@ -195,21 +195,14 @@ const Component = (props) => {
       const urlCategories = searchCategoriesArr.length > 0 ? `categories=${searchCategoriesArr.join(',')}&` : '';
       const urlKeyword = searchKeyword ? `keyword=${encodeURI(searchKeyword)}&` : '';
 
-      let url = `/gc/[urlID]/rec/[[...slug]]`;
-      let as = `/gc/${urlID}/rec/search?${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
+      let url = `/gc/${urlID}/rec/search?${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
 
       if (!urlHardwares && !urlCategories && !urlKeyword) {
 
         if (page === 1) {
-
-          url = `/gc/[urlID]/rec/[[...slug]]`;
-          as = `/gc/${urlID}/rec`;
-
+          url = `/gc/${urlID}/rec`;
         } else {
-
-          url = `/gc/[urlID]/rec/[[...slug]]`;
-          as = `/gc/${urlID}/rec/${page}`;
-
+          url = `/gc/${urlID}/rec/${page}`;
         }
 
       }
@@ -238,7 +231,6 @@ const Component = (props) => {
       //   page: {green ${page}}
       //   changeLimit: {green ${changeLimit}}
       //   url: {green ${url}}
-      //   as: {green ${as}}
       // `);
 
       // return;
@@ -248,7 +240,7 @@ const Component = (props) => {
       //   Router.push = History API pushState()
       // ---------------------------------------------
 
-      await Router.push(url, as);
+      Router.push(url);
 
 
     } catch (errorObj) {}

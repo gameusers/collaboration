@@ -187,6 +187,23 @@ export default async (req, res) => {
 
 
 
+
+    // ---------------------------------------------
+    //   データがない場合はエラー
+    // ---------------------------------------------
+
+    const dataObj = lodashGet(returnObj, ['gcListObj', 'dataObj'], {});
+
+    if (page !== 1 && Object.keys(dataObj).length === 0) {
+
+      statusCode = 404;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'JHGCBEP5P', messageID: 'Error' }] });
+
+    }
+
+
+
+
     // --------------------------------------------------
     //   DB find / Feed
     // --------------------------------------------------
@@ -219,10 +236,10 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
 
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/gc/[urlID]/index.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/gc/[urlID]/index.js
+    `);
 
     // console.log(chalk`
     //   page: {green ${page}}
@@ -231,11 +248,11 @@ export default async (req, res) => {
     //   keyword: {green ${keyword}}
     // `);
 
-    // console.log(`
-    //   ----- returnObj.gcListObj -----\n
-    //   ${util.inspect(returnObj.gcListObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj.gcListObj -----\n
+      ${util.inspect(returnObj.gcListObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
 
     // console.log(`
     //   ----- returnObj -----\n

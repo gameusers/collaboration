@@ -321,6 +321,12 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
 
+    // console.log(`
+    //   ----- userCommunityImagesAndVideosObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(userCommunityImagesAndVideosObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
     // console.log(chalk`
     //   communityType: {green ${communityType}}
     //   member: {green ${member}}
@@ -500,7 +506,7 @@ export default async (req, res) => {
 
         const threadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
 
-        if (threadPage !== 1 && Object.keys(threadsDataObj).length === 0) {
+        if (threadPage > 1 && Object.keys(threadsDataObj).length === 0) {
 
           statusCode = 404;
           throw new CustomError({ level: 'warn', errorsArr: [{ code: 'zbbRej-eH', messageID: 'Error' }] });

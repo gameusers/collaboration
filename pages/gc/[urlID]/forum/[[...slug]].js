@@ -187,7 +187,7 @@ const ContainerLayout = (props) => {
 
   return (
     <Layout
-      title={props.title}
+      metaObj={props.metaObj}
       componentSidebar={componentSidebar}
       componentContent={componentContent}
 
@@ -384,12 +384,20 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
-  //   Title
+  //   metaObj
   // --------------------------------------------------
 
-  let title = `フォーラム: Page ${threadPage} - ${gameName}`;
+  const metaObj = {
 
+    title: `フォーラム: Page ${threadPage} - ${gameName}`,
+    description: `${gameName}のフォーラムです。情報交換に利用してください。`,
+    type: 'article',
+    url: `${process.env.NEXT_PUBLIC_URL_BASE}gc/${urlID}`,
+    image: '',
 
+  }
+
+  
 
 
   // --------------------------------------------------
@@ -458,8 +466,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   recentAccessPage
   // --------------------------------------------------
 
-  let recentAccessPageHref = `/gc/[urlID]/forum/[[...slug]]`;
-  let recentAccessPageAs = `/gc/${urlID}`;
+  let recentAccessPageUrl = `/gc/${urlID}`;
 
 
 
@@ -487,11 +494,14 @@ export async function getServerSideProps({ req, res, query }) {
 
 
     // --------------------------------------------------
-    //   - recentAccessPage
+    //   - recentAccessPage & metaObj
     // --------------------------------------------------
 
     if (threadPage > 1) {
-      recentAccessPageAs = `/gc/${urlID}/forum/${threadPage}`;
+
+      recentAccessPageUrl = `/gc/${urlID}/forum/${threadPage}`;
+      metaObj.url = `${process.env.NEXT_PUBLIC_URL_BASE}gc/${urlID}/forum/${threadPage}`;
+      
     }
 
 
@@ -503,14 +513,13 @@ export async function getServerSideProps({ req, res, query }) {
 
 
     // ---------------------------------------------
-    //   - Title
+    //   - title
     // ---------------------------------------------
 
     const forumThreadsArr = lodashGet(dataObj, ['forumThreadsObj', 'page1Obj', 'arr'], []);
-    const forumName = lodashGet(dataObj, ['forumThreadsObj', 'dataObj', forumThreadsArr[0], 'name'], '');
-
-    title = `${forumName} - ${gameName}`;
-
+    const forumDataObj = lodashGet(dataObj, ['forumThreadsObj', 'dataObj', forumThreadsArr[0]], {});
+    const forumName = lodashGet(forumDataObj, ['name'], '');
+    
 
     // ---------------------------------------------
     //   - パンくずリスト
@@ -538,7 +547,33 @@ export async function getServerSideProps({ req, res, query }) {
     //   - recentAccessPage
     // --------------------------------------------------
 
-    recentAccessPageAs = `/gc/${urlID}/forum/${forumID}`;
+    recentAccessPageUrl = `/gc/${urlID}/forum/${forumID}`;
+
+
+    // ---------------------------------------------
+    //   - metaObj
+    // ---------------------------------------------
+
+    // console.log(`
+    //   ----- forumDataObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumDataObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    const src = lodashGet(forumDataObj, ['imagesAndVideosObj', 'arr', 0, 'src'], '');
+    let comment = lodashGet(forumDataObj, ['comment'], '');
+
+    if (comment.length > 79) {
+      comment = comment.substr(0, 79) + '…';
+    }
+
+    metaObj.title = `${forumName} - ${gameName}`;
+    metaObj.description = comment;
+    metaObj.url = `${process.env.NEXT_PUBLIC_URL_BASE}gc/${urlID}/forum/${forumID}`;
+
+    if (src) {
+      metaObj.image = `${process.env.NEXT_PUBLIC_URL_BASE}${src}`.replace('//img', '/img');
+    }
 
 
   }
@@ -550,8 +585,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
-  res.cookie('recentAccessPageHref', recentAccessPageHref);
-  res.cookie('recentAccessPageAs', recentAccessPageAs);
+  res.cookie('recentAccessPageUrl', recentAccessPageUrl);
 
 
 
@@ -655,7 +689,7 @@ export async function getServerSideProps({ req, res, query }) {
       statusCode,
       login,
       loginUsersObj,
-      title,
+      metaObj,
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,

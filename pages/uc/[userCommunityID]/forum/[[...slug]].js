@@ -187,7 +187,7 @@ const ContainerLayout = (props) => {
 
   return (
     <Layout
-      title={props.title}
+      metaObj={props.metaObj}
       componentSidebar={componentSidebar}
       componentContent={componentContent}
 
@@ -278,6 +278,8 @@ export async function getServerSideProps({ req, res, query }) {
 
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+
+
 
 
   // --------------------------------------------------
@@ -385,10 +387,25 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
-  //   Title
+  //   metaObj
   // --------------------------------------------------
 
-  let title = `フォーラム: Page ${threadPage} - ${userCommunityName}`;
+  const metaObj = {
+
+    title: `フォーラム: Page ${threadPage} - ${userCommunityName}`,
+    description: `${userCommunityName}のフォーラムです。情報交換に利用してください。`,
+    type: 'article',
+    url: `${process.env.NEXT_PUBLIC_URL_BASE}uc/${userCommunityID}`,
+    image: '',
+
+  }
+
+  // アップロードされた画像がある場合は、OGPの画像に設定する
+  const imageSrc = lodashGet(headerObj, ['imagesAndVideosObj', 'arr', 0, 'src'], '');
+  
+  if (imageSrc.indexOf('/img/uc/') !== -1) {
+    metaObj.image = `${process.env.NEXT_PUBLIC_URL_BASE}${imageSrc}`.replace('//img', '/img');
+  }
 
 
 
@@ -459,8 +476,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   recentAccessPage
   // --------------------------------------------------
 
-  let recentAccessPageHref = `/uc/[userCommunityID]/forum/[[...slug]]`;
-  let recentAccessPageAs = `/uc/${userCommunityID}`;
+  let recentAccessPageUrl = `/uc/${userCommunityID}`;
 
 
 
@@ -487,6 +503,18 @@ export async function getServerSideProps({ req, res, query }) {
     );
 
 
+    // --------------------------------------------------
+    //   - recentAccessPage & metaObj
+    // --------------------------------------------------
+
+    if (threadPage > 1) {
+
+      recentAccessPageUrl = `/uc/${userCommunityID}/forum/${threadPage}`;
+      metaObj.url = `${process.env.NEXT_PUBLIC_URL_BASE}uc/${userCommunityID}/forum/${threadPage}`;
+      
+    }
+
+
   // --------------------------------------------------
   //   個別のフォーラム
   // --------------------------------------------------
@@ -495,13 +523,12 @@ export async function getServerSideProps({ req, res, query }) {
 
 
     // ---------------------------------------------
-    //   - Title
+    //   - forumDataObj
     // ---------------------------------------------
 
     const forumThreadsArr = lodashGet(dataObj, ['forumThreadsObj', 'page1Obj', 'arr'], []);
-    const forumName = lodashGet(dataObj, ['forumThreadsObj', 'dataObj', forumThreadsArr[0], 'name'], '');
-
-    title = `${forumName} - ${userCommunityName}`;
+    const forumDataObj = lodashGet(dataObj, ['forumThreadsObj', 'dataObj', forumThreadsArr[0]], {});
+    const forumName = lodashGet(forumDataObj, ['name'], '');
 
 
     // ---------------------------------------------
@@ -530,8 +557,34 @@ export async function getServerSideProps({ req, res, query }) {
     //   - recentAccessPage
     // --------------------------------------------------
 
-    recentAccessPageAs = `/uc/${userCommunityID}/forum/${forumID}`;
+    recentAccessPageUrl = `/uc/${userCommunityID}/forum/${forumID}`;
 
+
+    // ---------------------------------------------
+    //   - metaObj
+    // ---------------------------------------------
+
+    // console.log(`
+    //   ----- forumDataObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumDataObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    const src = lodashGet(forumDataObj, ['imagesAndVideosObj', 'arr', 0, 'src'], '');
+    let comment = lodashGet(forumDataObj, ['comment'], '');
+
+    if (comment.length > 79) {
+      comment = comment.substr(0, 79) + '…';
+    }
+
+    metaObj.title = `${forumName} - ${userCommunityName}`;
+    metaObj.description = comment;
+    metaObj.url = `${process.env.NEXT_PUBLIC_URL_BASE}uc/${userCommunityID}/forum/${forumID}`;
+
+    if (src) {
+      metaObj.image = `${process.env.NEXT_PUBLIC_URL_BASE}${src}`.replace('//img', '/img');
+    }
+    
 
   }
 
@@ -542,8 +595,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
-  res.cookie('recentAccessPageHref', recentAccessPageHref);
-  res.cookie('recentAccessPageAs', recentAccessPageAs);
+  res.cookie('recentAccessPageUrl', recentAccessPageUrl);
 
 
 
@@ -643,7 +695,7 @@ export async function getServerSideProps({ req, res, query }) {
       statusCode,
       login,
       loginUsersObj,
-      title,
+      metaObj,
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,

@@ -116,17 +116,6 @@ const Component = (props) => {
 
 
   // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-
-  const stateUser = ContainerStateUser.useContainer();
-
-  const { localeObj } = stateUser;
-
-
-
-
-  // --------------------------------------------------
   //   props
   // --------------------------------------------------
 
@@ -144,8 +133,10 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
 
+  const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
 
+  const { localeObj } = stateUser;
   const { handleVideoOpen } = stateLayout;
 
 
@@ -162,7 +153,7 @@ const Component = (props) => {
 
 
   // 画像を追加してもプレビューが更新されないときがある。これを読み込むと正常に更新される。ただいい方法ではない。
-  // const imageType = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj', 'type'], '');
+  // const imageType = lodashGet(imagesAndVideosObj, ['type'], '');
 
 
 
@@ -222,12 +213,6 @@ const Component = (props) => {
   // console.log(`
   //   ----- imagesAndVideosObj -----\n
   //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-
-  // console.log(`
-  //   ----- imagesAndVideosObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
 

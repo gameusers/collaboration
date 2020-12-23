@@ -116,7 +116,7 @@ const Component = (props) => {
 
   const {
 
-    obj,
+    gcListObj,
     hardwaresArr,
     keyword,
 
@@ -198,21 +198,14 @@ const Component = (props) => {
       const urlHardwares = hardwareIDsArr.length > 0 ? `hardwares=${hardwareIDsArr.join(',')}&` : '';
       const urlKeyword = keyword ? `keyword=${encodeURI(keyword)}&` : '';
 
-      let url = `/gc/list/[[...slug]]?${urlHardwares}${urlKeyword}page=${page}`;
-      let as = `/gc/list/search?${urlHardwares}${urlKeyword}page=${page}`;
+      let url = `/gc/list/search?${urlHardwares}${urlKeyword}page=${page}`;
 
       if (!urlHardwares && !urlKeyword) {
 
         if (page === 1) {
-
-          url = '/gc/list/[[...slug]]';
-          as = '/gc/list';
-
+          url = '/gc/list';
         } else {
-
-          url = '/gc/list/[[...slug]]';
-          as = `/gc/list/${page}`;
-
+          url = `/gc/list/${page}`;
         }
 
       }
@@ -242,6 +235,8 @@ const Component = (props) => {
       });
 
 
+
+
       // ---------------------------------------------
       //   console.log
       // ---------------------------------------------
@@ -264,11 +259,13 @@ const Component = (props) => {
       // return;
 
 
+      
+
       // ---------------------------------------------
       //   Router.push = History API pushState()
       // ---------------------------------------------
 
-      await Router.push(url, as);
+      Router.push(url);
 
 
     } catch (errorObj) {}
@@ -283,10 +280,10 @@ const Component = (props) => {
   //   Thread
   // --------------------------------------------------
 
-  const page = lodashGet(obj, ['page'], 1);
-  const limit = lodashGet(obj, ['limit'], parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_LIMIT, 10));
-  const count = lodashGet(obj, ['count'], 0);
-  const arr = lodashGet(obj, [`page${page}Obj`, 'arr'], []);
+  const page = lodashGet(gcListObj, ['page'], 1);
+  const limit = lodashGet(gcListObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_LIMIT, 10));
+  const count = lodashGet(gcListObj, ['count'], 0);
+  const arr = lodashGet(gcListObj, [`page${page}Obj`, 'arr'], []);
 
 
 
@@ -333,7 +330,7 @@ const Component = (props) => {
     //   dataObj
     // --------------------------------------------------
 
-    const dataObj = lodashGet(obj, ['dataObj', gameCommunities_id], {});
+    const dataObj = lodashGet(gcListObj, ['dataObj', gameCommunities_id], {});
 
 
     // --------------------------------------------------

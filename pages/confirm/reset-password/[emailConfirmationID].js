@@ -110,7 +110,7 @@ const ContainerLayout = (props) => {
 
   return (
     <Layout
-      title={props.title}
+      metaObj={props.metaObj}
       componentSidebar={componentSidebar}
       componentContent={componentContent}
 
@@ -178,6 +178,8 @@ export async function getServerSideProps({ req, res, query }) {
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
 
 
+
+
   // --------------------------------------------------
   //   Query
   // --------------------------------------------------
@@ -222,10 +224,18 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
-  //   Title
+  //   metaObj
   // --------------------------------------------------
 
-  const title = 'パスワード再設定 - Game Users';
+  const metaObj = {
+
+    title: 'パスワード再設定 - Game Users',
+    description: '',
+    type: 'article',
+    url: '',
+    image: '',
+
+  }
 
 
 
@@ -239,7 +249,6 @@ export async function getServerSideProps({ req, res, query }) {
     {
       name: 'パスワード再設定',
       href: `/confirm/reset-password/${emailConfirmationID}?emailConfirmationID=${emailConfirmationID}`,
-      // as: `/confirm/reset-password/${emailConfirmationID}`,
       active: true,
     },
 
@@ -292,7 +301,7 @@ export async function getServerSideProps({ req, res, query }) {
       reqAcceptLanguage,
       ISO8601,
       statusCode,
-      title,
+      metaObj,
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,

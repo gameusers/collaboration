@@ -470,6 +470,24 @@ export default async (req, res) => {
       recruitmentObj = await ModelRecruitmentThreads.findRecruitmentsForSearch(argumentsObj);
 
 
+      // ---------------------------------------------
+      //   スレッドのデータがない場合はエラー
+      // ---------------------------------------------
+
+      if (threadPage > 1) {
+
+        const threadsDataObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj', 'dataObj'], {});
+
+        if (Object.keys(threadsDataObj).length === 0) {
+
+          statusCode = 404;
+          throw new CustomError({ level: 'warn', errorsArr: [{ code: 'gcWiGG4bX', messageID: 'Error' }] });
+
+        }
+
+      }
+
+
     // --------------------------------------------------
     //   DB find / Recruitment
     // --------------------------------------------------
@@ -483,12 +501,16 @@ export default async (req, res) => {
       //   スレッドのデータがない場合はエラー
       // ---------------------------------------------
 
-      const threadsDataObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj', 'dataObj'], {});
+      if (threadPage > 1) {
 
-      if (Object.keys(threadsDataObj).length === 0) {
+        const threadsDataObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj', 'dataObj'], {});
 
-        statusCode = 404;
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'oiWf5BWnc', messageID: 'Error' }] });
+        if (Object.keys(threadsDataObj).length === 0) {
+
+          statusCode = 404;
+          throw new CustomError({ level: 'warn', errorsArr: [{ code: 'oiWf5BWnc', messageID: 'Error' }] });
+
+        }
 
       }
 
@@ -507,20 +529,20 @@ export default async (req, res) => {
 
 
 
-    // // ---------------------------------------------
-    // //   スレッドのデータがない場合はエラー
-    // // ---------------------------------------------
+    // ---------------------------------------------
+    //   スレッドのデータがない場合はエラー
+    // ---------------------------------------------
 
     // const threadsDataObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj', 'dataObj'], {});
 
-    // // console.log(`
-    // //   ----- threadsDataObj -----\n
-    // //   ${util.inspect(threadsDataObj, { colors: true, depth: null })}\n
-    // //   --------------------\n
-    // // `);
+    // console.log(`
+    //   ----- threadsDataObj -----\n
+    //   ${util.inspect(threadsDataObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    // // if ((threadPage !== 1 || recruitmentID) && Object.keys(threadsDataObj).length === 0) {
-    // if (!returnObj.redirectObj && Object.keys(threadsDataObj).length === 0) {
+    // if (threadPage > 1 && !recruitmentID && Object.keys(threadsDataObj).length === 0) {
+    // // if (!returnObj.redirectObj && Object.keys(threadsDataObj).length === 0) {
 
     //   statusCode = 404;
     //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'RbKO6Ym7L', messageID: 'Error' }] });

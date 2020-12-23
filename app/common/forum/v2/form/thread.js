@@ -616,8 +616,10 @@ const Component = (props) => {
       //   スレッド投稿フォームを閉じる
       // --------------------------------------------------
 
-      setPanelExpanded(false);
-
+      if (setPanelExpanded) {
+        setPanelExpanded(false);
+      }
+      
 
 
 

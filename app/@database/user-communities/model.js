@@ -764,11 +764,13 @@ const findForUserCommunity = async ({
 
       returnObj.name = lodashGet(filteredArr, [0, 'name'], '');;
       returnObj.description = lodashGet(filteredArr, [0, 'description'], '');
+      returnObj.descriptionShort = lodashGet(filteredArr, [0, 'descriptionShort'], '');
 
     } else {
 
       returnObj.name = lodashGet(localesArr, [0, 'name'], '');
       returnObj.description = lodashGet(localesArr, [0, 'description'], '');
+      returnObj.descriptionShort = lodashGet(localesArr, [0, 'descriptionShort'], '');
 
     }
 

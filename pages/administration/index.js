@@ -15,7 +15,6 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-import Router from 'next/router';
 import Error from 'next/error';
 import moment from 'moment';
 
@@ -56,7 +55,7 @@ import FormLogin from 'app/administration/index/v2/form-login.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: http://localhost:8080/admin
+//   URL: http://localhost:8080/administration
 // --------------------------------------------------
 
 /**
@@ -99,8 +98,7 @@ const ContainerLayout = (props) => {
       />
 
       <FormLogin
-        recentAccessPageHref={props.recentAccessPageHref}
-        recentAccessPageAs={props.recentAccessPageAs}
+        recentAccessPageUrl={props.recentAccessPageUrl}
       />
 
     </React.Fragment>
@@ -113,7 +111,7 @@ const ContainerLayout = (props) => {
 
   return (
     <Layout
-      title={props.title}
+      metaObj={props.metaObj}
       componentSidebar={componentSidebar}
       componentContent={componentContent}
 
@@ -181,6 +179,8 @@ export async function getServerSideProps({ req, res, query }) {
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
 
 
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
@@ -192,13 +192,9 @@ export async function getServerSideProps({ req, res, query }) {
   //   Get Cookie Data
   // --------------------------------------------------
 
-  const recentAccessPageHref = getCookie({ key: 'recentAccessPageHref', reqHeadersCookie, decode: true });
-  const recentAccessPageAs = getCookie({ key: 'recentAccessPageAs', reqHeadersCookie, decode: true });
+  const recentAccessPageUrl = getCookie({ key: 'recentAccessPageUrl', reqHeadersCookie, decode: true });
 
-//   console.log(chalk`
-//   recentAccessPageHref: {green ${recentAccessPageHref}}
-//   recentAccessPageAs: {green ${recentAccessPageAs}}
-// `);
+
 
 
   // --------------------------------------------------
@@ -231,10 +227,18 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
-  //   Title
+  //   metaObj
   // --------------------------------------------------
 
-  const title = 'Administration - Game Users';
+  const metaObj = {
+
+    title: 'Administration - Game Users',
+    description: '',
+    type: 'article',
+    url: `${process.env.NEXT_PUBLIC_URL_BASE}administration`,
+    image: '',
+
+  }
 
 
 
@@ -278,39 +282,12 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
-  //   ログインしている場合はログアウトページにリダイレクト
-  // --------------------------------------------------
-
-  // if (login) {
-
-  //   const isServer = !process.browser;
-
-  //   if (isServer && res) {
-
-  //     res.writeHead(302, {
-  //       Location: '/logout'
-  //     });
-
-  //     res.end();
-
-  //   } else {
-
-  //     Router.replace('/logout');
-
-  //   }
-
-  // }
-
-
-
-
-  // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
 
   // console.log(`
   //   ----------------------------------------\n
-  //   pages/admin/index.js
+  //   pages/administration/index.js
   // `);
 
   // console.log(`
@@ -335,14 +312,13 @@ export async function getServerSideProps({ req, res, query }) {
       statusCode,
       login,
       loginUsersObj,
-      title,
+      metaObj,
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,
       feedObj,
 
-      recentAccessPageHref,
-      recentAccessPageAs,
+      recentAccessPageUrl,
 
     }
 

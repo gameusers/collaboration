@@ -318,10 +318,8 @@ const Component = (props) => {
       // ---------------------------------------------
 
       const userID = lodashGet(resultLoginObj, ['data', 'userID'], '');
-      const url = `/ur/[userID]`;
-      const as = `/ur/${userID}`;
 
-      Router.push(url, as);
+      Router.push(`/ur/${userID}`);
 
 
 

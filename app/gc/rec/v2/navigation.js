@@ -230,21 +230,14 @@ const Component = (props) => {
       const urlCategories = searchCategoriesArr.length > 0 ? `categories=${searchCategoriesArr.join(',')}&` : '';
       const urlKeyword = searchKeyword ? `keyword=${encodeURI(searchKeyword)}&` : '';
 
-      let url = `/gc/[urlID]/rec/[...slug]?${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
-      let as = `/gc/${urlID}/rec/search?${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
+      let url = `/gc/${urlID}/rec/search?${urlHardwares}${urlCategories}${urlKeyword}page=${page}`;
 
       if (!urlHardwares && !urlCategories && !urlKeyword) {
 
         if (page === 1) {
-
-          url = '/gc/[urlID]/rec/[[...slug]]';
-          as = `/gc/${urlID}/rec`;
-
+          url = `/gc/${urlID}/rec`;
         } else {
-
-          url = '/gc/[urlID]/rec/[[...slug]]';
-          as = `/gc/${urlID}/rec/${page}`;
-
+          url = `/gc/${urlID}/rec/${page}`;
         }
 
       }
@@ -298,7 +291,7 @@ const Component = (props) => {
       //   Router.push = History API pushState()
       // ---------------------------------------------
 
-      Router.push(url, as);
+      Router.push(url);
 
 
     } catch (errorObj) {}

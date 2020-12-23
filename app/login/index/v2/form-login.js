@@ -93,8 +93,7 @@ const Component = (props) => {
 
   const {
 
-    recentAccessPageHref,
-    recentAccessPageAs,
+    recentAccessPageUrl,
 
   } = props;
 
@@ -162,11 +161,6 @@ const Component = (props) => {
       // ---------------------------------------------
 
       eventObj.preventDefault();
-
-      // console.log(chalk`
-      //   recentAccessPageHref: {green ${recentAccessPageHref} / ${typeof recentAccessPageHref}}
-      //   recentAccessPageAs: {green ${recentAccessPageAs} / ${typeof recentAccessPageAs}}
-      // `);
 
 
       // ---------------------------------------------
@@ -275,43 +269,20 @@ const Component = (props) => {
       //   Router.push = History API pushState()
       // ---------------------------------------------
 
-      let url = recentAccessPageHref;
-      let as = recentAccessPageAs;
+      let url = recentAccessPageUrl;
 
       // console.log(chalk`
       //   url: {green ${url}}
-      //   as: {green ${as}}
       // `);
 
-      if (!url || !as) {
-        // console.log('AAA');
+      if (!url) {
+        
         const userID = lodashGet(resultObj, ['data', 'userID'], '');
-        url = `/ur/[userID]`;
-        as = `/ur/${userID}`;
+        url = `/ur/${userID}`;
 
       }
 
-      Router.push(url, as);
-
-
-
-      // ---------------------------------------------
-      //   Page Transition
-      // ---------------------------------------------
-
-      // let url = recentAccessPageHref;
-      // let as = recentAccessPageAs;
-
-      // if (!url || !as) {
-
-      //   const userID = lodashGet(resultObj, ['data', 'userID'], '');
-      //   url = `/ur/[userID]`;
-      //   as = `/ur/${userID}`;
-
-      // }
-
-      // // const userID = lodashGet(resultObj, ['data', 'userID'], '');
-      // window.location.href = `${process.env.NEXT_PUBLIC_URL_BASE}ur/${userID}`;
+      Router.push(url);
 
 
     } catch (errorObj) {

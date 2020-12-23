@@ -166,10 +166,25 @@ const formatImagesAndVideosObj = ({ localeObj = {}, obj, maxWidth = 1920 }) => {
   };
 
 
-  // console.log(chalk`
-  //   _id: {green ${_id}}
-  //   type: {green ${type}}
-  // `);
+
+  console.log(`
+    ----- obj -----\n
+    ${util.inspect(obj, { colors: true, depth: null })}\n
+    --------------------\n
+  `);
+
+  console.log(chalk`
+    _id: {green ${_id}}
+    type: {green ${type}}
+  `);
+
+  console.log(`
+    ----- arr -----\n
+    ${util.inspect(arr, { colors: true, depth: null })}\n
+    --------------------\n
+  `);
+
+  
 
   // console.log(`
   //   ----- obj -----\n
@@ -177,15 +192,6 @@ const formatImagesAndVideosObj = ({ localeObj = {}, obj, maxWidth = 1920 }) => {
   //   --------------------\n
   // `);
   // return null;
-
-
-  // if (_id === 'ymd-ldMa6odPm') {
-  //   console.log(chalk`
-  //     _id: {green ${_id}}
-  //     type: {green ${type}}
-  //     maxWidth: {green ${maxWidth}}
-  //   `);
-  // }
 
 
 
@@ -197,6 +203,8 @@ const formatImagesAndVideosObj = ({ localeObj = {}, obj, maxWidth = 1920 }) => {
     return {};
     // return null;
   }
+
+  // console.log('AAAAAAAAAAAAAAAAAAAAA');
 
 
   // --------------------------------------------------

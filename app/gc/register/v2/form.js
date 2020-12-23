@@ -856,10 +856,7 @@ const Component = (props) => {
       //   Router.push = History API pushState()
       // ---------------------------------------------
 
-      const url = '/gc/register/[[...slug]]';
-      const as = '/gc/register';
-
-      await Router.push(url, as);
+      Router.push('/gc/register');
 
 
 

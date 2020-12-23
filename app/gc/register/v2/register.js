@@ -15,7 +15,6 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
 import Router from 'next/router';
 import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
@@ -23,7 +22,6 @@ import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 import Cookies from 'js-cookie';
-import moment from 'moment';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
@@ -45,21 +43,11 @@ import lodashGet from 'lodash/get';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
-// import IconButton from '@material-ui/core/IconButton';
-// import Popover from '@material-ui/core/Popover';
 import Paper from '@material-ui/core/Paper';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-
-
-// ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-// import IconEdit from '@material-ui/icons/Edit';
-// import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
 // ---------------------------------------------
@@ -89,6 +77,8 @@ import Panel from 'app/common/layout/v2/panel.js';
 import Card from 'app/gc/register/v2/card.js';
 import CardTemp from 'app/gc/register/v2/card-temp.js';
 import Form from 'app/gc/register/v2/form.js';
+
+
 
 
 
@@ -134,6 +124,8 @@ const Component = (props) => {
   const {
 
     gcListObj,
+    hardwaresArr,
+    keyword,
     gcTempsListObj,
     gameGenresArr,
 
@@ -307,21 +299,32 @@ const Component = (props) => {
 
 
       // ---------------------------------------------
+      //   For Search
+      // ---------------------------------------------
+
+      const hardwareIDsArr = [];
+
+      for (let valueObj of hardwaresArr.values()) {
+        hardwareIDsArr.push(valueObj.hardwareID);
+      }
+
+
+      // ---------------------------------------------
       //   Router.push 用
       // ---------------------------------------------
 
-      let url = '';
-      let as = '';
+      const urlHardwares = hardwareIDsArr.length > 0 ? `hardwares=${hardwareIDsArr.join(',')}&` : '';
+      const urlKeyword = keyword ? `keyword=${encodeURI(keyword)}&` : '';
 
-      if (page === 1) {
+      let url = `/gc/register/search?${urlHardwares}${urlKeyword}page=${page}`;
 
-        url = `/gc/register/[[...slug]]`;
-        as ='/gc/register';
+      if (!urlHardwares && !urlKeyword) {
 
-      } else {
-
-        url = '/gc/register/[[...slug]]';
-        as = `/gc/register/${page}`;
+        if (page === 1) {
+          url = '/gc/register';
+        } else {
+          url = `/gc/register/${page}`;
+        }
 
       }
 
@@ -336,32 +339,48 @@ const Component = (props) => {
 
 
       // ---------------------------------------------
+      //   Scroll To
+      // ---------------------------------------------
+
+      handleScrollTo({
+
+        to: 'gcRegister',
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+
+      });
+
+
+
+
+      // ---------------------------------------------
       //   console.log
       // ---------------------------------------------
 
       // console.log(`
       //   ----------------------------------------\n
-      //   app/gc/list/v2/register.js - handleRead
+      //   app/gc/register/v2/register.js - handleRead
       // `);
 
       // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id}}
       //   page: {green ${page}}
       //   changeLimit: {green ${changeLimit}}
 
       //   url: {green ${url}}
-      //   as: {green ${as}}
       // `);
 
       // return;
+
+
 
 
       // ---------------------------------------------
       //   Router.push = History API pushState()
       // ---------------------------------------------
 
-      await Router.push(url, as);
+      Router.push(url);
 
 
     } catch (errorObj) {}
@@ -789,16 +808,6 @@ const Component = (props) => {
       setButtonDisabled(false);
 
 
-      // ---------------------------------------------
-      //   Router.push = History API pushState()
-      // ---------------------------------------------
-
-      // const url = '/gc/register/[[...slug]]';
-      // const as = '/gc/register';
-
-      // await Router.push(url, as);
-
-
 
 
       // ---------------------------------------------
@@ -951,10 +960,7 @@ const Component = (props) => {
       //   Router.push = History API pushState()
       // ---------------------------------------------
 
-      const url = '/gc/register/[[...slug]]';
-      const as = '/gc/register';
-
-      await Router.push(url, as);
+      Router.push('/gc/register');
 
 
 
@@ -1128,7 +1134,6 @@ const Component = (props) => {
 
 
 
-
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
@@ -1201,7 +1206,6 @@ const Component = (props) => {
                   adminCheckedGamesTemps_idsArr
                 },
               })}
-              // onClick={handleDelete}
             >
               削除する
             </Button>

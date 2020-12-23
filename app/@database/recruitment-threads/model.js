@@ -1210,17 +1210,10 @@ const findRecruitmentsForSearch = async ({
     //   /app/@database/recruitment-threads/model.js - findRecruitmentsForSearch
     // `);
 
-    // console.log(chalk`
-    //   findRecruitmentsForSearch
-
-    //   gameCommunities_id: {green ${gameCommunities_id} / ${typeof gameCommunities_id}}
-    //   keyword: {green ${keyword} / ${typeof keyword}}
-    //   threadPage: {green ${threadPage} / ${typeof threadPage}}
-    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
-    //   commentPage: {green ${commentPage} / ${typeof commentPage}}
-    //   commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
-    //   replyPage: {green ${replyPage} / ${typeof replyPage}}
-    //   replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
+    // console.log(`
+    //   ----- localeObj -----\n
+    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
 
     // console.log(`
@@ -1233,6 +1226,18 @@ const findRecruitmentsForSearch = async ({
     //   ----- categoriesArr -----\n
     //   ${util.inspect(categoriesArr, { colors: true, depth: null })}\n
     //   --------------------\n
+    // `);
+
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id} / ${typeof loginUsers_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id} / ${typeof gameCommunities_id}}
+    //   keyword: {green ${keyword} / ${typeof keyword}}
+    //   threadPage: {green ${threadPage} / ${typeof threadPage}}
+    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
+    //   commentPage: {green ${commentPage} / ${typeof commentPage}}
+    //   commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
+    //   replyPage: {green ${replyPage} / ${typeof replyPage}}
+    //   replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
     // `);
 
     // console.log(`

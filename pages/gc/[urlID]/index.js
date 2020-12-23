@@ -189,7 +189,7 @@ const ContainerLayout = (props) => {
 
   return (
     <Layout
-      title={props.title}
+      metaObj={props.metaObj}
       componentSidebar={componentSidebar}
       componentContent={componentContent}
 
@@ -355,10 +355,18 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
-  //   Title
+  //   metaObj
   // --------------------------------------------------
 
-  const title = `${gameName} - Game Users`;
+  const metaObj = {
+
+    title: `${gameName} - Game Users`,
+    description: `${gameName}のコミュニティ。フォーラム、募集が利用できます。`,
+    type: 'article',
+    url: `${process.env.NEXT_PUBLIC_URL_BASE}gc/${urlID}`,
+    image: '',
+
+  }
 
 
 
@@ -429,8 +437,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
-  res.cookie('recentAccessPageHref', '/gc/[urlID]');
-  res.cookie('recentAccessPageAs', `/gc/${urlID}`);
+  res.cookie('recentAccessPageUrl', `/gc/${urlID}`);
 
 
 
@@ -520,7 +527,7 @@ export async function getServerSideProps({ req, res, query }) {
       statusCode,
       login,
       loginUsersObj,
-      title,
+      metaObj,
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,

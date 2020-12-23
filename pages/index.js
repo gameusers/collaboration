@@ -344,7 +344,7 @@ const ContainerLayout = (props) => {
 
   return (
     <Layout
-      title={props.title}
+      metaObj={props.metaObj}
       // componentSidebar={}
       componentContent={componentContent}
 
@@ -451,10 +451,14 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
-  //   Title
+  //   metaObj
   // --------------------------------------------------
 
-  const title = `Game Users`;
+  const metaObj = {
+
+    type: 'website',
+
+  }
 
 
 
@@ -482,6 +486,8 @@ export async function getServerSideProps({ req, res, query }) {
     },
 
   ];
+
+
 
 
   // --------------------------------------------------
@@ -515,7 +521,7 @@ export async function getServerSideProps({ req, res, query }) {
       statusCode,
       login,
       loginUsersObj,
-      title,
+      metaObj,
       headerObj,
       headerNavMainArr,
 

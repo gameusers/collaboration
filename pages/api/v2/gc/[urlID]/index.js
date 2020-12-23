@@ -440,6 +440,20 @@ export default async (req, res) => {
       forumObj = await ModelForumThreads.findForumByforumID(argumentsObj);
 
 
+      // ---------------------------------------------
+      //   スレッドのデータがない場合はエラー
+      // ---------------------------------------------
+
+      const threadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
+
+      if (!returnObj.redirectObj && Object.keys(threadsDataObj).length === 0) {
+
+        statusCode = 404;
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'tz5ihO_-q', messageID: 'Error' }] });
+
+      }
+
+
     // --------------------------------------------------
     //   フォーラムをページで取得
     // --------------------------------------------------

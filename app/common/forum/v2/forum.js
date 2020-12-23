@@ -126,6 +126,8 @@ const Component = (props) => {
   } = props;
 
 
+
+
   // --------------------------------------------------
   //   Hooks
   // --------------------------------------------------
@@ -143,6 +145,8 @@ const Component = (props) => {
 
   }, []);
 
+
+  
 
   // --------------------------------------------------
   //   States
@@ -184,34 +188,21 @@ const Component = (props) => {
       // ---------------------------------------------
 
       let url = '';
-      let as = '';
 
       if (gameCommunities_id) {
 
         if (page === 1) {
-
-          url = `/gc/[urlID]`;
-          as = `/gc/${urlID}`;
-
+          url = `/gc/${urlID}`;
         } else {
-
-          url = `/gc/[urlID]/forum/[[...slug]]`;
-          as = `/gc/${urlID}/forum/${page}`;
-
+          url = `/gc/${urlID}/forum/${page}`;
         }
 
       } else {
 
         if (page === 1) {
-
-          url = `/uc/[userCommunityID]`;
-          as = `/uc/${userCommunityID}`;
-
+          url = `/uc/${userCommunityID}`;
         } else {
-
-          url = `/uc/[userCommunityID]/forum/[[...slug]]`;
-          as = `/uc/${userCommunityID}/forum/${page}`;
-
+          url = `/uc/${userCommunityID}/forum/${page}`;
         }
 
       }
@@ -252,7 +243,7 @@ const Component = (props) => {
       //   Router.push = History API pushState()
       // ---------------------------------------------
 
-      await Router.push(url, as);
+      Router.push(url);
 
 
     } catch (errorObj) {}

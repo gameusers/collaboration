@@ -184,18 +184,11 @@ const Component = (props) => {
       // ---------------------------------------------
 
       let url = '';
-      let as = '';
 
       if (page === 1) {
-
-        url = `/uc/list/[[...slug]]`;
-        as ='/uc/list';
-
+        url ='/uc/list';
       } else {
-
-        url = '/uc/list/[[...slug]]';
-        as = `/uc/list/${page}`;
-
+        url = `/uc/list/${page}`;
       }
 
 
@@ -251,7 +244,7 @@ const Component = (props) => {
       //   Router.push = History API pushState()
       // ---------------------------------------------
 
-      await Router.push(url, as);
+      Router.push(url);
 
 
     } catch (errorObj) {}

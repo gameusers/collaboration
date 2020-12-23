@@ -99,8 +99,7 @@ const ContainerLayout = (props) => {
       />
 
       <FormLogin
-        recentAccessPageHref={props.recentAccessPageHref}
-        recentAccessPageAs={props.recentAccessPageAs}
+        recentAccessPageUrl={props.recentAccessPageUrl}
       />
 
     </React.Fragment>
@@ -113,7 +112,7 @@ const ContainerLayout = (props) => {
 
   return (
     <Layout
-      title={props.title}
+      metaObj={props.metaObj}
       componentSidebar={componentSidebar}
       componentContent={componentContent}
 
@@ -181,6 +180,8 @@ export async function getServerSideProps({ req, res, query }) {
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
 
 
+
+
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
@@ -192,13 +193,9 @@ export async function getServerSideProps({ req, res, query }) {
   //   Get Cookie Data
   // --------------------------------------------------
 
-  const recentAccessPageHref = getCookie({ key: 'recentAccessPageHref', reqHeadersCookie, decode: true });
-  const recentAccessPageAs = getCookie({ key: 'recentAccessPageAs', reqHeadersCookie, decode: true });
+  const recentAccessPageUrl = getCookie({ key: 'recentAccessPageUrl', reqHeadersCookie, decode: true });
 
-//   console.log(chalk`
-//   recentAccessPageHref: {green ${recentAccessPageHref}}
-//   recentAccessPageAs: {green ${recentAccessPageAs}}
-// `);
+
 
 
   // --------------------------------------------------
@@ -231,10 +228,18 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
-  //   Title
+  //   metaObj
   // --------------------------------------------------
 
-  const title = `ログイン - Game Users`;
+  const metaObj = {
+
+    title: 'ログイン - Game Users',
+    description: 'Game Usersのログインページです。',
+    type: 'article',
+    url: `${process.env.NEXT_PUBLIC_URL_BASE}login`,
+    image: '',
+
+  }
 
 
 
@@ -335,14 +340,13 @@ export async function getServerSideProps({ req, res, query }) {
       statusCode,
       login,
       loginUsersObj,
-      title,
+      metaObj,
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,
       feedObj,
 
-      recentAccessPageHref,
-      recentAccessPageAs,
+      recentAccessPageUrl,
 
     }
 

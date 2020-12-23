@@ -213,10 +213,7 @@ const Component = (props) => {
       //   Router.push = History API pushState()
       // ---------------------------------------------
 
-      const url = '/index';
-      const as = '/';
-
-      Router.push(url, as);
+      Router.push('/');
 
 
     } catch (errorObj) {

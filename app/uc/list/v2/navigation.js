@@ -143,21 +143,14 @@ const Component = (props) => {
 
       const urlKeyword = searchKeyword ? `keyword=${encodeURI(searchKeyword)}&` : '';
 
-      let url = `/uc/list/[[...slug]]?${urlKeyword}page=1`;
-      let as = `/uc/list/search?${urlKeyword}page=1`;
+      let url = `/uc/list/search?${urlKeyword}page=1`;
 
       if (!urlKeyword) {
 
         if (page === 1) {
-
-          url = '/uc/list/[[...slug]]';
-          as = '/uc/list';
-
+          url = '/uc/list';
         } else {
-
-          url = '/uc/list/[[...slug]]';
-          as = `/uc/list/${page}`;
-
+          url = `/uc/list/${page}`;
         }
 
       }
@@ -212,7 +205,7 @@ const Component = (props) => {
       //   Router.push = History API pushState()
       // ---------------------------------------------
 
-      Router.push(url, as);
+      Router.push(url);
 
 
     } catch (errorObj) {}

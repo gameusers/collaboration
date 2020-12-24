@@ -421,15 +421,15 @@ const Component = (props) => {
     //   console.log
     // --------------------------------------------------
 
-    console.log(chalk`
-      /app/common/image-and-video/v2/components/form-image.js - handleAddImage
-    `);
+    // console.log(chalk`
+    //   /app/common/image-and-video/v2/components/form-image.js - handleAddImage
+    // `);
 
-    console.log(`
-      ----- clonedImagesAndVideosObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(clonedImagesAndVideosObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- clonedImagesAndVideosObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(clonedImagesAndVideosObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
     // console.log(`
     //   ----- imagesAndVideosObj -----\n
@@ -451,10 +451,6 @@ const Component = (props) => {
   // console.log(chalk`
   //   /app/common/image-and-video/v2/components/form-image.js
   // `);
-
-  // console.log(`\n---------- pathArr ----------\n`);
-  // console.dir(JSON.parse(JSON.stringify(pathArr)));
-  // console.log(`\n-----------------------------------\n`);
 
   // console.log(chalk`
   //   _id: {green ${_id}}

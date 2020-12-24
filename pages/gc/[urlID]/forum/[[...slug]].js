@@ -513,7 +513,7 @@ export async function getServerSideProps({ req, res, query }) {
 
 
     // ---------------------------------------------
-    //   - title
+    //   - forumDataObj
     // ---------------------------------------------
 
     const forumThreadsArr = lodashGet(dataObj, ['forumThreadsObj', 'page1Obj', 'arr'], []);

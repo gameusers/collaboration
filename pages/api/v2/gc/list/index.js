@@ -236,10 +236,10 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
 
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/gc/[urlID]/index.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/gc/[urlID]/index.js
+    // `);
 
     // console.log(chalk`
     //   page: {green ${page}}
@@ -248,11 +248,11 @@ export default async (req, res) => {
     //   keyword: {green ${keyword}}
     // `);
 
-    console.log(`
-      ----- returnObj.gcListObj -----\n
-      ${util.inspect(returnObj.gcListObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj.gcListObj -----\n
+    //   ${util.inspect(returnObj.gcListObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
     // console.log(`
     //   ----- returnObj -----\n

@@ -94,7 +94,8 @@ const Container = ({ children, showNavTop, lowerSidebar }) => {
         position: sticky;
         top: 0;
 
-        padding: 0 0 2px 0;
+        // margin: 0 4px 0 0;
+        padding: 0 4px 2px 0;
 
         @media screen and (max-width: 947px) {
           width: 100%;
@@ -103,6 +104,7 @@ const Container = ({ children, showNavTop, lowerSidebar }) => {
           position: static;
           overflow-y: visible;
           margin: 0;
+          padding: 0;
         }
       `}
       style={props}

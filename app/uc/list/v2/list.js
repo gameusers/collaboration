@@ -508,9 +508,9 @@ const Component = (props) => {
             >
 
               <p
-                css={css`
-                  margin: 0 0 14px 0;
-                `}
+                // css={css`
+                //   margin: 0 0 14px 0;
+                // `}
               >
                 左のボタンを押すと、ユーザーコミュニティの作成ページに移動します。<span css={css`color: red;`}>※ 作成フォームを利用するにはログインする必要があります。</span>
               </p>

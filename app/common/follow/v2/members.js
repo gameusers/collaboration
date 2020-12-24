@@ -79,6 +79,8 @@ import CardPlayer from 'app/common/card/v2/card-player.js';
 
 
 
+
+
 // --------------------------------------------------
 //   Emotion
 //   https://emotion.sh/docs/composition
@@ -330,6 +332,7 @@ const Component = (props) => {
       //   --------------------\n
       // `);
 
+
       // ---------------------------------------------
       //   すでにデータを読み込んでいる場合は、ストアのデータを表示する
       // ---------------------------------------------
@@ -386,6 +389,29 @@ const Component = (props) => {
 
       };
 
+      console.log(`
+        ----- formDataObj -----\n
+        ${util.inspect(formDataObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+
+      console.log(`
+        ----- JSON.stringify(formDataObj) -----\n
+        ${util.inspect(JSON.stringify(formDataObj), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+
+      // console.log(`
+      //   ----- formDataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // console.log(`
+      //   ----- JSON.stringify(formDataObj) -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(JSON.stringify(formDataObj))), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
 
       // ---------------------------------------------
       //   Fetch
@@ -435,10 +461,10 @@ const Component = (props) => {
       //   console.log
       // ---------------------------------------------
 
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/follow/v2/components/members.js - handleRead
-      // `);
+      console.log(`
+        ----------------------------------------\n
+        /app/common/follow/v2/components/members.js - handleRead
+      `);
 
       // console.log(chalk`
       //   gameCommunities_id: {green ${gameCommunities_id}}

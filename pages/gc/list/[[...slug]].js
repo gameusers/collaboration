@@ -272,7 +272,7 @@ export async function getServerSideProps({ req, res, query }) {
   const metaObj = {
 
     title: 'ゲームコミュニティ - Game Users',
-    description: `ゲームコミュニティの一覧です。ゲームを検索することができます。`,
+    description: `ゲームコミュニティの一覧です。ゲームコミュニティを検索することもできます。`,
     type: 'article',
     url: `${process.env.NEXT_PUBLIC_URL_BASE}gc/list`,
     image: '',

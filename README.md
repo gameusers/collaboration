@@ -2,9 +2,9 @@
 ![Game Users Banner](https://gameusers.org/assets/img/social/ogp_image.jpg)
 
 
-[![node](https://img.shields.io/badge/node-v14.15.1-lightgrey.svg)](https://nodejs.org/ja/)
+[![node](https://img.shields.io/badge/node-v14.15.3-lightgrey.svg)](https://nodejs.org/ja/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-v4.4.2-green.svg)](https://www.mongodb.com/)
-[![Docker](https://img.shields.io/badge/Docker-v19.03.13-blue.svg)](https://www.npmjs.com/)
+[![Docker](https://img.shields.io/badge/Docker-v20.10.1-blue.svg)](https://www.npmjs.com/)
 [![Docker Compose](https://img.shields.io/badge/Docker%20Compose-v1.26.2-blue.svg)](https://www.npmjs.com/)
 [![David](https://img.shields.io/david/expressjs/express.svg)]()
 [![license](https://img.shields.io/badge/license-Game%20Users%20Project-blue.svg)](https://github.com/gameusers/web/blob/master/LICENSE.txt)

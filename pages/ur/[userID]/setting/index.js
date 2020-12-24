@@ -134,7 +134,7 @@ const ContainerLayout = (props) => {
 
   return (
     <Layout
-      title={props.title}
+      metaObj={props.metaObj}
       componentSidebar={componentSidebar}
       componentContent={componentContent}
 
@@ -270,11 +270,27 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
-  //   Title
+  //   metaObj
   // --------------------------------------------------
 
   const userName = lodashGet(headerObj, ['name'], '');
-  const title = `ユーザー設定 - ${userName}`;
+
+  const metaObj = {
+
+    title: `ユーザー設定 - ${userName}`,
+    description: `${userName}さんのユーザー設定ページです。`,
+    type: 'article',
+    url: `${process.env.NEXT_PUBLIC_URL_BASE}ur/${userID}/setting`,
+    image: '',
+
+  }
+
+  // アップロードされた画像がある場合は、OGPの画像に設定する
+  const imageSrc = lodashGet(headerObj, ['imagesAndVideosObj', 'arr', 0, 'src'], '');
+  
+  if (imageSrc.indexOf('/img/ur/') !== -1) {
+    metaObj.image = `${process.env.NEXT_PUBLIC_URL_BASE}${imageSrc}`.replace('//img', '/img');
+  }
 
 
 
@@ -366,7 +382,7 @@ export async function getServerSideProps({ req, res, query }) {
       statusCode,
       login,
       loginUsersObj,
-      title,
+      metaObj,
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,

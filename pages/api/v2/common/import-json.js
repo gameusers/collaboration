@@ -5626,7 +5626,7 @@ export default async (req, res) => {
 
       let imagesAndVideos_id = '';
 
-      if (imageObj[game_no]) {
+      if (game_no !== '6' && imageObj[game_no]) {
         imagesAndVideos_id = lodashGet(idsImageObj, [`game_no_${game_no}`, 'id1'], '');
       }
 

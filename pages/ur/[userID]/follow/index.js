@@ -115,7 +115,7 @@ const ContainerLayout = (props) => {
 
   return (
     <Layout
-      title={props.title}
+      metaObj={props.metaObj}
       componentSidebar={componentSidebar}
       componentContent={componentContent}
 
@@ -181,6 +181,8 @@ export async function getServerSideProps({ req, res, query }) {
 
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+
+
 
 
   // --------------------------------------------------
@@ -252,9 +254,24 @@ export async function getServerSideProps({ req, res, query }) {
   });
 
   const pageTitle = lodashGet(pagesObj, ['title'], '');
-
   const userName = lodashGet(headerObj, ['name'], '');
-  const title = pageTitle ? pageTitle : `フォロー - ${userName}`;
+
+  const metaObj = {
+
+    title: pageTitle ? pageTitle : `フォロー - ${userName}`,
+    description: `${userName}さんのフォローページです。`,
+    type: 'article',
+    url: `${process.env.NEXT_PUBLIC_URL_BASE}ur/${userID}/follow`,
+    image: '',
+
+  }
+
+  // アップロードされた画像がある場合は、OGPの画像に設定する
+  const imageSrc = lodashGet(headerObj, ['imagesAndVideosObj', 'arr', 0, 'src'], '');
+  
+  if (imageSrc.indexOf('/img/ur/') !== -1) {
+    metaObj.image = `${process.env.NEXT_PUBLIC_URL_BASE}${imageSrc}`.replace('//img', '/img');
+  }
 
 
 
@@ -313,12 +330,13 @@ export async function getServerSideProps({ req, res, query }) {
   ];
 
 
+  
+
   // ---------------------------------------------
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
-  res.cookie('recentAccessPageHref', '/ur/[userID]/follow');
-  res.cookie('recentAccessPageAs', `/ur/${userID}/follow`);
+  res.cookie('recentAccessPageUrl', `/ur/${userID}/follow`);
 
 
 
@@ -354,7 +372,7 @@ export async function getServerSideProps({ req, res, query }) {
       statusCode,
       login,
       loginUsersObj,
-      title,
+      metaObj,
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,

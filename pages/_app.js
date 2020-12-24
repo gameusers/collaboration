@@ -24,7 +24,6 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useEffect } from 'react';
-import Head from 'next/head';
 import { IntlProvider, useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
 import { SnackbarProvider } from 'notistack';

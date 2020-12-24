@@ -254,13 +254,10 @@ const Component = (props) => {
   const url = lodashGet(metaObj, ['url'], process.env.NEXT_PUBLIC_URL_BASE);
 
   let image = `${process.env.NEXT_PUBLIC_URL_BASE}img/common/social/ogp_image.jpg`;
-  let twitterCard = 'summary';
+  const twitterCard = 'summary_large_image';// summary
 
   if (metaObj.image) {
-
     image = metaObj.image;
-    twitterCard = 'summary_large_image';
-
   }
   
 
@@ -368,7 +365,7 @@ const Component = (props) => {
 
       {/* Header - Navigation Main */}
       {navigationForLightbox &&
-        <div
+        <nav
           css={css`
             background-color: #151515;
             position: sticky;
@@ -380,7 +377,7 @@ const Component = (props) => {
             lowerNavMain={lowerNavMain}
             headerNavMainArr={headerNavMainArr}
           />
-        </div>
+        </nav>
       }
 
 
@@ -406,7 +403,7 @@ const Component = (props) => {
 
         {/* Sidebar */}
         {componentSidebar &&
-          <div
+          <aside
             css={css`
               width: 300px;
               margin: 0 16px 0 0;
@@ -429,7 +426,7 @@ const Component = (props) => {
               {componentSidebar}
             </Sidebar>
 
-          </div>
+          </aside>
         }
 
 

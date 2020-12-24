@@ -173,7 +173,7 @@ const Component = (props) => {
 
 
         {/* Navigation */}
-        <nav
+        <div
           css={css`
             display: flex;
             flex-flow: row wrap;
@@ -191,7 +191,7 @@ const Component = (props) => {
           <div css={cssMenu}><Link href="/inquiry/form"><a className="link-white">お問い合わせ</a></Link></div>
           <div css={cssMenuVerticalBar}>|</div>
           <div css={cssMenu}><Link href="https://twitter.com/gameusersorg"><a className="link-white">Twitter</a></Link></div>
-        </nav>
+        </div>
 
 
         {/* Scroll To Top Icon */}

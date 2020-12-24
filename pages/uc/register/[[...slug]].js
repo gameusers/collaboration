@@ -112,7 +112,7 @@ const ContainerLayout = (props) => {
 
   return (
     <Layout
-      title={props.title}
+      metaObj={props.metaObj}
       componentSidebar={componentSidebar}
       componentContent={componentContent}
 
@@ -178,6 +178,8 @@ export async function getServerSideProps({ req, res, query }) {
 
   const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+
+
 
 
   // --------------------------------------------------
@@ -255,10 +257,18 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
-  //   Title
+  //   metaObj
   // --------------------------------------------------
 
-  let title = `ユーザーコミュニティ - Game Users`;
+  const metaObj = {
+
+    title: 'ユーザーコミュニティ - Game Users',
+    description: 'Game Usersにユーザーコミュニティを作成することができます。',
+    type: 'article',
+    url: `${process.env.NEXT_PUBLIC_URL_BASE}uc/register`,
+    image: '',
+
+  }
 
 
 
@@ -311,8 +321,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   recentAccessPage
   // --------------------------------------------------
 
-  let recentAccessPageHref = '/uc/register/[[...slug]]';
-  let recentAccessPageAs = '/uc/register';
+  let recentAccessPageUrl = '/uc/register';
 
 
 
@@ -325,17 +334,17 @@ export async function getServerSideProps({ req, res, query }) {
 
 
     // ---------------------------------------------
-    //   - Title
+    //   - metaObj.title
     // ---------------------------------------------
 
-    title = `ユーザーコミュニティ: Page ${page} - Game Users`;
+    metaObj.title = `ユーザーコミュニティ: Page ${page} - Game Users`;
 
 
     // --------------------------------------------------
     //   - recentAccessPage
     // --------------------------------------------------
 
-    recentAccessPageAs = `/uc/register/${page}`;
+    recentAccessPageUrl = `/uc/register/${page}`;
 
 
   // --------------------------------------------------
@@ -346,10 +355,10 @@ export async function getServerSideProps({ req, res, query }) {
 
 
     // ---------------------------------------------
-    //   - Title
+    //   - metaObj.title
     // ---------------------------------------------
 
-    title = `ユーザーコミュニティ検索 - Game Users`;
+    metaObj.title = `ユーザーコミュニティ検索 - Game Users`;
 
 
     // ---------------------------------------------
@@ -380,7 +389,7 @@ export async function getServerSideProps({ req, res, query }) {
     const urlHardwares = hardwares ? `hardwares=${hardwares}&` : '';
     const urlKeyword = keyword ? `keyword=${encodeURI(keyword)}&` : '';
 
-    recentAccessPageAs = `/uc/register/search?${urlHardwares}${urlKeyword}page=${page}`;
+    recentAccessPageUrl = `/uc/register/search?${urlHardwares}${urlKeyword}page=${page}`;
 
 
   }
@@ -392,8 +401,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
-  res.cookie('recentAccessPageHref', recentAccessPageHref);
-  res.cookie('recentAccessPageAs', recentAccessPageAs);
+  res.cookie('recentAccessPageUrl', recentAccessPageUrl);
 
 
 
@@ -434,7 +442,7 @@ export async function getServerSideProps({ req, res, query }) {
       statusCode,
       login,
       loginUsersObj,
-      title,
+      metaObj,
       headerObj,
       headerNavMainArr,
       breadcrumbsArr,

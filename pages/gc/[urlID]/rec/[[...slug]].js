@@ -293,6 +293,8 @@ export async function getServerSideProps({ req, res, query }) {
   const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
 
 
+
+
   // --------------------------------------------------
   //   Query
   // --------------------------------------------------
@@ -328,6 +330,9 @@ export async function getServerSideProps({ req, res, query }) {
 
   }
   
+  // console.log(chalk`
+  //   pageType: {green ${pageType}}
+  // `);
 
   // console.log(`
   //   ----- query -----\n
@@ -357,9 +362,7 @@ export async function getServerSideProps({ req, res, query }) {
   const commentLimit = getCookie({ key: 'recruitmentCommentLimit', reqHeadersCookie });
   const replyLimit = getCookie({ key: 'recruitmentReplyLimit', reqHeadersCookie });
 
-  // console.log(chalk`
-  //   threadPage: {green ${threadPage}}
-  // `);
+  
 
 
   // --------------------------------------------------
@@ -479,11 +482,11 @@ export async function getServerSideProps({ req, res, query }) {
       href: `/gc/${urlID}`,
     },
 
-    {
-      type: 'gc/rec',
-      anchorText: '',
-      href: `/gc/${urlID}/rec`,
-    },
+    // {
+    //   type: 'gc/rec',
+    //   anchorText: '',
+    //   href: `/gc/${urlID}/rec`,
+    // },
 
   ];
 
@@ -513,6 +516,21 @@ export async function getServerSideProps({ req, res, query }) {
     metaObj.title = `募集 - ${gameName}`;
 
 
+    // ---------------------------------------------
+    //   - パンくずリスト
+    // ---------------------------------------------
+
+    breadcrumbsArr.push(
+
+      {
+        type: 'gc/rec',
+        anchorText: '',
+        href: '',
+      },
+
+    );
+
+
   // --------------------------------------------------
   //   募集
   // --------------------------------------------------
@@ -525,6 +543,21 @@ export async function getServerSideProps({ req, res, query }) {
     // ---------------------------------------------
 
     metaObj.title = `募集: Page ${threadPage} - ${gameName}`;
+
+
+    // ---------------------------------------------
+    //   - パンくずリスト
+    // ---------------------------------------------
+
+    breadcrumbsArr.push(
+
+      {
+        type: 'gc/rec',
+        anchorText: '',
+        href: `/gc/${urlID}/rec`,
+      },
+
+    );
 
 
     // --------------------------------------------------
@@ -555,6 +588,12 @@ export async function getServerSideProps({ req, res, query }) {
     // ---------------------------------------------
 
     breadcrumbsArr.push(
+
+      {
+        type: 'gc/rec',
+        anchorText: '',
+        href: `/gc/${urlID}/rec`,
+      },
 
       {
         type: 'gc/rec/individual',
@@ -614,6 +653,12 @@ export async function getServerSideProps({ req, res, query }) {
     // ---------------------------------------------
 
     breadcrumbsArr.push(
+
+      {
+        type: 'gc/rec',
+        anchorText: '',
+        href: `/gc/${urlID}/rec`,
+      },
 
       {
         type: 'gc/rec/search',

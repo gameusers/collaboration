@@ -46,13 +46,6 @@ import IconExpandLess from '@material-ui/icons/ExpandLess';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
 
 
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-// import { ContainerStateLayout } from 'app/@states/layout.js';
-
-
 
 
 
@@ -147,7 +140,10 @@ const Component = (props) => {
       {/* Heading */}
       <AccordionSummary
         css={css`
-          cursor: default !important;
+          && {
+            cursor: default;
+            user-select: auto;
+          }
         `}
       >
 

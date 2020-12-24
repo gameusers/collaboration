@@ -512,173 +512,179 @@ const Component = (props) => {
   // --------------------------------------------------
 
   return (
-    <Element
-      name={recruitmentThreads_id}
-    >
+    <article>
 
 
-      <Accordion
-        css={css`
-          margin: 0 0 16px 0 !important;
-        `}
-        expanded={panelExpanded}
+      <Element
+        name={recruitmentThreads_id}
       >
 
 
-        {/* Summary */}
-        <AccordionSummary
+        <Accordion
           css={css`
-            && {
-              cursor: default !important;
-              background-color: white !important;
-              user-select: auto;
-
-              @media screen and (max-width: 480px) {
-                padding: 0 16px;
-              }
-            }
+            margin: 0 0 16px 0 !important;
           `}
-          classes={{
-            expanded: classes.expanded
-          }}
+          expanded={panelExpanded}
         >
 
 
-          <div
+          {/* Summary */}
+          <AccordionSummary
             css={css`
-              display: flex;
-              flex-flow: column nowrap;
-              width: 100%;
+              && {
+                cursor: default;
+                background-color: white;
+                user-select: auto;
+
+                @media screen and (max-width: 480px) {
+                  padding: 0 16px;
+                }
+              }
             `}
+            classes={{
+              expanded: classes.expanded
+            }}
           >
 
 
-            {/* Container - Thread Name & Expansion Button */}
             <div
               css={css`
                 display: flex;
-                flex-flow: row nowrap;
-                align-items: center;
+                flex-flow: column nowrap;
                 width: 100%;
               `}
             >
 
 
-              {/* h2 */}
-              <h2
-                css={css`
-                  font-weight: bold;
-                  font-size: 16px;
-
-                  @media screen and (max-width: 480px) {
-                    font-size: 14px;
-                  }
-                `}
-              >
-                {title}
-              </h2>
-
-
-
-
-              {/* Expansion Button */}
-              <div
-                css={css`
-                  margin-left: auto;
-                `}
-              >
-
-                <IconButton
-                  css={css`
-                    && {
-                      margin: 0;
-                      padding: 4px;
-                    }
-                  `}
-                  aria-expanded={panelExpanded}
-                  aria-label="Show more"
-                  disabled={buttonDisabled}
-                  onClick={() => setPanelExpanded(!panelExpanded)}
-                >
-                  {panelExpanded ? (
-                    <IconExpandLess />
-                  ) : (
-                    <IconExpandMore />
-                  )}
-                </IconButton>
-
-              </div>
-
-
-            </div>
-
-
-
-
-            {/* Information */}
-            <div
-              css={css`
-                display: flex;
-                flex-flow: row nowrap;
-                align-items: center;
-                font-size: 12px;
-              `}
-            >
-
-
-              {/* Hardwares & recruitmentThreads_id */}
+              {/* Container - Thread Name & Expansion Button */}
               <div
                 css={css`
                   display: flex;
-                  flex-flow: row wrap;
+                  flex-flow: row nowrap;
                   align-items: center;
-                  margin: 0;
+                  width: 100%;
                 `}
               >
 
 
-                {/* ハードウェア  */}
-                <HardwaresChip
-                  hardwaresArr={hardwaresArr}
-                />
+                {/* h1 */}
+                <h1
+                  css={css`
+                    font-weight: bold;
+                    font-size: 16px;
+
+                    @media screen and (max-width: 480px) {
+                      font-size: 14px;
+                    }
+                  `}
+                >
+                  {title}
+                </h1>
 
 
-                {/* カテゴリー */}
-                <CategoryChip
-                  category={category}
-                />
 
 
-                {/* スレッドの固有ID: recruitmentThreads_id */}
+                {/* Expansion Button */}
                 <div
                   css={css`
-                    display: flex;
-                    flex-flow: row nowrap;
-                    margin: 8px 0 0 0;
+                    margin-left: auto;
                   `}
                 >
 
-                  <IconPublic
+                  <IconButton
                     css={css`
                       && {
-                        font-size: 24px;
-                        margin: 0 2px 0 0;
+                        margin: 0;
+                        padding: 4px;
                       }
                     `}
+                    aria-expanded={panelExpanded}
+                    aria-label="Show more"
+                    disabled={buttonDisabled}
+                    onClick={() => setPanelExpanded(!panelExpanded)}
+                  >
+                    {panelExpanded ? (
+                      <IconExpandLess />
+                    ) : (
+                      <IconExpandMore />
+                    )}
+                  </IconButton>
+
+                </div>
+
+
+              </div>
+
+
+
+
+              {/* Information */}
+              <div
+                css={css`
+                  display: flex;
+                  flex-flow: row nowrap;
+                  align-items: center;
+                  font-size: 12px;
+                `}
+              >
+
+
+                {/* Hardwares & recruitmentThreads_id */}
+                <div
+                  css={css`
+                    display: flex;
+                    flex-flow: row wrap;
+                    align-items: center;
+                    margin: 0;
+                  `}
+                >
+
+
+                  {/* ハードウェア  */}
+                  <HardwaresChip
+                    hardwaresArr={hardwaresArr}
                   />
 
+
+                  {/* カテゴリー */}
+                  <CategoryChip
+                    category={category}
+                  />
+
+
+                  {/* スレッドの固有ID: recruitmentThreads_id */}
                   <div
                     css={css`
-                      font-size: 12px;
-                      color: #009933;
-                      cursor: pointer;
-                      margin: 2px 0 0 0;
+                      display: flex;
+                      flex-flow: row nowrap;
+                      margin: 8px 0 0 0;
                     `}
                   >
-                    <Link href={linkHref} as={linkAs}>
-                      <a>{recruitmentThreads_id}</a>
-                    </Link>
+
+                    <IconPublic
+                      css={css`
+                        && {
+                          font-size: 24px;
+                          margin: 0 2px 0 0;
+                        }
+                      `}
+                    />
+
+                    <div
+                      css={css`
+                        font-size: 12px;
+                        color: #009933;
+                        cursor: pointer;
+                        margin: 2px 0 0 0;
+                      `}
+                    >
+                      <Link href={linkHref} as={linkAs}>
+                        <a>{recruitmentThreads_id}</a>
+                      </Link>
+                    </div>
+
                   </div>
+
 
                 </div>
 
@@ -689,168 +695,108 @@ const Component = (props) => {
             </div>
 
 
-          </div>
-
-
-        </AccordionSummary>
+          </AccordionSummary>
 
 
 
 
-        {/* Contents */}
-        <AccordionDetails
-          css={css`
-            && {
-              display: flex;
-              flex-flow: column wrap;
+          {/* Contents */}
+          <AccordionDetails
+            css={css`
+              && {
+                display: flex;
+                flex-flow: column wrap;
 
-              @media screen and (max-width: 480px) {
-                padding: 0 16px 16px !important;
+                @media screen and (max-width: 480px) {
+                  padding: 0 16px 16px !important;
+                }
               }
-            }
-          `}
-        >
+            `}
+          >
 
 
-            {/* Thread - Edit Form */}
-            {showFormThread &&
-              <div
-                css={css`
-                  width: 100%;
-
-                  border-top: 1px solid;
-                  border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
-                  border-image-slice: 1;
-
-                  margin: 12px 0 0 0;
-                `}
-              >
-
+              {/* Thread - Edit Form */}
+              {showFormThread &&
                 <div
                   css={css`
-                    border-left: 4px solid #A4A4A4;
-                    margin: 16px 0 0 0;
-                    padding: 8px 0 8px 16px;
+                    width: 100%;
 
-                    @media screen and (max-width: 480px) {
-                      border-left: none;
-                      margin: 0;
-                      padding: 32px 0 0 0;
-                    }
+                    border-top: 1px solid;
+                    border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+                    border-image-slice: 1;
+
+                    margin: 12px 0 0 0;
                   `}
                 >
 
-                  <FormThread
-                    gameCommunities_id={gameCommunities_id}
-                    recruitmentThreads_id={recruitmentThreads_id}
-                    setShowForm={setShowFormThread}
-                  />
-
-                </div>
-
-              </div>
-            }
-
-
-
-
-            {/* Thread */}
-            {!showFormThread &&
-              <div
-                css={css`
-                  width: 100%;
-
-                  border-top: 1px solid;
-                  border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
-                  border-image-slice: 1;
-
-                  margin: 12px 0 0 0;
-                  padding: 20px 0 0 0;
-                `}
-              >
-
-
-                {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
-                <User
-                  imagesAndVideosThumbnailObj={imagesAndVideosThumbnailObj}
-                  name={name}
-                  userID={userID}
-                  status={status}
-                  accessDate={accessDate}
-                  exp={exp}
-                  cardPlayers_id={cardPlayers_id}
-                />
-
-
-
-
-                {/* Images and Videos */}
-                {Object.keys(imagesAndVideosObj).length > 0 &&
                   <div
                     css={css`
-                      margin: 12px 0 0 0;
+                      border-left: 4px solid #A4A4A4;
+                      margin: 16px 0 0 0;
+                      padding: 8px 0 8px 16px;
+
+                      @media screen and (max-width: 480px) {
+                        border-left: none;
+                        margin: 0;
+                        padding: 32px 0 0 0;
+                      }
                     `}
                   >
 
-                    <ImageAndVideo
-                      imagesAndVideosObj={imagesAndVideosObj}
+                    <FormThread
+                      gameCommunities_id={gameCommunities_id}
+                      recruitmentThreads_id={recruitmentThreads_id}
+                      setShowForm={setShowFormThread}
                     />
 
                   </div>
-                }
+
+                </div>
+              }
 
 
 
 
-                {/* スレッド */}
+              {/* Thread */}
+              {!showFormThread &&
                 <div
                   css={css`
-                    font-size: 14px;
-                    line-height: 1.6em;
+                    width: 100%;
 
-                    border-left: 4px solid #A4A4A4;
-                    margin: 12px 0 24px 0;
-                    padding: 8px 0 8px 16px;
+                    border-top: 1px solid;
+                    border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+                    border-image-slice: 1;
 
-                    @media screen and (max-width: 480px) {
-                      padding: 8px 0 8px 12px;
-                    }
+                    margin: 12px 0 0 0;
+                    padding: 20px 0 0 0;
                   `}
                 >
 
 
-                  {/* コメント */}
-                  <Paragraph text={comment} />
-
-
-
-
-                  {/* ID & 情報 & 公開設定 */}
-                  <Public
-                    type="thread"
-                    idsArr={idsArr}
-                    publicIDsArr={publicIDsArr}
-                    publicInformationsArr={publicInformationsArr}
-                    publicSetting={publicSetting}
+                  {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
+                  <User
+                    imagesAndVideosThumbnailObj={imagesAndVideosThumbnailObj}
+                    name={name}
+                    userID={userID}
+                    status={status}
+                    accessDate={accessDate}
+                    exp={exp}
+                    cardPlayers_id={cardPlayers_id}
                   />
 
 
 
 
-                  {/* 募集期限 ＆ 通知方法 */}
-                  {(deadlineDate || notification) &&
+                  {/* Images and Videos */}
+                  {Object.keys(imagesAndVideosObj).length > 0 &&
                     <div
                       css={css`
-                        margin: 20px 0 0 0;
+                        margin: 12px 0 0 0;
                       `}
                     >
 
-                      <DeadlineDate
-                        deadlineDate={deadlineDate}
-                      />
-
-                      <Notification
-                        notification={notification}
+                      <ImageAndVideo
+                        imagesAndVideosObj={imagesAndVideosObj}
                       />
 
                     </div>
@@ -859,81 +805,92 @@ const Component = (props) => {
 
 
 
-                  {/* Bottom Container */}
+                  {/* スレッド */}
                   <div
                     css={css`
-                      display: flex;
-                      flex-flow: row wrap;
-                      margin: 12px 0 0 0;
+                      font-size: 14px;
+                      line-height: 1.6em;
+
+                      border-left: 4px solid #A4A4A4;
+                      margin: 12px 0 24px 0;
+                      padding: 8px 0 8px 16px;
+
+                      @media screen and (max-width: 480px) {
+                        padding: 8px 0 8px 12px;
+                      }
                     `}
                   >
 
 
-                    {/* Buttons */}
+                    {/* コメント */}
+                    <Paragraph text={comment} />
+
+
+
+
+                    {/* ID & 情報 & 公開設定 */}
+                    <Public
+                      type="thread"
+                      idsArr={idsArr}
+                      publicIDsArr={publicIDsArr}
+                      publicInformationsArr={publicInformationsArr}
+                      publicSetting={publicSetting}
+                    />
+
+
+
+
+                    {/* 募集期限 ＆ 通知方法 */}
+                    {(deadlineDate || notification) &&
+                      <div
+                        css={css`
+                          margin: 20px 0 0 0;
+                        `}
+                      >
+
+                        <DeadlineDate
+                          deadlineDate={deadlineDate}
+                        />
+
+                        <Notification
+                          notification={notification}
+                        />
+
+                      </div>
+                    }
+
+
+
+
+                    {/* Bottom Container */}
                     <div
                       css={css`
                         display: flex;
-                        flex-flow: row nowrap;
-                        margin-left: auto;
+                        flex-flow: row wrap;
+                        margin: 12px 0 0 0;
                       `}
                     >
 
 
-                      <Button
+                      {/* Buttons */}
+                      <div
                         css={css`
-                          && {
-                            font-size: 12px;
-                            height: 22px;
-                            min-width: 54px;
-                            min-height: 22px;
-                            line-height: 1;
-                            padding: 0 3px;
-
-                            @media screen and (max-width: 480px) {
-                              min-width: 36px;
-                              min-height: 22px;
-                            }
-                          }
+                          display: flex;
+                          flex-flow: row nowrap;
+                          margin-left: auto;
                         `}
-                        variant="outlined"
-                        href={shareTwitter}
-                        target="_blank"
-                        disabled={buttonDisabled}
                       >
-                        <Avatar
+
+
+                        <Button
                           css={css`
                             && {
-                              width: 16px;
-                              height: 16px;
+                              font-size: 12px;
+                              height: 22px;
+                              min-width: 54px;
+                              min-height: 22px;
                               line-height: 1;
-                              background-color: #1DA1F2;
-                              margin: 0 4px 0 0;
-                            }
-                          `}
-                          alt="PlayStation"
-                          style={{ 'backgroundColor': '#1DA1F2' }}
-                        >
-                          <div style={{ 'width': '80%', 'marginTop': '0px' }}>
-                            <SimpleIcons name="Twitter" color="white" />
-                          </div>
-                        </Avatar>
-                        シェア
-                      </Button>
-
-
-
-
-                      {/* Delete Button */}
-                      {editable &&
-                        <Button
-                          css={css`
-                            && {
-                              font-size: 12px;
-                              height: 22px;
-                              min-width: 54px;
-                              min-height: 22px;
-                              margin: 0 0 0 12px;
-                              padding: 0 4px;
+                              padding: 0 3px;
 
                               @media screen and (max-width: 480px) {
                                 min-width: 36px;
@@ -942,74 +899,123 @@ const Component = (props) => {
                             }
                           `}
                           variant="outlined"
-                          color="secondary"
+                          href={shareTwitter}
+                          target="_blank"
                           disabled={buttonDisabled}
-                          onClick={
-                            buttonDisabled
-                              ?
-                                () => {}
-                              :
-                                () => handleDialogOpen({
-
-                                  title: '募集削除',
-                                  description: '募集を削除しますか？',
-                                  handle: handleDelete,
-                                  argumentsObj: {
-                                    recruitmentThreads_id,
-                                  },
-
-                                })
-                          }
                         >
-                          <IconDelete
+                          <Avatar
                             css={css`
                               && {
-                                font-size: 16px;
-                                margin: 0 2px 1px 0;
+                                width: 16px;
+                                height: 16px;
+                                line-height: 1;
+                                background-color: #1DA1F2;
+                                margin: 0 4px 0 0;
                               }
                             `}
-                          />
-                          削除
+                            alt="PlayStation"
+                            style={{ 'backgroundColor': '#1DA1F2' }}
+                          >
+                            <div style={{ 'width': '80%', 'marginTop': '0px' }}>
+                              <SimpleIcons name="Twitter" color="white" />
+                            </div>
+                          </Avatar>
+                          シェア
                         </Button>
-                      }
 
 
 
 
-                      {/* Edit Button */}
-                      {editable &&
-                        <Button
-                          css={css`
-                            && {
-                              font-size: 12px;
-                              height: 22px;
-                              min-width: 54px;
-                              min-height: 22px;
-                              margin: 0 0 0 12px;
-                              padding: 0 4px;
-
-                              @media screen and (max-width: 480px) {
-                                min-width: 36px;
+                        {/* Delete Button */}
+                        {editable &&
+                          <Button
+                            css={css`
+                              && {
+                                font-size: 12px;
+                                height: 22px;
+                                min-width: 54px;
                                 min-height: 22px;
-                              }
-                            }
-                          `}
-                          variant="outlined"
-                          color="primary"
-                          disabled={buttonDisabled}
-                          onClick={() => setShowFormThread(true)}
-                        >
-                          <IconEdit
-                            css={css`
-                              && {
-                                font-size: 16px;
-                                margin: 0 2px 3px 0;
+                                margin: 0 0 0 12px;
+                                padding: 0 4px;
+
+                                @media screen and (max-width: 480px) {
+                                  min-width: 36px;
+                                  min-height: 22px;
+                                }
                               }
                             `}
-                          />
-                          編集
-                        </Button>
-                      }
+                            variant="outlined"
+                            color="secondary"
+                            disabled={buttonDisabled}
+                            onClick={
+                              buttonDisabled
+                                ?
+                                  () => {}
+                                :
+                                  () => handleDialogOpen({
+
+                                    title: '募集削除',
+                                    description: '募集を削除しますか？',
+                                    handle: handleDelete,
+                                    argumentsObj: {
+                                      recruitmentThreads_id,
+                                    },
+
+                                  })
+                            }
+                          >
+                            <IconDelete
+                              css={css`
+                                && {
+                                  font-size: 16px;
+                                  margin: 0 2px 1px 0;
+                                }
+                              `}
+                            />
+                            削除
+                          </Button>
+                        }
+
+
+
+
+                        {/* Edit Button */}
+                        {editable &&
+                          <Button
+                            css={css`
+                              && {
+                                font-size: 12px;
+                                height: 22px;
+                                min-width: 54px;
+                                min-height: 22px;
+                                margin: 0 0 0 12px;
+                                padding: 0 4px;
+
+                                @media screen and (max-width: 480px) {
+                                  min-width: 36px;
+                                  min-height: 22px;
+                                }
+                              }
+                            `}
+                            variant="outlined"
+                            color="primary"
+                            disabled={buttonDisabled}
+                            onClick={() => setShowFormThread(true)}
+                          >
+                            <IconEdit
+                              css={css`
+                                && {
+                                  font-size: 16px;
+                                  margin: 0 2px 3px 0;
+                                }
+                              `}
+                            />
+                            編集
+                          </Button>
+                        }
+
+
+                      </div>
 
 
                     </div>
@@ -1018,133 +1024,133 @@ const Component = (props) => {
                   </div>
 
 
-                </div>
 
 
+                  {/* Form Comment */}
+                  <div
+                    css={css`
+
+                      ${showFormComment
+                        ?
+                          `
+                          border-top: 2px dashed red;
+                          ${comments > 0 && 'border-bottom: 2px dashed red;'}
+                          `
+                        :
+                          `
+                          border-top: 1px dashed #585858;
+                          ${comments > 0 && 'border-bottom: 1px dashed #585858;'}
+                          `
+                      }
+
+                      @media screen and (max-width: 480px) {
+                        border-left: none;
+                      }
+                    `}
+                  >
 
 
-                {/* Form Comment */}
-                <div
-                  css={css`
+                    {/* Button - Show New Form Comment */}
+                    {!showFormComment &&
+                      <div
+                        css={css`
+                          display: flex;
+                          flex-flow: row nowrap;
+                          justify-content: center;
 
-                    ${showFormComment
-                      ?
-                        `
-                        border-top: 2px dashed red;
-                        ${comments > 0 && 'border-bottom: 2px dashed red;'}
-                        `
-                      :
-                        `
-                        border-top: 1px dashed #585858;
-                        ${comments > 0 && 'border-bottom: 1px dashed #585858;'}
-                        `
-                    }
-
-                    @media screen and (max-width: 480px) {
-                      border-left: none;
-                    }
-                  `}
-                >
-
-
-                  {/* Button - Show New Form Comment */}
-                  {!showFormComment &&
-                    <div
-                      css={css`
-                        display: flex;
-                        flex-flow: row nowrap;
-                        justify-content: center;
-
-                        ${comments > 0
-                          ?
-                            `
-                            margin: 14px 0;
-                            `
-                          :
-                            `
-                            margin: 14px 0 0 0;
-                            `
-                        }
-                      `}
-                    >
-                      <Button
-                        type="submit"
-                        variant="outlined"
-                        size="small"
-                        disabled={buttonDisabled}
-                        startIcon={<IconReply />}
-                        onClick={() => setShowFormComment(!showFormComment)}
+                          ${comments > 0
+                            ?
+                              `
+                              margin: 14px 0;
+                              `
+                            :
+                              `
+                              margin: 14px 0 0 0;
+                              `
+                          }
+                        `}
                       >
-                        コメント投稿フォーム
-                      </Button>
-                    </div>
-                  }
+                        <Button
+                          type="submit"
+                          variant="outlined"
+                          size="small"
+                          disabled={buttonDisabled}
+                          startIcon={<IconReply />}
+                          onClick={() => setShowFormComment(!showFormComment)}
+                        >
+                          コメント投稿フォーム
+                        </Button>
+                      </div>
+                    }
 
 
 
 
-                  {/* New Form Comment */}
-                  {showFormComment &&
-                    <div
-                      css={css`
-                        border-left: 4px solid #84cacb;
+                    {/* New Form Comment */}
+                    {showFormComment &&
+                      <div
+                        css={css`
+                          border-left: 4px solid #84cacb;
 
-                        ${comments > 0
-                          ? `
-                            margin: 24px 0;
-                            `
-                          : `
-                            margin: 24px 0 6px 0;
-                            `
-                        }
+                          ${comments > 0
+                            ? `
+                              margin: 24px 0;
+                              `
+                            : `
+                              margin: 24px 0 6px 0;
+                              `
+                          }
 
-                        padding: 0 0 0 16px;
+                          padding: 0 0 0 16px;
 
-                        @media screen and (max-width: 480px) {
-                          border-left: none;
+                          @media screen and (max-width: 480px) {
+                            border-left: none;
 
-                          padding-left: 0;
-                        }
-                      `}
-                    >
+                            padding-left: 0;
+                          }
+                        `}
+                      >
 
-                      <FormComment
-                        gameCommunities_id={gameCommunities_id}
-                        recruitmentThreads_id={recruitmentThreads_id}
-                        publicSettingThread={publicSetting}
+                        <FormComment
+                          gameCommunities_id={gameCommunities_id}
+                          recruitmentThreads_id={recruitmentThreads_id}
+                          publicSettingThread={publicSetting}
 
-                        setShowForm={setShowFormComment}
-                      />
+                          setShowForm={setShowFormComment}
+                        />
 
-                    </div>
-                  }
+                      </div>
+                    }
+
+
+                  </div>
+
+
+
+
+                  {/* Comment */}
+                  <Comment
+                    urlID={urlID}
+                    gameCommunities_id={gameCommunities_id}
+                    recruitmentThreads_id={recruitmentThreads_id}
+                    editableThread={editable}
+                  />
 
 
                 </div>
+              }
 
 
+            </AccordionDetails>
 
 
-                {/* Comment */}
-                <Comment
-                  urlID={urlID}
-                  gameCommunities_id={gameCommunities_id}
-                  recruitmentThreads_id={recruitmentThreads_id}
-                  editableThread={editable}
-                />
+        </Accordion>
 
 
-              </div>
-            }
+      </Element>
 
 
-          </AccordionDetails>
-
-
-      </Accordion>
-
-
-    </Element>
+    </article>
   );
 
 

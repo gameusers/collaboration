@@ -306,7 +306,7 @@ export async function getServerSideProps({ req, res, query }) {
   // アップロードされた画像がある場合は、OGPの画像に設定する
   const imageSrc = lodashGet(headerObj, ['imagesAndVideosObj', 'arr', 0, 'src'], '');
   
-  if (imageSrc.indexOf('/img/uc/') !== -1) {
+  if (imageSrc.indexOf('/img/ur/') !== -1) {
     metaObj.image = `${process.env.NEXT_PUBLIC_URL_BASE}${imageSrc}`.replace('//img', '/img');
   }
 

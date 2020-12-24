@@ -311,24 +311,26 @@ const Component = (props) => {
           `}
         >
 
-          {valueObj.href ?
+          {valueObj.href
+          
+            ?
 
-            <Link href={valueObj.href}>
-              <a className="link">{anchorText}</a>
-            </Link>
+              <Link href={valueObj.href}>
+                <a className="link">{anchorText}</a>
+              </Link>
 
-          :
+            :
 
-            <div
-              css={css`
-                font-size: 14px;
-                font-weight: bold;
-                color: rgba(0, 0, 0, 0.87);
-                margin: 0 0 0 4px;
-              `}
-            >
-              {anchorText}
-            </div>
+              <h1
+                css={css`
+                  font-size: 14px;
+                  font-weight: bold;
+                  color: rgba(0, 0, 0, 0.87);
+                  margin: 0 0 0 4px;
+                `}
+              >
+                {anchorText}
+              </h1>
 
           }
 
@@ -384,10 +386,15 @@ const Component = (props) => {
             `
         }
       `}
+      component="nav"
     >
 
 
-      <Breadcrumbs separator="›" aria-label="breadcrumb">
+      <Breadcrumbs
+        separator="›"
+        aria-label="breadcrumb"
+        component="div"
+      >
 
 
         <div

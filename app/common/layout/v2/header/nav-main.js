@@ -76,7 +76,7 @@ const Container = ({ children, lowerNavMain }) => {
   //   Return
   // --------------------------------------------------
 
-  return <animated.nav
+  return <animated.div
       css={css`
         width: 100%;
         height: 36px;
@@ -88,7 +88,7 @@ const Container = ({ children, lowerNavMain }) => {
       style={props}
     >
       {children}
-    </animated.nav>;
+    </animated.div>;
 
 
 };

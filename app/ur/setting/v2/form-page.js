@@ -320,17 +320,6 @@ const Component = (props) => {
 
   } = props;
 
-  const pagesImagesAndVideosObj = lodashGet(props, ['pagesImagesAndVideosObj'], [{
-
-    _id: '',
-    createdDate: '',
-    updatedDate: '',
-    users_id: '',
-    type: 'ur',
-    arr: [],
-
-  }]);
-
   const arr = lodashGet(pagesObj, ['arr'], [{
 
     _id: '',
@@ -340,7 +329,39 @@ const Component = (props) => {
 
   }]);
 
+  let pagesImagesAndVideosObj = lodashGet(props, ['pagesImagesAndVideosObj'], {});
 
+  if (Object.keys(pagesImagesAndVideosObj).length === 0) {
+
+    pagesImagesAndVideosObj = {
+
+      _id: '',
+      createdDate: '',
+      updatedDate: '',
+      users_id: '',
+      type: 'ur',
+      arr: [],
+  
+    }
+
+  }
+
+  // let pagesImagesAndVideosObj = lodashGet(props, ['pagesImagesAndVideosObj'], {
+
+  //   _id: '',
+  //   createdDate: '',
+  //   updatedDate: '',
+  //   users_id: '',
+  //   type: 'ur',
+  //   arr: [],
+
+  // });
+
+  // console.log(`
+  //   ----- pagesImagesAndVideosObj -----\n
+  //   ${util.inspect(pagesImagesAndVideosObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
 
 
   // --------------------------------------------------

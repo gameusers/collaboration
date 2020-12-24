@@ -541,341 +541,298 @@ const Component = (props) => {
   // --------------------------------------------------
 
   return (
-    <Element
-      name={forumThreads_id}
-    >
+    <article>
 
 
-      {/* Panel */}
-      <Accordion
-        css={css`
-          margin: 0 0 16px 0 !important;
-        `}
-        expanded={panelExpanded}
+      <Element
+        name={forumThreads_id}
       >
 
 
-        {/* Summary */}
-        <AccordionSummary
+        {/* Panel */}
+        <Accordion
           css={css`
-            && {
-              cursor: default !important;
-              background-color: white !important;
-              user-select: auto;
-
-              @media screen and (max-width: 480px) {
-                padding: 0 16px;
-              }
-            }
+            margin: 0 0 16px 0 !important;
           `}
-          classes={{
-            expanded: classes.expanded
-          }}
+          expanded={panelExpanded}
         >
 
 
-          {/* Form - Edit Thread */}
-          {showForm &&
-            <div
-              css={css`
-                width: 100%;
-              `}
-            >
+          {/* Summary */}
+          <AccordionSummary
+            css={css`
+              && {
+                cursor: default;
+                background-color: white;
+                user-select: auto;
 
-              <FormThread
-                gameCommunities_id={gameCommunities_id}
-                userCommunities_id={userCommunities_id}
-                forumThreads_id={forumThreads_id}
-
-                setShowForm={setShowForm}
-              />
-
-            </div>
-          }
-
+                @media screen and (max-width: 480px) {
+                  padding: 0 16px;
+                }
+              }
+            `}
+            classes={{
+              expanded: classes.expanded
+            }}
+          >
 
 
+            {/* Form - Edit Thread */}
+            {showForm &&
+              <div
+                css={css`
+                  width: 100%;
+                `}
+              >
 
-          {/* Thread */}
-          {!showForm &&
-            <div
-              css={css`
-                display: flex;
-                flex-flow: column nowrap;
-                width: 100%;
-              `}
-            >
+                <FormThread
+                  gameCommunities_id={gameCommunities_id}
+                  userCommunities_id={userCommunities_id}
+                  forumThreads_id={forumThreads_id}
+
+                  setShowForm={setShowForm}
+                />
+
+              </div>
+            }
 
 
-              {/* Container - Thread Name & Expansion Button */}
+
+
+            {/* Thread */}
+            {!showForm &&
               <div
                 css={css`
                   display: flex;
-                  flex-flow: row nowrap;
-                  align-items: center;
+                  flex-flow: column nowrap;
                   width: 100%;
                 `}
               >
 
 
-                {/* h2 */}
-                <h2
-                  css={css`
-                    font-weight: bold;
-                    font-size: 16px;
-
-                    @media screen and (max-width: 480px) {
-                      font-size: 14px;
-                    }
-                  `}
-                >
-                  {name}
-                </h2>
-
-
-
-
-                {/* Expansion Button */}
-                <div
-                  css={css`
-                    margin-left: auto;
-                  `}
-                >
-
-                  <IconButton
-                    css={css`
-                      && {
-                        margin: 0;
-                        padding: 4px;
-                      }
-                    `}
-
-                    onClick={() => setPanelExpanded(!panelExpanded)}
-                    aria-expanded={panelExpanded}
-                    aria-label="Show more"
-                    disabled={buttonDisabled}
-                  >
-                    {panelExpanded ? (
-                      <IconExpandLess />
-                    ) : (
-                      <IconExpandMore />
-                    )}
-                  </IconButton>
-
-                </div>
-
-
-              </div>
-
-
-
-
-              {/* Images and Videos */}
-              {Object.keys(imagesAndVideosObj).length > 0 &&
-                <div
-                  css={css`
-                    margin: 12px 0 4px 0;
-                  `}
-                >
-
-                  <ImageAndVideo
-                    imagesAndVideosObj={imagesAndVideosObj}
-                  />
-
-                </div>
-              }
-
-
-
-
-              {/* Information */}
-              <div
-                css={css`
-                  display: flex;
-                  flex-flow: row wrap;
-                  font-size: 12px;
-                  margin: 6px 0 0 0;
-                `}
-              >
-
-
-                {/* Show Thread Description */}
+                {/* Container - Thread Name & Expansion Button */}
                 <div
                   css={css`
                     display: flex;
                     flex-flow: row nowrap;
-                    margin: 0 6px 0 0;
+                    align-items: center;
+                    width: 100%;
                   `}
                 >
 
-                  <IconAssignment
+
+                  {/* heading */}
+                  <h1
                     css={css`
-                      && {
-                        font-size: 24px;
-                        margin: 0 2px 0 0;
+                      font-weight: bold;
+                      font-size: 16px;
+
+                      @media screen and (max-width: 480px) {
+                        font-size: 14px;
                       }
                     `}
-                  />
+                  >
+                    {name}
+                  </h1>
 
+
+
+
+                  {/* Expansion Button */}
                   <div
                     css={css`
-                      font-size: 12px;
-                      color: #009933;
-                      cursor: pointer;
-                      margin: 2px 0 0 0;
+                      margin-left: auto;
                     `}
-                    onClick={() => setShowComment(!showComment)}
                   >
-                    スレッドについて
+
+                    <IconButton
+                      css={css`
+                        && {
+                          margin: 0;
+                          padding: 4px;
+                        }
+                      `}
+
+                      onClick={() => setPanelExpanded(!panelExpanded)}
+                      aria-expanded={panelExpanded}
+                      aria-label="Show more"
+                      disabled={buttonDisabled}
+                    >
+                      {panelExpanded ? (
+                        <IconExpandLess />
+                      ) : (
+                        <IconExpandMore />
+                      )}
+                    </IconButton>
+
                   </div>
+
 
                 </div>
 
 
 
 
-                {/* Thread _id */}
-                <div
-                  css={css`
-                    display: flex;
-                    flex-flow: row nowrap;
-                  `}
-                >
-
-                  <IconPublic
-                    css={css`
-                      && {
-                        font-size: 24px;
-                        margin: 0 2px 0 0;
-                      }
-                    `}
-                  />
-
+                {/* Images and Videos */}
+                {Object.keys(imagesAndVideosObj).length > 0 &&
                   <div
                     css={css`
-                      font-size: 12px;
-                      color: #009933;
-                      cursor: pointer;
-                      margin: 2px 0 0 0;
+                      margin: 12px 0 4px 0;
                     `}
                   >
 
-                    <Link href={linkHref} as={linkAs}>
-                      <a>{forumThreads_id}</a>
-                    </Link>
+                    <ImageAndVideo
+                      imagesAndVideosObj={imagesAndVideosObj}
+                    />
+
                   </div>
-
-                </div>
-
-
-              </div>
-
-
-
-
-              <div
-                css={css`
-                  font-size: 14px;
-                  line-height: 1.6em;
-
-                  ${showComment &&
-                    `
-                    border-left: 4px solid #A4A4A4;
-                    margin: 12px 0 10px 0;
-                    padding: 8px 0 8px 16px;
-                    `
-                  }
-
-                  @media screen and (max-width: 480px) {
-                    padding: 0 0 8px 12px;
-                  }
-                `}
-              >
-
-
-                {/* Comment */}
-                {showComment &&
-                  <Paragraph text={comment} />
                 }
 
 
 
 
-                {/* Bottom Container */}
+                {/* Information */}
                 <div
                   css={css`
                     display: flex;
                     flex-flow: row wrap;
-                    margin: 16px 0 0 0;
+                    font-size: 12px;
+                    margin: 6px 0 0 0;
                   `}
                 >
 
 
-                  {/* Buttons */}
+                  {/* Show Thread Description */}
                   <div
                     css={css`
                       display: flex;
                       flex-flow: row nowrap;
-                      margin-left: auto;
+                      margin: 0 6px 0 0;
+                    `}
+                  >
+
+                    <IconAssignment
+                      css={css`
+                        && {
+                          font-size: 24px;
+                          margin: 0 2px 0 0;
+                        }
+                      `}
+                    />
+
+                    <div
+                      css={css`
+                        font-size: 12px;
+                        color: #009933;
+                        cursor: pointer;
+                        margin: 2px 0 0 0;
+                      `}
+                      onClick={() => setShowComment(!showComment)}
+                    >
+                      スレッドについて
+                    </div>
+
+                  </div>
+
+
+
+
+                  {/* Thread _id */}
+                  <div
+                    css={css`
+                      display: flex;
+                      flex-flow: row nowrap;
+                    `}
+                  >
+
+                    <IconPublic
+                      css={css`
+                        && {
+                          font-size: 24px;
+                          margin: 0 2px 0 0;
+                        }
+                      `}
+                    />
+
+                    <div
+                      css={css`
+                        font-size: 12px;
+                        color: #009933;
+                        cursor: pointer;
+                        margin: 2px 0 0 0;
+                      `}
+                    >
+
+                      <Link href={linkHref} as={linkAs}>
+                        <a>{forumThreads_id}</a>
+                      </Link>
+                    </div>
+
+                  </div>
+
+
+                </div>
+
+
+
+
+                <div
+                  css={css`
+                    font-size: 14px;
+                    line-height: 1.6em;
+
+                    ${showComment &&
+                      `
+                      border-left: 4px solid #A4A4A4;
+                      margin: 12px 0 10px 0;
+                      padding: 8px 0 8px 16px;
+                      `
+                    }
+
+                    @media screen and (max-width: 480px) {
+                      padding: 0 0 8px 12px;
+                    }
+                  `}
+                >
+
+
+                  {/* Comment */}
+                  {showComment &&
+                    <Paragraph text={comment} />
+                  }
+
+
+
+
+                  {/* Bottom Container */}
+                  <div
+                    css={css`
+                      display: flex;
+                      flex-flow: row wrap;
+                      margin: 16px 0 0 0;
                     `}
                   >
 
 
-                    <Button
+                    {/* Buttons */}
+                    <div
                       css={css`
-                        && {
-                          font-size: 12px;
-                          height: 22px;
-                          min-width: 54px;
-                          min-height: 22px;
-                          line-height: 1;
-                          padding: 0 3px;
-
-                          @media screen and (max-width: 480px) {
-                            min-width: 36px;
-                            min-height: 22px;
-                          }
-                        }
+                        display: flex;
+                        flex-flow: row nowrap;
+                        margin-left: auto;
                       `}
-                      variant="outlined"
-                      href={shareTwitter}
-                      target="_blank"
-                      disabled={buttonDisabled}
                     >
-                      <Avatar
+
+
+                      <Button
                         css={css`
                           && {
-                            width: 16px;
-                            height: 16px;
+                            font-size: 12px;
+                            height: 22px;
+                            min-width: 54px;
+                            min-height: 22px;
                             line-height: 1;
-                            background-color: #1DA1F2;
-                            margin: 0 4px 0 0;
-                          }
-                        `}
-                        alt="PlayStation"
-                        style={{ 'backgroundColor': '#1DA1F2' }}
-                      >
-                        <div style={{ 'width': '80%', 'marginTop': '0px' }}>
-                          <SimpleIcons name="Twitter" color="white" />
-                        </div>
-                      </Avatar>
-                      シェア
-                    </Button>
-
-
-
-
-                    {/* Delete Button */}
-                    {editable &&
-                      <Button
-                        css={css`
-                          && {
-                            font-size: 12px;
-                            height: 22px;
-                            min-width: 54px;
-                            min-height: 22px;
-                            margin: 0 0 0 12px;
-                            padding: 0 4px;
+                            padding: 0 3px;
 
                             @media screen and (max-width: 480px) {
                               min-width: 36px;
@@ -884,72 +841,121 @@ const Component = (props) => {
                           }
                         `}
                         variant="outlined"
-                        color="secondary"
+                        href={shareTwitter}
+                        target="_blank"
                         disabled={buttonDisabled}
-                        onClick={
-                          buttonDisabled
-                            ?
-                              () => {}
-                            :
-                              () => handleDialogOpen({
-
-                                title: 'スレッド削除',
-                                description: 'スレッドを削除しますか？',
-                                handle: handleDelete,
-                                argumentsObj: {},
-
-                              })
-                        }
                       >
-                        <IconDelete
+                        <Avatar
                           css={css`
                             && {
-                              font-size: 16px;
-                              margin: 0 2px 1px 0;
+                              width: 16px;
+                              height: 16px;
+                              line-height: 1;
+                              background-color: #1DA1F2;
+                              margin: 0 4px 0 0;
                             }
                           `}
-                        />
-                        削除
+                          alt="PlayStation"
+                          style={{ 'backgroundColor': '#1DA1F2' }}
+                        >
+                          <div style={{ 'width': '80%', 'marginTop': '0px' }}>
+                            <SimpleIcons name="Twitter" color="white" />
+                          </div>
+                        </Avatar>
+                        シェア
                       </Button>
-                    }
 
 
 
 
-                    {/* Edit Button */}
-                    {editable &&
-                      <Button
-                        css={css`
-                          && {
-                            font-size: 12px;
-                            height: 22px;
-                            min-width: 54px;
-                            min-height: 22px;
-                            margin: 0 0 0 12px;
-                            padding: 0 4px;
-
-                            @media screen and (max-width: 480px) {
-                              min-width: 36px;
+                      {/* Delete Button */}
+                      {editable &&
+                        <Button
+                          css={css`
+                            && {
+                              font-size: 12px;
+                              height: 22px;
+                              min-width: 54px;
                               min-height: 22px;
-                            }
-                          }
-                        `}
-                        variant="outlined"
-                        color="primary"
-                        disabled={buttonDisabled}
-                        onClick={() => setShowForm(true)}
-                      >
-                        <IconEdit
-                          css={css`
-                            && {
-                              font-size: 16px;
-                              margin: 0 2px 3px 0;
+                              margin: 0 0 0 12px;
+                              padding: 0 4px;
+
+                              @media screen and (max-width: 480px) {
+                                min-width: 36px;
+                                min-height: 22px;
+                              }
                             }
                           `}
-                        />
-                        編集
-                      </Button>
-                    }
+                          variant="outlined"
+                          color="secondary"
+                          disabled={buttonDisabled}
+                          onClick={
+                            buttonDisabled
+                              ?
+                                () => {}
+                              :
+                                () => handleDialogOpen({
+
+                                  title: 'スレッド削除',
+                                  description: 'スレッドを削除しますか？',
+                                  handle: handleDelete,
+                                  argumentsObj: {},
+
+                                })
+                          }
+                        >
+                          <IconDelete
+                            css={css`
+                              && {
+                                font-size: 16px;
+                                margin: 0 2px 1px 0;
+                              }
+                            `}
+                          />
+                          削除
+                        </Button>
+                      }
+
+
+
+
+                      {/* Edit Button */}
+                      {editable &&
+                        <Button
+                          css={css`
+                            && {
+                              font-size: 12px;
+                              height: 22px;
+                              min-width: 54px;
+                              min-height: 22px;
+                              margin: 0 0 0 12px;
+                              padding: 0 4px;
+
+                              @media screen and (max-width: 480px) {
+                                min-width: 36px;
+                                min-height: 22px;
+                              }
+                            }
+                          `}
+                          variant="outlined"
+                          color="primary"
+                          disabled={buttonDisabled}
+                          onClick={() => setShowForm(true)}
+                        >
+                          <IconEdit
+                            css={css`
+                              && {
+                                font-size: 16px;
+                                margin: 0 2px 3px 0;
+                              }
+                            `}
+                          />
+                          編集
+                        </Button>
+                      }
+
+
+                    </div>
 
 
                   </div>
@@ -959,73 +965,73 @@ const Component = (props) => {
 
 
               </div>
-
-
-            </div>
-          }
-
-
-        </AccordionSummary>
-
-
-
-
-        {/* Contents */}
-        <AccordionDetails
-          css={css`
-            @media screen and (max-width: 480px) {
-              padding: 0 16px 24px !important;
             }
-          `}
-        >
 
-          <div
+
+          </AccordionSummary>
+
+
+
+
+          {/* Contents */}
+          <AccordionDetails
             css={css`
-              width: 100%;
-              margin: 12px 0 0 0;
+              @media screen and (max-width: 480px) {
+                padding: 0 16px 24px !important;
+              }
             `}
           >
 
-
-            {/* Form - Post New Comment */}
             <div
               css={css`
-                border-top: 1px dashed #585858;
-                padding: 14px 0 0 0;
+                width: 100%;
+                margin: 12px 0 0 0;
               `}
             >
 
-              <FormComment
+
+              {/* Form - Post New Comment */}
+              <div
+                css={css`
+                  border-top: 1px dashed #585858;
+                  padding: 14px 0 0 0;
+                `}
+              >
+
+                <FormComment
+                  gameCommunities_id={gameCommunities_id}
+                  userCommunities_id={userCommunities_id}
+                  forumThreads_id={forumThreads_id}
+                  enableAnonymity={enableAnonymity}
+                />
+
+              </div>
+
+
+              {/* Comment */}
+              <Comment
+                urlID={urlID}
                 gameCommunities_id={gameCommunities_id}
+                userCommunityID={userCommunityID}
                 userCommunities_id={userCommunities_id}
                 forumThreads_id={forumThreads_id}
                 enableAnonymity={enableAnonymity}
               />
 
+
             </div>
 
 
-            {/* Comment */}
-            <Comment
-              urlID={urlID}
-              gameCommunities_id={gameCommunities_id}
-              userCommunityID={userCommunityID}
-              userCommunities_id={userCommunities_id}
-              forumThreads_id={forumThreads_id}
-              enableAnonymity={enableAnonymity}
-            />
+          </AccordionDetails>
 
 
-          </div>
+        </Accordion>
 
 
-        </AccordionDetails>
+      </Element>
 
 
-      </Accordion>
-
-
-    </Element>
+    </article>
   );
 
 

@@ -125,20 +125,20 @@ const Component = (props) => {
   //   console.log
   // --------------------------------------------------
 
-  console.log(`
-    ----------------------------------------\n
-    /app/common/image-and-video/components/form.js
-  `);
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /app/common/image-and-video/components/form.js
+  // `);
 
   // console.log(chalk`
   //   type: {green ${type}}
   // `);
 
-  console.log(`
-    ----- imagesAndVideosObj -----\n
-    ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- imagesAndVideosObj -----\n
+  //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
 
 
 

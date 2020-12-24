@@ -26,7 +26,7 @@ import Cookies from 'js-cookie';
 // --------------------------------------------------
 
 /**
- * Cookie からデータを取得する / 2020/6/6
+ * Cookie からデータを取得する / 2020/12/23
  * @param {String} key - 取得するキー
  * @param {String} reqHeadersCookie - サーバー側で受信したクッキーのデータ
  * @param {Boolean} decode - デコードする場合はtrue
@@ -38,7 +38,32 @@ const getCookie = ({ key, reqHeadersCookie = '', decode = false }) => {
   //   データを取得する
   // --------------------------------------------------
 
-  let returnValue = Cookies.get(key) || ((reqHeadersCookie + ';').match(key + '=([^¥S;]*)')||[])[1];
+  // let returnValue = Cookies.get(key) || ((reqHeadersCookie + ';').match(key + '=([^¥S;]*)')||[])[1];
+  let returnValue = Cookies.get(key);
+
+
+  // --------------------------------------------------
+  //   サーバー側
+  // --------------------------------------------------
+
+  if (!returnValue && reqHeadersCookie) {
+
+    const tempArr = reqHeadersCookie.split('; ');
+
+    for (let i = 0; i < tempArr.length; i++) {
+
+      const dataArr = tempArr[i].split('=');
+
+      if (key === dataArr[0]) {
+
+        returnValue = decodeURIComponent(dataArr[1]);
+        break;
+
+      }
+
+    }
+
+  }
 
 
   // --------------------------------------------------
@@ -51,12 +76,14 @@ const getCookie = ({ key, reqHeadersCookie = '', decode = false }) => {
 
 
   // --------------------------------------------------
-  //   returnValue
+  //   undefined を '' にする
   // --------------------------------------------------
 
   if (!returnValue) {
     returnValue = '';
   }
+
+
 
 
   // --------------------------------------------------
@@ -69,12 +96,10 @@ const getCookie = ({ key, reqHeadersCookie = '', decode = false }) => {
   // `);
 
   // console.log(chalk`
-  //   returnValue: {green ${returnValue} / ${typeof returnValue}}
-  // `);
-
-  // console.log(chalk`
   //   key: {green ${key}}
   //   reqHeadersCookie: {green ${reqHeadersCookie}}
+  //   decode: {green ${decode}}
+  //   returnValue: {green ${returnValue} / ${typeof returnValue}}
   // `);
 
   // console.log(chalk`

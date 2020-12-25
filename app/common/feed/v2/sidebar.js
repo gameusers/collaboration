@@ -14,8 +14,8 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React, { useState, useEffect } from 'react';
-import SwiperCore, { Pagination, Mousewheel, Autoplay } from 'swiper';
+import React from 'react';
+import SwiperCore, { Pagination, Autoplay } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 /** @jsx jsx */
@@ -41,8 +41,8 @@ import FeedCard from 'app/common/feed/v2/card.js';
 //   install Swiper components
 // ---------------------------------------------
 
-// SwiperCore.use([Pagination, Mousewheel, Autoplay]);
-SwiperCore.use([Autoplay]);
+SwiperCore.use([Pagination, Autoplay]);
+
 
 
 
@@ -77,8 +77,8 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const feedDataObj = lodashGet(feedObj, ['allObj', 'dataObj'], {});
-  // const feedArr = lodashGet(feedObj, ['allObj', 'page1Obj', 'arr'], []);
-  const feedArr = lodashGet(feedObj, ['sidebarRandomArr'], []);
+  const feedArr = lodashGet(feedObj, ['allObj', 'page1Obj', 'arr'], []);
+  // const feedArr = lodashGet(feedObj, ['sidebarRandomArr'], []);
 
 
   // --------------------------------------------------
@@ -90,11 +90,13 @@ const Component = (props) => {
   }
 
 
+
+
   // ---------------------------------------------
   //   配列をランダムに並び替える
   //   これがないとどのページも同じカードが最初に表示されて代わり映えがしないため
   //   本当は Swiper の初期表示番号の設定で対応したかったが
-  //   direction={'vertical'} の場合、initialSlide={number} が動かない。仕様かバグみたい。
+  //   direction={'vertical'} の場合、initialSlide={number} が動かない。仕様かバグみたい。2020/12/25 初期表示番号は動くようになった
   // ---------------------------------------------
 
   // const clonedFeedArr = feedArr.slice();
@@ -103,6 +105,8 @@ const Component = (props) => {
   //   const rand = Math.floor(Math.random() * (i + 1));
   //   [clonedFeedArr[i], clonedFeedArr[rand]] = [clonedFeedArr[rand], clonedFeedArr[i]];
   // }
+
+
 
 
   // ---------------------------------------------
@@ -128,14 +132,16 @@ const Component = (props) => {
   }
 
 
+
+
   // --------------------------------------------------
   //   最初に表示するカードをランダムに決定する
   //   これがないとどのページも同じカードが最初に表示されて代わり映えがしないため
   // --------------------------------------------------
 
-  // const min = 0;
-  // const max = feedArr.length;
-  // const initialSlide = Math.floor(Math.random() * (max - min) + min);
+  const min = 0;
+  const max = feedArr.length;
+  const initialSlide = Math.floor(Math.random() * (max - min) + min);
 
 
 
@@ -150,8 +156,8 @@ const Component = (props) => {
   // `);
 
   // console.log(`
-  //   ----- obj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(obj)), { colors: true, depth: null })}\n
+  //   ----- feedObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(feedObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
 
@@ -179,28 +185,19 @@ const Component = (props) => {
       direction={'vertical'}
       spaceBetween={14}
       autoHeight={true}
+      height={200}
       slidesPerView={'auto'}
       // freeMode={true}
       // centeredSlides={true}
-      // initialSlide={initialSlide}
-      // loop={true}
-      // pagination={{ clickable: false }}
-      // pagination={{ clickable: true }}
+      initialSlide={initialSlide}
+      loop={true}
+      pagination={{ clickable: false }}
       autoplay={{
         delay: 30000,
         disableOnInteraction: false,
       }}
       // mousewheel={true}
     >
-      {/* {feedArr.map((_id, index) =>
-        <SwiperSlide
-          key={index}
-        >
-          <FeedCard
-            obj={feedDataObj[_id]}
-          />
-        </SwiperSlide>
-      )} */}
       {componentFeedsArr}
     </Swiper>
   );

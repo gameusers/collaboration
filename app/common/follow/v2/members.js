@@ -389,17 +389,17 @@ const Component = (props) => {
 
       };
 
-      console.log(`
-        ----- formDataObj -----\n
-        ${util.inspect(formDataObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- formDataObj -----\n
+      //   ${util.inspect(formDataObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
 
-      console.log(`
-        ----- JSON.stringify(formDataObj) -----\n
-        ${util.inspect(JSON.stringify(formDataObj), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- JSON.stringify(formDataObj) -----\n
+      //   ${util.inspect(JSON.stringify(formDataObj), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
 
       // console.log(`
       //   ----- formDataObj -----\n
@@ -461,10 +461,10 @@ const Component = (props) => {
       //   console.log
       // ---------------------------------------------
 
-      console.log(`
-        ----------------------------------------\n
-        /app/common/follow/v2/components/members.js - handleRead
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/follow/v2/components/members.js - handleRead
+      // `);
 
       // console.log(chalk`
       //   gameCommunities_id: {green ${gameCommunities_id}}

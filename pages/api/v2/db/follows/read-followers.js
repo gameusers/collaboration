@@ -116,11 +116,11 @@ export default async (req, res) => {
     // --------------------------------------------------
     //   POST Data
     // --------------------------------------------------
-    console.log(`
-      ----- req.body -----\n
-      ${util.inspect(req.body, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- req.body -----\n
+    //   ${util.inspect(req.body, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     const bodyObj = JSON.parse(req.body);
 
     const {
@@ -149,21 +149,21 @@ export default async (req, res) => {
     //   console.log
     // ---------------------------------------------
 
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/db/follows/read-followers.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/follows/read-followers.js
+    // `);
 
-    console.log(chalk`
-      loginUsers_id: {green ${loginUsers_id}}
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
 
-      users_id: {green ${users_id}}
-      gameCommunities_id: {green ${gameCommunities_id}}
-      userCommunities_id: {green ${userCommunities_id}}
-      controlType: {green ${controlType} / ${typeof controlType}}
-      page: {green ${page} / ${typeof page}}
-      limit: {green ${limit} / ${typeof limit}}
-    `);
+    //   users_id: {green ${users_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   controlType: {green ${controlType} / ${typeof controlType}}
+    //   page: {green ${page} / ${typeof page}}
+    //   limit: {green ${limit} / ${typeof limit}}
+    // `);
 
 
 

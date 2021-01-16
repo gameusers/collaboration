@@ -126,11 +126,23 @@ export default async (req, res) => {
 
 
 
+    // console.log(chalk`
+    // loginID: {green ${loginID} typeof ${typeof loginID}}
+    // response: {green ${response} typeof ${typeof response}}
+    // `);
+
+    // console.log(bodyObj);
+
+
+
+
     // ---------------------------------------------
     //   Verify CSRF
     // ---------------------------------------------
 
     verifyCsrfToken(req, res);
+
+
 
 
     // ---------------------------------------------
@@ -140,7 +152,7 @@ export default async (req, res) => {
     await verifyRecaptcha({ response, remoteip: ip });
 
 
-
+    // throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Rnt_ekIjT', messageID: 'qnWsuPcrJ' }] });
 
     // --------------------------------------------------
     //   Login Check / ログイン状態ではアカウントを作成させない
@@ -169,7 +181,7 @@ export default async (req, res) => {
     //   Validations
     // --------------------------------------------------
 
-    await validationIP({ throwError: true, value: ip });
+    await validationIP({ throwError: true, required: true, value: ip });
     await validationUsersLoginIDServer({ value: loginID, loginUsers_id });
     await validationUsersLoginPassword({ throwError: true, required: true, value: loginPassword, loginID });
     await validationUsersEmailServer({ value: email, loginUsers_id, encryptedEmail });
@@ -227,7 +239,7 @@ export default async (req, res) => {
       },
       acceptLanguage,
       countriesArr: ['JP'],
-      termsOfServiceConfirmedDate: ISO8601,
+      termsOfServiceAgreedVersion: process.env.NEXT_PUBLIC_TERMS_OF_SERVICE_VERSION,
       webPushes_id: '',
       role: 'user',
 
@@ -403,7 +415,7 @@ export default async (req, res) => {
 
     // --------------------------------------------------
     //   セッションデータ格納
-    //   アカウント作成後のログインでは１度だけ Recaptcha のチェックをしない（作成時にすでにチェックされているため）
+    //   アカウント作成後のログインでは１度だけ reCAPTCHA のチェックをしない（すでにチェックされているため）
     // --------------------------------------------------
 
     req.session.passVerifyRecaptchaLoginID = loginID;

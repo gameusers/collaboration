@@ -177,7 +177,7 @@ const Reply = (props) => {
 
   const {
 
-    recruitmentCommentsObj,
+    // recruitmentCommentsObj,
     recruitmentRepliesObj,
     setRecruitmentRepliesObj,
     setReloadForceRecruitmentComment,
@@ -198,7 +198,7 @@ const Reply = (props) => {
 
   const [showFormEdit, setShowFormEdit] = useState(false);
   const [showFormNew, setShowFormNew] = useState(false);
-  const [goods, setGoods] = useState(lodashGet(recruitmentCommentsObj, ['dataObj', recruitmentComments_id, 'goods'], 0));
+  const [goods, setGoods] = useState(lodashGet(recruitmentRepliesObj, ['dataObj', recruitmentReplies_id, 'goods'], 0));
 
 
   useEffect(() => {

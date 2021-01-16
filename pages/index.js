@@ -284,7 +284,7 @@ const ContainerLayout = (props) => {
 
 
 
-      <div style={{ margin: '36px 24px' }}>
+      {/* <div style={{ margin: '36px 24px' }}>
 
         <p>------------------------------</p>
 
@@ -332,7 +332,7 @@ const ContainerLayout = (props) => {
 
         <p>------------------------------</p>
 
-      </div>
+      </div>*/}
 
     </React.Fragment>
   ;

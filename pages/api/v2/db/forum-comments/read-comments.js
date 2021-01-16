@@ -108,7 +108,16 @@ export default async (req, res) => {
     //   POST Data
     // --------------------------------------------------
     
+    // console.log(chalk`
+    //   /pages/api/v2/db/forum-comments/read-comments.js
+    // `);
+
+    // console.log(req.body);
+
     const bodyObj = JSON.parse(req.body);
+
+    // console.log(bodyObj);
+
     
     const {
       
@@ -164,7 +173,7 @@ export default async (req, res) => {
     //   Verify CSRF
     // ---------------------------------------------
     
-    verifyCsrfToken(req, res);
+    // verifyCsrfToken(req, res);
     
     
     
@@ -290,3 +299,16 @@ export default async (req, res) => {
   
   
 };
+
+
+
+
+// --------------------------------------------------
+//   config
+// --------------------------------------------------
+
+// export const config = {
+//   api: {
+//     bodyParser: false,
+//   },
+// };

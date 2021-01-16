@@ -67,6 +67,7 @@ const Component = (props) => {
     defaultExpanded = true,
     panelExpanded,
     setPanelExpanded,
+    mobileMargin = false,
 
   } = props;
 
@@ -132,6 +133,14 @@ const Component = (props) => {
     <Accordion
       css={css`
         margin: 0 !important;
+
+        ${mobileMargin &&
+          `
+            @media screen and (max-width: 947px) {
+              margin: 0 0 16px 0 !important;
+            }
+          `
+        }
       `}
       expanded={expanded}
     >

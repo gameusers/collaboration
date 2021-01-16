@@ -80,7 +80,17 @@ module.exports = withOffline({
     return [
       {
         source: '/pl/:slug*',
-        destination: '/ur/:slug*', // Matched parameters can be used in the destination
+        destination: '/ur/:slug*',
+        permanent: true,
+      },
+      {
+        source: '/gc/:gcid/bbs/:forumid',
+        destination: '/gc/:gcid/forum/:forumid',
+        permanent: true,
+      },
+      {
+        source: '/uc/:ucid/bbs/:forumid',
+        destination: '/uc/:ucid/forum/:forumid',
         permanent: true,
       },
     ]

@@ -18,6 +18,7 @@ import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
+import Cookies from 'js-cookie';
 import TextareaAutosize from 'react-autosize-textarea';
 
 /** @jsx jsx */
@@ -71,6 +72,7 @@ import { showSnackbar } from 'app/@modules/snackbar.js';
 // ---------------------------------------------
 
 import { validationHandleName } from 'app/@validations/name.js';
+import { validationTermsOfService } from 'app/@validations/terms-of-service.js';
 
 import { validationRecruitmentThreadsComment } from 'app/@database/recruitment-threads/validations/comment.js';
 
@@ -81,6 +83,7 @@ import { validationRecruitmentThreadsComment } from 'app/@database/recruitment-t
 
 import FormName from 'app/common/form/v2/name.js';
 import FormImageAndVideo from 'app/common/image-and-video/v2/form.js';
+import TermsOfService from 'app/common/form/v2/terms-of-service.js';
 
 
 
@@ -137,6 +140,8 @@ const Component = (props) => {
 
   });
 
+  const [agreeTermsOfService, setAgreeTermsOfService] = useState(false);
+
 
   useEffect(() => {
 
@@ -174,6 +179,8 @@ const Component = (props) => {
   const {
 
     localeObj,
+    termsOfServiceAgreedVersion,
+    setTermsOfServiceAgreedVersion,
 
   } = stateUser;
 
@@ -449,7 +456,8 @@ const Component = (props) => {
       if (
 
         validationHandleName({ value: name }).error ||
-        validationRecruitmentThreadsComment({ value: comment }).error
+        validationRecruitmentThreadsComment({ value: comment }).error ||
+        validationTermsOfService({ agree: agreeTermsOfService, agreedVersion: termsOfServiceAgreedVersion }).error
 
       ) {
 
@@ -525,6 +533,16 @@ const Component = (props) => {
 
 
       // ---------------------------------------------
+      //   Set termsOfServiceAgreedVersion
+      // ---------------------------------------------
+
+      Cookies.set('termsOfServiceAgreedVersion', process.env.NEXT_PUBLIC_TERMS_OF_SERVICE_VERSION);
+      setTermsOfServiceAgreedVersion(process.env.NEXT_PUBLIC_TERMS_OF_SERVICE_VERSION);
+
+
+
+
+      // ---------------------------------------------
       //   Reset Form
       // ---------------------------------------------
 
@@ -540,6 +558,8 @@ const Component = (props) => {
         arr: [],
 
       });
+
+      setAgreeTermsOfService(false);
 
 
       // ---------------------------------------------
@@ -897,7 +917,7 @@ const Component = (props) => {
         {/* Form Images & Videos */}
         <div
           css={css`
-            margin: 12px 0 0 0;
+            margin: 4px 0 0 0;
           `}
         >
 
@@ -915,14 +935,27 @@ const Component = (props) => {
 
 
 
+        {/* Terms of Service */}
+        <div
+          css={css`
+            margin: 14px 0 0 0;
+          `}
+        >
+          <TermsOfService
+            agreeTermsOfService={agreeTermsOfService}
+            setAgreeTermsOfService={setAgreeTermsOfService}
+          />
+        </div>
+
+
+
+
         {/* Buttons */}
         <div
           css={css`
             display: flex;
             flex-flow: row nowrap;
-            border-top: 1px dashed #848484;
             margin: 24px 0 0 0;
-            padding: 24px 0 0 0;
           `}
         >
 

@@ -142,7 +142,7 @@ export default async (req, res) => {
     //   Validation
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: ip });
+    await validationIP({ throwError: true, required: true, value: ip });
     
     await validationGameCommunities_idServer({ value: gameCommunities_id });
     await validationForumThreads_idServerGC({ forumThreads_id, gameCommunities_id });
@@ -158,7 +158,6 @@ export default async (req, res) => {
     const findForDeleteThreadObj = await ModelForumThreads.findForDeleteThread({
       
       req,
-      localeObj,
       loginUsers_id,
       forumThreads_id,
       

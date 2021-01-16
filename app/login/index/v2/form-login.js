@@ -19,7 +19,7 @@ import Link from 'next/link';
 import Router from 'next/router';
 import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
-import { GoogleReCaptchaProvider, GoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
@@ -82,9 +82,9 @@ import FormLoginPassword from 'app/common/form/v2/login-password.js';
 // --------------------------------------------------
 
 /**
- * Export Component
+ * Form Component
  */
-const Component = (props) => {
+const FormComponent = (props) => {
 
 
   // --------------------------------------------------
@@ -110,7 +110,8 @@ const Component = (props) => {
 
   const [loginID, setLoginID] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
-  const [recaptchaResponse, setRecaptchaResponse] = useState('');
+
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
 
   useEffect(() => {
@@ -163,20 +164,17 @@ const Component = (props) => {
       eventObj.preventDefault();
 
 
-      // ---------------------------------------------
-      //   Loading Open
-      // ---------------------------------------------
-
-      handleLoadingOpen({});
 
 
       // ---------------------------------------------
-      //   Button Disable
+      //   console.log
       // ---------------------------------------------
 
-      setButtonDisabled(true);
-
-
+      // console.log(chalk`
+      // loginID: {green ${loginID}}
+      // loginPassword: {green ${loginPassword}}
+      // recaptchaResponse: {green ${recaptchaResponse}}
+      // `);
 
 
       // ---------------------------------------------
@@ -194,6 +192,35 @@ const Component = (props) => {
 
 
       // ---------------------------------------------
+      //   Loading Open
+      // ---------------------------------------------
+
+      handleLoadingOpen({});
+
+
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+
+      setButtonDisabled(true);
+
+
+
+
+      // ---------------------------------------------
+      //   executeRecaptcha
+      // ---------------------------------------------
+
+      let response = '';
+
+      if (process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1') {
+        response = await executeRecaptcha('login');
+      }
+
+
+
+
+      // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
 
@@ -201,7 +228,7 @@ const Component = (props) => {
 
       formData.append('loginID', loginID);
       formData.append('loginPassword', loginPassword);
-      formData.append('response', recaptchaResponse);
+      formData.append('response', response);
 
 
       // ---------------------------------------------
@@ -371,18 +398,29 @@ const Component = (props) => {
     >
 
 
-      {/* reCAPTCHA */}
-      {process.env.NODE_ENV === 'production' &&
-        <GoogleReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}>
-          <GoogleReCaptcha onVerify={(token) => setRecaptchaResponse(token)} />
-        </GoogleReCaptchaProvider>
-      }
-
-
-
-
-      <p>
+      <p
+        css={css`
+          margin: 0 0 14px 0;
+        `}
+      >
         IDとパスワードでログインします。アカウントをお持ちでない場合は、<Link href="/login/account"><a>こちらのページ</a></Link>でアカウントを作成してください。
+      </p>
+
+      <p
+        css={css`
+          color: red;
+          margin: 0 0 14px 0;
+        `}
+      >
+        Game Usersはリニューアルしました。旧サイトのアカウントを新サイトで利用するには、<Link href="/inquiry/account"><a>アカウント移行フォーム</a></Link>で移行の手続きをする必要があります。
+      </p>
+
+      <p
+        css={css`
+          margin: 0 0 14px 0;
+        `}
+      >
+        リニューアル後、称号を利用できる新たな機能が追加されています。リニューアル前から利用してくれているユーザーのみもらえる特別な称号がありますので、ぜひ旧アカウントを移行して利用してください。
       </p>
 
 
@@ -447,6 +485,39 @@ const Component = (props) => {
 
     </Panel>
   );
+
+
+};
+
+
+
+
+/**
+ * Export Component
+ */
+const Component = (props) => {
+
+
+  // --------------------------------------------------
+  //   reCAPTCHA で検証する場合
+  // --------------------------------------------------
+
+  if (process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1') {
+
+    return (
+      <GoogleReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}>
+        <FormComponent {...props} />
+      </GoogleReCaptchaProvider>
+    );
+    
+  }
+  
+
+  // --------------------------------------------------
+  //   reCAPTCHA で検証しない場合
+  // --------------------------------------------------
+
+  return <FormComponent {...props} />;
 
 
 };

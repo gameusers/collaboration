@@ -129,14 +129,18 @@ export default async (req, res) => {
     
     verifyCsrfToken(req, res);
     
-    
+
+
+
     // ---------------------------------------------
     //   Verify reCAPTCHA
     // ---------------------------------------------
     
     await verifyRecaptcha({ response, remoteip: ip });
+
     
     
+
     // --------------------------------------------------
     //   Login Check / ログイン状態ではエラー
     // --------------------------------------------------
@@ -149,18 +153,19 @@ export default async (req, res) => {
     }
     
     
-    
+
     
     // --------------------------------------------------
     //   Validations
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: ip });
-    
+    await validationIP({ throwError: true, required: true, value: ip });
     await validationUsersLoginID({ throwError: true, required: true, value: loginID });
     await validationUsersEmail({ throwError: true, required: true, value: email });
     
-    
+
+
+
     // --------------------------------------------------
     //   docUsersObj
     // --------------------------------------------------

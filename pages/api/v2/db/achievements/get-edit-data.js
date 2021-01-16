@@ -123,7 +123,7 @@ export default async (req, res) => {
     //   Validations
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: ip });
+    await validationIP({ throwError: true, required: true, value: ip });
     
     
     

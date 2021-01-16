@@ -101,6 +101,8 @@ const Component = (props) => {
   } = props;
 
 
+
+
   // --------------------------------------------------
   //   States
   // --------------------------------------------------
@@ -120,6 +122,8 @@ const Component = (props) => {
 
   } = stateRecruitment;
 
+
+  
 
   // --------------------------------------------------
   //   Hooks
@@ -361,6 +365,7 @@ const Component = (props) => {
     <Panel
       heading="募集検索"
       defaultExpanded={true}
+      mobileMargin={true}
     >
 
 

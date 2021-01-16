@@ -121,6 +121,7 @@ const Component = (props) => {
     userCommunities_id,
 
     enableAnonymity,
+    deletable,
     individual,
 
   } = props;
@@ -342,6 +343,7 @@ const Component = (props) => {
         userCommunities_id={userCommunities_id}
         forumThreads_id={forumThreads_id}
         enableAnonymity={enableAnonymity}
+        deletable={deletable}
       />
     );
 

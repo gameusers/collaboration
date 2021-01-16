@@ -18,6 +18,7 @@ import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
+import Cookies from 'js-cookie';
 import TextareaAutosize from 'react-autosize-textarea';
 
 /** @jsx jsx */
@@ -65,6 +66,7 @@ import { showSnackbar } from 'app/@modules/snackbar.js';
 
 import { validationBoolean } from 'app/@validations/boolean.js';
 import { validationHandleName } from 'app/@validations/name.js';
+import { validationTermsOfService } from 'app/@validations/terms-of-service.js';
 
 import { validationRecruitmentThreadsComment } from 'app/@database/recruitment-threads/validations/comment.js';
 import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation, validationRecruitmentThreadsPublicSetting } from 'app/@database/recruitment-threads/validations/ids-informations.js';
@@ -77,6 +79,7 @@ import { validationRecruitmentThreadsPlatform, validationRecruitmentThreadsID, v
 import FormName from 'app/common/form/v2/name.js';
 import FormImageAndVideo from 'app/common/image-and-video/v2/form.js';
 import WebPuchCheckbox from 'app/common/web-push/v2/checkbox.js';
+import TermsOfService from 'app/common/form/v2/terms-of-service.js';
 
 import FormIDsInformations from 'app/gc/rec/v2/form/ids-informations.js';
 
@@ -168,9 +171,9 @@ const Component = (props) => {
   const [information4, setInformation4] = useState('');
   const [information5, setInformation5] = useState('');
   const [publicSetting, setPublicSetting] = useState(1);
-
   const [webPushAvailable, setWebPushAvailable] = useState(false);
   const [webPushSubscriptionObj, setWebPushSubscriptionObj] = useState({});
+  const [agreeTermsOfService, setAgreeTermsOfService] = useState(false);
 
 
   useEffect(() => {
@@ -209,6 +212,8 @@ const Component = (props) => {
   const {
 
     localeObj,
+    termsOfServiceAgreedVersion,
+    setTermsOfServiceAgreedVersion,
 
   } = stateUser;
 
@@ -555,7 +560,9 @@ const Component = (props) => {
 
         validationRecruitmentThreadsPublicSetting({ value: publicSetting }).error ||
 
-        validationBoolean({ value: webPushAvailable }).error
+        validationBoolean({ value: webPushAvailable }).error ||
+
+        validationTermsOfService({ agree: agreeTermsOfService, agreedVersion: termsOfServiceAgreedVersion }).error
 
       ) {
 
@@ -652,6 +659,16 @@ const Component = (props) => {
 
 
       // ---------------------------------------------
+      //   Set termsOfServiceAgreedVersion
+      // ---------------------------------------------
+
+      Cookies.set('termsOfServiceAgreedVersion', process.env.NEXT_PUBLIC_TERMS_OF_SERVICE_VERSION);
+      setTermsOfServiceAgreedVersion(process.env.NEXT_PUBLIC_TERMS_OF_SERVICE_VERSION);
+
+
+
+
+      // ---------------------------------------------
       //   Reset Form
       // ---------------------------------------------
 
@@ -688,6 +705,7 @@ const Component = (props) => {
       setPublicSetting(1);
       setWebPushAvailable(false);
       setWebPushSubscriptionObj({});
+      setAgreeTermsOfService(false);
 
 
 
@@ -1154,14 +1172,29 @@ const Component = (props) => {
 
 
 
+        {/* Terms of Service */}
+        <div
+          css={css`
+            border-top: 1px dashed #848484;
+            margin: 24px 0 0 0;
+            padding: 12px 0 0 0;
+          `}
+        >
+          <TermsOfService
+            agreeTermsOfService={agreeTermsOfService}
+            setAgreeTermsOfService={setAgreeTermsOfService}
+          />
+        </div>
+
+
+
+
         {/* Buttons */}
         <div
           css={css`
             display: flex;
             flex-flow: row nowrap;
-            border-top: 1px dashed #848484;
             margin: 24px 0 0 0;
-            padding: 24px 0 0 0;
           `}
         >
 

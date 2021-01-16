@@ -27,6 +27,8 @@ const { CustomError } = require('../@modules/error/custom');
 
 
 
+
+
 /**
  * IP Address
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
@@ -44,11 +46,13 @@ const validationIP = ({ throwError = false, required = false, value }) => {
   const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
-  let resultObj = {
+  const resultObj = {
+
     value: data,
     numberOfCharacters,
     messageID: 'Error',
     error: false,
+
   };
   
   
@@ -124,5 +128,7 @@ const validationIP = ({ throwError = false, required = false, value }) => {
 // --------------------------------------------------
 
 module.exports = {
+
   validationIP
+
 };

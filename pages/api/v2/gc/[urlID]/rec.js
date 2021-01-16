@@ -245,6 +245,15 @@ export default async (req, res) => {
 
       }
 
+
+      // ---------------------------------------------
+      //   recruitmentID 置き換え
+      // ---------------------------------------------
+
+      // if (redirectionsRecruitmentID) {
+      //   recruitmentID = redirectionsRecruitmentID;
+      // }
+
       // console.log(`
       //   ----- returnObj.redirectObj -----\n
       //   ${util.inspect(returnObj.redirectObj, { colors: true, depth: null })}\n
@@ -442,78 +451,82 @@ export default async (req, res) => {
 
     let recruitmentObj = {};
 
-    if (recruitmentID) {
+    if (!returnObj.redirectObj) {
 
-      recruitmentObj = await ModelRecruitmentThreads.findRecruitmentByRecruitmentID(argumentsObj);
+      if (recruitmentID) {
 
-
-      // ---------------------------------------------
-      //   スレッドのデータがない場合はエラー
-      // ---------------------------------------------
-
-      const threadsDataObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj', 'dataObj'], {});
-
-      if (Object.keys(threadsDataObj).length === 0) {
-
-        statusCode = 404;
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: '_eQCIVSDe', messageID: 'Error' }] });
-
-      }
+        recruitmentObj = await ModelRecruitmentThreads.findRecruitmentByRecruitmentID(argumentsObj);
 
 
-    // --------------------------------------------------
-    //   DB find / Recruitments For Search
-    // --------------------------------------------------
-
-    } else if (hardwares || categories || keyword) {
-
-      recruitmentObj = await ModelRecruitmentThreads.findRecruitmentsForSearch(argumentsObj);
-
-
-      // ---------------------------------------------
-      //   スレッドのデータがない場合はエラー
-      // ---------------------------------------------
-
-      if (threadPage > 1) {
+        // ---------------------------------------------
+        //   スレッドのデータがない場合はエラー
+        // ---------------------------------------------
 
         const threadsDataObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj', 'dataObj'], {});
 
         if (Object.keys(threadsDataObj).length === 0) {
 
           statusCode = 404;
-          throw new CustomError({ level: 'warn', errorsArr: [{ code: 'gcWiGG4bX', messageID: 'Error' }] });
+          throw new CustomError({ level: 'warn', errorsArr: [{ code: '_eQCIVSDe', messageID: 'Error' }] });
 
         }
 
-      }
+
+      // --------------------------------------------------
+      //   DB find / Recruitments For Search
+      // --------------------------------------------------
+
+      } else if (hardwares || categories || keyword) {
+
+        recruitmentObj = await ModelRecruitmentThreads.findRecruitmentsForSearch(argumentsObj);
 
 
-    // --------------------------------------------------
-    //   DB find / Recruitment
-    // --------------------------------------------------
+        // ---------------------------------------------
+        //   スレッドのデータがない場合はエラー
+        // ---------------------------------------------
 
-    } else {
+        if (threadPage > 1) {
 
-      recruitmentObj = await ModelRecruitmentThreads.findRecruitments(argumentsObj);
+          const threadsDataObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj', 'dataObj'], {});
 
+          if (Object.keys(threadsDataObj).length === 0) {
 
-      // ---------------------------------------------
-      //   スレッドのデータがない場合はエラー
-      // ---------------------------------------------
+            statusCode = 404;
+            throw new CustomError({ level: 'warn', errorsArr: [{ code: 'gcWiGG4bX', messageID: 'Error' }] });
 
-      if (threadPage > 1) {
-
-        const threadsDataObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj', 'dataObj'], {});
-
-        if (Object.keys(threadsDataObj).length === 0) {
-
-          statusCode = 404;
-          throw new CustomError({ level: 'warn', errorsArr: [{ code: 'oiWf5BWnc', messageID: 'Error' }] });
+          }
 
         }
 
-      }
 
+      // --------------------------------------------------
+      //   DB find / Recruitment
+      // --------------------------------------------------
+
+      } else {
+
+        recruitmentObj = await ModelRecruitmentThreads.findRecruitments(argumentsObj);
+
+
+        // ---------------------------------------------
+        //   スレッドのデータがない場合はエラー
+        // ---------------------------------------------
+
+        if (threadPage > 1) {
+
+          const threadsDataObj = lodashGet(recruitmentObj, ['recruitmentThreadsObj', 'dataObj'], {});
+
+          if (Object.keys(threadsDataObj).length === 0) {
+
+            statusCode = 404;
+            throw new CustomError({ level: 'warn', errorsArr: [{ code: 'oiWf5BWnc', messageID: 'Error' }] });
+
+          }
+
+        }
+
+
+      }
 
     }
 

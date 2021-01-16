@@ -78,10 +78,10 @@ const verifyRecaptcha = async ({ response, remoteip }) => {
 
 
   // --------------------------------------------------
-  //   製品版 / NEXT_PUBLIC_VERIFY_RECAPTCHA === '1' のときは検証する
+  //   NEXT_PUBLIC_VERIFY_RECAPTCHA === '1' のときは検証する
   // --------------------------------------------------
 
-  if (process.env.NODE_ENV === 'production' || process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1') {
+  if (process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1') {
 
 
     // ---------------------------------------------
@@ -108,7 +108,8 @@ const verifyRecaptcha = async ({ response, remoteip }) => {
     });
 
     const score = lodashGet(resultObj, ['data', 'score'], false);
-    const success = score >= 0.5 ? true : false;
+    const success = lodashGet(resultObj, ['data', 'success'], false);
+    // const success = score >= 0.5 ? true : false;
 
 
     // --------------------------------------------------
@@ -116,13 +117,16 @@ const verifyRecaptcha = async ({ response, remoteip }) => {
     // --------------------------------------------------
 
     // console.log(chalk`
+    //   process.env.RECAPTCHA_SECRET_KEY: {green ${process.env.RECAPTCHA_SECRET_KEY}}
+    //   response: {green ${response}}
+    //   remoteip: {green ${remoteip}}
     //   score: {green ${score}}
     //   success: {green ${success}}
     // `);
 
     // console.log(`
     //   ----- resultObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 

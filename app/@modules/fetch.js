@@ -27,7 +27,15 @@ const util = require('util');
  * @param {string} reqAcceptLanguage - サーバー側のときに req.headers['accept-language'] を送信　例）ja,en-US;q=0.9,en;q=0.8
  * @return {Object} 取得したデータまたはエラーオブジェクト
  */
-const fetchWrapper = ({ urlApi, methodType, formData, reqHeadersCookie, reqAcceptLanguage }) => {
+const fetchWrapper = ({
+  
+  urlApi,
+  methodType,
+  formData,
+  reqHeadersCookie,
+  reqAcceptLanguage,
+
+}) => {
 
 
   // ---------------------------------------------
@@ -43,6 +51,22 @@ const fetchWrapper = ({ urlApi, methodType, formData, reqHeadersCookie, reqAccep
   // const formData = argumentsObj.formData;
   // const reqHeadersCookie = argumentsObj.reqHeadersCookie;
   // const reqAcceptLanguage = argumentsObj.reqAcceptLanguage;
+
+
+  // console.log(chalk`
+  // fetchWrapper
+    
+  // urlApi: {green ${urlApi}}
+  // methodType: {green ${methodType}}
+  // reqHeadersCookie: {green ${reqHeadersCookie}}
+  // reqAcceptLanguage: {green ${reqAcceptLanguage}}
+  // `);
+
+  // console.log(`
+  //   ----- formData -----\n
+  //   ${util.inspect(formData, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
 
 
   // ---------------------------------------------

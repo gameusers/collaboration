@@ -2959,9 +2959,8 @@ const findRepliesForUpsert = async ({
 
 
 /**
- * コメント＆返信データを取得する　削除用
+ * コメントを削除する際に、同時に削除する画像の _id、返信数、画像数、動画数を取得する
  * @param {Object} req - リクエスト
- * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} forumComments_id - DB forum-comments _id / コメントのID
  * @return {Array} 取得データ
@@ -2969,7 +2968,6 @@ const findRepliesForUpsert = async ({
 const findForDeleteComment = async ({
 
   req,
-  localeObj,
   loginUsers_id,
   forumComments_id,
 
@@ -2983,35 +2981,42 @@ const findForDeleteComment = async ({
     //   Aggregate
     // --------------------------------------------------
 
-    const resultArr = await SchemaForumComments.aggregate([
+    const docArr = await SchemaForumComments.aggregate([
 
 
-      // コメントを取得
+      // --------------------------------------------------
+      //   $match
+      // --------------------------------------------------
+
       {
-        $match:
-          { $or:
-            [
-              { _id: forumComments_id },
-              { forumComments_id },
-            ]
-          },
+        $match: {
+          $or: [
+            { _id: forumComments_id },
+            { forumComments_id },
+          ]
+        },
       },
 
 
-      // 画像と動画を取得
+      // --------------------------------------------------
+      //   images-and-videos
+      // --------------------------------------------------
+
       {
         $lookup:
           {
             from: 'images-and-videos',
             let: { forumCommentsImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$forumCommentsImagesAndVideos_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$forumCommentsImagesAndVideos_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   images: 1,
                   videos: 1,
                 }
@@ -3029,13 +3034,57 @@ const findForDeleteComment = async ({
       },
 
 
-      { $project:
-        {
+      // --------------------------------------------------
+      //   user-communities
+      // --------------------------------------------------
+
+      {
+        $lookup:
+          {
+            from: 'user-communities',
+            let: { letUserCommunities_id: '$userCommunities_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$_id', '$$letUserCommunities_id'] },
+                    ]
+                  },
+                }
+              },
+
+              {
+                $project: {
+                  _id: 0,
+                  users_id: 1,
+                }
+              }
+            ],
+            as: 'userCommunitiesObj'
+          }
+      },
+
+      {
+        $unwind: {
+          path: '$userCommunitiesObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+
+
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+
+      {
+        $project: {
           createdDate: 1,
           users_id: 1,
           replies: 1,
           imagesAndVideos_id: 1,
           imagesAndVideosObj: 1,
+          userCommunitiesObj: 1,
         }
       },
 
@@ -3049,7 +3098,7 @@ const findForDeleteComment = async ({
     //   配列が空の場合は処理停止
     // --------------------------------------------------
 
-    if (resultArr.length === 0) {
+    if (docArr.length === 0) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: 'jiSBn7Gb-', messageID: 'cvS0qSAlE' }] });
     }
 
@@ -3057,18 +3106,52 @@ const findForDeleteComment = async ({
 
 
     // --------------------------------------------------
-    //   編集権限がない場合は処理停止
+    //   権限のチェック
     // --------------------------------------------------
 
+    let deletable = false;
+
+
+    // ---------------------------------------------
+    //   - 削除権限（ユーザーコミュニティの作者かどうか）
+    // ---------------------------------------------
+
+    const userCommunitiesUsers_id = lodashGet(docArr, [0, 'userCommunitiesObj', 'users_id'], '');
+
+    if (userCommunitiesUsers_id && loginUsers_id && userCommunitiesUsers_id === loginUsers_id) {
+      deletable = true;
+    }
+
+
+    // ---------------------------------------------
+    //   - 編集権限（サイト管理者か投稿者）
+    // ---------------------------------------------
+
     const editable = verifyAuthority({
+
       req,
-      users_id: lodashGet(resultArr, [0, 'users_id'], ''),
+      users_id: lodashGet(docArr, [0, 'users_id'], ''),
       loginUsers_id,
-      ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
-      _id: lodashGet(resultArr, [0, '_id'], ''),
+      ISO8601: lodashGet(docArr, [0, 'createdDate'], ''),
+      _id: lodashGet(docArr, [0, '_id'], ''),
+
     });
 
-    if (!editable) {
+    if (editable) {
+      deletable = true;
+    }
+
+    // console.log(chalk`
+    // deletable: {green ${deletable} typeof ${typeof deletable}}
+    // editable: {green ${editable} typeof ${typeof editable}}
+    // `);
+
+
+    // ---------------------------------------------
+    //   権限がない場合は処理停止
+    // ---------------------------------------------
+    
+    if (!deletable) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: 'IRZhSgQnt', messageID: 'DSRlEoL29' }] });
     }
 
@@ -3076,7 +3159,7 @@ const findForDeleteComment = async ({
 
 
     // --------------------------------------------------
-    //   Format
+    //   returnObj
     // --------------------------------------------------
 
     let replies = 0;
@@ -3084,7 +3167,7 @@ const findForDeleteComment = async ({
     let images = 0;
     let videos = 0;
 
-    for (let valueObj of resultArr.values()) {
+    for (let valueObj of docArr.values()) {
 
       if (valueObj.imagesAndVideos_id) {
         imagesAndVideos_idsArr.push(valueObj.imagesAndVideos_id);
@@ -3101,10 +3184,12 @@ const findForDeleteComment = async ({
     }
 
     const returnObj = {
+
       replies,
       imagesAndVideos_idsArr,
       images,
       videos,
+
     };
 
 
@@ -3127,8 +3212,8 @@ const findForDeleteComment = async ({
     // `);
 
     // console.log(`
-    //   ----- resultArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   ----- docArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
@@ -3161,9 +3246,8 @@ const findForDeleteComment = async ({
 
 
 /**
- * 返信データを取得する　削除用
+ * 返信を削除する際に、同時に削除する画像の _id、画像数、動画数を取得する
  * @param {Object} req - リクエスト
- * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
  * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
@@ -3175,7 +3259,6 @@ const findForDeleteComment = async ({
 const findForDeleteReply = async ({
 
   req,
-  localeObj,
   loginUsers_id,
   gameCommunities_id,
   userCommunities_id,
@@ -3239,7 +3322,7 @@ const findForDeleteReply = async ({
     //   Aggregate
     // --------------------------------------------------
 
-    const resultArr = await SchemaForumComments.aggregate([
+    const docArr = await SchemaForumComments.aggregate([
 
 
       // --------------------------------------------------
@@ -3259,13 +3342,15 @@ const findForDeleteReply = async ({
             from: 'images-and-videos',
             let: { forumCommentsImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$forumCommentsImagesAndVideos_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$forumCommentsImagesAndVideos_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   images: 1,
                   videos: 1,
                 }
@@ -3283,12 +3368,56 @@ const findForDeleteReply = async ({
       },
 
 
-      { $project:
-        {
+      // --------------------------------------------------
+      //   user-communities
+      // --------------------------------------------------
+
+      {
+        $lookup:
+          {
+            from: 'user-communities',
+            let: { letUserCommunities_id: '$userCommunities_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$_id', '$$letUserCommunities_id'] },
+                    ]
+                  },
+                }
+              },
+
+              {
+                $project: {
+                  _id: 0,
+                  users_id: 1,
+                }
+              }
+            ],
+            as: 'userCommunitiesObj'
+          }
+      },
+
+      {
+        $unwind: {
+          path: '$userCommunitiesObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+
+
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+
+      {
+        $project: {
           createdDate: 1,
           users_id: 1,
           imagesAndVideos_id: 1,
           imagesAndVideosObj: 1,
+          userCommunitiesObj: 1,
         }
       },
 
@@ -3302,30 +3431,66 @@ const findForDeleteReply = async ({
     //   配列が空の場合は処理停止
     // --------------------------------------------------
 
-    if (resultArr.length === 0) {
+    if (docArr.length === 0) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: 'VsOOpVMYg', messageID: 'cvS0qSAlE' }] });
     }
 
 
     // console.log(`
-    //   ----- resultArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   ----- docArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
+
+
     // --------------------------------------------------
-    //   編集権限がない場合は処理停止
+    //   権限のチェック
     // --------------------------------------------------
+
+    let deletable = false;
+
+
+    // ---------------------------------------------
+    //   - 削除権限（ユーザーコミュニティの作者かどうか）
+    // ---------------------------------------------
+
+    const userCommunitiesUsers_id = lodashGet(docArr, [0, 'userCommunitiesObj', 'users_id'], '');
+
+    if (userCommunitiesUsers_id && loginUsers_id && userCommunitiesUsers_id === loginUsers_id) {
+      deletable = true;
+    }
+
+
+    // ---------------------------------------------
+    //   - 編集権限（サイト管理者か投稿者）
+    // ---------------------------------------------
 
     const editable = verifyAuthority({
+
       req,
-      users_id: lodashGet(resultArr, [0, 'users_id'], ''),
+      users_id: lodashGet(docArr, [0, 'users_id'], ''),
       loginUsers_id,
-      ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
-      _id: lodashGet(resultArr, [0, '_id'], ''),
+      ISO8601: lodashGet(docArr, [0, 'createdDate'], ''),
+      _id: lodashGet(docArr, [0, '_id'], ''),
+
     });
 
-    if (!editable) {
+    if (editable) {
+      deletable = true;
+    }
+
+    // console.log(chalk`
+    // deletable: {green ${deletable} typeof ${typeof deletable}}
+    // editable: {green ${editable} typeof ${typeof editable}}
+    // `);
+
+
+    // ---------------------------------------------
+    //   権限がない場合は処理停止
+    // ---------------------------------------------
+    
+    if (!deletable) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: 'HdsQle2ZZ', messageID: 'DSRlEoL29' }] });
     }
 
@@ -3333,26 +3498,20 @@ const findForDeleteReply = async ({
 
 
     // --------------------------------------------------
-    //   Format
+    //   returnObj
     // --------------------------------------------------
 
-    const imagesAndVideos_id = lodashGet(resultArr, [0, 'imagesAndVideos_id'], '');
-    const images = - lodashGet(resultArr, [0, 'imagesAndVideosObj', 'images'], 0);
-    const videos = - lodashGet(resultArr, [0, 'imagesAndVideosObj', 'videos'], 0);
+    const imagesAndVideos_id = lodashGet(docArr, [0, 'imagesAndVideos_id'], '');
+    const images = - lodashGet(docArr, [0, 'imagesAndVideosObj', 'images'], 0);
+    const videos = - lodashGet(docArr, [0, 'imagesAndVideosObj', 'videos'], 0);
 
     const returnObj = {
+
       imagesAndVideos_id,
       images,
       videos,
+
     };
-
-    // const _id = lodashGet(resultArr, [0, '_id'], '');
-    // const imagesAndVideosObj = lodashGet(resultArr, [0, 'imagesAndVideosObj'], {});
-
-    // const returnObj = {
-    //   _id,
-    //   imagesAndVideosObj,
-    // };
 
 
 

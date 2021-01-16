@@ -164,7 +164,7 @@ export default async (req, res) => {
     //   Validation & データ取得
     // --------------------------------------------------
 
-    await validationIP({ throwError: true, value: ip });
+    await validationIP({ throwError: true, required: true, value: ip });
 
 
     // ---------------------------------------------

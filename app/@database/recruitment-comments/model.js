@@ -399,6 +399,53 @@ const findCommentsAndReplies = async ({
 
 
 
+    // const obj = await count({
+    //   conditionObj: {
+    //     recruitmentThreads_id: 'WrHXI4EtIuYY'
+    //   }
+    // });
+
+
+    // const commentsArr = await SchemaRecruitmentComments.aggregate([
+
+    //   {
+    //     $match: {
+    //       recruitmentThreads_id: 'WrHXI4EtIuYY'
+    //     },
+    //   },
+
+    // ]);
+
+    // const repliesArr = await SchemaRecruitmentReplies.aggregate([
+
+    //   {
+    //     $match: {
+    //       recruitmentThreads_id: 'WrHXI4EtIuYY'
+    //     },
+    //   },
+
+    // ]);
+
+
+    // console.log(`
+    //   ----- commentsArr -----\n
+    //   ${util.inspect(commentsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- repliesArr -----\n
+    //   ${util.inspect(repliesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(chalk`
+    // commentsArr.length: {green ${commentsArr.length}}
+    // repliesArr.length: {green ${repliesArr.length}}
+    // `);
+
+
+
     // --------------------------------------------------
     //   Loop
     // --------------------------------------------------
@@ -1067,6 +1114,7 @@ const findCommentsAndReplies = async ({
 
       // console.log(chalk`
       //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+      //   docArr.length: {green ${docArr.length}}
       // `);
 
       // console.log(`
@@ -1124,11 +1172,10 @@ const findCommentsAndReplies = async ({
     //   /app/@database/recruitment-comments/model.js - findCommentsAndReplies
     // `);
 
-    // console.log(chalk`
-    //   commentPage: {green ${commentPage}}
-    //   commentLimit: {green ${commentLimit}}
-    //   replyPage: {green ${replyPage}}
-    //   replyLimit: {green ${replyLimit}}
+    // console.log(`
+    //   ----- localeObj -----\n
+    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
 
     // console.log(`
@@ -1136,6 +1183,22 @@ const findCommentsAndReplies = async ({
     //   ${util.inspect(recruitmentThreads_idsArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+
+    // console.log(`
+    //   ----- recruitmentThreadsObj -----\n
+    //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   commentPage: {green ${commentPage}}
+    //   commentLimit: {green ${commentLimit}}
+    //   replyPage: {green ${replyPage}}
+    //   replyLimit: {green ${replyLimit}}
+    // `);
+
+    
 
     // console.log(`
     //   ----- resultArr -----\n

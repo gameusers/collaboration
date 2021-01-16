@@ -17,6 +17,7 @@ import util from 'util';
 import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
+import Cookies from 'js-cookie';
 import TextareaAutosize from 'react-autosize-textarea';
 
 /** @jsx jsx */
@@ -48,6 +49,7 @@ import IconReply from '@material-ui/icons/Reply';
 //   States
 // ---------------------------------------------
 
+import { ContainerStateUser } from 'app/@states/user.js';
 import { ContainerStateLayout } from 'app/@states/layout.js';
 import { ContainerStateCommunity } from 'app/@states/community.js';
 import { ContainerStateForum } from 'app/@states/forum.js';
@@ -69,6 +71,7 @@ import { showSnackbar } from 'app/@modules/snackbar.js';
 
 import { validationHandleName } from 'app/@validations/name.js';
 import { validationBoolean } from 'app/@validations/boolean.js';
+import { validationTermsOfService } from 'app/@validations/terms-of-service.js';
 
 import { validationForumCommentsComment } from 'app/@database/forum-comments/validations/comment.js';
 
@@ -79,6 +82,9 @@ import { validationForumCommentsComment } from 'app/@database/forum-comments/val
 
 import FormName from 'app/common/form/v2/name.js';
 import FormImageAndVideo from 'app/common/image-and-video/v2/form.js';
+import TermsOfService from 'app/common/form/v2/terms-of-service.js';
+
+
 
 
 
@@ -156,6 +162,8 @@ const Component = (props) => {
 
   });
 
+  const [agreeTermsOfService, setAgreeTermsOfService] = useState(false);
+
 
   useEffect(() => {
 
@@ -185,9 +193,17 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
 
+  const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
   const stateCommunity = ContainerStateCommunity.useContainer();
   const stateForum = ContainerStateForum.useContainer();
+
+  const {
+
+    termsOfServiceAgreedVersion,
+    setTermsOfServiceAgreedVersion,
+
+  } = stateUser;
 
   const {
 
@@ -453,7 +469,8 @@ const Component = (props) => {
 
         validationHandleName({ value: name }).error ||
         validationBoolean({ value: anonymity }).error ||
-        validationForumCommentsComment({ value: comment }).error
+        validationForumCommentsComment({ value: comment }).error ||
+        validationTermsOfService({ agree: agreeTermsOfService, agreedVersion: termsOfServiceAgreedVersion }).error
 
       ) {
 
@@ -556,6 +573,16 @@ const Component = (props) => {
 
 
       // ---------------------------------------------
+      //   Set termsOfServiceAgreedVersion
+      // ---------------------------------------------
+
+      Cookies.set('termsOfServiceAgreedVersion', process.env.NEXT_PUBLIC_TERMS_OF_SERVICE_VERSION);
+      setTermsOfServiceAgreedVersion(process.env.NEXT_PUBLIC_TERMS_OF_SERVICE_VERSION);
+      
+
+
+
+      // ---------------------------------------------
       //   Reset Form
       // ---------------------------------------------
 
@@ -572,6 +599,8 @@ const Component = (props) => {
         arr: [],
 
       });
+
+      setAgreeTermsOfService(false);
 
 
 
@@ -917,7 +946,7 @@ const Component = (props) => {
       {/* Form Images & Videos */}
       <div
         css={css`
-          margin: 12px 0 0 0;
+          margin: 4px 0 0 0;
         `}
       >
 
@@ -935,12 +964,27 @@ const Component = (props) => {
 
 
 
+      {/* Terms of Service */}
+      <div
+        css={css`
+          margin: 14px 0 0 0;
+        `}
+      >
+        <TermsOfService
+          agreeTermsOfService={agreeTermsOfService}
+          setAgreeTermsOfService={setAgreeTermsOfService}
+        />
+      </div>
+
+
+
+
       {/* Buttons */}
       <div
         css={css`
           display: flex;
           flex-flow: row nowrap;
-          margin: 36px 0 0 0;
+          margin: 24px 0 0 0;
         `}
       >
 

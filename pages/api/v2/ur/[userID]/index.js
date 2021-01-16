@@ -142,8 +142,47 @@ export default async (req, res) => {
 
     if (!users_id) {
 
-      statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '1G6OYPg8p', messageID: 'Error' }] });
+
+      // ---------------------------------------------
+      //   リダイレクト先があるか調べる
+      // ---------------------------------------------
+
+      const redirectionUsersObj = await ModelUsers.findOne({
+
+        conditionObj: {
+          userIDInitial: userID
+        }
+
+      });
+
+      
+      // ---------------------------------------------
+      //   リダイレクト先がない場合は、404エラー
+      // ---------------------------------------------
+
+      if (!redirectionUsersObj) {
+
+        statusCode = 404;
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: '1G6OYPg8p', messageID: 'Error' }] });
+
+      }
+      
+
+      // ---------------------------------------------
+      //   リダイレクト先
+      // ---------------------------------------------
+
+      returnObj.redirectObj = {
+        userID: redirectionUsersObj.userID,
+      }
+
+
+      // console.log(`
+      //   ----- redirectionUsersObj -----\n
+      //   ${util.inspect(redirectionUsersObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
 
     }
 
@@ -224,7 +263,7 @@ export default async (req, res) => {
     //   - 自分自身
     // ---------------------------------------------
 
-    if (users_id === loginUsers_id) {
+    if (users_id && loginUsers_id && users_id === loginUsers_id) {
       returnObj.accessLevel = 50;
     }
 

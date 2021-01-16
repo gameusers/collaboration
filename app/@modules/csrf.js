@@ -20,6 +20,8 @@ const tokens = new Tokens();
 
 
 
+
+
 // --------------------------------------------------
 //   function
 // --------------------------------------------------
@@ -100,6 +102,8 @@ const verifyCsrfToken = (req, res) => {
     //   cookies.token: {green ${token}}
     //   tokens.verify(secret, token): {rgb(255,131,0) ${tokens.verify(secret, token)}}
     // `);
+
+    // console.log(req.session);
     
     
     // 秘密文字 と トークン の組み合わせが正しいか検証
@@ -144,6 +148,8 @@ const verifyCsrfToken = (req, res) => {
 // --------------------------------------------------
 
 module.exports = {
+
   verifyCsrfToken,
   createCsrfToken
+
 };

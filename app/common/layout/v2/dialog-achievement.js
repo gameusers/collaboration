@@ -689,6 +689,7 @@ const Component = (props) => {
     let heading = '';
     let explanation = '';
     let unit = '回';
+    let arrayIndex = 0;
 
     switch (type) {
 
@@ -696,6 +697,7 @@ const Component = (props) => {
 
         heading = '古のアカウント';
         explanation = 'Game Users 創世記にアカウントを作成したユーザー。';
+        arrayIndex = 0;
         break;
 
       case 'level-count':
@@ -703,6 +705,7 @@ const Component = (props) => {
         heading = 'レベルアップ';
         explanation = 'レベルが上がるとカウントされます。';
         unit = 'レベル';
+        arrayIndex = 1;
         break;
 
       case 'account-count-day':
@@ -710,42 +713,49 @@ const Component = (props) => {
         heading = 'アカウント作成';
         explanation = 'アカウントを作成してから特定の日数が経過。';
         unit = '日';
+        arrayIndex = 2;
         break;
 
       case 'login-count':
 
         heading = 'ログイン回数';
         explanation = 'ログインするとカウントされます。ログイン状態が継続している場合は、毎日サイトにアクセスするだけでカウントされます。ログインしなおす必要はありません。';
+        arrayIndex = 3;
         break;
 
       case 'good-count-click':
 
         heading = 'Goodボタンを押す';
         explanation = 'フォーラムのGoodボタンを押すとカウントされます。';
+        arrayIndex = 4;
         break;
 
       case 'good-count-clicked':
 
         heading = 'Goodボタンを押される';
         explanation = 'フォーラムのGoodボタンを押されるとカウントされます。';
+        arrayIndex = 5;
         break;
 
       case 'gc-register':
 
         heading = 'ゲームを登録する';
         explanation = 'ゲーム登録ページでゲームを登録してください。';
+        arrayIndex = 6;
         break;
 
       case 'forum-count-post':
 
         heading = 'フォーラムに書き込む';
         explanation = 'ゲームコミュニティ、ユーザーコミュニティのフォーラムに書き込むとカウントされます。';
+        arrayIndex = 7;
         break;
 
       case 'recruitment-count-post':
 
         heading = '募集の投稿';
         explanation = 'ゲームコミュニティで募集を投稿するとカウントされます。募集へのコメント、返信でもカウントされます。';
+        arrayIndex = 8;
         break;
 
       case 'follow-count':
@@ -753,6 +763,7 @@ const Component = (props) => {
         heading = 'フォローする';
         explanation = 'ゲームコミュニティや他のユーザーをフォローするとカウントされます。';
         unit = '人';
+        arrayIndex = 9;
         break;
 
       case 'followed-count':
@@ -760,6 +771,7 @@ const Component = (props) => {
         heading = 'フォローされる';
         explanation = '他のユーザーにフォローされるとカウントされます。';
         unit = '人';
+        arrayIndex = 10;
         break;
 
       case 'title-count':
@@ -767,48 +779,56 @@ const Component = (props) => {
         heading = '称号を獲得する';
         explanation = '称号を獲得するとカウントされます。';
         unit = '個';
+        arrayIndex = 11;
         break;
 
       case 'title-show':
 
         heading = '称号を表示する';
         explanation = 'ユーザーページに称号を表示してください。';
+        arrayIndex = 12;
         break;
 
       case 'card-player-edit':
 
         heading = 'プレイヤーカードを編集する';
         explanation = 'プレイヤーカードを編集してください。';
+        arrayIndex = 13;
         break;
 
       case 'card-player-upload-image-main':
 
         heading = 'プレイヤーカードのメイン画像';
         explanation = 'プレイヤーカードにメイン画像をアップロードしてください。';
+        arrayIndex = 14;
         break;
 
       case 'card-player-upload-image-thumbnail':
 
         heading = 'プレイヤーカードのサムネイル画像';
         explanation = 'プレイヤーカードにサムネイル画像をアップロードしてください。';
+        arrayIndex = 15;
         break;
 
       case 'user-page-upload-image-main':
 
         heading = 'ユーザーページのトップ画像';
         explanation = 'ユーザーページにトップ画像をアップロードしてください。ユーザーページの設定で行えます。';
+        arrayIndex = 16;
         break;
 
       case 'user-page-change-url':
 
         heading = 'ユーザーページのURL';
         explanation = 'ユーザーページのURLを変更してください。ユーザーページの設定で行えます。';
+        arrayIndex = 17;
         break;
 
       case 'web-push-permission':
 
         heading = 'プッシュ通知の許可';
         explanation = 'プッシュ通知を許可してください。ユーザーページの設定で行えます。';
+        arrayIndex = 18;
         break;
 
     }
@@ -888,8 +908,6 @@ const Component = (props) => {
         }
 
       }
-
-
 
 
       // --------------------------------------------------
@@ -987,7 +1005,7 @@ const Component = (props) => {
     //   Component - 実績ページ（上部のボタンで切り替える）
     // --------------------------------------------------
 
-    componentAchievementsArr.push(
+    componentAchievementsArr[arrayIndex] =
       <ComponentPanel
         key={`achievement-${index1}`}
         heading={heading}
@@ -1044,7 +1062,7 @@ const Component = (props) => {
         </Stepper>
 
       </ComponentPanel>
-    );
+    ;
 
 
 
@@ -1053,7 +1071,7 @@ const Component = (props) => {
     //   Component - 称号ページ（上部のボタンで切り替える）
     // --------------------------------------------------
 
-    componentTitlesArr.push(
+    componentTitlesArr[arrayIndex] =
       <ComponentPanel
         key={`title-${index1}`}
         heading={heading}
@@ -1070,7 +1088,7 @@ const Component = (props) => {
         </div>
 
       </ComponentPanel>
-    );
+    ;
 
 
   }
@@ -1079,7 +1097,7 @@ const Component = (props) => {
 
 
   // --------------------------------------------------
-  //   Component - Title Selected
+  //   Component - 表示する称号
   // --------------------------------------------------
 
   const componentTitleSelectedArr = [];

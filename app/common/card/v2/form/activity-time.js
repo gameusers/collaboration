@@ -313,17 +313,6 @@ const Component = (props) => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={weekArr.indexOf(0) !== -1}
-                  onChange={() => handleOnChangeWeek({ index, value: 0 })}
-                  color="primary"
-                />
-              }
-              label="日"
-            />
-
-            <FormControlLabel
-              control={
-                <Checkbox
                   checked={weekArr.indexOf(1) !== -1}
                   onChange={() => handleOnChangeWeek({ index, value: 1 })}
                   color="primary"
@@ -385,6 +374,17 @@ const Component = (props) => {
                 />
               }
               label="土"
+            />
+
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={weekArr.indexOf(7) !== -1}
+                  onChange={() => handleOnChangeWeek({ index, value: 7 })}
+                  color="primary"
+                />
+              }
+              label="日"
             />
 
           </FormGroup>

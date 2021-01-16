@@ -202,6 +202,7 @@ const ContainerLayout = (props) => {
           userCommunityID={props.userCommunityID}
           userCommunities_id={props.userCommunities_id}
           enableAnonymity={props.enableAnonymity}
+          deletable={props.deletable}
         />
       }
 
@@ -345,6 +346,8 @@ export async function getServerSideProps({ req, res, query }) {
   const threadLimit = getCookie({ key: 'forumThreadLimit', reqHeadersCookie });
   const commentLimit = getCookie({ key: 'forumCommentLimit', reqHeadersCookie });
   const replyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
+
+  const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
 
 
 
@@ -492,6 +495,15 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // ---------------------------------------------
+  //   deletable
+  // ---------------------------------------------
+
+  const deletable = accessLevel >= 50 ? true : false;
+
+
+
+
+  // ---------------------------------------------
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
@@ -557,6 +569,9 @@ export async function getServerSideProps({ req, res, query }) {
       forumCommentsObj,
       forumRepliesObj,
       enableAnonymity,
+      deletable,
+
+      termsOfServiceAgreedVersion,
 
     }
 

@@ -127,13 +127,8 @@ export default async (req, res) => {
     verifyCsrfToken(req, res);
     
     
-    // ---------------------------------------------
-    //   Verify reCAPTCHA
-    // ---------------------------------------------
-    
-    await verifyRecaptcha({ response, remoteip: ip });
-    
-    
+
+
     // --------------------------------------------------
     //   Login Check / ログイン状態ではエラー
     // --------------------------------------------------
@@ -146,17 +141,26 @@ export default async (req, res) => {
     }
     
     
-    
+
     
     // --------------------------------------------------
     //   Validations
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: ip });
+    await validationIP({ throwError: true, required: true, value: ip });
     
     await validationEmailConfirmationsEmailConfirmationIDServer({ value: emailConfirmationID });
     await validationUsersLoginID({ throwError: true, required: true, value: loginID });
     await validationUsersLoginPassword({ throwError: true, required: true, value: loginPassword, loginID });
+
+
+
+
+    // ---------------------------------------------
+    //   Verify reCAPTCHA
+    // ---------------------------------------------
+    
+    await verifyRecaptcha({ response, remoteip: ip });
     
     
     
@@ -294,6 +298,16 @@ export default async (req, res) => {
     });
     
     
+
+
+    // --------------------------------------------------
+    //   セッションデータ格納
+    //   パスワードリセット後のログインでは１度だけ reCAPTCHA のチェックをしない（すでにチェックされているため）
+    // --------------------------------------------------
+
+    req.session.passVerifyRecaptchaLoginID = loginID;
+
+
     
     
     // --------------------------------------------------

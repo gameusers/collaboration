@@ -27,6 +27,8 @@ const { CustomError } = require('../@modules/error/custom');
 
 
 
+
+
 /**
  * 整数
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
@@ -132,5 +134,7 @@ const validationInteger = ({ throwError = false, required = false, value }) => {
 // --------------------------------------------------
 
 module.exports = {
+
   validationInteger
+
 };

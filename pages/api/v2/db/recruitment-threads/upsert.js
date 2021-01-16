@@ -244,7 +244,7 @@ export default async (req, res) => {
     //   Validation
     // --------------------------------------------------
 
-    await validationIP({ throwError: true, value: ip });
+    await validationIP({ throwError: true, required: true, value: ip });
 
     await validationGameCommunities_idServer({ value: gameCommunities_id });
     await validationHardwareIDsArrServer({ throwError: true, arr: hardwareIDsArr });

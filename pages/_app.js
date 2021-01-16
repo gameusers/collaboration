@@ -313,6 +313,7 @@ const Component = (props) => {
   const login = lodashGet(pageProps, ['login'], false);
   const loginUsersObj = lodashGet(pageProps, ['loginUsersObj'], {});
   const reqAcceptLanguage = lodashGet(pageProps, ['reqAcceptLanguage'], '');
+  const termsOfServiceAgreedVersion = lodashGet(pageProps, ['termsOfServiceAgreedVersion'], '');
 
   const localeObj = locale({
     acceptLanguage: reqAcceptLanguage
@@ -323,6 +324,7 @@ const Component = (props) => {
     login,
     loginUsersObj,
     localeObj,
+    termsOfServiceAgreedVersion,
 
   };
 

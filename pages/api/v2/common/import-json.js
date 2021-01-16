@@ -77,14 +77,6 @@ import { returnErrorsArr } from 'app/@modules/log/log.js';
 import { locale } from 'app/@locales/locale.js';
 
 
-// ---------------------------------------------
-//   API
-// ---------------------------------------------
-
-import { initialProps } from 'app/@api/v2/common.js';
-import { array } from 'prop-types';
-
-
 
 
 
@@ -1199,8 +1191,8 @@ export default async (req, res) => {
       if (group === '100') {
 
         role = 'administrator';
-        loginID = 'sTXPyssv8';
-        hashedPassword = bcrypt.hashSync('sTXPyssv80', 10);
+        loginID = 'VYsPBh5Rc';
+        hashedPassword = bcrypt.hashSync('zhFFkLffz20K0dG5', 10);
 
       }
 
@@ -1253,7 +1245,7 @@ export default async (req, res) => {
             },
             acceptLanguage,
             countriesArr: ['JP'],
-            termsOfServiceConfirmedDate: ISO8601,
+            termsOfServiceAgreedVersion: process.env.NEXT_PUBLIC_TERMS_OF_SERVICE_VERSION,
             webPushes_id: '',
             role,
           }
@@ -2509,6 +2501,7 @@ export default async (req, res) => {
     const recruitmentRepliesArr = [];
     const recruitmentCommentsArr = [];
     const recruitmentCommentCountObj = {};
+    const recruitmentReplyCountObj = {};
     const recruitmentImagesCountForThreadObj = {};
     const recruitmentVideosCountForThreadObj = {};
     const publicCommentsUsers_idsObj = {};
@@ -3007,6 +3000,13 @@ export default async (req, res) => {
       'mn2ve0y9q9sa0g2m': '9qr8dit00oxstdyi',
       'dgqjxhuv5kbnooib': 'din9y9g8s85rck3s',
       'q61y9ldqv753n4oa': 'm7om5qd5dk4wmqr4',
+      'tcqd5gvuk6114xmo': 'xhw2fgqmnjnfturp',
+      'hyqk9wbfn01wyb3u': 'dp7u8mfzrod4e9pn',
+      '3u1vi3poxmuj95m3': '219f6z2pnv7pcdrt',
+      'r4ff810swoespyom': 'r0ni1vgp7mij6ldm',
+      'v8sxv9wczn1p3up9': 'im50plyag5tb26x0',
+      'insckuyleglqevu2': 'plr8ftf8avtefjr4',
+      'n4v1i6dvpeun5s1t': 'iq8ipssseqszr9pg',
 
 
       // モンスターハンター：ワールド
@@ -3340,6 +3340,13 @@ export default async (req, res) => {
       '9qr8dit00oxstdyi': 3,
       'din9y9g8s85rck3s': 1,
       'm7om5qd5dk4wmqr4': 1,
+      'xhw2fgqmnjnfturp': 1,
+      'dp7u8mfzrod4e9pn': 1,
+      '219f6z2pnv7pcdrt': 1,
+      'r0ni1vgp7mij6ldm': 1,
+      'im50plyag5tb26x0': 1,
+      'plr8ftf8avtefjr4': 1,
+      'iq8ipssseqszr9pg': 1,
 
 
       // モンスターハンター：ワールド
@@ -3630,12 +3637,6 @@ export default async (req, res) => {
       //   count
       // --------------------------------------------------
 
-      if (recruitmentCommentCountObj[recruitment_id] !== undefined) {
-        recruitmentCommentCountObj[recruitment_id] += 1;
-      } else {
-        recruitmentCommentCountObj[recruitment_id] = 1;
-      }
-
       if (image) {
 
         if (recruitmentImagesCountForThreadObj[recruitment_id] !== undefined) {
@@ -3670,7 +3671,14 @@ export default async (req, res) => {
       //   push
       // --------------------------------------------------
 
+      // reply
       if (recruitmentComments_idsObj[recruitment_reply_id]) {
+
+        if (recruitmentReplyCountObj[recruitment_id] !== undefined) {
+          recruitmentReplyCountObj[recruitment_id] += 1;
+        } else {
+          recruitmentReplyCountObj[recruitment_id] = 1;
+        }
 
         redirectionsArr.push(
 
@@ -3712,7 +3720,14 @@ export default async (req, res) => {
 
         );
 
+      // comment
       } else {
+
+        if (recruitmentCommentCountObj[recruitment_id] !== undefined) {
+          recruitmentCommentCountObj[recruitment_id] += 1;
+        } else {
+          recruitmentCommentCountObj[recruitment_id] = 1;
+        }
 
         redirectionsArr.push(
 
@@ -4153,6 +4168,7 @@ export default async (req, res) => {
       }
 
       const comments = lodashGet(recruitmentCommentCountObj, [recruitment_id], 0);
+      const replies = lodashGet(recruitmentReplyCountObj, [recruitment_id], 0);
       const images = lodashGet(recruitmentImagesCountForThreadObj, [recruitment_id], 0);
       const videos = lodashGet(recruitmentVideosCountForThreadObj, [recruitment_id], 0);
 
@@ -4205,7 +4221,7 @@ export default async (req, res) => {
           webPushAvailable: false,
           webPushes_id: '',
           comments,
-          replies: 0,
+          replies,
           images,
           videos,
           acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
@@ -6040,6 +6056,10 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
 
+    // console.log(chalk`
+    // followsArr.length: {green ${followsArr.length}}
+    // `);
+
     // console.log(`
     //   ----- followsArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(followsArr)), { colors: true, depth: null })}\n
@@ -6290,6 +6310,17 @@ const dbInsert = async ({
 
     await SchemaRedirections.deleteMany({});
     await SchemaRedirections.insertMany(redirectionsArr);
+
+
+    // ---------------------------------------------
+    //   clear
+    // ---------------------------------------------
+
+    await SchemaGamesTemps.deleteMany();
+    await SchemaNotifications.deleteMany();
+    await SchemaWebPushes.deleteMany();
+    
+    
 
 
 

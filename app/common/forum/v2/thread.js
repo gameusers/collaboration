@@ -139,6 +139,7 @@ const Component = (props) => {
     userCommunities_id,
     forumThreads_id,
     enableAnonymity,
+    deletable,
 
   } = props;
 
@@ -869,7 +870,7 @@ const Component = (props) => {
 
 
                       {/* Delete Button */}
-                      {editable &&
+                      {(deletable || editable) &&
                         <Button
                           css={css`
                             && {
@@ -1016,6 +1017,7 @@ const Component = (props) => {
                 userCommunities_id={userCommunities_id}
                 forumThreads_id={forumThreads_id}
                 enableAnonymity={enableAnonymity}
+                deletable={deletable}
               />
 
 

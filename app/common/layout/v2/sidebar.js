@@ -165,7 +165,6 @@ const Component = (props) => {
   // --------------------------------------------------
 
   return (
-
     <Container
       showNavTop={showNavTop}
       lowerSidebar={lowerSidebar}
@@ -177,8 +176,6 @@ const Component = (props) => {
 
 
     </Container>
-
-
   );
 
 

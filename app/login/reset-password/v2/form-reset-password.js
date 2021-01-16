@@ -18,7 +18,7 @@ import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
-import { GoogleReCaptchaProvider, GoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
@@ -81,9 +81,9 @@ import FormEmail from 'app/common/form/v2/email.js';
 // --------------------------------------------------
 
 /**
- * Export Component
+ * Form Component
  */
-const Component = (props) => {
+const FormComponent = (props) => {
 
 
   // --------------------------------------------------
@@ -96,7 +96,8 @@ const Component = (props) => {
 
   const [loginID, setLoginID] = useState(lodashGet(props, ['loginID'], ''));
   const [email, setEmail] = useState(lodashGet(props, ['email'], ''));
-  const [recaptchaResponse, setRecaptchaResponse] = useState('');
+
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
 
   useEffect(() => {
@@ -187,6 +188,19 @@ const Component = (props) => {
 
 
       // ---------------------------------------------
+      //   executeRecaptcha
+      // ---------------------------------------------
+
+      let response = '';
+
+      if (process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1') {
+        response = await executeRecaptcha('loginResetPassword');
+      }
+
+
+
+
+      // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
 
@@ -194,7 +208,7 @@ const Component = (props) => {
 
         loginID,
         email,
-        response: recaptchaResponse,
+        response,
 
       };
 
@@ -375,21 +389,8 @@ const Component = (props) => {
 
   return (
     <Element
-      // css={css`
-      //   margin: 14px 0 0 0;
-      // `}
       name="elementFormResetPassword"
     >
-
-
-      {/* reCAPTCHA */}
-      {process.env.NODE_ENV === 'production' &&
-        <GoogleReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}>
-          <GoogleReCaptcha onVerify={(token) => setRecaptchaResponse(token)} />
-        </GoogleReCaptchaProvider>
-      }
-
-
 
 
       <Panel
@@ -494,6 +495,39 @@ const Component = (props) => {
 
     </Element>
   );
+
+
+};
+
+
+
+
+/**
+ * Export Component
+ */
+const Component = (props) => {
+
+
+  // --------------------------------------------------
+  //   reCAPTCHA で検証する場合
+  // --------------------------------------------------
+
+  if (process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1') {
+
+    return (
+      <GoogleReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}>
+        <FormComponent {...props} />
+      </GoogleReCaptchaProvider>
+    );
+    
+  }
+  
+
+  // --------------------------------------------------
+  //   reCAPTCHA で検証しない場合
+  // --------------------------------------------------
+
+  return <FormComponent {...props} />;
 
 
 };

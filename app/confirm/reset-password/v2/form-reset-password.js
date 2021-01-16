@@ -19,7 +19,7 @@ import Router from 'next/router';
 import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
-import { GoogleReCaptchaProvider, GoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
@@ -82,9 +82,9 @@ import FormLoginPassword from 'app/common/form/v2/login-password.js';
 // --------------------------------------------------
 
 /**
- * Export Component
+ * Form Component
  */
-const Component = (props) => {
+const FormComponent = (props) => {
 
 
   // --------------------------------------------------
@@ -111,7 +111,8 @@ const Component = (props) => {
   const [loginID, setLoginID] = useState(lodashGet(props, ['loginID'], ''));
   const [loginPassword, setLoginPassword] = useState('');
   const [loginPasswordConfirmation, setLoginPasswordConfirmation] = useState('');
-  const [recaptchaResponse, setRecaptchaResponse] = useState('');
+
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
 
   useEffect(() => {
@@ -203,6 +204,19 @@ const Component = (props) => {
 
 
       // ---------------------------------------------
+      //   executeRecaptcha
+      // ---------------------------------------------
+
+      let response = '';
+
+      if (process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1') {
+        response = await executeRecaptcha('confirmResetPassword');
+      }
+
+      
+
+
+      // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
 
@@ -211,7 +225,7 @@ const Component = (props) => {
         emailConfirmationID,
         loginID,
         loginPassword,
-        response: recaptchaResponse,
+        response,
 
       };
 
@@ -277,7 +291,7 @@ const Component = (props) => {
 
       formData.append('loginID', loginID);
       formData.append('loginPassword', loginPassword);
-      formData.append('response', recaptchaResponse);
+      formData.append('response', response);
 
 
       // ---------------------------------------------
@@ -444,16 +458,6 @@ const Component = (props) => {
     >
 
 
-      {/* reCAPTCHA */}
-      {process.env.NODE_ENV === 'production' &&
-        <GoogleReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}>
-          <GoogleReCaptcha onVerify={(token) => setRecaptchaResponse(token)} />
-        </GoogleReCaptchaProvider>
-      }
-
-
-
-
       <Panel
         heading="パスワード再設定"
         defaultExpanded={true}
@@ -548,6 +552,39 @@ const Component = (props) => {
 
     </Element>
   );
+
+
+};
+
+
+
+
+/**
+ * Export Component
+ */
+const Component = (props) => {
+
+
+  // --------------------------------------------------
+  //   reCAPTCHA で検証する場合
+  // --------------------------------------------------
+
+  if (process.env.NEXT_PUBLIC_VERIFY_RECAPTCHA === '1') {
+
+    return (
+      <GoogleReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}>
+        <FormComponent {...props} />
+      </GoogleReCaptchaProvider>
+    );
+    
+  }
+  
+
+  // --------------------------------------------------
+  //   reCAPTCHA で検証しない場合
+  // --------------------------------------------------
+
+  return <FormComponent {...props} />;
 
 
 };

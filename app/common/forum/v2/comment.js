@@ -147,11 +147,12 @@ const Comment = (props) => {
     forumThreads_id,
     forumComments_id,
     enableAnonymity,
+    deletable,
 
   } = props;
 
 
-
+  
 
   // --------------------------------------------------
   //   States
@@ -805,7 +806,7 @@ const Comment = (props) => {
 
 
                 {/* Delete Button */}
-                {editable &&
+                {(deletable || editable) &&
                   <Button
                     css={css`
                       && {
@@ -931,6 +932,7 @@ const Comment = (props) => {
               forumThreads_id={forumThreads_id}
               forumComments_id={forumComments_id}
               enableAnonymity={enableAnonymity}
+              deletable={deletable}
             />
 
 
@@ -968,6 +970,7 @@ const Component = (props) => {
     userCommunities_id,
     forumThreads_id,
     enableAnonymity,
+    deletable,
 
   } = props;
 
@@ -1494,6 +1497,7 @@ const Component = (props) => {
         forumThreads_id={forumThreads_id}
         forumComments_id={forumComments_id}
         enableAnonymity={enableAnonymity}
+        deletable={deletable}
       />
     );
 

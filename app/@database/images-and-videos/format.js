@@ -142,7 +142,13 @@ const formatImagesAndVideosArr = ({ localeObj, arr }) => {
  * @param {number} maxWidth - フォーマットする最大の横幅を指定する　それ以上のサイズの画像はフォーマットしない
  * @return {Array} フォーマットされたオブジェクト
  */
-const formatImagesAndVideosObj = ({ localeObj = {}, obj, maxWidth = 1920 }) => {
+const formatImagesAndVideosObj = ({
+  
+  localeObj = {},
+  obj,
+  maxWidth = 15360,
+
+}) => {
 
 
   // --------------------------------------------------
@@ -279,7 +285,7 @@ const formatImagesAndVideosObj = ({ localeObj = {}, obj, maxWidth = 1920 }) => {
       // --------------------------------------------------
 
       const srcSet2Arr = [];
-      const imageCount = 0;
+      // const imageCount = 0;
 
       for (let value2Obj of srcSetArr.values()) {
 
@@ -387,9 +393,11 @@ const formatImagesAndVideosObj = ({ localeObj = {}, obj, maxWidth = 1920 }) => {
     } else if (type2 === 'video') {
 
       returnArr.push({
+
         type: valueObj.type,
         videoChannel: valueObj.videoChannel,
         videoID: valueObj.videoID,
+
       });
 
     }

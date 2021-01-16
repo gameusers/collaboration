@@ -36,7 +36,7 @@ const schema = mongoose.Schema({
   },
   acceptLanguage: { type: String, required: true },
   countriesArr: [String],
-  termsOfServiceConfirmedDate: { type: Date, required: true },
+  termsOfServiceAgreedVersion: { type: Date, required: true },
   webPushes_id: { type: String },
   role: { type: String, enum: ['user', 'administrator'], required: true },
 

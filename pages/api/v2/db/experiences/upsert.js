@@ -153,7 +153,7 @@ export default async (req, res) => {
     //   Validations
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: ip });
+    await validationIP({ throwError: true, required: true, value: ip });
     
     const validationObj = await validationTitles_idsArrServer({ throwError: true, arr: titles_idsArr });
     

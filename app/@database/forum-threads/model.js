@@ -643,7 +643,7 @@ const findForForum = async ({
 
 
 
-    // console.time('threadCount & Match Condition Array');
+    
     // --------------------------------------------------
     //   threadCount & Match Condition Array
     // --------------------------------------------------
@@ -749,10 +749,10 @@ const findForForum = async ({
 
 
     }
-    // console.timeEnd('threadCount & Match Condition Array');
+    
 
 
-    // console.time('SchemaForumThreads.aggregate');
+    
     // --------------------------------------------------
     //   Aggregation
     // --------------------------------------------------
@@ -828,14 +828,14 @@ const findForForum = async ({
 
 
     ]).exec();
-    // console.timeEnd('SchemaForumThreads.aggregate');
+    
 
 
 
     // --------------------------------------------------
     //   Format
     // --------------------------------------------------
-    // console.time('formatVer2');
+    
     const formattedThreadsObj = formatVer2({
 
       req,
@@ -850,14 +850,14 @@ const findForForum = async ({
 
     const forumThreadsObj = lodashGet(formattedThreadsObj, ['forumThreadsObj'], {});
     const forumThreads_idsForCommentArr = lodashGet(formattedThreadsObj, ['forumThreads_idsForCommentArr'], []);
-    // console.timeEnd('formatVer2');
+    
 
 
 
     // --------------------------------------------------
     //   DB find / Forum Comments & Replies
     // --------------------------------------------------
-    // console.time('ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr');
+    
     const forumCommentsAndRepliesObj = await ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr({
 
       req,
@@ -874,7 +874,7 @@ const findForForum = async ({
 
     const forumCommentsObj = lodashGet(forumCommentsAndRepliesObj, ['forumCommentsObj'], {});
     const forumRepliesObj = lodashGet(forumCommentsAndRepliesObj, ['forumRepliesObj'], {});
-    // console.timeEnd('ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr');
+    
 
 
 
@@ -1646,9 +1646,11 @@ const findForForumBy_forumID = async ({
     // --------------------------------------------------
 
     const userCommunityArr = await ModelUserCommunities.find({
+
       conditionObj: {
         _id: userCommunities_id
       }
+
     });
 
     const threadCount = lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0);
@@ -1910,7 +1912,6 @@ const formatVer2 = ({
   threadLimit,
   threadCount,
 
-
 }) => {
 
 
@@ -1979,17 +1980,23 @@ const formatVer2 = ({
     }
 
 
+
+
     // --------------------------------------------------
     //   編集権限
     // --------------------------------------------------
 
     clonedObj.editable = verifyAuthority({
+
       req,
       users_id: valueObj.users_id,
       loginUsers_id,
       ISO8601: valueObj.createdDate,
-      _id: valueObj._id
+      _id: valueObj._id,
+
     });
+
+
 
 
     // --------------------------------------------------
@@ -2013,19 +2020,8 @@ const formatVer2 = ({
 
     }
 
-    // console.log(chalk`
-    //   valueObj._id: {green ${valueObj._id}}
-    //   clonedObj.name: {green ${clonedObj.name}}
-    //   authority: {green ${authority}}
-    // `);
+    
 
-
-
-    // console.log(`
-    //   ----- filteredArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(filteredArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
 
     // --------------------------------------------------
     //   不要な項目を削除する
@@ -2039,9 +2035,7 @@ const formatVer2 = ({
     delete clonedObj.userAgent;
     delete clonedObj.__v;
 
-    // console.log(`\n---------- clonedObj ----------\n`);
-    // console.dir(clonedObj);
-    // console.log(`\n-----------------------------------\n`);
+    
 
 
     // --------------------------------------------------
@@ -2049,8 +2043,6 @@ const formatVer2 = ({
     // --------------------------------------------------
 
     dataObj[valueObj._id] = clonedObj;
-
-    // forumThreads_idsArr.push(valueObj._id);
 
     if (valueObj.comments > 0) {
       forumThreads_idsForCommentArr.push(valueObj._id);
@@ -2075,10 +2067,7 @@ const formatVer2 = ({
   }
 
 
-
-
   forumThreadsObj.dataObj = dataObj;
-
 
 
   // --------------------------------------------------
@@ -2086,8 +2075,10 @@ const formatVer2 = ({
   // --------------------------------------------------
 
   return {
+
     forumThreadsObj,
     forumThreads_idsForCommentArr,
+
   };
 
 
@@ -2098,9 +2089,8 @@ const formatVer2 = ({
 
 
 /**
- * コメント＆返信データを取得する　削除用
+ * スレッドを削除する際に、同時に削除する画像の _id を取得する
  * @param {Object} req - リクエスト
- * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
  * @return {Array} 取得データ
@@ -2108,7 +2098,6 @@ const formatVer2 = ({
 const findForDeleteThread = async ({
 
   req,
-  localeObj,
   loginUsers_id,
   forumThreads_id,
 
@@ -2125,19 +2114,66 @@ const findForDeleteThread = async ({
     const forumThreadsArr = await SchemaForumThreads.aggregate([
 
 
+      // --------------------------------------------------
+      //   $match
+      // --------------------------------------------------
+
       {
         $match: { _id: forumThreads_id },
       },
 
 
-      { $project:
-        {
+      // --------------------------------------------------
+      //   user-communities
+      // --------------------------------------------------
+
+      {
+        $lookup:
+          {
+            from: 'user-communities',
+            let: { letUserCommunities_id: '$userCommunities_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$_id', '$$letUserCommunities_id'] },
+                    ]
+                  },
+                }
+              },
+
+              {
+                $project: {
+                  _id: 0,
+                  users_id: 1,
+                }
+              }
+            ],
+            as: 'userCommunitiesObj'
+          }
+      },
+
+      {
+        $unwind: {
+          path: '$userCommunitiesObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+
+      {
+        $project: {
           createdDate: 1,
           users_id: 1,
           imagesAndVideos_id: 1,
+          userCommunitiesObj: 1,
         }
       },
-
 
     ]).exec();
 
@@ -2150,25 +2186,26 @@ const findForDeleteThread = async ({
 
     const forumCommentsArr = await SchemaForumComments.aggregate([
 
-
       {
         $match: { forumThreads_id },
       },
 
-
-      { $project:
-        {
+      {
+        $project: {
           createdDate: 1,
           users_id: 1,
           imagesAndVideos_id: 1,
         }
       },
 
-
     ]).exec();
 
 
-
+  //   console.log(`
+  //   ----- forumThreadsArr -----\n
+  //   ${util.inspect(forumThreadsArr, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
 
     // --------------------------------------------------
     //   配列が空の場合は処理停止
@@ -2181,27 +2218,62 @@ const findForDeleteThread = async ({
 
 
 
+
     // --------------------------------------------------
-    //   編集権限がない場合は処理停止
+    //   権限のチェック
     // --------------------------------------------------
 
+    let deletable = false;
+
+
+    // ---------------------------------------------
+    //   - 削除権限（ユーザーコミュニティの作者かどうか）
+    // ---------------------------------------------
+
+    const userCommunitiesUsers_id = lodashGet(forumThreadsArr, [0, 'userCommunitiesObj', 'users_id'], '');
+
+    if (userCommunitiesUsers_id && loginUsers_id && userCommunitiesUsers_id === loginUsers_id) {
+      deletable = true;
+    }
+
+
+    // ---------------------------------------------
+    //   - 編集権限（サイト管理者か投稿者）
+    // ---------------------------------------------
+
     const editable = verifyAuthority({
+
       req,
       users_id: lodashGet(forumThreadsArr, [0, 'users_id'], ''),
       loginUsers_id,
       ISO8601: lodashGet(forumThreadsArr, [0, 'createdDate'], ''),
       _id: lodashGet(forumThreadsArr, [0, '_id'], ''),
+
     });
 
-    if (!editable) {
+    if (editable) {
+      deletable = true;
+    }
+
+    // console.log(chalk`
+    // deletable: {green ${deletable} typeof ${typeof deletable}}
+    // editable: {green ${editable} typeof ${typeof editable}}
+    // `);
+
+
+    // ---------------------------------------------
+    //   権限がない場合は処理停止
+    // ---------------------------------------------
+    
+    if (!deletable) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: 'M2XmqnE4r', messageID: 'DSRlEoL29' }] });
     }
 
-
+    
 
 
     // --------------------------------------------------
-    //   Format
+    //   returnObj
     // --------------------------------------------------
 
     const imagesAndVideos_id = lodashGet(forumThreadsArr, [0, 'imagesAndVideos_id'], '');
@@ -2224,6 +2296,7 @@ const findForDeleteThread = async ({
     const returnObj = {
       imagesAndVideos_idsArr,
     };
+
 
 
 
@@ -2323,13 +2396,15 @@ const findForEdit = async ({
             from: 'images-and-videos',
             let: { forumThreadsImagesAndVideos_id: '$imagesAndVideos_id' },
             pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$forumThreadsImagesAndVideos_id'] },
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$forumThreadsImagesAndVideos_id']
+                  },
                 }
               },
-              { $project:
-                {
+              {
+                $project: {
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -2349,8 +2424,8 @@ const findForEdit = async ({
       },
 
 
-      { $project:
-        {
+      {
+        $project: {
           createdDate: 0,
           imagesAndVideos_id: 0,
           __v: 0,
@@ -2379,11 +2454,13 @@ const findForEdit = async ({
     // --------------------------------------------------
 
     const editable = verifyAuthority({
+
       req,
       users_id: lodashGet(resultArr, [0, 'users_id'], ''),
       loginUsers_id,
       ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
-      _id: lodashGet(resultArr, [0, '_id'], '')
+      _id: lodashGet(resultArr, [0, '_id'], ''),
+
     });
 
     if (!editable) {
@@ -2455,10 +2532,12 @@ const findForEdit = async ({
     // --------------------------------------------------
 
     return {
+
       _id,
       name,
       comment,
       imagesAndVideosObj,
+
     };
 
 

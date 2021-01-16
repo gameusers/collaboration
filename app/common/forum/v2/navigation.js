@@ -708,6 +708,10 @@ const Component = (props) => {
     <Accordion
       css={css`
         margin: 0 !important;
+
+        @media screen and (max-width: 947px) {
+          margin: 0 0 16px 0 !important;
+        }
       `}
       expanded={panelExpanded}
     >

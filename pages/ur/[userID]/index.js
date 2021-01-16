@@ -279,6 +279,8 @@ export async function getServerSideProps({ req, res, query }) {
   const cardPlayers_idsArr = lodashGet(dataObj, ['cardPlayers_idsArr'], []);
   const cardPlayers_id = cardPlayers_idsArr[0];
 
+  const redirectUserID = lodashGet(dataObj, ['redirectObj', 'userID'], '');
+
 
 
 
@@ -368,6 +370,35 @@ export async function getServerSideProps({ req, res, query }) {
   // ---------------------------------------------
 
   res.cookie('recentAccessPageUrl', `/ur/${userID}`);
+
+
+
+
+  // --------------------------------------------------
+  //   リダイレクト
+  // --------------------------------------------------
+
+  if (redirectUserID) {
+
+    const isServer = !process.browser;
+
+    let destination = `/ur/${redirectUserID}`;
+
+    if (isServer && res) {
+
+      res.writeHead(301, {
+        Location: destination
+      });
+
+      res.end();
+
+    } else {
+
+      Router.replace(destination);
+
+    }
+
+  }
 
 
 

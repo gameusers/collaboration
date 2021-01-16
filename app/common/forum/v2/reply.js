@@ -148,6 +148,7 @@ const Reply = (props) => {
     forumComments_id,
     forumReplies_id,
     enableAnonymity,
+    deletable,
 
   } = props;
 
@@ -180,7 +181,7 @@ const Reply = (props) => {
 
   const {
 
-    forumCommentsObj,
+    // forumCommentsObj,
     forumRepliesObj,
     setForumRepliesObj,
     setReloadForceForumReply,
@@ -200,7 +201,7 @@ const Reply = (props) => {
 
   const [showFormReply, setShowFormReply] = useState(false);
   const [showFormReplyNew, setShowFormReplyNew] = useState(false);
-  const [goods, setGoods] = useState(lodashGet(forumCommentsObj, ['dataObj', forumComments_id, 'goods'], 0));
+  const [goods, setGoods] = useState(lodashGet(forumRepliesObj, ['dataObj', forumReplies_id, 'goods'], 0));
 
 
   useEffect(() => {
@@ -843,7 +844,7 @@ const Reply = (props) => {
 
 
                 {/* Delete Button */}
-                {editable &&
+                {(deletable || editable) &&
                   <Button
                     css={css`
                       && {
@@ -986,6 +987,7 @@ const Component = (props) => {
     forumThreads_id,
     forumComments_id,
     enableAnonymity,
+    deletable,
 
   } = props;
 
@@ -1495,6 +1497,7 @@ const Component = (props) => {
         forumComments_id={forumComments_id}
         forumReplies_id={forumReplies_id}
         enableAnonymity={enableAnonymity}
+        deletable={deletable}
       />
     );
 

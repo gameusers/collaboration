@@ -291,6 +291,7 @@ const Component = (props) => {
     <Panel
       heading="検索"
       defaultExpanded={true}
+      mobileMargin={true}
     >
 
 

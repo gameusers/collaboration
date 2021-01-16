@@ -14,7 +14,7 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useIntl } from 'react-intl';
 
 /** @jsx jsx */
@@ -31,6 +31,8 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
+
+import { makeStyles } from '@material-ui/core/styles';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -55,6 +57,27 @@ import CardPlayer from 'app/common/card/v2/card-player.js';
 
 
 // --------------------------------------------------
+//   Material UI Style Overrides
+//   https://material-ui.com/styles/basics/
+// --------------------------------------------------
+
+const useStyles = makeStyles({
+
+  paperWidthMd: {
+    ['@media (max-width:480px)']: {
+      maxWidth: '100%',
+      margin: 0
+    }
+  },
+
+});
+
+
+
+
+
+
+// --------------------------------------------------
 //   Components
 // --------------------------------------------------
 
@@ -66,6 +89,7 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const intl = useIntl();
+  const classes = useStyles();
 
 
 
@@ -109,6 +133,9 @@ const Component = (props) => {
 
   return (
     <Dialog
+      classes={{
+        paperWidthMd: classes.paperWidthMd
+      }}
       open={dialogCardOpen}
       maxWidth='md'
       onClose={() => handleDialogCardClose()}

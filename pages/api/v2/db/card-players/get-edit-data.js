@@ -137,7 +137,7 @@ export default async (req, res) => {
     //   Validations
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: ip });
+    await validationIP({ throwError: true, required: true, value: ip });
     await validationCardPlayers_idServer({ throwError: true, value: cardPlayers_id, loginUsers_id });
     
     

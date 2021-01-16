@@ -87,7 +87,15 @@ const setAuthority = ({ req, _id }) => {
  * @param {string} _id - 検証する_id
  * @return {boolean} 検証結果を真偽値で返す
  */
-const verifyAuthority = ({ req, users_id, loginUsers_id, ISO8601, _id }) => {
+const verifyAuthority = ({
+  
+  req,
+  users_id,
+  loginUsers_id,
+  ISO8601,
+  _id,
+
+}) => {
   
   
   // --------------------------------------------------

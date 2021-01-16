@@ -148,7 +148,7 @@ export default async (req, res) => {
     //   Verify CSRF
     // ---------------------------------------------
     
-    verifyCsrfToken(req, res);
+    // verifyCsrfToken(req, res);
     
     
     

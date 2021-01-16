@@ -15,8 +15,9 @@ const util = require('util');
 // ---------------------------------------------
 
 const express = require('express');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
 const flash = require('connect-flash');
 const passport = require('passport');
@@ -91,38 +92,76 @@ app.prepare().then(() => {
   //   Middleware Settings
   // --------------------------------------------------
 
-  // server.use(bodyParser.json({
-  //   limit: '50mb'
+  // server.use(bodyParser.json());
+  // server.use(bodyParser.urlencoded({
+  //   // limit: '50mb',
+  //   extended: true
   // }));
-  server.use(bodyParser.json());
-  server.use(bodyParser.urlencoded({
-    // limit: '50mb',
-    extended: true
-  }));
 
+  // 参考：https://qiita.com/MahoTakara/items/8495bbafc19859ef463b
 
-  server.use(cookieParser());
-
-  server.use(flash());
-
-  server.use(session({
+  let sessObj = {
+    
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store: new MongoStore({
       mongooseConnection: mongoose.connection,
       ttl: 12 * 60 * 60 // 12 hours
-      // ttl: 14 * 24 * 60 * 60 // 14 days
     }),
     cookie: {
-      // secure: true,
       httpOnly: true,
       maxAge: 12 * 60 * 60 * 1000 // 12 hours
     }
-  }));
+
+  }
+
+  if (process.env.NODE_ENV === 'production') {
+
+    sessObj = {
+    
+      secret: process.env.SESSION_SECRET,
+      proxy: true,
+      resave: false,
+      saveUninitialized: false,
+      store: new MongoStore({
+        mongooseConnection: mongoose.connection,
+        ttl: 7 * 24 * 60 * 60 // 7 days
+      }),
+      cookie: {
+        secure: true,
+        httpOnly: true,
+        domain: 'gameusers.org',
+        path: '/',
+        sameSite: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+      }
+  
+    }
+
+  }
+
+
+  server.use(cookieParser());
+
+  server.use(flash());
+
+  server.use(session(sessObj));
 
   server.use(passport.initialize());
   server.use(passport.session());
+
+
+
+
+  // --------------------------------------------------
+  //   production build 後に public ディレクトリーにアップロードされた画像が
+  //   表示されないため、express から提供する
+  //   build 時に存在している画像しか表示されないらしい
+  //   https://nextjs.org/docs/basic-features/static-file-serving
+  // --------------------------------------------------
+
+  server.use(express.static(path.join(__dirname, 'public')));
 
 
 
@@ -141,7 +180,8 @@ app.prepare().then(() => {
   }
 
 
-  let dbUrl = `mongodb://${dbUserPass}${process.env.DB_URL}/gameusers?replicaSet=rs0`;
+  // let dbUrl = `mongodb://${dbUserPass}${process.env.DB_URL}/gameusers?replicaSet=rs0`;
+  let dbUrl = `mongodb://${dbUserPass}${process.env.DB_URL}/gameusers?replicaSet=rs0&authSource=admin`;
 
   if (process.env.DB_URL_DOCKER) {
     dbUrl = `mongodb://${dbUserPass}${process.env.DB_URL_DOCKER}/gameusers?replicaSet=rs0`;

@@ -310,6 +310,8 @@ export async function getServerSideProps({ req, res, query }) {
   const commentLimit = getCookie({ key: 'forumCommentLimit', reqHeadersCookie });
   const replyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
 
+  const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
+
 
 
 
@@ -541,6 +543,8 @@ export async function getServerSideProps({ req, res, query }) {
       forumThreadsObj,
       forumCommentsObj,
       forumRepliesObj,
+
+      termsOfServiceAgreedVersion,
 
     }
 

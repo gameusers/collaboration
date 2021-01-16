@@ -362,6 +362,8 @@ export async function getServerSideProps({ req, res, query }) {
   const commentLimit = getCookie({ key: 'recruitmentCommentLimit', reqHeadersCookie });
   const replyLimit = getCookie({ key: 'recruitmentReplyLimit', reqHeadersCookie });
 
+  const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
+
   
 
 
@@ -481,12 +483,6 @@ export async function getServerSideProps({ req, res, query }) {
       anchorText: gameName,
       href: `/gc/${urlID}`,
     },
-
-    // {
-    //   type: 'gc/rec',
-    //   anchorText: '',
-    //   href: `/gc/${urlID}/rec`,
-    // },
 
   ];
 
@@ -706,7 +702,10 @@ export async function getServerSideProps({ req, res, query }) {
   res.cookie('recentAccessPageUrl', recentAccessPageUrl);
 
 
-
+  // console.log(chalk`
+  // redirectUrlID: {green ${redirectUrlID}}
+  // redirectRecruitmentID: {green ${redirectRecruitmentID}}
+  // `);
 
   // --------------------------------------------------
   //   リダイレクト
@@ -812,6 +811,8 @@ export async function getServerSideProps({ req, res, query }) {
       hardwaresArr,
       categories,
       keyword,
+
+      termsOfServiceAgreedVersion,
 
     }
 

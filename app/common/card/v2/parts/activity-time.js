@@ -98,7 +98,7 @@ const Component = (props) => {
       const tempArr = [];
 
       for (let value of weekArr.values()) {
-        tempArr.push(weekTextArr[value]);
+        tempArr.push(weekTextArr[value - 1]);
       }
 
       week = ` (${tempArr.join(' / ')})`;

@@ -372,7 +372,7 @@ const Component = (props) => {
               display: none;
 
               @media screen and (max-width: 947px) {
-                margin: 0;
+                // margin: 0;
                 display: inherit;
               }
             `

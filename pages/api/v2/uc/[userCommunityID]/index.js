@@ -504,15 +504,19 @@ export default async (req, res) => {
         //   スレッドのデータがない場合はエラー
         // ---------------------------------------------
 
-        const threadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
+        if (threadPage > 1) {
 
-        if (threadPage > 1 && Object.keys(threadsDataObj).length === 0) {
+          const threadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
 
-          statusCode = 404;
-          throw new CustomError({ level: 'warn', errorsArr: [{ code: 'zbbRej-eH', messageID: 'Error' }] });
+          if (Object.keys(threadsDataObj).length === 0) {
+  
+            statusCode = 404;
+            throw new CustomError({ level: 'warn', errorsArr: [{ code: 'zbbRej-eH', messageID: 'Error' }] });
+  
+          }
 
         }
-
+        
 
       }
 

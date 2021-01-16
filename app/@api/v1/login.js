@@ -44,6 +44,7 @@ const { CustomError } = require('../../@modules/error/custom.js');
 //   Validations
 // ---------------------------------------------
 
+const { validationIP } = require('../../@validations/ip.js');
 const { validationUsersLoginID } = require('../../@database/users/validations/login-id.js');
 const { validationUsersLoginPassword } = require('../../@database/users/validations/login-password.js');
 
@@ -146,6 +147,8 @@ router.post('/login', upload.none(), (req, res, next) => {
       verifyCsrfToken(req, res);
 
 
+      
+
       // ---------------------------------------------
       //   Verify reCAPTCHA
       // ---------------------------------------------
@@ -155,7 +158,7 @@ router.post('/login', upload.none(), (req, res, next) => {
 
         // --------------------------------------------------
         //   セッションデータ削除
-        //   アカウント作成後のログインでは１度だけ Recaptcha のチェックをしない（作成時にすでにチェックされているため）
+        //   アカウント作成後、パスワードリセット後のログインでは１度だけ reCAPTCHA のチェックをしない（すでにチェックされているため）
         // --------------------------------------------------
 
         delete req.session.passVerifyRecaptchaLoginID;
@@ -164,10 +167,9 @@ router.post('/login', upload.none(), (req, res, next) => {
       } else {
         await verifyRecaptcha({ response, remoteip: ip });
       }
-      // await verifyRecaptcha({ response, remoteip: ip });
 
 
-
+      
 
       // --------------------------------------------------
       //   Login Check
@@ -187,6 +189,7 @@ router.post('/login', upload.none(), (req, res, next) => {
       //   Validation
       // --------------------------------------------------
 
+      await validationIP({ throwError: true, required: true, value: ip });
       await validationUsersLoginID({ throwError: true, required: true, value: loginID });
       await validationUsersLoginPassword({ throwError: true, required: true, value: loginPassword, loginID });
 

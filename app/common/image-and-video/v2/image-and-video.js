@@ -313,6 +313,7 @@ const Component = (props) => {
                 }
               `}
               src={valueObj.src}
+              alt={valueObj.caption}
             />
 
           </div>

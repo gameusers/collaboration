@@ -1192,7 +1192,7 @@ const findOneForLoginUsersObj = async ({
           countriesArr: 0,
           userIDInitial: 0,
           pagesObj: 0,
-          termsOfServiceConfirmedDate: 0,
+          termsOfServiceAgreedVersion: 0,
           loginID: 0,
           loginPassword: 0,
           emailObj: 0,

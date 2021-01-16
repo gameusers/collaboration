@@ -21,7 +21,7 @@ desktop.ini
 /__/
 
 # データベース
-/db/mongodb/
+/db-production/
 /db/server1/data/*
 !/db/server1/data/.gitkeep
 /db/server1/log/*
@@ -49,3 +49,4 @@ __*.js
 /import/json/
 /import/img-old/
 /import/img-new/
+/import/dump/

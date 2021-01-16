@@ -41,7 +41,15 @@ import Checkbox from '@material-ui/core/Checkbox';
 //   States
 // ---------------------------------------------
 
+import { ContainerStateUser } from 'app/@states/user.js';
 import { ContainerStateLayout } from 'app/@states/layout.js';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+import { validationTermsOfService } from 'app/@validations/terms-of-service.js';
 
 
 // ---------------------------------------------
@@ -69,6 +77,7 @@ const Component = (props) => {
 
     agreeTermsOfService,
     setAgreeTermsOfService,
+    checkAgreedVersion = true,
 
   } = props;
 
@@ -79,8 +88,10 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
 
+  const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
 
+  const { termsOfServiceAgreedVersion } = stateUser;
   const { setDialogTermsOfServiceOpen } = stateLayout;
 
 
@@ -90,7 +101,35 @@ const Component = (props) => {
   //   Hooks
   // --------------------------------------------------
 
-  const intl = useIntl();
+  // const intl = useIntl();
+
+
+
+
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+
+  // console.log(chalk`
+  // agreeTermsOfService: {green ${agreeTermsOfService} typeof ${typeof agreeTermsOfService}}
+  // checkAgreedVersion: {green ${checkAgreedVersion} typeof ${typeof checkAgreedVersion}}
+  // termsOfServiceAgreedVersion: {green ${termsOfServiceAgreedVersion} typeof ${typeof termsOfServiceAgreedVersion}}
+  // `);
+
+
+
+
+  // --------------------------------------------------
+  //   Check Confirmed Version
+  // --------------------------------------------------
+
+  if (checkAgreedVersion && termsOfServiceAgreedVersion) {
+
+    if (validationTermsOfService({ agree: agreeTermsOfService, agreedVersion: termsOfServiceAgreedVersion }).error === false) {
+      return null;
+    }
+
+  }
 
 
 

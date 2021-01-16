@@ -27,6 +27,8 @@ import lodashGet from 'lodash/get';
 
 
 
+
+
 // --------------------------------------------------
 //   State
 // --------------------------------------------------
@@ -42,8 +44,11 @@ const useUser = (initialStateObj) => {
   const [loginUsersObj, setLoginUsersObj] = useState(lodashGet(initialStateObj, ['loginUsersObj'], {}));
   const [localeObj, setLocaleObj] = useState(lodashGet(initialStateObj, ['localeObj'], {}));
   const [serviceWorkerRegistrationObj, setServiceWorkerRegistrationObj] = useState({});
+  const [termsOfServiceAgreedVersion, setTermsOfServiceAgreedVersion] = useState(lodashGet(initialStateObj, ['termsOfServiceAgreedVersion'], ''));
   
   
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -59,6 +64,8 @@ const useUser = (initialStateObj) => {
   //   --------------------\n
   // `);
   
+
+
      
   // --------------------------------------------------
   //   Return
@@ -74,6 +81,8 @@ const useUser = (initialStateObj) => {
     setLocaleObj,
     serviceWorkerRegistrationObj,
     setServiceWorkerRegistrationObj,
+    termsOfServiceAgreedVersion,
+    setTermsOfServiceAgreedVersion,
     
   };
   

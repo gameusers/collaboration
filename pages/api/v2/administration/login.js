@@ -46,7 +46,8 @@ import { CustomError } from 'app/@modules/error/custom.js';
 // ---------------------------------------------
 
 import { validationIP } from 'app/@validations/ip.js';
-import { validationUsersLoginIDServer } from 'app/@database/users/validations/login-id-server.js';
+import { validationUsersLoginID } from 'app/@database/users/validations/login-id.js';
+// import { validationUsersLoginIDServer } from 'app/@database/users/validations/login-id-server.js';
 import { validationUsersLoginPassword } from 'app/@database/users/validations/login-password.js';
 
 
@@ -147,8 +148,9 @@ export default async (req, res) => {
     //   Validation
     // --------------------------------------------------
     
-    await validationIP({ throwError: true, value: ip });
-    await validationUsersLoginIDServer({ value: loginID });
+    await validationIP({ throwError: true, required: true, value: ip });
+    await validationUsersLoginID({ throwError: true, required: true, value: loginID });
+    // await validationUsersLoginIDServer({ value: loginID });
     await validationUsersLoginPassword({ throwError: true, required: true, value: loginPassword, loginID });
 
 

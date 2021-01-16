@@ -50,8 +50,8 @@ const validationCardPlayersActivityTimeArr = ({ throwError = false, required = f
   //   Config
   // ---------------------------------------------
   
-  const minNumber = 0;
-  const maxNumber = 6;
+  const minNumber = 1;
+  const maxNumber = 7;
   
   
   // ---------------------------------------------

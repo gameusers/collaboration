@@ -330,7 +330,7 @@ const Component = (props) => {
         {/* link */}
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/common/icons/apple-touch-icon-180×180.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/common/icons/apple-touch-icon-180x180.png" />
       </Head>
 
 
@@ -407,13 +407,12 @@ const Component = (props) => {
             css={css`
               width: 300px;
               margin: 0 16px 0 0;
-              // background-color: pink;
               padding: 0 0 48px 0;
 
               @media screen and (max-width: 947px) {
                 width: auto;
-                // margin: 0;
-                margin: 0 0 16px 0;
+                // margin: 0 0 16px 0;
+                margin: 0;
                 padding: 0;
               }
             `}

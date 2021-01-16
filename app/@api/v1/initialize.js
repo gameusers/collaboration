@@ -462,7 +462,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         },
         acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         countriesArr: ['JP'],
-        termsOfServiceConfirmedDate: ISO8601,
+        termsOfServiceAgreedVersion: process.env.NEXT_PUBLIC_TERMS_OF_SERVICE_VERSION,
         webPushes_id: '',
         role: 'administrator'
       },
@@ -500,7 +500,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         },
         acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         countriesArr: ['JP'],
-        termsOfServiceConfirmedDate: ISO8601,
+        termsOfServiceAgreedVersion: process.env.NEXT_PUBLIC_TERMS_OF_SERVICE_VERSION,
         webPushes_id: 'nOVilxpSk',
         role: 'user'
       },
@@ -525,7 +525,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         },
         acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         countriesArr: ['JP'],
-        termsOfServiceConfirmedDate: ISO8601,
+        termsOfServiceAgreedVersion: process.env.NEXT_PUBLIC_TERMS_OF_SERVICE_VERSION,
         webPushes_id: '',
         role: 'user'
       },
@@ -550,7 +550,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         },
         acceptLanguage: 'ja,en-US;q=0.9,en;q=0.8',
         countriesArr: ['JP'],
-        termsOfServiceConfirmedDate: ISO8601,
+        termsOfServiceAgreedVersion: process.env.NEXT_PUBLIC_TERMS_OF_SERVICE_VERSION,
         webPushes_id: '',
         role: 'user'
       },
@@ -5783,7 +5783,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         tabletModel: 'Google Nexus 9 Wi-Fiモデル 32GB',
         tabletComment: `2015年に買ったタブレットなので最近はブラウザをチェックするだけでも重い…。`,
         pcModel: '自作PC',
-        pcComment: `BTOで買ったPCが壊れそうになったので、ケースや光学ドライブなを流用しながらパーツを新しくしました。HDからSSDに移行したときはその速さに驚きましたね！容量があまりないので大量にゲームをインストールできないのですが、高速なのでなんとかSSDでやりくりしていきたいです。
+        pcComment: `BTOで買ったPCが壊れそうになったので、ケースや光学ドライブなどを流用しながらパーツを新しくしました。HDDからSSDに移行したときはその速さに驚きましたね！容量があまりないので大量にゲームをインストールできないのですが、高速なのでなんとかSSDでやりくりしていきたいです。
 
     グラボを積んでいないのですが、Ryzen 3 2200Gの機能で昔のゲームや2Dゲームなら普通に動きます。比較的最近のゲームですが、ダーケストダンジョンもいけました。`,
         pcSpecsObj: {

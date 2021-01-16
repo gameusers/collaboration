@@ -446,7 +446,7 @@ const formatFeedsArr = ({
 
     if (clonedObj.title) {
 
-      clonedObj.title = clonedObj.title.replace(/\r?\n/g, '');
+      clonedObj.title = clonedObj.title.replace(/\r?\n/g, ' ');
 
       if (clonedObj.title.length > 40) {
         clonedObj.title = clonedObj.title.substr(0, 39) + '…';
@@ -456,7 +456,7 @@ const formatFeedsArr = ({
 
     if (clonedObj.comment) {
 
-      clonedObj.comment = clonedObj.comment.replace(/\r?\n/g, '');
+      clonedObj.comment = clonedObj.comment.replace(/\r?\n/g, ' ');
 
       if (clonedObj.comment.length > 80) {
         clonedObj.comment = clonedObj.comment.substr(0, 79) + '…';

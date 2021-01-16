@@ -736,19 +736,21 @@ const Component = (props) => {
 
           {/* 管理 */}
           {administrator &&
-            <MenuItem
-              onClick={() => setLoginMenuOpen(false)}
+            <Link
+              href={`/administration`}
             >
 
-              <ListItemIcon>
-                <IconGavel />
-              </ListItemIcon>
+              <a className="link">
+
+                <MenuItem
+                  onClick={() => setLoginMenuOpen(false)}
+                >
+
+                  <ListItemIcon>
+                    <IconGavel />
+                  </ListItemIcon>
 
 
-              <Link
-                href={`/administration`}
-              >
-                <a className="link">
                   <ListItemText
                     css={css`
                       && {
@@ -757,29 +759,33 @@ const Component = (props) => {
                     `}
                     primary="管理"
                   />
-                </a>
-              </Link>
 
-            </MenuItem>
+                </MenuItem>
+
+              </a>
+
+            </Link>
           }
 
 
 
 
           {/* ユーザー */}
-          <MenuItem
-            onClick={() => setLoginMenuOpen(false)}
+          <Link
+            href={`/ur/${userID}`}
           >
+            
+            <a className="link">
 
-            <ListItemIcon>
-              <IconPerson />
-            </ListItemIcon>
+              <MenuItem
+                onClick={() => setLoginMenuOpen(false)}
+              >
 
+                <ListItemIcon>
+                  <IconPerson />
+                </ListItemIcon>
 
-            <Link
-              href={`/ur/${userID}`}
-            >
-              <a className="link">
+                
                 <ListItemText
                   css={css`
                     && {
@@ -788,10 +794,13 @@ const Component = (props) => {
                   `}
                   primary="ユーザー"
                 />
-              </a>
-            </Link>
+                
+              </MenuItem>
 
-          </MenuItem>
+            </a>
+
+          </Link>
+          
 
 
 
@@ -821,19 +830,21 @@ const Component = (props) => {
 
 
           {/* ログアウト */}
-          <MenuItem
-            onClick={() => setLoginMenuOpen(false)}
+          <Link
+            href="/logout"
           >
 
-            <ListItemIcon>
-              <IconEject />
-            </ListItemIcon>
+            <a className="link">
 
+              <MenuItem
+                onClick={() => setLoginMenuOpen(false)}
+              >
 
-            <Link
-              href="/logout"
-            >
-              <a className="link">
+                <ListItemIcon>
+                  <IconEject />
+                </ListItemIcon>
+
+                
                 <ListItemText
                   css={css`
                     && {
@@ -842,10 +853,12 @@ const Component = (props) => {
                   `}
                   primary="ログアウト"
                 />
-              </a>
-            </Link>
 
-          </MenuItem>
+              </MenuItem>
+
+            </a>
+
+          </Link>
 
 
         </Menu>

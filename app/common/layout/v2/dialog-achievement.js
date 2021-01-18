@@ -666,7 +666,14 @@ const Component = (props) => {
     const countValid = lodashGet(find1Obj , ['countValid'], 0);
     const countTotal = lodashGet(find1Obj , ['countTotal'], 0);
 
-    let activeStep = 0;
+    let activeStep = -1;
+
+
+    // console.log(`
+    //   ----- find1Obj -----\n
+    //   ${util.inspect(find1Obj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 
@@ -761,7 +768,7 @@ const Component = (props) => {
       case 'follow-count':
 
         heading = 'フォローする';
-        explanation = 'ゲームコミュニティや他のユーザーをフォローするとカウントされます。';
+        explanation = '他のユーザーをフォローするとカウントされます。';
         unit = '人';
         arrayIndex = 9;
         break;
@@ -889,24 +896,24 @@ const Component = (props) => {
       const name = lodashGet(titlesObj , [titles_id, 'name'], '');
 
 
+      // if (type === 'title-count') {
+      //   console.log(chalk`
+      //     index2: {green ${index2}}
+      //     count: {green ${count}}
+      //     countDay: {green ${countDay}}
+      //     urlID: {green ${urlID}}
+      //     name: {green ${name}}
+      //   `);
+      // }
+
+      
+
       // --------------------------------------------------
       //   達成状況
       // --------------------------------------------------
 
-      // 何も達成していない場合
-      if (countValid === 0) {
-
-        activeStep = -1;
-
-      } else if (countValid >= count) {
-
-        activeStep = index2;
-
-        // 最後まで実績を達成した場合
-        if (conditionsArr.length - 1 === index2) {
-          activeStep = index2 + 1;
-        }
-
+      if (countValid >= count) {
+        activeStep += 1;
       }
 
 
@@ -996,6 +1003,28 @@ const Component = (props) => {
       }
 
 
+    }
+
+
+
+    // if (type === 'account-count-day') {
+
+    //   console.log(chalk`
+    // conditionsArr.length: {green ${conditionsArr.length}}
+    // activeStep: {green ${activeStep}}
+    // `);
+
+    // }
+
+    
+
+    
+    // --------------------------------------------------
+    //   最後まで実績を達成した場合
+    // --------------------------------------------------
+
+    if ((conditionsArr.length - 1) === activeStep) {
+      activeStep += 1;
     }
 
 

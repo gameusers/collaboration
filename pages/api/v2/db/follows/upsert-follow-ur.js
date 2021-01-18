@@ -301,6 +301,7 @@ export default async (req, res) => {
         followedArr = followedArr.filter(value => value !== loginUsers_id);
         returnObj.follow = false;
         
+        
         // ---------------------------------------------
         //   自分 / フォローしているユーザーの配列から相手の users_id を削除する
         // ---------------------------------------------

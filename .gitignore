@@ -34,6 +34,7 @@ desktop.ini
 !/db/server3/data/.gitkeep
 /db/server3/log/*
 !/db/server3/log/.gitkeep
+/dump/
 
 # .env
 .env.development.local
@@ -44,9 +45,3 @@ desktop.ini
 # 一時的に複製したファイル
 __*.js
 /public/img2/
-
-# 旧データインポート用
-/import/json/
-/import/img-old/
-/import/img-new/
-/import/dump/

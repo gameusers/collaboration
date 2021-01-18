@@ -107,12 +107,18 @@ const updateAccessDate = async ({
       
       
       // ---------------------------------------------
-      //   - Property
+      //   - 前回アクセスからの日数の計算
       // ---------------------------------------------
       
-      const datetimeCurrentStartOfDay = moment().startOf('day');
-      const datetimeUpdatedStartOfDay = moment(updatedDate).startOf('day');
-      const days = datetimeCurrentStartOfDay.diff(datetimeUpdatedStartOfDay, 'days');
+      let  days = 1;
+
+      if (updatedDate) {
+
+        const datetimeCurrentStartOfDay = moment().startOf('day');
+        const datetimeUpdatedStartOfDay = moment(updatedDate).startOf('day');
+        days = datetimeCurrentStartOfDay.diff(datetimeUpdatedStartOfDay, 'days');
+
+      }
       
       
       // ---------------------------------------------
@@ -194,10 +200,6 @@ const updateAccessDate = async ({
       //   days: {green ${days}}
       //   minutes: {green ${minutes}}
       //   process.env.ACCESS_DATE_UPDATE_INTERVAL_MINUTES: {green ${process.env.ACCESS_DATE_UPDATE_INTERVAL_MINUTES}}
-      //   datetimeCurrentStartOfDay: {green ${datetimeCurrentStartOfDay}}
-      //   datetimeCurrent: {green ${datetimeCurrent}}
-      //   datetimeUpdatedStartOfDay: {green ${datetimeUpdatedStartOfDay}}
-      //   datetimeAccess: {green ${datetimeAccess}}
       // `);
       
     }
@@ -212,6 +214,11 @@ const updateAccessDate = async ({
     // console.log(`
     //   ----------------------------------------\n
     //   /app/@modules/access-date.js - updateAccessDate
+    // `);
+
+    // console.log(chalk`
+    // loginUsers_id: {green ${loginUsers_id} typeof ${typeof loginUsers_id}}
+    // accessDate: {green ${accessDate} typeof ${typeof accessDate}}
     // `);
     
     // console.log(`

@@ -184,14 +184,14 @@ export default async (req, res) => {
 
       const approval = lodashGet(valueObj, ['approval'], false);
       const targetUsers_id = lodashGet(valueObj, ['users_id'], '');
-
+      
 
       // ---------------------------------------------
       //   experienceCalculate
       // ---------------------------------------------
 
       if (!approval && targetUsers_id) {
-
+        
         await experienceCalculate({
 
           req,

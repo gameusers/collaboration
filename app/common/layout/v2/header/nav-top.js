@@ -159,6 +159,48 @@ const Container = ({ children, showNavTop }) => {
 
 
 /**
+ * <MenuItem> を Next.js の <Link> で囲うとエラーが出るのでこういう書き方をしている
+ * 参考：https://qiita.com/ainehanta/items/44fe664b4b2b0adf213b
+ */
+const LinkMenuItem = React.forwardRef((props, ref) => {
+
+
+  // --------------------------------------------------
+  //   props
+  // --------------------------------------------------
+
+  const {
+
+    href,
+    func,
+    ...other
+
+  } = props;
+
+
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+
+  return (
+    <Link href={href}>
+      <a className="link">
+        <MenuItem
+          onClick={func}
+          ref={ref}
+          {...other}
+        />
+      </a>
+    </Link>
+  );
+
+
+});
+
+
+
+
+/**
  * Export Component
  */
 const Component = (props) => {
@@ -736,72 +778,53 @@ const Component = (props) => {
 
           {/* 管理 */}
           {administrator &&
-            <Link
+            <LinkMenuItem
               href={`/administration`}
+              func={() => setLoginMenuOpen(false)}
             >
 
-              <a className="link">
-
-                <MenuItem
-                  onClick={() => setLoginMenuOpen(false)}
-                >
-
-                  <ListItemIcon>
-                    <IconGavel />
-                  </ListItemIcon>
+              <ListItemIcon>
+                <IconGavel />
+              </ListItemIcon>
 
 
-                  <ListItemText
-                    css={css`
-                      && {
-                        margin: 0 8px 0 0;
-                      }
-                    `}
-                    primary="管理"
-                  />
+              <ListItemText
+                css={css`
+                  && {
+                    margin: 0 8px 0 0;
+                  }
+                `}
+                primary="管理"
+              />
 
-                </MenuItem>
-
-              </a>
-
-            </Link>
+            </LinkMenuItem>
           }
 
 
 
 
           {/* ユーザー */}
-          <Link
+          <LinkMenuItem
             href={`/ur/${userID}`}
+            func={() => setLoginMenuOpen(false)}
           >
+
+            <ListItemIcon>
+              <IconPerson />
+            </ListItemIcon>
+
             
-            <a className="link">
+            <ListItemText
+              css={css`
+                && {
+                  margin: 0 8px 0 0;
+                }
+              `}
+              primary="ユーザー"
+            />
 
-              <MenuItem
-                onClick={() => setLoginMenuOpen(false)}
-              >
-
-                <ListItemIcon>
-                  <IconPerson />
-                </ListItemIcon>
-
-                
-                <ListItemText
-                  css={css`
-                    && {
-                      margin: 0 8px 0 0;
-                    }
-                  `}
-                  primary="ユーザー"
-                />
-                
-              </MenuItem>
-
-            </a>
-
-          </Link>
+          </LinkMenuItem>
           
-
 
 
 
@@ -830,35 +853,26 @@ const Component = (props) => {
 
 
           {/* ログアウト */}
-          <Link
+          <LinkMenuItem
             href="/logout"
+            func={() => setLoginMenuOpen(false)}
           >
 
-            <a className="link">
+            <ListItemIcon>
+              <IconEject />
+            </ListItemIcon>
 
-              <MenuItem
-                onClick={() => setLoginMenuOpen(false)}
-              >
+            
+            <ListItemText
+              css={css`
+                && {
+                  margin: 0 8px 0 0;
+                }
+              `}
+              primary="ログアウト"
+            />
 
-                <ListItemIcon>
-                  <IconEject />
-                </ListItemIcon>
-
-                
-                <ListItemText
-                  css={css`
-                    && {
-                      margin: 0 8px 0 0;
-                    }
-                  `}
-                  primary="ログアウト"
-                />
-
-              </MenuItem>
-
-            </a>
-
-          </Link>
+          </LinkMenuItem>
 
 
         </Menu>

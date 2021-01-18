@@ -413,7 +413,7 @@ const calculateAccountCountDay = async ({
       newHistoryObj = {
 
         _id: shortid.generate(),
-        createdDate: ISO8601,
+        createdDate,
         updatedDate: ISO8601,
         type: 'account-count-day',
         countDay: 0,
@@ -2162,6 +2162,13 @@ const experienceCalculate = async ({
   try {
 
 
+    // console.log(chalk`
+    // loginUsers_id: {green ${loginUsers_id}}
+    // targetUsers_id: {green ${targetUsers_id}}
+    // recalculationAll: {green ${recalculationAll}}
+    // `);
+
+
     // --------------------------------------------------
     //   ログインチェック
     // --------------------------------------------------
@@ -2177,7 +2184,7 @@ const experienceCalculate = async ({
 
     const role = lodashGet(req, ['user', 'role'], 'user');
 
-    if (role === 'administrator') {
+    if (role === 'administrator' && !targetUsers_id) {
       return {};
     }
 
@@ -2256,10 +2263,40 @@ const experienceCalculate = async ({
       //   account-count-day
       // ---------------------------------------------
 
-      if (type === 'account-count-day' || calculation === 'recalculation') {
+      // if (calculation === 'recalculation') {
 
-        const tempObj = await calculateAccountCountDay({
+      //   const tempObj = await calculateAccountCountDay({
 
+      //     users_id,
+      //     ISO8601,
+      //     historiesArr,
+      //     acquiredTitles_idsArr,
+
+      //   });
+
+      //   historiesArr = lodashGet(tempObj, ['historiesArr'], []);
+      //   acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
+
+      // }
+
+
+      // ---------------------------------------------
+      //   login-count & account-count-day
+      //   ログインカウントを増やす際に、同時にアカウント作成からの経過日数を計算する
+      // ---------------------------------------------
+
+      if ((type === 'login-count' && calculation === 'addition') || calculation === 'recalculation') {
+
+
+        // ---------------------------------------------
+        //   login-count
+        // ---------------------------------------------
+
+        let tempObj = await calculateAddition({
+
+          type: 'login-count',
+          calculation,
+          totalEqualValid: true,
           users_id,
           ISO8601,
           historiesArr,
@@ -2270,20 +2307,13 @@ const experienceCalculate = async ({
         historiesArr = lodashGet(tempObj, ['historiesArr'], []);
         acquiredTitles_idsArr = lodashGet(tempObj, ['acquiredTitles_idsArr'], []);
 
-      }
 
+        // ---------------------------------------------
+        //   account-count-day
+        // ---------------------------------------------
 
-      // ---------------------------------------------
-      //   login-count
-      // ---------------------------------------------
+        tempObj = await calculateAccountCountDay({
 
-      if ((type === 'login-count' && calculation === 'addition') || calculation === 'recalculation') {
-
-        const tempObj = await calculateAddition({
-
-          type: 'login-count',
-          calculation,
-          totalEqualValid: true,
           users_id,
           ISO8601,
           historiesArr,

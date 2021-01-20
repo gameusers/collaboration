@@ -307,6 +307,12 @@ export async function getServerSideProps({ req, res, query }) {
   let breadcrumbsArr = [
 
     {
+      type: 'uc/list',
+      anchorText: '',
+      href: '/uc/list',
+    },
+
+    {
       type: 'uc/register',
       anchorText: '',
       href: '',

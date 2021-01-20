@@ -627,7 +627,10 @@ export async function getServerSideProps({ req, res, query }) {
     metaObj.title = `${recruitmentTitle} - ${gameName}`;
     metaObj.description = comment;
     metaObj.url = `${process.env.NEXT_PUBLIC_URL_BASE}gc/${urlID}/rec/${recruitmentID}`;
-    metaObj.image = `${process.env.NEXT_PUBLIC_URL_BASE}${src}`.replace('//img', '/img');
+
+    if (src) {
+      metaObj.image = `${process.env.NEXT_PUBLIC_URL_BASE}${src}`.replace('//img', '/img');
+    }
 
 
   // --------------------------------------------------

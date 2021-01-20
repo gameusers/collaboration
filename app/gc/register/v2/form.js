@@ -394,14 +394,8 @@ const Component = (props) => {
       //   Validations
       // ---------------------------------------------
 
-      if (
-
-        validationGamesName({ value: name }).error
-
-      ) {
-
+      if (validationGamesName({ value: name }).error) {
         throw new CustomError({ errorsArr: [{ code: 'PmDcQerd2', messageID: 'uwHIKBy7c' }] });
-
       }
 
 
@@ -776,6 +770,11 @@ const Component = (props) => {
 
       if (administrator) {
 
+        // 新規登録の場合、games_id を空にする
+        if (formType === 'new') {
+          formDataObj.games_id = '';
+        }
+
         resultObj = await fetchWrapper({
 
           urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/games/upsert`,
@@ -1006,6 +1005,49 @@ const Component = (props) => {
 
 
 
+  
+
+
+  // --------------------------------------------------
+  //   Submit Button Label
+  // --------------------------------------------------
+
+  let submitButtonLabel = '仮登録する';
+
+  if (administrator) {
+
+    submitButtonLabel = '本登録：新規登録';
+
+    if (formType === 'postscript') {
+      submitButtonLabel = '本登録：編集';
+    }
+
+    // if (games_id) {
+    //   submitButtonLabel = '本登録：編集';
+    // }
+    
+  }
+  
+
+  // --------------------------------------------------
+  //   MenuItem
+  // --------------------------------------------------
+
+  // let componentMenuItemPostscript = '';
+
+  // // if (formType === 'postscript') {
+  // if (games_id) {
+
+  //   // const postscriptLabel = administrator ? '編集' : '追記';
+  //   componentMenuItemPostscript = <MenuItem value="postscript">編集: {sourceGamesName}</MenuItem>;
+
+  // }
+
+  // const postscriptLabel = games_id ? '本登録済みデータ編集' : '';
+
+
+
+
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
@@ -1048,32 +1090,24 @@ const Component = (props) => {
 
 
         {/* Heading & Explanation */}
-        {formType === 'postscript'
-          ?
-            <React.Fragment>
+        {/* {games_id &&
+          <p
+            css={css`
+            color: green;
+              margin: 0 0 14px 0;
+            `}
+          >
+            本登録済み [{sourceGamesName}] のデータを利用
+          </p>
+        } */}
 
-              <p
-                css={css`
-                  margin: 0 0 14px 0;
-                `}
-              >
-                登録済みのゲームのデータを利用して、さらに情報を追加できます。追記した場合、同じゲームが一覧に複数表示されることになりますが、これは元々の仕様なので気にしないようにしてください。
-              </p>
-
-            </React.Fragment>
-          :
-            <React.Fragment>
-
-              <p
-                css={css`
-                  margin: 0 0 14px 0;
-                `}
-              >
-                ゲームを新しく登録する場合、こちらのフォームを利用してください。すべての情報を正確に入力する必要はありません。わからない欄は未入力にしておいてください。
-              </p>
-
-            </React.Fragment>
-        }
+        <p
+          css={css`
+            margin: 0 0 14px 0;
+          `}
+        >
+          ゲームを新しく登録する場合、またはすでに登録済みのゲームに不足している情報を追加する場合に、こちらのフォームを利用してください。すべての情報を正確に入力する必要はありません。わからない欄は未入力にしておいてください。
+        </p>
 
         <p
           css={css`
@@ -1083,13 +1117,14 @@ const Component = (props) => {
           こちらのフォームに入力してもらったデータは仮登録という形で保存されます。Game Users運営の確認後に正式にサイトに反映されますので、空欄が多かったり、多少間違っている情報があっても問題はありません。
         </p>
 
-        {/* <p
+        <p
           css={css`
+            color: red;
             margin: 0 0 14px 0;
           `}
         >
-          登録は新規にすべての情報を入力するか、既存の情報をベースにして追記していくかになります。ゲームの一覧をクリック（タップ）すると、登録済みの情報に追記することができるようになります。追記した場合、同じゲームが一覧に複数表示されることになりますが、これは元々の仕様なので気にしないようにしてください。
-        </p> */}
+          ※ 仮登録をすると同じゲームが一覧に複数表示されることもありますが、これは元々の仕様なので気にしないようにしてください。
+        </p>
 
 
 
@@ -1111,7 +1146,7 @@ const Component = (props) => {
               margin: 0 0 12px 0;
             `}
           >
-            「新規登録」は新しくゲームを登録する場合に選んでください。「追記」はすでに本登録されているゲームに対して情報を追記・編集する場合に選びます。
+            「新規登録」は新しくゲームを登録する場合に選んでください。「本登録済みゲーム編集」はすでに本登録されているゲームに対して情報を追加する場合に選びます。
           </p>
 
           <p
@@ -1119,7 +1154,7 @@ const Component = (props) => {
               margin: 0 0 24px 0;
             `}
           >
-            例えばシリーズもののゲームを登録する場合、ゲームの一覧で過去作を選び、フォームに過去作の情報を表示します。そして登録の種類を「新規登録」に変更すると、過去作のデータを利用して新しいゲームを登録することができます。
+            例えばシリーズもののゲームを新規登録する場合、ゲームの一覧で過去作を選び、フォームに過去作の情報を表示します。そして登録の種類を「新規登録」に変更すると、過去作のデータを利用して新しいゲームを登録することができます。
           </p>
 
 
@@ -1139,9 +1174,7 @@ const Component = (props) => {
               onChange={(eventObj) => setFormType(eventObj.target.value)}
             >
               <MenuItem value="new">新規登録</MenuItem>
-              {games_id &&
-                <MenuItem value="postscript">追記: {sourceGamesName}</MenuItem>
-              }
+              <MenuItem value="postscript">{games_id ? '本登録済みゲーム編集' : ''}</MenuItem>
             </Select>
 
           </FormControl>
@@ -1275,7 +1308,7 @@ const Component = (props) => {
             onChange={(eventObj) => setName(eventObj.target.value)}
             error={validationGamesNameObj.error}
             helperText={intl.formatMessage({ id: validationGamesNameObj.messageID }, { numberOfCharacters: validationGamesNameObj.numberOfCharacters })}
-            disabled={!administrator && games_id ? true : false}
+            // disabled={!administrator && games_id ? true : false}
             margin="normal"
             inputProps={{
               maxLength: 100,
@@ -1898,7 +1931,7 @@ const Component = (props) => {
             color="primary"
             disabled={buttonDisabled}
           >
-            {administrator ? '本登録する' : '仮登録する'}
+            {submitButtonLabel}
           </Button>
 
 

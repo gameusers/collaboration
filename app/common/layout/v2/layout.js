@@ -254,11 +254,12 @@ const Component = (props) => {
   const url = lodashGet(metaObj, ['url'], process.env.NEXT_PUBLIC_URL_BASE);
 
   let image = `${process.env.NEXT_PUBLIC_URL_BASE}img/common/social/ogp_image.jpg`;
-  const twitterCard = 'summary_large_image';// summary
 
   if (metaObj.image) {
     image = metaObj.image;
   }
+
+  const twitterCard = 'summary_large_image';// summary
   
 
 
@@ -270,6 +271,12 @@ const Component = (props) => {
   // console.log(`
   //   ----------------------------------------\n
   //   /app/common/layout/v2/layout.js
+  // `);
+
+  // console.log(`
+  //   ----- metaObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(metaObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
   // `);
 
   // console.log(`

@@ -31,6 +31,7 @@ import { css, jsx } from '@emotion/react';
 
 import lodashGet from 'lodash/get';
 import lodashHas from 'lodash/has';
+import lodashMerge from 'lodash/merge';
 
 
 // ---------------------------------------------
@@ -577,10 +578,19 @@ const Component = (props) => {
 
 
       // ---------------------------------------------
-      //   forumRepliesObj
+      //   recruitmentRepliesObj
       // ---------------------------------------------
 
-      setRecruitmentRepliesObj(lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {}));
+      // setRecruitmentRepliesObj(lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {}));
+
+
+      // ---------------------------------------------
+      //   Update - forumRepliesObj
+      // ---------------------------------------------
+
+      const recruitmentRepliesNewObj = lodashGet(resultObj, ['data', 'recruitmentRepliesObj'], {});
+      const recruitmentRepliesMergedObj = lodashMerge(recruitmentRepliesObj, recruitmentRepliesNewObj);
+      setRecruitmentRepliesObj(recruitmentRepliesMergedObj);
 
 
       // ---------------------------------------------

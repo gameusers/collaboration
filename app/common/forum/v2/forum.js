@@ -21,7 +21,6 @@ import { useIntl } from 'react-intl';
 import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
-import Cookies from 'js-cookie';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
@@ -60,6 +59,13 @@ import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 // ---------------------------------------------
 
 import { ContainerStateForum } from 'app/@states/forum.js';
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { setCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
@@ -214,7 +220,7 @@ const Component = (props) => {
       // ---------------------------------------------
 
       if (changeLimit) {
-        Cookies.set('forumThreadLimit', changeLimit);
+        setCookie({ key: 'forumThreadLimit', value: changeLimit });
       }
 
 

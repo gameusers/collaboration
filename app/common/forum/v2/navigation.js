@@ -19,7 +19,6 @@ import Link from 'next/link';
 import { useIntl } from 'react-intl';
 // import TextareaAutosize from 'react-autosize-textarea';
 import moment from 'moment';
-import Cookies from 'js-cookie';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
@@ -92,7 +91,7 @@ import { ContainerStateForum } from 'app/@states/forum.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-// import { getCookie } from 'app/@modules/cookie.js';
+import { getCookie, setCookie } from 'app/@modules/cookie.js';
 
 
 
@@ -286,7 +285,7 @@ const Component = (props) => {
         //   Set Cookie - forumThreadListLimit
         // ---------------------------------------------
 
-        Cookies.set('forumThreadListLimit', changeLimit);
+        setCookie({ key: 'forumThreadListLimit', value: changeLimit });
 
 
         // ---------------------------------------------

@@ -35,6 +35,7 @@ import lodashGet from 'lodash/get';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
+import { setCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
@@ -44,7 +45,6 @@ import { createCsrfToken } from 'app/@modules/csrf.js';
 import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 import FeedSidebar from 'app/common/feed/v2/sidebar.js';
-// import FeedHorizontal from 'app/common/feed/v2/horizontal.js';
 
 import CardPlayer from 'app/common/card/v2/card-player.js';
 
@@ -369,7 +369,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
-  res.cookie('recentAccessPageUrl', `/ur/${userID}`);
+  setCookie({ key: 'recentAccessPageUrl', value: `/ur/${userID}`, expires: 0, res });
 
 
 

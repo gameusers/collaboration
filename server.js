@@ -116,7 +116,7 @@ app.prepare().then(() => {
 
   }
 
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_URL_BASE === 'https://gameusers.org/') {
 
     sessObj = {
     

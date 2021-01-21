@@ -44,7 +44,7 @@ import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
-import { getCookie } from 'app/@modules/cookie.js';
+import { getCookie, setCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
@@ -702,7 +702,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
-  res.cookie('recentAccessPageUrl', recentAccessPageUrl);
+  setCookie({ key: 'recentAccessPageUrl', value: recentAccessPageUrl, expires: 0, res });
 
 
   // console.log(chalk`

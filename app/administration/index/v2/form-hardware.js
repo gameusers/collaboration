@@ -54,15 +54,6 @@ import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-import { validationUsersUserID } from 'app/@database/users/validations/user-id.js';
-import { validationUsersLoginID } from 'app/@database/users/validations/login-id.js';
-import { validationUsersLoginPassword } from 'app/@database/users/validations/login-password.js';
-
-
-// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
@@ -155,23 +146,6 @@ const Component = (props) => {
 
 
       // ---------------------------------------------
-      //   Validation
-      // ---------------------------------------------
-
-      if (
-        
-        validationUsersUserID({ value: userID }).error ||
-        validationUsersLoginID({ required: true, value: loginID }).error ||
-        validationUsersLoginPassword({ required: true, value: loginPassword, loginID }).error
-        
-      ) {
-        throw new CustomError({ errorsArr: [{ code: 'lTrdInwGA', messageID: 'uwHIKBy7c' }] });
-      }
-
-
-
-
-      // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
 
@@ -190,7 +164,7 @@ const Component = (props) => {
 
       const resultObj = await fetchWrapper({
 
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/administration/login`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/administration/hardware`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
 
@@ -215,17 +189,6 @@ const Component = (props) => {
 
 
 
-      // ---------------------------------------------
-      //   Form Reset
-      // ---------------------------------------------
-
-      setUserID('');
-      setLoginID('');
-      setLoginPassword('');
-
-
-
-
       // --------------------------------------------------
       //   Snackbar: Success
       // --------------------------------------------------
@@ -237,7 +200,7 @@ const Component = (props) => {
         arr: [
           {
             variant: 'success',
-            messageID: 'EnStWOly-',
+            messageID: 'dusYj_Gh3',
           },
         ]
 
@@ -324,85 +287,53 @@ const Component = (props) => {
   // --------------------------------------------------
 
   return (
-    <Panel
-      heading="ログインID & パスワード変更"
-      defaultExpanded={true}
+    <div
+      css={css`
+        margin: 14px 0 0 0;
+      `}
     >
 
-
-      <p>
-        ユーザーのログインIDとパスワードを変更します。
-      </p>
-
-
-
-
-      {/* userID */}
-      <TextField
-        css={css`
-          && {
-            width: 300px;
-
-            @media screen and (max-width: 480px) {
-              width: 100%;
-            }
-          }
-        `}
-        id="userID"
-        type="text"
-        margin="normal"
-        label="userID / userIDInitial"
-        value={userID}
-        onChange={(eventObj) => setUserID(eventObj.target.value)}
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
-
-
-      {/* Login ID */}
-      <FormLoginID
-        loginID={loginID}
-        setLoginID={setLoginID}
-      />
-
-
-      {/* Login Password */}
-      <FormLoginPassword
-        loginPassword={loginPassword}
-        setLoginPassword={setLoginPassword}
-        loginID={loginID}
-        strength={true}
-        confirmation={false}
-      />
-
-
-
-
-      {/* Submit Button */}
-      <div
-        css={css`
-          margin: 24px 0 0 0;
-        `}
+      
+      <Panel
+        heading="ハードウェア更新"
+        defaultExpanded={true}
       >
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={buttonDisabled}
-          onClick={() => handleDialogOpen({
-            title: 'Login ID & Password',
-            description: '変更しますか？',
-            handle: handleSubmit,
-            argumentsObj: {},
-          })}
+
+
+        <p>
+          ハードウェアを更新します。
+        </p>
+
+
+
+
+        {/* Submit Button */}
+        <div
+          css={css`
+            margin: 24px 0 0 0;
+          `}
         >
-          変更する
-        </Button>
-      </div>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={buttonDisabled}
+            onClick={() => handleDialogOpen({
+              title: 'Update Hardware',
+              description: '更新しますか？',
+              handle: handleSubmit,
+              argumentsObj: {},
+            })}
+          >
+            更新する
+          </Button>
+        </div>
 
 
-    </Panel>
+      </Panel>
+
+
+    </div>
   );
 
 

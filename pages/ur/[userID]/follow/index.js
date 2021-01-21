@@ -35,7 +35,7 @@ import lodashGet from 'lodash/get';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
-import { getCookie } from 'app/@modules/cookie.js';
+import { getCookie, setCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
@@ -336,7 +336,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Set Cookie - recentAccessPage
   // ---------------------------------------------
 
-  res.cookie('recentAccessPageUrl', `/ur/${userID}/follow`);
+  setCookie({ key: 'recentAccessPageUrl', value: `/ur/${userID}/follow`, expires: 0, res });
 
 
 

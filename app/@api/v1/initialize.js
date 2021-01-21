@@ -4992,6 +4992,42 @@ router.post('/db', upload.none(), async (req, res, next) => {
 
 
       {
+        _id: 'aGcBHYjtR',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'HpmHVmZl_',
+        urlID: 'PlayStation-5',
+        name: 'PlayStation 5',
+        searchKeywordsArr: [
+          'プレイステーション5',
+          'プレーステーション5',
+          'プレステ5',
+          'プレイステーション５',
+          'プレーステーション５',
+          'プレステ５',
+          'プレイステーションファイブ',
+          'プレーステーションファイブ',
+          'プレステファイブ',
+          'ぷれいすてーしょん5',
+          'ぷれーすてーしょん5',
+          'ぷれすて5',
+          'ぷれいすてーしょん５',
+          'ぷれーすてーしょん５',
+          'ぷれすて５',
+          'ぷれいすてーしょんふぁいぶ',
+          'ぷれーすてーしょんふぁいぶ',
+          'ぷれすてふぁいぶ',
+          'Play Station 5',
+          'PlayStation 5',
+          'PlayStation5',
+          'PS5',
+        ]
+      },
+
+
+      {
         _id: 'vk2kF94Ks',
         createdDate: ISO8601,
         updatedDate: ISO8601,
@@ -5010,6 +5046,52 @@ router.post('/db', upload.none(), async (req, res, next) => {
           'Xbox 1',
           'Xbox1',
           'XO'
+        ]
+      },
+
+
+      {
+        _id: 'sK9V0tq0z',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'I7RARV3BG',
+        urlID: 'Xbox-Series-X',
+        name: 'Xbox Series X',
+        searchKeywordsArr: [
+          'エックスボックスシリーズエックス',
+          'エックスボックスエックス',
+          'えっくすぼっくすしりーずえっくす',
+          'えっくすぼっくすえっくす',
+          'Xbox Series X',
+          'XboxSeriesX',
+          'Xbox X',
+          'XboxX',
+          'XX'
+        ]
+      },
+
+
+      {
+        _id: 'KE7vrrnfw',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'Oavrp9S42',
+        urlID: 'Xbox-Series-S',
+        name: 'Xbox Series S',
+        searchKeywordsArr: [
+          'エックスボックスシリーズエス',
+          'エックスボックスエス',
+          'えっくすぼっくすしりーずえす',
+          'えっくすぼっくすえす',
+          'Xbox Series S',
+          'XboxSeriesS',
+          'Xbox S',
+          'XboxS',
+          'XS'
         ]
       },
 

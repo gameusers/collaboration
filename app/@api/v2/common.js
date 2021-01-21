@@ -45,7 +45,7 @@ import { updateAccessDate } from 'app/@modules/access-date.js';
  * ページにアクセスしたときの共通の処理
  * @param {Object} req - リクエスト
  * @param {Object} res - レスポンス
- * @param {Boolean} getHeroImage - ヒーローイメージを取得する場合、true
+ * @param {boolean} getHeroImage - ヒーローイメージを取得する場合、true
  */
 const initialProps = async ({
 

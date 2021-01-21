@@ -47,6 +47,7 @@ import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 
 import FormLogin from 'app/administration/index/v2/form-login.js';
+import FormHardware from 'app/administration/index/v2/form-hardware.js';
 
 
 
@@ -100,6 +101,8 @@ const ContainerLayout = (props) => {
       <FormLogin
         recentAccessPageUrl={props.recentAccessPageUrl}
       />
+
+      <FormHardware />
 
     </React.Fragment>
   ;

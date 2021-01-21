@@ -163,7 +163,7 @@ export default async (req, res) => {
       if (!redirectionUsersObj) {
 
         statusCode = 404;
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: '1G6OYPg8p', messageID: 'Error' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'QGUc_L0d1', messageID: 'Error' }] });
 
       }
       

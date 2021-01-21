@@ -21,7 +21,6 @@ import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 import moment from 'moment';
-import Cookies from 'js-cookie';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
@@ -66,7 +65,7 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-import { getCookie } from 'app/@modules/cookie.js';
+import { getCookie, setCookie } from 'app/@modules/cookie.js';
 import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
@@ -241,7 +240,7 @@ const Component = (props) => {
         //   Set Cookie - followLimit
         // ---------------------------------------------
 
-        Cookies.set('followLimit', changeLimit);
+        setCookie({ key: 'followLimit', value: changeLimit });
 
 
       }

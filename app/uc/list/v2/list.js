@@ -18,11 +18,9 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Router from 'next/router';
 import { useIntl } from 'react-intl';
-// import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
-import Cookies from 'js-cookie';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
@@ -64,6 +62,13 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 // ---------------------------------------------
 
 import { ContainerStateLayout } from 'app/@states/layout.js';
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { setCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
@@ -197,7 +202,7 @@ const Component = (props) => {
       // ---------------------------------------------
 
       if (changeLimit) {
-        Cookies.set('communityListLimit', changeLimit);
+        setCookie({ key: 'communityListLimit', value: changeLimit });
       }
 
 

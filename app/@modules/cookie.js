@@ -6,15 +6,16 @@
 //   Console
 // ---------------------------------------------
 
-import chalk from 'chalk';
-import util from 'util';
+// import chalk from 'chalk';
+// import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
-import Cookies from 'js-cookie';
+const Cookies = require('js-cookie');
+// import Cookies from 'js-cookie';
 
 
 
@@ -27,9 +28,9 @@ import Cookies from 'js-cookie';
 
 /**
  * Cookie からデータを取得する / 2020/12/23
- * @param {String} key - 取得するキー
- * @param {String} reqHeadersCookie - サーバー側で受信したクッキーのデータ
- * @param {Boolean} decode - デコードする場合はtrue
+ * @param {string} key - 取得するキー
+ * @param {string} reqHeadersCookie - サーバー側で受信したクッキーのデータ
+ * @param {boolean} decode - デコードする場合はtrue
  */
 const getCookie = ({ key, reqHeadersCookie = '', decode = false }) => {
 
@@ -129,6 +130,88 @@ const getCookie = ({ key, reqHeadersCookie = '', decode = false }) => {
 
 
 
+/**
+ * Cookie にデータをセットする / 2021/1/21
+ * @param {string} key - キー
+ * @param {string} value - 値
+ * @param {number} expires - 有効期限
+ * @param {string} path - パス
+ */
+const setCookie = ({ key, value, expires, path, httpOnly, res }) => {
+
+
+  // --------------------------------------------------
+  //   データを取得する
+  // --------------------------------------------------
+
+  let attributesObj = {
+
+    path: '/',
+
+  }
+
+  if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_URL_BASE === 'https://gameusers.org/') {
+
+    attributesObj = {
+
+      expires: 365,
+      domain: 'gameusers.org',
+      path: '/',
+      secure: true,
+      sameSite: 'strict',
+  
+    }
+
+  }
+
+  if (expires) {
+
+    attributesObj.expires = expires;
+
+  } else if (expires === 0) {
+
+    delete attributesObj.expires;
+
+  }
+
+  if (path) {
+    attributesObj.path = path;
+  }
+
+  if (httpOnly) {
+    attributesObj.httpOnly = true;
+  }
+
+  // console.log(attributesObj);
+
+  // --------------------------------------------------
+  //   セット
+  // --------------------------------------------------
+
+  // ---------------------------------------------
+  //   - サーバー側
+  // ---------------------------------------------
+
+  if (res) {
+
+    res.cookie(key, value, attributesObj);
+
+  // ---------------------------------------------
+  //   - クライアント側
+  // ---------------------------------------------
+
+  } else {
+
+    Cookies.set(key, value, attributesObj);
+
+  }
+
+
+};
+
+
+
+
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
@@ -136,5 +219,6 @@ const getCookie = ({ key, reqHeadersCookie = '', decode = false }) => {
 module.exports = {
 
   getCookie,
+  setCookie,
 
 };

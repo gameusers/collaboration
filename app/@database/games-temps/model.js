@@ -467,6 +467,7 @@ const findGamesTempsList = async ({
         $project: {
           createdDate: 1,
           approval: 1,
+          users_id: 1,
           name: 1,
           subtitle: 1,
           hardwareArr: 1,
@@ -536,6 +537,7 @@ const findGamesTempsList = async ({
       obj._id = _id;
       obj.createdDate = lodashGet(valueObj, ['createdDate'], '');
       obj.approval = lodashGet(valueObj, ['approval'], '');
+      obj.users_id = lodashGet(valueObj, ['users_id'], '');
       obj.name = lodashGet(valueObj, ['name'], '');
       obj.subtitle = lodashGet(valueObj, ['subtitle'], '');
 

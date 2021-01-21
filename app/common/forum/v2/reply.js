@@ -20,7 +20,6 @@ import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
 import moment from 'moment';
-import Cookies from 'js-cookie';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 
@@ -77,7 +76,7 @@ import { ContainerStateForum } from 'app/@states/forum.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-import { getCookie } from 'app/@modules/cookie.js';
+import { getCookie, setCookie } from 'app/@modules/cookie.js';
 import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
@@ -1130,7 +1129,7 @@ const Component = (props) => {
         //   Set Cookie - forumReplyLimit
         // ---------------------------------------------
 
-        Cookies.set('forumReplyLimit', changeLimit);
+        setCookie({ key: 'forumReplyLimit', value: changeLimit });
 
 
       }

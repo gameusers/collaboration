@@ -1501,7 +1501,7 @@ const Component = (props) => {
               margin: 0 0 12px 0;
             `}
           >
-            ゲームコミュニティのURLを入力してください。次の形式のURLになります。https://gameusers.org/gc/<span css={css`color: red;`}>***</span>　この赤文字部分です。
+            ゲームコミュニティのURLを入力してください。次の形式のURLになります。https://gameusers.org/gc/<span css={css`color: red;`}>***</span>　この赤文字部分だけです。
           </p>
 
           <p

@@ -18,7 +18,6 @@ import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
-import Cookies from 'js-cookie';
 import TextareaAutosize from 'react-autosize-textarea';
 
 /** @jsx jsx */
@@ -64,7 +63,7 @@ import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
-import { getCookie } from 'app/@modules/cookie.js';
+import { getCookie, setCookie } from 'app/@modules/cookie.js';
 import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
@@ -537,7 +536,7 @@ const Component = (props) => {
       //   Set termsOfServiceAgreedVersion
       // ---------------------------------------------
 
-      Cookies.set('termsOfServiceAgreedVersion', process.env.NEXT_PUBLIC_TERMS_OF_SERVICE_VERSION);
+      setCookie({ key: 'termsOfServiceAgreedVersion', value: process.env.NEXT_PUBLIC_TERMS_OF_SERVICE_VERSION });
       setTermsOfServiceAgreedVersion(process.env.NEXT_PUBLIC_TERMS_OF_SERVICE_VERSION);
 
 

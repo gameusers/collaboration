@@ -107,6 +107,7 @@ const Component = (props) => {
   const gamesTemps_id = lodashGet(obj, ['_id'], '');
   const createdDate = lodashGet(obj, ['createdDate'], '');
   const approval = lodashGet(obj, ['approval'], false);
+  const users_id = lodashGet(obj, ['users_id'], '');
   const name = lodashGet(obj, ['name'], '');
   const subtitle = lodashGet(obj, ['subtitle'], '');
   const src = '/img/common/thumbnail/none-game.jpg';
@@ -190,7 +191,7 @@ const Component = (props) => {
             font-weight: bold;
           `}
         >
-          {name}{subtitle}
+          {name}{subtitle}{administrator && `: ${users_id}`}
         </div>
 
 

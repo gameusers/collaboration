@@ -18,6 +18,13 @@ const Tokens = require('csrf');
 const tokens = new Tokens();
 
 
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { setCookie } = require('./cookie');
+
+
 
 
 
@@ -43,8 +50,11 @@ const createCsrfToken = (req, res) => {
     const secret = tokens.secretSync();
     const token = tokens.create(secret);
     
+    // セッションに保存
     req.session._csrf = secret;
-    res.cookie('_csrf', token);
+
+    // クッキーに保存
+    setCookie({ key: '_csrf', value: token, expires: 0, httpOnly: true, res });
     
     
     // console.log(chalk`

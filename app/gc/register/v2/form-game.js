@@ -87,10 +87,12 @@ import { validationGamesURLID } from 'app/@database/games/validations/url.js';
 
 import FormImageAndVideo from 'app/common/image-and-video/v2/form.js';
 
-import FormTwitter from 'app/gc/register/v2/form/twitter.js';
-import FormSearchKeyword from 'app/gc/register/v2/form/search-keyword.js';
-import FormHardware from 'app/gc/register/v2/form/hardware.js';
-import FormLink from 'app/gc/register/v2/form/link.js';
+import FormTwitter from 'app/gc/register/v2/form-game/twitter.js';
+import FormSearchKeyword from 'app/gc/register/v2/form-game/search-keyword.js';
+import FormHardware from 'app/gc/register/v2/form-game/hardware.js';
+import FormLink from 'app/gc/register/v2/form-game/link.js';
+
+
 
 
 
@@ -1002,9 +1004,6 @@ const Component = (props) => {
 
   }
 
-
-
-
   
 
 
@@ -1021,29 +1020,8 @@ const Component = (props) => {
     if (formType === 'postscript') {
       submitButtonLabel = '本登録：編集';
     }
-
-    // if (games_id) {
-    //   submitButtonLabel = '本登録：編集';
-    // }
     
   }
-  
-
-  // --------------------------------------------------
-  //   MenuItem
-  // --------------------------------------------------
-
-  // let componentMenuItemPostscript = '';
-
-  // // if (formType === 'postscript') {
-  // if (games_id) {
-
-  //   // const postscriptLabel = administrator ? '編集' : '追記';
-  //   componentMenuItemPostscript = <MenuItem value="postscript">編集: {sourceGamesName}</MenuItem>;
-
-  // }
-
-  // const postscriptLabel = games_id ? '本登録済みデータ編集' : '';
 
 
 
@@ -1088,18 +1066,6 @@ const Component = (props) => {
         })}
       >
 
-
-        {/* Heading & Explanation */}
-        {/* {games_id &&
-          <p
-            css={css`
-            color: green;
-              margin: 0 0 14px 0;
-            `}
-          >
-            本登録済み [{sourceGamesName}] のデータを利用
-          </p>
-        } */}
 
         <p
           css={css`
@@ -1183,6 +1149,7 @@ const Component = (props) => {
 
 
 
+
         {/* Category */}
         <div css={cssBox}>
 
@@ -1236,7 +1203,6 @@ const Component = (props) => {
 
               </FormControl>
             </div>
-
 
 
             <div

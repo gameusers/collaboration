@@ -295,12 +295,6 @@ const Component = (props) => {
   const handleScroll = useCallback(lodashThrottle(() => {
 
 
-    // console.log(chalk`
-    //     handleScroll
-    //     scrollToEnd: {green ${scrollToEnd}}
-    // `);
-
-
     // ---------------------------------------------
     //   Property
     // ---------------------------------------------
@@ -311,6 +305,13 @@ const Component = (props) => {
     let showNavTopNew = true;
     let lowerNavMainNew = false;
     let lowerSidebarNew = false;
+
+
+    // console.log(chalk`
+    //   handleScroll
+    //   scrollToEnd: {green ${scrollToEnd}}
+    //   scrollY: {green ${scrollY}}
+    // `);
 
 
 
@@ -377,6 +378,10 @@ const Component = (props) => {
 
     if (scrollY === 0) {
 
+      setShowNavTop(true);
+      setLowerNavMain(false);
+      setLowerSidebar(false);
+      
       return;
 
 

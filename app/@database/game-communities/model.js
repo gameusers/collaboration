@@ -362,11 +362,13 @@ const findForGameCommunity = async ({
     // --------------------------------------------------
 
     let matchConditionArr = [{
+
       $match: {
         language,
         country,
         urlID,
       }
+
     }];
 
     if (gameCommunities_id) {
@@ -697,7 +699,6 @@ const findForGameCommunity = async ({
     ]).exec();
 
 
-
     // console.log(`
     //   ----- docGamesArr -----\n
     //   ${util.inspect(docGamesArr, { colors: true, depth: null })}\n
@@ -816,7 +817,7 @@ const findForGameCommunity = async ({
       type: 'gc',
       gameCommunities_id: docGamesObj.gameCommunities_id,
       urlID: docGamesObj.urlID,
-      name: docGamesObj.name,
+      name: `${docGamesObj.name}${docGamesObj.subtitle}`,
       hardwareArr: docGamesObj.hardwareArr,
       genreArr: docGamesObj.genreArr,
       linkArr: docGamesObj.linkArr,

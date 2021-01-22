@@ -76,7 +76,8 @@ import Panel from 'app/common/layout/v2/panel.js';
 
 import Card from 'app/gc/register/v2/card.js';
 import CardTemp from 'app/gc/register/v2/card-temp.js';
-import Form from 'app/gc/register/v2/form.js';
+import FormGame from 'app/gc/register/v2/form-game.js';
+import FormDevelopersPublishers from 'app/gc/register/v2/form-developers-publishers.js';
 
 
 
@@ -342,15 +343,15 @@ const Component = (props) => {
       //   Scroll To
       // ---------------------------------------------
 
-      handleScrollTo({
+      // handleScrollTo({
 
-        to: 'gcRegister',
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
+      //   to: 'gcRegister',
+      //   duration: 0,
+      //   delay: 0,
+      //   smooth: 'easeInOutQuart',
+      //   offset: -50,
 
-      });
+      // });
 
 
 
@@ -367,7 +368,6 @@ const Component = (props) => {
       // console.log(chalk`
       //   page: {green ${page}}
       //   changeLimit: {green ${changeLimit}}
-
       //   url: {green ${url}}
       // `);
 
@@ -1031,10 +1031,10 @@ const Component = (props) => {
   //   Thread
   // --------------------------------------------------
 
-  const page = lodashGet(gcListObj, ['page'], 1);
-  const limit = lodashGet(gcListObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_LIMIT, 10));
-  const count = lodashGet(gcListObj, ['count'], 0);
-  const listArr = lodashGet(gcListObj, [`page${page}Obj`, 'arr'], []);
+  const page = lodashGet(gcTempsListObj, ['page'], 1);
+  const limit = lodashGet(gcTempsListObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_LIMIT, 10));
+  const count = lodashGet(gcTempsListObj, ['count'], 0);
+  const listArr = lodashGet(gcTempsListObj, [`page${page}Obj`, 'arr'], []);
   const tempsListArr = lodashGet(gcTempsListObj, [`page${page}Obj`, 'arr'], []);
 
 
@@ -1046,7 +1046,7 @@ const Component = (props) => {
 
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/forum/v2/components/forum.js
+  //   app/gc/register/v2/register.js
   // `);
 
   // console.log(chalk`
@@ -1058,6 +1058,18 @@ const Component = (props) => {
   //   page: {green ${page}}
   //   count: {green ${count}}
   //   limit: {green ${limit}}
+  // `);
+
+  // console.log(`
+  //   ----- gcListObj -----\n
+  //   ${util.inspect(gcListObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+
+  // console.log(`
+  //   ----- gcTempsListObj -----\n
+  //   ${util.inspect(gcTempsListObj, { colors: true, depth: null })}\n
+  //   --------------------\n
   // `);
 
   // console.log(`
@@ -1287,7 +1299,7 @@ const Component = (props) => {
 
 
 
-      {/* Form */}
+      {/* Form - Game */}
       {login
         ?
           <div
@@ -1301,7 +1313,7 @@ const Component = (props) => {
               defaultExpanded={true}
             >
 
-              <Form
+              <FormGame
                 gameGenresArr={gameGenresArr}
               />
 
@@ -1324,6 +1336,32 @@ const Component = (props) => {
             </p>
           </Paper>
       }
+
+
+
+
+      {/* Form - Developers Publishers */}
+      {administrator &&
+        <div
+          css={css`
+            margin: 28px 0 0 0;
+          `}
+        >
+
+          <Panel
+            heading="開発・販売フォーム"
+            defaultExpanded={true}
+          >
+
+            <FormDevelopersPublishers
+              // gameGenresArr={gameGenresArr}
+            />
+
+          </Panel>
+
+        </div>
+      }
+
 
 
     </Element>

@@ -467,15 +467,9 @@ export default async (req, res) => {
 
       forumObj = await ModelForumThreads.findForForum(argumentsObj);
 
-      // console.log(`
-      //   ----- forumObj -----\n
-      //   ${util.inspect(forumObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
 
       // ---------------------------------------------
-      //   スレッドのデータがない場合はエラー
+      //   2ページ目以降のスレッドのデータがない場合はエラー
       // ---------------------------------------------
 
       if (threadPage > 1) {
@@ -502,22 +496,6 @@ export default async (req, res) => {
     returnObj.forumThreadsObj = forumObj.forumThreadsObj;
     returnObj.forumCommentsObj = forumObj.forumCommentsObj;
     returnObj.forumRepliesObj = forumObj.forumRepliesObj;
-
-
-
-
-    // ---------------------------------------------
-    //   スレッドのデータがない場合はエラー
-    // ---------------------------------------------
-
-    // const threadsDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
-
-    // if (!returnObj.redirectObj && Object.keys(threadsDataObj).length === 0) {
-
-    //   statusCode = 404;
-    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'sF-4dYmdJ', messageID: 'Error' }] });
-
-    // }
 
 
 

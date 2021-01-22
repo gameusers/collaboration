@@ -345,6 +345,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
   const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
+  const gameSubtitle = lodashGet(dataObj, ['headerObj', 'subtitle'], '');
   const gameCommunityObj = lodashGet(dataObj, ['gameCommunityObj'], {});
   const forumThreadsForListObj = lodashGet(dataObj, ['forumThreadsForListObj'], {});
   const forumThreadsObj = lodashGet(dataObj, ['forumThreadsObj'], {});

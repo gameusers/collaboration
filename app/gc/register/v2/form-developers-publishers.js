@@ -15,7 +15,6 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-import Router from 'next/router';
 import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
@@ -38,31 +37,18 @@ import lodashHas from 'lodash/has';
 // ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Popover from '@material-ui/core/Popover';
-import Paper from '@material-ui/core/Paper';
-
-
-// ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
 // ---------------------------------------------
 //   States
 // ---------------------------------------------
 
-import { ContainerStateUser } from 'app/@states/user.js';
 import { ContainerStateLayout } from 'app/@states/layout.js';
-import { ContainerStateGcRegister } from 'app/@states/gc-register.js';
 
 
 // ---------------------------------------------
@@ -78,6 +64,7 @@ import { showSnackbar } from 'app/@modules/snackbar.js';
 //   Validations
 // ---------------------------------------------
 
+import { validation_id } from 'app/@validations/_id.js';
 import { validationKeyword } from 'app/@validations/keyword.js';
 
 
@@ -135,23 +122,15 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
 
-  const stateUser = ContainerStateUser.useContainer();
   const stateLayout = ContainerStateLayout.useContainer();
-
-  const { loginUsersObj } = stateUser;
 
   const {
 
     handleLoadingOpen,
     handleLoadingClose,
-    handleScrollTo,
     handleDialogOpen,
 
   } = stateLayout;
-
-
-  const role = lodashGet(loginUsersObj, ['role'], '');
-  const administrator = role === 'administrator' ? true : false;
 
 
 
@@ -164,15 +143,14 @@ const Component = (props) => {
   const { enqueueSnackbar } = useSnackbar();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
-  const [publishersArr, setPublishersArr] = useState([]);
+  const [developersPublishersArr, setDevelopersPublishersArr] = useState([]);
+  const [editDeveloperPublisherID, setEditDeveloperPublisherID] = useState('');
 
   const [language, setLanguage] = useState('ja');
   const [country, setCountry] = useState('JP');
-  const [developerPublisherID, setDeveloperPublisherID] = useState('');
-  const [urlID, setUrlID] = useState('');
+  const [developerPublisherID, setDeveloperPublisherID] = useState(shortid.generate());
+  const [urlID, setUrlID] = useState(shortid.generate());
   const [name, setName] = useState('');
-
-  // const limitDevPub = parseInt(process.env.NEXT_PUBLIC_GAMES_DEVELOPERS_PUBLISHERS_LIMIT, 10);
   
 
   useEffect(() => {
@@ -193,6 +171,152 @@ const Component = (props) => {
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
+
+  /**
+   * 編集用データを読み込む
+   */
+  const handleGetEditData = async () => {
+
+
+    try {
+
+
+      // console.log(chalk`
+      // language: {green ${language}}
+      // country: {green ${country}}
+      // developerPublisherID: {green ${developerPublisherID}}
+      // `);
+
+      // console.log(`
+      //   ----- developersPublishersArr -----\n
+      //   ${util.inspect(developersPublishersArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // ---------------------------------------------
+      //   必要な情報が存在しない場合エラー
+      // ---------------------------------------------
+
+      const tempEditDeveloperPublisherID = lodashGet(developersPublishersArr, [0, 'developerPublisherID'], '');
+
+      if (!language || !country || !tempEditDeveloperPublisherID) {
+        throw new CustomError({ errorsArr: [{ code: 'QLIbXWjFI', messageID: '1YJnibkmh' }] });
+      }
+
+
+
+
+      // ---------------------------------------------
+      //   Loading Open
+      // ---------------------------------------------
+
+      handleLoadingOpen({});
+
+
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+
+      setButtonDisabled(true);
+
+
+
+
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+
+      const formDataObj = {
+
+        language,
+        country,
+        developerPublisherID: tempEditDeveloperPublisherID,
+
+      };
+
+
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+
+      const resultObj = await fetchWrapper({
+
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/developers-publishers/get-edit-data`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
+
+      });
+
+
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+
+
+
+
+      // ---------------------------------------------
+      //   Set Form Data
+      // ---------------------------------------------
+
+      setEditDeveloperPublisherID(tempEditDeveloperPublisherID);
+      setDeveloperPublisherID(lodashGet(resultObj, ['data', 'developerPublisherID'], ''));
+      setUrlID(lodashGet(resultObj, ['data', 'urlID'], ''));
+      setName(lodashGet(resultObj, ['data', 'name'], ''));
+
+
+    } catch (errorObj) {
+
+
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+
+      showSnackbar({
+
+        enqueueSnackbar,
+        intl,
+        errorObj,
+
+      });
+
+
+    } finally {
+
+
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+
+      setButtonDisabled(false);
+
+
+      // ---------------------------------------------
+      //   Loading Close
+      // ---------------------------------------------
+
+      handleLoadingClose();
+
+
+    }
+
+
+  };
+
+
+
 
   /**
    * ゲームを登録する
@@ -221,8 +345,8 @@ const Component = (props) => {
       //   Validations
       // ---------------------------------------------
 
-      if (validationGamesName({ value: name }).error) {
-        throw new CustomError({ errorsArr: [{ code: 'PmDcQerd2', messageID: 'uwHIKBy7c' }] });
+      if (!language || !country || !developerPublisherID || !urlID || !name) {
+        throw new CustomError({ errorsArr: [{ code: 'ubk9i-Ak2', messageID: 'uwHIKBy7c' }] });
       }
 
 
@@ -250,377 +374,27 @@ const Component = (props) => {
 
       const formDataObj = {
 
-        games_id,
+        editDeveloperPublisherID,
         language,
         country,
-        name,
-        subtitle,
-        sortKeyword,
+        developerPublisherID,
         urlID,
-        twitterHashtagsArr,
-        searchKeywordsArr,
-        genreArr: [],
-        hardwareArr: [],
-        linkArr,
+        name,
 
       };
-
-      if (genre1) {
-        formDataObj.genreArr.push(genre1);
-      }
-
-      if (genre2) {
-        formDataObj.genreArr.push(genre2);
-      }
-
-      if (genre3) {
-        formDataObj.genreArr.push(genre3);
-      }
-
-
-      let hardwareObj = {};
-
-      if (hardwares1Arr.length > 0) {
-
-        const publisherIDsArr = [];
-
-        for (let valueObj of publishers1Arr.values()) {
-          publisherIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        const developerIDsArr = [];
-
-        for (let valueObj of developers1Arr.values()) {
-          developerIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        hardwareObj = {
-
-          _id: '',
-          hardwareID: lodashGet(hardwares1Arr, [0, 'hardwareID'], ''),
-          releaseDate: releaseDate1,
-          playersMin: playersMin1,
-          playersMax: playersMax1,
-          publisherIDsArr,
-          developerIDsArr,
-
-        }
-
-        formDataObj.hardwareArr.push(hardwareObj);
-
-      }
-
-      if (hardwares2Arr.length > 0) {
-
-        const publisherIDsArr = [];
-
-        for (let valueObj of publishers2Arr.values()) {
-          publisherIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        const developerIDsArr = [];
-
-        for (let valueObj of developers2Arr.values()) {
-          developerIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        hardwareObj = {
-
-          _id: '',
-          hardwareID: lodashGet(hardwares2Arr, [0, 'hardwareID'], ''),
-          releaseDate: releaseDate2,
-          playersMin: playersMin2,
-          playersMax: playersMax2,
-          publisherIDsArr,
-          developerIDsArr,
-
-        }
-
-        formDataObj.hardwareArr.push(hardwareObj);
-
-      }
-
-      if (hardwares3Arr.length > 0) {
-
-        const publisherIDsArr = [];
-
-        for (let valueObj of publishers3Arr.values()) {
-          publisherIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        const developerIDsArr = [];
-
-        for (let valueObj of developers3Arr.values()) {
-          developerIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        hardwareObj = {
-
-          _id: '',
-          hardwareID: lodashGet(hardwares3Arr, [0, 'hardwareID'], ''),
-          releaseDate: releaseDate3,
-          playersMin: playersMin3,
-          playersMax: playersMax3,
-          publisherIDsArr,
-          developerIDsArr,
-
-        }
-
-        formDataObj.hardwareArr.push(hardwareObj);
-
-      }
-
-      if (hardwares4Arr.length > 0) {
-
-        const publisherIDsArr = [];
-
-        for (let valueObj of publishers4Arr.values()) {
-          publisherIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        const developerIDsArr = [];
-
-        for (let valueObj of developers4Arr.values()) {
-          developerIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        hardwareObj = {
-
-          _id: '',
-          hardwareID: lodashGet(hardwares4Arr, [0, 'hardwareID'], ''),
-          releaseDate: releaseDate4,
-          playersMin: playersMin4,
-          playersMax: playersMax4,
-          publisherIDsArr,
-          developerIDsArr,
-
-        }
-
-        formDataObj.hardwareArr.push(hardwareObj);
-
-      }
-
-      if (hardwares5Arr.length > 0) {
-
-        const publisherIDsArr = [];
-
-        for (let valueObj of publishers5Arr.values()) {
-          publisherIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        const developerIDsArr = [];
-
-        for (let valueObj of developers5Arr.values()) {
-          developerIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        hardwareObj = {
-
-          _id: '',
-          hardwareID: lodashGet(hardwares5Arr, [0, 'hardwareID'], ''),
-          releaseDate: releaseDate5,
-          playersMin: playersMin5,
-          playersMax: playersMax5,
-          publisherIDsArr,
-          developerIDsArr,
-
-        }
-
-        formDataObj.hardwareArr.push(hardwareObj);
-
-      }
-
-      if (hardwares6Arr.length > 0) {
-
-        const publisherIDsArr = [];
-
-        for (let valueObj of publishers6Arr.values()) {
-          publisherIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        const developerIDsArr = [];
-
-        for (let valueObj of developers6Arr.values()) {
-          developerIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        hardwareObj = {
-
-          _id: '',
-          hardwareID: lodashGet(hardwares6Arr, [0, 'hardwareID'], ''),
-          releaseDate: releaseDate6,
-          playersMin: playersMin6,
-          playersMax: playersMax6,
-          publisherIDsArr,
-          developerIDsArr,
-
-        }
-
-        formDataObj.hardwareArr.push(hardwareObj);
-
-      }
-
-      if (hardwares7Arr.length > 0) {
-
-        const publisherIDsArr = [];
-
-        for (let valueObj of publishers7Arr.values()) {
-          publisherIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        const developerIDsArr = [];
-
-        for (let valueObj of developers7Arr.values()) {
-          developerIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        hardwareObj = {
-
-          _id: '',
-          hardwareID: lodashGet(hardwares7Arr, [0, 'hardwareID'], ''),
-          releaseDate: releaseDate7,
-          playersMin: playersMin7,
-          playersMax: playersMax7,
-          publisherIDsArr,
-          developerIDsArr,
-
-        }
-
-        formDataObj.hardwareArr.push(hardwareObj);
-
-      }
-
-      if (hardwares8Arr.length > 0) {
-
-        const publisherIDsArr = [];
-
-        for (let valueObj of publishers8Arr.values()) {
-          publisherIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        const developerIDsArr = [];
-
-        for (let valueObj of developers8Arr.values()) {
-          developerIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        hardwareObj = {
-
-          _id: '',
-          hardwareID: lodashGet(hardwares8Arr, [0, 'hardwareID'], ''),
-          releaseDate: releaseDate8,
-          playersMin: playersMin8,
-          playersMax: playersMax8,
-          publisherIDsArr,
-          developerIDsArr,
-
-        }
-
-        formDataObj.hardwareArr.push(hardwareObj);
-
-      }
-
-      if (hardwares9Arr.length > 0) {
-
-        const publisherIDsArr = [];
-
-        for (let valueObj of publishers9Arr.values()) {
-          publisherIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        const developerIDsArr = [];
-
-        for (let valueObj of developers9Arr.values()) {
-          developerIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        hardwareObj = {
-
-          _id: '',
-          hardwareID: lodashGet(hardwares9Arr, [0, 'hardwareID'], ''),
-          releaseDate: releaseDate9,
-          playersMin: playersMin9,
-          playersMax: playersMax9,
-          publisherIDsArr,
-          developerIDsArr,
-
-        }
-
-        formDataObj.hardwareArr.push(hardwareObj);
-
-      }
-
-      if (hardwares10Arr.length > 0) {
-
-        const publisherIDsArr = [];
-
-        for (let valueObj of publishers10Arr.values()) {
-          publisherIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        const developerIDsArr = [];
-
-        for (let valueObj of developers10Arr.values()) {
-          developerIDsArr.push(valueObj.developerPublisherID);
-        }
-
-        hardwareObj = {
-
-          _id: '',
-          hardwareID: lodashGet(hardwares10Arr, [0, 'hardwareID'], ''),
-          releaseDate: releaseDate10,
-          playersMin: playersMin10,
-          playersMax: playersMax10,
-          publisherIDsArr,
-          developerIDsArr,
-
-        }
-
-        formDataObj.hardwareArr.push(hardwareObj);
-
-      }
-
-      if (administrator && imagesAndVideosObj.arr.length !== 0) {
-        formDataObj.imagesAndVideosObj = imagesAndVideosObj;
-      }
-
-      if (administrator && imagesAndVideosThumbnailObj.arr.length !== 0) {
-        formDataObj.imagesAndVideosThumbnailObj = imagesAndVideosThumbnailObj;
-      }
 
 
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
 
-      let resultObj = {};
+      const resultObj = await fetchWrapper({
 
-      if (administrator) {
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/developers-publishers/upsert`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
 
-        // 新規登録の場合、games_id を空にする
-        if (formType === 'new') {
-          formDataObj.games_id = '';
-        }
-
-        resultObj = await fetchWrapper({
-
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/games/upsert`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-
-        });
-
-      } else {
-
-        resultObj = await fetchWrapper({
-
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/games-temps/upsert`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-
-        });
-
-      }
+      });
 
 
       // ---------------------------------------------
@@ -640,29 +414,12 @@ const Component = (props) => {
 
       handleResetForm();
 
-
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-
-      setButtonDisabled(false);
+      
 
 
       // --------------------------------------------------
       //   Snackbar: Success
       // --------------------------------------------------
-
-      let messageID = 'Kail6oUOo';
-
-      if (administrator) {
-
-        messageID = 'eeZLfSrPw';
-
-        if (games_id) {
-          messageID = 'EnStWOly-';
-        }
-
-      }
 
       showSnackbar({
 
@@ -671,18 +428,11 @@ const Component = (props) => {
         arr: [
           {
             variant: 'success',
-            messageID,
+            messageID: 'As9-T8q9N',
           },
         ]
 
       });
-
-
-      // ---------------------------------------------
-      //   Router.push = History API pushState()
-      // ---------------------------------------------
-
-      Router.push('/gc/register');
 
 
 
@@ -718,13 +468,6 @@ const Component = (props) => {
 
 
       // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-
-      setButtonDisabled(false);
-
-
-      // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
 
@@ -741,18 +484,10 @@ const Component = (props) => {
 
 
       // ---------------------------------------------
-      //   Scroll
+      //   Button Enable
       // ---------------------------------------------
 
-      handleScrollTo({
-
-        to: 'gcRegisterForm',
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
-
-      });
+      setButtonDisabled(false);
 
 
       // ---------------------------------------------
@@ -770,39 +505,49 @@ const Component = (props) => {
 
 
 
+  /**
+   * フォームをリセットする
+   */
+  const handleResetForm = () => {
+
+    setDevelopersPublishersArr([]);
+    setEditDeveloperPublisherID('');
+    setLanguage('ja');
+    setCountry('JP');
+    setDeveloperPublisherID(shortid.generate());
+    setUrlID(shortid.generate());
+    setName('');
+
+  };
+
+
+
+
   // --------------------------------------------------
   //   Validations
   // --------------------------------------------------
 
-  const validationDeveloperPublisherIDObj = validationKeyword({ value: developerPublisherID });
+  const validationDeveloperPublisherIDObj = validation_id({ value: developerPublisherID });
   const validationUrlIDObj = validationKeyword({ value: urlID });
   const validationNameObj = validationKeyword({ value: name });
-  
 
-  // --------------------------------------------------
-  //   Element Name
-  // --------------------------------------------------
 
-  const elementName = 'gcRegisterDevelopersPublishersForm';
-
-  
 
 
   // --------------------------------------------------
   //   Submit Button Label
   // --------------------------------------------------
 
-  let submitButtonLabel = '仮登録する';
+  const submitButtonLabel = editDeveloperPublisherID ? '編集する' : '新規登録する';
 
-  // if (administrator) {
 
-  //   submitButtonLabel = '本登録：新規登録';
 
-  //   if (formType === 'postscript') {
-  //     submitButtonLabel = '本登録：編集';
-  //   }
-    
-  // }
+
+  // --------------------------------------------------
+  //   Element Name
+  // --------------------------------------------------
+
+  const elementName = 'gcRegisterDevelopersPublishersForm';
 
 
 
@@ -813,7 +558,7 @@ const Component = (props) => {
 
   // console.log(`
   //   ----------------------------------------\n
-  //   app/gc/register/v2/form.js
+  //   app/gc/register/v2/form-developers-publishers.js
   // `);
 
   // console.log(chalk`
@@ -859,14 +604,37 @@ const Component = (props) => {
 
 
 
-        {/* 開発 */}
+        {/* 開発・販売検索 */}
         <div css={cssBox}>
+
+
+          {/* Form */}
           <FormDeveloperPublisher
             type="developer"
-            arr={publishersArr}
-            setArr={setPublishersArr}
+            arr={developersPublishersArr}
+            setArr={setDevelopersPublishersArr}
             limit={1}
           />
+
+
+          {/* Submit */}
+          <div
+            css={css`
+              margin: 14px 0 0 0;
+            `}
+          >
+            <Button
+              type="button"
+              variant="contained"
+              color="primary"
+              disabled={buttonDisabled}
+              onClick={handleGetEditData}
+            >
+              編集データを取得する
+            </Button>
+          </div>
+
+
         </div>
 
 

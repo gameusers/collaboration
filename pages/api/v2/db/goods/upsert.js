@@ -220,8 +220,6 @@ export default async (req, res) => {
     // `);
     
     
-    
-    
     // --------------------------------------------------
     //   評価対象のデータがデータベースに見つからなかった場合、エラー
     // --------------------------------------------------
@@ -240,7 +238,7 @@ export default async (req, res) => {
     const targetUsers_id = lodashGet(docObj, ['users_id'], '');
     const targetIP = lodashGet(docObj, ['ip'], '');
     
-    if (targetUsers_id === loginUsers_id || targetIP === ip) {
+    if ((targetUsers_id && loginUsers_id && targetUsers_id === loginUsers_id) || targetIP === ip) {
       
       statusCode = 403;
       throw new CustomError({ level: 'info', errorsArr: [{ code: 'MX3nsHgs6', messageID: 'x-g8kaDr7' }] });
@@ -248,32 +246,83 @@ export default async (req, res) => {
     }
     
     
+    // console.log(chalk`
+    // type: {green ${type}}
+    // target_id: {green ${target_id}}
     
+    // targetIP: {green ${targetIP}}
+    // ip: {green ${ip}}
+    // targetUsers_id: {green ${targetUsers_id}}
+    // loginUsers_id: {green ${loginUsers_id}}: {green ${loginUsers_id}}
+    // `);
     
     // --------------------------------------------------
     //   すでに Good ボタンを押しているかチェックする
     // --------------------------------------------------
     
-    // let docGoodsObj = {};
-    
-    const docGoodsObj = await ModelGoods.findOne({
+    let docGoodsObj = null;
+
+    if (loginUsers_id) {
+
+      docGoodsObj = await ModelGoods.findOne({
+        
+        conditionObj: {
+          $and: [
+            { target_id },
+            {
+              $or: [
+                { users_id: loginUsers_id },
+                { ip }
+              ]
+            }
+          ]
+        }
+        
+      });
+
+      // docGoodsObj = await ModelGoods.findOne({
       
-      conditionObj: {
-        $and: [
-          { target_id },
-          {
-            $or: [
-              { users_id: loginUsers_id },
-              { ip }
-            ]
-          }
-        ]
-      }
+      //   conditionObj: {
+      //     $and: [
+      //       { target_id },
+      //       { users_id: loginUsers_id }
+      //     ]
+      //   }
+        
+      // });
+
+    } else {
+
+      docGoodsObj = await ModelGoods.findOne({
       
-    });
+        conditionObj: {
+          $and: [
+            { target_id },
+            { ip }
+          ]
+        }
+        
+      });
+
+    }
+
+    // const docGoodsObj = await ModelGoods.findOne({
+      
+    //   conditionObj: {
+    //     $and: [
+    //       { target_id },
+    //       {
+    //         $or: [
+    //           { users_id: loginUsers_id },
+    //           { ip }
+    //         ]
+    //       }
+    //     ]
+    //   }
+      
+    // });
     
     const goods_id = lodashGet(docGoodsObj, ['_id'], '');
-    // const users_id = lodashGet(docGoodsObj, ['users_id'], '');
     
     
     
@@ -299,8 +348,6 @@ export default async (req, res) => {
     let recruitmentCommentsSaveObj = {};
     let recruitmentRepliesConditionObj = {};
     let recruitmentRepliesSaveObj = {};
-    // let usersConditionObj = {};
-    // let usersSaveObj = {};
     
     returnObj.result = true;
     
@@ -370,23 +417,6 @@ export default async (req, res) => {
         };
         
       }
-      
-      
-      // ---------------------------------------------
-      //   - users
-      // ---------------------------------------------
-      
-      // if (targetUsers_id) {
-        
-      //   usersConditionObj = {
-      //     _id: targetUsers_id,
-      //   };
-        
-      //   usersSaveObj = {
-      //     $inc: { exp: - parseInt((users_id ? process.env.NEXT_PUBLIC_EXP_GOOD_BUTTON_LOGIN_USER : process.env.NEXT_PUBLIC_EXP_GOOD_BUTTON), 10) }
-      //   };
-        
-      // }
       
       
       // ---------------------------------------------
@@ -475,25 +505,10 @@ export default async (req, res) => {
       }
       
       
-      // ---------------------------------------------
-      //   - users
-      // ---------------------------------------------
-      
-      // if (targetUsers_id) {
-        
-      //   usersConditionObj = {
-      //     _id: targetUsers_id,
-      //   };
-        
-      //   usersSaveObj = {
-      //     $inc: { exp: + parseInt((loginUsers_id ? process.env.NEXT_PUBLIC_EXP_GOOD_BUTTON_LOGIN_USER : process.env.NEXT_PUBLIC_EXP_GOOD_BUTTON), 10) }
-      //   };
-        
-      // }
-      
-      
     }
+
     
+
     
     // --------------------------------------------------
     //   transaction
@@ -509,8 +524,6 @@ export default async (req, res) => {
       recruitmentCommentsSaveObj,
       recruitmentRepliesConditionObj,
       recruitmentRepliesSaveObj,
-      // usersConditionObj,
-      // usersSaveObj,
       
     });
     
@@ -567,10 +580,6 @@ export default async (req, res) => {
     }
     
     
-    // console.log(chalk`
-    //   targetUsers_id: {green ${targetUsers_id}}
-    // `);
-    
     
     
     // --------------------------------------------------
@@ -591,6 +600,30 @@ export default async (req, res) => {
     // console.log(`
     //   ----- docGoodsObj -----\n
     //   ${util.inspect(docGoodsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- goodsConditionObj -----\n
+    //   ${util.inspect(goodsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- goodsSaveObj -----\n
+    //   ${util.inspect(goodsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- forumCommentsConditionObj -----\n
+    //   ${util.inspect(forumCommentsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- forumCommentsSaveObj -----\n
+    //   ${util.inspect(forumCommentsSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

@@ -22,7 +22,7 @@ import lodashSet from 'lodash/set';
 //   Model
 // ---------------------------------------------
 
-import ModelCardPlayers from 'app/@database/card-players/model.js';
+import ModelDevelopersPublishers from 'app/@database/developers-publishers/model.js';
 
 
 // ---------------------------------------------
@@ -31,16 +31,6 @@ import ModelCardPlayers from 'app/@database/card-players/model.js';
 
 import { verifyCsrfToken } from 'app/@modules/csrf.js';
 import { returnErrorsArr } from 'app/@modules/log/log.js';
-import { CustomError } from 'app/@modules/error/custom.js';
-
-
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-import { validationIP } from 'app/@validations/ip.js';
-
-import { validationCardPlayers_idServer } from 'app/@database/card-players/validations/_id-server.js';
 
 
 // ---------------------------------------------
@@ -55,7 +45,7 @@ import { locale } from 'app/@locales/locale.js';
 
 
 // --------------------------------------------------
-//   endpointID: 6bx3tNubv
+//   endpointID: 8_ggnm_lH
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -107,76 +97,74 @@ export default async (req, res) => {
     
     const {
       
-      cardPlayers_id
+      language,
+      country,
+      developerPublisherID,
       
     } = bodyObj;
     
-    lodashSet(requestParametersObj, ['cardPlayers_id'], cardPlayers_id);
+    
+    lodashSet(requestParametersObj, ['developerPublisherID'], developerPublisherID);
     
     
-
-
+    
+    
     // ---------------------------------------------
     //   Verify CSRF
     // ---------------------------------------------
     
     verifyCsrfToken(req, res);
-    
-    
+
+
 
 
     // --------------------------------------------------
-    //   Login Check
+    //   Role
     // --------------------------------------------------
-    
-    if (!req.isAuthenticated()) {
-      
+
+    const role = lodashGet(req, ['user', 'role'], 'user');
+    const administrator = role === 'administrator' ? true : false;
+
+
+    // --------------------------------------------------
+    //   Administrator Check
+    // --------------------------------------------------
+
+    if (!administrator) {
+
       statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'lqld6ikrT', messageID: 'xLLNIpo6a' }] });
-      
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'c1P9TS245', messageID: 'DSRlEoL29' }] });
+
     }
     
     
-
-
-    // --------------------------------------------------
-    //   Validations
-    // --------------------------------------------------
-    
-    await validationIP({ throwError: true, required: true, value: ip });
-    await validationCardPlayers_idServer({ throwError: true, value: cardPlayers_id, loginUsers_id });
     
     
-
-
     // --------------------------------------------------
-    //   DB find / Card Players
-    //   プレイヤーカード情報
+    //   DB find / developers-publishers
     // --------------------------------------------------
     
-    const returnObj = await ModelCardPlayers.findOneForEdit({
-      
-      localeObj,
-      loginUsers_id,
-      cardPlayers_id,
+    const returnObj = await ModelDevelopersPublishers.findOne({
+
+      conditionObj: {
+
+        language,
+        country,
+        developerPublisherID,
+
+      }
       
     });
     
     
-
+    
     
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/db/card-players/read-edit-form.js
-    // `);
-    
     // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   cardPlayers_id: {green ${cardPlayers_id}}
+    //   forumThreads_id: {green ${forumThreads_id}}
     // `);
     
     // console.log(`
@@ -184,6 +172,8 @@ export default async (req, res) => {
     //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    
     
     
     // ---------------------------------------------
@@ -203,7 +193,7 @@ export default async (req, res) => {
     const resultErrorObj = returnErrorsArr({
       
       errorObj,
-      endpointID: '6bx3tNubv',
+      endpointID: '8_ggnm_lH',
       users_id: loginUsers_id,
       ip,
       userAgent,

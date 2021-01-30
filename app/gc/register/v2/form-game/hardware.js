@@ -208,8 +208,8 @@ const ComponentForm = (props) => {
       {/* 開発 */}
       <FormDeveloperPublisher
         type="developer"
-        arr={publishersArr}
-        setArr={setPublishersArr}
+        arr={developersArr}
+        setArr={setDevelopersArr}
         limit={limitDevPub}
       />
 
@@ -217,8 +217,8 @@ const ComponentForm = (props) => {
       {/* パブリッシャー */}
       <FormDeveloperPublisher
         type="publisher"
-        arr={developersArr}
-        setArr={setDevelopersArr}
+        arr={publishersArr}
+        setArr={setPublishersArr}
         limit={limitDevPub}
       />
 

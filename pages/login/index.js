@@ -193,6 +193,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Get Cookie Data
   // --------------------------------------------------
 
+  const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
   const recentAccessPageUrl = getCookie({ key: 'recentAccessPageUrl', reqHeadersCookie, decode: true });
 
 
@@ -337,6 +338,7 @@ export async function getServerSideProps({ req, res, query }) {
 
       reqAcceptLanguage,
       ISO8601,
+      termsOfServiceAgreedVersion,
       statusCode,
       login,
       loginUsersObj,

@@ -258,6 +258,9 @@ const Component = (props) => {
               <MenuItem value={'Facebook'}>Facebook</MenuItem>
               <MenuItem value={'YouTube'}>YouTube</MenuItem>
               <MenuItem value={'Steam'}>Steam</MenuItem>
+              <MenuItem value={'MicrosoftStore'}>Microsoft Store</MenuItem>
+              <MenuItem value={'AppStore'}>App Store</MenuItem>
+              <MenuItem value={'GooglePlay'}>Google Play</MenuItem>
               <MenuItem value={'Other'}>その他</MenuItem>
             </Select>
 

@@ -258,7 +258,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   Get Cookie Data
   // --------------------------------------------------
 
-  const page = 1;
+  const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
   const limit = getCookie({ key: 'followLimit', reqHeadersCookie });
 
 
@@ -270,7 +270,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   const resultObj = await fetchWrapper({
 
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/uc/${userCommunityID}/member?page=${page}&limit=${limit}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/uc/${userCommunityID}/member?page=${1}&limit=${limit}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -450,6 +450,7 @@ export async function getServerSideProps({ req, res, query }) {
 
       reqAcceptLanguage,
       ISO8601,
+      termsOfServiceAgreedVersion,
       statusCode,
       login,
       loginUsersObj,

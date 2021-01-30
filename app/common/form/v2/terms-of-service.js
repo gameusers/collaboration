@@ -114,6 +114,7 @@ const Component = (props) => {
   // agreeTermsOfService: {green ${agreeTermsOfService} typeof ${typeof agreeTermsOfService}}
   // checkAgreedVersion: {green ${checkAgreedVersion} typeof ${typeof checkAgreedVersion}}
   // termsOfServiceAgreedVersion: {green ${termsOfServiceAgreedVersion} typeof ${typeof termsOfServiceAgreedVersion}}
+  // validationTermsOfService: {green ${validationTermsOfService({ agree: agreeTermsOfService, agreedVersion: termsOfServiceAgreedVersion }).error}}
   // `);
 
 

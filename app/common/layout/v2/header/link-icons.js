@@ -25,6 +25,19 @@ import { css, jsx } from '@emotion/react';
 import Button from '@material-ui/core/Button';
 
 
+// ---------------------------------------------
+//   Simple Icons
+// ---------------------------------------------
+
+import {
+  
+  Apple as SimpleIconApple,
+  Microsoft as SimpleIconMicrosoft,
+  Googleplay as SimpleIconGooglePlay
+
+} from '@icons-pack/react-simple-icons';
+
+
 
 
 
@@ -141,7 +154,7 @@ const Component = (props) => {
           key={index}
         >
           <a href={valueObj.url} target="_blank">
-            <img src="/img/common/social/twitter@2x.png" width="20" height="20" />
+            <img src="/img/common/social/twitter@2x.png" title="Twitter" width="20" height="20" />
           </a>
         </div>
       );
@@ -154,7 +167,7 @@ const Component = (props) => {
           key={index}
         >
           <a href={valueObj.url} target="_blank">
-            <img src="/img/common/social/facebook@2x.png" width="20" height="20" />
+            <img src="/img/common/social/facebook@2x.png" title="Facebook" width="20" height="20" />
           </a>
         </div>
       );
@@ -167,7 +180,7 @@ const Component = (props) => {
           key={index}
         >
           <a href={valueObj.url} target="_blank">
-            <img src="/img/common/social/youtube@2x.png" width="20" height="20" />
+            <img src="/img/common/social/youtube@2x.png" title="YouTube" width="20" height="20" />
           </a>
         </div>
       );
@@ -180,7 +193,73 @@ const Component = (props) => {
           key={index}
         >
           <a href={valueObj.url} target="_blank">
-            <img src="/img/common/social/steam@2x.png" width="20" height="20" />
+            <img src="/img/common/social/steam@2x.png" title="Steam" width="20" height="20" />
+          </a>
+        </div>
+      );
+
+    } else if (valueObj.type === 'MicrosoftStore') {
+
+      componentsArr.push(
+        <div
+          css={css`
+            margin: 8px 8px 0 0;
+          `}
+          key={index}
+        >
+          <a href={valueObj.url} target="_blank">
+            <div
+              css={css`
+                width: 20px;
+                height: 20px;
+              `}
+            >
+              <SimpleIconMicrosoft title="Microsoft Store" color="#F54E25" size={19} />
+            </div>
+          </a>
+        </div>
+      );
+
+    } else if (valueObj.type === 'AppStore') {
+
+      componentsArr.push(
+        <div
+          css={css`
+            margin: 7px 8px 0 0;
+          `}
+          key={index}
+        >
+          <a href={valueObj.url} target="_blank">
+            <div
+              css={css`
+                width: 20px;
+                height: 20px;
+              `}
+            >
+              <SimpleIconApple title="App Store" color="#FFFFFF" size={19} />
+            </div>
+          </a>
+        </div>
+      );
+
+    } else if (valueObj.type === 'GooglePlay') {
+
+      componentsArr.push(
+        <div
+          css={css`
+            margin: 8px 8px 0 0;
+          `}
+          key={index}
+        >
+          <a href={valueObj.url} target="_blank">
+            <div
+              css={css`
+                width: 20px;
+                height: 20px;
+              `}
+            >
+              <SimpleIconGooglePlay title="Google Play" color="#00D7FF" size={19} />
+            </div>
           </a>
         </div>
       );

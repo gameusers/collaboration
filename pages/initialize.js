@@ -53,6 +53,7 @@ import { ContainerStateLayout } from 'app/@states/layout.js';
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { CustomError } from 'app/@modules/error/custom.js';
 import { showSnackbar } from 'app/@modules/snackbar.js';
+import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
@@ -560,6 +561,13 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
+  //   Get Cookie Data
+  // --------------------------------------------------
+
+  const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
+
+
+  // --------------------------------------------------
   //   Title
   // --------------------------------------------------
 
@@ -614,6 +622,7 @@ export async function getServerSideProps({ req, res, query }) {
 
       reqAcceptLanguage,
       ISO8601,
+      termsOfServiceAgreedVersion,
       statusCode,
       login: false,
       loginUsersObj: {},

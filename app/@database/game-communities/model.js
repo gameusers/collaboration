@@ -689,7 +689,7 @@ const findForGameCommunity = async ({
           linkArr: 1,
           hardwaresArr: 1,
           gameGenresArr: 1,
-          developersPublishersArr: 1,
+          // developersPublishersArr: 1,
           followsObj: 1,
           gameCommunitiesObj: 1,
         }
@@ -742,12 +742,30 @@ const findForGameCommunity = async ({
     //   - Loop
     // ---------------------------------------------
 
+    // console.log(`
+    //   ----- hardwareArr -----\n
+    //   ${util.inspect(hardwareArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
     for (let valueObj of hardwareArr.values()) {
 
-      const publisherIDsArr = lodashGet(valueObj, ['publisherIDsArr'], []);
       const developerIDsArr = lodashGet(valueObj, ['developerIDsArr'], []);
+      const publisherIDsArr = lodashGet(valueObj, ['publisherIDsArr'], []);
 
-      developerPublisherIDsArr = developerPublisherIDsArr.concat(publisherIDsArr, developerIDsArr);
+      // console.log(`
+      //   ----- developerIDsArr -----\n
+      //   ${util.inspect(developerIDsArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // console.log(`
+      //   ----- publisherIDsArr -----\n
+      //   ${util.inspect(publisherIDsArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      developerPublisherIDsArr = developerPublisherIDsArr.concat(developerIDsArr, publisherIDsArr);
 
     }
 
@@ -773,6 +791,12 @@ const findForGameCommunity = async ({
 
     });
 
+    // console.log(`
+    //   ----- docDevelopersPublishersArr -----\n
+    //   ${util.inspect(docDevelopersPublishersArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
 
     // ---------------------------------------------
     //   - 名前だけ配列に入れる
@@ -780,9 +804,53 @@ const findForGameCommunity = async ({
 
     const developersPublishersArr = [];
 
-    for (let valueObj of docDevelopersPublishersArr.values()) {
-      developersPublishersArr.push(valueObj.name);
+    for (let value of developerPublisherIDsArr.values()) {
+      
+      const resultObj = docDevelopersPublishersArr.find((valueObj) => {
+        return valueObj.developerPublisherID === value;
+      });
+
+      if (resultObj) {
+        developersPublishersArr.push(resultObj.name);
+      }
+      
+      // console.log(chalk`
+      // value: {green ${value}}
+      // `);
+
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
     }
+
+    // for (let valueObj of developerPublisherIDsArr.values()) {
+
+    //   const index = developerPublisherIDsArr.indexOf(valueObj);
+
+    //   developersPublishersArr.push(valueObj.name);
+
+    //   console.log(`
+    //     ----- valueObj -----\n
+    //     ${util.inspect(valueObj, { colors: true, depth: null })}\n
+    //     --------------------\n
+    //   `);
+    // }
+
+    // for (let valueObj of docDevelopersPublishersArr.values()) {
+
+    //   const index = developerPublisherIDsArr.indexOf(valueObj);
+
+    //   developersPublishersArr.push(valueObj.name);
+
+    //   console.log(`
+    //     ----- valueObj -----\n
+    //     ${util.inspect(valueObj, { colors: true, depth: null })}\n
+    //     --------------------\n
+    //   `);
+    // }
 
     docGamesObj.developersPublishersArr = developersPublishersArr;
 
@@ -807,6 +875,18 @@ const findForGameCommunity = async ({
 
 
 
+    // --------------------------------------------------
+    //   name
+    // --------------------------------------------------
+
+    let name = docGamesObj.name;
+
+    if (docGamesObj.subtitle) {
+      name = `${docGamesObj.name}${docGamesObj.subtitle}`;
+    }
+
+    
+
 
     // --------------------------------------------------
     //   Locale / name & description
@@ -817,7 +897,7 @@ const findForGameCommunity = async ({
       type: 'gc',
       gameCommunities_id: docGamesObj.gameCommunities_id,
       urlID: docGamesObj.urlID,
-      name: `${docGamesObj.name}${docGamesObj.subtitle}`,
+      name,
       hardwareArr: docGamesObj.hardwareArr,
       genreArr: docGamesObj.genreArr,
       linkArr: docGamesObj.linkArr,

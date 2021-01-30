@@ -315,6 +315,10 @@ const Component = (props) => {
   const reqAcceptLanguage = lodashGet(pageProps, ['reqAcceptLanguage'], '');
   const termsOfServiceAgreedVersion = lodashGet(pageProps, ['termsOfServiceAgreedVersion'], '');
 
+  // console.log(chalk`
+  //   termsOfServiceAgreedVersion: {green ${termsOfServiceAgreedVersion}}
+  // `);
+
   const localeObj = locale({
     acceptLanguage: reqAcceptLanguage
   });

@@ -19,7 +19,6 @@ import Link from 'next/link';
 import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
-import SimpleIcons from 'simple-icons-react-component';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
@@ -58,6 +57,17 @@ import IconAssignment from '@material-ui/icons/Assignment';
 import IconPublic from '@material-ui/icons/Public';
 import IconDelete from '@material-ui/icons/Delete';
 import IconEdit from '@material-ui/icons/Edit';
+
+
+// ---------------------------------------------
+//   Simple Icons
+// ---------------------------------------------
+
+import {
+  
+  Twitter as SimpleIconTwitter
+
+} from '@icons-pack/react-simple-icons';
 
 
 // ---------------------------------------------
@@ -856,11 +866,11 @@ const Component = (props) => {
                               margin: 0 4px 0 0;
                             }
                           `}
-                          alt="PlayStation"
+                          alt="Twitter"
                           style={{ 'backgroundColor': '#1DA1F2' }}
                         >
                           <div style={{ 'width': '80%', 'marginTop': '0px' }}>
-                            <SimpleIcons name="Twitter" color="white" />
+                            <SimpleIconTwitter title="Twitter" color="#FFFFFF" size={12} />
                           </div>
                         </Avatar>
                         シェア

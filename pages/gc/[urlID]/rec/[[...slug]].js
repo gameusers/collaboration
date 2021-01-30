@@ -358,11 +358,11 @@ export async function getServerSideProps({ req, res, query }) {
   //   Get Cookie Data
   // --------------------------------------------------
 
+  const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
+
   const threadLimit = getCookie({ key: 'recruitmentThreadLimit', reqHeadersCookie });
   const commentLimit = getCookie({ key: 'recruitmentCommentLimit', reqHeadersCookie });
   const replyLimit = getCookie({ key: 'recruitmentReplyLimit', reqHeadersCookie });
-
-  const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
 
   
 
@@ -793,6 +793,7 @@ export async function getServerSideProps({ req, res, query }) {
 
       reqAcceptLanguage,
       ISO8601,
+      termsOfServiceAgreedVersion,
       statusCode,
       login,
       loginUsersObj,
@@ -814,8 +815,6 @@ export async function getServerSideProps({ req, res, query }) {
       hardwaresArr,
       categories,
       keyword,
-
-      termsOfServiceAgreedVersion,
 
     }
 

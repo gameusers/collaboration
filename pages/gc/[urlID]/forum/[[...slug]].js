@@ -169,7 +169,7 @@ const ContainerLayout = (props) => {
       <Forum
         urlID={props.urlID}
         gameCommunities_id={props.gameCommunities_id}
-        enableAnonymity={true}
+        enableAnonymity={false}
         individual={props.individual}
       />
 
@@ -331,14 +331,14 @@ export async function getServerSideProps({ req, res, query }) {
   //   Get Cookie Data & Temporary Data for Fetch
   // --------------------------------------------------
 
+  const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
+
   const threadListPage = 1;
   const threadListLimit = getCookie({ key: 'forumThreadListLimit', reqHeadersCookie });
 
   const threadLimit = getCookie({ key: 'forumThreadLimit', reqHeadersCookie });
   const commentLimit = getCookie({ key: 'forumCommentLimit', reqHeadersCookie });
   const replyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
-
-  const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
 
 
 
@@ -688,6 +688,7 @@ export async function getServerSideProps({ req, res, query }) {
 
       reqAcceptLanguage,
       ISO8601,
+      termsOfServiceAgreedVersion,
       statusCode,
       login,
       loginUsersObj,
@@ -707,8 +708,6 @@ export async function getServerSideProps({ req, res, query }) {
       forumCommentsObj,
       forumRepliesObj,
       individual,
-
-      termsOfServiceAgreedVersion,
 
     }
 

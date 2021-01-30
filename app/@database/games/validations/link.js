@@ -159,7 +159,7 @@ const validationGamesLinkArr = ({ throwError = false, required = false, valueArr
       //   Type
       // ---------------------------------------------
 
-      if (!validator.isIn(type, ['Official', 'Twitter', 'Facebook', 'YouTube', 'Steam', 'Other'])) {
+      if (!validator.isIn(type, ['Official', 'Twitter', 'Facebook', 'YouTube', 'Steam', 'MicrosoftStore', 'AppStore', 'GooglePlay', 'Other'])) {
 
         formObj.typeObj.error = true;
         formObj.typeObj.messageID = 'PH8jcw-VF';

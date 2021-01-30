@@ -894,6 +894,7 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                           $project: {
                             _id: 0,
                             localesArr: 1,
+                            anonymity: 1,
                             cardPlayersObj: 1,
                           }
                         }
@@ -1637,6 +1638,7 @@ const findRepliesByForumComments_idsArr = async ({
                         $project: {
                           _id: 0,
                           localesArr: 1,
+                          anonymity: 1,
                           cardPlayersObj: 1,
                         }
                       }
@@ -1978,9 +1980,21 @@ const formatVer2 = ({
 
       if (valueObj.replyToObj) {
 
+        // console.log(`
+        //   ----- valueObj.replyToObj -----\n
+        //   ${util.inspect(valueObj.replyToObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+
+        const anonymity = lodashGet(valueObj, ['replyToObj', 'anonymity'], false);
+
         clonedObj.replyToName = lodashGet(valueObj, ['replyToObj', 'cardPlayersObj', 'name'], '');
 
-        if (!clonedObj.replyToName) {
+        if (anonymity) {
+
+          clonedObj.replyToName = '';
+
+        } else if (!clonedObj.replyToName) {
 
           const localesArr = lodashGet(valueObj, ['replyToObj', 'localesArr'], []);
 

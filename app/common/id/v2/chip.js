@@ -14,8 +14,6 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import SimpleIcons from 'simple-icons-react-component';
-
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 
@@ -40,6 +38,29 @@ import Avatar from '@material-ui/core/Avatar';
 
 import IconGrade from '@material-ui/icons/Grade';
 import IconPC from '@material-ui/icons/LaptopMac';
+
+
+// ---------------------------------------------
+//   Simple Icons
+// ---------------------------------------------
+
+import {
+  
+  Apple as SimpleIconIOS,
+  Android as SimpleIconAndroid,
+  Nintendo as SimpleIconNintendo,
+  Playstation as SimpleIconPlayStation,
+  Xbox as SimpleIconXbox,
+  Steam as SimpleIconSteam,
+  Origin as SimpleIconOrigin,
+  Discord as SimpleIconDiscord,
+  Skype as SimpleIconSkype,
+  Icq as SimpleIconICQ,
+  Line as SimpleIconLINE,
+
+} from '@icons-pack/react-simple-icons';
+
+
 
 
 
@@ -117,10 +138,8 @@ const Component = (props) => {
   if (platform === 'PlayStation') {
 
     componentAvatar =
-      <Avatar css={cssAvatar} alt="PlayStation" style={{ 'backgroundColor': '#003791' }}>
-        <div style={{ 'width': '80%', 'marginTop': '4px' }}>
-          <SimpleIcons name="PlayStation" color="white" />
-        </div>
+      <Avatar css={cssAvatar} style={{ 'backgroundColor': '#003791' }}>
+        <SimpleIconPlayStation title="PlayStation" color="#FFFFFF" size={24} />
       </Avatar>
     ;
 
@@ -134,10 +153,8 @@ const Component = (props) => {
   } else if (platform === 'Xbox') {
 
     componentAvatar =
-      <Avatar css={cssAvatar} alt="Xbox" style={{ 'backgroundColor': '#107C10' }}>
-        <div style={{ 'width': '75%', 'marginTop': '2px' }}>
-          <SimpleIcons name="Xbox" color="white" />
-        </div>
+      <Avatar css={cssAvatar} style={{ 'backgroundColor': '#107C10' }}>
+        <SimpleIconXbox title="Xbox" color="#FFFFFF" size={24} />
       </Avatar>
     ;
 
@@ -151,10 +168,8 @@ const Component = (props) => {
   } else if (platform === 'Nintendo') {
 
     componentAvatar =
-      <Avatar css={cssAvatar} alt="Nintendo" style={{ 'backgroundColor': '#e60012' }}>
-        <div style={{ 'width': '55%', 'marginTop': '4px' }}>
-          <SimpleIcons name="Nintendo" color="white" />
-        </div>
+      <Avatar css={cssAvatar} style={{ 'backgroundColor': '#e60012' }}>
+        <SimpleIconNintendo name="Nintendo" color="#FFFFFF" size={19} />
       </Avatar>
     ;
 
@@ -183,10 +198,8 @@ const Component = (props) => {
   } else if (platform === 'Android') {
 
     componentAvatar =
-      <Avatar css={cssAvatar} alt="Android" style={{ 'backgroundColor': '#A4C639' }}>
-        <div style={{ 'width': '75%', 'marginTop': '4px' }}>
-          <SimpleIcons name="Android" color="white" />
-        </div>
+      <Avatar css={cssAvatar} style={{ 'backgroundColor': '#A4C639' }}>
+        <SimpleIconAndroid title="Android" color="#FFFFFF" size={24} />
       </Avatar>
     ;
 
@@ -200,10 +213,8 @@ const Component = (props) => {
   } else if (platform === 'iOS') {
 
     componentAvatar =
-      <Avatar css={cssAvatar} alt="Apple" style={{ 'backgroundColor': '#999999' }}>
-        <div style={{ 'width': '75%', 'marginTop': '2px' }}>
-          <SimpleIcons name="Apple" color="white" />
-        </div>
+      <Avatar css={cssAvatar} style={{ 'backgroundColor': '#999999' }}>
+        <SimpleIconIOS title="iOS" color="#FFFFFF" size={22} />
       </Avatar>
     ;
 
@@ -215,12 +226,10 @@ const Component = (props) => {
   // ---------------------------------------------
 
   } else if (platform === 'Steam') {
-
+    
     componentAvatar =
-      <Avatar css={cssAvatar} alt="Steam" style={{ 'backgroundColor': '#000000' }}>
-        <div style={{ 'width': '80%', 'marginTop': '4px' }}>
-          <SimpleIcons name="Steam" color="white" />
-        </div>
+      <Avatar css={cssAvatar} style={{ 'backgroundColor': '#000000' }}>
+        <SimpleIconSteam title="Steam" color="#FFFFFF" size={24} />
       </Avatar>
     ;
 
@@ -234,10 +243,8 @@ const Component = (props) => {
   } else if (platform === 'Origin') {
 
     componentAvatar =
-      <Avatar css={cssAvatar} alt="Origin" style={{ 'backgroundColor': '#F56C2D' }}>
-        <div style={{ 'width': '80%', 'marginTop': '4px' }}>
-          <SimpleIcons name="Origin" color="white" />
-        </div>
+      <Avatar css={cssAvatar} style={{ 'backgroundColor': '#F56C2D' }}>
+        <SimpleIconOrigin title="Origin" color="#FFFFFF" size={26} />
       </Avatar>
     ;
 
@@ -249,12 +256,10 @@ const Component = (props) => {
   // ---------------------------------------------
 
   } else if (platform === 'Discord') {
-
+    
     componentAvatar =
-      <Avatar css={cssAvatar} alt="Discord" style={{ 'backgroundColor': '#7289DA' }}>
-        <div style={{ 'width': '65%', 'marginTop': '5px', 'marginRight': '1px' }}>
-          <SimpleIcons name="Discord" color="white" />
-        </div>
+      <Avatar css={cssAvatar} style={{ 'backgroundColor': '#7289DA' }}>
+        <SimpleIconDiscord title="Discord" color="#FFFFFF" size={19} />
       </Avatar>
     ;
 
@@ -268,13 +273,11 @@ const Component = (props) => {
   } else if (platform === 'Skype') {
 
     componentAvatar =
-      <Avatar css={cssAvatar} alt="Skype" style={{ 'backgroundColor': '#00AFF0' }}>
-        <div style={{ 'width': '70%', 'marginTop': '4px' }}>
-          <SimpleIcons name="Skype" color="white" />
-        </div>
+      <Avatar css={cssAvatar} style={{ 'backgroundColor': '#00AFF0' }}>
+        <SimpleIconSkype title="Skype" color="#FFFFFF" size={22} />
       </Avatar>
     ;
-
+    
     labelValue = 'Skype';
 
 
@@ -285,13 +288,11 @@ const Component = (props) => {
   } else if (platform === 'ICQ') {
 
     componentAvatar =
-      <Avatar css={cssAvatar} alt="ICQ" style={{ 'backgroundColor': '#7EBD00' }}>
-        <div style={{ 'width': '75%', 'marginTop': '4px' }}>
-          <SimpleIcons name="ICQ" color="white" />
-        </div>
+      <Avatar css={cssAvatar} style={{ 'backgroundColor': '#7EBD00' }}>
+        <SimpleIconICQ title="ICQ" color="#FFFFFF" size={22} />
       </Avatar>
     ;
-
+    
     labelValue = 'ICQ';
 
 
@@ -302,10 +303,8 @@ const Component = (props) => {
   } else if (platform === 'Line') {
 
     componentAvatar =
-      <Avatar css={cssAvatar} alt="Line" style={{ 'backgroundColor': '#00C300' }}>
-        <div style={{ 'width': '75%', 'marginTop': '5px' }}>
-          <SimpleIcons name="Line" color="white" />
-        </div>
+      <Avatar css={cssAvatar} style={{ 'backgroundColor': '#00C300' }}>
+        <SimpleIconLINE title="Line" color="#FFFFFF" size={25} />
       </Avatar>
     ;
 

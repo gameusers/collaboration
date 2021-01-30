@@ -35,6 +35,7 @@ import lodashGet from 'lodash/get';
 
 import { fetchWrapper } from 'app/@modules/fetch.js';
 import { createCsrfToken } from 'app/@modules/csrf.js';
+import { getCookie } from 'app/@modules/cookie.js';
 
 
 // ---------------------------------------------
@@ -194,6 +195,13 @@ export async function getServerSideProps({ req, res, query }) {
   const ISO8601 = moment().utc().toISOString();
 
 
+  // --------------------------------------------------
+  //   Get Cookie Data
+  // --------------------------------------------------
+
+  const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
+
+
 
 
   // --------------------------------------------------
@@ -300,6 +308,7 @@ export async function getServerSideProps({ req, res, query }) {
 
       reqAcceptLanguage,
       ISO8601,
+      termsOfServiceAgreedVersion,
       statusCode,
       metaObj,
       headerObj,

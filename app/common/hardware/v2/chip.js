@@ -38,7 +38,16 @@ import IconOther from '@material-ui/icons/Grade';
 //   Simple Icons
 // ---------------------------------------------
 
-import SimpleIcons from 'simple-icons-react-component';
+import {
+  
+  Apple as SimpleIconIOS,
+  Android as SimpleIconAndroid,
+  Nintendo as SimpleIconNintendo,
+  NintendoThreeDs as SimpleIconNintendo3DS,
+  Playstation as SimpleIconPlayStation,
+  Xbox as SimpleIconXbox,
+
+} from '@icons-pack/react-simple-icons';
 
 
 
@@ -104,7 +113,7 @@ const Component = (props) => {
           <Chip
             avatar={
               <Avatar alt="PC">
-                <IconLaptopMac />
+                <IconLaptopMac style={{ fontSize: 20 }} />
               </Avatar>
             }
             label="PC"
@@ -130,10 +139,8 @@ const Component = (props) => {
         >
           <Chip
             avatar={
-              <Avatar alt={valueObj.name} style={{ 'backgroundColor': '#3DDC84' }}>
-                <div style={{ 'width': '80%', 'marginTop': '1px' }}>
-                  <SimpleIcons name="Android" color="white" />
-                </div>
+              <Avatar style={{ 'backgroundColor': '#3DDC84' }}>
+                <SimpleIconAndroid title="Android" color="#FFFFFF" size={18} />
               </Avatar>
             }
             label={valueObj.name}
@@ -160,9 +167,7 @@ const Component = (props) => {
           <Chip
             avatar={
               <Avatar alt={valueObj.name} style={{ 'backgroundColor': '#999999' }}>
-                <div style={{ 'width': '75%', 'marginTop': '0' }}>
-                  <SimpleIcons name="Apple" color="white" />
-                </div>
+                <SimpleIconIOS title="iOS" color="#FFFFFF" size={18} />
               </Avatar>
             }
             label={valueObj.name}
@@ -174,10 +179,10 @@ const Component = (props) => {
 
 
     // --------------------------------------------------
-    //   - Nintendo Switch
+    //   - Nintendo Switch / Wii U
     // --------------------------------------------------
 
-    } else if (valueObj.hardwareID === 'Zd_Ia4Hwm') {
+    } else if (['Zd_Ia4Hwm', 'uPqoiXA_8'].includes(valueObj.hardwareID)) {
 
       componentsArr.push(
         <div
@@ -189,9 +194,7 @@ const Component = (props) => {
           <Chip
             avatar={
               <Avatar alt={valueObj.name} style={{ 'backgroundColor': '#E60012' }}>
-                <div style={{ 'width': '65%', 'marginTop': '2px' }}>
-                  <SimpleIcons name="Nintendo Switch" color="white" />
-                </div>
+                <SimpleIconNintendo name="Nintendo" color="#FFFFFF" size={16} />
               </Avatar>
             }
             label={valueObj.name}
@@ -201,152 +204,7 @@ const Component = (props) => {
         </div>
       );
 
-
-    // --------------------------------------------------
-    //   - PlayStation 4
-    // --------------------------------------------------
-
-    } else if (valueObj.hardwareID === 'TdK3Oc-yV') {
-
-      componentsArr.push(
-        <div
-          key={`hardwareChips-${index}`}
-          css={css`
-            margin: 8px 8px 0 0;
-          `}
-        >
-          <Chip
-            avatar={
-              <Avatar alt={valueObj.name} style={{ 'backgroundColor': '#003791' }}>
-                <div style={{ 'width': '80%', 'marginTop': '2px' }}>
-                  <SimpleIcons name="PlayStation" color="white" />
-                </div>
-              </Avatar>
-            }
-            label={valueObj.name}
-            color="primary"
-            variant="outlined"
-          />
-        </div>
-      );
-
-
-    // --------------------------------------------------
-    //   - Xbox One
-    // --------------------------------------------------
-
-    } else if (valueObj.hardwareID === 'uPqoiXA_8') {
-
-      componentsArr.push(
-        <div
-          key={`hardwareChips-${index}`}
-          css={css`
-            margin: 8px 8px 0 0;
-          `}
-        >
-          <Chip
-            avatar={
-              <Avatar alt={valueObj.name} style={{ 'backgroundColor': '#107C10' }}>
-                <div style={{ 'width': '75%', 'marginTop': '2px' }}>
-                  <SimpleIcons name="Xbox" color="white" />
-                </div>
-              </Avatar>
-            }
-            label={valueObj.name}
-            color="primary"
-            variant="outlined"
-          />
-        </div>
-      );
-
-
-    // --------------------------------------------------
-    //   - Wii U
-    // --------------------------------------------------
-
-    } else if (valueObj.hardwareID === 'uPqoiXA_8') {
-
-      componentsArr.push(
-        <div
-          key={`hardwareChips-${index}`}
-          css={css`
-            margin: 8px 8px 0 0;
-          `}
-        >
-          <Chip
-            avatar={
-              <Avatar alt={valueObj.name} style={{ 'backgroundColor': '#107C10' }}>
-                <div style={{ 'width': '75%', 'marginTop': '2px' }}>
-                  <SimpleIcons name="Xbox" color="white" />
-                </div>
-              </Avatar>
-            }
-            label={valueObj.name}
-            color="primary"
-            variant="outlined"
-          />
-        </div>
-      );
-
-
-    // --------------------------------------------------
-    //   - PlayStation 3
-    // --------------------------------------------------
-
-    } else if (valueObj.hardwareID === 'YNZ6nb1Ki') {
-
-      componentsArr.push(
-        <div
-          key={`hardwareChips-${index}`}
-          css={css`
-            margin: 8px 8px 0 0;
-          `}
-        >
-          <Chip
-            avatar={
-              <Avatar alt={valueObj.name} style={{ 'backgroundColor': '#003791' }}>
-                <div style={{ 'width': '80%', 'marginTop': '2px' }}>
-                  <SimpleIcons name="PlayStation" color="white" />
-                </div>
-              </Avatar>
-            }
-            label={valueObj.name}
-            color="primary"
-            variant="outlined"
-          />
-        </div>
-      );
-
-
-    // --------------------------------------------------
-    //   - Xbox 360
-    // --------------------------------------------------
-
-    } else if (valueObj.hardwareID === '08Qp5KxPA') {
-
-      componentsArr.push(
-        <div
-          key={`hardwareChips-${index}`}
-          css={css`
-            margin: 8px 8px 0 0;
-          `}
-        >
-          <Chip
-            avatar={
-              <Avatar alt={valueObj.name} style={{ 'backgroundColor': '#107C10' }}>
-                <div style={{ 'width': '75%', 'marginTop': '2px' }}>
-                  <SimpleIcons name="Xbox" color="white" />
-                </div>
-              </Avatar>
-            }
-            label={valueObj.name}
-            color="primary"
-            variant="outlined"
-          />
-        </div>
-      );
-
-
+    
     // --------------------------------------------------
     //   - Nintendo 3DS
     // --------------------------------------------------
@@ -363,9 +221,7 @@ const Component = (props) => {
           <Chip
             avatar={
               <Avatar alt={valueObj.name} style={{ 'backgroundColor': '#D12228' }}>
-                <div style={{ 'width': '65%', 'marginTop': '2px' }}>
-                  <SimpleIcons name="Nintendo 3DS" color="white" />
-                </div>
+                <SimpleIconNintendo3DS name="Nintendo 3DS" color="#FFFFFF" size={16} />
               </Avatar>
             }
             label={valueObj.name}
@@ -377,10 +233,10 @@ const Component = (props) => {
 
 
     // --------------------------------------------------
-    //   - PS Vita
+    //   - PlayStation 5 / PlayStation 4 / PlayStation 3 / PS Vita / PSP
     // --------------------------------------------------
 
-    } else if (valueObj.hardwareID === 'mOpBZsQBm') {
+    } else if (['HpmHVmZl_', 'TdK3Oc-yV', 'YNZ6nb1Ki', 'mOpBZsQBm', 'efIOgWs3N'].includes(valueObj.hardwareID)) {
 
       componentsArr.push(
         <div
@@ -392,9 +248,7 @@ const Component = (props) => {
           <Chip
             avatar={
               <Avatar alt={valueObj.name} style={{ 'backgroundColor': '#003791' }}>
-                <div style={{ 'width': '80%', 'marginTop': '2px' }}>
-                  <SimpleIcons name="PlayStation" color="white" />
-                </div>
+                <SimpleIconPlayStation title="PlayStation" color="#FFFFFF" size={20} />
               </Avatar>
             }
             label={valueObj.name}
@@ -406,10 +260,10 @@ const Component = (props) => {
 
 
     // --------------------------------------------------
-    //   - PSP
+    //   - Xbox Series X / Xbox Series S / Xbox One / Xbox 360 / Xbox
     // --------------------------------------------------
 
-    } else if (valueObj.hardwareID === 'efIOgWs3N') {
+    } else if (['I7RARV3BG', 'Oavrp9S42', 'uPqoiXA_8', '08Qp5KxPA', '78lc0hPjL'].includes(valueObj.hardwareID)) {
 
       componentsArr.push(
         <div
@@ -420,39 +274,8 @@ const Component = (props) => {
         >
           <Chip
             avatar={
-              <Avatar alt={valueObj.name} style={{ 'backgroundColor': '#003791' }}>
-                <div style={{ 'width': '80%', 'marginTop': '2px' }}>
-                  <SimpleIcons name="PlayStation" color="white" />
-                </div>
-              </Avatar>
-            }
-            label={valueObj.name}
-            color="primary"
-            variant="outlined"
-          />
-        </div>
-      );
-
-
-    // --------------------------------------------------
-    //   - ファミリーコンピュータ
-    // --------------------------------------------------
-
-    } else if (valueObj.hardwareID === 'I-iu-WmkO') {
-
-      componentsArr.push(
-        <div
-          key={`hardwareChips-${index}`}
-          css={css`
-            margin: 8px 8px 0 0;
-          `}
-        >
-          <Chip
-            avatar={
-              <Avatar alt="Nintendo" style={{ 'backgroundColor': '#e60012' }}>
-                <div style={{ 'width': '55%', 'marginTop': '2px' }}>
-                  <SimpleIcons name="Nintendo" color="white" />
-                </div>
+              <Avatar alt={valueObj.name} style={{ 'backgroundColor': '#107C10' }}>
+                <SimpleIconXbox title="Xbox" color="#FFFFFF" size={18} />
               </Avatar>
             }
             label={valueObj.name}
@@ -490,6 +313,7 @@ const Component = (props) => {
       );
 
     }
+
 
   }
 

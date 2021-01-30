@@ -1034,7 +1034,7 @@ const Component = (props) => {
   const page = lodashGet(gcTempsListObj, ['page'], 1);
   const limit = lodashGet(gcTempsListObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_LIMIT, 10));
   const count = lodashGet(gcTempsListObj, ['count'], 0);
-  const listArr = lodashGet(gcTempsListObj, [`page${page}Obj`, 'arr'], []);
+  const listArr = lodashGet(gcListObj, [`page${page}Obj`, 'arr'], []);
   const tempsListArr = lodashGet(gcTempsListObj, [`page${page}Obj`, 'arr'], []);
 
 

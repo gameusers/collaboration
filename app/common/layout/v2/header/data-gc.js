@@ -230,17 +230,6 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const developersPublishersArr = lodashGet(headerObj, ['developersPublishersArr'], []);
-  // const developerID = lodashGet(hardwareSortedArr, [0, 'developerID'], '');
-
-  // let developer = '';
-
-  // for (let valueObj of developersPublishersArr.values()) {
-
-  //   if (valueObj.developerPublisherID === developerID) {
-  //     developer = valueObj.name;
-  //   }
-
-  // }
   const developersPublishers = developersPublishersArr.join(', ');
 
 

@@ -42,7 +42,7 @@ const schema = mongoose.Schema({
   linkArr: [
     {
       _id: { type: String },
-      type: { type: String, enum: ['Official', 'Twitter', 'Facebook', 'YouTube', 'Steam', 'Other'], required: true },
+      type: { type: String, enum: ['Official', 'Twitter', 'Facebook', 'YouTube', 'Steam', 'MicrosoftStore', 'AppStore', 'GooglePlay', 'Other'], required: true },
       label: String,
       url: { type: String, required: true },
     },

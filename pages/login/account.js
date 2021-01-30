@@ -187,6 +187,13 @@ export async function getServerSideProps({ req, res, query }) {
   const ISO8601 = moment().utc().toISOString();
 
 
+  // --------------------------------------------------
+  //   Get Cookie Data
+  // --------------------------------------------------
+
+  const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
+
+
 
 
   // --------------------------------------------------
@@ -328,6 +335,7 @@ export async function getServerSideProps({ req, res, query }) {
 
       reqAcceptLanguage,
       ISO8601,
+      termsOfServiceAgreedVersion,
       statusCode,
       login,
       loginUsersObj,

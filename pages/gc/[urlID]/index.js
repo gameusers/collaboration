@@ -172,7 +172,7 @@ const ContainerLayout = (props) => {
       <Forum
         urlID={props.urlID}
         gameCommunities_id={props.gameCommunities_id}
-        enableAnonymity={true}
+        enableAnonymity={false}
       />
 
       <FeedHorizontal
@@ -302,6 +302,8 @@ export async function getServerSideProps({ req, res, query }) {
   //   Get Cookie Data
   // --------------------------------------------------
 
+  const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
+
   const threadListPage = 1;
   const threadListLimit = getCookie({ key: 'forumThreadListLimit', reqHeadersCookie });
 
@@ -310,9 +312,7 @@ export async function getServerSideProps({ req, res, query }) {
   const commentLimit = getCookie({ key: 'forumCommentLimit', reqHeadersCookie });
   const replyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
 
-  const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
-
-
+  
 
 
   // --------------------------------------------------
@@ -345,7 +345,6 @@ export async function getServerSideProps({ req, res, query }) {
 
   const gameCommunities_id = lodashGet(dataObj, ['gameCommunityObj', '_id'], '');
   const gameName = lodashGet(dataObj, ['headerObj', 'name'], '');
-  const gameSubtitle = lodashGet(dataObj, ['headerObj', 'subtitle'], '');
   const gameCommunityObj = lodashGet(dataObj, ['gameCommunityObj'], {});
   const forumThreadsForListObj = lodashGet(dataObj, ['forumThreadsForListObj'], {});
   const forumThreadsObj = lodashGet(dataObj, ['forumThreadsObj'], {});
@@ -527,6 +526,7 @@ export async function getServerSideProps({ req, res, query }) {
 
       reqAcceptLanguage,
       ISO8601,
+      termsOfServiceAgreedVersion,
       statusCode,
       login,
       loginUsersObj,
@@ -544,8 +544,6 @@ export async function getServerSideProps({ req, res, query }) {
       forumThreadsObj,
       forumCommentsObj,
       forumRepliesObj,
-
-      termsOfServiceAgreedVersion,
 
     }
 

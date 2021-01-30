@@ -14,8 +14,6 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import SimpleIcons from 'simple-icons-react-component';
-
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
 
@@ -39,6 +37,26 @@ import Button from '@material-ui/core/Button';
 // ---------------------------------------------
 
 import IconPublic from '@material-ui/icons/Public';
+
+
+// ---------------------------------------------
+//   Simple Icons
+// ---------------------------------------------
+
+import {
+  
+  Twitter as SimpleIconTwitter,
+  Facebook as SimpleIconFacebook,
+  Instagram as SimpleIconInstagram,
+  Youtube as SimpleIconYouTube,
+  Twitch as SimpleIconTwitch,
+  Steam as SimpleIconSteam,
+  Discord as SimpleIconDiscord,
+  Flickr as SimpleIconFlickr,
+  Tumblr as SimpleIconTumblr,
+  Pinterest as SimpleIconPinterest,
+
+} from '@icons-pack/react-simple-icons';
 
 
 
@@ -120,27 +138,86 @@ const Component = (props) => {
 
     } else if (valueObj.url) {
 
-      componentsArr.push(
-        <div
-          css={css`
-            margin: 10px 14px 0 0;
-          `}
-          key={`link${index}`}
-        >
 
-          <a href={valueObj.url} target="_blank">
-            <div
-              css={css`
-                width: 24px;
-                height: 24px;
-              `}
-            >
-              <SimpleIcons name={valueObj.type} />
-            </div>
-          </a>
+      // --------------------------------------------------
+      //   componentSimpleIcon
+      // --------------------------------------------------
 
-        </div>
-      );
+      let componentSimpleIcon = '';
+
+      if (valueObj.type === 'Twitter') {
+
+        componentSimpleIcon = <SimpleIconTwitter title="Twitter" color="#1DA1F2" />;
+
+      } else if (valueObj.type === 'Facebook') {
+
+        componentSimpleIcon = <SimpleIconFacebook title="Facebook" color="#1877F2" />;
+
+      } else if (valueObj.type === 'Instagram') {
+
+        componentSimpleIcon = <SimpleIconInstagram title="Instagram" color="#E4405F" />;
+
+      } else if (valueObj.type === 'YouTube') {
+
+        componentSimpleIcon = <SimpleIconYouTube title="YouTube" color="#FF0000" />;
+
+      } else if (valueObj.type === 'Twitch') {
+
+        componentSimpleIcon = <SimpleIconTwitch title="Twitch" color="#9146FF" />;
+
+      } else if (valueObj.type === 'Steam') {
+
+        componentSimpleIcon = <SimpleIconSteam title="Steam" color="#000000" />;
+
+      } else if (valueObj.type === 'Discord') {
+
+        componentSimpleIcon = <SimpleIconDiscord title="Discord" color="#7289DA" />;
+
+      } else if (valueObj.type === 'Flickr') {
+
+        componentSimpleIcon = <SimpleIconFlickr title="Flickr" color="#0063DC" />;
+
+      } else if (valueObj.type === 'Tumblr') {
+
+        componentSimpleIcon = <SimpleIconTumblr title="Tumblr" color="#36465D" />;
+
+      } else if (valueObj.type === 'Pinterest') {
+
+        componentSimpleIcon = <SimpleIconPinterest title="Pinterest" color="#BD081C" />;
+
+      }
+
+
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
+
+      if (componentSimpleIcon) {
+
+        componentsArr.push(
+          <div
+            css={css`
+              margin: 10px 14px 0 0;
+            `}
+            key={`link${index}`}
+          >
+  
+            <a href={valueObj.url} target="_blank">
+              <div
+                css={css`
+                  width: 24px;
+                  height: 24px;
+                `}
+              >
+                {componentSimpleIcon}
+              </div>
+            </a>
+  
+          </div>
+        );
+
+      }
+
 
     }
 

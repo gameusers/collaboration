@@ -206,10 +206,10 @@ const Component = (props) => {
 
     
     // --------------------------------------------------
-    //   - Nintendo 3DS
+    //   - Newニンテンドー3DS / Newニンテンドー3DS LL / ニンテンドー3DS / ニンテンドー3DS LL / Newニンテンドー2DS LL / ニンテンドー2DS
     // --------------------------------------------------
-
-    } else if (valueObj.hardwareID === 'qk9DiUwN-') {
+    
+    } else if (['XdHIETDWn', 'MfGcqLKYE', 'qk9DiUwN-', '_5hAACSkD', 'gUbpQnI7S', 'cLpRfUcf5', ].includes(valueObj.hardwareID)) {
 
       componentsArr.push(
         <div
@@ -233,10 +233,10 @@ const Component = (props) => {
 
 
     // --------------------------------------------------
-    //   - PlayStation 5 / PlayStation 4 / PlayStation 3 / PS Vita / PSP
+    //   - PlayStation 5 / PlayStation 5 Digital Edition / PlayStation 4 / PlayStation 4 Pro / PlayStation 3 / PlayStation VR / PS Vita / PlayStation Vita TV / PSP
     // --------------------------------------------------
 
-    } else if (['HpmHVmZl_', 'TdK3Oc-yV', 'YNZ6nb1Ki', 'mOpBZsQBm', 'efIOgWs3N'].includes(valueObj.hardwareID)) {
+    } else if (['HpmHVmZl_', 'byyV8Ltdc', 'TdK3Oc-yV', '8dAGDVWLy', 'YNZ6nb1Ki', 'rWnfDngrY', 'mOpBZsQBm', 'mSNE9IGXN', 'efIOgWs3N'].includes(valueObj.hardwareID)) {
 
       componentsArr.push(
         <div
@@ -260,10 +260,10 @@ const Component = (props) => {
 
 
     // --------------------------------------------------
-    //   - Xbox Series X / Xbox Series S / Xbox One / Xbox 360 / Xbox
+    //   - Xbox Series X / Xbox Series S / Xbox One / Xbox One S / Xbox One X / Xbox One S All Digital Edition / Xbox 360 / Xbox 360 エリート / Xbox 360 S / Xbox 360 E / Xbox
     // --------------------------------------------------
 
-    } else if (['I7RARV3BG', 'Oavrp9S42', 'uPqoiXA_8', '08Qp5KxPA', '78lc0hPjL'].includes(valueObj.hardwareID)) {
+    } else if (['I7RARV3BG', 'Oavrp9S42', 'uPqoiXA_8', 'XA-5bmGgf', 's5tMWj5TX', 'QNxk7c-ZO', '08Qp5KxPA', 'lCMv0vbVE', 'CH5XjDxmE', 'iJoiTR3Lp', '78lc0hPjL'].includes(valueObj.hardwareID)) {
 
       componentsArr.push(
         <div

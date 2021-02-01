@@ -742,28 +742,10 @@ const findForGameCommunity = async ({
     //   - Loop
     // ---------------------------------------------
 
-    // console.log(`
-    //   ----- hardwareArr -----\n
-    //   ${util.inspect(hardwareArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
     for (let valueObj of hardwareArr.values()) {
 
       const developerIDsArr = lodashGet(valueObj, ['developerIDsArr'], []);
       const publisherIDsArr = lodashGet(valueObj, ['publisherIDsArr'], []);
-
-      // console.log(`
-      //   ----- developerIDsArr -----\n
-      //   ${util.inspect(developerIDsArr, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
-      // console.log(`
-      //   ----- publisherIDsArr -----\n
-      //   ${util.inspect(publisherIDsArr, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
 
       developerPublisherIDsArr = developerPublisherIDsArr.concat(developerIDsArr, publisherIDsArr);
 
@@ -791,12 +773,6 @@ const findForGameCommunity = async ({
 
     });
 
-    // console.log(`
-    //   ----- docDevelopersPublishersArr -----\n
-    //   ${util.inspect(docDevelopersPublishersArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
 
     // ---------------------------------------------
     //   - 名前だけ配列に入れる
@@ -813,44 +789,8 @@ const findForGameCommunity = async ({
       if (resultObj) {
         developersPublishersArr.push(resultObj.name);
       }
-      
-      // console.log(chalk`
-      // value: {green ${value}}
-      // `);
-
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
 
     }
-
-    // for (let valueObj of developerPublisherIDsArr.values()) {
-
-    //   const index = developerPublisherIDsArr.indexOf(valueObj);
-
-    //   developersPublishersArr.push(valueObj.name);
-
-    //   console.log(`
-    //     ----- valueObj -----\n
-    //     ${util.inspect(valueObj, { colors: true, depth: null })}\n
-    //     --------------------\n
-    //   `);
-    // }
-
-    // for (let valueObj of docDevelopersPublishersArr.values()) {
-
-    //   const index = developerPublisherIDsArr.indexOf(valueObj);
-
-    //   developersPublishersArr.push(valueObj.name);
-
-    //   console.log(`
-    //     ----- valueObj -----\n
-    //     ${util.inspect(valueObj, { colors: true, depth: null })}\n
-    //     --------------------\n
-    //   `);
-    // }
 
     docGamesObj.developersPublishersArr = developersPublishersArr;
 
@@ -1484,10 +1424,10 @@ const findGamesList = async ({
 
       for (let value2Obj of hardwareArr.values()) {
 
-        const publisherIDsArr = lodashGet(value2Obj, ['publisherIDsArr'], []);
         const developerIDsArr = lodashGet(value2Obj, ['developerIDsArr'], []);
+        const publisherIDsArr = lodashGet(value2Obj, ['publisherIDsArr'], []);
 
-        developerPublisherIDsArr = developerPublisherIDsArr.concat(publisherIDsArr, developerIDsArr);
+        developerPublisherIDsArr = developerPublisherIDsArr.concat(developerIDsArr, publisherIDsArr);
 
       }
 
@@ -1498,7 +1438,7 @@ const findGamesList = async ({
 
       developerPublisherIDsArr = Array.from(new Set(developerPublisherIDsArr));
 
-
+      
       // ---------------------------------------------
       //   - find
       // ---------------------------------------------
@@ -1520,17 +1460,20 @@ const findGamesList = async ({
 
       const developersPublishersArr = [];
 
-      for (let value2Obj of docDevelopersPublishersArr.values()) {
+      for (let value of developerPublisherIDsArr.values()) {
+        
+        const resultObj = docDevelopersPublishersArr.find((value2Obj) => {
+          return value2Obj.developerPublisherID === value;
+        });
 
-        developersPublishersArr.push(value2Obj.name);
-        // developersPublishersArr.push({
-        //   developerPublisherID: value2Obj.developerPublisherID,
-        //   name: value2Obj.name
-        // });
+        if (resultObj) {
+          developersPublishersArr.push(resultObj.name);
+        }
 
       }
 
       obj.developersPublishers = developersPublishersArr.join(', ');
+
 
       // console.log(`
       //   ----- developerPublisherIDsArr -----\n

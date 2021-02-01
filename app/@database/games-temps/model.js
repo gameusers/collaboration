@@ -867,10 +867,10 @@ const findEditData = async ({
 
     for (let valueObj of hardwareArr.values()) {
 
-      const publisherIDsArr = lodashGet(valueObj, ['publisherIDsArr'], []);
       const developerIDsArr = lodashGet(valueObj, ['developerIDsArr'], []);
+      const publisherIDsArr = lodashGet(valueObj, ['publisherIDsArr'], []);
 
-      developerPublisherIDsArr = developerPublisherIDsArr.concat(publisherIDsArr, developerIDsArr);
+      developerPublisherIDsArr = developerPublisherIDsArr.concat(developerIDsArr, publisherIDsArr);
 
     }
 
@@ -921,24 +921,12 @@ const findEditData = async ({
       //   - Developers Publishers
       // ----------------------------------------
 
-      const publishersArr = [];
       const developersArr = [];
-
-      const publisherIDsArr = lodashGet(value1Obj, ['publisherIDsArr'], []);
+      const publishersArr = [];
+      
       const developerIDsArr = lodashGet(value1Obj, ['developerIDsArr'], []);
-
-      for (let publisherID of publisherIDsArr.values()) {
-
-        const find2Obj = docDevelopersPublishersArr.find((value2Obj) => {
-          return value2Obj.developerPublisherID === publisherID;
-        });
-
-        publishersArr.push({
-          developerPublisherID: find2Obj.developerPublisherID,
-          name: find2Obj.name,
-        });
-
-      }
+      const publisherIDsArr = lodashGet(value1Obj, ['publisherIDsArr'], []);
+      
 
       for (let developerID of developerIDsArr.values()) {
 
@@ -953,6 +941,20 @@ const findEditData = async ({
 
       }
 
+
+      for (let publisherID of publisherIDsArr.values()) {
+
+        const find2Obj = docDevelopersPublishersArr.find((value2Obj) => {
+          return value2Obj.developerPublisherID === publisherID;
+        });
+
+        publishersArr.push({
+          developerPublisherID: find2Obj.developerPublisherID,
+          name: find2Obj.name,
+        });
+
+      }
+      
 
       // console.log(`
       //   ----- value1Obj -----\n

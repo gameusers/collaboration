@@ -472,94 +472,6 @@ const findForHeroImage = async ({ localeObj }) => {
 
 
       // --------------------------------------------------
-      //   developers-publishers / 開発＆パブリッシャー
-      // --------------------------------------------------
-
-      // {
-      //   $unwind: '$hardwareArr'
-      // },
-
-      // {
-      //   $group: {
-      //     _id: '$hardwareArr.publisherIDsArr',
-      //     publisherIDsArr: '$hardwareArr.publisherIDsArr'
-      //   }
-      // },
-
-      // {
-      //   $project: {
-      //     publisherIDsArr: '$hardwareArr.publisherIDsArr',
-      //     // developerPublisherID: 1,
-      //     // name: 1,
-      //     // letPublisherIDsArr: 1,
-      //   }
-      // },
-
-      // {
-      //   $lookup:
-      //     {
-      //       from: 'developers-publishers',
-      //       let: {
-      //         // letPublisherIDsArr: '$hardwareArr.publisherIDsArr',
-      //         // letPublisherIDsArr: ['YtKRcK3Ar'],
-      //         // letHardwareArr: '$hardwareArr',
-      //         letPublisherIDsArr: '$hardwareArr.publisherIDsArr',
-      //         // letPublisherIDsArr: '$publisherIDsArr',
-      //         // letDeveloperIDsArr: '$hardwareArr.developerIDsArr',
-      //       },
-      //       pipeline: [
-      //         // {
-      //         //   $unwind: '$letHardwareArr'
-      //         // },
-      //         // {
-      //         //   $unwind: '$letHardwareArr.publisherIDsArr'
-      //         // },
-
-      //         {
-      //           $match: {
-      //             $expr: {
-      //               $or: [
-      //                 {
-      //                   $and: [
-      //                     { $eq: ['$language', language] },
-      //                     { $eq: ['$country', country] },
-      //                     // { $in: ['$developerPublisherID', '$$letPublisherIDsArr'] }
-      //                     // { $in: ['$developerPublisherID', ['YtKRcK3Ar']] }
-      //                     // { $eq: ['$developerPublisherID', '$$letPublisherIDsArr'] }
-      //                     // { $in: ['$developerPublisherID', '$letHardwareArr.publisherIDsArr'] }
-      //                     // { $in: ['$developerPublisherID', '$hardwareArr.publisherIDsArr'] }
-      //                     // { $in: ['$developerPublisherID', '$$letHardwareArr.publisherIDsArr'] }
-      //                     // { $in: ['$developerPublisherID', '$$letPublisherIDsArr'] }
-      //                   ]
-      //                 },
-      //                 // {
-      //                 //   $and: [
-      //                 //     { $eq: ['$language', language] },
-      //                 //     { $eq: ['$country', country] },
-      //                 //     // { $in: ['$developerPublisherID', '$$letDeveloperIDsArr'] }
-      //                 //     { $in: ['$developerPublisherID', ['zXOweU_0y']] }
-      //                 //   ]
-      //                 // }
-      //               ]
-      //             },
-      //           }
-      //         },
-      //         {
-      //           $project: {
-      //             _id: 0,
-      //             developerPublisherID: 1,
-      //             name: 1,
-      //             letPublisherIDsArr: '$$letPublisherIDsArr',
-      //             // letPublisherIDsArr: 1,
-      //           }
-      //         }
-      //       ],
-      //       as: 'developersPublishersArr'
-      //     }
-      // },
-
-
-      // --------------------------------------------------
       //   $project
       // --------------------------------------------------
 
@@ -575,9 +487,6 @@ const findForHeroImage = async ({ localeObj }) => {
           linkArr: 1,
           hardwaresArr: 1,
           gameGenresArr: 1,
-          // developersPublishersArr: 1,
-
-          // publisherIDsArr: 1,
         }
       },
 
@@ -645,10 +554,10 @@ const findForHeroImage = async ({ localeObj }) => {
 
     for (let valueObj of hardwareArr.values()) {
 
-      const publisherIDsArr = lodashGet(valueObj, ['publisherIDsArr'], []);
       const developerIDsArr = lodashGet(valueObj, ['developerIDsArr'], []);
+      const publisherIDsArr = lodashGet(valueObj, ['publisherIDsArr'], []);
 
-      developerPublisherIDsArr = developerPublisherIDsArr.concat(publisherIDsArr, developerIDsArr);
+      developerPublisherIDsArr = developerPublisherIDsArr.concat(developerIDsArr, publisherIDsArr);
 
     }
 
@@ -681,11 +590,32 @@ const findForHeroImage = async ({ localeObj }) => {
 
     const developersPublishersArr = [];
 
-    for (let valueObj of docDevelopersPublishersArr.values()) {
-      developersPublishersArr.push(valueObj.name);
+    for (let value of developerPublisherIDsArr.values()) {
+      
+      const resultObj = docDevelopersPublishersArr.find((valueObj) => {
+        return valueObj.developerPublisherID === value;
+      });
+
+      if (resultObj) {
+        developersPublishersArr.push(resultObj.name);
+      }
+
     }
 
     returnObj.developersPublishersArr = developersPublishersArr;
+
+
+    // ---------------------------------------------
+    //   - 名前だけ配列に入れる
+    // ---------------------------------------------
+
+    // const developersPublishersArr = [];
+
+    // for (let valueObj of docDevelopersPublishersArr.values()) {
+    //   developersPublishersArr.push(valueObj.name);
+    // }
+
+    // returnObj.developersPublishersArr = developersPublishersArr;
 
     // console.log(`
     //   ----- developerPublisherIDsArr -----\n
@@ -1133,10 +1063,10 @@ const findEditData = async ({
 
     for (let valueObj of hardwareArr.values()) {
 
-      const publisherIDsArr = lodashGet(valueObj, ['publisherIDsArr'], []);
       const developerIDsArr = lodashGet(valueObj, ['developerIDsArr'], []);
+      const publisherIDsArr = lodashGet(valueObj, ['publisherIDsArr'], []);
 
-      developerPublisherIDsArr = developerPublisherIDsArr.concat(publisherIDsArr, developerIDsArr);
+      developerPublisherIDsArr = developerPublisherIDsArr.concat(developerIDsArr, publisherIDsArr);
 
     }
 
@@ -1186,24 +1116,12 @@ const findEditData = async ({
       //   - Developers Publishers
       // ----------------------------------------
 
-      const publishersArr = [];
       const developersArr = [];
-
-      const publisherIDsArr = lodashGet(value1Obj, ['publisherIDsArr'], []);
+      const publishersArr = [];
+      
       const developerIDsArr = lodashGet(value1Obj, ['developerIDsArr'], []);
-
-      for (let publisherID of publisherIDsArr.values()) {
-
-        const find2Obj = docDevelopersPublishersArr.find((value2Obj) => {
-          return value2Obj.developerPublisherID === publisherID;
-        });
-
-        publishersArr.push({
-          developerPublisherID: find2Obj.developerPublisherID,
-          name: find2Obj.name,
-        });
-
-      }
+      const publisherIDsArr = lodashGet(value1Obj, ['publisherIDsArr'], []);
+      
 
       for (let developerID of developerIDsArr.values()) {
 
@@ -1212,6 +1130,20 @@ const findEditData = async ({
         });
 
         developersArr.push({
+          developerPublisherID: find2Obj.developerPublisherID,
+          name: find2Obj.name,
+        });
+
+      }
+
+
+      for (let publisherID of publisherIDsArr.values()) {
+
+        const find2Obj = docDevelopersPublishersArr.find((value2Obj) => {
+          return value2Obj.developerPublisherID === publisherID;
+        });
+
+        publishersArr.push({
           developerPublisherID: find2Obj.developerPublisherID,
           name: find2Obj.name,
         });

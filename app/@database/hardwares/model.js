@@ -320,6 +320,7 @@ const findForSuggestion = async ({
     
     const language = lodashGet(localeObj, ['language'], '');
     const country = lodashGet(localeObj, ['country'], '');
+    const limit = parseInt(process.env.NEXT_PUBLIC_HARDWARES_SEARCH_SUGGESTION_LIMIT, 10);
     
     
     // --------------------------------------------------
@@ -329,8 +330,12 @@ const findForSuggestion = async ({
     const pattern = new RegExp(`.*${keyword}.*`);
     
     return await SchemaHardwares.find(
-      { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } },
-    ).select('hardwareID name').exec();
+      {
+        language,
+        country,
+        searchKeywordsArr: { $regex: pattern, $options: 'i' }
+      }
+    ).select('hardwareID name').limit(limit).exec();
     
     
   } catch (err) {

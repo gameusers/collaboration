@@ -563,6 +563,7 @@ const findForUserCommunity = async ({
                   gameCommunities_id: 1,
                   urlID: 1,
                   name: 1,
+                  subtitle: 1,
                   imagesAndVideosThumbnailObj: 1,
                 }
               },

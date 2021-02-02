@@ -385,14 +385,22 @@ export default async (req, res) => {
 
     for (let valueObj of hardwareArr.values()) {
 
+      let releaseDate = '';
+
+      if (valueObj.releaseDate) {
+        releaseDate = moment.utc(valueObj.releaseDate).toISOString();
+      }
+
       newHardwareArr.push({
+
         _id: shortid.generate(),
         hardwareID: valueObj.hardwareID,
-        releaseDate: moment(valueObj.releaseDate).utc().toISOString(),
+        releaseDate,
         playersMin: valueObj.playersMin,
         playersMax: valueObj.playersMax,
         publisherIDsArr: valueObj.publisherIDsArr,
         developerIDsArr: valueObj.developerIDsArr,
+
       });
 
     }
@@ -407,10 +415,12 @@ export default async (req, res) => {
     for (let valueObj of linkArr.values()) {
 
       newLinkArr.push({
+
         _id: shortid.generate(),
         type: valueObj.type,
         label: valueObj.label,
         url: valueObj.url,
+
       });
 
     }
@@ -489,6 +499,13 @@ export default async (req, res) => {
     //   - forum-threads
     // ---------------------------------------------
 
+    let forumThreadName = name;
+
+    if (subtitle) {
+      forumThreadName = `${name}${subtitle}`;
+    }
+
+
     let forumThreadsConditionObj = {
       _id: shortid.generate(),
     };
@@ -504,7 +521,7 @@ export default async (req, res) => {
         {
           _id: shortid.generate(),
           language: 'ja',
-          name: `${name}について語ろう！`,
+          name: `${forumThreadName}について語ろう！`,
           comment: '雑談でもなんでもOK！\nみんなで語りましょう！！',
         }
       ],

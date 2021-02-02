@@ -602,6 +602,21 @@ const Component = (props) => {
 
 
       // ---------------------------------------------
+      //   1文字以内の場合、処理停止
+      // ---------------------------------------------
+      
+      if (value.length <= 1) {
+
+        setSuggestionsArr([]);
+        setSuggestionSelectedIndex(9999);
+        return;
+
+      }
+
+
+
+
+      // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
 
@@ -690,12 +705,28 @@ const Component = (props) => {
 
     for (const [index, valueObj] of gamesArr.entries()) {
 
+
+      // --------------------------------------------------
+      //   name
+      // --------------------------------------------------
+
+      let gameName = valueObj.name;
+
+      if (valueObj.subtitle) {
+        gameName = `${valueObj.name}${valueObj.subtitle}`;
+      }
+
+
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
+
       componentSelectedArr.push(
         <Chip
           key={index}
           _id={valueObj._id}
           gameCommunities_id={valueObj.gameCommunities_id}
-          name={valueObj.name}
+          name={gameName}
           imagesAndVideosThumbnailObj={valueObj.imagesAndVideosThumbnailObj}
           gamesArr={gamesArr}
           setGamesArr={setGamesArr}
@@ -754,6 +785,16 @@ const Component = (props) => {
       const thumbnailSrcSet = lodashGet(valueObj, ['imagesAndVideosThumbnailObj', 'arr', 0, 'srcSet'], '');
 
 
+      // --------------------------------------------------
+      //   name
+      // --------------------------------------------------
+
+      let gameName = valueObj.name;
+
+      if (valueObj.subtitle) {
+        gameName = `${valueObj.name}${valueObj.subtitle}`;
+      }
+
       // console.log(chalk`
       //   thumbnailSrc: {green ${thumbnailSrc}}
       //   thumbnailSrcSet: {green ${thumbnailSrcSet}}
@@ -795,7 +836,7 @@ const Component = (props) => {
                 height: 24px;
               }
             `}
-            alt="valueObj.name"
+            alt={gameName}
             src={thumbnailSrc}
             srcSet={thumbnailSrcSet}
           />
@@ -804,7 +845,7 @@ const Component = (props) => {
               margin: 0 0 0 8px;
             `}
           >
-            {valueObj.name}
+            {gameName}
           </span>
         </MenuItem>
       );

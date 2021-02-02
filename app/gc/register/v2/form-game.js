@@ -873,7 +873,7 @@ const Component = (props) => {
 
       // console.log(`
       //   ----- formDataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
+      //   ${util.inspect(formDataObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
 

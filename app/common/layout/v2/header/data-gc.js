@@ -14,7 +14,7 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import moment from 'moment';
 
@@ -120,6 +120,8 @@ const Component = (props) => {
   const [open, setOpen] = useState(true);
 
 
+
+
   // --------------------------------------------------
   //   props
   // --------------------------------------------------
@@ -132,6 +134,8 @@ const Component = (props) => {
   } = props;
 
 
+
+  
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
@@ -155,8 +159,12 @@ const Component = (props) => {
   // ハードウェアの発売日順に並び替える
   const hardwareSortedArr = hardwareArr.slice().sort((a, b) => {
 
-    const date1 = new Date(a.releaseDate);
-    const date2 = new Date(b.releaseDate);
+    // const date1 = new Date(a.releaseDate);
+    // const date2 = new Date(b.releaseDate);
+
+    // 発売日が登録されていないハードウェアを一番後ろに持っていくために new Date() としている
+    const date1 = a.releaseDate ? new Date(a.releaseDate) : new Date();
+    const date2 = b.releaseDate ? new Date(b.releaseDate) : new Date();
 
     return (date1 < date2) ? -1 : 1;
 

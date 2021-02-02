@@ -150,6 +150,17 @@ const Component = (props) => {
     const linkAs = `/gc/${urlID}`;
 
 
+    // --------------------------------------------------
+    //   name
+    // --------------------------------------------------
+
+    let gameName = valueObj.name;
+
+    if (valueObj.subtitle) {
+      gameName = `${valueObj.name}${valueObj.subtitle}`;
+    }
+
+
     codeGames.push(
       <div
         key={index}
@@ -169,14 +180,14 @@ const Component = (props) => {
               margin: 0 8px 0 0;
             }
           `}
-          alt={valueObj.name}
+          alt={gameName}
           src={src}
           srcSet={srcSet}
         />
 
 
         <Link href={linkHref} as={linkAs}>
-          <a>{valueObj.name}</a>
+          <a>{gameName}</a>
         </Link>
 
       </div>

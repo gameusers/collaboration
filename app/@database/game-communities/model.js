@@ -1146,6 +1146,7 @@ const findGamesList = async ({
 
       const orArr = [
         { name: { $regex: pattern, $options: 'i' } },
+        { subtitle: { $regex: pattern, $options: 'i' } },
         { searchKeywordsArr: { $regex: pattern, $options: 'i' } }
       ];
       // lodashSet(conditionObj, ['name'], { $regex: pattern, $options: 'i' });

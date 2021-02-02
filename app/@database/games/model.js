@@ -713,6 +713,7 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
     const pattern = new RegExp(`.*${keyword}.*`);
     const language = lodashGet(localeObj, ['language'], '');
     const country = lodashGet(localeObj, ['country'], '');
+    const limit = parseInt(process.env.NEXT_PUBLIC_GAMES_SEARCH_SUGGESTION_LIMIT, 10);
 
 
 
@@ -721,12 +722,36 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
     //   Aggregation
     // --------------------------------------------------
 
-    const resultArr = await SchemaGames.aggregate([
+    const docArr = await SchemaGames.aggregate([
 
 
       {
-        $match : { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } }
+        $match: {
+          language,
+          country,
+          $or: [
+            { name: { $regex: pattern, $options: 'i' } },
+            { subtitle: { $regex: pattern, $options: 'i' } },
+            { searchKeywordsArr: { $regex: pattern, $options: 'i' } }
+          ]
+          
+        }
       },
+
+      // {
+      //   $match: {
+      //     language,
+      //     country,
+      //     searchKeywordsArr: { $regex: pattern, $options: 'i' }
+      //   }
+      // },
+
+
+      // --------------------------------------------------
+      //   $limit
+      // --------------------------------------------------
+
+      { $limit: limit },
 
 
       // --------------------------------------------------
@@ -775,6 +800,7 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
         $project: {
           gameCommunities_id: 1,
           name: 1,
+          subtitle: 1,
           imagesAndVideosThumbnailObj: 1,
         }
       },
@@ -783,67 +809,9 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
     ]).exec();
 
 
-
-
-    // --------------------------------------------------
-    //   Loop
-    // --------------------------------------------------
-
-    // const returnArr = [];
-
-    // for (let valueObj of resultArr.values()) {
-
-    //   // console.log(`\n---------- valueObj ----------\n`);
-    //   // console.dir(valueObj);
-    //   // console.log(`\n-----------------------------------\n`);
-
-
-    //   // --------------------------------------------------
-    //   //   Deep Copy
-    //   // --------------------------------------------------
-
-    //   const clonedObj = lodashCloneDeep(valueObj);
-
-
-    //   // --------------------------------------------------
-    //   //   画像と動画の処理
-    //   // --------------------------------------------------
-
-    //   const formattedObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.imagesAndVideosObj });
-
-    //   if (formattedObj) {
-
-    //     clonedObj.imagesAndVideosObj = formattedObj;
-
-    //   } else {
-
-    //     delete clonedObj.imagesAndVideosObj;
-
-    //   }
-
-    //   // console.log(`\n---------- clonedObj ----------\n`);
-    //   // console.dir(clonedObj);
-    //   // console.log(`\n-----------------------------------\n`);
-
-    //   // --------------------------------------------------
-    //   //   Push
-    //   // --------------------------------------------------
-
-    //   returnArr.push(clonedObj);
-
-
-    // }
-
-
     // console.log(`
-    //   ----- resultArr -----\n
-    //   ${util.inspect(resultArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- returnArr -----\n
-    //   ${util.inspect(returnArr, { colors: true, depth: null })}\n
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
@@ -852,7 +820,7 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
     //   Return
     // --------------------------------------------------
 
-    return resultArr;
+    return docArr;
 
 
   } catch (err) {

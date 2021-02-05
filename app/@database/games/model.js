@@ -344,7 +344,7 @@ const findForHeroImage = async ({ localeObj }) => {
     //   Find
     // --------------------------------------------------
 
-    let resultArr = await SchemaGames.aggregate([
+    const docArr = await SchemaGames.aggregate([
 
 
       // --------------------------------------------------
@@ -352,7 +352,9 @@ const findForHeroImage = async ({ localeObj }) => {
       // --------------------------------------------------
 
       {
-        $match : { 'imagesAndVideos_id': { $exists: true, $ne: '' } }
+        $match : {
+          imagesAndVideos_id: { $exists: true, $ne: '' },
+        }
       },
 
 
@@ -500,7 +502,7 @@ const findForHeroImage = async ({ localeObj }) => {
     //   ヒーローイメージがランダムに表示されるように並び替える
     // --------------------------------------------------
 
-    let returnObj = lodashGet(resultArr, [0], {});
+    let returnObj = lodashGet(docArr, [0], {});
 
     if (Object.keys(returnObj).length !== 0) {
 
@@ -638,6 +640,18 @@ const findForHeroImage = async ({ localeObj }) => {
 
 
 
+
+    // --------------------------------------------------
+    //   subtitle を追加
+    // --------------------------------------------------
+
+    if (returnObj.subtitle) {
+      returnObj.name = `${returnObj.name}${returnObj.subtitle}`;
+    }
+
+
+
+
     // --------------------------------------------------
     //   Type
     // --------------------------------------------------
@@ -657,8 +671,8 @@ const findForHeroImage = async ({ localeObj }) => {
     // `);
 
     // console.log(`
-    //   ----- resultArr -----\n
-    //   ${util.inspect(resultArr, { colors: true, depth: null })}\n
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 

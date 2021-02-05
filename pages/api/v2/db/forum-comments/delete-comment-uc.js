@@ -166,6 +166,7 @@ export default async (req, res) => {
       
     });
     
+    const users_id = lodashGet(docForumCommentsObj, ['users_id'], '');
     const replies = lodashGet(docForumCommentsObj, ['replies'], 0);
     const imagesAndVideos_idsArr = lodashGet(docForumCommentsObj, ['imagesAndVideos_idsArr'], []);
     const images = lodashGet(docForumCommentsObj, ['images'], 0);
@@ -304,24 +305,29 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   experience
+    //   experience / 投稿者の場合のみ
     // --------------------------------------------------
     
-    const experienceObj = await experienceCalculate({ 
+    if (loginUsers_id && users_id && loginUsers_id === users_id) {
+
+      const experienceObj = await experienceCalculate({ 
+        
+        req,
+        localeObj,
+        loginUsers_id,
+        arr: [{
+          type: 'forum-count-post',
+          calculation: 'subtraction',
+        }],
+        
+      });
       
-      req,
-      localeObj,
-      loginUsers_id,
-      arr: [{
-        type: 'forum-count-post',
-        calculation: 'subtraction',
-      }],
-      
-    });
-    
-    if (Object.keys(experienceObj).length !== 0) {
-      returnObj.experienceObj = experienceObj;
+      if (Object.keys(experienceObj).length !== 0) {
+        returnObj.experienceObj = experienceObj;
+      }
+
     }
+
     
     
     
@@ -330,6 +336,11 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   pages/api/v2/db/forum-comments/delete-comment-uc.js
+    // `);
+
     // console.log(chalk`
     //   userCommunities_id: {green ${userCommunities_id}}
     //   forumThreads_id: {green ${forumThreads_id}}
@@ -337,6 +348,12 @@ export default async (req, res) => {
     //   anonymity: {green ${anonymity} / ${typeof anonymity}}
     //   IP: {green ${ip}}
     //   User Agent: {green ${req.headers['user-agent']}}
+    // `);
+
+    // console.log(`
+    //   ----- docForumCommentsObj -----\n
+    //   ${util.inspect(docForumCommentsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     

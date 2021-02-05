@@ -3141,10 +3141,12 @@ const findForDeleteComment = async ({
     //   - 編集権限（サイト管理者か投稿者）
     // ---------------------------------------------
 
+    const users_id = lodashGet(docArr, [0, 'users_id'], '');
+
     const editable = verifyAuthority({
 
       req,
-      users_id: lodashGet(docArr, [0, 'users_id'], ''),
+      users_id,
       loginUsers_id,
       ISO8601: lodashGet(docArr, [0, 'createdDate'], ''),
       _id: lodashGet(docArr, [0, '_id'], ''),
@@ -3199,6 +3201,7 @@ const findForDeleteComment = async ({
 
     const returnObj = {
 
+      users_id,
       replies,
       imagesAndVideos_idsArr,
       images,
@@ -3480,10 +3483,12 @@ const findForDeleteReply = async ({
     //   - 編集権限（サイト管理者か投稿者）
     // ---------------------------------------------
 
+    const users_id = lodashGet(docArr, [0, 'users_id'], '');
+
     const editable = verifyAuthority({
 
       req,
-      users_id: lodashGet(docArr, [0, 'users_id'], ''),
+      users_id,
       loginUsers_id,
       ISO8601: lodashGet(docArr, [0, 'createdDate'], ''),
       _id: lodashGet(docArr, [0, '_id'], ''),
@@ -3521,6 +3526,7 @@ const findForDeleteReply = async ({
 
     const returnObj = {
 
+      users_id,
       imagesAndVideos_id,
       images,
       videos,

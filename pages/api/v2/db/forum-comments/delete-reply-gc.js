@@ -172,11 +172,7 @@ export default async (req, res) => {
       
     });
     
-    
-    // --------------------------------------------------
-    //   images & videos
-    // --------------------------------------------------
-    
+    const users_id = lodashGet(docForumCommentsObj, ['users_id'], '');
     const imagesAndVideos_id = lodashGet(docForumCommentsObj, ['imagesAndVideos_id'], '');
     const images = lodashGet(docForumCommentsObj, ['images'], 0);
     const videos = lodashGet(docForumCommentsObj, ['images'], 0);
@@ -319,23 +315,27 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   experience
+    //   experience / 投稿者の場合のみ
     // --------------------------------------------------
     
-    const experienceObj = await experienceCalculate({ 
+    if (loginUsers_id && users_id && loginUsers_id === users_id) {
+
+      const experienceObj = await experienceCalculate({ 
+        
+        req,
+        localeObj,
+        loginUsers_id,
+        arr: [{
+          type: 'forum-count-post',
+          calculation: 'subtraction',
+        }],
+        
+      });
       
-      req,
-      localeObj,
-      loginUsers_id,
-      arr: [{
-        type: 'forum-count-post',
-        calculation: 'subtraction',
-      }],
-      
-    });
-    
-    if (Object.keys(experienceObj).length !== 0) {
-      returnObj.experienceObj = experienceObj;
+      if (Object.keys(experienceObj).length !== 0) {
+        returnObj.experienceObj = experienceObj;
+      }
+
     }
     
     

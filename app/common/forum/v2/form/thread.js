@@ -714,9 +714,13 @@ const Component = (props) => {
         setShowForm(false);
       }
 
+      // console.log(chalk`
+      //   forumThreads_id: {green ${forumThreads_id} / ${typeof forumThreads_id}}
+      //   newForumThreads_id: {green ${newForumThreads_id} / ${typeof newForumThreads_id}}
+      // `);
 
       // ---------------------------------------------
-      //   Scroll To
+      //   Scroll To / 新規投稿時に効かない
       // ---------------------------------------------
 
       handleScrollTo({

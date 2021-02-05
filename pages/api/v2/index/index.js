@@ -31,7 +31,6 @@ import ModelFeeds from 'app/@database/feeds/model.js';
 // ---------------------------------------------
 
 import { returnErrorsArr } from 'app/@modules/log/log.js';
-// import { CustomError } from 'app/@modules/error/custom.js';
 
 
 // ---------------------------------------------
@@ -95,31 +94,6 @@ export default async (req, res) => {
 
 
   try {
-
-
-    // --------------------------------------------------
-    //   GET Data
-    // --------------------------------------------------
-
-    // const urlID = lodashGet(req, ['query', 'urlID'], '');
-    // const forumID = lodashGet(req, ['query', 'forumID'], '');
-    // const threadListPage = parseInt(lodashGet(req, ['query', 'threadListPage'], 1), 10);
-    // const threadListLimit = parseInt(lodashGet(req, ['query', 'threadListLimit'], ''), 10);
-    // const threadPage = parseInt(lodashGet(req, ['query', 'threadPage'], 1), 10);
-    // const threadLimit = parseInt(lodashGet(req, ['query', 'threadLimit'], ''), 10);
-    // const commentLimit = parseInt(lodashGet(req, ['query', 'commentLimit'], ''), 10);
-    // const replyLimit = parseInt(lodashGet(req, ['query', 'replyLimit'], ''), 10);
-
-    // lodashSet(requestParametersObj, ['urlID'], urlID);
-    // lodashSet(requestParametersObj, ['forumID'], forumID);
-    // lodashSet(requestParametersObj, ['threadListPage'], threadListPage);
-    // lodashSet(requestParametersObj, ['threadListLimit'], threadListLimit);
-    // lodashSet(requestParametersObj, ['threadPage'], threadPage);
-    // lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
-    // lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
-    // lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
-
-
 
 
     // --------------------------------------------------

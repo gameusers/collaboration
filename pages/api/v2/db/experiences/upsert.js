@@ -161,7 +161,7 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB findeOne
+    //   表示する称号が獲得済みのものかチェックする
     // --------------------------------------------------
     
     const docExperiencesObj = await ModelExperiences.findOne({
@@ -174,7 +174,7 @@ export default async (req, res) => {
     
     const acquiredTitles_idsArr = lodashGet(docExperiencesObj, ['acquiredTitles_idsArr'], []);
     const valueArr = lodashGet(validationObj, ['valueArr'], []);
-    const saveTitles_idsArr = [];
+    let saveTitles_idsArr = [];
     
     for (let titles_id of valueArr.values()) {
       
@@ -183,6 +183,16 @@ export default async (req, res) => {
       }
       
     }
+
+
+
+
+    // --------------------------------------------------
+    //   表示できる数は決まっているので、多すぎる要素をカットする
+    // --------------------------------------------------
+
+    const limit = parseInt(process.env.NEXT_PUBLIC_SELECTED_TITLES_LIMIT, 10);
+    saveTitles_idsArr = saveTitles_idsArr.slice(0, limit);
     
     
     

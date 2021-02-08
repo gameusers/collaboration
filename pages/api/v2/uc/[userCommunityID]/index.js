@@ -176,7 +176,7 @@ export default async (req, res) => {
 
     // ---------------------------------------------
     //   - headerObj
-    //   ユーザーがトップ画像をアップロードしていない場合は、ランダム取得のゲーム画像を代わりに利用する
+    //   ユーザーがトップ画像をアップロードしていない場合は、ランダム取得の画像を代わりに利用する
     // ---------------------------------------------
 
     const imagesAndVideosObj = lodashGet(returnObj, ['headerObj', 'imagesAndVideosObj'], {});

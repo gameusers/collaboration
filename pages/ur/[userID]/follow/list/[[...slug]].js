@@ -66,6 +66,31 @@ const ContainerLayout = (props) => {
 
 
   // --------------------------------------------------
+  //   Hooks
+  // --------------------------------------------------
+
+  // const [cardPlayersObj, setCardPlayersObj] = useState(props.cardPlayersObj);
+  // const [cardPlayers_idsArr, setCardPlayers_idsArr] = useState(props.cardPlayers_idsArr);
+
+
+  // useEffect(() => {
+
+
+  //   // --------------------------------------------------
+  //   //   Router.push でページを移動した際の処理
+  //   //   getServerSideProps でデータを取得してからデータを更新する
+  //   // --------------------------------------------------
+
+  //   setCardPlayersObj(props.cardPlayersObj);
+  //   setCardPlayers_idsArr(props.cardPlayers_idsArr);
+
+
+  // }, [props.ISO8601]);
+
+
+
+
+  // --------------------------------------------------
   //   Component - Sidebar
   // --------------------------------------------------
 
@@ -98,11 +123,15 @@ const ContainerLayout = (props) => {
       />
 
       <FollowList
+        ISO8601={props.ISO8601}
         pageType="ur"
+        listType={props.listType}
+        userID={props.userID}
         users_id={props.users_id}
-        accessLevel={props.accessLevel}
+        // accessLevel={props.accessLevel}
+        followListGcObj={props.followListGcObj}
         cardPlayersObj={props.cardPlayersObj}
-        followMembersObj={props.followMembersObj}
+        followListUrObj={props.followListUrObj}
       />
 
     </React.Fragment>
@@ -190,6 +219,26 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
 
   const userID = query.userID;
+  const slugsArr = lodashGet(query, ['slug'], []);
+
+  let listType = slugsArr[0];
+  let page = 1;
+
+  if (Math.sign(slugsArr[1]) === 1) {
+    page = slugsArr[1];
+  }
+
+  // console.log(`
+  //   ----- query -----\n
+  //   ${util.inspect(query, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+
+  // console.log(`
+  //   ----- slugsArr -----\n
+  //   ${util.inspect(slugsArr, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
 
 
   // --------------------------------------------------
@@ -215,7 +264,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   const resultObj = await fetchWrapper({
 
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}/follow?page=${1}&limit=${limit}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}/follow/list?listType=${listType}&page=${page}&limit=${limit}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -239,10 +288,15 @@ export async function getServerSideProps({ req, res, query }) {
 
   const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
   const users_id = lodashGet(dataObj, ['users_id'], '');
+  const followListGcObj = lodashGet(dataObj, ['followListGcObj'], {});
   const cardPlayersObj = lodashGet(dataObj, ['cardPlayersObj'], {});
-  const followMembersObj = lodashGet(dataObj, ['followMembersObj'], {});
+  const followListUrObj = lodashGet(dataObj, ['followListUrObj'], {});
 
-
+  // console.log(`
+  //   ----- followListUrObj -----\n
+  //   ${util.inspect(followListUrObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
 
 
   // --------------------------------------------------
@@ -388,9 +442,12 @@ export async function getServerSideProps({ req, res, query }) {
 
       accessLevel,
       userID,
+      listType,
+      page,
       users_id,
+      followListGcObj,
       cardPlayersObj,
-      followMembersObj,
+      followListUrObj,
 
     }
 

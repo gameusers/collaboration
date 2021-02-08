@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import moment from 'moment';
+import shortid from 'shortid';
 
 
 // ---------------------------------------------
@@ -171,7 +172,7 @@ export default async (req, res) => {
     //   - Property
     // ---------------------------------------------
 
-    const conditionObj = {};
+    let conditionFollowsObj = {};
     let communityType = 'open';
 
 
@@ -193,7 +194,7 @@ export default async (req, res) => {
       //   データ取得用検索条件
       // ---------------------------------------------
 
-      conditionObj.gameCommunities_id = gameCommunities_id;
+      conditionFollowsObj.gameCommunities_id = gameCommunities_id;
 
 
     // ---------------------------------------------
@@ -214,7 +215,7 @@ export default async (req, res) => {
       //   データ取得用検索条件
       // ---------------------------------------------
 
-      conditionObj.userCommunities_id = userCommunities_id;
+      conditionFollowsObj.userCommunities_id = userCommunities_id;
 
 
       // ---------------------------------------------
@@ -256,7 +257,7 @@ export default async (req, res) => {
     //   データ取得
     // --------------------------------------------------
 
-    const docFollowsObj = await ModelFollows.findOne({ conditionObj });
+    const docFollowsObj = await ModelFollows.findOne({ conditionObj: conditionFollowsObj });
 
 
     // console.log(`
@@ -275,6 +276,7 @@ export default async (req, res) => {
     let approvalArr = lodashGet(docFollowsObj, ['approvalArr'], []);
     let approvalCount = lodashGet(docFollowsObj, ['approvalCount'], 0);
     let blockArr = lodashGet(docFollowsObj, ['blockArr'], []);
+    let blockCount = lodashGet(docFollowsObj, ['blockCount'], 0);
 
     const approval = lodashGet(docFollowsObj, ['approval'], false);
 
@@ -361,27 +363,82 @@ export default async (req, res) => {
 
 
     // --------------------------------------------------
-    //   Save Object
+    //   Insert
     // --------------------------------------------------
 
-    const saveObj = {
+    let conditionObj = {
+      _id: shortid.generate(),
+    }
 
-      $set: {
+    let saveObj = {
 
-        followedArr,
-        followedCount,
-        approvalArr,
-        approvalCount,
-        blockArr,
-        updatedDate: moment().utc().toISOString(),
-
-      }
+      updatedDate: moment().utc().toISOString(),
+      users_id: '',
+      approval: false,
+      followArr: [],
+      followCount: 0,
+      followedArr,
+      followedCount,
+      approvalArr,
+      approvalCount,
+      blockArr,
+      blockCount,
 
     };
+
+    if (gameCommunities_id) {
+
+      saveObj.gameCommunities_id = gameCommunities_id;
+      saveObj.userCommunities_id = '';
+
+    } else {
+
+      saveObj.gameCommunities_id = '';
+      saveObj.userCommunities_id = userCommunities_id;
+
+    }
 
 
     // --------------------------------------------------
     //   Update
+    // --------------------------------------------------
+
+    if (docFollowsObj) {
+
+      if (gameCommunities_id) {
+
+        conditionObj = {
+          gameCommunities_id
+        }
+
+      } else {
+
+        conditionObj = {
+          userCommunities_id
+        }
+
+      }
+      
+      saveObj = {
+
+        $set: {
+
+          followedArr,
+          followedCount,
+          approvalArr,
+          approvalCount,
+          blockArr,
+          updatedDate: moment().utc().toISOString(),
+
+        }
+
+      };
+
+    }
+
+
+    // --------------------------------------------------
+    //   Upsert
     // --------------------------------------------------
 
     await ModelFollows.upsert({

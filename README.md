@@ -11,7 +11,7 @@
 
 Game Users を Node.js に書き換えたい！
 
-[開発中のウェブサイト（サンプル）](https://dev-1.gameusers.org/)
+[運営中のウェブサイト](https://gameusers.org/)
 <br /><br /><br />
 
 # 開発環境の作り方
@@ -287,11 +287,3 @@ Node.js が利用できない場合はインストールを行い、利用でき
 ## ライセンス
 
 Game Users プロジェクトに帰属します。
-<br /><br />
-
-
-## 開発について
-
-ここで開発について解説していますので、よければチェックしてみてください。
-
-https://gameusers.org/dev/blog/live/

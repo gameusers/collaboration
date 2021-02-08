@@ -26,6 +26,7 @@ import lodashHas from 'lodash/has';
 import ModelUsers from 'app/@database/users/model.js';
 import ModelCardPlayers from 'app/@database/card-players/model.js';
 import ModelFeeds from 'app/@database/feeds/model.js';
+import ModelFollows from 'app/@database/follows/model.js';
 
 
 // ---------------------------------------------
@@ -112,12 +113,28 @@ export default async (req, res) => {
     // --------------------------------------------------
 
     const userID = lodashGet(req, ['query', 'userID'], '');
+    const listType = lodashGet(req, ['query', 'listType'], '');
     const page = parseInt(lodashGet(req, ['query', 'page'], 1), 10);
     const limit = parseInt(lodashGet(req, ['query', 'limit'], '') || process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT, 10);
 
     lodashSet(requestParametersObj, ['userID'], userID);
+    lodashSet(requestParametersObj, ['listType'], listType);
     lodashSet(requestParametersObj, ['page'], page);
     lodashSet(requestParametersObj, ['limit'], limit);
+
+
+
+
+    // --------------------------------------------------
+    //   Login Check
+    // --------------------------------------------------
+
+    if (!req.isAuthenticated()) {
+
+      statusCode = 403;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'c-tLHLHXX', messageID: 'xLLNIpo6a' }] });
+
+    }
 
 
 
@@ -159,13 +176,35 @@ export default async (req, res) => {
 
     }
 
+
+    // --------------------------------------------------
+    //   自分のページではない場合はエラー
+    // --------------------------------------------------
+
+    if (users_id !== loginUsers_id) {
+
+      statusCode = 401;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'cenSkI4qb', messageID: 'Error' }] });
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   users_id & pagesObj
+    // --------------------------------------------------
+
     returnObj.users_id = users_id;
+    returnObj.pagesObj = lodashGet(usersObj, ['pagesObj'], []);
+    
 
 
-    // ---------------------------------------------
-    //   - headerObj
+
+    // --------------------------------------------------
+    //   headerObj
     //   ユーザーがトップ画像をアップロードしていない場合は、ランダム取得の画像を代わりに利用する
-    // ---------------------------------------------
+    // --------------------------------------------------
 
     const imagesAndVideosObj = lodashGet(returnObj, ['headerObj', 'imagesAndVideosObj'], {});
     const usersImagesAndVideosObj = lodashGet(usersObj, ['headerObj', 'imagesAndVideosObj'], {});
@@ -175,45 +214,6 @@ export default async (req, res) => {
     }
 
     returnObj.headerObj = usersObj.headerObj;
-
-
-    // --------------------------------------------------
-    //   pagesObj
-    // --------------------------------------------------
-
-    returnObj.pagesObj = lodashGet(usersObj, ['pagesObj'], []);
-
-
-
-
-    // --------------------------------------------------
-    //   DB find / Card Players
-    // --------------------------------------------------
-
-    const argumentsObj = {
-
-      localeObj,
-      loginUsers_id,
-      adminUsers_id: users_id,
-      users_id,
-      controlType: 'follow',
-
-    };
-
-
-    if (await validationInteger({ throwError: false, required: true, value: page }).error === false) {
-      argumentsObj.page = page;
-    }
-
-    if (await validationFollowLimit({ throwError: false, required: true, value: limit }).error === false) {
-      argumentsObj.limit = limit;
-    }
-
-
-    const resultFollowersObj = await ModelCardPlayers.findForFollowers(argumentsObj);
-
-    returnObj.cardPlayersObj = resultFollowersObj.cardPlayersObj;
-    returnObj.followMembersObj = resultFollowersObj.followMembersObj;
 
 
 
@@ -228,6 +228,80 @@ export default async (req, res) => {
       arr: ['all'],
 
     });
+
+
+
+
+    // --------------------------------------------------
+    //   一覧を取得する
+    // --------------------------------------------------
+
+    // ---------------------------------------------
+    //   - 引数
+    // ---------------------------------------------
+
+    const argumentsObj = {
+
+      localeObj,
+      loginUsers_id,
+
+    };
+
+    if (await validationInteger({ throwError: false, required: true, value: page }).error === false) {
+      argumentsObj.page = page;
+    }
+
+    if (await validationFollowLimit({ throwError: false, required: true, value: limit }).error === false) {
+      argumentsObj.limit = limit;
+    }
+
+
+    // ---------------------------------------------
+    //   - ゲームコミュニティ
+    // ---------------------------------------------
+
+    if (listType === 'gc') {
+
+      returnObj.followListGcObj = await ModelFollows.findFollowGamesList(argumentsObj);
+
+
+    // ---------------------------------------------
+    //   - ユーザーコミュニティ
+    // ---------------------------------------------
+
+    } else if (listType === 'uc') {
+
+
+
+    // ---------------------------------------------
+    //   - ユーザー
+    // ---------------------------------------------
+
+    } else {
+
+
+      // --------------------------------------------------
+      //   DB find / Card Players
+      // --------------------------------------------------
+
+      argumentsObj.adminUsers_id = users_id;
+      argumentsObj.users_id = users_id;
+      argumentsObj.controlType = 'follow';
+
+
+      const resultFollowersObj = await ModelCardPlayers.findForFollowers(argumentsObj);
+
+      returnObj.cardPlayersObj = resultFollowersObj.cardPlayersObj;
+      returnObj.followListUrObj = resultFollowersObj.followMembersObj;
+
+      // console.log(`
+      //   ----- resultFollowersObj -----\n
+      //   ${util.inspect(resultFollowersObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+
+    }
 
 
 
@@ -264,20 +338,17 @@ export default async (req, res) => {
 
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/api/v2/ur/[userID]/followers.js
+    //   pages/api/v2/ur/[userID]/follow/list.js
     // `);
 
     // console.log(chalk`
     //   userID: {green ${userID}}
+    //   listType: {green ${listType}}
     //   page: {green ${page} / ${typeof page}}
     //   limit: {green ${limit} / ${typeof limit}}
     // `);
 
-    // console.log(`
-    //   ----- resultFollowersObj -----\n
-    //   ${util.inspect(resultFollowersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    
 
     // console.log(`
     //   ----- returnObj -----\n

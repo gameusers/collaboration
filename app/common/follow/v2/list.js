@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
+import Router from 'next/router';
 import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
@@ -73,27 +74,12 @@ import { showSnackbar } from 'app/@modules/snackbar.js';
 //   Components
 // ---------------------------------------------
 
-import CardPlayer from 'app/common/card/v2/card-player.js';
+import ListGc from 'app/common/follow/v2/list-gc.js';
+import ListUr from 'app/common/follow/v2/list-ur.js';
 
 
 
 
-
-
-// --------------------------------------------------
-//   Emotion
-//   https://emotion.sh/docs/composition
-// --------------------------------------------------
-
-const cssButton = css`
-  && {
-    font-size: 12px;
-    min-width: 40px;
-    min-height: 24px;
-    margin: 0 12px 0 0;
-    padding: 2px 8px 0;
-  }
-`;
 
 
 // --------------------------------------------------
@@ -133,6 +119,8 @@ const Component = (props) => {
   const {
 
     pageType,
+    listType,
+    userID,
     users_id,
     gameCommunities_id,
     userCommunities_id,
@@ -153,15 +141,28 @@ const Component = (props) => {
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
   const [controlType, setControlType] = useState(pageType === 'ur' ? 'follow' : 'followed');
+  
+  const [followListGcObj, setFollowListGcObj] = useState(props.followListGcObj);
   const [cardPlayersObj, setCardPlayersObj] = useState(props.cardPlayersObj);
-  const [followMembersObj, setFollowMembersObj] = useState(props.followMembersObj);
+  const [followListUrObj, setFollowListUrObj] = useState(props.followListUrObj);
 
 
   useEffect(() => {
 
+
+    // --------------------------------------------------
+    //   Router.push でページを移動した際の処理
+    //   ISO8601に変更があったら（ページを移動したら）更新する
+    // --------------------------------------------------
+
     setButtonDisabled(false);
 
-  }, []);
+    setFollowListGcObj(props.followListGcObj);
+    setCardPlayersObj(props.cardPlayersObj);
+    setFollowListUrObj(props.followListUrObj);
+
+
+  }, [props.ISO8601]);
 
 
 
@@ -170,20 +171,20 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
 
-  const stateUser = ContainerStateUser.useContainer();
-  const stateLayout = ContainerStateLayout.useContainer();
+  // const stateUser = ContainerStateUser.useContainer();
+  // const stateLayout = ContainerStateLayout.useContainer();
 
-  const { loginUsersObj } = stateUser;
+  // const { loginUsersObj } = stateUser;
 
-  const {
+  // const {
 
-    setHeaderObj,
-    handleDialogOpen,
-    handleLoadingOpen,
-    handleLoadingClose,
-    handleScrollTo,
+  //   setHeaderObj,
+  //   handleDialogOpen,
+  //   handleLoadingOpen,
+  //   handleLoadingClose,
+  //   handleScrollTo,
 
-  } = stateLayout;
+  // } = stateLayout;
 
 
 
@@ -193,352 +194,21 @@ const Component = (props) => {
   // --------------------------------------------------
 
   /**
-   * フォロワー / メンバーを読み込む
-   * @param {string} changeControlType - 表示するタイプを変更する場合入力　フォロー、フォロワー、承認、ブロックのどれか
-   * @param {number} page - スレッドのページ
-   * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
-   * @param {boolean} forceReload - 強制的に再読み込みする場合は true
+   * リストタイプを変更する / ページを移動する
+   * @param {string} newListType - [gc / uc / ur]
    */
-  const handleRead = async ({
+  const handleChangeListType = async ({
 
-    changeControlType,
-    page = 1,
-    changeLimit,
-    forceReload = false,
+    newListType,
 
   }) => {
 
 
-    try {
-
-
-      // ---------------------------------------------
-      //   Property
-      // ---------------------------------------------
-
-      const newControlType = changeControlType || controlType;
-
-      const loadedDate = lodashGet(followMembersObj, [`${newControlType}Obj`, `page${page}Obj`, 'loadedDate'], '');
-      const arr = lodashGet(followMembersObj, [`${newControlType}Obj`, `page${page}Obj`, 'arr'], []);
-
-      let limit = parseInt((getCookie({ key: 'followLimit' }) || process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT), 10);
-
-
-
-
-      // ---------------------------------------------
-      //   Change Limit
-      // ---------------------------------------------
-
-      if (changeLimit) {
-
-
-        limit = changeLimit;
-
-
-        // ---------------------------------------------
-        //   Set Cookie - followLimit
-        // ---------------------------------------------
-
-        setCookie({ key: 'followLimit', value: changeLimit });
-
-
-      }
-
-
-
-
-      // ---------------------------------------------
-      //   再読込するかどうか
-      // ---------------------------------------------
-
-      let reload = false;
-
-
-      // ---------------------------------------------
-      //   controlType を変更する場合
-      // ---------------------------------------------
-
-      if (changeControlType) {
-
-
-        // ---------------------------------------------
-        //   Set controlType
-        // ---------------------------------------------
-
-        setControlType(changeControlType);
-
-
-        // ---------------------------------------------
-        //   再読込する
-        // ---------------------------------------------
-
-        reload = true;
-
-
-      // ---------------------------------------------
-      //   1ページに表示する件数を変更した場合、再読込
-      // ---------------------------------------------
-
-      } else if (changeLimit || forceReload) {
-
-
-        // ---------------------------------------------
-        //   再読込
-        // ---------------------------------------------
-
-        reload = true;
-
-
-      // ---------------------------------------------
-      //   最後の読み込み以降に更新があった場合
-      //   または最後の読み込みからある程度時間（10分）が経っていた場合、再読込する
-      // ---------------------------------------------
-
-      } else if (loadedDate) {
-
-        const datetimeNow = moment().utcOffset(0);
-        const datetimeReloadLimit = moment(loadedDate).add(process.env.NEXT_PUBLIC_FOLLOWERS_RELOAD_MINUTES, 'm').utcOffset(0);
-
-        if (datetimeNow.isAfter(datetimeReloadLimit)) {
-          reload = true;
-        }
-
-      }
-
-
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/follow/v2/components/members.js - handleRead
-      // `);
-
-      // console.log(chalk`
-      //   newControlType: {green ${newControlType}}
-      //   controlType: {green ${controlType}}
-      //   page: {green ${page}}
-      //   reload: {green ${reload}}
-      // `);
-
-      // console.log(`
-      //   ----- followMembersObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(followMembersObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
-      // console.log(`
-      //   ----- arr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
-
-      // ---------------------------------------------
-      //   すでにデータを読み込んでいる場合は、ストアのデータを表示する
-      // ---------------------------------------------
-
-      if (!reload && arr.length > 0) {
-
-        // console.log('store');
-
-
-        // ---------------------------------------------
-        //   Set Page
-        // ---------------------------------------------
-
-        const clonedObj = lodashCloneDeep(followMembersObj);
-        lodashSet(clonedObj, [`${newControlType}Obj`, 'page'], page);
-        setFollowMembersObj(clonedObj);
-
-
-        // ---------------------------------------------
-        //   Return
-        // ---------------------------------------------
-
-        return;
-
-
-      }
-
-      // console.log('fetch');
-
-
-
-
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-
-      setButtonDisabled(true);
-
-
-
-
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
-
-      const formDataObj = {
-
-        users_id,
-        gameCommunities_id,
-        userCommunities_id,
-        controlType: newControlType,
-        page,
-        limit,
-
-      };
-
-      // console.log(`
-      //   ----- formDataObj -----\n
-      //   ${util.inspect(formDataObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
-      // console.log(`
-      //   ----- JSON.stringify(formDataObj) -----\n
-      //   ${util.inspect(JSON.stringify(formDataObj), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
-      // console.log(`
-      //   ----- formDataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
-      // console.log(`
-      //   ----- JSON.stringify(formDataObj) -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(JSON.stringify(formDataObj))), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
-
-      const resultObj = await fetchWrapper({
-
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/read-followers`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
-
-      });
-
-
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-
-
-
-
-      // ---------------------------------------------
-      //   Update - cardPlayersObj
-      // ---------------------------------------------
-
-      const cardPlayersNewObj = lodashGet(resultObj, ['data', 'cardPlayersObj'], {});
-      const cardPlayersMergedObj = reload ? cardPlayersNewObj : lodashMerge(cardPlayersObj, cardPlayersNewObj);
-      setCardPlayersObj(cardPlayersMergedObj);
-
-
-      // ---------------------------------------------
-      //   Update - followMembersObj
-      // ---------------------------------------------
-
-      const followMembersNewObj = lodashGet(resultObj, ['data', 'followMembersObj'], {});
-      const followMembersMergedObj = reload ? followMembersNewObj : lodashMerge(followMembersObj, followMembersNewObj);
-      setFollowMembersObj(followMembersMergedObj);
-
-
-
-
-      // ---------------------------------------------
-      //   console.log
-      // ---------------------------------------------
-
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/follow/v2/components/members.js - handleRead
-      // `);
-
-      // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id}}
-      //   forumThreads_id: {green ${forumThreads_id}}
-      //   forumComments_id: {green ${forumComments_id}}
-      // `);
-
-      // console.log(`
-      //   ----- formDataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
-      // console.log(`
-      //   ----- cardPlayersMergedObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(cardPlayersMergedObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
-      // console.log(`
-      //   ----- followMembersMergedObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(followMembersMergedObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
-
-    } catch (errorObj) {
-
-
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-
-      showSnackbar({
-
-        enqueueSnackbar,
-        intl,
-        errorObj,
-
-      });
-
-
-    } finally {
-
-
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-
-      setButtonDisabled(false);
-
-
-      // ---------------------------------------------
-      //   Scroll To
-      // ---------------------------------------------
-
-      handleScrollTo({
-
-        to: 'elementFollowList',
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
-
-      });
-
-
-    }
+    // ---------------------------------------------
+    //   Router.push = History API pushState()
+    // ---------------------------------------------
+
+    Router.push(`/ur/${userID}/follow/list/${newListType}`);
 
 
   };
@@ -546,241 +216,40 @@ const Component = (props) => {
 
 
 
-  /**
-   * フォロワーやコミュニティメンバーの管理 - フォロー解除（コミュニティから退会）/ 承認 / 拒否 / ブロック / ブロック解除
-   * @param {string} targetUsers_id - DB users _id / 管理するユーザーのID
-   * @param {string} type - タイプ [follow / unfollow / approval / unapproval / block / unblock]
-   */
-  const handleManage = async ({
-
-    targetUsers_id,
-    type,
-
-  }) => {
-
-
-    try {
-
-
-      // ---------------------------------------------
-      //   Loading Open
-      // ---------------------------------------------
-
-      handleLoadingOpen({});
-
-
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-
-      setButtonDisabled(true);
-
-
-
-
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
-
-      let resultObj = {};
-
-
-      // ----------------------------------------
-      //   - User
-      // ----------------------------------------
-
-      if (pageType === 'ur') {
-
-
-        // ---------------------------------------------
-        //   FormData
-        // ---------------------------------------------
-
-        const formDataObj = {
-
-          targetUsers_id,
-          type,
-
-        };
-
-
-        // ---------------------------------------------
-        //   Fetch
-        // ---------------------------------------------
-
-        resultObj = await fetchWrapper({
-
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/upsert-manage-followers-ur`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-
-        });
-
-
-      // ----------------------------------------
-      //   - User Community
-      // ----------------------------------------
-
-      } else if (pageType === 'uc') {
-
-
-        // ---------------------------------------------
-        //   FormData
-        // ---------------------------------------------
-
-        const formDataObj = {
-
-          userCommunities_id,
-          targetUsers_id,
-          type,
-
-        };
-
-
-        // ---------------------------------------------
-        //   Fetch
-        // ---------------------------------------------
-
-        resultObj = await fetchWrapper({
-
-          urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/db/follows/upsert-manage-followers-uc`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-
-        });
-
-
-      }
-
-
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-
-
-
-
-      // ---------------------------------------------
-      //   メンバー読み込み
-      // ---------------------------------------------
-
-      handleRead({
-
-        page,
-        forceReload: true,
-
-      });
-
-
-
-
-      // ---------------------------------------------
-      //   Update - Header
-      // ---------------------------------------------
-
-      const headerObj = lodashGet(resultObj, ['data', 'headerObj'], {});
-
-      if (Object.keys(headerObj).length !== 0) {
-        setHeaderObj(headerObj);
-      }
-
-
-      // ---------------------------------------------
-      //   Snackbar: Success
-      // ---------------------------------------------
-
-      showSnackbar({
-
-        enqueueSnackbar,
-        intl,
-        experienceObj: lodashGet(resultObj, ['data', 'experienceObj'], {}),
-
-      });
-
-
-
-
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
-
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/follow/v2/components/members.js - handleManage
-      // `);
-
-      // console.log(chalk`
-      //   users_id: {green ${users_id} / ${typeof users_id}}
-      //   gameCommunities_id: {green ${gameCommunities_id} / ${typeof gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id} / ${typeof userCommunities_id}}
-      //   pageType: {green ${pageType} / ${typeof pageType}}
-      //   targetUsers_id: {green ${targetUsers_id} / ${typeof targetUsers_id}}
-      //   type: {green ${type} / ${typeof type}}
-      // `);
-
-
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
-
-    } catch (errorObj) {
-
-
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-
-      showSnackbar({
-
-        enqueueSnackbar,
-        intl,
-        errorObj,
-
-      });
-
-
-    } finally {
-
-
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-
-      setButtonDisabled(false);
-
-
-      // ---------------------------------------------
-      //   Loading Close
-      // ---------------------------------------------
-
-      handleLoadingClose();
-
-
-    }
-
-
-  };
-
-
-
 
   // --------------------------------------------------
-  //   Property
+  //   Component - List
   // --------------------------------------------------
 
-  const page = lodashGet(followMembersObj, [`${controlType}Obj`, 'page'], 1);
-  const limit = lodashGet(followMembersObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT, 10));
-  const count = lodashGet(followMembersObj, [`${controlType}Obj`, 'count'], 0);
-  const arr = lodashGet(followMembersObj, [`${controlType}Obj`, `page${page}Obj`, 'arr'], []);
+  let componentList = '';
 
-  const loginUsers_id = lodashGet(loginUsersObj, ['_id'], '');
+  if (listType === 'gc') {
+
+    componentList =
+      <ListGc
+        followListGcObj={followListGcObj}
+      />
+    ;
+
+  } else if (listType === 'uc') {
+
+    // componentList =
+    //   <ListGc
+    //     followListGcObj={followListGcObj}
+    //   />
+    // ;
+
+  } else if (listType === 'ur') {
+
+    componentList =
+      <ListUr
+        cardPlayersObj={cardPlayersObj}
+        setCardPlayersObj={setCardPlayersObj}
+        followListUrObj={followListUrObj}
+      />
+    ;
+
+  }
 
 
 
@@ -807,8 +276,8 @@ const Component = (props) => {
   // `);
 
   // console.log(`
-  //   ----- followMembersObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(followMembersObj)), { colors: true, depth: null })}\n
+  //   ----- followListUrObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(followListUrObj)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
 
@@ -817,125 +286,6 @@ const Component = (props) => {
   //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-
-
-
-
-  // --------------------------------------------------
-  //   Component - Card Players
-  // --------------------------------------------------
-
-  const componentsArr = [];
-
-  for (const [index, cardPlayers_id] of arr.entries()) {
-
-
-    // --------------------------------------------------
-    //   ユーザーデータ - 管理する相手
-    // --------------------------------------------------
-
-    const targetCardPlayersObj = lodashGet(cardPlayersObj, [cardPlayers_id], {});
-    const targetUsers_id = lodashGet(cardPlayersObj, [cardPlayers_id, 'users_id'], '');
-
-
-    // --------------------------------------------------
-    //   管理ボタンを表示するかどうか
-    // --------------------------------------------------
-
-    // const showManageButton = (accessLevel >= 50 && loginUsers_id !== targetUsers_id) ? true : false;
-
-
-    // console.log(chalk`
-    //   targetUsers_id: {green ${targetUsers_id}}
-    // `);
-
-    // console.log(`
-    //   ----- targetCardPlayersObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(targetCardPlayersObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-
-    // --------------------------------------------------
-    //   push
-    // --------------------------------------------------
-
-    componentsArr.push(
-      <div
-        css={css`
-          ${index === 0 ? 'margin: 0' : 'margin: 16px 0 0 0'};
-        `}
-        key={index}
-      >
-
-
-        {/* Card Player */}
-        <div
-          css={css`
-            margin: 0;
-          `}
-        >
-
-          <CardPlayer
-            obj={targetCardPlayersObj}
-            showFollow={true}
-            showEditButton={true}
-            defaultExpanded={false}
-            cardPlayersObj={cardPlayersObj}
-            setCardPlayersObj={setCardPlayersObj}
-          />
-
-        </div>
-
-
-
-
-        <Paper
-          css={css`
-            display: flex;
-            flex-flow: row wrap;
-            border-top: 1px dashed #A4A4A4;
-            margin: 0 0 16px 0;
-            padding: 10px 12px;
-          `}
-        >
-
-
-          {controlType === 'follow' &&
-            <div
-              css={css`
-                margin: 0 16px 0 0;
-              `}
-            >
-              <Button
-                css={cssButton}
-                variant="contained"
-                color="secondary"
-                disabled={buttonDisabled}
-                onClick={() => handleDialogOpen({
-                  title: pageType === 'ur' ? 'フォロー解除' : 'コミュニティ退会',
-                  description: pageType === 'ur' ? 'フォローを解除しますか？' : 'コミュニティから退会させますか？',
-                  handle: handleManage,
-                  argumentsObj: {
-                    targetUsers_id,
-                    type: 'unfollow',
-                  },
-                })}
-              >
-                {pageType === 'ur' ? 'フォロー解除' : '退会'}
-              </Button>
-            </div>
-          }
-
-
-        </Paper>
-
-
-      </div>
-    );
-
-
-  }
 
 
 
@@ -1043,16 +393,16 @@ const Component = (props) => {
           <FormControl>
 
             <Select
-              value="ur"
-              // onChange={(eventObj) => setSex(eventObj.target.value)}
+              value={listType}
+              onChange={(eventObj) => handleChangeListType({ newListType: eventObj.target.value })}
               inputProps={{
                 name: 'typeList',
                 id: 'typeList',
               }}
             >
-              <MenuItem value="gc">ゲームコミュニティ</MenuItem>
-              <MenuItem value="uc">ユーザーコミュニティ</MenuItem>
-              <MenuItem value="ur">ユーザー</MenuItem>
+              <MenuItem value="gc">フォロー中のゲームコミュニティ</MenuItem>
+              <MenuItem value="uc">参加中のユーザーコミュニティ</MenuItem>
+              <MenuItem value="ur">フォロー中のユーザー</MenuItem>
             </Select>
 
           </FormControl>
@@ -1065,78 +415,9 @@ const Component = (props) => {
 
 
 
-      {/* Card Players */}
-      {componentsArr}
-
-
-
-
-      {/* Pagination */}
-      <Paper
-        css={css`
-          display: flex;
-          flex-flow: row wrap;
-          padding: 0 8px 8px 8px;
-        `}
-      >
-
-
-        {/* Pagination */}
-        <div
-          css={css`
-            margin: 8px 24px 0 0;
-          `}
-        >
-
-          <Pagination
-            disabled={buttonDisabled}
-            onChange={(page) => handleRead({
-              page,
-            })}
-            pageSize={limit}
-            current={page}
-            total={count}
-            locale={localeInfo}
-          />
-
-        </div>
-
-
-        {/* Rows Per Page */}
-        <FormControl
-          css={css`
-            margin: 8px 0 0 0 !important;
-          `}
-          variant="outlined"
-        >
-
-          <Select
-            value={limit}
-            onChange={(eventObj) => handleRead({
-              page: 1,
-              changeLimit: eventObj.target.value,
-            })}
-            input={
-              <OutlinedInput
-                classes={{
-                  input: classes.input
-                }}
-                name="follow-members-pagination"
-                id="outlined-rows-per-page"
-              />
-            }
-          >
-            <MenuItem value={5}>5</MenuItem>
-            <MenuItem value={10}>10</MenuItem>
-            <MenuItem value={20}>20</MenuItem>
-            <MenuItem value={50}>50</MenuItem>
-          </Select>
-
-        </FormControl>
-
-
-      </Paper>
-
+      {/* Component List */}
+      {componentList}
+      
 
     </Element>
   );

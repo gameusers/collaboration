@@ -19,9 +19,9 @@ import Router from 'next/router';
 import { useIntl } from 'react-intl';
 import { useSnackbar } from 'notistack';
 import { Element } from 'react-scroll';
-import Pagination from 'rc-pagination';
-import localeInfo from 'rc-pagination/lib/locale/ja_JP';
-import moment from 'moment';
+// import Pagination from 'rc-pagination';
+// import localeInfo from 'rc-pagination/lib/locale/ja_JP';
+// import moment from 'moment';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react';
@@ -46,7 +46,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Paper from '@material-ui/core/Paper';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
+// import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -56,18 +56,18 @@ import Select from '@material-ui/core/Select';
 //   States
 // ---------------------------------------------
 
-import { ContainerStateUser } from 'app/@states/user.js';
-import { ContainerStateLayout } from 'app/@states/layout.js';
+// import { ContainerStateUser } from 'app/@states/user.js';
+// import { ContainerStateLayout } from 'app/@states/layout.js';
 
 
-// ---------------------------------------------
-//   Modules
-// ---------------------------------------------
+// // ---------------------------------------------
+// //   Modules
+// // ---------------------------------------------
 
-import { fetchWrapper } from 'app/@modules/fetch.js';
-import { CustomError } from 'app/@modules/error/custom.js';
-import { getCookie, setCookie } from 'app/@modules/cookie.js';
-import { showSnackbar } from 'app/@modules/snackbar.js';
+// import { fetchWrapper } from 'app/@modules/fetch.js';
+// import { CustomError } from 'app/@modules/error/custom.js';
+// import { getCookie, setCookie } from 'app/@modules/cookie.js';
+// import { showSnackbar } from 'app/@modules/snackbar.js';
 
 
 // ---------------------------------------------
@@ -75,6 +75,7 @@ import { showSnackbar } from 'app/@modules/snackbar.js';
 // ---------------------------------------------
 
 import ListGc from 'app/common/follow/v2/list-gc.js';
+import ListUc from 'app/common/follow/v2/list-uc.js';
 import ListUr from 'app/common/follow/v2/list-ur.js';
 
 
@@ -121,10 +122,10 @@ const Component = (props) => {
     pageType,
     listType,
     userID,
-    users_id,
-    gameCommunities_id,
-    userCommunities_id,
-    accessLevel,
+    // users_id,
+    // gameCommunities_id,
+    // userCommunities_id,
+    // accessLevel,
 
   } = props;
 
@@ -140,9 +141,10 @@ const Component = (props) => {
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
-  const [controlType, setControlType] = useState(pageType === 'ur' ? 'follow' : 'followed');
+  // const [controlType, setControlType] = useState(pageType === 'ur' ? 'follow' : 'followed');
   
   const [followListGcObj, setFollowListGcObj] = useState(props.followListGcObj);
+  const [followListUcObj, setFollowListUcObj] = useState(props.followListUcObj);
   const [cardPlayersObj, setCardPlayersObj] = useState(props.cardPlayersObj);
   const [followListUrObj, setFollowListUrObj] = useState(props.followListUrObj);
 
@@ -158,6 +160,7 @@ const Component = (props) => {
     setButtonDisabled(false);
 
     setFollowListGcObj(props.followListGcObj);
+    setFollowListUcObj(props.followListUcObj);
     setCardPlayersObj(props.cardPlayersObj);
     setFollowListUrObj(props.followListUrObj);
 
@@ -227,22 +230,25 @@ const Component = (props) => {
 
     componentList =
       <ListGc
+        userID={userID}
         followListGcObj={followListGcObj}
       />
     ;
 
   } else if (listType === 'uc') {
 
-    // componentList =
-    //   <ListGc
-    //     followListGcObj={followListGcObj}
-    //   />
-    // ;
+    componentList =
+      <ListUc
+        userID={userID}
+        followListUcObj={followListUcObj}
+      />
+    ;
 
   } else if (listType === 'ur') {
 
     componentList =
       <ListUr
+        userID={userID}
         cardPlayersObj={cardPlayersObj}
         setCardPlayersObj={setCardPlayersObj}
         followListUrObj={followListUrObj}

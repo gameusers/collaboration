@@ -37,7 +37,7 @@ const SchemaForumComments = require('../forum-comments/schema.js');
 const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
 const SchemaFollows = require('../follows/schema.js');
 
-const ModelGames = require('../games/model.js');
+const ModelImagesAndVideos = require('../images-and-videos/model.js');
 
 
 // ---------------------------------------------
@@ -364,17 +364,10 @@ const findHeader = async ({
 
 
       // --------------------------------------------------
-      //   DB games / ヘッダーヒーローイメージ用
+      //   DB images-and-videos / ヘッダーヒーローイメージ用
       // --------------------------------------------------
 
-      const docGamesHeaderObj = await ModelGames.findForHeroImage({
-
-        localeObj,
-
-      });
-
-      const imagesAndVideosObj = lodashGet(docGamesHeaderObj, ['imagesAndVideosObj'], {});
-
+      const imagesAndVideosObj = await ModelImagesAndVideos.findHeroImage({ localeObj });
       lodashSet(returnObj, ['imagesAndVideosObj'], imagesAndVideosObj);
 
 

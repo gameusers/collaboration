@@ -130,6 +130,7 @@ const ContainerLayout = (props) => {
         users_id={props.users_id}
         // accessLevel={props.accessLevel}
         followListGcObj={props.followListGcObj}
+        followListUcObj={props.followListUcObj}
         cardPlayersObj={props.cardPlayersObj}
         followListUrObj={props.followListUrObj}
       />
@@ -289,6 +290,7 @@ export async function getServerSideProps({ req, res, query }) {
   const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
   const users_id = lodashGet(dataObj, ['users_id'], '');
   const followListGcObj = lodashGet(dataObj, ['followListGcObj'], {});
+  const followListUcObj = lodashGet(dataObj, ['followListUcObj'], {});
   const cardPlayersObj = lodashGet(dataObj, ['cardPlayersObj'], {});
   const followListUrObj = lodashGet(dataObj, ['followListUrObj'], {});
 
@@ -446,6 +448,7 @@ export async function getServerSideProps({ req, res, query }) {
       page,
       users_id,
       followListGcObj,
+      followListUcObj,
       cardPlayersObj,
       followListUrObj,
 

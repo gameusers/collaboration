@@ -227,7 +227,7 @@ export default async (req, res) => {
     let approvalCount = lodashGet(resultObj, ['approvalCount'], 0);
     const blockArr = lodashGet(resultObj, ['blockArr'], []);
     
-    const approval = lodashGet(resultObj, ['approval'], false);
+    // const approval = lodashGet(resultObj, ['approval'], false);
     
     let followSelfArr = lodashGet(resultSelfObj, ['followArr'], []);
     let followSelfCount = lodashGet(resultSelfObj, ['followCount'], 1);
@@ -250,114 +250,187 @@ export default async (req, res) => {
     //   - 承認制
     // ---------------------------------------------
     
-    if (approval && followedArr.includes(loginUsers_id) === false) {
+    // if (approval && followedArr.includes(loginUsers_id) === false) {
+      
+      
+    //   // ---------------------------------------------
+    //   //   フォロー申請取り消し
+    //   //   承認申請がすでに行われている場合は、配列から削除する
+    //   // ---------------------------------------------
+    //   // 
+    //   if (approvalArr.includes(loginUsers_id)) {
+        
+    //     approvalArr = approvalArr.filter(value => value !== loginUsers_id);
+    //     returnObj.followApproval = false;
+        
+        
+    //   // ---------------------------------------------
+    //   //   フォロー申請
+    //   //   承認申請がまだ行われていない場合は、配列に追加する
+    //   // ---------------------------------------------
+      
+    //   } else {
+        
+    //     approvalArr.push(loginUsers_id);
+    //     returnObj.followApproval = true;
+        
+    //   }
+      
+    //   approvalCount = approvalArr.length;
+      
+      
+    // // ---------------------------------------------
+    // //   - 誰でも参加できる
+    // // ---------------------------------------------
+      
+    // } else {
+      
+      
+    //   // ---------------------------------------------
+    //   //   フォロー解除
+    //   //   すでにメンバーである場合は、配列から削除する
+    //   // ---------------------------------------------
+      
+    //   if (followedArr.includes(loginUsers_id)) {
+        
+        
+    //     // ---------------------------------------------
+    //     //   相手 / フォローされているユーザーの配列から自分の users_id を削除する
+    //     // ---------------------------------------------
+        
+    //     followedArr = followedArr.filter(value => value !== loginUsers_id);
+    //     returnObj.follow = false;
+        
+        
+    //     // ---------------------------------------------
+    //     //   自分 / フォローしているユーザーの配列から相手の users_id を削除する
+    //     // ---------------------------------------------
+        
+    //     followSelfArr = followSelfArr.filter(value => value !== users_id);
+        
+        
+    //     // ---------------------------------------------
+    //     //   経験値減算
+    //     // ---------------------------------------------
+        
+    //     calculation = 'subtraction';
+        
+        
+    //   // ---------------------------------------------
+    //   //   フォロー
+    //   //   まだメンバーでない場合は、配列に追加する
+    //   // ---------------------------------------------
+      
+    //   } else {
+        
+        
+    //     // ---------------------------------------------
+    //     //   相手 / フォローされているユーザーの配列に自分の users_id を追加する
+    //     // ---------------------------------------------
+        
+    //     followedArr.push(loginUsers_id);
+    //     returnObj.follow = true;
+        
+        
+    //     // ---------------------------------------------
+    //     //   自分 / フォローしているユーザーの配列に相手の users_id を追加する
+    //     // ---------------------------------------------
+        
+    //     followSelfArr.push(users_id);
+        
+        
+    //     // ---------------------------------------------
+    //     //   経験値加算
+    //     // ---------------------------------------------
+        
+    //     calculation = 'addition';
+        
+        
+    //   }
+      
+      
+    //   // 相手
+    //   followedCount = followedArr.length;
+    //   returnObj.followedCount = followedCount;
+      
+    //   // 自分
+    //   followSelfCount = followSelfArr.length;
+      
+      
+    // }
+
+
+
+
+    // ---------------------------------------------
+    //   フォロー解除
+    //   すでにメンバーである場合は、配列から削除する
+    // ---------------------------------------------
+    
+    if (followedArr.includes(loginUsers_id)) {
       
       
       // ---------------------------------------------
-      //   フォロー申請取り消し
-      //   承認申請がすでに行われている場合は、配列から削除する
-      // ---------------------------------------------
-      // 
-      if (approvalArr.includes(loginUsers_id)) {
-        
-        approvalArr = approvalArr.filter(value => value !== loginUsers_id);
-        returnObj.followApproval = false;
-        
-        
-      // ---------------------------------------------
-      //   フォロー申請
-      //   承認申請がまだ行われていない場合は、配列に追加する
+      //   相手 / フォローされているユーザーの配列から自分の users_id を削除する
       // ---------------------------------------------
       
-      } else {
-        
-        approvalArr.push(loginUsers_id);
-        returnObj.followApproval = true;
-        
-      }
+      followedArr = followedArr.filter(value => value !== loginUsers_id);
+      returnObj.follow = false;
       
-      approvalCount = approvalArr.length;
+      
+      // ---------------------------------------------
+      //   自分 / フォローしているユーザーの配列から相手の users_id を削除する
+      // ---------------------------------------------
+      
+      followSelfArr = followSelfArr.filter(value => value !== users_id);
+      
+      
+      // ---------------------------------------------
+      //   経験値減算
+      // ---------------------------------------------
+      
+      calculation = 'subtraction';
       
       
     // ---------------------------------------------
-    //   - 誰でも参加できる
+    //   フォロー
+    //   まだメンバーでない場合は、配列に追加する
     // ---------------------------------------------
-      
+    
     } else {
       
       
       // ---------------------------------------------
-      //   フォロー解除
-      //   すでにメンバーである場合は、配列から削除する
+      //   相手 / フォローされているユーザーの配列に自分の users_id を追加する
       // ---------------------------------------------
       
-      if (followedArr.includes(loginUsers_id)) {
-        
-        
-        // ---------------------------------------------
-        //   相手 / フォローされているユーザーの配列から自分の users_id を削除する
-        // ---------------------------------------------
-        
-        followedArr = followedArr.filter(value => value !== loginUsers_id);
-        returnObj.follow = false;
-        
-        
-        // ---------------------------------------------
-        //   自分 / フォローしているユーザーの配列から相手の users_id を削除する
-        // ---------------------------------------------
-        
-        followSelfArr = followSelfArr.filter(value => value !== users_id);
-        
-        
-        // ---------------------------------------------
-        //   経験値減算
-        // ---------------------------------------------
-        
-        calculation = 'subtraction';
-        
-        
+      followedArr.push(loginUsers_id);
+      returnObj.follow = true;
+      
+      
       // ---------------------------------------------
-      //   フォロー
-      //   まだメンバーでない場合は、配列に追加する
+      //   自分 / フォローしているユーザーの配列に相手の users_id を追加する
       // ---------------------------------------------
       
-      } else {
-        
-        
-        // ---------------------------------------------
-        //   相手 / フォローされているユーザーの配列に自分の users_id を追加する
-        // ---------------------------------------------
-        
-        followedArr.push(loginUsers_id);
-        returnObj.follow = true;
-        
-        
-        // ---------------------------------------------
-        //   自分 / フォローしているユーザーの配列に相手の users_id を追加する
-        // ---------------------------------------------
-        
-        followSelfArr.push(users_id);
-        
-        
-        // ---------------------------------------------
-        //   経験値加算
-        // ---------------------------------------------
-        
-        calculation = 'addition';
-        
-        
-      }
+      followSelfArr.push(users_id);
       
       
-      // 相手
-      followedCount = followedArr.length;
-      returnObj.followedCount = followedCount;
+      // ---------------------------------------------
+      //   経験値加算
+      // ---------------------------------------------
       
-      // 自分
-      followSelfCount = followSelfArr.length;
+      calculation = 'addition';
       
       
     }
+    
+    
+    // 相手
+    followedCount = followedArr.length;
+    returnObj.followedCount = followedCount;
+    
+    // 自分
+    followSelfCount = followSelfArr.length;
     
     
     
@@ -501,8 +574,6 @@ export default async (req, res) => {
       returnObj.headerObj = headerObj;
       
     }
-    
-    
     
     
     

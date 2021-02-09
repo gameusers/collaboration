@@ -262,7 +262,7 @@ export default async (req, res) => {
 
     if (listType === 'gc') {
 
-      returnObj.followListGcObj = await ModelFollows.findFollowGamesList(argumentsObj);
+      returnObj.followListGcObj = await ModelFollows.findFollowListGc(argumentsObj);
 
 
     // ---------------------------------------------
@@ -271,6 +271,7 @@ export default async (req, res) => {
 
     } else if (listType === 'uc') {
 
+      returnObj.followListUcObj = await ModelFollows.findFollowListUc(argumentsObj);
 
 
     // ---------------------------------------------

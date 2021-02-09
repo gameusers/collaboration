@@ -40,7 +40,7 @@ const ModelDevelopersPublishers = require('../developers-publishers/model.js');
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosObj } = require('../images-and-videos/format');
+const { formatImagesAndVideosObj, formatImagesAndVideosArr } = require('../images-and-videos/format');
 
 
 // ---------------------------------------------
@@ -324,13 +324,12 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 /**
  * フォローしているゲームコミュニティの一覧データを取得する / pages/api/v2/ur/[userID]/follow/list.js
  * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {number} page - ページ
  * @param {number} limit - リミット
- * @param {Array} hardwareIDsArr - DB hardwares hardwareID の入った配列
- * @param {string} keyword - 検索キーワード
  * @return {Object} 取得データ
  */
-const findFollowGamesList = async ({
+const findFollowListGc = async ({
 
   localeObj,
   loginUsers_id,
@@ -428,7 +427,7 @@ const findFollowGamesList = async ({
       {
         $unwind: {
           path: '$gameCommunitiesObj',
-          preserveNullAndEmptyArrays: true,
+          // preserveNullAndEmptyArrays: true,
         }
       },
 
@@ -526,80 +525,6 @@ const findFollowGamesList = async ({
 
 
       // --------------------------------------------------
-      //   images-and-videos / サムネイル用
-      // --------------------------------------------------
-
-      // {
-      //   $lookup:
-      //     {
-      //       from: 'images-and-videos',
-      //       let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-      //       pipeline: [
-      //         {
-      //           $match: {
-      //             $expr: {
-      //               $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
-      //             },
-      //           }
-      //         },
-      //         {
-      //           $project: {
-      //             createdDate: 0,
-      //             updatedDate: 0,
-      //             users_id: 0,
-      //             __v: 0,
-      //           }
-      //         }
-      //       ],
-      //       as: 'imagesAndVideosThumbnailObj'
-      //     }
-      // },
-
-      // {
-      //   $unwind: {
-      //     path: '$imagesAndVideosThumbnailObj',
-      //     preserveNullAndEmptyArrays: true,
-      //   }
-      // },
-
-
-      // --------------------------------------------------
-      //   follows
-      // --------------------------------------------------
-
-      // {
-      //   $lookup:
-      //     {
-      //       from: 'follows',
-      //       let: { letGameCommunities_id: '$gameCommunities_id' },
-      //       pipeline: [
-      //         {
-      //           $match: {
-      //             $expr: {
-      //               $eq: ['$gameCommunities_id', '$$letGameCommunities_id']
-      //             },
-      //           }
-      //         },
-      //         {
-      //           $project: {
-      //             _id: 0,
-      //             followedCount: 1,
-      //           }
-      //         }
-      //       ],
-      //       as: 'followsObj'
-      //     }
-      // },
-
-      // {
-      //   $unwind: {
-      //     path: '$followsObj',
-      //     preserveNullAndEmptyArrays: true,
-      //   }
-      // },
-
-
-      // --------------------------------------------------
       //   $project
       // --------------------------------------------------
 
@@ -607,12 +532,6 @@ const findFollowGamesList = async ({
         $project: {
           gameCommunities_id: 1,
           followedCount: 1,
-          // urlID: 1,
-          // imagesAndVideosThumbnailObj: 1,
-          // name: 1,
-          // subtitle: 1,
-          // hardwareArr: 1,
-          // followsObj: 1,
           gameCommunitiesObj: 1,
           gamesObj: 1,
         }
@@ -657,12 +576,12 @@ const findFollowGamesList = async ({
     //   - Loop
     // ---------------------------------------------
 
-    for (let valueObj of docArr.values()) {
+    for (let value1Obj of docArr.values()) {
 
 
       // console.log(`
-      //   ----- valueObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(valueObj)), { colors: true, depth: null })}\n
+      //   ----- value1Obj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(value1Obj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
 
@@ -678,16 +597,14 @@ const findFollowGamesList = async ({
       //   Data
       // --------------------------------------------------
 
-      const _id = lodashGet(valueObj, ['_id'], '');
-      const gameCommunities_id = lodashGet(valueObj, ['gameCommunities_id'], '');
-      const updatedDate = lodashGet(valueObj, ['gameCommunitiesObj', 'updatedDate'], '');
-      const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
-      const followedCount = lodashGet(valueObj, ['followedCount'], 0);
+      const gameCommunities_id = lodashGet(value1Obj, ['gameCommunities_id'], '');
+      const updatedDate = lodashGet(value1Obj, ['gameCommunitiesObj', 'updatedDate'], '');
+      const imagesAndVideosThumbnailObj = lodashGet(value1Obj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
+      const followedCount = lodashGet(value1Obj, ['followedCount'], 0);
 
-      obj._id = _id;
-      obj.urlID = lodashGet(valueObj, ['gamesObj', 'urlID'], '');
-      obj.name = lodashGet(valueObj, ['gamesObj', 'name'], '');
-      obj.subtitle = lodashGet(valueObj, ['gamesObj', 'subtitle'], '');
+      obj.urlID = lodashGet(value1Obj, ['gamesObj', 'urlID'], '');
+      obj.name = lodashGet(value1Obj, ['gamesObj', 'name'], '');
+      obj.subtitle = lodashGet(value1Obj, ['gamesObj', 'subtitle'], '');
 
       if (followedCount >= followersLimit) {
         obj.followedCount = followedCount;
@@ -722,7 +639,7 @@ const findFollowGamesList = async ({
       //   Developers Publishers
       // --------------------------------------------------
 
-      const hardwareArr = lodashGet(valueObj, ['gamesObj', 'hardwareArr'], []);
+      const hardwareArr = lodashGet(value1Obj, ['gamesObj', 'hardwareArr'], []);
       let developerPublisherIDsArr = [];
 
 
@@ -849,7 +766,7 @@ const findFollowGamesList = async ({
 
     // console.log(`
     //   ----------------------------------------\n
-    //   app/@database/follows/model.js - findFollowGamesList
+    //   app/@database/follows/model.js - findFollowListGc
     // `);
     
     // console.log(chalk`
@@ -883,6 +800,512 @@ const findFollowGamesList = async ({
     // `);
 
 
+
+
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+
+    return returnObj;
+
+
+  } catch (err) {
+
+    throw err;
+
+  }
+
+
+};
+
+
+
+
+/**
+ * 参加しているユーザーコミュニティ一覧のデータを取得する / uc/list
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {number} page - ページ
+ * @param {number} limit - リミット
+ * @return {Object} 取得データ
+ */
+const findFollowListUc = async ({
+
+  localeObj,
+  loginUsers_id,
+  page = 1,
+  limit = process.env.NEXT_PUBLIC_COMMUNITY_LIST_LIMIT,
+
+}) => {
+
+
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+
+  try {
+
+
+    // --------------------------------------------------
+    //   Language & Country
+    // --------------------------------------------------
+
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+
+
+    // --------------------------------------------------
+    //   parseInt
+    // --------------------------------------------------
+
+    let intPage = parseInt(page, 10);
+    let intLimit = parseInt(limit, 10);
+
+
+
+
+    // --------------------------------------------------
+    //   $match（ドキュメントの検索用） & count（総数の検索用）の条件作成
+    // --------------------------------------------------
+
+    const conditionObj = {
+      
+      followedArr: { $in: [loginUsers_id] },
+      userCommunities_id: { $exists: true },
+      userCommunities_id: { $ne: null },
+      userCommunities_id: { $ne: ''},
+
+    };
+
+
+
+
+    // --------------------------------------------------
+    //   Aggregation
+    // --------------------------------------------------
+
+    const docArr = await SchemaFollows.aggregate([
+
+
+      // --------------------------------------------------
+      //   Match Condition Array
+      // --------------------------------------------------
+
+      {
+        $match: conditionObj
+      },
+
+
+      // --------------------------------------------------
+      //   $sort / $skip / $limit
+      // --------------------------------------------------
+
+      // { $sort: { updatedDate: -1 } },
+      // { $skip: (intPage - 1) * intLimit },
+      // { $limit: intLimit },
+
+
+      // --------------------------------------------------
+      //   user-communities
+      // --------------------------------------------------
+
+      {
+        $lookup:
+          {
+            from: 'user-communities',
+            let: { letUserCommunities_id: '$userCommunities_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letUserCommunities_id']
+                  },
+                }
+              },
+
+
+              // --------------------------------------------------
+              //   games - 関連するゲーム
+              // --------------------------------------------------
+
+              {
+                $lookup:
+                  {
+                    from: 'games',
+                    let: { letGameCommunities_idsArr: '$gameCommunities_idsArr' },
+                    pipeline: [
+
+                      {
+                        $match: {
+                          $expr: {
+                            $and: [
+                              { $eq: ['$language', language] },
+                              { $eq: ['$country', country] },
+                              { $in: ['$gameCommunities_id', '$$letGameCommunities_idsArr'] },
+                            ]
+                          },
+                        }
+                      },
+
+
+                      // --------------------------------------------------
+                      //   games / images-and-videos / サムネイル用
+                      // --------------------------------------------------
+
+                      {
+                        $lookup:
+                          {
+                            from: 'images-and-videos',
+                            let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                            pipeline: [
+                              {
+                                $match: {
+                                  $expr: {
+                                    $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                                  },
+                                }
+                              },
+                              {
+                                $project: {
+                                  createdDate: 0,
+                                  updatedDate: 0,
+                                  users_id: 0,
+                                  __v: 0,
+                                }
+                              }
+                            ],
+                            as: 'imagesAndVideosThumbnailObj'
+                          }
+                      },
+
+                      {
+                        $unwind: {
+                          path: '$imagesAndVideosThumbnailObj',
+                          preserveNullAndEmptyArrays: true,
+                        }
+                      },
+
+
+                      {
+                        $project: {
+                          gameCommunities_id: 1,
+                          urlID: 1,
+                          name: 1,
+                          imagesAndVideosThumbnailObj: 1,
+                        }
+                      },
+                    ],
+                    as: 'gamesArr'
+                  }
+              },
+
+
+              // --------------------------------------------------
+              //   images-and-videos / サムネイル用
+              // --------------------------------------------------
+
+              {
+                $lookup:
+                  {
+                    from: 'images-and-videos',
+                    let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                          },
+                        }
+                      },
+                      {
+                        $project: {
+                          createdDate: 0,
+                          updatedDate: 0,
+                          users_id: 0,
+                          __v: 0,
+                        }
+                      }
+                    ],
+                    as: 'imagesAndVideosThumbnailObj'
+                  }
+              },
+
+              {
+                $unwind: {
+                  path: '$imagesAndVideosThumbnailObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+
+
+              {
+                $project: {
+                  // _id: 0,
+                  _id: 1,
+                  createdDate: 1,
+                  updatedDate: 1,
+                  userCommunityID: 1,
+                  localesArr: 1,
+                  communityType: 1,
+                  gameCommunities_idsArr: 1,
+                  gamesArr: 1,
+                  imagesAndVideosThumbnailObj: 1,
+
+                }
+              }
+            ],
+            as: 'userCommunitiesObj'
+          }
+      },
+
+      {
+        $unwind: {
+          path: '$userCommunitiesObj',
+          // preserveNullAndEmptyArrays: true,
+        }
+      },
+
+
+      // --------------------------------------------------
+      //   $sort / $skip / $limit
+      // --------------------------------------------------
+
+      { $sort: { 'userCommunitiesObj.updatedDate': -1 } },
+      { $skip: (intPage - 1) * intLimit },
+      { $limit: intLimit },
+
+
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+
+      {
+        $project: {
+          userCommunitiesObj: 1,
+          followedCount: 1,
+        }
+      },
+
+
+    ]).exec();
+
+
+
+
+    // --------------------------------------------------
+    //   Count
+    // --------------------------------------------------
+
+    const listCount = await count({
+
+      conditionObj
+
+    });
+
+
+    // ---------------------------------------------
+    //   Return Value
+    // ---------------------------------------------
+
+    const returnObj = {
+
+      page,
+      limit: intLimit,
+      count: listCount,
+      dataObj: {},
+
+    };
+
+    const ISO8601 = moment().utc().toISOString();
+    // const daysLimit = parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_UPDATED_DATE_DAYS_LOWER_LIMIT, 10);
+    // const followersLimit = parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_FOLLOWERS_LOWER_LIMIT, 10);
+
+
+    // --------------------------------------------------
+    //   Loop
+    // --------------------------------------------------
+
+    for (let value1Obj of docArr.values()) {
+
+
+      // --------------------------------------------------
+      //   object
+      // --------------------------------------------------
+
+      const obj = {};
+
+
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
+
+      const userCommunities_id = lodashGet(value1Obj, ['userCommunitiesObj', '_id'], '');
+
+      // obj.userCommunities_id = userCommunities_id;
+      obj.userCommunityID = lodashGet(value1Obj, ['userCommunitiesObj', 'userCommunityID'], '');
+      obj.communityType = lodashGet(value1Obj, ['userCommunitiesObj', 'communityType'], 'open');
+      obj.approval = lodashGet(value1Obj, ['approval'], false);
+      obj.followedCount = lodashGet(value1Obj, ['followedCount'], 0);
+
+
+      // --------------------------------------------------
+      //   createdDate
+      // --------------------------------------------------
+
+      const createdDate = lodashGet(value1Obj, ['userCommunitiesObj', 'createdDate'], '');
+      obj.createdDate = moment(createdDate).utc().format('YYYY/MM/DD');
+
+
+      // --------------------------------------------------
+      //   画像と動画の処理
+      // --------------------------------------------------
+
+      const imagesAndVideosThumbnailObj = lodashGet(value1Obj, ['userCommunitiesObj', 'imagesAndVideosThumbnailObj'], {});
+
+      if (Object.keys(imagesAndVideosThumbnailObj).length !== 0) {
+
+        const formattedThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosThumbnailObj });
+        obj.src = lodashGet(formattedThumbnailObj, ['arr', 0, 'src'], '/img/common/thumbnail/none-game.jpg');
+        obj.srcSet = lodashGet(formattedThumbnailObj, ['arr', 0, 'srcSet'], '');
+
+      }
+
+
+      // --------------------------------------------------
+      //   関連するゲーム
+      // --------------------------------------------------
+
+      const gamesArr = lodashGet(value1Obj, ['userCommunitiesObj', 'gamesArr'], []);
+
+      if (gamesArr.length > 0) {
+
+
+        // --------------------------------------------------
+        //   gamesArr - 元の配列の順番通りに並べなおす
+        // --------------------------------------------------
+
+        const sortedGamesArr = [];
+        const gameCommunities_idsArr = lodashGet(value1Obj, ['userCommunitiesObj', 'gameCommunities_idsArr'], []);
+        // const gamesArr = lodashGet(value1Obj, ['userCommunitiesObj', 'gamesArr'], []);
+
+        for (let gameCommunities_id of gameCommunities_idsArr) {
+
+          const index = gamesArr.findIndex((value2Obj) => {
+            return value2Obj.gameCommunities_id === gameCommunities_id;
+          });
+
+          if (index !== -1) {
+            sortedGamesArr.push(gamesArr[index]);
+          }
+
+        }
+
+
+        // --------------------------------------------------
+        //   画像の処理
+        // --------------------------------------------------
+
+        obj.gamesArr = formatImagesAndVideosArr({ arr: sortedGamesArr });
+
+
+      }
+
+
+      // console.log(`
+      //   ----- gameCommunities_idsArr -----\n
+      //   ${util.inspect(gameCommunities_idsArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // console.log(`
+      //   ----- gamesArr -----\n
+      //   ${util.inspect(gamesArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // console.log(`
+      //   ----- sortedGamesArr -----\n
+      //   ${util.inspect(sortedGamesArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // --------------------------------------------------
+      //   Locale / name & description
+      // --------------------------------------------------
+
+      const localesArr = lodashGet(value1Obj, ['userCommunitiesObj', 'localesArr'], []);
+
+      const filteredArr = localesArr.filter((filterObj) => {
+        return filterObj.language === localeObj.language;
+      });
+
+
+      if (lodashHas(filteredArr, [0])) {
+
+        obj.name = lodashGet(filteredArr, [0, 'name'], '');;
+        obj.descriptionShort = lodashGet(filteredArr, [0, 'descriptionShort'], '');
+
+      } else {
+
+        obj.name = lodashGet(localesArr, [0, 'name'], '');
+        obj.descriptionShort = lodashGet(localesArr, [0, 'descriptionShort'], '');
+
+      }
+
+
+      // --------------------------------------------------
+      //   Set Data
+      // --------------------------------------------------
+
+      lodashSet(returnObj, ['dataObj', userCommunities_id], obj);
+
+
+      // --------------------------------------------------
+      //   Pages Array
+      // --------------------------------------------------
+
+      const pagesArr = lodashGet(returnObj, [`page${page}Obj`, 'arr'], []);
+      pagesArr.push(userCommunities_id);
+
+      returnObj[`page${page}Obj`] = {
+
+        loadedDate: ISO8601,
+        arr: pagesArr,
+
+      };
+
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+
+    console.log(`
+      ----------------------------------------\n
+      app/@database/follows/model.js - findFollowListUc
+    `);
+
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   userCommunityID: {green ${userCommunityID}}
+    // `);
+
+    console.log(`
+      ----- docArr -----\n
+      ${util.inspect(docArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
 
 
     // --------------------------------------------------
@@ -1070,7 +1493,8 @@ module.exports = {
   insertMany,
   deleteMany,
   
-  findFollowGamesList,
+  findFollowListGc,
+  findFollowListUc,
   transactionForUpsert,
   
 };

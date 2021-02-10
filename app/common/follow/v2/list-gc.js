@@ -249,7 +249,7 @@ const Component = (props) => {
 
   /**
    * フォロワーの管理 - フォロー解除
-   * @param {string} gameCommunities_id - DB users _id / 管理するユーザーのID
+   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
    */
   const handleManage = async ({
 
@@ -527,7 +527,7 @@ const Component = (props) => {
             <Button
               css={cssButton}
               variant="contained"
-              color="secondary"
+              color="primary"
               disabled={buttonDisabled}
               onClick={() => handleDialogOpen({
                 title: 'フォロー解除',

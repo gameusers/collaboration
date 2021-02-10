@@ -564,7 +564,7 @@ const Component = (props) => {
             <Button
               css={cssButton}
               variant="contained"
-              color="secondary"
+              color="primary"
               disabled={buttonDisabled}
               onClick={() => handleDialogOpen({
                 title: 'フォロー解除',

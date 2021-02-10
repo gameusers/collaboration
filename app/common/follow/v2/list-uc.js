@@ -68,7 +68,7 @@ import { setCookie } from 'app/@modules/cookie.js';
 //   Components
 // ---------------------------------------------
 
-import CardGc from 'app/common/community-list/v2/card-gc.js';
+import CardUc from 'app/common/community-list/v2/card-uc.js';
 
 
 
@@ -128,7 +128,7 @@ const Component = (props) => {
   const {
 
     userID,
-    followListGcObj,
+    followListUcObj,
 
   } = props;
 
@@ -177,7 +177,7 @@ const Component = (props) => {
   // --------------------------------------------------
 
   /**
-   * ゲームコミュニティ一覧を読み込む
+   * ユーザーコミュニティ一覧を読み込む
    * @param {number} page - ページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
@@ -199,9 +199,9 @@ const Component = (props) => {
       let url = '';
 
       if (page === 1) {
-        url = `/ur/${userID}/follow/list/gc`;
+        url = `/ur/${userID}/follow/list/uc`;
       } else {
-        url = `/ur/${userID}/follow/list/gc/${page}`;
+        url = `/ur/${userID}/follow/list/uc/${page}`;
       }
 
 
@@ -220,7 +220,7 @@ const Component = (props) => {
 
       // console.log(`
       //   ----------------------------------------\n
-      //   app/common/follow/v2/list-gc.js - handleRead
+      //   app/common/follow/v2/list-uc.js - handleRead
       // `);
 
       // console.log(chalk`
@@ -248,12 +248,12 @@ const Component = (props) => {
 
 
   /**
-   * フォロワーの管理 - フォロー解除
-   * @param {string} gameCommunities_id - DB users _id / 管理するユーザーのID
+   * 参加ユーザーコミュニティの管理 - コミュニティ退会
+   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティID
    */
   const handleManage = async ({
 
-    gameCommunities_id,
+    userCommunities_id,
 
   }) => {
 
@@ -283,7 +283,7 @@ const Component = (props) => {
 
       const formDataObj = {
 
-        gameCommunities_id,
+        userCommunities_id,
 
       };
 
@@ -335,7 +335,7 @@ const Component = (props) => {
         arr: [
           {
             variant: 'success',
-            messageID: '1z127R0YE',
+            messageID: 'xWAfTONZ6',
           },
         ]
 
@@ -426,10 +426,10 @@ const Component = (props) => {
   //   Property
   // --------------------------------------------------
 
-  const page = lodashGet(followListGcObj, ['page'], 1);
-  const limit = lodashGet(followListGcObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT, 10));
-  const count = lodashGet(followListGcObj, ['count'], 0);
-  const arr = lodashGet(followListGcObj, [`page${page}Obj`, 'arr'], []);
+  const page = lodashGet(followListUcObj, ['page'], 1);
+  const limit = lodashGet(followListUcObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT, 10));
+  const count = lodashGet(followListUcObj, ['count'], 0);
+  const arr = lodashGet(followListUcObj, [`page${page}Obj`, 'arr'], []);
 
 
 
@@ -440,7 +440,7 @@ const Component = (props) => {
 
   // console.log(`
   //   ----------------------------------------\n
-  //   app/common/follow/v2/list-gc.js
+  //   app/common/follow/v2/list-uc.js
   // `);
 
   // console.log(chalk`
@@ -461,8 +461,8 @@ const Component = (props) => {
   // `);
 
   // console.log(`
-  //   ----- followListGcObj -----\n
-  //   ${util.inspect(followListGcObj, { colors: true, depth: null })}\n
+  //   ----- followListUcObj -----\n
+  //   ${util.inspect(followListUcObj, { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
 
@@ -475,14 +475,15 @@ const Component = (props) => {
 
   const componentsArr = [];
 
-  for (const [index, gameCommunities_id] of arr.entries()) {
+  for (const [index, userCommunities_id] of arr.entries()) {
 
 
     // --------------------------------------------------
     //   dataObj
     // --------------------------------------------------
 
-    const dataObj = lodashGet(followListGcObj, ['dataObj', gameCommunities_id], {});
+    const dataObj = lodashGet(followListUcObj, ['dataObj', userCommunities_id], {});
+    const owner = lodashGet(dataObj, ['owner'], false);
 
 
     // --------------------------------------------------
@@ -499,7 +500,7 @@ const Component = (props) => {
 
 
         {/* Card */}
-        <CardGc
+        <CardUc
           key={index}
           obj={dataObj}
         />
@@ -508,42 +509,44 @@ const Component = (props) => {
 
 
         {/* Manage Button */}
-        <Paper
-          css={css`
-            display: flex;
-            flex-flow: row wrap;
-            border-top: 1px dashed #A4A4A4;
-            margin: 0 0 16px 0;
-            padding: 10px 12px;
-          `}
-        >
-
-
-          <div
+        {!owner &&
+          <Paper
             css={css`
-              margin: 0 16px 0 0;
+              display: flex;
+              flex-flow: row wrap;
+              border-top: 1px dashed #A4A4A4;
+              margin: 0 0 16px 0;
+              padding: 10px 12px;
             `}
           >
-            <Button
-              css={cssButton}
-              variant="contained"
-              color="secondary"
-              disabled={buttonDisabled}
-              onClick={() => handleDialogOpen({
-                title: 'フォロー解除',
-                description: 'フォローを解除しますか？',
-                handle: handleManage,
-                argumentsObj: {
-                  gameCommunities_id,
-                },
-              })}
+
+
+            <div
+              css={css`
+                margin: 0 16px 0 0;
+              `}
             >
-              フォロー解除
-            </Button>
-          </div>
+              <Button
+                css={cssButton}
+                variant="contained"
+                color="primary"
+                disabled={buttonDisabled}
+                onClick={() => handleDialogOpen({
+                  title: 'コミュニティ退会',
+                  description: 'コミュニティから退会しますか？',
+                  handle: handleManage,
+                  argumentsObj: {
+                    userCommunities_id,
+                  },
+                })}
+              >
+                コミュニティ退会
+              </Button>
+            </div>
 
 
-        </Paper>
+          </Paper>
+        }
 
 
       </div>
@@ -561,7 +564,7 @@ const Component = (props) => {
 
   return (
     <Element
-      name="followListGc"
+      name="followListUc"
     >
 
 
@@ -627,7 +630,7 @@ const Component = (props) => {
                 classes={{
                   input: classes.input
                 }}
-                name="list-gc-limit-pagination"
+                name="list-uc-limit-pagination"
                 id="outlined-rows-per-page"
               />
             }

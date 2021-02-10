@@ -48,6 +48,7 @@ import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 
 import FormLogin from 'app/administration/index/v2/form-login.js';
 import FormHardware from 'app/administration/index/v2/form-hardware.js';
+import FormFollowFix from 'app/administration/index/v2/form-follow-fix.js';
 
 
 
@@ -103,6 +104,8 @@ const ContainerLayout = (props) => {
       />
 
       <FormHardware />
+
+      <FormFollowFix />
 
     </React.Fragment>
   ;

@@ -150,7 +150,7 @@ const Component = (props) => {
 
       const resultObj = await fetchWrapper({
 
-        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/administration/hardware`,
+        urlApi: `${process.env.NEXT_PUBLIC_URL_API}/v2/administration/follow-fix`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
 
@@ -281,13 +281,13 @@ const Component = (props) => {
 
       
       <Panel
-        heading="ハードウェア更新"
+        heading="フォローデータ修正"
         defaultExpanded={true}
       >
 
 
         <p>
-          ハードウェアを更新します。
+          フォローのデータを修正します。
         </p>
 
 
@@ -305,13 +305,13 @@ const Component = (props) => {
             color="primary"
             disabled={buttonDisabled}
             onClick={() => handleDialogOpen({
-              title: 'Update Hardware',
-              description: '更新しますか？',
+              title: 'Update Follow',
+              description: '修正しますか？',
               handle: handleSubmit,
               argumentsObj: {},
             })}
           >
-            更新する
+            修正する
           </Button>
         </div>
 

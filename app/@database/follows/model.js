@@ -372,8 +372,8 @@ const findFollowListGc = async ({
 
       followedArr: { $in: [loginUsers_id] },
       gameCommunities_id: { $exists: true },
-      gameCommunities_id: { $ne: null },
-      gameCommunities_id: { $ne: ''},
+      userCommunities_id: '',
+      users_id: '',
 
     };
 
@@ -871,9 +871,11 @@ const findFollowListUc = async ({
     const conditionObj = {
       
       followedArr: { $in: [loginUsers_id] },
+      gameCommunities_id: '',
       userCommunities_id: { $exists: true },
-      userCommunities_id: { $ne: null },
-      userCommunities_id: { $ne: ''},
+      users_id: '',
+      // userCommunities_id: { $ne: null },
+      // userCommunities_id: { $ne: ''},
 
     };
 
@@ -894,15 +896,6 @@ const findFollowListUc = async ({
       {
         $match: conditionObj
       },
-
-
-      // --------------------------------------------------
-      //   $sort / $skip / $limit
-      // --------------------------------------------------
-
-      // { $sort: { updatedDate: -1 } },
-      // { $skip: (intPage - 1) * intLimit },
-      // { $limit: intLimit },
 
 
       // --------------------------------------------------
@@ -1040,11 +1033,11 @@ const findFollowListUc = async ({
 
               {
                 $project: {
-                  // _id: 0,
                   _id: 1,
                   createdDate: 1,
                   updatedDate: 1,
                   userCommunityID: 1,
+                  users_id: 1,
                   localesArr: 1,
                   communityType: 1,
                   gameCommunities_idsArr: 1,
@@ -1061,7 +1054,7 @@ const findFollowListUc = async ({
       {
         $unwind: {
           path: '$userCommunitiesObj',
-          // preserveNullAndEmptyArrays: true,
+          preserveNullAndEmptyArrays: true,
         }
       },
 
@@ -1070,9 +1063,9 @@ const findFollowListUc = async ({
       //   $sort / $skip / $limit
       // --------------------------------------------------
 
-      { $sort: { 'userCommunitiesObj.updatedDate': -1 } },
-      { $skip: (intPage - 1) * intLimit },
-      { $limit: intLimit },
+      // { $sort: { 'userCommunitiesObj.updatedDate': -1 } },
+      // { $skip: (intPage - 1) * intLimit },
+      // { $limit: intLimit },
 
 
       // --------------------------------------------------
@@ -1117,8 +1110,8 @@ const findFollowListUc = async ({
     };
 
     const ISO8601 = moment().utc().toISOString();
-    // const daysLimit = parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_UPDATED_DATE_DAYS_LOWER_LIMIT, 10);
-    // const followersLimit = parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_FOLLOWERS_LOWER_LIMIT, 10);
+
+
 
 
     // --------------------------------------------------
@@ -1140,12 +1133,13 @@ const findFollowListUc = async ({
       // --------------------------------------------------
 
       const userCommunities_id = lodashGet(value1Obj, ['userCommunitiesObj', '_id'], '');
+      const users_id = lodashGet(value1Obj, ['userCommunitiesObj', 'users_id'], '');
 
-      // obj.userCommunities_id = userCommunities_id;
       obj.userCommunityID = lodashGet(value1Obj, ['userCommunitiesObj', 'userCommunityID'], '');
       obj.communityType = lodashGet(value1Obj, ['userCommunitiesObj', 'communityType'], 'open');
       obj.approval = lodashGet(value1Obj, ['approval'], false);
       obj.followedCount = lodashGet(value1Obj, ['followedCount'], 0);
+      obj.owner = loginUsers_id === users_id ? true : false;
 
 
       // --------------------------------------------------
@@ -1186,7 +1180,6 @@ const findFollowListUc = async ({
 
         const sortedGamesArr = [];
         const gameCommunities_idsArr = lodashGet(value1Obj, ['userCommunitiesObj', 'gameCommunities_idsArr'], []);
-        // const gamesArr = lodashGet(value1Obj, ['userCommunitiesObj', 'gamesArr'], []);
 
         for (let gameCommunities_id of gameCommunities_idsArr) {
 
@@ -1285,27 +1278,27 @@ const findFollowListUc = async ({
     //   console.log
     // --------------------------------------------------
 
-    console.log(`
-      ----------------------------------------\n
-      app/@database/follows/model.js - findFollowListUc
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   app/@database/follows/model.js - findFollowListUc
+    // `);
 
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
     //   userCommunityID: {green ${userCommunityID}}
     // `);
 
-    console.log(`
-      ----- docArr -----\n
-      ${util.inspect(docArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
     // --------------------------------------------------

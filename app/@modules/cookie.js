@@ -31,8 +31,9 @@ const Cookies = require('js-cookie');
  * @param {string} key - 取得するキー
  * @param {string} reqHeadersCookie - サーバー側で受信したクッキーのデータ
  * @param {boolean} decode - デコードする場合はtrue
+ * @param {string} defaultValue - サーバー側で受信したクッキーのデータ
  */
-const getCookie = ({ key, reqHeadersCookie = '', decode = false }) => {
+const getCookie = ({ key, reqHeadersCookie = '', decode = false, defaultValue }) => {
 
 
   // --------------------------------------------------
@@ -77,11 +78,17 @@ const getCookie = ({ key, reqHeadersCookie = '', decode = false }) => {
 
 
   // --------------------------------------------------
-  //   undefined を '' にする
+  //   undefined を '' または defaultValue にする
   // --------------------------------------------------
 
   if (!returnValue) {
+
     returnValue = '';
+
+    if (defaultValue) {
+      returnValue = defaultValue;
+    }
+
   }
 
 

@@ -46,7 +46,11 @@ import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 
-import FollowList from 'app/common/follow/v2/list.js';
+import FollowNavigation from 'app/common/follow/v2/navigation.js';
+import ListGc from 'app/common/follow/v2/list-gc.js';
+import ListUc from 'app/common/follow/v2/list-uc.js';
+import ListUr from 'app/common/follow/v2/list-ur.js';
+// import FollowList from 'app/common/follow/v2/list.js';
 
 
 
@@ -55,7 +59,7 @@ import FollowList from 'app/common/follow/v2/list.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: http://localhost:8080/ur/***/follow
+//   URL: http://localhost:8080/ur/***/follow/list
 // --------------------------------------------------
 
 /**
@@ -69,24 +73,70 @@ const ContainerLayout = (props) => {
   //   Hooks
   // --------------------------------------------------
 
-  // const [cardPlayersObj, setCardPlayersObj] = useState(props.cardPlayersObj);
-  // const [cardPlayers_idsArr, setCardPlayers_idsArr] = useState(props.cardPlayers_idsArr);
+  const [followListGcObj, setFollowListGcObj] = useState(props.followListGcObj);
+  const [followListUcObj, setFollowListUcObj] = useState(props.followListUcObj);
+  const [cardPlayersObj, setCardPlayersObj] = useState(props.cardPlayersObj);
+  const [followListUrObj, setFollowListUrObj] = useState(props.followListUrObj);
 
 
-  // useEffect(() => {
+  useEffect(() => {
 
 
-  //   // --------------------------------------------------
-  //   //   Router.push でページを移動した際の処理
-  //   //   getServerSideProps でデータを取得してからデータを更新する
-  //   // --------------------------------------------------
+    // --------------------------------------------------
+    //   Router.push でページを移動した際の処理
+    //   ISO8601に変更があったら（ページを移動したら）更新する
+    // --------------------------------------------------
 
-  //   setCardPlayersObj(props.cardPlayersObj);
-  //   setCardPlayers_idsArr(props.cardPlayers_idsArr);
+    // setButtonDisabled(false);
+
+    setFollowListGcObj(props.followListGcObj);
+    setFollowListUcObj(props.followListUcObj);
+    setCardPlayersObj(props.cardPlayersObj);
+    setFollowListUrObj(props.followListUrObj);
 
 
-  // }, [props.ISO8601]);
+  }, [props.ISO8601]);
 
+
+
+
+  // --------------------------------------------------
+  //   Component - List
+  // --------------------------------------------------
+
+  let componentList = '';
+
+  if (props.listType === 'gc') {
+
+    componentList =
+      <ListGc
+        userID={props.userID}
+        followListGcObj={followListGcObj}
+      />
+    ;
+
+  } else if (props.listType === 'uc') {
+
+    componentList =
+      <ListUc
+        userID={props.userID}
+        followListUcObj={followListUcObj}
+      />
+    ;
+
+  } else if (props.listType === 'ur') {
+
+    componentList =
+      <ListUr
+        userID={props.userID}
+        cardPlayersObj={cardPlayersObj}
+        setCardPlayersObj={setCardPlayersObj}
+        followListUrObj={followListUrObj}
+      />
+    ;
+
+  }
+  
 
 
 
@@ -102,9 +152,14 @@ const ContainerLayout = (props) => {
         sidebar={true}
       />
 
+      <FollowNavigation
+        pageType="list"
+        listType={props.listType}
+        userID={props.userID}
+      />
+
       <FeedSidebar
         feedObj={props.feedObj}
-        top={true}
       />
 
     </React.Fragment>
@@ -122,7 +177,9 @@ const ContainerLayout = (props) => {
         arr={props.breadcrumbsArr}
       />
 
-      <FollowList
+      {componentList}
+
+      {/* <FollowList
         ISO8601={props.ISO8601}
         pageType="ur"
         listType={props.listType}
@@ -133,7 +190,7 @@ const ContainerLayout = (props) => {
         followListUcObj={props.followListUcObj}
         cardPlayersObj={props.cardPlayersObj}
         followListUrObj={props.followListUrObj}
-      />
+      /> */}
 
     </React.Fragment>
   ;
@@ -288,7 +345,7 @@ export async function getServerSideProps({ req, res, query }) {
   const feedObj = lodashGet(dataObj, ['feedObj'], {});
 
   const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
-  const users_id = lodashGet(dataObj, ['users_id'], '');
+  // const users_id = lodashGet(dataObj, ['users_id'], '');
   const followListGcObj = lodashGet(dataObj, ['followListGcObj'], {});
   const followListUcObj = lodashGet(dataObj, ['followListUcObj'], {});
   const cardPlayersObj = lodashGet(dataObj, ['cardPlayersObj'], {});
@@ -446,7 +503,7 @@ export async function getServerSideProps({ req, res, query }) {
       userID,
       listType,
       page,
-      users_id,
+      // users_id,
       followListGcObj,
       followListUcObj,
       cardPlayersObj,

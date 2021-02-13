@@ -160,7 +160,6 @@ const Component = (props) => {
     handleDialogOpen,
     handleLoadingOpen,
     handleLoadingClose,
-    // handleScrollTo,
 
   } = stateLayout;
 

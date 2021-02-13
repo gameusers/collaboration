@@ -165,8 +165,6 @@ export default async (req, res) => {
     //   DB / Follows
     // --------------------------------------------------
 
-    // const docArr = await SchemaFollows.find({ $where: "this._id.length >= 16" });
-
     const conditionObj = {
 
       userCommunities_id: { $exists: false },
@@ -228,7 +226,7 @@ export default async (req, res) => {
     //   Delete & Insert
     // --------------------------------------------------
 
-    // await ModelFollows.deleteMany({ conditionObj });
+    await ModelFollows.deleteMany({ conditionObj });
     await ModelFollows.insertMany({ saveArr });
 
     
@@ -238,32 +236,32 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
 
-    console.log(`
-      ----------------------------------------\n
-      pages/api/v2/administration/follow-fix.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   pages/api/v2/administration/follow-fix.js
+    // `);
 
-    console.log(chalk`
-    docArr.length: {green ${docArr.length}}
-    `);
+    // console.log(chalk`
+    // docArr.length: {green ${docArr.length}}
+    // `);
 
-    console.log(`
-      ----- docArr -----\n
-      ${util.inspect(docArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- conditionObj -----\n
-      ${util.inspect(conditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- conditionObj -----\n
+    //   ${util.inspect(conditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- saveArr -----\n
-      ${util.inspect(saveArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- saveArr -----\n
+    //   ${util.inspect(saveArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 

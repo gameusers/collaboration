@@ -24,7 +24,7 @@ import lodashHas from 'lodash/has';
 // ---------------------------------------------
 
 import ModelUsers from 'app/@database/users/model.js';
-import ModelCardPlayers from 'app/@database/card-players/model.js';
+import ModelFollows from 'app/@database/follows/model.js';
 import ModelFeeds from 'app/@database/feeds/model.js';
 
 
@@ -155,17 +155,27 @@ export default async (req, res) => {
     if (!users_id) {
 
       statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '1G6OYPg8p', messageID: 'Error' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'rytBKA_Sq', messageID: 'Error' }] });
 
     }
 
+
+
+
+    // --------------------------------------------------
+    //   users_id & pagesObj
+    // --------------------------------------------------
+
     returnObj.users_id = users_id;
+    returnObj.pagesObj = lodashGet(usersObj, ['pagesObj'], []);
+
+    
 
 
-    // ---------------------------------------------
-    //   - headerObj
+    // --------------------------------------------------
+    //   headerObj
     //   ユーザーがトップ画像をアップロードしていない場合は、ランダム取得の画像を代わりに利用する
-    // ---------------------------------------------
+    // --------------------------------------------------
 
     const imagesAndVideosObj = lodashGet(returnObj, ['headerObj', 'imagesAndVideosObj'], {});
     const usersImagesAndVideosObj = lodashGet(usersObj, ['headerObj', 'imagesAndVideosObj'], {});
@@ -175,45 +185,6 @@ export default async (req, res) => {
     }
 
     returnObj.headerObj = usersObj.headerObj;
-
-
-    // --------------------------------------------------
-    //   pagesObj
-    // --------------------------------------------------
-
-    returnObj.pagesObj = lodashGet(usersObj, ['pagesObj'], []);
-
-
-
-
-    // --------------------------------------------------
-    //   DB find / Card Players
-    // --------------------------------------------------
-
-    const argumentsObj = {
-
-      localeObj,
-      loginUsers_id,
-      adminUsers_id: users_id,
-      users_id,
-      controlType: 'follow',
-
-    };
-
-
-    if (await validationInteger({ throwError: false, required: true, value: page }).error === false) {
-      argumentsObj.page = page;
-    }
-
-    if (await validationFollowLimit({ throwError: false, required: true, value: limit }).error === false) {
-      argumentsObj.limit = limit;
-    }
-
-
-    const resultFollowersObj = await ModelCardPlayers.findForFollowers(argumentsObj);
-
-    returnObj.cardPlayersObj = resultFollowersObj.cardPlayersObj;
-    returnObj.followMembersObj = resultFollowersObj.followMembersObj;
 
 
 
@@ -228,6 +199,38 @@ export default async (req, res) => {
       arr: ['all'],
 
     });
+
+
+
+
+    // --------------------------------------------------
+    //   DB find / Card Players
+    // --------------------------------------------------
+
+    const argumentsObj = {
+
+      localeObj,
+      loginUsers_id,
+      users_id,
+
+    };
+
+
+    if (await validationInteger({ throwError: false, required: true, value: page }).error === false) {
+      argumentsObj.page = page;
+    }
+
+    // if (await validationFollowLimit({ throwError: false, required: true, value: limit }).error === false) {
+    //   argumentsObj.limit = limit;
+    // }
+
+
+    const resultFollowContentsObj = await ModelFollows.findFollowContents(argumentsObj);
+
+    // returnObj.cardPlayersObj = resultFollowersObj.cardPlayersObj;
+    // returnObj.followMembersObj = resultFollowersObj.followMembersObj;
+
+
 
 
 

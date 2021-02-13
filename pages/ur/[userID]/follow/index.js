@@ -46,6 +46,7 @@ import Layout from 'app/common/layout/v2/layout.js';
 import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 
+import FollowNavigation from 'app/common/follow/v2/navigation.js';
 import FollowMembers from 'app/common/follow/v2/members.js';
 
 
@@ -77,9 +78,15 @@ const ContainerLayout = (props) => {
         sidebar={true}
       />
 
+      <FollowNavigation
+        pageType="contents"
+        listType={props.listType}
+        userID={props.userID}
+        periodMinutes={props.periodMinutes}
+      />
+
       <FeedSidebar
         feedObj={props.feedObj}
-        top={true}
       />
 
     </React.Fragment>
@@ -97,13 +104,13 @@ const ContainerLayout = (props) => {
         arr={props.breadcrumbsArr}
       />
 
-      <FollowMembers
+      {/* <FollowMembers
         pageType="ur"
         users_id={props.users_id}
         accessLevel={props.accessLevel}
         cardPlayersObj={props.cardPlayersObj}
         followMembersObj={props.followMembersObj}
-      />
+      /> */}
 
     </React.Fragment>
   ;
@@ -190,6 +197,14 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
 
   const userID = query.userID;
+  const slugsArr = lodashGet(query, ['slug'], []);
+
+  let listType = 'all';
+  let page = 1;
+
+  if (Math.sign(slugsArr[1]) === 1) {
+    page = slugsArr[1];
+  }
 
 
   // --------------------------------------------------
@@ -200,11 +215,12 @@ export async function getServerSideProps({ req, res, query }) {
 
 
   // --------------------------------------------------
-  //   Get Cookie Data & Temporary Data for Fetch
+  //   Get Cookie Data
   // --------------------------------------------------
 
   const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
   const limit = getCookie({ key: 'followLimit', reqHeadersCookie });
+  const periodMinutes = getCookie({ key: 'periodMinutes', reqHeadersCookie });
 
 
 
@@ -215,7 +231,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   const resultObj = await fetchWrapper({
 
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}/follow?page=${1}&limit=${limit}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}/follow/contents?page=${1}&limit=${limit}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -238,7 +254,7 @@ export async function getServerSideProps({ req, res, query }) {
   const feedObj = lodashGet(dataObj, ['feedObj'], {});
 
   const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
-  const users_id = lodashGet(dataObj, ['users_id'], '');
+  // const users_id = lodashGet(dataObj, ['users_id'], '');
   const cardPlayersObj = lodashGet(dataObj, ['cardPlayersObj'], {});
   const followMembersObj = lodashGet(dataObj, ['followMembersObj'], {});
 
@@ -382,9 +398,11 @@ export async function getServerSideProps({ req, res, query }) {
 
       accessLevel,
       userID,
-      users_id,
+      listType,
+      // users_id,
       cardPlayersObj,
       followMembersObj,
+      periodMinutes,
 
     }
 

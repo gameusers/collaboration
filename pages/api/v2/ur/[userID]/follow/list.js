@@ -64,7 +64,7 @@ import { initialProps } from 'app/@api/v2/common.js';
 
 
 // --------------------------------------------------
-//   endpointID: ir73GK2D_
+//   endpointID: jmqJRn8sY
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -132,7 +132,7 @@ export default async (req, res) => {
     if (!req.isAuthenticated()) {
 
       statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'c-tLHLHXX', messageID: 'xLLNIpo6a' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CTObVauuz', messageID: 'xLLNIpo6a' }] });
 
     }
 
@@ -172,7 +172,7 @@ export default async (req, res) => {
     if (!users_id) {
 
       statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '1G6OYPg8p', messageID: 'Error' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: '9zuH0jxcO', messageID: 'Error' }] });
 
     }
 
@@ -184,7 +184,7 @@ export default async (req, res) => {
     if (users_id !== loginUsers_id) {
 
       statusCode = 401;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'cenSkI4qb', messageID: 'Error' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'gWL-VLRft', messageID: 'Error' }] });
 
     }
 
@@ -377,7 +377,7 @@ export default async (req, res) => {
     const resultErrorObj = returnErrorsArr({
 
       errorObj,
-      endpointID: 'ir73GK2D_',
+      endpointID: 'jmqJRn8sY',
       users_id: loginUsers_id,
       ip,
       userAgent,

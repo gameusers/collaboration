@@ -114,7 +114,7 @@ export default async (req, res) => {
 
     const userCommunityID = lodashGet(req, ['query', 'userCommunityID'], '');
     const page = parseInt(lodashGet(req, ['query', 'page'], 1), 10);
-    const limit = parseInt(lodashGet(req, ['query', 'limit'], '') || process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT, 10);
+    const limit = parseInt(lodashGet(req, ['query', 'limit'], '') || process.env.NEXT_PUBLIC_FOLLOW_LIST_LIMIT, 10);
 
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
     lodashSet(requestParametersObj, ['page'], page);

@@ -223,7 +223,7 @@ const Component = (props) => {
       // ---------------------------------------------
 
       if (changeLimit) {
-        setCookie({ key: 'followLimit', value: changeLimit });
+        setCookie({ key: 'followListLimit', value: changeLimit });
       }
 
 
@@ -458,7 +458,7 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const page = lodashGet(followListUrObj, ['followObj', 'page'], 1);
-  const limit = lodashGet(followListUrObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT, 10));
+  const limit = lodashGet(followListUrObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FOLLOW_LIST_LIMIT, 10));
   const count = lodashGet(followListUrObj, ['followObj', 'count'], 0);
   const arr = lodashGet(followListUrObj, ['followObj', `page${page}Obj`, 'arr'], []);
 

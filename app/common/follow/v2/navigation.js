@@ -209,7 +209,7 @@ const Component = (props) => {
   //   Property
   // --------------------------------------------------
 
-  const periodMinutes = props.periodMinutes || 1440;
+  const followContentsPeriod = props.followContentsPeriod || parseInt(process.env.NEXT_PUBLIC_FOLLOW_CONTENTS_PERIOD, 10);;
   
 
 
@@ -234,7 +234,7 @@ const Component = (props) => {
   // `);
 
   // console.log(chalk`
-  // periodMinutes: {green ${periodMinutes} typeof ${typeof periodMinutes}}
+  // followContentsPeriod: {green ${followContentsPeriod} typeof ${typeof followContentsPeriod}}
   // `);
 
   // console.log(`
@@ -351,11 +351,11 @@ const Component = (props) => {
             <FormControl>
 
               <Select
-                value={periodMinutes}
+                value={followContentsPeriod}
                 // onChange={(eventObj) => handleChangeListType({ newListType: eventObj.target.value })}
                 inputProps={{
-                  name: 'periodMinutes',
-                  id: 'periodMinutes',
+                  name: 'followContentsPeriod',
+                  id: 'followContentsPeriod',
                 }}
               >
                 <MenuItem value="360">6時間</MenuItem>

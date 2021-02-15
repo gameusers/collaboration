@@ -38,7 +38,7 @@ const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
 const SchemaGameCommunities = require('../game-communities/schema.js');
 const SchemaUserCommunities = require('../user-communities/schema.js');
 
-const ModelForumComments = require('../forum-comments/model.js');
+const ModelForumThreads = require('../forum-threads/model.js');
 const ModelGameCommunities = require('../game-communities/model.js');
 const ModelUserCommunities = require('../user-communities/model.js');
 
@@ -346,7 +346,7 @@ const findFollowListGc = async ({
   localeObj,
   loginUsers_id,
   page = 1,
-  limit = process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT,
+  limit = process.env.NEXT_PUBLIC_FOLLOW_LIST_LIMIT,
 
 }) => {
 
@@ -1342,11 +1342,13 @@ const findFollowListUc = async ({
  */
 const findFollowContents = async ({
 
+  req,
   localeObj,
   loginUsers_id,
   users_id,
+  period = process.env.NEXT_PUBLIC_FOLLOW_CONTENTS_PERIOD,
   page = 1,
-  limit = process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT,
+  limit = process.env.NEXT_PUBLIC_FOLLOW_CONTENTS_LIMIT,
 
 }) => {
 
@@ -1356,6 +1358,17 @@ const findFollowContents = async ({
   // --------------------------------------------------
 
   try {
+
+
+    // --------------------------------------------------
+    //   parseInt
+    // --------------------------------------------------
+    
+    const intPeriod = parseInt(period, 10);
+    const intPage = parseInt(page, 10);
+    const intLimit = parseInt(limit, 10);
+
+
 
 
     // --------------------------------------------------
@@ -1376,7 +1389,7 @@ const findFollowContents = async ({
     });
 
 
-    const gameCommunities_idsArr = [];
+    let gameCommunities_idsArr = [];
 
     for (let valueObj of docFollowsArr.values()) {
       gameCommunities_idsArr.push(valueObj.gameCommunities_id);
@@ -1386,27 +1399,30 @@ const findFollowContents = async ({
 
 
     // --------------------------------------------------
-    //   ○○分前の日時を取得し、その日時内に更新されたデータを取得する
-    // --------------------------------------------------
-    
-    const dateTimeLimit = moment().utc().add(-216000000, 'minutes').toISOString();
-
-
-    // --------------------------------------------------
     //   matchConditionArr
     // --------------------------------------------------
 
-    const matchConditionArr = [
-      {
-        $match: {
+    const forumGcObj = await ModelForumThreads.findForumForFollowContents({
 
-          // gameCommunities_id: { $in: gameCommunities_idsArr },
-          // updatedDate: { $gte: dateTimeLimit }
-          updatedDate: { $gt: new Date("2001-04-12T12:00:00.000Z") }
+      req,
+      localeObj,
+      loginUsers_id,
+      gameCommunities_idsArr,
+      period,
+      threadPage: intPage,
+      threadLimit: intLimit,
+      // commentPage: 1,
+      // commentLimit = process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT,
+      // replyPage: 1,
+      // replyLimit,
 
-        }
-      },
-    ];
+    });
+
+    // console.log(`
+    //   ----- docForumThreadsArr -----\n
+    //   ${util.inspect(docForumThreadsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 
@@ -1415,77 +1431,77 @@ const findFollowContents = async ({
     //   Aggregation
     // --------------------------------------------------
 
-    const docArr = await SchemaForumThreads.aggregate([
+    // const docForumThreadsArr = await SchemaForumThreads.aggregate([
 
 
-      // --------------------------------------------------
-      //   Match Condition Array
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   Match Condition Array
+    //   // --------------------------------------------------
 
-      ...matchConditionArr,
-
-
-      // --------------------------------------------------
-      //   $sort / $skip / $limit
-      // --------------------------------------------------
-
-      // { $sort: { updatedDate: -1 } },
-      // { $skip: (threadPage - 1) * intThreadLimit },
-      // { $limit: intThreadLimit },
+    //   ...matchConditionArr,
 
 
-      // --------------------------------------------------
-      //   images-and-videos
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   $sort / $skip / $limit
+    //   // --------------------------------------------------
 
-      // {
-      //   $lookup:
-      //     {
-      //       from: 'images-and-videos',
-      //       let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
-      //       pipeline: [
-      //         {
-      //           $match: {
-      //             $expr: {
-      //               $eq: ['$_id', '$$letImagesAndVideos_id']
-      //             },
-      //           }
-      //         },
-      //         {
-      //           $project: {
-      //             createdDate: 0,
-      //             updatedDate: 0,
-      //             users_id: 0,
-      //             __v: 0,
-      //           }
-      //         }
-      //       ],
-      //       as: 'imagesAndVideosObj'
-      //     }
-      // },
-
-      // {
-      //   $unwind: {
-      //     path: '$imagesAndVideosObj',
-      //     preserveNullAndEmptyArrays: true,
-      //   }
-      // },
+    //   { $sort: { updatedDate: -1 } },
+    //   { $skip: (intPage - 1) * intLimit },
+    //   { $limit: intLimit },
 
 
-      // // --------------------------------------------------
-      // //   $project
-      // // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   images-and-videos
+    //   // --------------------------------------------------
 
-      // {
-      //   $project: {
-      //     imagesAndVideos_id: 0,
-      //     acceptLanguage: 0,
-      //     __v: 0,
-      //   }
-      // },
+    //   {
+    //     $lookup:
+    //       {
+    //         from: 'images-and-videos',
+    //         let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
+    //         pipeline: [
+    //           {
+    //             $match: {
+    //               $expr: {
+    //                 $eq: ['$_id', '$$letImagesAndVideos_id']
+    //               },
+    //             }
+    //           },
+    //           {
+    //             $project: {
+    //               createdDate: 0,
+    //               updatedDate: 0,
+    //               users_id: 0,
+    //               __v: 0,
+    //             }
+    //           }
+    //         ],
+    //         as: 'imagesAndVideosObj'
+    //       }
+    //   },
+
+    //   {
+    //     $unwind: {
+    //       path: '$imagesAndVideosObj',
+    //       preserveNullAndEmptyArrays: true,
+    //     }
+    //   },
 
 
-    ]).exec();
+    //   // --------------------------------------------------
+    //   //   $project
+    //   // --------------------------------------------------
+
+    //   {
+    //     $project: {
+    //       imagesAndVideos_id: 0,
+    //       acceptLanguage: 0,
+    //       __v: 0,
+    //     }
+    //   },
+
+
+    // ]).exec();
 
 
 
@@ -1494,38 +1510,66 @@ const findFollowContents = async ({
     //   console.log
     // --------------------------------------------------
 
-    console.log(`
-      ----------------------------------------\n
-      app/@database/follows/model.js - findFollowContents
-    `);
+    // gameCommunities_idsArr = [];
 
-    console.log(chalk`
-    dateTimeLimit: {green ${dateTimeLimit} / ${typeof dateTimeLimit}}
-    `);
+    // for (let valueObj of docForumThreadsArr.values()) {
+    //   gameCommunities_idsArr.push(valueObj.gameCommunities_id);
+    // }
+
+
+    // const docGameCommunitiesArr = await ModelGameCommunities.findGamesListCommon({
+
+    //   localeObj,
+    //   page: intPage,
+    //   limit: intLimit,
+    //   gameCommunities_idsArr,
+
+    // });
+
+
     
+
+
+
+
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+
+    // console.log(`
+    //   ----------------------------------------\n
+    //   app/@database/follows/model.js - findFollowContents
+    // `);
+
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id} / ${typeof loginUsers_id}}
+    //   users_id: {green ${users_id} / ${typeof users_id}}
+    //   period: {green ${period} / ${typeof period}}
     //   page: {green ${page} / ${typeof page}}
     //   limit: {green ${limit} / ${typeof limit}}
     // `);
-
+    
     // console.log(`
     //   ----- docFollowsArr -----\n
     //   ${util.inspect(docFollowsArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
-    console.log(`
-      ----- gameCommunities_idsArr -----\n
-      ${util.inspect(gameCommunities_idsArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gameCommunities_idsArr -----\n
+    //   ${util.inspect(gameCommunities_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- docArr -----\n
-      ${util.inspect(docArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- docForumThreadsArr -----\n
+    //   ${util.inspect(docForumThreadsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(chalk`
+    // docForumThreadsArr.length: {green ${docForumThreadsArr.length} / ${typeof docForumThreadsArr.length}}
+    // `);
 
     // console.log(`
     //   ----- returnObj -----\n
@@ -1540,7 +1584,11 @@ const findFollowContents = async ({
     //   Return
     // --------------------------------------------------
 
-    // return returnObj;
+    return {
+
+      forumGcObj,
+
+    };
 
 
   } catch (err) {
@@ -1568,7 +1616,7 @@ const findFollowForumGc = async ({
   localeObj,
   loginUsers_id,
   page = 1,
-  limit = process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT,
+  limit = process.env.NEXT_PUBLIC_FOLLOW_LIST_LIMIT,
 
 }) => {
 

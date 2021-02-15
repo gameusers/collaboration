@@ -1631,7 +1631,7 @@ const findForFollowers = async ({
   userCommunities_id,
   controlType,
   page = 1,
-  limit = process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT,
+  limit = process.env.NEXT_PUBLIC_FOLLOW_LIST_LIMIT,
 
 }) => {
 

@@ -1599,6 +1599,489 @@ const findGamesList = async ({
 
 
 
+/**
+ * ゲーム一覧のデータを取得する / 共通
+ * @param {Object} localeObj - ロケール
+ * @param {number} page - ページ
+ * @param {number} limit - リミット
+ * @param {Array} gameCommunities_idsArr - DB game-communities _id
+ * @return {Object} 取得データ
+ */
+const findGamesListCommon = async ({
+
+  localeObj,
+  page = 1,
+  limit = process.env.NEXT_PUBLIC_COMMUNITY_LIST_LIMIT,
+  gameCommunities_idsArr = [],
+
+}) => {
+
+
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+
+  try {
+
+
+    // --------------------------------------------------
+    //   Language & Country
+    // --------------------------------------------------
+
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+
+
+    // --------------------------------------------------
+    //   parseInt
+    // --------------------------------------------------
+
+    const intPage = parseInt(page, 10);
+    const intLimit = parseInt(limit, 10);
+
+
+
+
+    // --------------------------------------------------
+    //   $match（ドキュメントの検索用） & count（総数の検索用）の条件作成
+    // --------------------------------------------------
+
+    const conditionObj = {
+
+      language,
+      country,
+
+    };
+
+
+    // ---------------------------------------------
+    //   - 検索条件
+    // ---------------------------------------------
+
+    if (gameCommunities_idsArr.length > 0) {
+
+      lodashSet(conditionObj, ['gameCommunities_id'],
+        {
+          $in: gameCommunities_idsArr
+        }
+      );
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   Aggregation - games
+    // --------------------------------------------------
+
+    const docArr = await SchemaGames.aggregate([
+
+
+      // --------------------------------------------------
+      //   Match Condition Array
+      // --------------------------------------------------
+
+      {
+        $match: conditionObj
+      },
+
+
+      // --------------------------------------------------
+      //   game-communities
+      // --------------------------------------------------
+
+      {
+        $lookup:
+          {
+            from: 'game-communities',
+            let: { letGameCommunities_id: '$gameCommunities_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letGameCommunities_id']
+                  },
+                }
+              },
+              {
+                $project: {
+                  _id: 0,
+                  updatedDate: 1,
+                }
+              }
+            ],
+            as: 'gameCommunitiesObj'
+          }
+      },
+
+      {
+        $unwind: {
+          path: '$gameCommunitiesObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+
+
+      // --------------------------------------------------
+      //   $sort / $skip / $limit
+      // --------------------------------------------------
+
+      { $sort: { 'gameCommunitiesObj.updatedDate': -1 } },
+      { $skip: (intPage - 1) * intLimit },
+      { $limit: intLimit },
+
+
+      // --------------------------------------------------
+      //   images-and-videos / サムネイル用
+      // --------------------------------------------------
+
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                  },
+                }
+              },
+              {
+                $project: {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosThumbnailObj'
+          }
+      },
+
+      {
+        $unwind: {
+          path: '$imagesAndVideosThumbnailObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+
+
+      // --------------------------------------------------
+      //   follows
+      // --------------------------------------------------
+
+      {
+        $lookup:
+          {
+            from: 'follows',
+            let: { letGameCommunities_id: '$gameCommunities_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$gameCommunities_id', '$$letGameCommunities_id']
+                  },
+                }
+              },
+              {
+                $project: {
+                  _id: 0,
+                  followedCount: 1,
+                }
+              }
+            ],
+            as: 'followsObj'
+          }
+      },
+
+      {
+        $unwind: {
+          path: '$followsObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+
+
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+
+      {
+        $project: {
+          gameCommunities_id: 1,
+          urlID: 1,
+          imagesAndVideosThumbnailObj: 1,
+          name: 1,
+          subtitle: 1,
+          hardwareArr: 1,
+          followsObj: 1,
+          gameCommunitiesObj: 1,
+        }
+      },
+
+
+    ]).exec();
+
+
+
+
+    // ---------------------------------------------
+    //   - Return Value
+    // ---------------------------------------------
+
+    const returnObj = {};
+
+    const ISO8601 = moment().utc().toISOString();
+    const daysLimit = parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_UPDATED_DATE_DAYS_LOWER_LIMIT, 10);
+    const followersLimit = parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_FOLLOWERS_LOWER_LIMIT, 10);
+
+
+
+
+    // ---------------------------------------------
+    //   - Loop
+    // ---------------------------------------------
+
+    for (let valueObj of docArr.values()) {
+
+
+      // console.log(`
+      //   ----- valueObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(valueObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // --------------------------------------------------
+      //   Deep Copy
+      // --------------------------------------------------
+
+      const obj = {};
+
+
+      // --------------------------------------------------
+      //   Data
+      // --------------------------------------------------
+
+      const _id = lodashGet(valueObj, ['_id'], '');
+      const gameCommunities_id = lodashGet(valueObj, ['gameCommunities_id'], '');
+      const updatedDate = lodashGet(valueObj, ['gameCommunitiesObj', 'updatedDate'], '');
+      const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['imagesAndVideosThumbnailObj'], {});
+      const followedCount = lodashGet(valueObj, ['followsObj', 'followedCount'], 0);
+
+      obj._id = _id;
+      obj.urlID = lodashGet(valueObj, ['urlID'], '');
+      obj.name = lodashGet(valueObj, ['name'], '');
+      obj.subtitle = lodashGet(valueObj, ['subtitle'], '');
+
+      if (followedCount >= followersLimit) {
+        obj.followedCount = followedCount;
+      }
+
+
+      // --------------------------------------------------
+      //   Datetime
+      // --------------------------------------------------
+
+      let datetimeCurrent = ISO8601;
+      const datetimeUpdated = moment(updatedDate);
+
+      if (datetimeUpdated.isAfter(datetimeCurrent)) {
+        datetimeCurrent = datetimeUpdated;
+      }
+
+      const days = moment().diff(datetimeUpdated, 'days');
+
+      if (days <= daysLimit) {
+        obj.datetimeFrom = datetimeUpdated.from(datetimeCurrent);
+      }
+
+      // console.log(chalk`
+      //   days: {green ${days}}
+      // `);
+
+
+
+
+      // --------------------------------------------------
+      //   Developers Publishers
+      // --------------------------------------------------
+
+      const hardwareArr = lodashGet(valueObj, ['hardwareArr'], []);
+      let developerPublisherIDsArr = [];
+
+
+      // ---------------------------------------------
+      //   - Loop
+      // ---------------------------------------------
+
+      for (let value2Obj of hardwareArr.values()) {
+
+        const developerIDsArr = lodashGet(value2Obj, ['developerIDsArr'], []);
+        const publisherIDsArr = lodashGet(value2Obj, ['publisherIDsArr'], []);
+
+        developerPublisherIDsArr = developerPublisherIDsArr.concat(developerIDsArr, publisherIDsArr);
+
+      }
+
+
+      // ---------------------------------------------
+      //   - 配列の重複している値を削除
+      // ---------------------------------------------
+
+      developerPublisherIDsArr = Array.from(new Set(developerPublisherIDsArr));
+
+      
+      // ---------------------------------------------
+      //   - find
+      // ---------------------------------------------
+
+      const docDevelopersPublishersArr = await ModelDevelopersPublishers.find({
+
+        conditionObj: {
+          language,
+          country,
+          developerPublisherID: { $in: developerPublisherIDsArr },
+        }
+
+      });
+
+
+      // ---------------------------------------------
+      //   - 名前だけ配列に入れる
+      // ---------------------------------------------
+
+      const developersPublishersArr = [];
+
+      for (let value of developerPublisherIDsArr.values()) {
+        
+        const resultObj = docDevelopersPublishersArr.find((value2Obj) => {
+          return value2Obj.developerPublisherID === value;
+        });
+
+        if (resultObj) {
+          developersPublishersArr.push(resultObj.name);
+        }
+
+      }
+
+      obj.developersPublishers = developersPublishersArr.join(', ');
+
+
+      // console.log(`
+      //   ----- developerPublisherIDsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(developerPublisherIDsArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // console.log(`
+      //   ----- docDevelopersPublishersArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(docDevelopersPublishersArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // console.log(`
+      //   ----- developersPublishersArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(developersPublishersArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // --------------------------------------------------
+      //   画像と動画の処理
+      // --------------------------------------------------
+
+      const formattedThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosThumbnailObj });
+
+      if (Object.keys(formattedThumbnailObj).length !== 0) {
+
+        obj.src = lodashGet(formattedThumbnailObj, ['arr', 0, 'src'], '/img/common/thumbnail/none-game.jpg');
+        obj.srcSet = lodashGet(formattedThumbnailObj, ['arr', 0, 'srcSet'], '');
+
+      }
+
+
+      // --------------------------------------------------
+      //   Set Data
+      // --------------------------------------------------
+
+      lodashSet(returnObj, [gameCommunities_id], obj);
+
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/game-communities/model.js - findGamesListCommon
+    // `);
+
+    // console.log(chalk`
+    //   page: {green ${page} / ${typeof page}}
+    //   intLimit: {green ${intLimit} / ${typeof intLimit}}
+    //   (page - 1) * intLimit: {green ${(page - 1) * intLimit} / ${typeof (page - 1) * intLimit}}
+    //   keyword: {green ${keyword} / ${typeof keyword}}
+    // `);
+
+    // console.log(`
+    //   ----- hardwareIDsArr -----\n
+    //   ${util.inspect(hardwareIDsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- conditionObj -----\n
+    //   ${util.inspect(conditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
+
+
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+
+    return returnObj;
+    // return {};
+
+
+  } catch (err) {
+
+    throw err;
+
+  }
+
+
+};
+
+
+
+
+
+
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
@@ -1615,5 +2098,6 @@ module.exports = {
   findForGameCommunity,
   findForGameCommunityByGameCommunities_id,
   findGamesList,
+  findGamesListCommon,
 
 };

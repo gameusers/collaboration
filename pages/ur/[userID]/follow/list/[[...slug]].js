@@ -279,7 +279,7 @@ export async function getServerSideProps({ req, res, query }) {
   const userID = query.userID;
   const slugsArr = lodashGet(query, ['slug'], []);
 
-  let listType = slugsArr[0];
+  let listType = slugsArr[0] || '';
   let page = 1;
 
   if (Math.sign(slugsArr[1]) === 1) {
@@ -311,7 +311,7 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
 
   const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
-  const limit = getCookie({ key: 'followLimit', reqHeadersCookie });
+  const limit = getCookie({ key: 'followListLimit', reqHeadersCookie });
 
 
 

@@ -115,7 +115,7 @@ export default async (req, res) => {
     const userID = lodashGet(req, ['query', 'userID'], '');
     const listType = lodashGet(req, ['query', 'listType'], '');
     const page = parseInt(lodashGet(req, ['query', 'page'], 1), 10);
-    const limit = parseInt(lodashGet(req, ['query', 'limit'], '') || process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT, 10);
+    const limit = parseInt(lodashGet(req, ['query', 'limit'], '') || process.env.NEXT_PUBLIC_FOLLOW_LIST_LIMIT, 10);
 
     lodashSet(requestParametersObj, ['userID'], userID);
     lodashSet(requestParametersObj, ['listType'], listType);
@@ -137,13 +137,16 @@ export default async (req, res) => {
     }
 
 
-
-
     // --------------------------------------------------
-    //   Common Initial Props
+    //   listType が存在しない場合はエラー
     // --------------------------------------------------
 
-    const returnObj = await initialProps({ req, localeObj, type: 'other' });
+    if (!listType) {
+
+      statusCode = 404;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 's0_x1UM-3', messageID: 'Error' }] });
+
+    }
 
 
 
@@ -189,6 +192,13 @@ export default async (req, res) => {
     }
 
 
+
+
+    // --------------------------------------------------
+    //   Common Initial Props
+    // --------------------------------------------------
+
+    const returnObj = await initialProps({ req, localeObj, type: 'other' });
 
 
     // --------------------------------------------------

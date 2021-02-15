@@ -221,7 +221,7 @@ const Component = (props) => {
       const loadedDate = lodashGet(followMembersObj, [`${newControlType}Obj`, `page${page}Obj`, 'loadedDate'], '');
       const arr = lodashGet(followMembersObj, [`${newControlType}Obj`, `page${page}Obj`, 'arr'], []);
 
-      let limit = parseInt((getCookie({ key: 'followLimit' }) || process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT), 10);
+      let limit = parseInt((getCookie({ key: 'followLimit' }) || process.env.NEXT_PUBLIC_FOLLOW_LIST_LIMIT), 10);
 
 
 
@@ -776,7 +776,7 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const page = lodashGet(followMembersObj, [`${controlType}Obj`, 'page'], 1);
-  const limit = lodashGet(followMembersObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT, 10));
+  const limit = lodashGet(followMembersObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FOLLOW_LIST_LIMIT, 10));
   const count = lodashGet(followMembersObj, [`${controlType}Obj`, 'count'], 0);
   const arr = lodashGet(followMembersObj, [`${controlType}Obj`, `page${page}Obj`, 'arr'], []);
 

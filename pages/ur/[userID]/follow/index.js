@@ -30,6 +30,14 @@ import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
+//   States
+// ---------------------------------------------
+
+import { ContainerStateCommunity } from 'app/@states/community.js';
+import { ContainerStateForum } from 'app/@states/forum.js';
+
+
+// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -47,6 +55,7 @@ import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 
 import FollowNavigation from 'app/common/follow/v2/navigation.js';
+import Forum from 'app/common/forum/v2/forum.js';
 import FollowMembers from 'app/common/follow/v2/members.js';
 
 
@@ -82,7 +91,7 @@ const ContainerLayout = (props) => {
         pageType="contents"
         listType={props.listType}
         userID={props.userID}
-        periodMinutes={props.periodMinutes}
+        followContentsPeriod={props.followContentsPeriod}
       />
 
       <FeedSidebar
@@ -102,6 +111,14 @@ const ContainerLayout = (props) => {
 
       <Breadcrumbs
         arr={props.breadcrumbsArr}
+      />
+
+      <Forum
+        // urlID={props.urlID}
+        // gameCommunities_id={props.gameCommunities_id}
+        urlID={'aaa'}
+        gameCommunities_id={'bbb'}
+        enableAnonymity={false}
       />
 
       {/* <FollowMembers
@@ -141,6 +158,32 @@ const ContainerLayout = (props) => {
  * コンポーネント / このページ独自のステートを設定する
  * @param {Object} props - Props
  */
+// const Component = (props) => {
+
+
+//   // --------------------------------------------------
+//   //   Error
+//   //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
+//   // --------------------------------------------------
+
+//   if (props.statusCode !== 200) {
+//     return <Error statusCode={props.statusCode} />;
+//   }
+
+
+//   // --------------------------------------------------
+//   //   Return
+//   // --------------------------------------------------
+
+//   return <ContainerLayout {...props} />;
+
+
+// };
+
+/**
+ * コンポーネント / このページ独自のステートを設定する
+ * @param {Object} props - Props
+ */
 const Component = (props) => {
 
 
@@ -155,13 +198,41 @@ const Component = (props) => {
 
 
   // --------------------------------------------------
+  //   unstated-next - Initial State
+  // --------------------------------------------------
+
+  const initialStateObj = {
+
+    // gameCommunityObj: props.gameCommunityObj,
+    // forumThreadsForListObj: props.forumThreadsForListObj,
+    gameCommunityObj: {},
+    forumThreadsForListObj: {},
+    forumThreadsObj: props.forumThreadsGcObj,
+    forumCommentsObj: props.forumCommentsGcObj,
+    forumRepliesObj: props.forumRepliesGcObj,
+
+  };
+  
+
+  // --------------------------------------------------
   //   Return
   // --------------------------------------------------
 
-  return <ContainerLayout {...props} />;
+  return (
+    <ContainerStateCommunity.Provider initialState={initialStateObj}>
+
+      <ContainerStateForum.Provider initialState={initialStateObj}>
+
+        <ContainerLayout {...props} />
+
+      </ContainerStateForum.Provider>
+
+    </ContainerStateCommunity.Provider>
+  );
 
 
 };
+
 
 
 
@@ -219,9 +290,9 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
 
   const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
-  const limit = getCookie({ key: 'followLimit', reqHeadersCookie });
-  const periodMinutes = getCookie({ key: 'periodMinutes', reqHeadersCookie });
-
+  const followContentsPeriod = getCookie({ key: 'followContentsPeriod', reqHeadersCookie });
+  const limit = getCookie({ key: 'followContentsLimit', reqHeadersCookie });
+  
 
 
 
@@ -231,7 +302,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   const resultObj = await fetchWrapper({
 
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}/follow/contents?page=${1}&limit=${limit}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}/follow/contents?period=${followContentsPeriod}&page=${1}&limit=${limit}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -255,9 +326,10 @@ export async function getServerSideProps({ req, res, query }) {
 
   const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
   // const users_id = lodashGet(dataObj, ['users_id'], '');
-  const cardPlayersObj = lodashGet(dataObj, ['cardPlayersObj'], {});
-  const followMembersObj = lodashGet(dataObj, ['followMembersObj'], {});
-
+  const forumThreadsGcObj = lodashGet(dataObj, ['forumGcObj', 'forumThreadsObj'], {});
+  const forumCommentsGcObj = lodashGet(dataObj, ['forumGcObj', 'forumCommentsObj'], {});
+  const forumRepliesGcObj = lodashGet(dataObj, ['forumGcObj', 'forumRepliesObj'], {});
+  
 
 
 
@@ -400,9 +472,11 @@ export async function getServerSideProps({ req, res, query }) {
       userID,
       listType,
       // users_id,
-      cardPlayersObj,
-      followMembersObj,
-      periodMinutes,
+      
+      followContentsPeriod,
+      forumThreadsGcObj,
+      forumCommentsGcObj,
+      forumRepliesGcObj,
 
     }
 

@@ -41,7 +41,7 @@ import { CustomError } from 'app/@modules/error/custom.js';
 // ---------------------------------------------
 
 import { validationInteger } from 'app/@validations/integer.js';
-import { validationFollowLimit } from 'app/@database/follows/validations/follow-limit.js';
+import { validationFollowPeriod, validationFollowLimit } from 'app/@database/follows/validations/follow-limit.js';
 
 
 // ---------------------------------------------
@@ -112,22 +112,15 @@ export default async (req, res) => {
     // --------------------------------------------------
 
     const userID = lodashGet(req, ['query', 'userID'], '');
-    const page = parseInt(lodashGet(req, ['query', 'page'], 1), 10);
-    const limit = parseInt(lodashGet(req, ['query', 'limit'], '') || process.env.NEXT_PUBLIC_FOLLOWERS_LIMIT, 10);
+    const page = lodashGet(req, ['query', 'page'], 1);
+    const limit = lodashGet(req, ['query', 'limit'], '');
+    const period = lodashGet(req, ['query', 'period'], '');
 
     lodashSet(requestParametersObj, ['userID'], userID);
     lodashSet(requestParametersObj, ['page'], page);
     lodashSet(requestParametersObj, ['limit'], limit);
-
-
-
-
-    // --------------------------------------------------
-    //   Common Initial Props
-    // --------------------------------------------------
-
-    const returnObj = await initialProps({ req, localeObj, type: 'other' });
-
+    lodashSet(requestParametersObj, ['period'], period);
+    
 
 
 
@@ -160,6 +153,13 @@ export default async (req, res) => {
     }
 
 
+
+
+    // --------------------------------------------------
+    //   Common Initial Props
+    // --------------------------------------------------
+
+    const returnObj = await initialProps({ req, localeObj, type: 'other' });
 
 
     // --------------------------------------------------
@@ -204,11 +204,12 @@ export default async (req, res) => {
 
 
     // --------------------------------------------------
-    //   DB find / Card Players
+    //   DB find / follows
     // --------------------------------------------------
 
     const argumentsObj = {
 
+      req,
       localeObj,
       loginUsers_id,
       users_id,
@@ -216,19 +217,23 @@ export default async (req, res) => {
     };
 
 
+    if (await validationFollowPeriod({ throwError: false, required: true, value: period }).error === false) {
+      argumentsObj.period = period;
+    }
+
     if (await validationInteger({ throwError: false, required: true, value: page }).error === false) {
       argumentsObj.page = page;
     }
 
-    // if (await validationFollowLimit({ throwError: false, required: true, value: limit }).error === false) {
-    //   argumentsObj.limit = limit;
-    // }
+    if (await validationFollowLimit({ throwError: false, required: true, value: limit }).error === false) {
+      argumentsObj.limit = limit;
+    }
 
 
-    const resultFollowContentsObj = await ModelFollows.findFollowContents(argumentsObj);
+    const followContentsObj = await ModelFollows.findFollowContents(argumentsObj);
 
-    // returnObj.cardPlayersObj = resultFollowersObj.cardPlayersObj;
-    // returnObj.followMembersObj = resultFollowersObj.followMembersObj;
+    returnObj.forumGcObj = lodashGet(followContentsObj, ['forumGcObj'], []);
+    // returnObj.followMembersObj = forumGcObj.followMembersObj;
 
 
 

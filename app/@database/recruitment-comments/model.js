@@ -69,7 +69,7 @@ const { formatRecruitmentCommentsAndRepliesArr } = require('./format.js');
 
 
 // --------------------------------------------------
-//   Function
+//   Common
 // --------------------------------------------------
 
 /**
@@ -1103,6 +1103,7 @@ const findCommentsAndReplies = async ({
           $project: {
             imagesAndVideos_id: 0,
             webPushes_id: 0,
+            acceptLanguage: 0,
             __v: 0,
           }
         },
@@ -2386,7 +2387,7 @@ const findForNotification = async ({
 
 
 // --------------------------------------------------
-//   transaction
+//   Transaction
 // --------------------------------------------------
 
 /**

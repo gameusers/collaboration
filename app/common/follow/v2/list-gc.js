@@ -500,7 +500,6 @@ const Component = (props) => {
 
         {/* Card */}
         <CardGc
-          key={index}
           obj={dataObj}
         />
 

@@ -69,7 +69,7 @@ const { formatRecruitmentRepliesArr } = require('./format.js');
 
 
 // --------------------------------------------------
-//   Function
+//   Common
 // --------------------------------------------------
 
 /**
@@ -334,7 +334,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 
 // --------------------------------------------------
-//   find
+//   Function
 // --------------------------------------------------
 
 /**
@@ -714,6 +714,7 @@ const findReplies = async ({
         {
           $project: {
             imagesAndVideos_id: 0,
+            acceptLanguage: 0,
             __v: 0,
           }
         },
@@ -1703,7 +1704,7 @@ const findForNotification = async ({
 
 
 // --------------------------------------------------
-//   transaction
+//   Transaction
 // --------------------------------------------------
 
 /**

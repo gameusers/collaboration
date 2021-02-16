@@ -1399,7 +1399,7 @@ const findFollowContents = async ({
 
 
     // --------------------------------------------------
-    //   matchConditionArr
+    //   フォーラム取得
     // --------------------------------------------------
 
     const forumGcObj = await ModelForumThreads.findForumForFollowContents({
@@ -1409,8 +1409,8 @@ const findFollowContents = async ({
       loginUsers_id,
       gameCommunities_idsArr,
       period,
-      threadPage: intPage,
-      threadLimit: intLimit,
+      threadPage: page,
+      threadLimit: limit,
       // commentPage: 1,
       // commentLimit = process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT,
       // replyPage: 1,
@@ -1418,115 +1418,49 @@ const findFollowContents = async ({
 
     });
 
+    console.log(`
+      ----- forumGcObj -----\n
+      ${util.inspect(forumGcObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+
+
+
+
+    // --------------------------------------------------
+    //   ゲームコミュニティ一覧取得
+    // --------------------------------------------------
+
+    const forumDataGcObj = lodashGet(forumGcObj, ['forumThreadsObj', 'dataObj'], {});
+
+    gameCommunities_idsArr = [];
+
+    for (let valueObj of Object.values(forumDataGcObj)) {
+      gameCommunities_idsArr.push(valueObj.gameCommunities_id);
+    }
+
+
+    const gameCommunitiesObj = await ModelGameCommunities.findGamesListCommon({
+
+      localeObj,
+      page: intPage,
+      limit: intLimit,
+      gameCommunities_idsArr,
+
+    });
+
+
     // console.log(`
-    //   ----- docForumThreadsArr -----\n
-    //   ${util.inspect(docForumThreadsArr, { colors: true, depth: null })}\n
+    //   ----- forumDataGcObj -----\n
+    //   ${util.inspect(forumDataGcObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
-
-
-
-    // --------------------------------------------------
-    //   Aggregation
-    // --------------------------------------------------
-
-    // const docForumThreadsArr = await SchemaForumThreads.aggregate([
-
-
-    //   // --------------------------------------------------
-    //   //   Match Condition Array
-    //   // --------------------------------------------------
-
-    //   ...matchConditionArr,
-
-
-    //   // --------------------------------------------------
-    //   //   $sort / $skip / $limit
-    //   // --------------------------------------------------
-
-    //   { $sort: { updatedDate: -1 } },
-    //   { $skip: (intPage - 1) * intLimit },
-    //   { $limit: intLimit },
-
-
-    //   // --------------------------------------------------
-    //   //   images-and-videos
-    //   // --------------------------------------------------
-
-    //   {
-    //     $lookup:
-    //       {
-    //         from: 'images-and-videos',
-    //         let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
-    //         pipeline: [
-    //           {
-    //             $match: {
-    //               $expr: {
-    //                 $eq: ['$_id', '$$letImagesAndVideos_id']
-    //               },
-    //             }
-    //           },
-    //           {
-    //             $project: {
-    //               createdDate: 0,
-    //               updatedDate: 0,
-    //               users_id: 0,
-    //               __v: 0,
-    //             }
-    //           }
-    //         ],
-    //         as: 'imagesAndVideosObj'
-    //       }
-    //   },
-
-    //   {
-    //     $unwind: {
-    //       path: '$imagesAndVideosObj',
-    //       preserveNullAndEmptyArrays: true,
-    //     }
-    //   },
-
-
-    //   // --------------------------------------------------
-    //   //   $project
-    //   // --------------------------------------------------
-
-    //   {
-    //     $project: {
-    //       imagesAndVideos_id: 0,
-    //       acceptLanguage: 0,
-    //       __v: 0,
-    //     }
-    //   },
-
-
-    // ]).exec();
-
-
-
-
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-
-    // gameCommunities_idsArr = [];
-
-    // for (let valueObj of docForumThreadsArr.values()) {
-    //   gameCommunities_idsArr.push(valueObj.gameCommunities_id);
-    // }
-
-
-    // const docGameCommunitiesArr = await ModelGameCommunities.findGamesListCommon({
-
-    //   localeObj,
-    //   page: intPage,
-    //   limit: intLimit,
-    //   gameCommunities_idsArr,
-
-    // });
-
-
+    console.log(`
+      ----- gameCommunitiesObj -----\n
+      ${util.inspect(gameCommunitiesObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
 
 
@@ -1587,6 +1521,7 @@ const findFollowContents = async ({
     return {
 
       forumGcObj,
+      gameCommunitiesObj,
 
     };
 

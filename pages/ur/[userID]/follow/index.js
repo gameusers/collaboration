@@ -55,8 +55,8 @@ import Breadcrumbs from 'app/common/layout/v2/breadcrumbs.js';
 import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 
 import FollowNavigation from 'app/common/follow/v2/navigation.js';
-import Forum from 'app/common/forum/v2/forum.js';
-import FollowMembers from 'app/common/follow/v2/members.js';
+import FollowContents from 'app/common/follow/v2/contents.js';
+// import FollowMembers from 'app/common/follow/v2/members.js';
 
 
 
@@ -113,11 +113,12 @@ const ContainerLayout = (props) => {
         arr={props.breadcrumbsArr}
       />
 
-      <Forum
+      <FollowContents
         // urlID={props.urlID}
         // gameCommunities_id={props.gameCommunities_id}
         urlID={'aaa'}
         gameCommunities_id={'bbb'}
+        gameCommunitiesObj={props.gameCommunitiesObj}
         enableAnonymity={false}
       />
 
@@ -206,7 +207,7 @@ const Component = (props) => {
     // gameCommunityObj: props.gameCommunityObj,
     // forumThreadsForListObj: props.forumThreadsForListObj,
     gameCommunityObj: {},
-    forumThreadsForListObj: {},
+    // forumThreadsForListObj: {},
     forumThreadsObj: props.forumThreadsGcObj,
     forumCommentsObj: props.forumCommentsGcObj,
     forumRepliesObj: props.forumRepliesGcObj,
@@ -302,7 +303,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   const resultObj = await fetchWrapper({
 
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}/follow/contents?period=${followContentsPeriod}&page=${1}&limit=${limit}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}/follow/contents?period=${followContentsPeriod}&page=${page}&limit=${limit}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -326,9 +327,11 @@ export async function getServerSideProps({ req, res, query }) {
 
   const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
   // const users_id = lodashGet(dataObj, ['users_id'], '');
+  
   const forumThreadsGcObj = lodashGet(dataObj, ['forumGcObj', 'forumThreadsObj'], {});
   const forumCommentsGcObj = lodashGet(dataObj, ['forumGcObj', 'forumCommentsObj'], {});
   const forumRepliesGcObj = lodashGet(dataObj, ['forumGcObj', 'forumRepliesObj'], {});
+  const gameCommunitiesObj = lodashGet(dataObj, ['gameCommunitiesObj'], {});
   
 
 
@@ -477,6 +480,7 @@ export async function getServerSideProps({ req, res, query }) {
       forumThreadsGcObj,
       forumCommentsGcObj,
       forumRepliesGcObj,
+      gameCommunitiesObj,
 
     }
 

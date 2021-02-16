@@ -1608,7 +1608,7 @@ const findForumByforumID = async ({
 
 
 /**
- * スレッドを取得する
+ * フォーラムを取得する / フォロー用
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
@@ -1707,10 +1707,6 @@ const findForumForFollowContents = async ({
       threadCount = await count({
         conditionObj
       });
-
-      // threadCount = 30;
-
-      // threadCount = lodashGet(gameCommunityArr, [0, 'forumObj', 'threadCount'], 0);
 
 
     // ---------------------------------------------

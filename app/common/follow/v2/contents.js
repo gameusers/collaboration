@@ -40,8 +40,6 @@ import lodashGet from 'lodash/get';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import Popover from '@material-ui/core/Popover';
 import Paper from '@material-ui/core/Paper';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -53,15 +51,14 @@ import Select from '@material-ui/core/Select';
 //   Material UI / Icons
 // ---------------------------------------------
 
-import IconEdit from '@material-ui/icons/Edit';
-import IconHelpOutline from '@material-ui/icons/HelpOutline';
+import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 
 
 // ---------------------------------------------
 //   States
 // ---------------------------------------------
 
-import { ContainerStateLayout } from 'app/@states/layout.js';
+import { ContainerStateForum } from 'app/@states/forum.js';
 
 
 // ---------------------------------------------
@@ -75,6 +72,8 @@ import { setCookie } from 'app/@modules/cookie.js';
 //   Components
 // ---------------------------------------------
 
+import Panel from 'app/common/layout/v2/panel.js';
+import Thread from 'app/common/forum/v2/thread.js';
 import CardGc from 'app/common/community-list/v2/card-gc.js';
 
 
@@ -122,26 +121,17 @@ const Component = (props) => {
 
   const {
 
-    gcListObj,
-    hardwaresArr,
-    keyword,
+    // urlID,
+    // gameCommunities_id,
+    userCommunityID,
+    userCommunities_id,
+
+    gameCommunitiesObj,
+
+    enableAnonymity,
+    deletable,
 
   } = props;
-
-
-
-
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-
-  const stateLayout = ContainerStateLayout.useContainer();
-
-  const {
-
-    handleScrollTo,
-
-  } = stateLayout;
 
 
 
@@ -154,7 +144,7 @@ const Component = (props) => {
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
-  const [anchorElEditMode, setAnchorElEditMode] = useState(null);
+  // const [panelExpanded, setPanelExpanded] = useState(false);
 
 
   useEffect(() => {
@@ -164,6 +154,21 @@ const Component = (props) => {
   }, []);
 
 
+  
+
+  // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+
+  const stateForum = ContainerStateForum.useContainer();
+
+  const {
+
+    forumThreadsObj,
+
+  } = stateForum;
+
+
 
 
   // --------------------------------------------------
@@ -171,8 +176,8 @@ const Component = (props) => {
   // --------------------------------------------------
 
   /**
-   * ゲームコミュニティ一覧を読み込む
-   * @param {number} page - ページ
+   * スレッドを読み込む
+   * @param {number} page - スレッドのページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
   const handleRead = async ({
@@ -187,31 +192,25 @@ const Component = (props) => {
 
 
       // ---------------------------------------------
-      //   For Search
-      // ---------------------------------------------
-
-      const hardwareIDsArr = [];
-
-      for (let valueObj of hardwaresArr.values()) {
-        hardwareIDsArr.push(valueObj.hardwareID);
-      }
-
-
-      // ---------------------------------------------
       //   Router.push 用
       // ---------------------------------------------
 
-      const urlHardwares = hardwareIDsArr.length > 0 ? `hardwares=${hardwareIDsArr.join(',')}&` : '';
-      const urlKeyword = keyword ? `keyword=${encodeURI(keyword)}&` : '';
+      let url = '';
 
-      let url = `/gc/list/search?${urlHardwares}${urlKeyword}page=${page}`;
-
-      if (!urlHardwares && !urlKeyword) {
+      if (gameCommunities_id) {
 
         if (page === 1) {
-          url = '/gc/list';
+          url = `/gc/${urlID}`;
         } else {
-          url = `/gc/list/${page}`;
+          url = `/gc/${urlID}/forum/${page}`;
+        }
+
+      } else {
+
+        if (page === 1) {
+          url = `/uc/${userCommunityID}`;
+        } else {
+          url = `/uc/${userCommunityID}/forum/${page}`;
         }
 
       }
@@ -222,25 +221,8 @@ const Component = (props) => {
       // ---------------------------------------------
 
       if (changeLimit) {
-        setCookie({ key: 'communityListLimit', value: changeLimit });
+        setCookie({ key: 'forumThreadLimit', value: changeLimit });
       }
-
-
-      // ---------------------------------------------
-      //   Scroll To
-      // ---------------------------------------------
-
-      handleScrollTo({
-
-        to: 'gcList',
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
-
-      });
-
-
 
 
       // ---------------------------------------------
@@ -249,7 +231,7 @@ const Component = (props) => {
 
       // console.log(`
       //   ----------------------------------------\n
-      //   app/gc/list/v2/list.js - handleRead
+      //   /app/common/forum/v2/components/forum.js - handleRead
       // `);
 
       // console.log(chalk`
@@ -264,8 +246,6 @@ const Component = (props) => {
 
       // return;
 
-
-      
 
       // ---------------------------------------------
       //   Router.push = History API pushState()
@@ -286,10 +266,11 @@ const Component = (props) => {
   //   Thread
   // --------------------------------------------------
 
-  const page = lodashGet(gcListObj, ['page'], 1);
-  const limit = lodashGet(gcListObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_LIMIT, 10));
-  const count = lodashGet(gcListObj, ['count'], 0);
-  const arr = lodashGet(gcListObj, [`page${page}Obj`, 'arr'], []);
+  const page = lodashGet(forumThreadsObj, ['page'], 1);
+  const limit = lodashGet(forumThreadsObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT, 10));
+  const count = lodashGet(forumThreadsObj, ['count'], 0);
+  const arr = lodashGet(forumThreadsObj, [`page${page}Obj`, 'arr'], []);
+  const dataObj = lodashGet(forumThreadsObj, ['dataObj'], {});
 
 
 
@@ -300,7 +281,7 @@ const Component = (props) => {
 
   // console.log(`
   //   ----------------------------------------\n
-  //   app/gc/list/v2/list.js
+  //   /app/common/forum/v2/components/forum.js
   // `);
 
   // console.log(chalk`
@@ -324,31 +305,66 @@ const Component = (props) => {
 
 
   // --------------------------------------------------
-  //   Component - List
+  //   Component - Thread
   // --------------------------------------------------
 
   const componentsArr = [];
 
-  for (const [index, gameCommunities_id] of arr.entries()) {
+  for (const [index, forumThreads_id] of arr.entries()) {
 
+    const gameCommunities_id = lodashGet(dataObj, [forumThreads_id, 'gameCommunities_id'], {});
+    const gameCommunitiesDataObj = lodashGet(gameCommunitiesObj, [gameCommunities_id], {});
+    const urlID = lodashGet(gameCommunitiesDataObj, ['urlID'], '');
 
-    // --------------------------------------------------
-    //   dataObj
-    // --------------------------------------------------
+    // console.log(`
+    //   ----- gameCommunitiesDataObj -----\n
+    //   ${util.inspect(gameCommunitiesDataObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    const dataObj = lodashGet(gcListObj, ['dataObj', gameCommunities_id], {});
-
-
-    // --------------------------------------------------
-    //   push
-    // --------------------------------------------------
+    // console.log(chalk`
+    // gameCommunities_id: {green ${gameCommunities_id}}
+    // urlID: {green ${urlID}}
+    // `);
+    
 
     componentsArr.push(
-      <CardGc
-        obj={dataObj}
-      />
-    );
+      <React.Fragment>
 
+        <div
+          css={css`
+            margin: 28px 0 14px 0;
+
+            @media screen and (max-width: 947px) {
+              ${index === 0 ? 'margin: 0 0 14px 0;' : 'margin: 28px 0 14px 0;'}
+            }
+          `}
+        >
+          <CardGc
+            obj={gameCommunitiesDataObj}
+          />
+        </div>
+        
+
+        {/* <div
+          css={css`
+            margin-bottom: 0;
+          `}
+        > */}
+          <Thread
+            key={forumThreads_id}
+            urlID={urlID}
+            gameCommunities_id={gameCommunities_id}
+            // userCommunityID={userCommunityID}
+            // userCommunities_id={userCommunities_id}
+            forumThreads_id={forumThreads_id}
+            enableAnonymity={enableAnonymity}
+            deletable={deletable}
+          />
+        {/* </div> */}
+
+      </React.Fragment>
+    );
 
   }
 
@@ -361,18 +377,12 @@ const Component = (props) => {
 
   return (
     <Element
-      name="gcList"
+      name="elementFollowContents"
     >
 
 
-      {/* List */}
-      <div
-        css={css`
-          margin: 0 0 16px 0;
-        `}
-      >
-        {componentsArr}
-      </div>
+      {/* Forum */}
+      {componentsArr}
 
 
 
@@ -427,129 +437,20 @@ const Component = (props) => {
                 classes={{
                   input: classes.input
                 }}
-                name="gc-limit-pagination"
+                name="forum-threads-pagination"
                 id="outlined-rows-per-page"
               />
             }
           >
+            <MenuItem value={1}>1</MenuItem>
+            <MenuItem value={3}>3</MenuItem>
             <MenuItem value={5}>5</MenuItem>
             <MenuItem value={10}>10</MenuItem>
             <MenuItem value={20}>20</MenuItem>
-            <MenuItem value={50}>50</MenuItem>
           </Select>
 
         </FormControl>
 
-
-      </Paper>
-
-
-
-
-      {/* Button */}
-      <Paper
-        css={css`
-          display: flex;
-          flex-flow: row nowrap;
-          align-items: center;
-          margin: 48px 0 0 0;
-          padding: 12px;
-        `}
-      >
-
-        <Link
-          href={'/gc/register/[[...slug]]'}
-          as={'/gc/register'}
-        >
-          <a className="link">
-            <Button
-              variant="outlined"
-              size="small"
-              disabled={buttonDisabled}
-            >
-              <IconEdit
-                css={css`
-                  padding: 0 4px 0 0;
-                `}
-              />
-              ゲーム登録ページ
-            </Button>
-          </a>
-        </Link>
-
-
-
-
-        {/* ？アイコン */}
-        <div
-          css={css`
-            margin: 0 0 0 12px;
-          `}
-        >
-          <IconButton
-            css={css`
-              && {
-                margin: 0 0 0 4px;
-                padding: 0;
-              }
-            `}
-            color="primary"
-            aria-label="Show Explanation"
-            onClick={(eventObj) => setAnchorElEditMode(eventObj.currentTarget)}
-          >
-            <IconHelpOutline />
-          </IconButton>
-        </div>
-
-
-
-
-        {/* ？アイコンを押すと表示される解説文 */}
-        <Popover
-          id={Boolean(anchorElEditMode) ? 'popoverEditMode' : undefined}
-          open={Boolean(anchorElEditMode)}
-          anchorEl={anchorElEditMode}
-          onClose={() => setAnchorElEditMode(null)}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
-        >
-
-          <Paper
-            css={css`
-              max-width: 400px;
-              padding: 0 16px 8px 16px;
-            `}
-          >
-
-            <div
-              css={css`
-                margin: 12px 0 0 0;
-              `}
-            >
-
-              <p
-                css={css`
-                  margin: 0 0 14px 0;
-                `}
-              >
-                左のボタンを押すと、ゲームの登録ページに移動します。<span css={css`color: red;`}>※ 登録フォームを利用するにはログインする必要があります。</span>
-              </p>
-
-              <p>
-                Game Users のコンテンツを充実させるために、ぜひデータ追加のお手伝いをよろしくお願いします。
-              </p>
-
-            </div>
-
-          </Paper>
-
-        </Popover>
 
       </Paper>
 

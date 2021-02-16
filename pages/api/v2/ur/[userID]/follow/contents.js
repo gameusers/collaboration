@@ -232,8 +232,8 @@ export default async (req, res) => {
 
     const followContentsObj = await ModelFollows.findFollowContents(argumentsObj);
 
-    returnObj.forumGcObj = lodashGet(followContentsObj, ['forumGcObj'], []);
-    // returnObj.followMembersObj = forumGcObj.followMembersObj;
+    returnObj.forumGcObj = lodashGet(followContentsObj, ['forumGcObj'], {});
+    returnObj.gameCommunitiesObj = lodashGet(followContentsObj, ['gameCommunitiesObj'], {});
 
 
 

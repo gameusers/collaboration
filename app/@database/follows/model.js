@@ -39,6 +39,7 @@ const SchemaGameCommunities = require('../game-communities/schema.js');
 const SchemaUserCommunities = require('../user-communities/schema.js');
 
 const ModelForumThreads = require('../forum-threads/model.js');
+const ModelRecruitmentThreads = require('../recruitment-threads/model.js');
 const ModelGameCommunities = require('../game-communities/model.js');
 const ModelUserCommunities = require('../user-communities/model.js');
 
@@ -1375,79 +1376,454 @@ const findFollowContents = async ({
     //   フォローしているゲームの gameCommunities_id を取得する
     // --------------------------------------------------
     
+    // const docFollowsArr = await find({
+
+    //   conditionObj: {
+
+    //     followedArr: { $in: [users_id] },
+    //     gameCommunities_id: { $exists: true },
+    //     userCommunities_id: '',
+    //     users_id: '',
+
+    //   }
+
+    // });
+
+
+    // let gameCommunities_idsArr = [];
+
+    // for (let valueObj of docFollowsArr.values()) {
+    //   gameCommunities_idsArr.push(valueObj.gameCommunities_id);
+    // }
+
+
+
+
+    // --------------------------------------------------
+    //   _id を取得する
+    // --------------------------------------------------
+    
     const docFollowsArr = await find({
 
       conditionObj: {
-
         followedArr: { $in: [users_id] },
-        gameCommunities_id: { $exists: true },
-        userCommunities_id: '',
-        users_id: '',
-
       }
 
     });
 
 
     let gameCommunities_idsArr = [];
+    let userCommunities_idsArr = [];
+    let users_idsArr = [];
 
     for (let valueObj of docFollowsArr.values()) {
-      gameCommunities_idsArr.push(valueObj.gameCommunities_id);
+
+      if (valueObj.gameCommunities_id) {
+
+        gameCommunities_idsArr.push(valueObj.gameCommunities_id);
+
+      } else if (valueObj.userCommunities_id) {
+
+        userCommunities_idsArr.push(valueObj.userCommunities_id);
+        
+      } else if (valueObj.users_id) {
+
+        users_idsArr.push(valueObj.users_id);
+        
+      }
+
     }
 
 
 
 
     // --------------------------------------------------
-    //   フォーラム取得
+    //   ログインしているユーザーが同じクローズドコミュニティに入っていない場合は
+    //   コンテンツを表示する権限がないため userCommunities_idsArr 配列から userCommunities_id を削除する
     // --------------------------------------------------
 
-    const forumGcObj = await ModelForumThreads.findForumForFollowContents({
+    if (userCommunities_idsArr.length > 0) {
 
-      req,
-      localeObj,
-      loginUsers_id,
-      gameCommunities_idsArr,
-      period,
-      threadPage: page,
-      threadLimit: limit,
-      // commentPage: 1,
-      // commentLimit = process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT,
-      // replyPage: 1,
-      // replyLimit,
 
-    });
+      // --------------------------------------------------
+      //   Aggregation
+      // --------------------------------------------------
 
-    console.log(`
-      ----- forumGcObj -----\n
-      ${util.inspect(forumGcObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+      const docUserCommunitiesArr = await SchemaUserCommunities.aggregate([
+
+
+        // --------------------------------------------------
+        //   Match Condition Array
+        // --------------------------------------------------
+  
+        {
+          $match: {
+            _id: { $in: userCommunities_idsArr },
+            communityType: 'closed',
+          }
+        },
+
+
+        // --------------------------------------------------
+        //   follows
+        // --------------------------------------------------
+  
+        {
+          $lookup:
+            {
+              from: 'follows',
+              let: { letUserCommunities_id: '$_id' },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ['$userCommunities_id', '$$letUserCommunities_id'] },
+                      ]
+                    },
+                  }
+                },
+  
+                {
+                  $project: {
+                    _id: 0,
+                    followedArr: 1,
+                  }
+                }
+              ],
+              as: 'followsObj'
+            }
+        },
+  
+        {
+          $unwind: {
+            path: '$followsObj',
+          }
+        },
+  
+  
+        // --------------------------------------------------
+        //   $project
+        // --------------------------------------------------
+  
+        {
+          $project: {
+            _id: 1,
+            followsObj: 1,
+          }
+        },
+
+
+      ]).exec();
+
+
+
+
+      // --------------------------------------------------
+      //   ログインしていない、または同じクローズドコミュニティに参加していない場合、userCommunities_id を削除
+      // --------------------------------------------------
+
+      for (let valueObj of docUserCommunitiesArr.values()) {
+
+        const followedArr = lodashGet(valueObj, ['followsObj', 'followedArr'], []);
+
+        if (!loginUsers_id || !followedArr.includes(loginUsers_id)) {
+
+          const index = userCommunities_idsArr.indexOf(valueObj._id);
+
+          if (index !== 1) {
+            userCommunities_idsArr.splice(index, 1);
+          }
+          
+        }
+        
+      }
+
+
+    }
+
+    
+
+
+    // console.log(`
+    //   ----- gameCommunities_idsArr -----\n
+    //   ${util.inspect(gameCommunities_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- userCommunities_idsArr -----\n
+    //   ${util.inspect(userCommunities_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- users_idsArr -----\n
+    //   ${util.inspect(users_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 
 
     // --------------------------------------------------
-    //   ゲームコミュニティ一覧取得
+    //   returnObj
     // --------------------------------------------------
 
-    const forumDataGcObj = lodashGet(forumGcObj, ['forumThreadsObj', 'dataObj'], {});
+    const returnObj = {
 
-    gameCommunities_idsArr = [];
+      forumGcObj: {},
+      forumUcObj: {},
+      gameCommunitiesObj: {},
+      userCommunitiesObj: {},
 
-    for (let valueObj of Object.values(forumDataGcObj)) {
-      gameCommunities_idsArr.push(valueObj.gameCommunities_id);
+    };
+
+
+
+
+    // --------------------------------------------------
+    //   コンテンツ取得
+    // --------------------------------------------------
+
+    let forumGcObj = {};
+    let forumUcObj = {};
+    let recruitmentObj = {};
+
+
+    // ---------------------------------------------
+    //   ゲームコミュニティ
+    // ---------------------------------------------
+
+    if (gameCommunities_idsArr.length > 0) {
+
+
+      // ---------------------------------------------
+      //   - フォーラム
+      // ---------------------------------------------
+
+      forumGcObj = await ModelForumThreads.findForumForFollowContents({
+
+        req,
+        localeObj,
+        loginUsers_id,
+        gameCommunities_idsArr,
+        period,
+        threadPage: page,
+        threadLimit: limit,
+  
+      });
+
+
+      // ---------------------------------------------
+      //   - 募集
+      // ---------------------------------------------
+
+      recruitmentObj = await ModelRecruitmentThreads.findRecruitments({
+
+        req,
+        localeObj,
+        loginUsers_id,
+        gameCommunities_idsArr,
+        period,
+        threadPage: page,
+        threadLimit: limit,
+  
+      });
+
+
+      // ---------------------------------------------
+      //   - コミュニティ一覧取得用
+      // ---------------------------------------------
+
+      gameCommunities_idsArr = [];
+
+      const forumDataGcObj = lodashGet(returnObj, ['forumGcObj', 'forumThreadsObj', 'dataObj'], {});
+
+      for (let valueObj of Object.values(forumDataGcObj)) {
+        gameCommunities_idsArr.push(valueObj.gameCommunities_id);
+      }
+
+
     }
 
 
-    const gameCommunitiesObj = await ModelGameCommunities.findGamesListCommon({
+    // ---------------------------------------------
+    //   ユーザーコミュニティ
+    // ---------------------------------------------
 
-      localeObj,
-      page: intPage,
-      limit: intLimit,
-      gameCommunities_idsArr,
+    if (userCommunities_idsArr.length > 0) {
 
-    });
+
+      // ---------------------------------------------
+      //   - フォーラム
+      // ---------------------------------------------
+
+      forumUcObj = await ModelForumThreads.findForumForFollowContents({
+
+        req,
+        localeObj,
+        loginUsers_id,
+        userCommunities_idsArr,
+        period,
+        threadPage: page,
+        threadLimit: limit,
+  
+      });
+
+
+      // ---------------------------------------------
+      //   - コミュニティ一覧取得用
+      // ---------------------------------------------
+
+      userCommunities_idsArr = [];
+
+      const forumDataUcObj = lodashGet(returnObj, ['forumUcObj', 'forumThreadsObj', 'dataObj'], {});
+
+      for (let valueObj of Object.values(forumDataUcObj)) {
+        userCommunities_idsArr.push(valueObj.userCommunities_id);
+      }
+
+      // console.log(`
+      //   ----- forumDataUcObj -----\n
+      //   ${util.inspect(forumDataUcObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+
+    }
+
+
+
+
+
+    // --------------------------------------------------
+    //   並び替え＆データの統合
+    // --------------------------------------------------
+
+    /**
+     * 日付で並び替える
+     * @param {Array} arr - 配列
+     * @return {Object} 並び替えたデータ
+     */
+    // const sortArray = (arr) => {
+
+    //   const sortedArr = arr.sort((a, b) => {
+
+    //     const date1 = new Date(a.createdDate);
+    //     const date2 = new Date(b.createdDate);
+
+    //     return (date1 < date2) ? 1 : -1;
+
+    //   });
+
+    //   return sortedArr;
+
+    // };
+
+
+    // const forumDataGcObj = lodashGet(forumGcObj, ['forumThreadsObj', 'dataObj'], {});
+    // const forumDataUcObj = lodashGet(forumUcObj, ['forumThreadsObj', 'dataObj'], {});
+    
+    // const forumObj = Object.assign(forumDataGcObj, forumDataUcObj);
+
+    // console.log(`
+    //   ----- forumDataGcObj -----\n
+    //   ${util.inspect(forumDataGcObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- forumDataUcObj -----\n
+    //   ${util.inspect(forumDataUcObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- forumObj -----\n
+    //   ${util.inspect(forumObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
+
+
+    
+
+
+
+
+    // --------------------------------------------------
+    //   コミュニティ一覧取得
+    // --------------------------------------------------
+
+    // ---------------------------------------------
+    //   ゲームコミュニティ
+    // ---------------------------------------------
+
+    if (gameCommunities_idsArr.length > 0) {
+
+
+      // ---------------------------------------------
+      //   - 配列の重複している値を削除
+      // ---------------------------------------------
+
+      gameCommunities_idsArr = Array.from(new Set(gameCommunities_idsArr));
+
+
+      // ---------------------------------------------
+      //   - データ取得
+      // ---------------------------------------------
+
+      returnObj.gameCommunitiesObj = await ModelGameCommunities.findGamesListCommon({
+
+        localeObj,
+        page: intPage,
+        limit: intLimit,
+        gameCommunities_idsArr,
+
+      });
+
+
+    }
+
+
+    // ---------------------------------------------
+    //   ユーザーコミュニティ
+    // ---------------------------------------------
+
+    if (userCommunities_idsArr.length > 0) {
+
+
+      // ---------------------------------------------
+      //   - 配列の重複している値を削除
+      // ---------------------------------------------
+
+      userCommunities_idsArr = Array.from(new Set(userCommunities_idsArr));
+
+
+      // console.log(`
+      //   ----- userCommunities_idsArr2 -----\n
+      //   ${util.inspect(userCommunities_idsArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+
+      // ---------------------------------------------
+      //   - データ取得
+      // ---------------------------------------------
+
+      returnObj.userCommunitiesObj = await ModelUserCommunities.findUserCommunitiesListCommon({
+
+        localeObj,
+        page: intPage,
+        limit: intLimit,
+        userCommunities_idsArr,
+
+      });
+
+
+    }
 
 
     // console.log(`
@@ -1456,13 +1832,49 @@ const findFollowContents = async ({
     //   --------------------\n
     // `);
 
-    console.log(`
-      ----- gameCommunitiesObj -----\n
-      ${util.inspect(gameCommunitiesObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj.forumGcObj -----\n
+    //   ${util.inspect(returnObj.forumGcObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- returnObj.forumGcObj.forumThreadsObj -----\n
+    //   ${util.inspect(returnObj.forumGcObj.forumThreadsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- returnObj.forumUcObj.forumThreadsObj -----\n
+    //   ${util.inspect(returnObj.forumUcObj.forumThreadsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- forumUcObj.forumCommentsObj -----\n
+    //   ${util.inspect(forumUcObj.forumCommentsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- recruitmentObj -----\n
+    //   ${util.inspect(recruitmentObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
 
+    // console.log(`
+    //   ----- returnObj.gameCommunitiesObj -----\n
+    //   ${util.inspect(returnObj.gameCommunitiesObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- returnObj.userCommunitiesObj -----\n
+    //   ${util.inspect(returnObj.userCommunitiesObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
 
 
 
@@ -1482,28 +1894,6 @@ const findFollowContents = async ({
     //   page: {green ${page} / ${typeof page}}
     //   limit: {green ${limit} / ${typeof limit}}
     // `);
-    
-    // console.log(`
-    //   ----- docFollowsArr -----\n
-    //   ${util.inspect(docFollowsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- gameCommunities_idsArr -----\n
-    //   ${util.inspect(gameCommunities_idsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- docForumThreadsArr -----\n
-    //   ${util.inspect(docForumThreadsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(chalk`
-    // docForumThreadsArr.length: {green ${docForumThreadsArr.length} / ${typeof docForumThreadsArr.length}}
-    // `);
 
     // console.log(`
     //   ----- returnObj -----\n
@@ -1518,12 +1908,7 @@ const findFollowContents = async ({
     //   Return
     // --------------------------------------------------
 
-    return {
-
-      forumGcObj,
-      gameCommunitiesObj,
-
-    };
+    return returnObj;
 
 
   } catch (err) {

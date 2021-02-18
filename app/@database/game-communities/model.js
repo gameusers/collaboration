@@ -1660,11 +1660,15 @@ const findGamesListCommon = async ({
 
     if (gameCommunities_idsArr.length > 0) {
 
-      lodashSet(conditionObj, ['gameCommunities_id'],
-        {
-          $in: gameCommunities_idsArr
-        }
-      );
+      conditionObj.gameCommunities_id = {
+        $in: gameCommunities_idsArr
+      }
+
+      // lodashSet(conditionObj, ['gameCommunities_id'],
+      //   {
+      //     $in: gameCommunities_idsArr
+      //   }
+      // );
 
     }
 

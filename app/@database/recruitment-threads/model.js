@@ -72,7 +72,7 @@ const { formatImagesAndVideosObj } = require('../images-and-videos/format.js');
 
 
 // --------------------------------------------------
-//   Function
+//   Common
 // --------------------------------------------------
 
 /**
@@ -337,963 +337,11 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 
 // --------------------------------------------------
-//   find
+//   Function
 // --------------------------------------------------
 
 /**
- * 募集（コメント＆返信を含む全てのデータ）を取得する
- * @param {Object} req - リクエスト
- * @param {Object} localeObj - ロケール
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
- * @param {Array} recruitmentThreads_idsArr - DB recruitment-threads _id / スレッドID
- * @param {number} threadPage - スレッドのページ
- * @param {number} threadLimit - スレッドのリミット
- * @param {number} commentPage - コメントのページ
- * @param {number} commentLimit - コメントのリミット
- * @param {number} replyPage - 返信のページ
- * @param {number} replyLimit - 返信のリミット
- * @return {Array} 取得データ
- */
-const findRecruitments = async ({
-
-  req,
-  localeObj,
-  loginUsers_id,
-  gameCommunities_id,
-  recruitmentThreads_idsArr = [],
-  threadPage = 1,
-  threadLimit = process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT,
-  commentPage = 1,
-  commentLimit = process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT,
-  replyPage = 1,
-  replyLimit = process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT,
-
-}) => {
-
-
-  try {
-
-
-    // --------------------------------------------------
-    //   Parse
-    // --------------------------------------------------
-
-    const intThreadLimit = parseInt(threadLimit, 10);
-    const intCommentLimit = parseInt(commentLimit, 10);
-    const intReplyLimit = parseInt(replyLimit, 10);
-
-
-
-
-    // --------------------------------------------------
-    //   Match Condition Array
-    // --------------------------------------------------
-
-    let matchConditionArr = [];
-
-    matchConditionArr = [
-      {
-        $match: { gameCommunities_id }
-      },
-    ];
-
-
-    // ---------------------------------------------
-    //   - コメント更新時
-    // ---------------------------------------------
-
-    if (recruitmentThreads_idsArr.length > 0) {
-
-      matchConditionArr = [
-        {
-          $match: {
-            $and:
-              [
-                { gameCommunities_id },
-                { _id: { $in: recruitmentThreads_idsArr } }
-              ]
-          }
-        },
-      ];
-
-    }
-
-
-
-
-    // --------------------------------------------------
-    //   Aggregate
-    // --------------------------------------------------
-
-    const docArr = await aggregate({
-
-      req,
-      localeObj,
-      loginUsers_id,
-      matchConditionArr,
-      threadPage,
-      threadLimit: intThreadLimit,
-
-    });
-
-
-
-
-    // --------------------------------------------------
-    //   Format
-    // --------------------------------------------------
-
-    const formattedThreadsObj = formatRecruitmentThreadsArr({
-
-      req,
-      localeObj,
-      loginUsers_id,
-      arr: docArr,
-      threadPage,
-      threadLimit: intThreadLimit,
-
-    });
-
-    const recruitmentThreadsObj = lodashGet(formattedThreadsObj, ['recruitmentThreadsObj'], {});
-
-
-
-
-    // --------------------------------------------------
-    //   DB find / Comments & Replies
-    // --------------------------------------------------
-
-    const formattedCommentsAndRepliesObj = await ModelRecruitmentComments.findCommentsAndReplies({
-
-      req,
-      localeObj,
-      loginUsers_id,
-      recruitmentThreads_idsArr: lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []),
-      recruitmentThreadsObj,
-      commentPage,
-      commentLimit: intCommentLimit,
-      replyPage,
-      replyLimit: intReplyLimit,
-
-    });
-
-    const recruitmentCommentsObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentCommentsObj'], {});
-    const recruitmentRepliesObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentRepliesObj'], {});
-
-
-
-
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/@database/recruitment-threads/model.js - findRecruitments
-    // `);
-
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   threadPage: {green ${threadPage}}
-    //   threadLimit: {green ${threadLimit}}
-    //   commentPage: {green ${commentPage}}
-    //   commentLimit: {green ${commentLimit}}
-    //   replyPage: {green ${replyPage}}
-    //   replyLimit: {green ${replyLimit}}
-    // `);
-
-    // console.log(`
-    //   ----- matchConditionArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(matchConditionArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- docArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- recruitmentThreadsObj -----\n
-    //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- recruitmentCommentsObj -----\n
-    //   ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- recruitmentRepliesObj -----\n
-    //   ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-
-
-
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-
-    return {
-
-      recruitmentThreadsObj,
-      recruitmentCommentsObj,
-      recruitmentRepliesObj,
-
-    };
-
-
-  } catch (err) {
-
-    throw err;
-
-  }
-
-
-};
-
-
-
-
-/**
- * 募集（コメント＆返信を含む全てのデータ）を取得する / スレッドID、コメントID、返信IDのどれかで検索する
- * @param {Object} req - リクエスト
- * @param {Object} localeObj - ロケール
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
- * @param {string} recruitmentID - スレッドID / コメントID / 返信ID
- * @param {number} threadPage - スレッドのページ
- * @param {number} threadLimit - スレッドのリミット
- * @param {number} commentPage - コメントのページ
- * @param {number} commentLimit - コメントのリミット
- * @param {number} replyPage - 返信のページ
- * @param {number} replyLimit - 返信のリミット
- * @return {Array} 取得データ
- */
-const findRecruitmentByRecruitmentID = async ({
-
-  req,
-  localeObj,
-  loginUsers_id,
-  gameCommunities_id,
-  recruitmentID,
-  threadPage = 1,
-  threadLimit = process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT,
-  commentPage = 1,
-  commentLimit = process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT,
-  replyPage = 1,
-  replyLimit = process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT,
-
-}) => {
-
-
-  try {
-
-
-    // --------------------------------------------------
-    //   Parse
-    // --------------------------------------------------
-
-    // const intThreadLimit = parseInt(threadLimit, 10);
-    const intCommentLimit = parseInt(commentLimit, 10);
-    const intReplyLimit = parseInt(replyLimit, 10);
-
-
-
-
-    // --------------------------------------------------
-    //   DB find / スレッドIDを取得する
-    // --------------------------------------------------
-
-    let type = 'thread';
-
-    let recruitmentThreads_id = '';
-    let recruitmentComments_id = '';
-    let recruitmentReplies_id = '';
-
-
-    const threadsObj = await findOne({
-
-      conditionObj: {
-
-        _id: recruitmentID,
-        gameCommunities_id,
-
-      }
-
-    });
-
-    recruitmentThreads_id = lodashGet(threadsObj, ['_id'], '');
-
-
-    // --------------------------------------------------
-    //   DB find / コメントからスレッドIDを取得する
-    // --------------------------------------------------
-
-    if (!recruitmentThreads_id) {
-
-      const commentsObj = await ModelRecruitmentComments.findOne({
-
-        conditionObj: {
-
-          _id: recruitmentID,
-          gameCommunities_id,
-
-        }
-
-      });
-
-      recruitmentThreads_id = lodashGet(commentsObj, ['recruitmentThreads_id'], '');
-      recruitmentComments_id = lodashGet(commentsObj, ['_id'], '');
-
-      type = 'comment';
-
-    }
-
-
-    // --------------------------------------------------
-    //   DB find / 返信からスレッドIDを取得する
-    // --------------------------------------------------
-
-    if (!recruitmentThreads_id) {
-
-      const repliesObj = await ModelRecruitmentReplies.findOne({
-
-        conditionObj: {
-
-          _id: recruitmentID,
-          gameCommunities_id,
-
-        }
-
-      });
-
-      recruitmentThreads_id = lodashGet(repliesObj, ['recruitmentThreads_id'], '');
-      recruitmentComments_id = lodashGet(repliesObj, ['recruitmentComments_id'], '');
-      recruitmentReplies_id = lodashGet(repliesObj, ['_id'], '');
-
-      type = 'reply';
-
-    }
-
-
-
-
-    // --------------------------------------------------
-    //   Match Condition Array
-    // --------------------------------------------------
-
-    let matchConditionArr = [];
-
-    matchConditionArr = [
-      {
-        $match: {
-          _id: recruitmentThreads_id,
-        }
-      },
-    ];
-
-
-
-
-    // --------------------------------------------------
-    //   Aggregate
-    // --------------------------------------------------
-
-    const docArr = await aggregate({
-
-      req,
-      localeObj,
-      loginUsers_id,
-      matchConditionArr,
-      threadPage: 1,
-      threadLimit: 1,
-
-    });
-
-
-
-
-    // --------------------------------------------------
-    //   Format
-    // --------------------------------------------------
-
-    const formattedThreadsObj = formatRecruitmentThreadsArr({
-
-      req,
-      localeObj,
-      loginUsers_id,
-      arr: docArr,
-      threadPage: 1,
-      threadLimit: 1,
-
-    });
-
-    const recruitmentThreadsObj = lodashGet(formattedThreadsObj, ['recruitmentThreadsObj'], {});
-    recruitmentThreadsObj.count = 0;
-
-
-
-
-    // ------------------------------------------------------------
-    //   コメント＆返信を取得する
-    // ------------------------------------------------------------
-
-    let recruitmentCommentsObj = {};
-    let recruitmentRepliesObj = {};
-    let formattedCommentsAndRepliesObj = {};
-
-
-    // --------------------------------------------------
-    //   recruitmentID がスレッドの場合
-    // --------------------------------------------------
-
-    if (type === 'thread') {
-
-
-      // --------------------------------------------------
-      //   DB find / Forum Comments & Replies
-      // --------------------------------------------------
-
-      formattedCommentsAndRepliesObj = await ModelRecruitmentComments.findCommentsAndReplies({
-
-        req,
-        localeObj,
-        loginUsers_id,
-        recruitmentThreads_idsArr: lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []),
-        recruitmentThreadsObj,
-        commentPage,
-        commentLimit: intCommentLimit,
-        replyPage,
-        replyLimit: intReplyLimit,
-
-      });
-
-
-    // --------------------------------------------------
-    //   recruitmentID がコメントの場合
-    // --------------------------------------------------
-
-    } else if (type === 'comment') {
-
-
-      // --------------------------------------------------
-      //   DB / コメントのページ番号を取得する
-      // --------------------------------------------------
-
-      const pageObj = await ModelRecruitmentComments.getPage({
-
-        recruitmentThreads_id,
-        recruitmentComments_id,
-        commentLimit,
-
-      });
-
-
-      // --------------------------------------------------
-      //   DB find / Forum Comments & Replies
-      // --------------------------------------------------
-
-      formattedCommentsAndRepliesObj = await ModelRecruitmentComments.findCommentsAndReplies({
-
-        req,
-        localeObj,
-        loginUsers_id,
-        recruitmentThreads_idsArr: lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []),
-        recruitmentThreadsObj,
-        commentPage: lodashGet(pageObj, ['commentPage'], 1),
-        commentLimit: intCommentLimit,
-        replyPage: 1,
-        replyLimit: intReplyLimit,
-
-      });
-
-    //   console.log(`
-    //   ----- formattedCommentsAndRepliesObj -----\n
-    //   ${util.inspect(formattedCommentsAndRepliesObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-
-    // --------------------------------------------------
-    //   recruitmentID が返信の場合
-    // --------------------------------------------------
-
-    } else if (type === 'reply') {
-
-
-      // --------------------------------------------------
-      //   DB / コメントと返信のページ番号を取得する
-      // --------------------------------------------------
-
-      const pageObj = await ModelRecruitmentReplies.getPage({
-
-        recruitmentThreads_id,
-        recruitmentComments_id,
-        recruitmentReplies_id,
-        commentLimit,
-        replyLimit,
-
-      });
-
-
-      // --------------------------------------------------
-      //   DB find / Forum Comments & Replies
-      // --------------------------------------------------
-
-      formattedCommentsAndRepliesObj = await ModelRecruitmentComments.findCommentsAndReplies({
-
-        req,
-        localeObj,
-        loginUsers_id,
-        recruitmentThreads_idsArr: lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []),
-        recruitmentThreadsObj,
-        commentPage: lodashGet(pageObj, ['commentPage'], 1),
-        commentLimit: intCommentLimit,
-        replyPage: lodashGet(pageObj, ['replyPage'], 1),
-        replyLimit: intReplyLimit,
-
-      });
-
-
-    }
-
-
-    recruitmentCommentsObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentCommentsObj'], {});
-    recruitmentRepliesObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentRepliesObj'], {});
-
-
-
-
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/@database/recruitment-threads/model.js - findRecruitmentByRecruitmentID
-    // `);
-
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   recruitmentID: {green ${recruitmentID}}
-    //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
-    //   recruitmentComments_id: {green ${recruitmentComments_id}}
-    //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
-    // `);
-
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   threadPage: {green ${threadPage}}
-    //   threadLimit: {green ${threadLimit}}
-    //   commentPage: {green ${commentPage}}
-    //   commentLimit: {green ${commentLimit}}
-    //   replyPage: {green ${replyPage}}
-    //   replyLimit: {green ${replyLimit}}
-    // `);
-
-    // console.log(`
-    //   ----- docArr -----\n
-    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- recruitmentThreadsObj -----\n
-    //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- recruitmentCommentsObj -----\n
-    //   ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- recruitmentRepliesObj -----\n
-    //   ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-
-
-
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-
-    return {
-
-      recruitmentThreadsObj,
-      recruitmentCommentsObj,
-      recruitmentRepliesObj,
-
-    };
-
-
-  } catch (err) {
-
-    throw err;
-
-  }
-
-
-};
-
-
-
-
-/**
- * 募集の検索データを取得する
- * @param {Object} req - リクエスト
- * @param {Object} localeObj - ロケール
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
- * @param {Array} hardwareIDsArr - DB hardwares _id / ハードウェアIDの入った配列
- * @param {Array} categoriesArr - カテゴリーNoの入った配列
- * @param {string} keyword - キーワード
- * @param {number} threadPage - スレッドのページ
- * @param {number} threadLimit - スレッドのリミット
- * @param {number} commentPage - コメントのページ
- * @param {number} commentLimit - コメントのリミット
- * @param {number} replyPage - 返信のページ
- * @param {number} replyLimit - 返信のリミット
- * @return {Array} 取得データ
- */
-const findRecruitmentsForSearch = async ({
-
-  req,
-  localeObj,
-  loginUsers_id,
-  gameCommunities_id,
-  hardwareIDsArr = [],
-  categoriesArr = [],
-  keyword,
-  threadPage = 1,
-  threadLimit = process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT,
-  commentPage = 1,
-  commentLimit = process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT,
-  replyPage = 1,
-  replyLimit = process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT,
-
-}) => {
-
-
-  try {
-
-
-    // --------------------------------------------------
-    //   Parse
-    // --------------------------------------------------
-
-    const intThreadLimit = parseInt(threadLimit, 10);
-    const intCommentLimit = parseInt(commentLimit, 10);
-    const intReplyLimit = parseInt(replyLimit, 10);
-
-
-
-
-    // --------------------------------------------------
-    //   Match Condition Array
-    // --------------------------------------------------
-
-    let matchConditionArr = [];
-
-
-    // ---------------------------------------------
-    //   - andArr（ドキュメントの検索用） & threadCountConditionObj（総数の検索用）
-    // ---------------------------------------------
-
-    const andArr = [{
-      gameCommunities_id
-    }];
-
-    const threadCountConditionObj = {
-      gameCommunities_id
-    };
-
-
-    // ---------------------------------------------
-    //   - 検索条件
-    // ---------------------------------------------
-
-    if (hardwareIDsArr.length > 0) {
-
-      andArr.push({
-        hardwareIDsArr: { $in: hardwareIDsArr }
-      });
-
-      threadCountConditionObj.hardwareIDsArr = { $in: hardwareIDsArr };
-
-    }
-
-
-    if (categoriesArr.length > 0) {
-
-      andArr.push({
-        category: { $in: categoriesArr }
-      });
-
-      threadCountConditionObj.category = { $in: categoriesArr };
-
-    }
-
-
-    if (keyword) {
-
-      andArr.push({
-        $or: [
-          { 'localesArr.title': { $regex: keyword } },
-          { 'localesArr.comment': { $regex: keyword } },
-        ]
-      });
-
-      threadCountConditionObj.$or = [
-        { 'localesArr.title': { $regex: keyword } },
-        { 'localesArr.comment': { $regex: keyword } },
-      ];
-
-    }
-
-
-    // ---------------------------------------------
-    //   - 検索条件設定
-    // ---------------------------------------------
-
-    matchConditionArr = [
-      {
-        $match: {
-          $and: andArr
-        }
-      }
-    ];
-
-
-    // console.log(`
-    //   ----- andArr -----\n
-    //   ${util.inspect(andArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- matchConditionArr -----\n
-    //   ${util.inspect(matchConditionArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- threadCountConditionObj -----\n
-    //   ${util.inspect(threadCountConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-
-
-
-    // --------------------------------------------------
-    //   Aggregate
-    // --------------------------------------------------
-
-    const docArr = await aggregate({
-
-      req,
-      localeObj,
-      loginUsers_id,
-      matchConditionArr,
-      threadPage,
-      threadLimit,
-
-    });
-
-
-
-
-    // --------------------------------------------------
-    //   スレッドのフォーマット & コメント＆返信データ取得
-    // --------------------------------------------------
-
-    let recruitmentThreadsObj = {};
-    let recruitmentCommentsObj = {};
-    let recruitmentRepliesObj = {};
-
-
-    if (docArr.length > 0) {
-
-
-      // --------------------------------------------------
-      //   threadCount（スレッドの総数） 取得
-      // --------------------------------------------------
-
-      const threadCount = await count({
-
-        conditionObj: threadCountConditionObj
-
-      });
-
-      // console.log(chalk`
-      //   threadCount: {green ${threadCount}}
-      // `);
-
-
-      // --------------------------------------------------
-      //   threadCount を置き換える（フォーマットでは配列の最初に出てくる総数だけを利用する）
-      // --------------------------------------------------
-
-      lodashSet(docArr, [0, 'gameCommunitiesObj', 'recruitmentObj', 'threadCount'], threadCount);
-
-
-
-
-      // --------------------------------------------------
-      //   Format
-      // --------------------------------------------------
-
-      const formattedThreadsObj = formatRecruitmentThreadsArr({
-
-        req,
-        localeObj,
-        loginUsers_id,
-        arr: docArr,
-        threadPage,
-        threadLimit: intThreadLimit,
-
-      });
-
-      recruitmentThreadsObj = lodashGet(formattedThreadsObj, ['recruitmentThreadsObj'], {});
-
-
-
-
-      // --------------------------------------------------
-      //   DB find / Comments & Replies
-      // --------------------------------------------------
-
-      const formattedCommentsAndRepliesObj = await ModelRecruitmentComments.findCommentsAndReplies({
-
-        req,
-        localeObj,
-        loginUsers_id,
-        recruitmentThreads_idsArr: lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []),
-        recruitmentThreadsObj,
-        commentPage,
-        commentLimit: intCommentLimit,
-        replyPage,
-        replyLimit: intReplyLimit,
-
-      });
-
-      recruitmentCommentsObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentCommentsObj'], {});
-      recruitmentRepliesObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentRepliesObj'], {});
-
-
-    }
-
-
-
-
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/@database/recruitment-threads/model.js - findRecruitmentsForSearch
-    // `);
-
-    // console.log(`
-    //   ----- localeObj -----\n
-    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- hardwareIDsArr -----\n
-    //   ${util.inspect(hardwareIDsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- categoriesArr -----\n
-    //   ${util.inspect(categoriesArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id} / ${typeof loginUsers_id}}
-    //   gameCommunities_id: {green ${gameCommunities_id} / ${typeof gameCommunities_id}}
-    //   keyword: {green ${keyword} / ${typeof keyword}}
-    //   threadPage: {green ${threadPage} / ${typeof threadPage}}
-    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
-    //   commentPage: {green ${commentPage} / ${typeof commentPage}}
-    //   commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
-    //   replyPage: {green ${replyPage} / ${typeof replyPage}}
-    //   replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
-    // `);
-
-    // console.log(`
-    //   ----- docArr -----\n
-    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- recruitmentThreadsObj -----\n
-    //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- recruitmentCommentsObj -----\n
-    //   ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- recruitmentRepliesObj -----\n
-    //   ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-
-
-
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-
-    return {
-
-      recruitmentThreadsObj,
-      recruitmentCommentsObj,
-      recruitmentRepliesObj,
-
-    };
-
-
-  } catch (err) {
-
-    throw err;
-
-  }
-
-
-};
-
-
-
-
-/**
- * aggregate / スレッドを取得する部分
+ * 募集を取得する / 共通
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
@@ -1302,11 +350,10 @@ const findRecruitmentsForSearch = async ({
  * @param {number} threadLimit - スレッドのリミット
  * @return {Array} 取得データ
  */
-const aggregate = async ({
+const findRecruitmentCommon = async ({
 
   req,
   localeObj,
-  loginUsers_id,
   matchConditionArr = [],
   threadPage = 1,
   threadLimit = process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT,
@@ -1326,19 +373,14 @@ const aggregate = async ({
 
 
     // --------------------------------------------------
-    //   Limit
+    //   parseInt
     // --------------------------------------------------
 
+    const intThreadPage = parseInt(threadPage, 10);
     const intThreadLimit = parseInt((threadLimit || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
     const errorLimit = parseInt(process.env.WEB_PUSH_ERROR_LIMIT, 10);
 
 
-    // console.log(chalk`
-    //   aggregate
-    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
-    //   process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT: {green ${process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT} / ${typeof process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT}}
-    //   intThreadLimit: {green ${intThreadLimit}}
-    // `);
 
 
     // --------------------------------------------------
@@ -1360,7 +402,7 @@ const aggregate = async ({
       // --------------------------------------------------
 
       { $sort: { updatedDate: -1 } },
-      { $skip: (threadPage - 1) * intThreadLimit },
+      { $skip: (intThreadPage - 1) * intThreadLimit },
       { $limit: intThreadLimit },
 
 
@@ -1839,6 +881,12 @@ const aggregate = async ({
     //   replyLimit: {green ${replyLimit}}
     // `);
 
+    // console.log(chalk`
+    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
+    //   process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT: {green ${process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT} / ${typeof process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT}}
+    //   intThreadLimit: {green ${intThreadLimit}}
+    // `);
+
     // console.log(`
     //   ----- docArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
@@ -1863,6 +911,1855 @@ const aggregate = async ({
 
 
 };
+
+
+
+
+/**
+ * 募集（コメント＆返信を含む全てのデータ）を取得する
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
+ * @param {Array} recruitmentThreads_idsArr - DB recruitment-threads _id / スレッドID
+ * @param {number} threadPage - スレッドのページ
+ * @param {number} threadLimit - スレッドのリミット
+ * @param {number} commentPage - コメントのページ
+ * @param {number} commentLimit - コメントのリミット
+ * @param {number} replyPage - 返信のページ
+ * @param {number} replyLimit - 返信のリミット
+ * @return {Array} 取得データ
+ */
+const findRecruitments = async ({
+
+  req,
+  localeObj,
+  loginUsers_id,
+  gameCommunities_id,
+  recruitmentThreads_idsArr = [],
+  gameCommunities_idsArr = [],
+  period,
+  threadPage = 1,
+  threadLimit = process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT,
+  commentPage = 1,
+  commentLimit = process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT,
+  replyPage = 1,
+  replyLimit = process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT,
+
+}) => {
+
+
+  try {
+
+
+
+    // --------------------------------------------------
+    //   property
+    // --------------------------------------------------
+
+    let threadCount = 0;
+    let matchConditionArr = [];
+
+
+    // --------------------------------------------------
+    //   parseInt
+    // --------------------------------------------------
+
+    const intThreadLimit = parseInt(threadLimit, 10);
+    const intCommentLimit = parseInt(commentLimit, 10);
+    const intReplyLimit = parseInt(replyLimit, 10);
+
+
+
+
+    // --------------------------------------------------
+    //   Match Condition Array
+    // --------------------------------------------------
+
+    matchConditionArr = [
+      {
+        $match: { gameCommunities_id }
+      },
+    ];
+
+
+    // ---------------------------------------------
+    //   コメントの表示件数を更新する際に、表示中のスレッドも同時に更新する
+    // ---------------------------------------------
+
+    if (recruitmentThreads_idsArr.length > 0) {
+
+      matchConditionArr = [
+        {
+          $match: {
+            $and:
+              [
+                { gameCommunities_id },
+                { _id: { $in: recruitmentThreads_idsArr } }
+              ]
+          }
+        },
+      ];
+
+
+    // ---------------------------------------------
+    //   Follow Contents
+    // ---------------------------------------------
+
+    } else if (gameCommunities_idsArr.length > 0) {
+
+
+      // ---------------------------------------------
+      //   ○○分前の日時を取得し、その日時内に更新されたデータを取得する
+      // ---------------------------------------------
+      
+      const dateTimeLimit = moment().utc().add(-(period), 'minutes').toDate();
+
+      conditionObj = {
+
+        gameCommunities_id: { $in: gameCommunities_idsArr },
+        updatedDate: { $gte: dateTimeLimit }
+        // updatedDate: { $gt: new Date("2021-02-05T12:00:00.000Z") }
+        
+      }
+
+
+      // ---------------------------------------------
+      //   matchConditionArr
+      // ---------------------------------------------
+
+      matchConditionArr = [
+        {
+          $match: conditionObj
+        }
+      ];
+
+
+      // ---------------------------------------------
+      //   threadCount
+      // ---------------------------------------------
+
+      threadCount = await count({
+        conditionObj
+      });
+
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   findRecruitmentCommon
+    // --------------------------------------------------
+
+    const docArr = await findRecruitmentCommon({
+
+      req,
+      localeObj,
+      loginUsers_id,
+      matchConditionArr,
+      threadPage,
+      threadLimit: intThreadLimit,
+
+    });
+
+
+
+
+    // --------------------------------------------------
+    //   Format
+    // --------------------------------------------------
+
+    const formattedThreadsObj = formatRecruitmentThreadsArr({
+
+      req,
+      localeObj,
+      loginUsers_id,
+      arr: docArr,
+      threadPage,
+      threadLimit: intThreadLimit,
+      threadCount,
+
+    });
+
+    const recruitmentThreadsObj = lodashGet(formattedThreadsObj, ['recruitmentThreadsObj'], {});
+
+
+
+
+    // --------------------------------------------------
+    //   DB find / Comments & Replies
+    // --------------------------------------------------
+
+    const formattedCommentsAndRepliesObj = await ModelRecruitmentComments.findCommentsAndReplies({
+
+      req,
+      localeObj,
+      loginUsers_id,
+      recruitmentThreads_idsArr: lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []),
+      recruitmentThreadsObj,
+      commentPage,
+      commentLimit: intCommentLimit,
+      replyPage,
+      replyLimit: intReplyLimit,
+
+    });
+
+    const recruitmentCommentsObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentCommentsObj'], {});
+    const recruitmentRepliesObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentRepliesObj'], {});
+
+
+
+
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/recruitment-threads/model.js - findRecruitments
+    // `);
+
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   threadPage: {green ${threadPage}}
+    //   threadLimit: {green ${threadLimit}}
+    //   commentPage: {green ${commentPage}}
+    //   commentLimit: {green ${commentLimit}}
+    //   replyPage: {green ${replyPage}}
+    //   replyLimit: {green ${replyLimit}}
+    // `);
+
+    // console.log(`
+    //   ----- matchConditionArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(matchConditionArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- recruitmentThreadsObj -----\n
+    //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- recruitmentCommentsObj -----\n
+    //   ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- recruitmentRepliesObj -----\n
+    //   ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
+
+
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+
+    return {
+
+      recruitmentThreadsObj,
+      recruitmentCommentsObj,
+      recruitmentRepliesObj,
+
+    };
+
+
+  } catch (err) {
+
+    throw err;
+
+  }
+
+
+};
+
+
+
+
+/**
+ * 募集（コメント＆返信を含む全てのデータ）を取得する / スレッドID、コメントID、返信IDのどれかで検索する
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
+ * @param {string} recruitmentID - スレッドID / コメントID / 返信ID
+ * @param {number} threadPage - スレッドのページ
+ * @param {number} threadLimit - スレッドのリミット
+ * @param {number} commentPage - コメントのページ
+ * @param {number} commentLimit - コメントのリミット
+ * @param {number} replyPage - 返信のページ
+ * @param {number} replyLimit - 返信のリミット
+ * @return {Array} 取得データ
+ */
+const findRecruitmentByRecruitmentID = async ({
+
+  req,
+  localeObj,
+  loginUsers_id,
+  gameCommunities_id,
+  recruitmentID,
+  threadPage = 1,
+  threadLimit = process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT,
+  commentPage = 1,
+  commentLimit = process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT,
+  replyPage = 1,
+  replyLimit = process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT,
+
+}) => {
+
+
+  try {
+
+
+    // --------------------------------------------------
+    //   Parse
+    // --------------------------------------------------
+
+    // const intThreadLimit = parseInt(threadLimit, 10);
+    const intCommentLimit = parseInt(commentLimit, 10);
+    const intReplyLimit = parseInt(replyLimit, 10);
+
+
+
+
+    // --------------------------------------------------
+    //   DB find / スレッドIDを取得する
+    // --------------------------------------------------
+
+    let type = 'thread';
+
+    let recruitmentThreads_id = '';
+    let recruitmentComments_id = '';
+    let recruitmentReplies_id = '';
+
+
+    const threadsObj = await findOne({
+
+      conditionObj: {
+
+        _id: recruitmentID,
+        gameCommunities_id,
+
+      }
+
+    });
+
+    recruitmentThreads_id = lodashGet(threadsObj, ['_id'], '');
+
+
+    // --------------------------------------------------
+    //   DB find / コメントからスレッドIDを取得する
+    // --------------------------------------------------
+
+    if (!recruitmentThreads_id) {
+
+      const commentsObj = await ModelRecruitmentComments.findOne({
+
+        conditionObj: {
+
+          _id: recruitmentID,
+          gameCommunities_id,
+
+        }
+
+      });
+
+      recruitmentThreads_id = lodashGet(commentsObj, ['recruitmentThreads_id'], '');
+      recruitmentComments_id = lodashGet(commentsObj, ['_id'], '');
+
+      type = 'comment';
+
+    }
+
+
+    // --------------------------------------------------
+    //   DB find / 返信からスレッドIDを取得する
+    // --------------------------------------------------
+
+    if (!recruitmentThreads_id) {
+
+      const repliesObj = await ModelRecruitmentReplies.findOne({
+
+        conditionObj: {
+
+          _id: recruitmentID,
+          gameCommunities_id,
+
+        }
+
+      });
+
+      recruitmentThreads_id = lodashGet(repliesObj, ['recruitmentThreads_id'], '');
+      recruitmentComments_id = lodashGet(repliesObj, ['recruitmentComments_id'], '');
+      recruitmentReplies_id = lodashGet(repliesObj, ['_id'], '');
+
+      type = 'reply';
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   Match Condition Array
+    // --------------------------------------------------
+
+    let matchConditionArr = [];
+
+    matchConditionArr = [
+      {
+        $match: {
+          _id: recruitmentThreads_id,
+        }
+      },
+    ];
+
+
+
+
+    // --------------------------------------------------
+    //   Aggregate
+    // --------------------------------------------------
+
+    const docArr = await findRecruitmentCommon({
+
+      req,
+      localeObj,
+      loginUsers_id,
+      matchConditionArr,
+      threadPage: 1,
+      threadLimit: 1,
+
+    });
+
+
+
+
+    // --------------------------------------------------
+    //   Format
+    // --------------------------------------------------
+
+    const formattedThreadsObj = formatRecruitmentThreadsArr({
+
+      req,
+      localeObj,
+      loginUsers_id,
+      arr: docArr,
+      threadPage: 1,
+      threadLimit: 1,
+
+    });
+
+    const recruitmentThreadsObj = lodashGet(formattedThreadsObj, ['recruitmentThreadsObj'], {});
+    recruitmentThreadsObj.count = 0;
+
+
+
+
+    // ------------------------------------------------------------
+    //   コメント＆返信を取得する
+    // ------------------------------------------------------------
+
+    let recruitmentCommentsObj = {};
+    let recruitmentRepliesObj = {};
+    let formattedCommentsAndRepliesObj = {};
+
+
+    // --------------------------------------------------
+    //   recruitmentID がスレッドの場合
+    // --------------------------------------------------
+
+    if (type === 'thread') {
+
+
+      // --------------------------------------------------
+      //   DB find / Forum Comments & Replies
+      // --------------------------------------------------
+
+      formattedCommentsAndRepliesObj = await ModelRecruitmentComments.findCommentsAndReplies({
+
+        req,
+        localeObj,
+        loginUsers_id,
+        recruitmentThreads_idsArr: lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []),
+        recruitmentThreadsObj,
+        commentPage,
+        commentLimit: intCommentLimit,
+        replyPage,
+        replyLimit: intReplyLimit,
+
+      });
+
+
+    // --------------------------------------------------
+    //   recruitmentID がコメントの場合
+    // --------------------------------------------------
+
+    } else if (type === 'comment') {
+
+
+      // --------------------------------------------------
+      //   DB / コメントのページ番号を取得する
+      // --------------------------------------------------
+
+      const pageObj = await ModelRecruitmentComments.getPage({
+
+        recruitmentThreads_id,
+        recruitmentComments_id,
+        commentLimit,
+
+      });
+
+
+      // --------------------------------------------------
+      //   DB find / Forum Comments & Replies
+      // --------------------------------------------------
+
+      formattedCommentsAndRepliesObj = await ModelRecruitmentComments.findCommentsAndReplies({
+
+        req,
+        localeObj,
+        loginUsers_id,
+        recruitmentThreads_idsArr: lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []),
+        recruitmentThreadsObj,
+        commentPage: lodashGet(pageObj, ['commentPage'], 1),
+        commentLimit: intCommentLimit,
+        replyPage: 1,
+        replyLimit: intReplyLimit,
+
+      });
+
+    //   console.log(`
+    //   ----- formattedCommentsAndRepliesObj -----\n
+    //   ${util.inspect(formattedCommentsAndRepliesObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
+    // --------------------------------------------------
+    //   recruitmentID が返信の場合
+    // --------------------------------------------------
+
+    } else if (type === 'reply') {
+
+
+      // --------------------------------------------------
+      //   DB / コメントと返信のページ番号を取得する
+      // --------------------------------------------------
+
+      const pageObj = await ModelRecruitmentReplies.getPage({
+
+        recruitmentThreads_id,
+        recruitmentComments_id,
+        recruitmentReplies_id,
+        commentLimit,
+        replyLimit,
+
+      });
+
+
+      // --------------------------------------------------
+      //   DB find / Forum Comments & Replies
+      // --------------------------------------------------
+
+      formattedCommentsAndRepliesObj = await ModelRecruitmentComments.findCommentsAndReplies({
+
+        req,
+        localeObj,
+        loginUsers_id,
+        recruitmentThreads_idsArr: lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []),
+        recruitmentThreadsObj,
+        commentPage: lodashGet(pageObj, ['commentPage'], 1),
+        commentLimit: intCommentLimit,
+        replyPage: lodashGet(pageObj, ['replyPage'], 1),
+        replyLimit: intReplyLimit,
+
+      });
+
+
+    }
+
+
+    recruitmentCommentsObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentCommentsObj'], {});
+    recruitmentRepliesObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentRepliesObj'], {});
+
+
+
+
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/recruitment-threads/model.js - findRecruitmentByRecruitmentID
+    // `);
+
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   recruitmentID: {green ${recruitmentID}}
+    //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
+    //   recruitmentComments_id: {green ${recruitmentComments_id}}
+    //   recruitmentReplies_id: {green ${recruitmentReplies_id}}
+    // `);
+
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   threadPage: {green ${threadPage}}
+    //   threadLimit: {green ${threadLimit}}
+    //   commentPage: {green ${commentPage}}
+    //   commentLimit: {green ${commentLimit}}
+    //   replyPage: {green ${replyPage}}
+    //   replyLimit: {green ${replyLimit}}
+    // `);
+
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- recruitmentThreadsObj -----\n
+    //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- recruitmentCommentsObj -----\n
+    //   ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- recruitmentRepliesObj -----\n
+    //   ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
+
+
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+
+    return {
+
+      recruitmentThreadsObj,
+      recruitmentCommentsObj,
+      recruitmentRepliesObj,
+
+    };
+
+
+  } catch (err) {
+
+    throw err;
+
+  }
+
+
+};
+
+
+
+
+/**
+ * 募集の検索データを取得する
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
+ * @param {Array} hardwareIDsArr - DB hardwares _id / ハードウェアIDの入った配列
+ * @param {Array} categoriesArr - カテゴリーNoの入った配列
+ * @param {string} keyword - キーワード
+ * @param {number} threadPage - スレッドのページ
+ * @param {number} threadLimit - スレッドのリミット
+ * @param {number} commentPage - コメントのページ
+ * @param {number} commentLimit - コメントのリミット
+ * @param {number} replyPage - 返信のページ
+ * @param {number} replyLimit - 返信のリミット
+ * @return {Array} 取得データ
+ */
+const findRecruitmentsForSearch = async ({
+
+  req,
+  localeObj,
+  loginUsers_id,
+  gameCommunities_id,
+  hardwareIDsArr = [],
+  categoriesArr = [],
+  keyword,
+  threadPage = 1,
+  threadLimit = process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT,
+  commentPage = 1,
+  commentLimit = process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT,
+  replyPage = 1,
+  replyLimit = process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT,
+
+}) => {
+
+
+  try {
+
+
+    // --------------------------------------------------
+    //   Parse
+    // --------------------------------------------------
+
+    const intThreadLimit = parseInt(threadLimit, 10);
+    const intCommentLimit = parseInt(commentLimit, 10);
+    const intReplyLimit = parseInt(replyLimit, 10);
+
+
+
+
+    // --------------------------------------------------
+    //   Match Condition Array
+    // --------------------------------------------------
+
+    let matchConditionArr = [];
+
+
+    // ---------------------------------------------
+    //   - andArr（ドキュメントの検索用） & threadCountConditionObj（総数の検索用）
+    // ---------------------------------------------
+
+    const andArr = [{
+      gameCommunities_id
+    }];
+
+    const threadCountConditionObj = {
+      gameCommunities_id
+    };
+
+
+    // ---------------------------------------------
+    //   - 検索条件
+    // ---------------------------------------------
+
+    if (hardwareIDsArr.length > 0) {
+
+      andArr.push({
+        hardwareIDsArr: { $in: hardwareIDsArr }
+      });
+
+      threadCountConditionObj.hardwareIDsArr = { $in: hardwareIDsArr };
+
+    }
+
+
+    if (categoriesArr.length > 0) {
+
+      andArr.push({
+        category: { $in: categoriesArr }
+      });
+
+      threadCountConditionObj.category = { $in: categoriesArr };
+
+    }
+
+
+    if (keyword) {
+
+      andArr.push({
+        $or: [
+          { 'localesArr.title': { $regex: keyword } },
+          { 'localesArr.comment': { $regex: keyword } },
+        ]
+      });
+
+      threadCountConditionObj.$or = [
+        { 'localesArr.title': { $regex: keyword } },
+        { 'localesArr.comment': { $regex: keyword } },
+      ];
+
+    }
+
+
+    // ---------------------------------------------
+    //   - 検索条件設定
+    // ---------------------------------------------
+
+    matchConditionArr = [
+      {
+        $match: {
+          $and: andArr
+        }
+      }
+    ];
+
+
+    // console.log(`
+    //   ----- andArr -----\n
+    //   ${util.inspect(andArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- matchConditionArr -----\n
+    //   ${util.inspect(matchConditionArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- threadCountConditionObj -----\n
+    //   ${util.inspect(threadCountConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
+
+
+    // --------------------------------------------------
+    //   Aggregate
+    // --------------------------------------------------
+
+    const docArr = await findRecruitmentCommon({
+
+      req,
+      localeObj,
+      loginUsers_id,
+      matchConditionArr,
+      threadPage,
+      threadLimit,
+
+    });
+
+
+
+
+    // --------------------------------------------------
+    //   スレッドのフォーマット & コメント＆返信データ取得
+    // --------------------------------------------------
+
+    let recruitmentThreadsObj = {};
+    let recruitmentCommentsObj = {};
+    let recruitmentRepliesObj = {};
+
+
+    if (docArr.length > 0) {
+
+
+      // --------------------------------------------------
+      //   threadCount（スレッドの総数） 取得
+      // --------------------------------------------------
+
+      const threadCount = await count({
+
+        conditionObj: threadCountConditionObj
+
+      });
+
+      // console.log(chalk`
+      //   threadCount: {green ${threadCount}}
+      // `);
+
+
+      // --------------------------------------------------
+      //   threadCount を置き換える（フォーマットでは配列の最初に出てくる総数だけを利用する）
+      // --------------------------------------------------
+
+      lodashSet(docArr, [0, 'gameCommunitiesObj', 'recruitmentObj', 'threadCount'], threadCount);
+
+
+
+
+      // --------------------------------------------------
+      //   Format
+      // --------------------------------------------------
+
+      const formattedThreadsObj = formatRecruitmentThreadsArr({
+
+        req,
+        localeObj,
+        loginUsers_id,
+        arr: docArr,
+        threadPage,
+        threadLimit: intThreadLimit,
+
+      });
+
+      recruitmentThreadsObj = lodashGet(formattedThreadsObj, ['recruitmentThreadsObj'], {});
+
+
+
+
+      // --------------------------------------------------
+      //   DB find / Comments & Replies
+      // --------------------------------------------------
+
+      const formattedCommentsAndRepliesObj = await ModelRecruitmentComments.findCommentsAndReplies({
+
+        req,
+        localeObj,
+        loginUsers_id,
+        recruitmentThreads_idsArr: lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []),
+        recruitmentThreadsObj,
+        commentPage,
+        commentLimit: intCommentLimit,
+        replyPage,
+        replyLimit: intReplyLimit,
+
+      });
+
+      recruitmentCommentsObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentCommentsObj'], {});
+      recruitmentRepliesObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentRepliesObj'], {});
+
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/recruitment-threads/model.js - findRecruitmentsForSearch
+    // `);
+
+    // console.log(`
+    //   ----- localeObj -----\n
+    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- hardwareIDsArr -----\n
+    //   ${util.inspect(hardwareIDsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- categoriesArr -----\n
+    //   ${util.inspect(categoriesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id} / ${typeof loginUsers_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id} / ${typeof gameCommunities_id}}
+    //   keyword: {green ${keyword} / ${typeof keyword}}
+    //   threadPage: {green ${threadPage} / ${typeof threadPage}}
+    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
+    //   commentPage: {green ${commentPage} / ${typeof commentPage}}
+    //   commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
+    //   replyPage: {green ${replyPage} / ${typeof replyPage}}
+    //   replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
+    // `);
+
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- recruitmentThreadsObj -----\n
+    //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- recruitmentCommentsObj -----\n
+    //   ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- recruitmentRepliesObj -----\n
+    //   ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
+
+
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+
+    return {
+
+      recruitmentThreadsObj,
+      recruitmentCommentsObj,
+      recruitmentRepliesObj,
+
+    };
+
+
+  } catch (err) {
+
+    throw err;
+
+  }
+
+
+};
+
+
+
+
+/**
+ * 募集（コメント＆返信を含む全てのデータ）を取得する
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
+ * @param {Array} recruitmentThreads_idsArr - DB recruitment-threads _id / スレッドID
+ * @param {number} threadPage - スレッドのページ
+ * @param {number} threadLimit - スレッドのリミット
+ * @param {number} commentPage - コメントのページ
+ * @param {number} commentLimit - コメントのリミット
+ * @param {number} replyPage - 返信のページ
+ * @param {number} replyLimit - 返信のリミット
+ * @return {Array} 取得データ
+ */
+// const findRecruitmentsForFollowContents = async ({
+
+//   req,
+//   localeObj,
+//   loginUsers_id,
+//   gameCommunities_id,
+//   gameCommunities_idsArr = [],
+//   period,
+//   recruitmentThreads_idsArr = [],
+//   threadPage = 1,
+//   threadLimit = process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT,
+//   commentPage = 1,
+//   commentLimit = process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT,
+//   replyPage = 1,
+//   replyLimit = process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT,
+
+// }) => {
+
+
+//   try {
+
+
+//     // --------------------------------------------------
+//     //   Parse
+//     // --------------------------------------------------
+
+//     const intThreadLimit = parseInt(threadLimit, 10);
+//     const intCommentLimit = parseInt(commentLimit, 10);
+//     const intReplyLimit = parseInt(replyLimit, 10);
+
+
+
+
+//     // --------------------------------------------------
+//     //   Match Condition Array
+//     // --------------------------------------------------
+
+//     let matchConditionArr = [];
+
+//     matchConditionArr = [
+//       {
+//         $match: { gameCommunities_id }
+//       },
+//     ];
+
+
+//     // ---------------------------------------------
+//     //   - コメント更新時
+//     // ---------------------------------------------
+
+//     if (recruitmentThreads_idsArr.length > 0) {
+
+//       matchConditionArr = [
+//         {
+//           $match: {
+//             $and:
+//               [
+//                 { gameCommunities_id },
+//                 { _id: { $in: recruitmentThreads_idsArr } }
+//               ]
+//           }
+//         },
+//       ];
+
+//     }
+
+
+//     // ---------------------------------------------
+//     //   - Follow Contents
+//     // ---------------------------------------------
+
+//     if (gameCommunities_idsArr.length > 0) {
+
+
+//       // ---------------------------------------------
+//       //   ○○分前の日時を取得し、その日時内に更新されたデータを取得する
+//       // ---------------------------------------------
+      
+//       const dateTimeLimit = moment().utc().add(-(period), 'minutes').toDate();
+
+//       conditionObj = {
+
+//         gameCommunities_id: { $in: gameCommunities_idsArr },
+//         updatedDate: { $gte: dateTimeLimit }
+//         // updatedDate: { $gt: new Date("2021-02-05T12:00:00.000Z") }
+        
+//       }
+
+
+//       // ---------------------------------------------
+//       //   matchConditionArr
+//       // ---------------------------------------------
+
+//       matchConditionArr = [
+//         {
+//           $match: conditionObj
+//         }
+//       ];
+
+
+//       // ---------------------------------------------
+//       //   - threadCount
+//       // ---------------------------------------------
+
+//       threadCount = await count({
+//         conditionObj
+//       });
+
+
+//     }
+
+
+
+
+//     // --------------------------------------------------
+//     //   Aggregate
+//     // --------------------------------------------------
+
+//     const docArr = await findRecruitmentCommon({
+
+//       req,
+//       localeObj,
+//       loginUsers_id,
+//       matchConditionArr,
+//       threadPage,
+//       threadLimit: intThreadLimit,
+
+//     });
+
+
+
+
+//     // --------------------------------------------------
+//     //   Format
+//     // --------------------------------------------------
+
+//     const formattedThreadsObj = formatRecruitmentThreadsArr({
+
+//       req,
+//       localeObj,
+//       loginUsers_id,
+//       arr: docArr,
+//       threadPage,
+//       threadLimit: intThreadLimit,
+
+//     });
+
+//     const recruitmentThreadsObj = lodashGet(formattedThreadsObj, ['recruitmentThreadsObj'], {});
+
+
+
+
+//     // --------------------------------------------------
+//     //   DB find / Comments & Replies
+//     // --------------------------------------------------
+
+//     const formattedCommentsAndRepliesObj = await ModelRecruitmentComments.findCommentsAndReplies({
+
+//       req,
+//       localeObj,
+//       loginUsers_id,
+//       recruitmentThreads_idsArr: lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []),
+//       recruitmentThreadsObj,
+//       commentPage,
+//       commentLimit: intCommentLimit,
+//       replyPage,
+//       replyLimit: intReplyLimit,
+
+//     });
+
+//     const recruitmentCommentsObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentCommentsObj'], {});
+//     const recruitmentRepliesObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentRepliesObj'], {});
+
+
+
+
+//     // --------------------------------------------------
+//     //   console.log
+//     // --------------------------------------------------
+
+//     // console.log(`
+//     //   ----------------------------------------\n
+//     //   /app/@database/recruitment-threads/model.js - findRecruitments
+//     // `);
+
+//     // console.log(chalk`
+//     //   loginUsers_id: {green ${loginUsers_id}}
+//     //   gameCommunities_id: {green ${gameCommunities_id}}
+//     //   threadPage: {green ${threadPage}}
+//     //   threadLimit: {green ${threadLimit}}
+//     //   commentPage: {green ${commentPage}}
+//     //   commentLimit: {green ${commentLimit}}
+//     //   replyPage: {green ${replyPage}}
+//     //   replyLimit: {green ${replyLimit}}
+//     // `);
+
+//     // console.log(`
+//     //   ----- matchConditionArr -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(matchConditionArr)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+
+//     // console.log(`
+//     //   ----- docArr -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+
+//     // console.log(`
+//     //   ----- recruitmentThreadsObj -----\n
+//     //   ${util.inspect(recruitmentThreadsObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+
+//     // console.log(`
+//     //   ----- recruitmentCommentsObj -----\n
+//     //   ${util.inspect(recruitmentCommentsObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+
+//     // console.log(`
+//     //   ----- recruitmentRepliesObj -----\n
+//     //   ${util.inspect(recruitmentRepliesObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+
+
+
+
+//     // --------------------------------------------------
+//     //   Return
+//     // --------------------------------------------------
+
+//     return {
+
+//       recruitmentThreadsObj,
+//       recruitmentCommentsObj,
+//       recruitmentRepliesObj,
+
+//     };
+
+
+//   } catch (err) {
+
+//     throw err;
+
+//   }
+
+
+// };
+
+
+
+
+/**
+ * aggregate / スレッドを取得する部分
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {Array} matchConditionArr - 検索条件
+ * @param {number} threadPage - スレッドのページ
+ * @param {number} threadLimit - スレッドのリミット
+ * @return {Array} 取得データ
+ */
+// const aggregate = async ({
+
+//   req,
+//   localeObj,
+//   loginUsers_id,
+//   matchConditionArr = [],
+//   threadPage = 1,
+//   threadLimit = process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT,
+
+// }) => {
+
+
+//   try {
+
+
+//     // --------------------------------------------------
+//     //   Language & Country
+//     // --------------------------------------------------
+
+//     const language = lodashGet(localeObj, ['language'], '');
+//     const country = lodashGet(localeObj, ['country'], '');
+
+
+//     // --------------------------------------------------
+//     //   Limit
+//     // --------------------------------------------------
+
+//     const intThreadLimit = parseInt((threadLimit || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
+//     const errorLimit = parseInt(process.env.WEB_PUSH_ERROR_LIMIT, 10);
+
+
+//     // console.log(chalk`
+//     //   aggregate
+//     //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
+//     //   process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT: {green ${process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT} / ${typeof process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT}}
+//     //   intThreadLimit: {green ${intThreadLimit}}
+//     // `);
+
+
+//     // --------------------------------------------------
+//     //   Aggregation
+//     // --------------------------------------------------
+
+//     const docArr = await SchemaRecruitmentThreads.aggregate([
+
+
+//       // --------------------------------------------------
+//       //   Match Condition Array
+//       // --------------------------------------------------
+
+//       ...matchConditionArr,
+
+
+//       // --------------------------------------------------
+//       //   $sort / $skip / $limit
+//       // --------------------------------------------------
+
+//       { $sort: { updatedDate: -1 } },
+//       { $skip: (threadPage - 1) * intThreadLimit },
+//       { $limit: intThreadLimit },
+
+
+//       // --------------------------------------------------
+//       //   games
+//       // --------------------------------------------------
+
+//       {
+//         $lookup:
+//           {
+//             from: 'games',
+//             let: { letGameCommunities_id: '$gameCommunities_id' },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $and: [
+//                       { $eq: ['$language', language] },
+//                       { $eq: ['$country', country] },
+//                       { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
+//                     ]
+//                   },
+//                 }
+//               },
+
+
+//               {
+//                 $project: {
+//                   _id: 0,
+//                   twitterHashtagsArr: 1,
+//                 }
+//               }
+//             ],
+//             as: 'gamesObj'
+//           }
+//       },
+
+//       {
+//         $unwind: {
+//           path: '$gamesObj',
+//           preserveNullAndEmptyArrays: true,
+//         }
+//       },
+
+
+//       // --------------------------------------------------
+//       //   game-communities / threadCount 取得用
+//       // --------------------------------------------------
+
+//       {
+//         $lookup:
+//           {
+//             from: 'game-communities',
+//             let: { letGameCommunities_id: '$gameCommunities_id' },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $eq: ['$_id', '$$letGameCommunities_id']
+//                   },
+//                 }
+//               },
+//               {
+//                 $project: {
+//                   _id: 0,
+//                   recruitmentObj: 1,
+//                 }
+//               }
+//             ],
+//             as: 'gameCommunitiesObj'
+//           }
+//       },
+
+//       {
+//         $unwind: {
+//           path: '$gameCommunitiesObj',
+//           preserveNullAndEmptyArrays: true,
+//         }
+//       },
+
+
+//       // --------------------------------------------------
+//       //   card-players / プレイヤーカードを取得（名前＆ステータス＆サムネイル用）
+//       // --------------------------------------------------
+
+//       {
+//         $lookup:
+//           {
+//             from: 'card-players',
+//             let: { letUsers_id: '$users_id' },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $and: [
+//                       { $eq: ['$language', language] },
+//                       { $eq: ['$users_id', '$$letUsers_id'] },
+//                     ]
+//                   },
+//                 }
+//               },
+
+
+//               // --------------------------------------------------
+//               //   card-players / images-and-videos / サムネイルを取得
+//               // --------------------------------------------------
+
+//               {
+//                 $lookup:
+//                   {
+//                     from: 'images-and-videos',
+//                     let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+//                     pipeline: [
+//                       {
+//                         $match: {
+//                           $expr: {
+//                             $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+//                           },
+//                         }
+//                       },
+//                       {
+//                         $project: {
+//                           createdDate: 0,
+//                           updatedDate: 0,
+//                           users_id: 0,
+//                           __v: 0,
+//                         }
+//                       }
+//                     ],
+//                     as: 'imagesAndVideosThumbnailObj'
+//                   }
+//               },
+
+//               {
+//                 $unwind: {
+//                   path: '$imagesAndVideosThumbnailObj',
+//                   preserveNullAndEmptyArrays: true,
+//                 }
+//               },
+
+
+//               {
+//                 $project: {
+//                   name: 1,
+//                   status: 1,
+//                   imagesAndVideosThumbnailObj: 1,
+//                 }
+//               }
+//             ],
+//             as: 'cardPlayersObj'
+//           }
+//       },
+
+//       {
+//         $unwind: {
+//           path: '$cardPlayersObj',
+//           preserveNullAndEmptyArrays: true,
+//         }
+//       },
+
+
+//       // --------------------------------------------------
+//       //   web-pushes
+//       // --------------------------------------------------
+
+//       {
+//         $lookup:
+//           {
+//             from: 'web-pushes',
+//             let: { letWebPushes_id: '$webPushes_id' },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $and: [
+//                       { $eq: ['$_id', '$$letWebPushes_id'] },
+//                       { $lt: ['$errorCount', errorLimit] },
+//                     ]
+//                   },
+
+//                 }
+//               },
+//               {
+//                 $project: {
+//                   _id: 1,
+//                   users_id: 1,
+//                   subscriptionObj: 1,
+//                   sendTodayCount: 1,
+//                 }
+//               }
+//             ],
+//             as: 'webPushesObj'
+//           }
+//       },
+
+//       {
+//         $unwind: {
+//           path: '$webPushesObj',
+//           preserveNullAndEmptyArrays: true,
+//         }
+//       },
+
+
+//       // --------------------------------------------------
+//       //   users
+//       // --------------------------------------------------
+
+//       {
+//         $lookup:
+//           {
+//             from: 'users',
+//             let: { letUsers_id: '$users_id' },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $eq: ['$_id', '$$letUsers_id']
+//                   },
+//                 }
+//               },
+
+
+//               {
+//                 $project: {
+//                   _id: 0,
+//                   accessDate: 1,
+//                   exp: 1,
+//                   userID: 1,
+//                 }
+//               }
+//             ],
+//             as: 'usersObj'
+//           }
+//       },
+
+//       {
+//         $unwind: {
+//           path: '$usersObj',
+//           preserveNullAndEmptyArrays: true,
+//         }
+//       },
+
+
+//       // --------------------------------------------------
+//       //   images-and-videos
+//       // --------------------------------------------------
+
+//       {
+//         $lookup:
+//           {
+//             from: 'images-and-videos',
+//             let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $eq: ['$_id', '$$letImagesAndVideos_id']
+//                   },
+//                 }
+//               },
+//               {
+//                 $project: {
+//                   createdDate: 0,
+//                   updatedDate: 0,
+//                   users_id: 0,
+//                   __v: 0,
+//                 }
+//               }
+//             ],
+//             as: 'imagesAndVideosObj'
+//           }
+//       },
+
+//       {
+//         $unwind: {
+//           path: '$imagesAndVideosObj',
+//           preserveNullAndEmptyArrays: true,
+//         }
+//       },
+
+
+//       // --------------------------------------------------
+//       //   hardwares
+//       // --------------------------------------------------
+
+//       {
+//         $lookup:
+//           {
+//             from: 'hardwares',
+//             let: { letHardwareIDsArr: '$hardwareIDsArr' },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $and: [
+//                       { $eq: ['$language', language] },
+//                       { $eq: ['$country', country] },
+//                       { $in: ['$hardwareID', '$$letHardwareIDsArr'] }
+//                     ]
+//                   },
+//                 }
+//               },
+//               {
+//                 $project: {
+//                   _id: 0,
+//                   hardwareID: 1,
+//                   name: 1,
+//                 }
+//               }
+//             ],
+//             as: 'hardwaresArr'
+//           }
+//       },
+
+
+//       // --------------------------------------------------
+//       //   ids
+//       // --------------------------------------------------
+
+//       {
+//         $lookup:
+//           {
+//             from: 'ids',
+//             let: {
+//               letIDs_idArr: '$ids_idsArr',
+//               letUsers_id: '$users_id',
+//             },
+//             pipeline: [
+//               {
+//                 $match: {
+//                   $expr: {
+//                     $and: [
+//                       { $eq: ['$users_id', '$$letUsers_id'] },
+//                       { $in: ['$_id', '$$letIDs_idArr'] }
+//                     ]
+//                   },
+//                 }
+//               },
+
+
+//               // --------------------------------------------------
+//               //   ids / games
+//               // --------------------------------------------------
+
+//               {
+//                 $lookup:
+//                   {
+//                     from: 'games',
+//                     let: { letGameCommunities_id: '$gameCommunities_id' },
+//                     pipeline: [
+//                       {
+//                         $match: {
+//                           $expr: {
+//                             $and: [
+//                               { $eq: ['$language', language] },
+//                               { $eq: ['$country', country] },
+//                               { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
+//                             ]
+//                           },
+//                         }
+//                       },
+
+
+//                       // --------------------------------------------------
+//                       //   ids / games / images-and-videos / サムネイル用
+//                       // --------------------------------------------------
+
+//                       {
+//                         $lookup:
+//                           {
+//                             from: 'images-and-videos',
+//                             let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+//                             pipeline: [
+//                               {
+//                                 $match: {
+//                                   $expr: {
+//                                     $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+//                                   },
+//                                 }
+//                               },
+//                               {
+//                                 $project: {
+//                                   createdDate: 0,
+//                                   updatedDate: 0,
+//                                   users_id: 0,
+//                                   __v: 0,
+//                                 }
+//                               }
+//                             ],
+//                             as: 'imagesAndVideosThumbnailObj'
+//                           }
+//                       },
+
+//                       {
+//                         $unwind: {
+//                           path: '$imagesAndVideosThumbnailObj',
+//                           preserveNullAndEmptyArrays: true,
+//                         }
+//                       },
+
+
+//                       {
+//                         $project: {
+//                           _id: 1,
+//                           gameCommunities_id: 1,
+//                           name: 1,
+//                           imagesAndVideosThumbnailObj: 1,
+//                         }
+//                       }
+//                     ],
+//                     as: 'gamesObj'
+//                   }
+//               },
+
+//               {
+//                 $unwind:
+//                   {
+//                     path: '$gamesObj',
+//                     preserveNullAndEmptyArrays: true
+//                   }
+//               },
+
+
+//               {
+//                 $project: {
+//                   createdDate: 0,
+//                   updatedDate: 0,
+//                   users_id: 0,
+//                   search: 0,
+//                   __v: 0,
+//                 }
+//               }
+//             ],
+//             as: 'idsArr'
+//           }
+//       },
+
+
+
+//       // --------------------------------------------------
+//       //   $project
+//       // --------------------------------------------------
+
+//       {
+//         $project: {
+//           imagesAndVideos_id: 0,
+//           webPushes_id: 0,
+//           acceptLanguage: 0,
+//           __v: 0,
+//         }
+//       },
+
+
+//     ]).exec();
+
+
+
+
+//     // --------------------------------------------------
+//     //   console.log
+//     // --------------------------------------------------
+
+//     // console.log(`
+//     //   ----------------------------------------\n
+//     //   /app/@database/recruitment-threads/model.js - findRecruitments
+//     // `);
+
+//     // console.log(chalk`
+//     //   loginUsers_id: {green ${loginUsers_id}}
+//     //   gameCommunities_id: {green ${gameCommunities_id}}
+//     //   threadPage: {green ${threadPage}}
+//     //   threadLimit: {green ${threadLimit}}
+//     //   commentPage: {green ${commentPage}}
+//     //   commentLimit: {green ${commentLimit}}
+//     //   replyPage: {green ${replyPage}}
+//     //   replyLimit: {green ${replyLimit}}
+//     // `);
+
+//     // console.log(`
+//     //   ----- docArr -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+
+
+
+
+//     // --------------------------------------------------
+//     //   Return
+//     // --------------------------------------------------
+
+//     return docArr;
+
+
+//   } catch (err) {
+
+//     throw err;
+
+//   }
+
+
+// };
 
 
 

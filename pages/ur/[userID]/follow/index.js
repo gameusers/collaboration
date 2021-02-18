@@ -116,8 +116,8 @@ const ContainerLayout = (props) => {
       <FollowContents
         // urlID={props.urlID}
         // gameCommunities_id={props.gameCommunities_id}
-        urlID={'aaa'}
-        gameCommunities_id={'bbb'}
+        // urlID={'aaa'}
+        // gameCommunities_id={'bbb'}
         gameCommunitiesObj={props.gameCommunitiesObj}
         enableAnonymity={false}
       />

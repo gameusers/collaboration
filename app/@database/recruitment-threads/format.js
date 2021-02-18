@@ -67,6 +67,7 @@ const formatRecruitmentThreadsArr = ({
   arr,
   threadPage,
   threadLimit,
+  threadCount = 0,
 
 }) => {
 
@@ -87,6 +88,12 @@ const formatRecruitmentThreadsArr = ({
   const dataObj = {};
   const recruitmentThreads_idsArr = [];
   const ISO8601 = moment().utc().toISOString();
+
+
+  if (threadCount > 0) {
+    recruitmentThreadsObj.count = threadCount;
+  }
+
 
   // console.log(chalk`
   //   lodashGet(arr, [0, 'gameCommunitiesObj', 'recruitmentObj', 'threadCount'], 0): {green ${lodashGet(arr, [0, 'gameCommunitiesObj', 'recruitmentObj', 'threadCount'], 0)}}

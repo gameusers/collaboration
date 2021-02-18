@@ -1614,6 +1614,7 @@ const findForumByforumID = async ({
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
  * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティID
+ * @param {number} period - 取得期間
  * @param {number} threadPage - スレッドのページ
  * @param {number} threadLimit - スレッドのリミット
  * @param {number} commentPage - コメントのページ
@@ -1644,17 +1645,6 @@ const findForumForFollowContents = async ({
 
 
     // --------------------------------------------------
-    //   Parse
-    // --------------------------------------------------
-
-    // const intThreadLimit = parseInt(threadLimit, 10);
-    // const intCommentLimit = parseInt(commentLimit, 10);
-    // const intReplyLimit = parseInt(replyLimit, 10);
-
-
-
-    
-    // --------------------------------------------------
     //   threadCount & Match Condition Array
     // --------------------------------------------------
 
@@ -1670,28 +1660,24 @@ const findForumForFollowContents = async ({
     if (gameCommunities_idsArr.length > 0) {
 
 
-      // -----------------------------------
-      //   - matchConditionArr
-      // -----------------------------------
-
-      // --------------------------------------------------
+      // ---------------------------------------------
       //   ○○分前の日時を取得し、その日時内に更新されたデータを取得する
-      // --------------------------------------------------
+      // ---------------------------------------------
       
       const dateTimeLimit = moment().utc().add(-(period), 'minutes').toDate();
 
       conditionObj = {
 
         gameCommunities_id: { $in: gameCommunities_idsArr },
-        // updatedDate: { $gte: dateTimeLimit }
-        updatedDate: { $gt: new Date("2021-02-05T12:00:00.000Z") }
+        updatedDate: { $gte: dateTimeLimit }
+        // updatedDate: { $gt: new Date("2021-02-05T12:00:00.000Z") }
         
       }
 
 
-      // --------------------------------------------------
+      // ---------------------------------------------
       //   matchConditionArr
-      // --------------------------------------------------
+      // ---------------------------------------------
 
       matchConditionArr = [
         {
@@ -1700,9 +1686,9 @@ const findForumForFollowContents = async ({
       ];
 
 
-      // -----------------------------------
+      // ---------------------------------------------
       //   - threadCount
-      // -----------------------------------
+      // ---------------------------------------------
 
       threadCount = await count({
         conditionObj
@@ -1716,17 +1702,39 @@ const findForumForFollowContents = async ({
     } else if (userCommunities_idsArr.length > 0) {
 
 
-      // -----------------------------------
+      // ---------------------------------------------
+      //   ○○分前の日時を取得し、その日時内に更新されたデータを取得する
+      // ---------------------------------------------
+      
+      const dateTimeLimit = moment().utc().add(-(period), 'minutes').toDate();
+
+      conditionObj = {
+
+        userCommunities_id: { $in: userCommunities_idsArr },
+        updatedDate: { $gte: dateTimeLimit }
+        // updatedDate: { $gt: new Date("2021-02-05T12:00:00.000Z") }
+        
+      }
+
+
+      // ---------------------------------------------
+      //   matchConditionArr
+      // ---------------------------------------------
+
+      matchConditionArr = [
+        {
+          $match: conditionObj
+        }
+      ];
+
+
+      // ---------------------------------------------
       //   - threadCount
-      // -----------------------------------
+      // ---------------------------------------------
 
-      // const userCommunityArr = await ModelUserCommunities.find({
-
-      //   conditionObj: matchConditionArr
-
-      // });
-
-      // threadCount = lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0);
+      threadCount = await count({
+        conditionObj
+      });
 
 
     }
@@ -1735,7 +1743,7 @@ const findForumForFollowContents = async ({
 
     
     // --------------------------------------------------
-    //   Aggregation
+    //   findForumCommon
     // --------------------------------------------------
 
     const returnObj = await findForumCommon({
@@ -1763,7 +1771,7 @@ const findForumForFollowContents = async ({
 
     // console.log(`
     //   ----------------------------------------\n
-    //   app/@database/forum-threads/model.js - findForForum
+    //   app/@database/forum-threads/model.js - findForumForFollowContents
     // `);
 
     // console.log(chalk`
@@ -1776,18 +1784,6 @@ const findForumForFollowContents = async ({
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- formattedThreadsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(formattedThreadsObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- forumCommentsAndRepliesObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 

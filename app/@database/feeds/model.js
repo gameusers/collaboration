@@ -595,6 +595,7 @@ const findForumGc = async ({
                   _id: 0,
                   urlID: 1,
                   name: 1,
+                  subtitle: 1,
                   imagesAndVideosObj: 1,
                   imagesAndVideosThumbnailObj: 1,
                 }

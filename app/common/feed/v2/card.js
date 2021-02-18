@@ -107,6 +107,7 @@ const Component = (props) => {
 
   const gameUrlID = lodashGet(obj, ['gamesObj', 'urlID'], '');
   const gameName = lodashGet(obj, ['gamesObj', 'name'], '');
+  const gameSubtitle = lodashGet(obj, ['gamesObj', 'subtitle'], '');
   const gameImagesAndVideosObj = lodashGet(obj, ['gamesObj', 'imagesAndVideosObj'], {});
   // const gameImagesAndVideosArr = lodashGet(obj, ['gamesObj', 'imagesAndVideosObj', 'arr'], []);
   const gameImagesAndVideosThumbnailObj = lodashGet(obj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
@@ -206,7 +207,7 @@ const Component = (props) => {
 
   let linkHref = '';
   let linkAs = '';
-  let communityName = gameName;
+  let communityName = gameName + gameSubtitle;
   let communityLinkHref = `/gc/[urlID]`;
   let communityLinkAs = `/gc/${gameUrlID}`;
 

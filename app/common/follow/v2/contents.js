@@ -121,14 +121,11 @@ const Component = (props) => {
 
   const {
 
-    // urlID,
-    // gameCommunities_id,
     userCommunityID,
     userCommunities_id,
 
     gameCommunitiesObj,
 
-    enableAnonymity,
     deletable,
 
   } = props;
@@ -329,7 +326,9 @@ const Component = (props) => {
     
 
     componentsArr.push(
-      <React.Fragment>
+      <React.Fragment
+        key={index}
+      >
 
         <div
           css={css`
@@ -346,22 +345,16 @@ const Component = (props) => {
         </div>
         
 
-        {/* <div
-          css={css`
-            margin-bottom: 0;
-          `}
-        > */}
-          <Thread
-            key={forumThreads_id}
-            urlID={urlID}
-            gameCommunities_id={gameCommunities_id}
-            // userCommunityID={userCommunityID}
-            // userCommunities_id={userCommunities_id}
-            forumThreads_id={forumThreads_id}
-            enableAnonymity={enableAnonymity}
-            deletable={deletable}
-          />
-        {/* </div> */}
+        <Thread
+          key={forumThreads_id}
+          urlID={urlID}
+          gameCommunities_id={gameCommunities_id}
+          // userCommunityID={userCommunityID}
+          // userCommunities_id={userCommunities_id}
+          forumThreads_id={forumThreads_id}
+          enableAnonymity={false}
+          deletable={deletable}
+        />
 
       </React.Fragment>
     );

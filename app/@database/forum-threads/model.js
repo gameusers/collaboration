@@ -607,6 +607,7 @@ const findForThreadsList = async ({
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {Array} matchConditionArr - 検索条件
+ * @param {Array} sortSkipLimitArr - 並べ替えとページャー
  * @param {number} threadCount - スレッドの総数
  * @param {number} threadPage - スレッドのページ
  * @param {number} threadLimit - スレッドのリミット
@@ -622,6 +623,7 @@ const findForumCommon = async ({
   localeObj,
   loginUsers_id,
   matchConditionArr = [],
+  sortSkipLimitArr = [],
   threadCount,
   threadPage = 1,
   threadLimit = process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT,
@@ -641,7 +643,7 @@ const findForumCommon = async ({
     // --------------------------------------------------
 
     const intThreadPage = parseInt(threadPage, 10);
-    const intCommenPage = parseInt(commentPage, 10);
+    const intCommentPage = parseInt(commentPage, 10);
     const intReplyPage = parseInt(replyPage, 10);
 
     const intThreadLimit = parseInt(threadLimit, 10);
@@ -650,6 +652,25 @@ const findForumCommon = async ({
 
     const intTreadCount = parseInt(threadCount, 10);
     
+
+
+
+    // --------------------------------------------------
+    //   sortSkipLimitArr
+    // --------------------------------------------------
+
+    let sslArr = [
+
+      { $sort: { updatedDate: -1 } },
+      { $skip: (intThreadPage - 1) * intThreadLimit },
+      { $limit: intThreadLimit },
+
+    ];
+
+    if (sortSkipLimitArr.length > 0) {
+      sslArr = sortSkipLimitArr;
+    }
+
 
 
     
@@ -671,9 +692,11 @@ const findForumCommon = async ({
       //   $sort / $skip / $limit
       // --------------------------------------------------
 
-      { $sort: { updatedDate: -1 } },
-      { $skip: (intThreadPage - 1) * intThreadLimit },
-      { $limit: intThreadLimit },
+      ...sslArr,
+
+      // { $sort: { updatedDate: -1 } },
+      // { $skip: (intThreadPage - 1) * intThreadLimit },
+      // { $limit: intThreadLimit },
 
 
       // --------------------------------------------------
@@ -765,7 +788,7 @@ const findForumCommon = async ({
       loginUsers_id,
       forumThreads_idsArr: forumThreads_idsForCommentArr,
       forumThreadsObj,
-      commentPage: intCommenPage,
+      commentPage: intCommentPage,
       commentLimit: intCommentLimit,
       replyPage: intReplyPage,
       replyLimit: intReplyLimit,
@@ -792,18 +815,6 @@ const findForumCommon = async ({
     // console.log(`
     //   ----- docArr -----\n
     //   ${util.inspect(docArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- formattedThreadsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(formattedThreadsObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- forumCommentsAndRepliesObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
@@ -1623,206 +1634,206 @@ const findForumByforumID = async ({
  * @param {number} replyLimit - 返信のリミット
  * @return {Object} 取得データ
  */
-const findForumForFollowContents = async ({
+// const findForumForFollowContents = async ({
 
-  req,
-  localeObj,
-  loginUsers_id,
-  gameCommunities_idsArr = [],
-  userCommunities_idsArr = [],
-  period,
-  threadPage = 1,
-  threadLimit = process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT,
-  commentPage = 1,
-  commentLimit = process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT,
-  replyPage = 1,
-  replyLimit = process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT,
+//   req,
+//   localeObj,
+//   loginUsers_id,
+//   gameCommunities_idsArr = [],
+//   userCommunities_idsArr = [],
+//   period,
+//   threadPage = 1,
+//   threadLimit = process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT,
+//   commentPage = 1,
+//   commentLimit = process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT,
+//   replyPage = 1,
+//   replyLimit = process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT,
 
-}) => {
-
-
-  try {
+// }) => {
 
 
-    // --------------------------------------------------
-    //   threadCount & Match Condition Array
-    // --------------------------------------------------
-
-    let threadCount = 0;
-    let matchConditionArr = [];
-    let conditionObj = {};
+//   try {
 
 
-    // ---------------------------------------------
-    //   - Game Community
-    // ---------------------------------------------
+//     // --------------------------------------------------
+//     //   threadCount & Match Condition Array
+//     // --------------------------------------------------
 
-    if (gameCommunities_idsArr.length > 0) {
+//     let threadCount = 0;
+//     let matchConditionArr = [];
+//     let conditionObj = {};
 
 
-      // ---------------------------------------------
-      //   ○○分前の日時を取得し、その日時内に更新されたデータを取得する
-      // ---------------------------------------------
+//     // ---------------------------------------------
+//     //   - Game Community
+//     // ---------------------------------------------
+
+//     if (gameCommunities_idsArr.length > 0) {
+
+
+//       // ---------------------------------------------
+//       //   ○○分前の日時を取得し、その日時内に更新されたデータを取得する
+//       // ---------------------------------------------
       
-      const dateTimeLimit = moment().utc().add(-(period), 'minutes').toDate();
+//       const dateTimeLimit = moment().utc().add(-(period), 'minutes').toDate();
 
-      conditionObj = {
+//       conditionObj = {
 
-        gameCommunities_id: { $in: gameCommunities_idsArr },
-        updatedDate: { $gte: dateTimeLimit }
-        // updatedDate: { $gt: new Date("2021-02-05T12:00:00.000Z") }
+//         gameCommunities_id: { $in: gameCommunities_idsArr },
+//         updatedDate: { $gte: dateTimeLimit }
+//         // updatedDate: { $gt: new Date("2021-02-05T12:00:00.000Z") }
         
-      }
+//       }
 
 
-      // ---------------------------------------------
-      //   matchConditionArr
-      // ---------------------------------------------
+//       // ---------------------------------------------
+//       //   matchConditionArr
+//       // ---------------------------------------------
 
-      matchConditionArr = [
-        {
-          $match: conditionObj
-        }
-      ];
-
-
-      // ---------------------------------------------
-      //   - threadCount
-      // ---------------------------------------------
-
-      threadCount = await count({
-        conditionObj
-      });
+//       matchConditionArr = [
+//         {
+//           $match: conditionObj
+//         }
+//       ];
 
 
-    // ---------------------------------------------
-    //   - User Community
-    // ---------------------------------------------
+//       // ---------------------------------------------
+//       //   - threadCount
+//       // ---------------------------------------------
 
-    } else if (userCommunities_idsArr.length > 0) {
+//       threadCount = await count({
+//         conditionObj
+//       });
 
 
-      // ---------------------------------------------
-      //   ○○分前の日時を取得し、その日時内に更新されたデータを取得する
-      // ---------------------------------------------
+//     // ---------------------------------------------
+//     //   - User Community
+//     // ---------------------------------------------
+
+//     } else if (userCommunities_idsArr.length > 0) {
+
+
+//       // ---------------------------------------------
+//       //   ○○分前の日時を取得し、その日時内に更新されたデータを取得する
+//       // ---------------------------------------------
       
-      const dateTimeLimit = moment().utc().add(-(period), 'minutes').toDate();
+//       const dateTimeLimit = moment().utc().add(-(period), 'minutes').toDate();
 
-      conditionObj = {
+//       conditionObj = {
 
-        userCommunities_id: { $in: userCommunities_idsArr },
-        updatedDate: { $gte: dateTimeLimit }
-        // updatedDate: { $gt: new Date("2021-02-05T12:00:00.000Z") }
+//         userCommunities_id: { $in: userCommunities_idsArr },
+//         updatedDate: { $gte: dateTimeLimit }
+//         // updatedDate: { $gt: new Date("2021-02-05T12:00:00.000Z") }
         
-      }
+//       }
 
 
-      // ---------------------------------------------
-      //   matchConditionArr
-      // ---------------------------------------------
+//       // ---------------------------------------------
+//       //   matchConditionArr
+//       // ---------------------------------------------
 
-      matchConditionArr = [
-        {
-          $match: conditionObj
-        }
-      ];
-
-
-      // ---------------------------------------------
-      //   - threadCount
-      // ---------------------------------------------
-
-      threadCount = await count({
-        conditionObj
-      });
+//       matchConditionArr = [
+//         {
+//           $match: conditionObj
+//         }
+//       ];
 
 
-    }
+//       // ---------------------------------------------
+//       //   - threadCount
+//       // ---------------------------------------------
+
+//       threadCount = await count({
+//         conditionObj
+//       });
+
+
+//     }
     
     
 
     
-    // --------------------------------------------------
-    //   findForumCommon
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   findForumCommon
+//     // --------------------------------------------------
 
-    const returnObj = await findForumCommon({
+//     const returnObj = await findForumCommon({
 
-      req,
-      localeObj,
-      loginUsers_id,
-      matchConditionArr,
-      threadCount,
-      threadPage,
-      threadLimit,
-      commentPage,
-      commentLimit,
-      replyPage,
-      replyLimit,
+//       req,
+//       localeObj,
+//       loginUsers_id,
+//       matchConditionArr,
+//       threadCount,
+//       threadPage,
+//       threadLimit,
+//       commentPage,
+//       commentLimit,
+//       replyPage,
+//       replyLimit,
 
-    });
-
-
-
-
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-
-    // console.log(`
-    //   ----------------------------------------\n
-    //   app/@database/forum-threads/model.js - findForumForFollowContents
-    // `);
-
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   userCommunities_id: {green ${userCommunities_id}}
-    //   page: {green ${page}}
-    //   limit: {green ${limit}}
-    // `);
-
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- forumThreadsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- forumCommentsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- forumRepliesObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumRepliesObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+//     });
 
 
 
 
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   console.log
+//     // --------------------------------------------------
 
-    return returnObj;
+//     // console.log(`
+//     //   ----------------------------------------\n
+//     //   app/@database/forum-threads/model.js - findForumForFollowContents
+//     // `);
+
+//     // console.log(chalk`
+//     //   loginUsers_id: {green ${loginUsers_id}}
+//     //   userCommunities_id: {green ${userCommunities_id}}
+//     //   page: {green ${page}}
+//     //   limit: {green ${limit}}
+//     // `);
+
+//     // console.log(`
+//     //   ----- returnObj -----\n
+//     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+
+//     // console.log(`
+//     //   ----- forumThreadsObj -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+
+//     // console.log(`
+//     //   ----- forumCommentsObj -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+
+//     // console.log(`
+//     //   ----- forumRepliesObj -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(forumRepliesObj)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
 
 
-  } catch (err) {
-
-    throw err;
-
-  }
 
 
-};
+//     // --------------------------------------------------
+//     //   Return
+//     // --------------------------------------------------
+
+//     return returnObj;
+
+
+//   } catch (err) {
+
+//     throw err;
+
+//   }
+
+
+// };
 
 
 
@@ -2307,6 +2318,7 @@ const formatVer2 = ({
 
   const dataObj = {};
   const forumThreads_idsForCommentArr = [];
+
 
 
 
@@ -3378,13 +3390,14 @@ module.exports = {
   insertMany,
   deleteMany,
 
+  findForumCommon,
   findForThreadsList,
   findForForum,
   findForumByforumID,
-  findForumForFollowContents,
-  // findForForumBy_forumID,
+  // findForumForFollowContents,
   findForEdit,
   findForDeleteThread,
+
   transactionForUpsertThread,
   transactionForDeleteThread,
 

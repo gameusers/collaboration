@@ -346,6 +346,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {Array} matchConditionArr - 検索条件
+ * @param {Array} sortSkipLimitArr - 並べ替えとページャー
  * @param {number} threadPage - スレッドのページ
  * @param {number} threadLimit - スレッドのリミット
  * @return {Array} 取得データ
@@ -354,9 +355,16 @@ const findRecruitmentCommon = async ({
 
   req,
   localeObj,
+  loginUsers_id,
   matchConditionArr = [],
+  sortSkipLimitArr = [],
+  format = false,
   threadPage = 1,
   threadLimit = process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT,
+  commentPage = 1,
+  commentLimit = process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT,
+  replyPage = 1,
+  replyLimit = process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT,
 
 }) => {
 
@@ -376,9 +384,37 @@ const findRecruitmentCommon = async ({
     //   parseInt
     // --------------------------------------------------
 
+    // const intThreadPage = parseInt(threadPage, 10);
+    // const intThreadLimit = parseInt((threadLimit || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
+
     const intThreadPage = parseInt(threadPage, 10);
-    const intThreadLimit = parseInt((threadLimit || process.env.NEXT_PUBLIC_RECRUITMENT_THREAD_LIMIT), 10);
+    const intCommentPage = parseInt(commentPage, 10);
+    const intReplyPage = parseInt(replyPage, 10);
+
+    const intThreadLimit = parseInt(threadLimit, 10);
+    const intCommentLimit = parseInt(commentLimit, 10);
+    const intReplyLimit = parseInt(replyLimit, 10);
+
     const errorLimit = parseInt(process.env.WEB_PUSH_ERROR_LIMIT, 10);
+
+
+
+
+    // --------------------------------------------------
+    //   sortSkipLimitArr
+    // --------------------------------------------------
+
+    let sslArr = [
+
+      { $sort: { updatedDate: -1 } },
+      { $skip: (intThreadPage - 1) * intThreadLimit },
+      { $limit: intThreadLimit },
+
+    ];
+
+    if (sortSkipLimitArr.length > 0) {
+      sslArr = sortSkipLimitArr;
+    }
 
 
 
@@ -401,9 +437,10 @@ const findRecruitmentCommon = async ({
       //   $sort / $skip / $limit
       // --------------------------------------------------
 
-      { $sort: { updatedDate: -1 } },
-      { $skip: (intThreadPage - 1) * intThreadLimit },
-      { $limit: intThreadLimit },
+      ...sslArr,
+      // { $sort: { updatedDate: -1 } },
+      // { $skip: (intThreadPage - 1) * intThreadLimit },
+      // { $limit: intThreadLimit },
 
 
       // --------------------------------------------------
@@ -862,6 +899,82 @@ const findRecruitmentCommon = async ({
 
 
     // --------------------------------------------------
+    //   Format
+    // --------------------------------------------------
+
+    if (format) {
+    //   console.log(`
+    //   ----- docArr111 -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+      // --------------------------------------------------
+      //   Threads
+      // --------------------------------------------------
+
+      const formattedThreadsObj = formatRecruitmentThreadsArr({
+
+        req,
+        localeObj,
+        loginUsers_id,
+        arr: docArr,
+        threadPage: intThreadPage,
+        threadLimit: intThreadLimit,
+        // threadCount,
+  
+      });
+  
+      const recruitmentThreadsObj = lodashGet(formattedThreadsObj, ['recruitmentThreadsObj'], {});
+  
+  
+  
+  
+      // --------------------------------------------------
+      //   Comments & Replies
+      // --------------------------------------------------
+  
+      const formattedCommentsAndRepliesObj = await ModelRecruitmentComments.findCommentsAndReplies({
+  
+        req,
+        localeObj,
+        loginUsers_id,
+        recruitmentThreads_idsArr: lodashGet(formattedThreadsObj, ['recruitmentThreads_idsArr'], []),
+        recruitmentThreadsObj,
+        commentPage: intCommentPage,
+        commentLimit: intCommentLimit,
+        replyPage: intReplyPage,
+        replyLimit: intReplyLimit,
+  
+      });
+  
+      const recruitmentCommentsObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentCommentsObj'], {});
+      const recruitmentRepliesObj = lodashGet(formattedCommentsAndRepliesObj, ['recruitmentRepliesObj'], {});
+
+
+
+
+      // --------------------------------------------------
+      //   Return
+      // --------------------------------------------------
+
+      return {
+
+        recruitmentThreadsObj,
+        recruitmentCommentsObj,
+        recruitmentRepliesObj,
+  
+      };
+
+
+    }
+
+    
+
+
+
+
+    // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
 
@@ -1079,7 +1192,7 @@ const findRecruitments = async ({
       arr: docArr,
       threadPage,
       threadLimit: intThreadLimit,
-      threadCount,
+      // threadCount,
 
     });
 
@@ -4806,6 +4919,7 @@ module.exports = {
   insertMany,
   deleteMany,
 
+  findRecruitmentCommon,
   findRecruitments,
   findRecruitmentByRecruitmentID,
   findRecruitmentsForSearch,

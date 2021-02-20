@@ -33,8 +33,10 @@ import lodashGet from 'lodash/get';
 //   States
 // ---------------------------------------------
 
+import { ContainerStateLayout } from 'app/@states/layout.js';
 import { ContainerStateCommunity } from 'app/@states/community.js';
 import { ContainerStateForum } from 'app/@states/forum.js';
+import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 
 
 // ---------------------------------------------
@@ -76,6 +78,79 @@ const ContainerLayout = (props) => {
 
 
   // --------------------------------------------------
+  //   States
+  // --------------------------------------------------
+
+  const stateLayout = ContainerStateLayout.useContainer();
+  const stateCommunity = ContainerStateCommunity.useContainer();
+  const stateForum = ContainerStateForum.useContainer();
+  const stateRecruitment = ContainerStateRecruitment.useContainer();
+
+  const { handleScrollTo } = stateLayout;
+  const { setGameCommunityObj, setUserCommunityObj } = stateCommunity;
+  const { setForumThreadsObj, setForumCommentsObj, setForumRepliesObj } = stateForum;
+  const { setRecruitmentThreadsObj, setRecruitmentCommentsObj, setRecruitmentRepliesObj } = stateRecruitment;
+
+
+
+
+  // --------------------------------------------------
+  //   Hooks
+  // --------------------------------------------------
+
+  useEffect(() => {
+
+
+    // --------------------------------------------------
+    //   Router.push でページを移動した際の処理
+    //   getServerSideProps でデータを取得してからデータを更新する
+    // --------------------------------------------------
+
+    setGameCommunityObj(props.gameCommunityObj);
+    setUserCommunityObj(props.userCommunityObj);
+    setRecruitmentThreadsObj(props.recruitmentThreadsObj);
+    setRecruitmentCommentsObj(props.recruitmentCommentsObj);
+    setRecruitmentRepliesObj(props.recruitmentRepliesObj);
+    setForumThreadsObj(props.forumThreadsObj);
+    setForumCommentsObj(props.forumCommentsObj);
+    setForumRepliesObj(props.forumRepliesObj);
+
+
+    // ---------------------------------------------
+    //   Scroll To
+    // ---------------------------------------------
+
+    // handleScrollTo({
+
+    //   to: 'recruitmentThreads',
+    //   duration: 0,
+    //   delay: 0,
+    //   smooth: 'easeInOutQuart',
+    //   offset: -50,
+
+    // });
+
+    // if (props.pageType === 'page') {
+
+    //   handleScrollTo({
+
+    //     to: 'recruitmentThreads',
+    //     duration: 0,
+    //     delay: 0,
+    //     smooth: 'easeInOutQuart',
+    //     offset: -50,
+
+    //   });
+
+    // }
+
+
+  }, [props.ISO8601]);
+
+
+
+
+  // --------------------------------------------------
   //   Component - Sidebar
   // --------------------------------------------------
 
@@ -114,12 +189,7 @@ const ContainerLayout = (props) => {
       />
 
       <FollowContents
-        // urlID={props.urlID}
-        // gameCommunities_id={props.gameCommunities_id}
-        // urlID={'aaa'}
-        // gameCommunities_id={'bbb'}
-        gameCommunitiesObj={props.gameCommunitiesObj}
-        enableAnonymity={false}
+        pageObj={props.pageObj}
       />
 
       {/* <FollowMembers
@@ -132,7 +202,7 @@ const ContainerLayout = (props) => {
 
     </React.Fragment>
   ;
-
+  
 
   // --------------------------------------------------
   //   Return
@@ -159,32 +229,6 @@ const ContainerLayout = (props) => {
  * コンポーネント / このページ独自のステートを設定する
  * @param {Object} props - Props
  */
-// const Component = (props) => {
-
-
-//   // --------------------------------------------------
-//   //   Error
-//   //   参考：https://nextjs.org/docs/advanced-features/custom-error-page#reusing-the-built-in-error-page
-//   // --------------------------------------------------
-
-//   if (props.statusCode !== 200) {
-//     return <Error statusCode={props.statusCode} />;
-//   }
-
-
-//   // --------------------------------------------------
-//   //   Return
-//   // --------------------------------------------------
-
-//   return <ContainerLayout {...props} />;
-
-
-// };
-
-/**
- * コンポーネント / このページ独自のステートを設定する
- * @param {Object} props - Props
- */
 const Component = (props) => {
 
 
@@ -204,13 +248,16 @@ const Component = (props) => {
 
   const initialStateObj = {
 
-    // gameCommunityObj: props.gameCommunityObj,
-    // forumThreadsForListObj: props.forumThreadsForListObj,
-    gameCommunityObj: {},
-    // forumThreadsForListObj: {},
-    forumThreadsObj: props.forumThreadsGcObj,
-    forumCommentsObj: props.forumCommentsGcObj,
-    forumRepliesObj: props.forumRepliesGcObj,
+    gameCommunityObj: props.gameCommunityObj,
+    userCommunityObj: props.userCommunityObj,
+
+    forumThreadsObj: props.forumThreadsObj,
+    forumCommentsObj: props.forumCommentsObj,
+    forumRepliesObj: props.forumRepliesObj,
+
+    recruitmentThreadsObj: props.recruitmentThreadsObj,
+    recruitmentCommentsObj: props.recruitmentCommentsObj,
+    recruitmentRepliesObj: props.recruitmentRepliesObj,
 
   };
   
@@ -224,7 +271,11 @@ const Component = (props) => {
 
       <ContainerStateForum.Provider initialState={initialStateObj}>
 
-        <ContainerLayout {...props} />
+        <ContainerStateRecruitment.Provider initialState={initialStateObj}>
+
+          <ContainerLayout {...props} />
+
+        </ContainerStateRecruitment.Provider>
 
       </ContainerStateForum.Provider>
 
@@ -328,13 +379,31 @@ export async function getServerSideProps({ req, res, query }) {
   const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
   // const users_id = lodashGet(dataObj, ['users_id'], '');
   
-  const forumThreadsGcObj = lodashGet(dataObj, ['forumGcObj', 'forumThreadsObj'], {});
-  const forumCommentsGcObj = lodashGet(dataObj, ['forumGcObj', 'forumCommentsObj'], {});
-  const forumRepliesGcObj = lodashGet(dataObj, ['forumGcObj', 'forumRepliesObj'], {});
-  const gameCommunitiesObj = lodashGet(dataObj, ['gameCommunitiesObj'], {});
+  const pageObj = lodashGet(dataObj, ['pageObj'], {});
+
+  const forumThreadsObj = lodashGet(dataObj, ['forumObj', 'forumThreadsObj'], {});
+  const forumCommentsObj = lodashGet(dataObj, ['forumObj', 'forumCommentsObj'], {});
+  const forumRepliesObj = lodashGet(dataObj, ['forumObj', 'forumRepliesObj'], {});
+
+  const recruitmentThreadsObj = lodashGet(dataObj, ['recruitmentObj', 'recruitmentThreadsObj'], {});
+  const recruitmentCommentsObj = lodashGet(dataObj, ['recruitmentObj', 'recruitmentCommentsObj'], {});
+  const recruitmentRepliesObj = lodashGet(dataObj, ['recruitmentObj', 'recruitmentRepliesObj'], {});
+
+  const gameCommunityObj = lodashGet(dataObj, ['gameCommunityObj'], {});
+  const userCommunityObj = lodashGet(dataObj, ['userCommunityObj'], {});
   
+  
+  // console.log(`
+  //   ----- 2 -----\n
+  //   ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
 
-
+  // console.log(`
+  //   ----- forumThreadsObj -----\n
+  //   ${util.inspect(forumThreadsObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
 
   // --------------------------------------------------
   //   Title
@@ -477,10 +546,15 @@ export async function getServerSideProps({ req, res, query }) {
       // users_id,
       
       followContentsPeriod,
-      forumThreadsGcObj,
-      forumCommentsGcObj,
-      forumRepliesGcObj,
-      gameCommunitiesObj,
+      pageObj,
+      forumThreadsObj,
+      forumCommentsObj,
+      forumRepliesObj,
+      recruitmentThreadsObj,
+      recruitmentCommentsObj,
+      recruitmentRepliesObj,
+      gameCommunityObj,
+      userCommunityObj,
 
     }
 

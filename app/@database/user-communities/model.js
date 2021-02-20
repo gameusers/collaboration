@@ -2376,7 +2376,7 @@ const findUserCommunitiesListCommon = async ({
       //   Set Data
       // --------------------------------------------------
 
-      lodashSet(returnObj, ['dataObj', _id], obj);
+      lodashSet(returnObj, [_id], obj);
 
 
     }

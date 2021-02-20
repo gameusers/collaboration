@@ -40,8 +40,6 @@ const useForum = (initialStateObj) => {
   //   Hooks
   // --------------------------------------------------
   
-  // const [forumID, setForumID] = useState(lodashGet(initialStateObj, ['forumID'], ''));
-  
   const [forumThreadsForListObj, setForumThreadsForListObj] = useState(lodashGet(initialStateObj, ['forumThreadsForListObj'], {}));
   const [forumThreadsObj, setForumThreadsObj] = useState(lodashGet(initialStateObj, ['forumThreadsObj'], {}));
   const [forumCommentsObj, setForumCommentsObj] = useState(lodashGet(initialStateObj, ['forumCommentsObj'], {}));
@@ -58,9 +56,6 @@ const useForum = (initialStateObj) => {
   // --------------------------------------------------
   
   return {
-    
-    // forumID,
-    // setForumID,
     
     forumThreadsForListObj,
     setForumThreadsForListObj,

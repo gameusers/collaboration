@@ -58,7 +58,9 @@ import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 //   States
 // ---------------------------------------------
 
+import { ContainerStateCommunity } from 'app/@states/community.js';
 import { ContainerStateForum } from 'app/@states/forum.js';
+import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 
 
 // ---------------------------------------------
@@ -73,8 +75,10 @@ import { setCookie } from 'app/@modules/cookie.js';
 // ---------------------------------------------
 
 import Panel from 'app/common/layout/v2/panel.js';
-import Thread from 'app/common/forum/v2/thread.js';
+import ForumThread from 'app/common/forum/v2/thread.js';
+import RecruitmentThread from 'app/gc/rec/v2/thread.js';
 import CardGc from 'app/common/community-list/v2/card-gc.js';
+import CardUc from 'app/common/community-list/v2/card-uc.js';
 
 
 
@@ -121,12 +125,14 @@ const Component = (props) => {
 
   const {
 
-    userCommunityID,
-    userCommunities_id,
+    // userCommunityID,
+    // userCommunities_id,
 
-    gameCommunitiesObj,
+    // gameCommunitiesObj,
+    // userCommunitiesObj,
 
-    deletable,
+    // deletable,
+    pageObj,
 
   } = props;
 
@@ -157,13 +163,28 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
 
+  const stateCommunity = ContainerStateCommunity.useContainer();
   const stateForum = ContainerStateForum.useContainer();
+  const stateRecruitment = ContainerStateRecruitment.useContainer();
+
+  const {
+
+    gameCommunityObj,
+    userCommunityObj,
+
+  } = stateCommunity;
 
   const {
 
     forumThreadsObj,
 
   } = stateForum;
+
+  const {
+
+    recruitmentThreadsObj,
+
+  } = stateRecruitment;
 
 
 
@@ -263,11 +284,12 @@ const Component = (props) => {
   //   Thread
   // --------------------------------------------------
 
-  const page = lodashGet(forumThreadsObj, ['page'], 1);
-  const limit = lodashGet(forumThreadsObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT, 10));
-  const count = lodashGet(forumThreadsObj, ['count'], 0);
-  const arr = lodashGet(forumThreadsObj, [`page${page}Obj`, 'arr'], []);
-  const dataObj = lodashGet(forumThreadsObj, ['dataObj'], {});
+  const page = lodashGet(pageObj, ['page'], 1);
+  const limit = lodashGet(pageObj, ['limit'], parseInt(process.env.NEXT_PUBLIC_FORUM_THREAD_LIMIT, 10));
+  const count = lodashGet(pageObj, ['count'], 0);
+  const arr = lodashGet(pageObj, ['arr'], []);
+  const forumDataObj = lodashGet(forumThreadsObj, ['dataObj'], {});
+  const recruitmentDataObj = lodashGet(recruitmentThreadsObj, ['dataObj'], {});
 
 
 
@@ -278,7 +300,7 @@ const Component = (props) => {
 
   // console.log(`
   //   ----------------------------------------\n
-  //   /app/common/forum/v2/components/forum.js
+  //   app/common/follow/v2/contents.js
   // `);
 
   // console.log(chalk`
@@ -298,6 +320,12 @@ const Component = (props) => {
   //   --------------------\n
   // `);
 
+  // console.log(`
+  //   ----- userCommunityObj -----\n
+  //   ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+
 
 
 
@@ -307,57 +335,131 @@ const Component = (props) => {
 
   const componentsArr = [];
 
-  for (const [index, forumThreads_id] of arr.entries()) {
+  for (const [index, valueObj] of arr.entries()) {
 
-    const gameCommunities_id = lodashGet(dataObj, [forumThreads_id, 'gameCommunities_id'], {});
-    const gameCommunitiesDataObj = lodashGet(gameCommunitiesObj, [gameCommunities_id], {});
-    const urlID = lodashGet(gameCommunitiesDataObj, ['urlID'], '');
+
+    let communitiesDataObj = {};
+    let urlID = '';
+    let userCommunityID = '';
+    let gameCommunities_id = '';
+    let userCommunities_id = '';
+
+    const _id = valueObj._id;
+    const type = valueObj.type;
+
+    const dataObj = type === 'forum' ? forumDataObj : recruitmentDataObj;
+    
+
+    gameCommunities_id = lodashGet(dataObj, [_id, 'gameCommunities_id'], '');
+    userCommunities_id = lodashGet(dataObj, [_id, 'userCommunities_id'], '');
+
+    if (gameCommunities_id) {
+
+      communitiesDataObj = lodashGet(gameCommunityObj, [gameCommunities_id], {});
+      urlID = lodashGet(communitiesDataObj, ['urlID'], '');
+
+    } else {
+
+      communitiesDataObj = lodashGet(userCommunityObj, [userCommunities_id], {});
+      userCommunityID = lodashGet(communitiesDataObj, ['userCommunityID'], '');
+
+    }
+
 
     // console.log(`
-    //   ----- gameCommunitiesDataObj -----\n
-    //   ${util.inspect(gameCommunitiesDataObj, { colors: true, depth: null })}\n
+    //   ----- communitiesDataObj -----\n
+    //   ${util.inspect(communitiesDataObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
     // console.log(chalk`
     // gameCommunities_id: {green ${gameCommunities_id}}
     // urlID: {green ${urlID}}
+    // userCommunities_id: {green ${userCommunities_id}}
+    // userCommunityID: {green ${userCommunityID}}
     // `);
     
 
-    componentsArr.push(
-      <React.Fragment
-        key={index}
-      >
+    if (valueObj.type === 'forum') {
 
-        <div
-          css={css`
-            margin: 28px 0 14px 0;
-
-            @media screen and (max-width: 947px) {
-              ${index === 0 ? 'margin: 0 0 14px 0;' : 'margin: 28px 0 14px 0;'}
-            }
-          `}
+      componentsArr.push(
+        <React.Fragment
+          key={index}
         >
-          <CardGc
-            obj={gameCommunitiesDataObj}
+  
+          <div
+            css={css`
+              margin: 28px 0 14px 0;
+  
+              @media screen and (max-width: 947px) {
+                ${index === 0 ? 'margin: 0 0 14px 0;' : 'margin: 28px 0 14px 0;'}
+              }
+            `}
+          >
+  
+            {gameCommunities_id
+            ?
+              <CardGc
+                obj={communitiesDataObj}
+              />
+            :
+              <CardUc
+                obj={communitiesDataObj}
+              />
+            }
+  
+          </div>
+          
+  
+          <ForumThread
+            key={_id}
+            urlID={urlID}
+            gameCommunities_id={gameCommunities_id}
+            userCommunityID={userCommunityID}
+            userCommunities_id={userCommunities_id}
+            forumThreads_id={_id}
+            enableAnonymity={false}
+            deletable={false}
           />
-        </div>
-        
+  
+        </React.Fragment>
+      );
 
-        <Thread
-          key={forumThreads_id}
-          urlID={urlID}
-          gameCommunities_id={gameCommunities_id}
-          // userCommunityID={userCommunityID}
-          // userCommunities_id={userCommunities_id}
-          forumThreads_id={forumThreads_id}
-          enableAnonymity={false}
-          deletable={deletable}
-        />
+    } else {
 
-      </React.Fragment>
-    );
+      componentsArr.push(
+        <React.Fragment
+          key={index}
+        >
+  
+          <div
+            css={css`
+              margin: 28px 0 14px 0;
+  
+              @media screen and (max-width: 947px) {
+                ${index === 0 ? 'margin: 0 0 14px 0;' : 'margin: 28px 0 14px 0;'}
+              }
+            `}
+          >
+  
+            <CardGc
+              obj={communitiesDataObj}
+            />
+  
+          </div>
+          
+  
+          <RecruitmentThread
+            key={_id}
+            urlID={urlID}
+            gameCommunities_id={gameCommunities_id}
+            recruitmentThreads_id={_id}
+          />
+  
+        </React.Fragment>
+      );
+
+    }
 
   }
 

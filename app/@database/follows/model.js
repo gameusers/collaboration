@@ -1373,33 +1373,6 @@ const findFollowContents = async ({
 
 
     // --------------------------------------------------
-    //   フォローしているゲームの gameCommunities_id を取得する
-    // --------------------------------------------------
-    
-    // const docFollowsArr = await find({
-
-    //   conditionObj: {
-
-    //     followedArr: { $in: [users_id] },
-    //     gameCommunities_id: { $exists: true },
-    //     userCommunities_id: '',
-    //     users_id: '',
-
-    //   }
-
-    // });
-
-
-    // let gameCommunities_idsArr = [];
-
-    // for (let valueObj of docFollowsArr.values()) {
-    //   gameCommunities_idsArr.push(valueObj.gameCommunities_id);
-    // }
-
-
-
-
-    // --------------------------------------------------
     //   _id を取得する
     // --------------------------------------------------
     
@@ -1542,8 +1515,209 @@ const findFollowContents = async ({
 
     }
 
-    
 
+
+
+    // --------------------------------------------------
+    //   フォーラムと募集を結合して、更新日時で並び替えてから _id を取得する
+    // --------------------------------------------------
+
+    // ---------------------------------------------
+    //   検索条件
+    // ---------------------------------------------
+
+    const conditionObj = {
+
+      $or: [
+        { gameCommunities_id: { $in: gameCommunities_idsArr } },
+        { userCommunities_id: { $in: userCommunities_idsArr } },
+        // { users_id: { $in: users_idsArr } },
+      ],
+
+      // updatedDate: { $gte: moment().utc().add(-(intPeriod), 'minutes').toDate() }
+      updatedDate: { $gte: new Date("2021-02-05T12:00:00.000Z") }
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   スレッドと募集の総数を取得
+    // --------------------------------------------------
+
+    const threadCountObj = await SchemaForumThreads.aggregate([
+
+
+      // --------------------------------------------------
+      //   $unionWith
+      // --------------------------------------------------
+
+      { $unionWith: "recruitment-threads" },
+
+
+      // --------------------------------------------------
+      //   Match Condition Array
+      // --------------------------------------------------
+
+      {
+        $match: conditionObj
+      },
+
+
+      // --------------------------------------------------
+      //   $group
+      // --------------------------------------------------
+
+      { $group: { _id: null, n: { $sum: 1 } } }
+
+
+    ]).exec();
+
+
+    // const threadCount = lodashGet(threadCountObj, [0, 'n'], 0);
+
+
+
+
+    // --------------------------------------------------
+    //   スレッドと募集を取得
+    // --------------------------------------------------
+
+    const docContentsIdsArr = await SchemaForumThreads.aggregate([
+
+
+      // --------------------------------------------------
+      //   $unionWith
+      // --------------------------------------------------
+
+      { $unionWith: "recruitment-threads" },
+
+
+      // --------------------------------------------------
+      //   Match Condition Array
+      // --------------------------------------------------
+
+      {
+        $match: conditionObj
+      },
+
+
+      // --------------------------------------------------
+      //   $sort / $skip / $limit
+      // --------------------------------------------------
+
+      { $sort: { updatedDate: -1 } },
+      { $skip: (intPage - 1) * intLimit },
+      { $limit: intLimit },
+
+
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+
+      {
+        $project: {
+          _id: 1,
+          gameCommunities_id: 1,
+          userCommunities_id: 1,
+          publicInformationsArr: 1,
+        }
+      },
+
+
+    ]).exec();
+
+
+
+
+    // --------------------------------------------------
+    //   _id を分配する
+    // --------------------------------------------------
+
+    const arr = [];
+
+    const forumThreads_idsArr = [];
+    const recruitmentThreads_idsArr = [];
+
+    gameCommunities_idsArr = [];
+    userCommunities_idsArr = [];
+
+    for (let valueObj of docContentsIdsArr.values()) {
+
+
+      // --------------------------------------------------
+      //   forumThreads_id & recruitmentThreads_id
+      // --------------------------------------------------
+
+      if (valueObj.publicInformationsArr) {
+
+        arr.push({
+          _id: valueObj._id,
+          type: 'recruitment',
+        });
+
+        recruitmentThreads_idsArr.push(valueObj._id);
+
+      } else {
+
+        arr.push({
+          _id: valueObj._id,
+          type: 'forum',
+        });
+
+        forumThreads_idsArr.push(valueObj._id);
+
+      }
+
+
+      // --------------------------------------------------
+      //   gameCommunities_id & userCommunities_id
+      // --------------------------------------------------
+
+      if (valueObj.gameCommunities_id) {
+
+        gameCommunities_idsArr.push(valueObj.gameCommunities_id);
+
+      } else if (valueObj.userCommunities_id) {
+
+        userCommunities_idsArr.push(valueObj.userCommunities_id);
+
+      }
+
+      
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   returnObj
+    // --------------------------------------------------
+
+    const returnObj = {
+
+      pageObj: {
+        page: intPage,
+        limit: intLimit,
+        count: lodashGet(threadCountObj, [0, 'n'], 0),
+        arr,
+      },
+      forumObj: {},
+      recruitmentObj: {},
+      gameCommunityObj: {},
+      userCommunityObj: {},
+
+    };
+
+
+
+
+    // console.log(`
+    //   ----- docContentsIdsArr -----\n
+    //   ${util.inspect(docContentsIdsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
     // console.log(`
     //   ----- gameCommunities_idsArr -----\n
@@ -1563,21 +1737,30 @@ const findFollowContents = async ({
     //   --------------------\n
     // `);
 
+    // console.log(`
+    //   ----- forumThreads_idsArr -----\n
+    //   ${util.inspect(forumThreads_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
+    // console.log(`
+    //   ----- recruitmentThreads_idsArr -----\n
+    //   ${util.inspect(recruitmentThreads_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
+    // console.log(`
+    //   ----- gameCommunities_idsArr -----\n
+    //   ${util.inspect(gameCommunities_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    // --------------------------------------------------
-    //   returnObj
-    // --------------------------------------------------
-
-    const returnObj = {
-
-      forumGcObj: {},
-      forumUcObj: {},
-      gameCommunitiesObj: {},
-      userCommunitiesObj: {},
-
-    };
+    // console.log(`
+    //   ----- userCommunities_idsArr -----\n
+    //   ${util.inspect(userCommunities_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
 
 
 
@@ -1586,169 +1769,66 @@ const findFollowContents = async ({
     //   コンテンツ取得
     // --------------------------------------------------
 
-    let forumGcObj = {};
-    let forumUcObj = {};
-    let recruitmentObj = {};
+    // ---------------------------------------------
+    //   フォーラム
+    // ---------------------------------------------
+
+    returnObj.forumObj = await ModelForumThreads.findForumCommon({
+
+      req,
+      localeObj,
+      loginUsers_id,
+      matchConditionArr: [
+        {
+          $match: {
+            _id: { $in: forumThreads_idsArr }
+          },
+        }
+      ],
+      sortSkipLimitArr: [],
+
+    });
 
 
     // ---------------------------------------------
-    //   ゲームコミュニティ
+    //   募集
     // ---------------------------------------------
 
-    if (gameCommunities_idsArr.length > 0) {
+    returnObj.recruitmentObj = await ModelRecruitmentThreads.findRecruitmentCommon({
 
+      req,
+      localeObj,
+      loginUsers_id,
+      matchConditionArr: [
+        {
+          $match: {
+            _id: { $in: recruitmentThreads_idsArr }
+          },
+        }
+      ],
+      sortSkipLimitArr: [],
+      format: true,
 
-      // ---------------------------------------------
-      //   - フォーラム
-      // ---------------------------------------------
+    });
 
-      forumGcObj = await ModelForumThreads.findForumForFollowContents({
-
-        req,
-        localeObj,
-        loginUsers_id,
-        gameCommunities_idsArr,
-        period,
-        threadPage: page,
-        threadLimit: limit,
-  
-      });
-
-
-      // ---------------------------------------------
-      //   - 募集
-      // ---------------------------------------------
-
-      recruitmentObj = await ModelRecruitmentThreads.findRecruitments({
-
-        req,
-        localeObj,
-        loginUsers_id,
-        gameCommunities_idsArr,
-        period,
-        threadPage: page,
-        threadLimit: limit,
-  
-      });
-
-
-      // ---------------------------------------------
-      //   - コミュニティ一覧取得用
-      // ---------------------------------------------
-
-      gameCommunities_idsArr = [];
-
-      const forumDataGcObj = lodashGet(returnObj, ['forumGcObj', 'forumThreadsObj', 'dataObj'], {});
-
-      for (let valueObj of Object.values(forumDataGcObj)) {
-        gameCommunities_idsArr.push(valueObj.gameCommunities_id);
-      }
-
-
-    }
-
-
-    // ---------------------------------------------
-    //   ユーザーコミュニティ
-    // ---------------------------------------------
-
-    if (userCommunities_idsArr.length > 0) {
-
-
-      // ---------------------------------------------
-      //   - フォーラム
-      // ---------------------------------------------
-
-      forumUcObj = await ModelForumThreads.findForumForFollowContents({
-
-        req,
-        localeObj,
-        loginUsers_id,
-        userCommunities_idsArr,
-        period,
-        threadPage: page,
-        threadLimit: limit,
-  
-      });
-
-
-      // ---------------------------------------------
-      //   - コミュニティ一覧取得用
-      // ---------------------------------------------
-
-      userCommunities_idsArr = [];
-
-      const forumDataUcObj = lodashGet(returnObj, ['forumUcObj', 'forumThreadsObj', 'dataObj'], {});
-
-      for (let valueObj of Object.values(forumDataUcObj)) {
-        userCommunities_idsArr.push(valueObj.userCommunities_id);
-      }
-
-      // console.log(`
-      //   ----- forumDataUcObj -----\n
-      //   ${util.inspect(forumDataUcObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-
-    }
-
-
-
-
-
-    // --------------------------------------------------
-    //   並び替え＆データの統合
-    // --------------------------------------------------
-
-    /**
-     * 日付で並び替える
-     * @param {Array} arr - 配列
-     * @return {Object} 並び替えたデータ
-     */
-    // const sortArray = (arr) => {
-
-    //   const sortedArr = arr.sort((a, b) => {
-
-    //     const date1 = new Date(a.createdDate);
-    //     const date2 = new Date(b.createdDate);
-
-    //     return (date1 < date2) ? 1 : -1;
-
-    //   });
-
-    //   return sortedArr;
-
-    // };
-
-
-    // const forumDataGcObj = lodashGet(forumGcObj, ['forumThreadsObj', 'dataObj'], {});
-    // const forumDataUcObj = lodashGet(forumUcObj, ['forumThreadsObj', 'dataObj'], {});
-    
-    // const forumObj = Object.assign(forumDataGcObj, forumDataUcObj);
 
     // console.log(`
-    //   ----- forumDataGcObj -----\n
-    //   ${util.inspect(forumDataGcObj, { colors: true, depth: null })}\n
+    //   ----- returnObj.forumObj.forumThreadsObj -----\n
+    //   ${util.inspect(returnObj.forumObj.forumThreadsObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
     // console.log(`
-    //   ----- forumDataUcObj -----\n
-    //   ${util.inspect(forumDataUcObj, { colors: true, depth: null })}\n
+    //   ----- returnObj.recruitmentObj -----\n
+    //   ${util.inspect(returnObj.recruitmentObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
     // console.log(`
-    //   ----- forumObj -----\n
-    //   ${util.inspect(forumObj, { colors: true, depth: null })}\n
+    //   ----- returnObj.recruitmentObj.recruitmentThreadsObj -----\n
+    //   ${util.inspect(returnObj.recruitmentObj.recruitmentThreadsObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-
-
-
-
-    
 
 
 
@@ -1775,7 +1855,7 @@ const findFollowContents = async ({
       //   - データ取得
       // ---------------------------------------------
 
-      returnObj.gameCommunitiesObj = await ModelGameCommunities.findGamesListCommon({
+      returnObj.gameCommunityObj = await ModelGameCommunities.findGamesListCommon({
 
         localeObj,
         page: intPage,
@@ -1813,7 +1893,7 @@ const findFollowContents = async ({
       //   - データ取得
       // ---------------------------------------------
 
-      returnObj.userCommunitiesObj = await ModelUserCommunities.findUserCommunitiesListCommon({
+      returnObj.userCommunityObj = await ModelUserCommunities.findUserCommunitiesListCommon({
 
         localeObj,
         page: intPage,
@@ -1826,23 +1906,7 @@ const findFollowContents = async ({
     }
 
 
-    // console.log(`
-    //   ----- forumDataGcObj -----\n
-    //   ${util.inspect(forumDataGcObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
 
-    // console.log(`
-    //   ----- returnObj.forumGcObj -----\n
-    //   ${util.inspect(returnObj.forumGcObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- returnObj.forumGcObj.forumThreadsObj -----\n
-    //   ${util.inspect(returnObj.forumGcObj.forumThreadsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
 
     // console.log(`
     //   ----- returnObj.forumUcObj.forumThreadsObj -----\n
@@ -1931,588 +1995,226 @@ const findFollowContents = async ({
  * @param {number} limit - リミット
  * @return {Object} 取得データ
  */
-const findFollowForumGc = async ({
+// const findFollowContentsAll = async ({
 
-  localeObj,
-  loginUsers_id,
-  page = 1,
-  limit = process.env.NEXT_PUBLIC_FOLLOW_LIST_LIMIT,
+//   localeObj,
+//   loginUsers_id,
+//   period,
+//   gameCommunities_idsArr,
+//   userCommunities_idsArr,
+//   users_idsArr,
+//   page = 1,
+//   limit = process.env.NEXT_PUBLIC_FOLLOW_LIST_LIMIT,
 
-}) => {
-
-
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-
-  try {
+// }) => {
 
 
-    // --------------------------------------------------
-    //   Language & Country
-    // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Database
+//   // --------------------------------------------------
+
+//   try {
+
+
+//     // --------------------------------------------------
+//     //   Language & Country
+//     // --------------------------------------------------
     
-    const docFollowsArr = await find({
+//     // const docFollowsArr = await find({
 
-      conditionObj: {
+//     //   conditionObj: {
 
-      }
+//     //   }
 
-    });
+//     // });
 
 
+//     const intPage = 1;
+//     const intLimit = 10;
 
 
-    // --------------------------------------------------
-    //   Aggregation
-    // --------------------------------------------------
 
-    const resultArr = await SchemaForumThreads.aggregate([
+//     // --------------------------------------------------
+//     //   Aggregation
+//     // --------------------------------------------------
 
+//     const docArr = await SchemaForumThreads.aggregate([
 
-      // --------------------------------------------------
-      //   Match Condition Array
-      // --------------------------------------------------
 
-      ...matchConditionArr,
+//       { $unionWith: "recruitment-threads" },
 
 
-      // --------------------------------------------------
-      //   $sort / $skip / $limit
-      // --------------------------------------------------
+//       // --------------------------------------------------
+//       //   Match Condition Array
+//       // --------------------------------------------------
 
-      { $sort: { updatedDate: -1 } },
-      { $skip: (threadPage - 1) * intThreadLimit },
-      { $limit: intThreadLimit },
+//       {
+//         $match: {
 
+          
 
-      // --------------------------------------------------
-      //   images-and-videos
-      // --------------------------------------------------
+//           $or: [
+//             { gameCommunities_id: { $in: gameCommunities_idsArr } },
+//             { userCommunities_id: { $in: userCommunities_idsArr } },
+//             // { users_id: { $in: users_idsArr } },
+//           ],
 
-      {
-        $lookup:
-          {
-            from: 'images-and-videos',
-            let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$_id', '$$letImagesAndVideos_id']
-                  },
-                }
-              },
-              {
-                $project: {
-                  createdDate: 0,
-                  updatedDate: 0,
-                  users_id: 0,
-                  __v: 0,
-                }
-              }
-            ],
-            as: 'imagesAndVideosObj'
-          }
-      },
+//           // updatedDate: { $gte: dateTimeLimit }
+//           updatedDate: { $gte: new Date("2021-02-05T12:00:00.000Z") }
+          
+//         }
+//       },
+//       // ...matchConditionArr,
 
-      {
-        $unwind: {
-          path: '$imagesAndVideosObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
 
+//       // --------------------------------------------------
+//       //   $sort / $skip / $limit
+//       // --------------------------------------------------
 
-      // --------------------------------------------------
-      //   $project
-      // --------------------------------------------------
+//       // { $sort: { updatedDate: -1 } },
+//       // { $skip: (1 - 1) * 3 },
+//       // { $limit: 3 },
 
-      {
-        $project: {
-          imagesAndVideos_id: 0,
-          acceptLanguage: 0,
-          __v: 0,
-        }
-      },
+//       { $sort: { updatedDate: -1 } },
+//       { $skip: (intPage - 1) * intLimit },
+//       { $limit: intLimit },
 
 
-    ]).exec();
+//       // --------------------------------------------------
+//       //   images-and-videos
+//       // --------------------------------------------------
 
+//       // {
+//       //   $lookup:
+//       //     {
+//       //       from: 'images-and-videos',
+//       //       let: { letImagesAndVideos_id: '$imagesAndVideos_id' },
+//       //       pipeline: [
+//       //         {
+//       //           $match: {
+//       //             $expr: {
+//       //               $eq: ['$_id', '$$letImagesAndVideos_id']
+//       //             },
+//       //           }
+//       //         },
+//       //         {
+//       //           $project: {
+//       //             createdDate: 0,
+//       //             updatedDate: 0,
+//       //             users_id: 0,
+//       //             __v: 0,
+//       //           }
+//       //         }
+//       //       ],
+//       //       as: 'imagesAndVideosObj'
+//       //     }
+//       // },
 
+//       // {
+//       //   $unwind: {
+//       //     path: '$imagesAndVideosObj',
+//       //     preserveNullAndEmptyArrays: true,
+//       //   }
+//       // },
 
 
-    // --------------------------------------------------
-    //   Language & Country
-    // --------------------------------------------------
+//       // --------------------------------------------------
+//       //   $project
+//       // --------------------------------------------------
 
-    // const language = lodashGet(localeObj, ['language'], '');
-    // const country = lodashGet(localeObj, ['country'], '');
+//       {
+//         $project: {
+//           _id: 1,
+//           publicInformationsArr: 1,
 
+//           // contentsType: {
+//           //   $ifNull: ['$A', '$B']
+//           //   // $cond: { if: { $exists: ["$webPushes_id", true ] }, then: "rec", else: "forum" }
+//           //   // $cond: { if: { $gte: [ "$amount", 10 ] }, then: 1, else: 0 } }
+//           // },
 
-    // // --------------------------------------------------
-    // //   parseInt
-    // // --------------------------------------------------
+//           // __v: 0,
+//         }
+//       },
 
-    // let intPage = parseInt(page, 10);
-    // let intLimit = parseInt(limit, 10);
+//       // {
+//       //   $project: {
+//       //     imagesAndVideos_id: 0,
+//       //     acceptLanguage: 0,
 
-
-
+//       //     contentsType: {
+//       //       $ifNull: ['$A', '$B']
+//       //       // $cond: { if: { $exists: ["$webPushes_id", true ] }, then: "rec", else: "forum" }
+//       //       // $cond: { if: { $gte: [ "$amount", 10 ] }, then: 1, else: 0 } }
+//       //     },
 
-    // // ---------------------------------------------
-    // //   $match（ドキュメントの検索用） & count（総数の検索用）の条件作成
-    // // ---------------------------------------------
+//       //     __v: 0,
+//       //   }
+//       // },
 
-    // const conditionObj = {
 
-    //   followedArr: { $in: [loginUsers_id] },
-    //   gameCommunities_id: { $exists: true },
-    //   userCommunities_id: '',
-    //   users_id: '',
-
-    // };
-
-
-
-
-    // // --------------------------------------------------
-    // //   Aggregation
-    // // --------------------------------------------------
-
-    // const docArr = await SchemaFollows.aggregate([
-
-
-    //   // --------------------------------------------------
-    //   //   Match Condition Array
-    //   // --------------------------------------------------
-
-    //   {
-    //     $match: conditionObj
-    //   },
-
-
-    //   // --------------------------------------------------
-    //   //   game-communities
-    //   // --------------------------------------------------
-
-    //   {
-    //     $lookup:
-    //       {
-    //         from: 'game-communities',
-    //         let: { letGameCommunities_id: '$gameCommunities_id' },
-    //         pipeline: [
-    //           {
-    //             $match: {
-    //               $expr: {
-    //                 $eq: ['$_id', '$$letGameCommunities_id']
-    //               },
-    //             }
-    //           },
-    //           {
-    //             $project: {
-    //               _id: 0,
-    //               updatedDate: 1,
-    //             }
-    //           }
-    //         ],
-    //         as: 'gameCommunitiesObj'
-    //       }
-    //   },
-
-    //   {
-    //     $unwind: {
-    //       path: '$gameCommunitiesObj',
-    //       // preserveNullAndEmptyArrays: true,
-    //     }
-    //   },
-
-
-    //   // --------------------------------------------------
-    //   //   $sort / $skip / $limit
-    //   // --------------------------------------------------
-
-    //   { $sort: { 'gameCommunitiesObj.updatedDate': -1 } },
-    //   { $skip: (intPage - 1) * intLimit },
-    //   { $limit: intLimit },
-
-
-    //   // --------------------------------------------------
-    //   //   games
-    //   // --------------------------------------------------
-
-    //   {
-    //     $lookup:
-    //       {
-    //         from: 'games',
-    //         let: { letGameCommunities_id: '$gameCommunities_id' },
-    //         pipeline: [
-    //           {
-    //             $match: {
-    //               $expr: {
-    //                 $and: [
-    //                   { $eq: ['$language', language] },
-    //                   { $eq: ['$country', country] },
-    //                   { $eq: ['$gameCommunities_id', '$$letGameCommunities_id'] }
-    //                 ]
-    //               },
-    //             }
-    //           },
-
-
-    //           // --------------------------------------------------
-    //           //   games / images-and-videos / サムネイル画像
-    //           // --------------------------------------------------
-
-    //           {
-    //             $lookup:
-    //               {
-    //                 from: 'images-and-videos',
-    //                 let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-    //                 pipeline: [
-    //                   {
-    //                     $match: {
-    //                       $expr: {
-    //                         $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
-    //                       },
-    //                     }
-    //                   },
-    //                   {
-    //                     $project: {
-    //                       createdDate: 0,
-    //                       updatedDate: 0,
-    //                       users_id: 0,
-    //                       __v: 0,
-    //                     }
-    //                   }
-    //                 ],
-    //                 as: 'imagesAndVideosThumbnailObj'
-    //               }
-    //           },
+//     ]).exec();
 
-    //           {
-    //             $unwind: {
-    //               path: '$imagesAndVideosThumbnailObj',
-    //               preserveNullAndEmptyArrays: true,
-    //             }
-    //           },
 
-    //           {
-    //             $project: {
-    //               _id: 0,
-    //               urlID: 1,
-    //               name: 1,
-    //               subtitle: 1,
-    //               hardwareArr: 1,
-    //               imagesAndVideosThumbnailObj: 1,
-    //             }
-    //           }
-    //         ],
-    //         as: 'gamesObj'
-    //       }
-    //   },
 
-    //   {
-    //     $unwind: {
-    //       path: '$gamesObj',
-    //       preserveNullAndEmptyArrays: true,
-    //     }
-    //   },
 
+//     // --------------------------------------------------
+//     //   console.log
+//     // --------------------------------------------------
 
-    //   // --------------------------------------------------
-    //   //   $project
-    //   // --------------------------------------------------
-
-    //   {
-    //     $project: {
-    //       gameCommunities_id: 1,
-    //       followedCount: 1,
-    //       gameCommunitiesObj: 1,
-    //       gamesObj: 1,
-    //     }
-    //   },
-
-
-    // ]).exec();
-
-
-
-
-    // --------------------------------------------------
-    //   Count
-    // --------------------------------------------------
-
-    // const listCount = await count({
-
-    //   conditionObj
-
-    // });
-
-
-    // // ---------------------------------------------
-    // //   - Return Value
-    // // ---------------------------------------------
-
-    // const returnObj = {
-
-    //   page,
-    //   limit: intLimit,
-    //   count: listCount,
-    //   dataObj: {},
-
-    // };
-
-    // const ISO8601 = moment().utc().toISOString();
-    // const daysLimit = parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_UPDATED_DATE_DAYS_LOWER_LIMIT, 10);
-    // const followersLimit = parseInt(process.env.NEXT_PUBLIC_COMMUNITY_LIST_FOLLOWERS_LOWER_LIMIT, 10);
-
-
-    // // ---------------------------------------------
-    // //   - Loop
-    // // ---------------------------------------------
-
-    // for (let value1Obj of docArr.values()) {
-
-
-    //   // console.log(`
-    //   //   ----- value1Obj -----\n
-    //   //   ${util.inspect(JSON.parse(JSON.stringify(value1Obj)), { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
-
-
-    //   // --------------------------------------------------
-    //   //   Deep Copy
-    //   // --------------------------------------------------
-
-    //   const obj = {};
-
-
-    //   // --------------------------------------------------
-    //   //   Data
-    //   // --------------------------------------------------
-
-    //   const gameCommunities_id = lodashGet(value1Obj, ['gameCommunities_id'], '');
-    //   const updatedDate = lodashGet(value1Obj, ['gameCommunitiesObj', 'updatedDate'], '');
-    //   const imagesAndVideosThumbnailObj = lodashGet(value1Obj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
-    //   const followedCount = lodashGet(value1Obj, ['followedCount'], 0);
-
-    //   obj.urlID = lodashGet(value1Obj, ['gamesObj', 'urlID'], '');
-    //   obj.name = lodashGet(value1Obj, ['gamesObj', 'name'], '');
-    //   obj.subtitle = lodashGet(value1Obj, ['gamesObj', 'subtitle'], '');
-
-    //   if (followedCount >= followersLimit) {
-    //     obj.followedCount = followedCount;
-    //   }
-
-
-    //   // --------------------------------------------------
-    //   //   Datetime
-    //   // --------------------------------------------------
-
-    //   let datetimeCurrent = ISO8601;
-    //   const datetimeUpdated = moment(updatedDate);
-
-    //   if (datetimeUpdated.isAfter(datetimeCurrent)) {
-    //     datetimeCurrent = datetimeUpdated;
-    //   }
-
-    //   const days = moment().diff(datetimeUpdated, 'days');
-
-    //   if (days <= daysLimit) {
-    //     obj.datetimeFrom = datetimeUpdated.from(datetimeCurrent);
-    //   }
-
-    //   // console.log(chalk`
-    //   //   days: {green ${days}}
-    //   // `);
-
-
-
-
-    //   // --------------------------------------------------
-    //   //   Developers Publishers
-    //   // --------------------------------------------------
-
-    //   const hardwareArr = lodashGet(value1Obj, ['gamesObj', 'hardwareArr'], []);
-    //   let developerPublisherIDsArr = [];
-
-
-    //   // ---------------------------------------------
-    //   //   - Loop
-    //   // ---------------------------------------------
-
-    //   for (let value2Obj of hardwareArr.values()) {
-
-    //     const developerIDsArr = lodashGet(value2Obj, ['developerIDsArr'], []);
-    //     const publisherIDsArr = lodashGet(value2Obj, ['publisherIDsArr'], []);
-
-    //     developerPublisherIDsArr = developerPublisherIDsArr.concat(developerIDsArr, publisherIDsArr);
-
-    //   }
-
-
-    //   // ---------------------------------------------
-    //   //   - 配列の重複している値を削除
-    //   // ---------------------------------------------
-
-    //   developerPublisherIDsArr = Array.from(new Set(developerPublisherIDsArr));
-
-      
-    //   // ---------------------------------------------
-    //   //   - find
-    //   // ---------------------------------------------
-
-    //   const docDevelopersPublishersArr = await ModelDevelopersPublishers.find({
-
-    //     conditionObj: {
-    //       language,
-    //       country,
-    //       developerPublisherID: { $in: developerPublisherIDsArr },
-    //     }
-
-    //   });
-
-
-    //   // ---------------------------------------------
-    //   //   - 名前だけ配列に入れる
-    //   // ---------------------------------------------
-
-    //   const developersPublishersArr = [];
-
-    //   for (let value of developerPublisherIDsArr.values()) {
-        
-    //     const resultObj = docDevelopersPublishersArr.find((value2Obj) => {
-    //       return value2Obj.developerPublisherID === value;
-    //     });
-
-    //     if (resultObj) {
-    //       developersPublishersArr.push(resultObj.name);
-    //     }
-
-    //   }
-
-    //   obj.developersPublishers = developersPublishersArr.join(', ');
-
-
-    //   // console.log(`
-    //   //   ----- developerPublisherIDsArr -----\n
-    //   //   ${util.inspect(JSON.parse(JSON.stringify(developerPublisherIDsArr)), { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
-
-    //   // console.log(`
-    //   //   ----- docDevelopersPublishersArr -----\n
-    //   //   ${util.inspect(JSON.parse(JSON.stringify(docDevelopersPublishersArr)), { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
-
-    //   // console.log(`
-    //   //   ----- developersPublishersArr -----\n
-    //   //   ${util.inspect(JSON.parse(JSON.stringify(developersPublishersArr)), { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
-
-
-    //   // --------------------------------------------------
-    //   //   画像と動画の処理
-    //   // --------------------------------------------------
-
-    //   const formattedThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosThumbnailObj });
-
-    //   if (Object.keys(formattedThumbnailObj).length !== 0) {
-
-    //     obj.src = lodashGet(formattedThumbnailObj, ['arr', 0, 'src'], '/img/common/thumbnail/none-game.jpg');
-    //     obj.srcSet = lodashGet(formattedThumbnailObj, ['arr', 0, 'srcSet'], '');
-
-    //   }
-
-
-    //   // --------------------------------------------------
-    //   //   Set Data
-    //   // --------------------------------------------------
-
-    //   lodashSet(returnObj, ['dataObj', gameCommunities_id], obj);
-
-
-    //   // --------------------------------------------------
-    //   //   Pages Array
-    //   // --------------------------------------------------
-
-    //   const pagesArr = lodashGet(returnObj, [`page${page}Obj`, 'arr'], []);
-    //   pagesArr.push(gameCommunities_id);
-
-    //   returnObj[`page${page}Obj`] = {
-
-    //     loadedDate: ISO8601,
-    //     arr: pagesArr,
-
-    //   };
-
-
-    // }
-
-
-
-
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-
-    // console.log(`
-    //   ----------------------------------------\n
-    //   app/@database/follows/model.js - findFollowListGc
-    // `);
+//     console.log(`
+//       ----------------------------------------\n
+//       app/@database/follows/model.js - findFollowContentsAll
+//     `);
     
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id} / ${typeof loginUsers_id}}
-    //   page: {green ${page} / ${typeof page}}
-    //   limit: {green ${limit} / ${typeof limit}}
-    // `);
+//     // console.log(chalk`
+//     //   loginUsers_id: {green ${loginUsers_id} / ${typeof loginUsers_id}}
+//     //   page: {green ${page} / ${typeof page}}
+//     //   limit: {green ${limit} / ${typeof limit}}
+//     // `);
 
-    // console.log(`
-    //   ----- hardwareIDsArr -----\n
-    //   ${util.inspect(hardwareIDsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+//     // console.log(`
+//     //   ----- hardwareIDsArr -----\n
+//     //   ${util.inspect(hardwareIDsArr, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
 
-    // console.log(`
-    //   ----- conditionObj -----\n
-    //   ${util.inspect(conditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+//     // console.log(`
+//     //   ----- conditionObj -----\n
+//     //   ${util.inspect(conditionObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
 
-    // console.log(`
-    //   ----- docArr -----\n
-    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+//     console.log(`
+//       ----- docArr -----\n
+//       ${util.inspect(docArr, { colors: true, depth: null })}\n
+//       --------------------\n
+//     `);
 
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-
+//     // console.log(`
+//     //   ----- returnObj -----\n
+//     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
 
 
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-
-    return returnObj;
 
 
-  } catch (err) {
+//     // --------------------------------------------------
+//     //   Return
+//     // --------------------------------------------------
 
-    throw err;
-
-  }
+//     // return returnObj;
 
 
-};
+//   } catch (err) {
+
+//     throw err;
+
+//   }
+
+
+// };
 
 
 
@@ -2692,7 +2394,7 @@ module.exports = {
   findFollowListGc,
   findFollowListUc,
   findFollowContents,
-  findFollowForumGc,
+  // findFollowForumGc,
   transactionForUpsert,
   
 };

@@ -67,7 +67,7 @@ const formatRecruitmentThreadsArr = ({
   arr,
   threadPage,
   threadLimit,
-  threadCount = 0,
+  // threadCount = 0,
 
 }) => {
 
@@ -90,9 +90,9 @@ const formatRecruitmentThreadsArr = ({
   const ISO8601 = moment().utc().toISOString();
 
 
-  if (threadCount > 0) {
-    recruitmentThreadsObj.count = threadCount;
-  }
+  // if (threadCount > 0) {
+  //   recruitmentThreadsObj.count = threadCount;
+  // }
 
 
   // console.log(chalk`

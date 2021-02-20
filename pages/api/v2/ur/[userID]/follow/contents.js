@@ -232,11 +232,24 @@ export default async (req, res) => {
 
     const followContentsObj = await ModelFollows.findFollowContents(argumentsObj);
 
-    returnObj.forumGcObj = lodashGet(followContentsObj, ['forumGcObj'], {});
-    returnObj.gameCommunitiesObj = lodashGet(followContentsObj, ['gameCommunitiesObj'], {});
+    returnObj.pageObj = lodashGet(followContentsObj, ['pageObj'], {});
+    returnObj.forumObj = lodashGet(followContentsObj, ['forumObj'], {});
+    returnObj.recruitmentObj = lodashGet(followContentsObj, ['recruitmentObj'], {});
+    returnObj.gameCommunityObj = lodashGet(followContentsObj, ['gameCommunityObj'], {});
+    returnObj.userCommunityObj = lodashGet(followContentsObj, ['userCommunityObj'], {});
 
 
+    // console.log(`
+    //   ----- returnObj.gameCommunityObj -----\n
+    //   ${util.inspect(returnObj.gameCommunityObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
+    // console.log(`
+    //   ----- returnObj.userCommunityObj1 -----\n
+    //   ${util.inspect(returnObj.userCommunityObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 

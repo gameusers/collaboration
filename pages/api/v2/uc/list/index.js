@@ -111,8 +111,8 @@ export default async (req, res) => {
     //   GET Data
     // --------------------------------------------------
 
-    const page = parseInt(lodashGet(req, ['query', 'page'], 1), 10);
-    const limit = parseInt(lodashGet(req, ['query', 'limit'], ''), 10);
+    const page = lodashGet(req, ['query', 'page'], 1);
+    const limit = lodashGet(req, ['query', 'limit'], '');
     const keyword = lodashGet(req, ['query', 'keyword'], '');
 
     lodashSet(requestParametersObj, ['page'], page);

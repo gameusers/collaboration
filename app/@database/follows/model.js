@@ -1350,6 +1350,10 @@ const findFollowContents = async ({
   period = process.env.NEXT_PUBLIC_FOLLOW_CONTENTS_PERIOD,
   page = 1,
   limit = process.env.NEXT_PUBLIC_FOLLOW_CONTENTS_LIMIT,
+  forumCommentLimit,
+  forumReplyLimit,
+  recruitmentCommentLimit,
+  recruitmentReplyLimit,
 
 }) => {
 
@@ -1370,7 +1374,7 @@ const findFollowContents = async ({
     const intLimit = parseInt(limit, 10);
 
 
-
+    
 
     // --------------------------------------------------
     //   _id を取得する
@@ -1575,13 +1579,10 @@ const findFollowContents = async ({
     ]).exec();
 
 
-    // const threadCount = lodashGet(threadCountObj, [0, 'n'], 0);
-
-
 
 
     // --------------------------------------------------
-    //   スレッドと募集を取得
+    //   スレッドと募集の _id を取得するためのデータ
     // --------------------------------------------------
 
     const docContentsIdsArr = await SchemaForumThreads.aggregate([
@@ -1764,7 +1765,6 @@ const findFollowContents = async ({
 
 
 
-
     // --------------------------------------------------
     //   コンテンツ取得
     // --------------------------------------------------
@@ -1786,6 +1786,8 @@ const findFollowContents = async ({
         }
       ],
       sortSkipLimitArr: [],
+      commentLimit: forumCommentLimit,
+      replyLimit: forumReplyLimit,
 
     });
 
@@ -1808,27 +1810,10 @@ const findFollowContents = async ({
       ],
       sortSkipLimitArr: [],
       format: true,
+      commentLimit: recruitmentCommentLimit,
+      replyLimit: recruitmentReplyLimit,
 
     });
-
-
-    // console.log(`
-    //   ----- returnObj.forumObj.forumThreadsObj -----\n
-    //   ${util.inspect(returnObj.forumObj.forumThreadsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- returnObj.recruitmentObj -----\n
-    //   ${util.inspect(returnObj.recruitmentObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- returnObj.recruitmentObj.recruitmentThreadsObj -----\n
-    //   ${util.inspect(returnObj.recruitmentObj.recruitmentThreadsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
 
 
 
@@ -1851,16 +1836,35 @@ const findFollowContents = async ({
       gameCommunities_idsArr = Array.from(new Set(gameCommunities_idsArr));
 
 
+      // --------------------------------------------------
+      //   Language & Country
+      // --------------------------------------------------
+
+      const language = lodashGet(localeObj, ['language'], '');
+      const country = lodashGet(localeObj, ['country'], '');
+
+
       // ---------------------------------------------
       //   - データ取得
       // ---------------------------------------------
 
       returnObj.gameCommunityObj = await ModelGameCommunities.findGamesListCommon({
 
+        commonType: 'followContents',
         localeObj,
+        matchConditionArr: [
+          {
+            $match: {
+              language,
+              country,
+              gameCommunities_id: {
+                $in: gameCommunities_idsArr
+              }
+            }
+          },
+        ],
         page: intPage,
         limit: intLimit,
-        gameCommunities_idsArr,
 
       });
 
@@ -1882,23 +1886,25 @@ const findFollowContents = async ({
       userCommunities_idsArr = Array.from(new Set(userCommunities_idsArr));
 
 
-      // console.log(`
-      //   ----- userCommunities_idsArr2 -----\n
-      //   ${util.inspect(userCommunities_idsArr, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-
-
       // ---------------------------------------------
       //   - データ取得
       // ---------------------------------------------
 
       returnObj.userCommunityObj = await ModelUserCommunities.findUserCommunitiesListCommon({
 
+        commonType: 'followContents',
         localeObj,
+        matchConditionArr: [
+          {
+            $match: {
+              _id: {
+                $in: userCommunities_idsArr
+              }
+            }
+          },
+        ],
         page: intPage,
         limit: intLimit,
-        userCommunities_idsArr,
 
       });
 
@@ -1909,33 +1915,32 @@ const findFollowContents = async ({
 
 
     // console.log(`
-    //   ----- returnObj.forumUcObj.forumThreadsObj -----\n
-    //   ${util.inspect(returnObj.forumUcObj.forumThreadsObj, { colors: true, depth: null })}\n
+    //   ----- returnObj.forumObj.forumThreadsObj -----\n
+    //   ${util.inspect(returnObj.forumObj.forumThreadsObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
     // console.log(`
-    //   ----- forumUcObj.forumCommentsObj -----\n
-    //   ${util.inspect(forumUcObj.forumCommentsObj, { colors: true, depth: null })}\n
+    //   ----- returnObj.recruitmentObj -----\n
+    //   ${util.inspect(returnObj.recruitmentObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
     // console.log(`
-    //   ----- recruitmentObj -----\n
-    //   ${util.inspect(recruitmentObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-
-    // console.log(`
-    //   ----- returnObj.gameCommunitiesObj -----\n
-    //   ${util.inspect(returnObj.gameCommunitiesObj, { colors: true, depth: null })}\n
+    //   ----- returnObj.recruitmentObj.recruitmentThreadsObj -----\n
+    //   ${util.inspect(returnObj.recruitmentObj.recruitmentThreadsObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
     // console.log(`
-    //   ----- returnObj.userCommunitiesObj -----\n
-    //   ${util.inspect(returnObj.userCommunitiesObj, { colors: true, depth: null })}\n
+    //   ----- returnObj.gameCommunityObj -----\n
+    //   ${util.inspect(returnObj.gameCommunityObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- returnObj.userCommunityObj -----\n
+    //   ${util.inspect(returnObj.userCommunityObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

@@ -51,7 +51,7 @@ import Select from '@material-ui/core/Select';
 //   Material UI / Icons
 // ---------------------------------------------
 
-import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
+// import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 
 
 // ---------------------------------------------
@@ -125,13 +125,9 @@ const Component = (props) => {
 
   const {
 
-    // userCommunityID,
-    // userCommunities_id,
-
-    // gameCommunitiesObj,
-    // userCommunitiesObj,
-
-    // deletable,
+    urlID,
+    userCommunityID,
+    userID,
     pageObj,
 
   } = props;
@@ -215,21 +211,30 @@ const Component = (props) => {
 
       let url = '';
 
-      if (gameCommunities_id) {
+      if (urlID) {
 
         if (page === 1) {
-          url = `/gc/${urlID}`;
+          url = `/gc/${urlID}/follow`;
         } else {
-          url = `/gc/${urlID}/forum/${page}`;
+          url = `/gc/${urlID}/follow/${page}`;
+        }
+
+      } else if (userCommunityID) {
+
+        if (page === 1) {
+          url = `/uc/${userCommunityID}/follow`;
+        } else {
+          url = `/uc/${userCommunityID}/follow/${page}`;
         }
 
       } else {
 
         if (page === 1) {
-          url = `/uc/${userCommunityID}`;
+          url = `/ur/${userID}/follow`;
         } else {
-          url = `/uc/${userCommunityID}/forum/${page}`;
+          url = `/ur/${userID}/follow/${page}`;
         }
+        
 
       }
 
@@ -239,7 +244,7 @@ const Component = (props) => {
       // ---------------------------------------------
 
       if (changeLimit) {
-        setCookie({ key: 'forumThreadLimit', value: changeLimit });
+        setCookie({ key: 'followContentsLimit', value: changeLimit });
       }
 
 
@@ -338,9 +343,13 @@ const Component = (props) => {
   for (const [index, valueObj] of arr.entries()) {
 
 
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+
     let communitiesDataObj = {};
-    let urlID = '';
-    let userCommunityID = '';
+    let contentsUrlID = '';
+    let contentsUserCommunityID = '';
     let gameCommunities_id = '';
     let userCommunities_id = '';
 
@@ -356,12 +365,12 @@ const Component = (props) => {
     if (gameCommunities_id) {
 
       communitiesDataObj = lodashGet(gameCommunityObj, [gameCommunities_id], {});
-      urlID = lodashGet(communitiesDataObj, ['urlID'], '');
+      contentsUrlID = lodashGet(communitiesDataObj, ['urlID'], '');
 
     } else {
 
       communitiesDataObj = lodashGet(userCommunityObj, [userCommunities_id], {});
-      userCommunityID = lodashGet(communitiesDataObj, ['userCommunityID'], '');
+      contentsUserCommunityID = lodashGet(communitiesDataObj, ['userCommunityID'], '');
 
     }
 
@@ -379,6 +388,10 @@ const Component = (props) => {
     // userCommunityID: {green ${userCommunityID}}
     // `);
     
+
+    // --------------------------------------------------
+    //   push
+    // --------------------------------------------------
 
     if (valueObj.type === 'forum') {
 
@@ -413,9 +426,9 @@ const Component = (props) => {
   
           <ForumThread
             key={_id}
-            urlID={urlID}
+            urlID={contentsUrlID}
             gameCommunities_id={gameCommunities_id}
-            userCommunityID={userCommunityID}
+            userCommunityID={contentsUserCommunityID}
             userCommunities_id={userCommunities_id}
             forumThreads_id={_id}
             enableAnonymity={false}
@@ -451,7 +464,7 @@ const Component = (props) => {
   
           <RecruitmentThread
             key={_id}
-            urlID={urlID}
+            urlID={contentsUrlID}
             gameCommunities_id={gameCommunities_id}
             recruitmentThreads_id={_id}
           />
@@ -460,6 +473,7 @@ const Component = (props) => {
       );
 
     }
+
 
   }
 
@@ -532,7 +546,7 @@ const Component = (props) => {
                 classes={{
                   input: classes.input
                 }}
-                name="forum-threads-pagination"
+                name="follow-contents-pagination"
                 id="outlined-rows-per-page"
               />
             }

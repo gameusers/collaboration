@@ -116,12 +116,12 @@ export default async (req, res) => {
 
     const userCommunityID = lodashGet(req, ['query', 'userCommunityID'], '');
     const forumID = lodashGet(req, ['query', 'forumID'], '');
-    const threadListPage = parseInt(lodashGet(req, ['query', 'threadListPage'], 1), 10);
-    const threadListLimit = parseInt(lodashGet(req, ['query', 'threadListLimit'], ''), 10);
-    const threadPage = parseInt(lodashGet(req, ['query', 'threadPage'], 1), 10);
-    const threadLimit = parseInt(lodashGet(req, ['query', 'threadLimit'], ''), 10);
-    const commentLimit = parseInt(lodashGet(req, ['query', 'commentLimit'], ''), 10);
-    const replyLimit = parseInt(lodashGet(req, ['query', 'replyLimit'], ''), 10);
+    const threadListPage = lodashGet(req, ['query', 'threadListPage'], 1);
+    const threadListLimit = lodashGet(req, ['query', 'threadListLimit'], '');
+    const threadPage = lodashGet(req, ['query', 'threadPage'], 1);
+    const threadLimit = lodashGet(req, ['query', 'threadLimit'], '');
+    const commentLimit = lodashGet(req, ['query', 'commentLimit'], '');
+    const replyLimit = lodashGet(req, ['query', 'replyLimit'], '');
 
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
     lodashSet(requestParametersObj, ['forumID'], forumID);

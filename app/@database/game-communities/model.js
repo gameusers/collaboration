@@ -58,7 +58,7 @@ moment.locale('ja');
 
 
 // --------------------------------------------------
-//   Function
+//   Common
 // --------------------------------------------------
 
 /**
@@ -321,6 +321,10 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 
 
+
+// --------------------------------------------------
+//   Function
+// --------------------------------------------------
 
 /**
  * 検索してデータを取得する / For Game Community
@@ -1601,18 +1605,22 @@ const findGamesList = async ({
 
 /**
  * ゲーム一覧のデータを取得する / 共通
+ * @param {string} commonType - タイプ / matchConditionArr & sortSkipLimitArr に影響する
  * @param {Object} localeObj - ロケール
+ * @param {Array} matchConditionArr - 検索条件
+ * @param {Array} sortSkipLimitArr - 並び替えとページャーの条件
  * @param {number} page - ページ
  * @param {number} limit - リミット
- * @param {Array} gameCommunities_idsArr - DB game-communities _id
  * @return {Object} 取得データ
  */
 const findGamesListCommon = async ({
 
+  commonType = 'default',
   localeObj,
+  matchConditionArr = [],
+  sortSkipLimitArr = [],
   page = 1,
   limit = process.env.NEXT_PUBLIC_COMMUNITY_LIST_LIMIT,
-  gameCommunities_idsArr = [],
 
 }) => {
 
@@ -1643,32 +1651,53 @@ const findGamesListCommon = async ({
 
 
     // --------------------------------------------------
-    //   $match（ドキュメントの検索用） & count（総数の検索用）の条件作成
+    //   matchConditionArr & sortSkipLimitArr
     // --------------------------------------------------
 
-    const conditionObj = {
+    let mcArr = matchConditionArr;
+    let sslArr = sortSkipLimitArr;
 
-      language,
-      country,
+    if (commonType === 'default') {
 
-    };
+      sslArr = [
 
-
-    // ---------------------------------------------
-    //   - 検索条件
-    // ---------------------------------------------
-
-    if (gameCommunities_idsArr.length > 0) {
-
-      conditionObj.gameCommunities_id = {
-        $in: gameCommunities_idsArr
-      }
-
-      // lodashSet(conditionObj, ['gameCommunities_id'],
-      //   {
-      //     $in: gameCommunities_idsArr
-      //   }
-      // );
+        {
+          $lookup:
+            {
+              from: 'game-communities',
+              let: { letGameCommunities_id: '$gameCommunities_id' },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $eq: ['$_id', '$$letGameCommunities_id']
+                    },
+                  }
+                },
+                {
+                  $project: {
+                    _id: 0,
+                    updatedDate: 1,
+                  }
+                }
+              ],
+              as: 'gameCommunitiesObj'
+            }
+        },
+  
+        {
+          $unwind: {
+            path: '$gameCommunitiesObj',
+            preserveNullAndEmptyArrays: true,
+          }
+        },
+  
+  
+        { $sort: { 'gameCommunitiesObj.updatedDate': -1 } },
+        { $skip: (intPage - 1) * intLimit },
+        { $limit: intLimit },
+  
+      ];
 
     }
 
@@ -1686,54 +1715,14 @@ const findGamesListCommon = async ({
       //   Match Condition Array
       // --------------------------------------------------
 
-      {
-        $match: conditionObj
-      },
-
-
-      // --------------------------------------------------
-      //   game-communities
-      // --------------------------------------------------
-
-      {
-        $lookup:
-          {
-            from: 'game-communities',
-            let: { letGameCommunities_id: '$gameCommunities_id' },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$_id', '$$letGameCommunities_id']
-                  },
-                }
-              },
-              {
-                $project: {
-                  _id: 0,
-                  updatedDate: 1,
-                }
-              }
-            ],
-            as: 'gameCommunitiesObj'
-          }
-      },
-
-      {
-        $unwind: {
-          path: '$gameCommunitiesObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
+      ...mcArr,
 
 
       // --------------------------------------------------
       //   $sort / $skip / $limit
       // --------------------------------------------------
 
-      { $sort: { 'gameCommunitiesObj.updatedDate': -1 } },
-      { $skip: (intPage - 1) * intLimit },
-      { $limit: intLimit },
+      ...sslArr,
 
 
       // --------------------------------------------------

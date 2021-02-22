@@ -189,6 +189,7 @@ const ContainerLayout = (props) => {
       />
 
       <FollowContents
+        userID={props.userID}
         pageObj={props.pageObj}
       />
 
@@ -325,10 +326,14 @@ export async function getServerSideProps({ req, res, query }) {
   let listType = 'all';
   let page = 1;
 
-  if (Math.sign(slugsArr[1]) === 1) {
-    page = slugsArr[1];
+  if (Math.sign(slugsArr[0]) === 1) {
+    page = slugsArr[0];
   }
-
+  // console.log(`
+  //   ----- slugsArr -----\n
+  //   ${util.inspect(slugsArr, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
 
   // --------------------------------------------------
   //   Property
@@ -342,9 +347,16 @@ export async function getServerSideProps({ req, res, query }) {
   // --------------------------------------------------
 
   const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
+  
   const followContentsPeriod = getCookie({ key: 'followContentsPeriod', reqHeadersCookie });
   const limit = getCookie({ key: 'followContentsLimit', reqHeadersCookie });
+
+  const forumCommentLimit = getCookie({ key: 'forumCommentLimit', reqHeadersCookie });
+  const forumReplyLimit = getCookie({ key: 'forumReplyLimit', reqHeadersCookie });
   
+  const recruitmentCommentLimit = getCookie({ key: 'recruitmentCommentLimit', reqHeadersCookie });
+  const recruitmentReplyLimit = getCookie({ key: 'recruitmentReplyLimit', reqHeadersCookie });
+
 
 
 
@@ -354,7 +366,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   const resultObj = await fetchWrapper({
 
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}/follow/contents?period=${followContentsPeriod}&page=${page}&limit=${limit}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}/follow/contents?period=${followContentsPeriod}&page=${page}&limit=${limit}&forumCommentLimit=${forumCommentLimit}&forumReplyLimit=${forumReplyLimit}&recruitmentCommentLimit=${recruitmentCommentLimit}&recruitmentReplyLimit=${recruitmentReplyLimit}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -404,6 +416,7 @@ export async function getServerSideProps({ req, res, query }) {
   //   ${util.inspect(forumThreadsObj, { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
+
 
   // --------------------------------------------------
   //   Title

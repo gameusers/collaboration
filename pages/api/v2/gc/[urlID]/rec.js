@@ -120,10 +120,10 @@ export default async (req, res) => {
 
     const urlID = lodashGet(req, ['query', 'urlID'], '');
     const recruitmentID = lodashGet(req, ['query', 'recruitmentID'], '');
-    const threadPage = parseInt(lodashGet(req, ['query', 'threadPage'], 1), 10);
-    const threadLimit = parseInt(lodashGet(req, ['query', 'threadLimit'], ''), 10);
-    const commentLimit = parseInt(lodashGet(req, ['query', 'commentLimit'], ''), 10);
-    const replyLimit = parseInt(lodashGet(req, ['query', 'replyLimit'], ''), 10);
+    const threadPage = lodashGet(req, ['query', 'threadPage'], 1);
+    const threadLimit = lodashGet(req, ['query', 'threadLimit'], '');
+    const commentLimit = lodashGet(req, ['query', 'commentLimit'], '');
+    const replyLimit = lodashGet(req, ['query', 'replyLimit'], '');
     const hardwares = lodashGet(req, ['query', 'hardwares'], '');
     const categories = lodashGet(req, ['query', 'categories'], '');
     const keyword = lodashGet(req, ['query', 'keyword'], '');

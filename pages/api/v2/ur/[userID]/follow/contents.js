@@ -42,6 +42,9 @@ import { CustomError } from 'app/@modules/error/custom.js';
 
 import { validationInteger } from 'app/@validations/integer.js';
 import { validationFollowPeriod, validationFollowLimit } from 'app/@database/follows/validations/follow-limit.js';
+import { validationForumCommentsLimit, validationForumRepliesLimit } from 'app/@database/forum-comments/validations/limit.js';
+import { validationRecruitmentCommentsLimit } from 'app/@database/recruitment-comments/validations/limit.js';
+import { validationRecruitmentRepliesLimit } from 'app/@database/recruitment-replies/validations/limit.js';
 
 
 // ---------------------------------------------
@@ -112,16 +115,24 @@ export default async (req, res) => {
     // --------------------------------------------------
 
     const userID = lodashGet(req, ['query', 'userID'], '');
+    const period = lodashGet(req, ['query', 'period'], '');
     const page = lodashGet(req, ['query', 'page'], 1);
     const limit = lodashGet(req, ['query', 'limit'], '');
-    const period = lodashGet(req, ['query', 'period'], '');
-
+    const forumCommentLimit = lodashGet(req, ['query', 'forumCommentLimit'], '');
+    const forumReplyLimit = lodashGet(req, ['query', 'forumReplyLimit'], '');
+    const recruitmentCommentLimit = lodashGet(req, ['query', 'recruitmentCommentLimit'], '');
+    const recruitmentReplyLimit = lodashGet(req, ['query', 'recruitmentReplyLimit'], '');
+    
     lodashSet(requestParametersObj, ['userID'], userID);
+    lodashSet(requestParametersObj, ['period'], period);
     lodashSet(requestParametersObj, ['page'], page);
     lodashSet(requestParametersObj, ['limit'], limit);
-    lodashSet(requestParametersObj, ['period'], period);
+    lodashSet(requestParametersObj, ['forumCommentLimit'], forumCommentLimit);
+    lodashSet(requestParametersObj, ['forumReplyLimit'], forumReplyLimit);
+    lodashSet(requestParametersObj, ['recruitmentCommentLimit'], recruitmentCommentLimit);
+    lodashSet(requestParametersObj, ['recruitmentReplyLimit'], recruitmentReplyLimit);
     
-
+    
 
 
     // --------------------------------------------------
@@ -224,9 +235,25 @@ export default async (req, res) => {
     if (await validationInteger({ throwError: false, required: true, value: page }).error === false) {
       argumentsObj.page = page;
     }
-
+    
     if (await validationFollowLimit({ throwError: false, required: true, value: limit }).error === false) {
       argumentsObj.limit = limit;
+    }
+
+    if (await validationForumCommentsLimit({ throwError: false, required: true, value: forumCommentLimit }).error === false) {
+      argumentsObj.forumCommentLimit = forumCommentLimit;
+    }
+
+    if (await validationForumRepliesLimit({ throwError: false, required: true, value: forumReplyLimit }).error === false) {
+      argumentsObj.forumReplyLimit = forumReplyLimit;
+    }
+
+    if (await validationRecruitmentCommentsLimit({ throwError: false, required: true, value: recruitmentCommentLimit }).error === false) {
+      argumentsObj.recruitmentCommentLimit = recruitmentCommentLimit;
+    }
+
+    if (await validationRecruitmentRepliesLimit({ throwError: false, required: true, value: recruitmentReplyLimit }).error === false) {
+      argumentsObj.recruitmentReplyLimit = recruitmentReplyLimit;
     }
 
 
@@ -240,6 +267,24 @@ export default async (req, res) => {
 
 
     // console.log(`
+    //   ----- returnObj.pageObj -----\n
+    //   ${util.inspect(returnObj.pageObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- returnObj.forumObj -----\n
+    //   ${util.inspect(returnObj.forumObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- returnObj.recruitmentObj -----\n
+    //   ${util.inspect(returnObj.recruitmentObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
     //   ----- returnObj.gameCommunityObj -----\n
     //   ${util.inspect(returnObj.gameCommunityObj, { colors: true, depth: null })}\n
     //   --------------------\n
@@ -250,6 +295,27 @@ export default async (req, res) => {
     //   ${util.inspect(returnObj.userCommunityObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+
+
+
+
+    // --------------------------------------------------
+    //   2ページ目以降のデータがない場合はエラー
+    // --------------------------------------------------
+
+    if (page > 1) {
+
+      const pageArr = lodashGet(returnObj, ['pageObj', 'arr'], []);
+
+      if (pageArr.length === 0) {
+
+        statusCode = 404;
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: '_VqxOHS3z', messageID: 'Error' }] });
+
+      }
+
+    }
+
 
 
 

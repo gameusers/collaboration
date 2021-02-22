@@ -342,17 +342,24 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 /**
  * 募集を取得する / 共通
+ * @param {string} commonType - タイプ / matchConditionArr & sortSkipLimitArr に影響する
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {Array} matchConditionArr - 検索条件
- * @param {Array} sortSkipLimitArr - 並べ替えとページャー
+ * @param {Array} sortSkipLimitArr - 並び替えとページャーの条件
+ * @param {boolean} format - フォーマットする場合 true / 取得ドキュメントをそのまま帰す場合 false 
  * @param {number} threadPage - スレッドのページ
  * @param {number} threadLimit - スレッドのリミット
+ * @param {number} commentPage - コメントのページ
+ * @param {number} commentLimit - コメントのリミット
+ * @param {number} replyPage - 返信のページ
+ * @param {number} replyLimit - 返信のリミット
  * @return {Array} 取得データ
  */
 const findRecruitmentCommon = async ({
 
+  commonType = 'default',
   req,
   localeObj,
   loginUsers_id,
@@ -401,20 +408,39 @@ const findRecruitmentCommon = async ({
 
 
     // --------------------------------------------------
+    //   matchConditionArr & sortSkipLimitArr
+    // --------------------------------------------------
+
+    let mcArr = matchConditionArr;
+    let sslArr = sortSkipLimitArr;
+
+    if (commonType === 'default') {
+
+      sslArr = [
+
+        { $sort: { updatedDate: -1 } },
+        { $skip: (intThreadPage - 1) * intThreadLimit },
+        { $limit: intThreadLimit },
+  
+      ];
+
+    }
+
+    // --------------------------------------------------
     //   sortSkipLimitArr
     // --------------------------------------------------
 
-    let sslArr = [
+    // let sslArr = [
 
-      { $sort: { updatedDate: -1 } },
-      { $skip: (intThreadPage - 1) * intThreadLimit },
-      { $limit: intThreadLimit },
+    //   { $sort: { updatedDate: -1 } },
+    //   { $skip: (intThreadPage - 1) * intThreadLimit },
+    //   { $limit: intThreadLimit },
 
-    ];
+    // ];
 
-    if (sortSkipLimitArr.length > 0) {
-      sslArr = sortSkipLimitArr;
-    }
+    // if (sortSkipLimitArr.length > 0) {
+    //   sslArr = sortSkipLimitArr;
+    // }
 
 
 
@@ -430,7 +456,7 @@ const findRecruitmentCommon = async ({
       //   Match Condition Array
       // --------------------------------------------------
 
-      ...matchConditionArr,
+      ...mcArr,
 
 
       // --------------------------------------------------

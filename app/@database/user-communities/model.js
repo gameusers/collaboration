@@ -1974,18 +1974,22 @@ const findUserCommunitiesList = async ({
 
 /**
  * ユーザーコミュニティ一覧のデータを取得する / 共通
+ * @param {string} commonType - タイプ / matchConditionArr & sortSkipLimitArr に影響する
  * @param {Object} localeObj - ロケール
+ * @param {Array} matchConditionArr - 検索条件
+ * @param {Array} sortSkipLimitArr - 並び替えとページャーの条件
  * @param {number} page - ページ
  * @param {number} limit - リミット
- * @param {Array} userCommunities_idsArr - DB user-communities _id
  * @return {Array} 取得データ
  */
 const findUserCommunitiesListCommon = async ({
 
+  commonType = 'default',
   localeObj,
+  matchConditionArr = [],
+  sortSkipLimitArr = [],
   page = 1,
   limit = process.env.NEXT_PUBLIC_COMMUNITY_LIST_LIMIT,
-  userCommunities_idsArr = [],
 
 }) => {
 
@@ -2005,26 +2009,54 @@ const findUserCommunitiesListCommon = async ({
     const country = lodashGet(localeObj, ['country'], '');
 
 
+    // --------------------------------------------------
+    //   parseInt
+    // --------------------------------------------------
+
+    const intPage = parseInt(page, 10);
+    const intLimit = parseInt(limit, 10);
+
+
+
+
+    // --------------------------------------------------
+    //   matchConditionArr & sortSkipLimitArr
+    // --------------------------------------------------
+
+    let mcArr = matchConditionArr;
+    let sslArr = sortSkipLimitArr;
+
+    if (commonType === 'default') {
+
+      sslArr = [
+
+        { $sort: { updatedDate: -1 } },
+        { $skip: (intPage - 1) * intLimit },
+        { $limit: intLimit },
+
+      ];
+
+    }
 
 
     // --------------------------------------------------
     //   $match（ドキュメントの検索用） & count（総数の検索用）の条件作成
     // --------------------------------------------------
 
-    const conditionObj = {};
+    // const conditionObj = {};
 
 
-    // ---------------------------------------------
-    //   - 検索条件
-    // ---------------------------------------------
+    // // ---------------------------------------------
+    // //   - 検索条件
+    // // ---------------------------------------------
 
-    if (userCommunities_idsArr.length > 0) {
+    // if (userCommunities_idsArr.length > 0) {
 
-      conditionObj._id = {
-        $in: userCommunities_idsArr
-      }
+    //   conditionObj._id = {
+    //     $in: userCommunities_idsArr
+    //   }
 
-    }
+    // }
 
 
 
@@ -2040,9 +2072,14 @@ const findUserCommunitiesListCommon = async ({
       //   Match Condition Array
       // --------------------------------------------------
 
-      {
-        $match: conditionObj
-      },
+      ...mcArr,
+
+
+      // --------------------------------------------------
+      //   $sort / $skip / $limit
+      // --------------------------------------------------
+
+      ...sslArr,
 
 
       // --------------------------------------------------

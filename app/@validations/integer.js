@@ -44,11 +44,12 @@ const validationInteger = ({ throwError = false, required = false, value }) => {
   // ---------------------------------------------
   
   const data = value ? String(value) : '';
+  const intValue = parseInt(value ,10);
   const numberOfCharacters = data ? data.length : 0;
   
   const resultObj = {
     
-    value: data,
+    value: intValue,
     numberOfCharacters,
     messageID: 'Error',
     error: false,
@@ -84,7 +85,7 @@ const validationInteger = ({ throwError = false, required = false, value }) => {
     //   整数チェック
     // ---------------------------------------------
     
-    if (!Number.isInteger(value)) {
+    if (!Number.isInteger(intValue)) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: '2dSCYnE7M', messageID: 'f_YBnQcfW' }] });
     }
     

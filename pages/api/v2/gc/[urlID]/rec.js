@@ -120,20 +120,20 @@ export default async (req, res) => {
 
     const urlID = lodashGet(req, ['query', 'urlID'], '');
     const recruitmentID = lodashGet(req, ['query', 'recruitmentID'], '');
-    const threadPage = lodashGet(req, ['query', 'threadPage'], 1);
-    const threadLimit = lodashGet(req, ['query', 'threadLimit'], '');
-    const commentLimit = lodashGet(req, ['query', 'commentLimit'], '');
-    const replyLimit = lodashGet(req, ['query', 'replyLimit'], '');
+    const threadPage = parseInt(lodashGet(req, ['query', 'threadPage'], 1), 10);
+    const threadLimit = parseInt(lodashGet(req, ['query', 'threadLimit'], ''), 10);
+    const commentLimit = parseInt(lodashGet(req, ['query', 'commentLimit'], ''), 10);
+    const replyLimit = parseInt(lodashGet(req, ['query', 'replyLimit'], ''), 10);
     const hardwares = lodashGet(req, ['query', 'hardwares'], '');
     const categories = lodashGet(req, ['query', 'categories'], '');
     const keyword = lodashGet(req, ['query', 'keyword'], '');
 
     lodashSet(requestParametersObj, ['urlID'], urlID);
     lodashSet(requestParametersObj, ['recruitmentID'], recruitmentID);
-    lodashSet(requestParametersObj, ['threadPage'], threadPage);
-    lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
-    lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
-    lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
+    lodashSet(requestParametersObj, ['threadPage'], lodashGet(req, ['query', 'threadPage'], ''));
+    lodashSet(requestParametersObj, ['threadLimit'], lodashGet(req, ['query', 'threadLimit'], ''));
+    lodashSet(requestParametersObj, ['commentLimit'], lodashGet(req, ['query', 'commentLimit'], ''));
+    lodashSet(requestParametersObj, ['replyLimit'], lodashGet(req, ['query', 'replyLimit'], ''));
     lodashSet(requestParametersObj, ['hardwares'], hardwares);
     lodashSet(requestParametersObj, ['categories'], categories);
     lodashSet(requestParametersObj, ['keyword'], keyword);

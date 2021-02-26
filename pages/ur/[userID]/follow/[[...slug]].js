@@ -130,7 +130,7 @@ const ContainerLayout = (props) => {
 
     // });
 
-    // if (props.pageType === 'page') {
+    // if (props.category === 'page') {
 
     //   handleScrollTo({
 
@@ -163,8 +163,9 @@ const ContainerLayout = (props) => {
       />
 
       <FollowNavigation
-        pageType="contents"
-        listType={props.listType}
+        contentsOrList={props.contentsOrList}
+        category={props.category}
+        contents={props.contents}
         userID={props.userID}
         followContentsPeriod={props.followContentsPeriod}
       />
@@ -194,7 +195,7 @@ const ContainerLayout = (props) => {
       />
 
       {/* <FollowMembers
-        pageType="ur"
+        category="ur"
         users_id={props.users_id}
         accessLevel={props.accessLevel}
         cardPlayersObj={props.cardPlayersObj}
@@ -323,7 +324,9 @@ export async function getServerSideProps({ req, res, query }) {
   const userID = query.userID;
   const slugsArr = lodashGet(query, ['slug'], []);
 
-  let listType = 'all';
+  let contentsOrList = 'contents';
+  let category = 'all';
+  let contents = 'all';
   let page = 1;
 
   if (Math.sign(slugsArr[0]) === 1) {
@@ -555,7 +558,9 @@ export async function getServerSideProps({ req, res, query }) {
 
       accessLevel,
       userID,
-      listType,
+      contentsOrList,
+      category,
+      contents,
       // users_id,
       
       followContentsPeriod,

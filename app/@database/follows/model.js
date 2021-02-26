@@ -1374,6 +1374,14 @@ const findFollowContents = async ({
     const intLimit = parseInt(limit, 10);
 
 
+    // --------------------------------------------------
+    //   Period
+    // --------------------------------------------------
+
+    const datePeriod = new Date("2018-02-05T12:00:00.000Z");
+    // const datePeriod = moment().utc().add(-(intPeriod), 'minutes').toDate();
+
+
     
 
     // --------------------------------------------------
@@ -1410,6 +1418,106 @@ const findFollowContents = async ({
       }
 
     }
+
+
+
+
+    // --------------------------------------------------
+    //  フォローしたユーザーのコンテンツを取得する 
+    //  フォーラム＆募集の最新投稿から gameCommunities_id を userCommunities_id を取得する
+    // --------------------------------------------------
+    
+    if (loginUsers_id && users_id && loginUsers_id === users_id) {
+
+
+      const docForumRecruitmentIdsArr = await SchemaForumComments.aggregate([
+
+
+        // --------------------------------------------------
+        //   $unionWith
+        // --------------------------------------------------
+  
+        { $unionWith: "recruitment-comments" },
+        { $unionWith: "recruitment-replies" },
+  
+  
+        // --------------------------------------------------
+        //   Match Condition Array
+        // --------------------------------------------------
+  
+        {
+          $match: {
+            users_id: { $in: users_idsArr },
+            updatedDate: { $gte: datePeriod }
+          }
+        },
+  
+  
+        // --------------------------------------------------
+        //   $project
+        // --------------------------------------------------
+  
+        {
+          $project: {
+            _id: 1,
+            gameCommunities_id: 1,
+            userCommunities_id: 1,
+          }
+        },
+  
+  
+      ]).exec();
+  
+  
+      // --------------------------------------------------
+      //   ループで gameCommunities_idsArr と userCommunities_idsArr に追加する
+      // --------------------------------------------------
+  
+      for (let valueObj of docForumRecruitmentIdsArr.values()) {
+  
+        if (valueObj.gameCommunities_id) {
+  
+          gameCommunities_idsArr.push(valueObj.gameCommunities_id);
+  
+        } else if (valueObj.userCommunities_id) {
+  
+          userCommunities_idsArr.push(valueObj.userCommunities_id);
+          
+        }
+  
+      }
+  
+  
+      // --------------------------------------------------
+      //   配列の重複している値を削除
+      // --------------------------------------------------
+  
+      gameCommunities_idsArr = Array.from(new Set(gameCommunities_idsArr));
+      userCommunities_idsArr = Array.from(new Set(userCommunities_idsArr));
+
+
+    }
+
+    
+
+
+    // console.log(`
+    //   ----- docForumRecruitmentIdsArr -----\n
+    //   ${util.inspect(docForumRecruitmentIdsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- gameCommunities_idsArr -----\n
+    //   ${util.inspect(gameCommunities_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- userCommunities_idsArr -----\n
+    //   ${util.inspect(userCommunities_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 
@@ -1538,8 +1646,9 @@ const findFollowContents = async ({
         // { users_id: { $in: users_idsArr } },
       ],
 
+      updatedDate: { $gte: datePeriod }
       // updatedDate: { $gte: moment().utc().add(-(intPeriod), 'minutes').toDate() }
-      updatedDate: { $gte: new Date("2021-02-05T12:00:00.000Z") }
+      // updatedDate: { $gte: new Date("2018-02-05T12:00:00.000Z") }
 
     }
 

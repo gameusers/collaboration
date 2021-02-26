@@ -45,6 +45,7 @@ desktop.ini
 # 一時的に複製したファイル
 __*.js
 /public/img-github/
+/public/img-production/
 /public/img2/
 /public/img3/
 /public/img4/

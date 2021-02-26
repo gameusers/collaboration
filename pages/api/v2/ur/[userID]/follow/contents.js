@@ -115,22 +115,22 @@ export default async (req, res) => {
     // --------------------------------------------------
 
     const userID = lodashGet(req, ['query', 'userID'], '');
-    const period = lodashGet(req, ['query', 'period'], '');
-    const page = lodashGet(req, ['query', 'page'], 1);
-    const limit = lodashGet(req, ['query', 'limit'], '');
-    const forumCommentLimit = lodashGet(req, ['query', 'forumCommentLimit'], '');
-    const forumReplyLimit = lodashGet(req, ['query', 'forumReplyLimit'], '');
-    const recruitmentCommentLimit = lodashGet(req, ['query', 'recruitmentCommentLimit'], '');
-    const recruitmentReplyLimit = lodashGet(req, ['query', 'recruitmentReplyLimit'], '');
+    const period = parseInt(lodashGet(req, ['query', 'period'], ''), 10);
+    const page = parseInt(lodashGet(req, ['query', 'page'], 1), 10);
+    const limit = parseInt(lodashGet(req, ['query', 'limit'], ''), 10);
+    const forumCommentLimit = parseInt(lodashGet(req, ['query', 'forumCommentLimit'], ''), 10);
+    const forumReplyLimit = parseInt(lodashGet(req, ['query', 'forumReplyLimit'], ''), 10);
+    const recruitmentCommentLimit = parseInt(lodashGet(req, ['query', 'recruitmentCommentLimit'], ''), 10);
+    const recruitmentReplyLimit = parseInt(lodashGet(req, ['query', 'recruitmentReplyLimit'], ''), 10);
     
     lodashSet(requestParametersObj, ['userID'], userID);
-    lodashSet(requestParametersObj, ['period'], period);
-    lodashSet(requestParametersObj, ['page'], page);
-    lodashSet(requestParametersObj, ['limit'], limit);
-    lodashSet(requestParametersObj, ['forumCommentLimit'], forumCommentLimit);
-    lodashSet(requestParametersObj, ['forumReplyLimit'], forumReplyLimit);
-    lodashSet(requestParametersObj, ['recruitmentCommentLimit'], recruitmentCommentLimit);
-    lodashSet(requestParametersObj, ['recruitmentReplyLimit'], recruitmentReplyLimit);
+    lodashSet(requestParametersObj, ['period'], lodashGet(req, ['query', 'period'], ''));
+    lodashSet(requestParametersObj, ['page'], lodashGet(req, ['query', 'page'], ''));
+    lodashSet(requestParametersObj, ['limit'], lodashGet(req, ['query', 'limit'], ''));
+    lodashSet(requestParametersObj, ['forumCommentLimit'], lodashGet(req, ['query', 'forumCommentLimit'], ''));
+    lodashSet(requestParametersObj, ['forumReplyLimit'], lodashGet(req, ['query', 'forumReplyLimit'], ''));
+    lodashSet(requestParametersObj, ['recruitmentCommentLimit'], lodashGet(req, ['query', 'recruitmentCommentLimit'], ''));
+    lodashSet(requestParametersObj, ['recruitmentReplyLimit'], lodashGet(req, ['query', 'recruitmentReplyLimit'], ''));
     
     
 

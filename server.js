@@ -23,6 +23,7 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+// const MongoStore = require('connect-mongo').default;
 const next = require('next');
 
 const port = parseInt(process.env.PORT, 10) || 8080;
@@ -108,7 +109,11 @@ app.prepare().then(() => {
     store: new MongoStore({
       mongooseConnection: mongoose.connection,
       ttl: 12 * 60 * 60 // 12 hours
-    }),
+    }),// connect-mongo 3.2.0
+    // store: MongoStore.create({
+    //   mongooseConnection: mongoose.connection,
+    //   ttl: 12 * 60 * 60 // 12 hours
+    // }),// connect-mongo 4.2.0 書き方がわからん
     cookie: {
       httpOnly: true,
       maxAge: 12 * 60 * 60 * 1000 // 12 hours
@@ -127,7 +132,11 @@ app.prepare().then(() => {
       store: new MongoStore({
         mongooseConnection: mongoose.connection,
         ttl: 7 * 24 * 60 * 60 // 7 days
-      }),
+      }),// connect-mongo 3.2.0
+      // store: MongoStore.create({
+      //   mongooseConnection: mongoose.connection,
+      //   ttl: 7 * 24 * 60 * 60 // 7 days
+      // }),// connect-mongo 4.2.0 書き方がわからん
       cookie: {
         secure: true,
         httpOnly: true,

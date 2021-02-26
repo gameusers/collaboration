@@ -113,12 +113,12 @@ export default async (req, res) => {
     // --------------------------------------------------
 
     const userCommunityID = lodashGet(req, ['query', 'userCommunityID'], '');
-    const page = lodashGet(req, ['query', 'page'], 1);
-    const limit = lodashGet(req, ['query', 'limit'], '') || process.env.NEXT_PUBLIC_FOLLOW_LIST_LIMIT;
+    const page = parseInt(lodashGet(req, ['query', 'page'], 1), 10);
+    const limit = parseInt(lodashGet(req, ['query', 'limit'], '') || process.env.NEXT_PUBLIC_FOLLOW_LIST_LIMIT, 10);
 
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
-    lodashSet(requestParametersObj, ['page'], page);
-    lodashSet(requestParametersObj, ['limit'], limit);
+    lodashSet(requestParametersObj, ['page'], lodashGet(req, ['query', 'page'], ''));
+    lodashSet(requestParametersObj, ['limit'], lodashGet(req, ['query', 'limit'], ''));
 
 
 

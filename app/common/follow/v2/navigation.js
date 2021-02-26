@@ -99,8 +99,9 @@ const Component = (props) => {
 
   const {
 
-    pageType,
-    listType,
+    contentsOrList,
+    category,
+    contents,
     userID,
 
   } = props;
@@ -149,12 +150,12 @@ const Component = (props) => {
   // --------------------------------------------------
 
   /**
-   * ページタイプを変更する / ページを移動する
-   * @param {string} newListType - [gc / uc / ur]
+   * カテゴリーを変更する / ページを移動する
+   * @param {string} newCategory - [all / gc / uc / ur]
    */
-  const handleChangePageType = async ({
+  const handleChangeCategory = async ({
 
-    newPageType,
+    newCategory,
 
   }) => {
 
@@ -163,9 +164,9 @@ const Component = (props) => {
     //   URL
     // ---------------------------------------------
 
-    let url = `/ur/${userID}/follow/${newPageType}`;
+    let url = `/ur/${userID}/follow/${newCategory}`;
 
-    if (newPageType === 'all') {
+    if (newCategory === 'all') {
       url = `/ur/${userID}/follow`;
     }
 
@@ -272,7 +273,7 @@ const Component = (props) => {
             <a className="link">
               <span
                 css={css`
-                  ${pageType === 'contents' && 'font-weight: bold'};
+                  ${contentsOrList === 'contents' && 'font-weight: bold'};
                 `}
               >
                 コンテンツ
@@ -290,7 +291,7 @@ const Component = (props) => {
             <a className="link">
               <span
                 css={css`
-                  ${pageType === 'list' && 'font-weight: bold'};
+                  ${contentsOrList === 'list' && 'font-weight: bold'};
                 `}
               >
                 一覧
@@ -305,8 +306,8 @@ const Component = (props) => {
 
 
 
-      {/* タイプ */}
-      {pageType === 'contents'
+      {/* コンテンツまたはリスト */}
+      {contentsOrList === 'contents'
       
       ?
 
@@ -321,11 +322,11 @@ const Component = (props) => {
             <FormControl>
 
               <Select
-                value={listType}
-                onChange={(eventObj) => handleChangePageType({ newPageType: eventObj.target.value })}
+                value={category}
+                onChange={(eventObj) => handleChangeCategory({ newCategory: eventObj.target.value })}
                 inputProps={{
-                  name: 'listType',
-                  id: 'listType',
+                  name: 'category',
+                  id: 'category',
                 }}
               >
                 <MenuItem value="all">すべて</MenuItem>
@@ -387,11 +388,11 @@ const Component = (props) => {
           <FormControl>
 
             <Select
-              value={listType}
+              value={category}
               onChange={(eventObj) => handleChangeListType({ newListType: eventObj.target.value })}
               inputProps={{
-                name: 'listType',
-                id: 'listType',
+                name: 'category',
+                id: 'category',
               }}
             >
               <MenuItem value="gc">ゲームコミュニティ</MenuItem>

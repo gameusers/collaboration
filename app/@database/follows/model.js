@@ -34,7 +34,9 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 const SchemaFollows = require('./schema');
 const SchemaForumThreads = require('../forum-threads/schema.js');
 const SchemaForumComments = require('../forum-comments/schema.js');
-const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
+const SchemaRecruitmentThreads = require('../recruitment-threads/schema.js');
+const SchemaRecruitmentComments = require('../recruitment-comments/schema.js');
+// const SchemaImagesAndVideos = require('../images-and-videos/schema.js');
 const SchemaGameCommunities = require('../game-communities/schema.js');
 const SchemaUserCommunities = require('../user-communities/schema.js');
 
@@ -1347,6 +1349,8 @@ const findFollowContents = async ({
   localeObj,
   loginUsers_id,
   users_id,
+  category = 'all',
+  contents = 'all',
   period = process.env.NEXT_PUBLIC_FOLLOW_CONTENTS_PERIOD,
   page = 1,
   limit = process.env.NEXT_PUBLIC_FOLLOW_CONTENTS_LIMIT,
@@ -1400,6 +1404,7 @@ const findFollowContents = async ({
     let gameCommunities_idsArr = [];
     let userCommunities_idsArr = [];
     let users_idsArr = [];
+    let checkUnauthorizedUserCommunities_idsArr = [];
 
     for (let valueObj of docFollowsArr.values()) {
 
@@ -1410,6 +1415,7 @@ const findFollowContents = async ({
       } else if (valueObj.userCommunities_id) {
 
         userCommunities_idsArr.push(valueObj.userCommunities_id);
+        checkUnauthorizedUserCommunities_idsArr.push(valueObj.userCommunities_id);
         
       } else if (valueObj.users_id) {
 
@@ -1420,114 +1426,208 @@ const findFollowContents = async ({
     }
 
 
+    // --------------------------------------------------
+    //   category の指定がある場合は、必要のない _id の入った配列を空にする
+    // --------------------------------------------------
+
+    if (category === 'gc') {
+
+      userCommunities_idsArr = [];
+      users_idsArr = [];
+
+    } else if (category === 'uc') {
+
+      gameCommunities_idsArr = [];
+      users_idsArr = [];
+
+    } else if (category === 'ur') {
+
+      gameCommunities_idsArr = [];
+      userCommunities_idsArr = [];
+
+    }
+
+
 
 
     // --------------------------------------------------
     //  フォローしたユーザーのコンテンツを取得する 
-    //  フォーラム＆募集の最新投稿から gameCommunities_id を userCommunities_id を取得する
+    //  フォーラム＆募集の最新投稿から forumThreads_id を recruitmentThreads_id を取得する
+    //   本人のみに表示する
     // --------------------------------------------------
     
-    if (loginUsers_id && users_id && loginUsers_id === users_id) {
+    let docContentsIdsUrArr = [];
+
+    if ((category === 'all' || category === 'ur') && (loginUsers_id && users_id && loginUsers_id === users_id)) {
 
 
-      const docForumRecruitmentIdsArr = await SchemaForumComments.aggregate([
-
-
-        // --------------------------------------------------
-        //   $unionWith
-        // --------------------------------------------------
-  
-        { $unionWith: "recruitment-comments" },
-        { $unionWith: "recruitment-replies" },
-  
-  
-        // --------------------------------------------------
-        //   Match Condition Array
-        // --------------------------------------------------
-  
-        {
-          $match: {
-            users_id: { $in: users_idsArr },
-            updatedDate: { $gte: datePeriod }
-          }
-        },
-  
-  
-        // --------------------------------------------------
-        //   $project
-        // --------------------------------------------------
-  
-        {
-          $project: {
-            _id: 1,
-            gameCommunities_id: 1,
-            userCommunities_id: 1,
-          }
-        },
-  
-  
-      ]).exec();
-  
-  
       // --------------------------------------------------
-      //   ループで gameCommunities_idsArr と userCommunities_idsArr に追加する
+      //   all
+      // --------------------------------------------------
+
+      if (contents === 'all') {
+
+        docContentsIdsUrArr = await SchemaForumComments.aggregate([
+
+
+          // --------------------------------------------------
+          //   $unionWith
+          // --------------------------------------------------
+    
+          { $unionWith: "recruitment-comments" },
+          { $unionWith: "recruitment-replies" },
+    
+    
+          // --------------------------------------------------
+          //   Match Condition Array
+          // --------------------------------------------------
+    
+          {
+            $match: {
+              users_id: { $in: users_idsArr },
+              updatedDate: { $gte: datePeriod }
+            }
+          },
+    
+    
+          // --------------------------------------------------
+          //   $project
+          // --------------------------------------------------
+    
+          {
+            $project: {
+              _id: 0,
+              userCommunities_id: 1,
+              forumThreads_id: 1,
+              recruitmentThreads_id: 1,
+            }
+          },
+    
+    
+        ]).exec();
+
+
+      // --------------------------------------------------
+      //   forum
+      // --------------------------------------------------
+
+      } else if (contents === 'forum') {
+
+        docContentsIdsUrArr = await SchemaForumComments.aggregate([
+    
+    
+          // --------------------------------------------------
+          //   Match Condition Array
+          // --------------------------------------------------
+    
+          {
+            $match: {
+              users_id: { $in: users_idsArr },
+              updatedDate: { $gte: datePeriod }
+            }
+          },
+    
+    
+          // --------------------------------------------------
+          //   $project
+          // --------------------------------------------------
+    
+          {
+            $project: {
+              _id: 0,
+              userCommunities_id: 1,
+              forumThreads_id: 1,
+            }
+          },
+    
+    
+        ]).exec();
+
+
+      // --------------------------------------------------
+      //   forum
+      // --------------------------------------------------
+
+      } else if (contents === 'rec') {
+
+        docContentsIdsUrArr = await SchemaRecruitmentComments.aggregate([
+
+
+          // --------------------------------------------------
+          //   $unionWith
+          // --------------------------------------------------
+    
+          { $unionWith: "recruitment-replies" },
+    
+    
+          // --------------------------------------------------
+          //   Match Condition Array
+          // --------------------------------------------------
+    
+          {
+            $match: {
+              users_id: { $in: users_idsArr },
+              updatedDate: { $gte: datePeriod }
+            }
+          },
+    
+    
+          // --------------------------------------------------
+          //   $project
+          // --------------------------------------------------
+    
+          {
+            $project: {
+              _id: 0,
+              recruitmentThreads_id: 1,
+            }
+          },
+    
+    
+        ]).exec();
+
+      }
+
+
+      // --------------------------------------------------
+      //   checkUnauthorizedUserCommunities_idsArr に userCommunities_id を追加する
+      //   これはクローズドユーザーコミュニティの表示権限を調べるための配列
       // --------------------------------------------------
   
-      for (let valueObj of docForumRecruitmentIdsArr.values()) {
+      for (let valueObj of docContentsIdsUrArr.values()) {
   
-        if (valueObj.gameCommunities_id) {
-  
-          gameCommunities_idsArr.push(valueObj.gameCommunities_id);
-  
-        } else if (valueObj.userCommunities_id) {
-  
-          userCommunities_idsArr.push(valueObj.userCommunities_id);
-          
+        if (valueObj.userCommunities_id) {
+          checkUnauthorizedUserCommunities_idsArr.push(valueObj.userCommunities_id);
         }
   
       }
-  
-  
+
+
       // --------------------------------------------------
       //   配列の重複している値を削除
       // --------------------------------------------------
   
-      gameCommunities_idsArr = Array.from(new Set(gameCommunities_idsArr));
-      userCommunities_idsArr = Array.from(new Set(userCommunities_idsArr));
+      checkUnauthorizedUserCommunities_idsArr = Array.from(new Set(checkUnauthorizedUserCommunities_idsArr));
 
-
+      
     }
 
+
+    console.log(`
+      ----- checkUnauthorizedUserCommunities_idsArr -----\n
+      ${util.inspect(checkUnauthorizedUserCommunities_idsArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-
-
-    // console.log(`
-    //   ----- docForumRecruitmentIdsArr -----\n
-    //   ${util.inspect(docForumRecruitmentIdsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- gameCommunities_idsArr -----\n
-    //   ${util.inspect(gameCommunities_idsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- userCommunities_idsArr -----\n
-    //   ${util.inspect(userCommunities_idsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-
-
 
     // --------------------------------------------------
     //   ログインしているユーザーが同じクローズドコミュニティに入っていない場合は
     //   コンテンツを表示する権限がないため userCommunities_idsArr 配列から userCommunities_id を削除する
     // --------------------------------------------------
 
-    if (userCommunities_idsArr.length > 0) {
+    const unauthorizedUserCommunities_idsArr = [];
+
+    if (checkUnauthorizedUserCommunities_idsArr.length > 0) {
 
 
       // --------------------------------------------------
@@ -1543,7 +1643,7 @@ const findFollowContents = async ({
   
         {
           $match: {
-            _id: { $in: userCommunities_idsArr },
+            _id: { $in: checkUnauthorizedUserCommunities_idsArr },
             communityType: 'closed',
           }
         },
@@ -1619,14 +1719,81 @@ const findFollowContents = async ({
           if (index !== 1) {
             userCommunities_idsArr.splice(index, 1);
           }
+          // console.log('aaaa');
+          unauthorizedUserCommunities_idsArr.push(valueObj._id);
           
         }
+
+        // console.log(`
+        //   ----- followedArr -----\n
+        //   ${util.inspect(followedArr, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
         
       }
 
 
     }
 
+
+    // --------------------------------------------------
+    //   ループで forumThreads_idsArr と recruitmentThreads_idsArr に追加する
+    // --------------------------------------------------
+
+    const forumRecruitmentThreads_idsArr = [];
+
+    for (let valueObj of docContentsIdsUrArr.values()) {
+
+      // console.log(`
+      //   ----- valueObj -----\n
+      //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // 表示する権限がないユーザーコミュニティのコンテンツは除く
+      if (!unauthorizedUserCommunities_idsArr.includes(valueObj.userCommunities_id)) {
+        
+        if (valueObj.forumThreads_id) {
+
+          forumRecruitmentThreads_idsArr.push(valueObj.forumThreads_id);
+  
+        } else if (valueObj.recruitmentThreads_id) {
+  
+          forumRecruitmentThreads_idsArr.push(valueObj.recruitmentThreads_id);
+          
+        }
+
+      }
+
+    }
+
+
+
+
+    console.log(`
+      ----- unauthorizedUserCommunities_idsArr -----\n
+      ${util.inspect(unauthorizedUserCommunities_idsArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+
+    console.log(`
+      ----- gameCommunities_idsArr -----\n
+      ${util.inspect(gameCommunities_idsArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+
+    console.log(`
+      ----- userCommunities_idsArr -----\n
+      ${util.inspect(userCommunities_idsArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+
+    console.log(`
+      ----- forumRecruitmentThreads_idsArr -----\n
+      ${util.inspect(forumRecruitmentThreads_idsArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
 
 
 
@@ -1638,107 +1805,315 @@ const findFollowContents = async ({
     //   検索条件
     // ---------------------------------------------
 
-    const conditionObj = {
+    const orArr = [];
 
-      $or: [
-        { gameCommunities_id: { $in: gameCommunities_idsArr } },
-        { userCommunities_id: { $in: userCommunities_idsArr } },
-        // { users_id: { $in: users_idsArr } },
-      ],
+    if (gameCommunities_idsArr.length > 0) {
 
-      updatedDate: { $gte: datePeriod }
-      // updatedDate: { $gte: moment().utc().add(-(intPeriod), 'minutes').toDate() }
-      // updatedDate: { $gte: new Date("2018-02-05T12:00:00.000Z") }
+      orArr.push({
+        gameCommunities_id: { $in: gameCommunities_idsArr }
+      });
+
+    }
+    
+    if (userCommunities_idsArr.length > 0) {
+
+      orArr.push({
+        userCommunities_id: { $in: userCommunities_idsArr }
+      });
+
+    }
+
+    if (forumRecruitmentThreads_idsArr.length > 0) {
+
+      orArr.push({
+        _id: { $in: forumRecruitmentThreads_idsArr }
+      });
 
     }
 
 
+    const conditionObj = {
+
+      $or: orArr,
+      updatedDate: { $gte: datePeriod }
+
+    }
 
 
     // --------------------------------------------------
-    //   スレッドと募集の総数を取得
+    //   検索条件がない場合は処理停止
     // --------------------------------------------------
+    
+    if (orArr.length === 0) {
 
-    const threadCountObj = await SchemaForumThreads.aggregate([
-
-
-      // --------------------------------------------------
-      //   $unionWith
-      // --------------------------------------------------
-
-      { $unionWith: "recruitment-threads" },
+    }
 
 
-      // --------------------------------------------------
-      //   Match Condition Array
-      // --------------------------------------------------
-
-      {
-        $match: conditionObj
-      },
-
-
-      // --------------------------------------------------
-      //   $group
-      // --------------------------------------------------
-
-      { $group: { _id: null, n: { $sum: 1 } } }
-
-
-    ]).exec();
+    console.log(`
+      ----- conditionObj -----\n
+      ${util.inspect(conditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
 
 
 
 
     // --------------------------------------------------
-    //   スレッドと募集の _id を取得するためのデータ
+    //   コンテンツ取得
     // --------------------------------------------------
 
-    const docContentsIdsArr = await SchemaForumThreads.aggregate([
+    let threadCountObj = {};
+    let docContentsIdsArr = [];
+    
+
+    // --------------------------------------------------
+    //   すべて
+    // --------------------------------------------------
+
+    if (contents === 'all') {
 
 
       // --------------------------------------------------
-      //   $unionWith
+      //   総数を取得
       // --------------------------------------------------
 
-      { $unionWith: "recruitment-threads" },
+      threadCountObj = await SchemaForumThreads.aggregate([
+
+
+        // --------------------------------------------------
+        //   $unionWith
+        // --------------------------------------------------
+  
+        { $unionWith: "recruitment-threads" },
+  
+  
+        // --------------------------------------------------
+        //   Match Condition Array
+        // --------------------------------------------------
+  
+        {
+          $match: conditionObj
+        },
+  
+  
+        // --------------------------------------------------
+        //   $group
+        // --------------------------------------------------
+  
+        { $group: { _id: null, n: { $sum: 1 } } }
+  
+  
+      ]).exec();
+  
+
+
+  
+      // --------------------------------------------------
+      //   _id を取得するためのデータ
+      // --------------------------------------------------
+  
+      docContentsIdsArr = await SchemaForumThreads.aggregate([
+  
+  
+        // --------------------------------------------------
+        //   $unionWith
+        // --------------------------------------------------
+  
+        { $unionWith: "recruitment-threads" },
+  
+  
+        // --------------------------------------------------
+        //   Match Condition Array
+        // --------------------------------------------------
+  
+        {
+          $match: conditionObj
+        },
+  
+  
+        // --------------------------------------------------
+        //   $sort / $skip / $limit
+        // --------------------------------------------------
+  
+        { $sort: { updatedDate: -1 } },
+        { $skip: (intPage - 1) * intLimit },
+        { $limit: intLimit },
+  
+  
+        // --------------------------------------------------
+        //   $project
+        // --------------------------------------------------
+  
+        {
+          $project: {
+            _id: 1,
+            gameCommunities_id: 1,
+            userCommunities_id: 1,
+            publicInformationsArr: 1,
+          }
+        },
+  
+  
+      ]).exec();
+
+
+    // --------------------------------------------------
+    //   スレッド
+    // --------------------------------------------------
+
+    } else if (contents === 'forum') {
 
 
       // --------------------------------------------------
-      //   Match Condition Array
+      //   総数を取得
       // --------------------------------------------------
 
-      {
-        $match: conditionObj
-      },
+      threadCountObj = await SchemaForumThreads.aggregate([
+  
+  
+        // --------------------------------------------------
+        //   Match Condition Array
+        // --------------------------------------------------
+  
+        {
+          $match: conditionObj
+        },
+  
+  
+        // --------------------------------------------------
+        //   $group
+        // --------------------------------------------------
+  
+        { $group: { _id: null, n: { $sum: 1 } } }
+  
+  
+      ]).exec();
+  
+
+      
+  
+      // --------------------------------------------------
+      //   _id を取得するためのデータ
+      // --------------------------------------------------
+  
+      docContentsIdsArr = await SchemaForumThreads.aggregate([
+  
+  
+        // --------------------------------------------------
+        //   Match Condition Array
+        // --------------------------------------------------
+  
+        {
+          $match: conditionObj
+        },
+  
+  
+        // --------------------------------------------------
+        //   $sort / $skip / $limit
+        // --------------------------------------------------
+  
+        { $sort: { updatedDate: -1 } },
+        { $skip: (intPage - 1) * intLimit },
+        { $limit: intLimit },
+  
+  
+        // --------------------------------------------------
+        //   $project
+        // --------------------------------------------------
+  
+        {
+          $project: {
+            _id: 1,
+            gameCommunities_id: 1,
+            userCommunities_id: 1,
+            publicInformationsArr: 1,
+          }
+        },
+  
+  
+      ]).exec();
+
+
+    // --------------------------------------------------
+    //   募集
+    // --------------------------------------------------
+
+    } else if (contents === 'rec') {
 
 
       // --------------------------------------------------
-      //   $sort / $skip / $limit
+      //   総数を取得
       // --------------------------------------------------
 
-      { $sort: { updatedDate: -1 } },
-      { $skip: (intPage - 1) * intLimit },
-      { $limit: intLimit },
+      threadCountObj = await SchemaRecruitmentThreads.aggregate([
 
+
+        // --------------------------------------------------
+        //   Match Condition Array
+        // --------------------------------------------------
+
+        {
+          $match: conditionObj
+        },
+
+
+        // --------------------------------------------------
+        //   $group
+        // --------------------------------------------------
+
+        { $group: { _id: null, n: { $sum: 1 } } }
+
+
+      ]).exec();
+
+
+      
 
       // --------------------------------------------------
-      //   $project
+      //   _id を取得するためのデータ
       // --------------------------------------------------
 
-      {
-        $project: {
-          _id: 1,
-          gameCommunities_id: 1,
-          userCommunities_id: 1,
-          publicInformationsArr: 1,
-        }
-      },
+      docContentsIdsArr = await SchemaRecruitmentThreads.aggregate([
 
 
-    ]).exec();
+        // --------------------------------------------------
+        //   Match Condition Array
+        // --------------------------------------------------
+
+        {
+          $match: conditionObj
+        },
 
 
+        // --------------------------------------------------
+        //   $sort / $skip / $limit
+        // --------------------------------------------------
+
+        { $sort: { updatedDate: -1 } },
+        { $skip: (intPage - 1) * intLimit },
+        { $limit: intLimit },
+
+
+        // --------------------------------------------------
+        //   $project
+        // --------------------------------------------------
+
+        {
+          $project: {
+            _id: 1,
+            gameCommunities_id: 1,
+            userCommunities_id: 1,
+            publicInformationsArr: 1,
+          }
+        },
+
+
+      ]).exec();
+
+
+    }
+
+    
 
 
     // --------------------------------------------------
@@ -1882,47 +2257,55 @@ const findFollowContents = async ({
     //   フォーラム
     // ---------------------------------------------
 
-    returnObj.forumObj = await ModelForumThreads.findForumCommon({
+    if (forumThreads_idsArr.length > 0) {
 
-      req,
-      localeObj,
-      loginUsers_id,
-      matchConditionArr: [
-        {
-          $match: {
-            _id: { $in: forumThreads_idsArr }
-          },
-        }
-      ],
-      sortSkipLimitArr: [],
-      commentLimit: forumCommentLimit,
-      replyLimit: forumReplyLimit,
+      returnObj.forumObj = await ModelForumThreads.findForumCommon({
 
-    });
+        req,
+        localeObj,
+        loginUsers_id,
+        matchConditionArr: [
+          {
+            $match: {
+              _id: { $in: forumThreads_idsArr }
+            },
+          }
+        ],
+        sortSkipLimitArr: [],
+        commentLimit: forumCommentLimit,
+        replyLimit: forumReplyLimit,
+
+      });
+
+    }
 
 
     // ---------------------------------------------
     //   募集
     // ---------------------------------------------
 
-    returnObj.recruitmentObj = await ModelRecruitmentThreads.findRecruitmentCommon({
+    if (recruitmentThreads_idsArr.length > 0) {
 
-      req,
-      localeObj,
-      loginUsers_id,
-      matchConditionArr: [
-        {
-          $match: {
-            _id: { $in: recruitmentThreads_idsArr }
-          },
-        }
-      ],
-      sortSkipLimitArr: [],
-      format: true,
-      commentLimit: recruitmentCommentLimit,
-      replyLimit: recruitmentReplyLimit,
+      returnObj.recruitmentObj = await ModelRecruitmentThreads.findRecruitmentCommon({
 
-    });
+        req,
+        localeObj,
+        loginUsers_id,
+        matchConditionArr: [
+          {
+            $match: {
+              _id: { $in: recruitmentThreads_idsArr }
+            },
+          }
+        ],
+        sortSkipLimitArr: [],
+        format: true,
+        commentLimit: recruitmentCommentLimit,
+        replyLimit: recruitmentReplyLimit,
+  
+      });
+
+    }
 
 
 

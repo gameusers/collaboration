@@ -4,12 +4,11 @@
   "description": "Game Users Node.js Version. 現在、collaborationリポジトリを使用していますが、Node.jsバージョンが形になったら新規リポジトリに移し替えます。collaborationリポジトリは共同開発のテスト用として作られたリポジトリです。",
   "main": "public/js/build.js",
   "scripts": {
-    "nodemon:start": "nodemon node server.js",
-    "mongo-express:start": "cd node_modules/mongo-express/ && ME_CONFIG_MONGODB_ENABLE_ADMIN=true node --icu-data-dir=../full-icu app.js",
-    "dev": "NODE_ICU_DATA=node_modules/full-icu NODE_ENV=development run-p nodemon:start",
+    "mongo-express:start": "cd node_modules/mongo-express/ && ME_CONFIG_MONGODB_ENABLE_ADMIN=true node app.js",
+    "dev": "NODE_ENV=development node --max-old-space-size=4096 server.js",
     "build": "next build && node app/@modules/service-worker/merge.js",
-    "start": "NODE_ICU_DATA=node_modules/full-icu NODE_ENV=production node server.js",
-    "production:start": "NODE_ICU_DATA=node_modules/full-icu NODE_ENV=production forever start server.js"
+    "start": "NODE_ENV=production node server.js",
+    "production:start": "NODE_ENV=production forever start server.js"
   },
   "homepage": "https://gameusers.org/",
   "author": {

@@ -41,7 +41,7 @@ import { CustomError } from 'app/@modules/error/custom.js';
 // ---------------------------------------------
 
 import { validationInteger } from 'app/@validations/integer.js';
-import { validationFollowPeriod, validationFollowLimit } from 'app/@database/follows/validations/follow-limit.js';
+import { validationFollowCategory, validationFollowContents ,validationFollowPeriod, validationFollowLimit } from 'app/@database/follows/validations/follow-limit.js';
 import { validationForumCommentsLimit, validationForumRepliesLimit } from 'app/@database/forum-comments/validations/limit.js';
 import { validationRecruitmentCommentsLimit } from 'app/@database/recruitment-comments/validations/limit.js';
 import { validationRecruitmentRepliesLimit } from 'app/@database/recruitment-replies/validations/limit.js';
@@ -115,6 +115,8 @@ export default async (req, res) => {
     // --------------------------------------------------
 
     const userID = lodashGet(req, ['query', 'userID'], '');
+    const category = lodashGet(req, ['query', 'category'], '');
+    const contents = lodashGet(req, ['query', 'contents'], '');
     const period = parseInt(lodashGet(req, ['query', 'period'], ''), 10);
     const page = parseInt(lodashGet(req, ['query', 'page'], 1), 10);
     const limit = parseInt(lodashGet(req, ['query', 'limit'], ''), 10);
@@ -124,6 +126,8 @@ export default async (req, res) => {
     const recruitmentReplyLimit = parseInt(lodashGet(req, ['query', 'recruitmentReplyLimit'], ''), 10);
     
     lodashSet(requestParametersObj, ['userID'], userID);
+    lodashSet(requestParametersObj, ['category'], category);
+    lodashSet(requestParametersObj, ['contents'], contents);
     lodashSet(requestParametersObj, ['period'], lodashGet(req, ['query', 'period'], ''));
     lodashSet(requestParametersObj, ['page'], lodashGet(req, ['query', 'page'], ''));
     lodashSet(requestParametersObj, ['limit'], lodashGet(req, ['query', 'limit'], ''));
@@ -160,6 +164,25 @@ export default async (req, res) => {
 
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'rytBKA_Sq', messageID: 'Error' }] });
+
+    }
+
+
+    // console.log(chalk`
+    // category: {green ${category}}
+    // contents: {green ${contents}}
+    // users_id: {green ${users_id}}
+    // loginUsers_id: {green ${loginUsers_id}}
+    // `);
+
+    // --------------------------------------------------
+    //   フォローしているユーザーのコンテンツを表示できるのはユーザー自身のみ、それ以外はエラー
+    // --------------------------------------------------
+
+    if (category === 'ur' && users_id !== loginUsers_id) {
+
+      statusCode = 403;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Oe5muRlPx', messageID: 'Error' }] });
 
     }
 
@@ -227,6 +250,14 @@ export default async (req, res) => {
 
     };
 
+
+    if (await validationFollowCategory({ throwError: false, required: true, value: category }).error === false) {
+      argumentsObj.category = category;
+    }
+
+    if (await validationFollowContents({ throwError: false, required: true, value: contents }).error === false) {
+      argumentsObj.contents = contents;
+    }
 
     if (await validationFollowPeriod({ throwError: false, required: true, value: period }).error === false) {
       argumentsObj.period = period;

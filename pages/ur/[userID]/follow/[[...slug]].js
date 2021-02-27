@@ -163,11 +163,12 @@ const ContainerLayout = (props) => {
       />
 
       <FollowNavigation
+        accessLevel={props.accessLevel}
+        userID={props.userID}
         contentsOrList={props.contentsOrList}
         category={props.category}
         contents={props.contents}
-        userID={props.userID}
-        followContentsPeriod={props.followContentsPeriod}
+        period={props.period}
       />
 
       <FeedSidebar
@@ -329,14 +330,47 @@ export async function getServerSideProps({ req, res, query }) {
   let contents = 'all';
   let page = 1;
 
-  if (Math.sign(slugsArr[0]) === 1) {
-    page = slugsArr[0];
+  if (slugsArr[0] === 'forum' || slugsArr[0] === 'rec') {
+
+    contents = slugsArr[0];
+
+  } else if (slugsArr[0] === 'gc' || slugsArr[0] === 'uc' || slugsArr[0] === 'ur') {
+
+    category = slugsArr[0];
+
+    if (slugsArr[1] === 'forum' || slugsArr[1] === 'rec') {
+      contents = slugsArr[1];
+    }
+
   }
+  
+  if (Math.sign(slugsArr[0]) === 1) {
+
+    page = slugsArr[0];
+
+  } else if (Math.sign(slugsArr[1]) === 1) {
+
+    page = slugsArr[1];
+
+  } else if (Math.sign(slugsArr[2]) === 1) {
+
+    page = slugsArr[2];
+
+  }
+
+
   // console.log(`
   //   ----- slugsArr -----\n
   //   ${util.inspect(slugsArr, { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
+
+  // console.log(chalk`
+  // category: {green ${category}}
+  // contents: {green ${contents}}
+  // page: {green ${page}}
+  // `);
+
 
   // --------------------------------------------------
   //   Property
@@ -351,7 +385,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   const termsOfServiceAgreedVersion = getCookie({ key: 'termsOfServiceAgreedVersion', reqHeadersCookie });
   
-  const followContentsPeriod = getCookie({ key: 'followContentsPeriod', reqHeadersCookie });
+  const period = getCookie({ key: 'followContentsPeriod', reqHeadersCookie });
   const limit = getCookie({ key: 'followContentsLimit', reqHeadersCookie });
 
   const forumCommentLimit = getCookie({ key: 'forumCommentLimit', reqHeadersCookie });
@@ -369,7 +403,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   const resultObj = await fetchWrapper({
 
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}/follow/contents?period=${followContentsPeriod}&page=${page}&limit=${limit}&forumCommentLimit=${forumCommentLimit}&forumReplyLimit=${forumReplyLimit}&recruitmentCommentLimit=${recruitmentCommentLimit}&recruitmentReplyLimit=${recruitmentReplyLimit}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}/follow/contents?category=${category}&contents=${contents}&period=${period}&page=${page}&limit=${limit}&forumCommentLimit=${forumCommentLimit}&forumReplyLimit=${forumReplyLimit}&recruitmentCommentLimit=${recruitmentCommentLimit}&recruitmentReplyLimit=${recruitmentReplyLimit}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -561,9 +595,8 @@ export async function getServerSideProps({ req, res, query }) {
       contentsOrList,
       category,
       contents,
-      // users_id,
-      
-      followContentsPeriod,
+      period,
+
       pageObj,
       forumThreadsObj,
       forumCommentsObj,

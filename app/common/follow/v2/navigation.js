@@ -99,10 +99,12 @@ const Component = (props) => {
 
   const {
 
-    contentsOrList,
-    category,
-    contents,
+    accessLevel,
     userID,
+    contentsOrList,
+    // category,
+    // contents,
+    // period,
 
   } = props;
 
@@ -131,9 +133,10 @@ const Component = (props) => {
   const intl = useIntl();
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
-  // const [searchHardwaresArr, setSearchHardwaresArr] = useState(hardwaresArr);
-  // const [searchKeyword, setSearchKeyword] = useState(keyword);
-  // const [anchorEl, setAnchorEl] = useState(null);
+  // const [contentsOrList, setContentsOrList] = useState(props.contentsOrList);
+  const [category, setCategory] = useState(props.category);
+  const [contents, setContents] = useState(props.contents);
+  const [period, setPeriod] = useState(props.period || parseInt(process.env.NEXT_PUBLIC_FOLLOW_CONTENTS_PERIOD, 10));
 
 
   useEffect(() => {
@@ -148,34 +151,76 @@ const Component = (props) => {
   // --------------------------------------------------
   //   Handler
   // --------------------------------------------------
-
+  
   /**
-   * カテゴリーを変更する / ページを移動する
+   * 変更する / ページを移動する
    * @param {string} newCategory - [all / gc / uc / ur]
+   * @param {string} newContents - [all / forum / rec]
+   * @param {string} newPeriod - [360 / 720 / 1440 / 4320 / 7200 / 14400 / 21600 / 43200]
    */
-  const handleChangeCategory = async ({
+  const handleChange = async ({
 
     newCategory,
+    newContents,
+    newPeriod,
 
   }) => {
+
+
+    // ---------------------------------------------
+    //   Category
+    // ---------------------------------------------
+
+    const currentCategory = newCategory || category;
+
+    if (newCategory) {
+      setCategory(newCategory);
+    }
+
+
+    // ---------------------------------------------
+    //   Contents
+    // ---------------------------------------------
+
+    const currentContents = newContents || contents;
+
+    if (newContents) {
+      setContents(newContents);
+    }
+
+
+    // ---------------------------------------------
+    //   Period
+    // ---------------------------------------------
+
+    if (newPeriod) {
+      setPeriod(newPeriod);
+    }
 
 
     // ---------------------------------------------
     //   URL
     // ---------------------------------------------
 
-    let url = `/ur/${userID}/follow/${newCategory}`;
+    const urlCategory = currentCategory === 'all' ? '' : `/${currentCategory}`;
+    const urlContents = currentContents === 'all' ? '' : `/${currentContents}`;
 
-    if (newCategory === 'all') {
-      url = `/ur/${userID}/follow`;
-    }
+    const url = `/ur/${userID}/follow${urlCategory}${urlContents}`;
+
+
+    // console.log(chalk`
+    // newCategory: {green ${newCategory}}
+    // category: {green ${category}}
+    // contents: {green ${contents}}
+    // url: {green ${url}}
+    // `);
 
 
     // ---------------------------------------------
     //   Router.push = History API pushState()
     // ---------------------------------------------
 
-    Router.push(url);
+    // Router.push(url);
 
 
   };
@@ -210,7 +255,7 @@ const Component = (props) => {
   //   Property
   // --------------------------------------------------
 
-  const followContentsPeriod = props.followContentsPeriod || parseInt(process.env.NEXT_PUBLIC_FOLLOW_CONTENTS_PERIOD, 10);;
+  // const followContentsPeriod = props.followContentsPeriod || parseInt(process.env.NEXT_PUBLIC_FOLLOW_CONTENTS_PERIOD, 10);
   
 
 
@@ -315,31 +360,53 @@ const Component = (props) => {
 
           <div
             css={css`
-              margin: 16px 0 0 0;
+              margin: 20px 0 0 0;
             `}
           >
 
             <FormControl>
 
-              <Select
-                value={category}
-                onChange={(eventObj) => handleChangeCategory({ newCategory: eventObj.target.value })}
-                inputProps={{
-                  name: 'category',
-                  id: 'category',
-                }}
-              >
-                <MenuItem value="all">すべて</MenuItem>
-                <MenuItem value="gc">ゲームコミュニティ</MenuItem>
-                <MenuItem value="uc">ユーザーコミュニティ</MenuItem>
-                <MenuItem value="ur">ユーザー</MenuItem>
-              </Select>
+              {accessLevel >= 50
 
-              <FormHelperText>表示するコンテンツ</FormHelperText>
+              ?
+
+                <Select
+                  value={category}
+                  onChange={(eventObj) => handleChange({ newCategory: eventObj.target.value })}
+                  inputProps={{
+                    name: 'category',
+                    id: 'category',
+                  }}
+                >
+                  <MenuItem value="all">すべて</MenuItem>
+                  <MenuItem value="gc">ゲームコミュニティ</MenuItem>
+                  <MenuItem value="uc">ユーザーコミュニティ</MenuItem>
+                  <MenuItem value="ur">ユーザー</MenuItem>
+                </Select>
+
+              :
+
+                <Select
+                  value={category}
+                  onChange={(eventObj) => handleChange({ newCategory: eventObj.target.value })}
+                  inputProps={{
+                    name: 'category',
+                    id: 'category',
+                  }}
+                >
+                  <MenuItem value="all">すべて</MenuItem>
+                  <MenuItem value="gc">ゲームコミュニティ</MenuItem>
+                  <MenuItem value="uc">ユーザーコミュニティ</MenuItem>
+                </Select>
+
+              }
+
+              <FormHelperText>表示するカテゴリー</FormHelperText>
 
             </FormControl>
 
           </div>
+
 
 
 
@@ -352,11 +419,41 @@ const Component = (props) => {
             <FormControl>
 
               <Select
-                value={followContentsPeriod}
-                // onChange={(eventObj) => handleChangeListType({ newListType: eventObj.target.value })}
+                value={contents}
+                onChange={(eventObj) => handleChange({ newContents: eventObj.target.value })}
                 inputProps={{
-                  name: 'followContentsPeriod',
-                  id: 'followContentsPeriod',
+                  name: 'contents',
+                  id: 'contents',
+                }}
+              >
+                <MenuItem value="all">すべて</MenuItem>
+                <MenuItem value="forum">フォーラム</MenuItem>
+                <MenuItem value="rec">募集</MenuItem>
+              </Select>
+
+              <FormHelperText>表示するコンテンツ</FormHelperText>
+
+            </FormControl>
+
+          </div>
+
+
+
+
+          <div
+            css={css`
+              margin: 12px 0 0 0;
+            `}
+          >
+
+            <FormControl>
+
+              <Select
+                value={period}
+                onChange={(eventObj) => handleChange({ newPeriod: eventObj.target.value })}
+                inputProps={{
+                  name: 'period',
+                  id: 'period',
                 }}
               >
                 <MenuItem value="360">6時間</MenuItem>
@@ -381,7 +478,7 @@ const Component = (props) => {
 
         <div
           css={css`
-            margin: 16px 0 0 0;
+            margin: 20px 0 0 0;
           `}
         >
 

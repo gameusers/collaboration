@@ -160,6 +160,7 @@ export default async (req, res) => {
 
     });
 
+    const users_id = lodashGet(docObj, ['users_id'], '');
     const gameCommunities_id = lodashGet(docObj, ['gameCommunities_id'], '');
     const recruitmentThreads_id = lodashGet(docObj, ['recruitmentThreads_id'], '');
     const replies = lodashGet(docObj, ['replies'], 0);
@@ -194,6 +195,11 @@ export default async (req, res) => {
     // `);
 
     // console.log(chalk`
+    // loginUsers_id: {green ${loginUsers_id}}
+    // users_id: {green ${users_id}}
+    // `);
+
+    // console.log(chalk`
     //   recruitmentThreads_id: {green ${recruitmentThreads_id}}
     //   replies: {green ${replies}}
     //   images: {green ${images}}
@@ -214,11 +220,6 @@ export default async (req, res) => {
     // --------------------------------------------------
 
     const ISO8601 = moment().utc().toISOString();
-
-
-
-
-
 
 
 
@@ -397,20 +398,24 @@ export default async (req, res) => {
     //   experience
     // --------------------------------------------------
 
-    const experienceObj = await experienceCalculate({
+    if (loginUsers_id && users_id && loginUsers_id === users_id) {
 
-      req,
-      localeObj,
-      loginUsers_id,
-      arr: [{
-        type: 'recruitment-count-post',
-        calculation: 'subtraction',
-      }],
+      const experienceObj = await experienceCalculate({
 
-    });
+        req,
+        localeObj,
+        loginUsers_id,
+        arr: [{
+          type: 'recruitment-count-post',
+          calculation: 'subtraction',
+        }],
 
-    if (Object.keys(experienceObj).length !== 0) {
-      returnObj.experienceObj = experienceObj;
+      });
+
+      if (Object.keys(experienceObj).length !== 0) {
+        returnObj.experienceObj = experienceObj;
+      }
+
     }
 
 

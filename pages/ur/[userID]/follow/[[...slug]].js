@@ -82,12 +82,12 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
 
   const stateLayout = ContainerStateLayout.useContainer();
-  const stateCommunity = ContainerStateCommunity.useContainer();
+  // const stateCommunity = ContainerStateCommunity.useContainer();
   const stateForum = ContainerStateForum.useContainer();
   const stateRecruitment = ContainerStateRecruitment.useContainer();
 
   const { handleScrollTo } = stateLayout;
-  const { setGameCommunityObj, setUserCommunityObj } = stateCommunity;
+  // const { setGameCommunityObj, setUserCommunityObj } = stateCommunity;
   const { setForumThreadsObj, setForumCommentsObj, setForumRepliesObj } = stateForum;
   const { setRecruitmentThreadsObj, setRecruitmentCommentsObj, setRecruitmentRepliesObj } = stateRecruitment;
 
@@ -106,8 +106,8 @@ const ContainerLayout = (props) => {
     //   getServerSideProps でデータを取得してからデータを更新する
     // --------------------------------------------------
 
-    setGameCommunityObj(props.gameCommunityObj);
-    setUserCommunityObj(props.userCommunityObj);
+    // setGameCommunityObj(props.gameCommunityObj);
+    // setUserCommunityObj(props.userCommunityObj);
     setRecruitmentThreadsObj(props.recruitmentThreadsObj);
     setRecruitmentCommentsObj(props.recruitmentCommentsObj);
     setRecruitmentRepliesObj(props.recruitmentRepliesObj);
@@ -165,7 +165,7 @@ const ContainerLayout = (props) => {
       <FollowNavigation
         accessLevel={props.accessLevel}
         userID={props.userID}
-        contentsOrList={props.contentsOrList}
+        contentsOrList="contents"
         category={props.category}
         contents={props.contents}
         period={props.period}
@@ -192,16 +192,12 @@ const ContainerLayout = (props) => {
 
       <FollowContents
         userID={props.userID}
+        category={props.category}
+        contents={props.contents}
         pageObj={props.pageObj}
+        gameCommunityObj={props.gameCommunityObj}
+        userCommunityObj={props.userCommunityObj}
       />
-
-      {/* <FollowMembers
-        category="ur"
-        users_id={props.users_id}
-        accessLevel={props.accessLevel}
-        cardPlayersObj={props.cardPlayersObj}
-        followMembersObj={props.followMembersObj}
-      /> */}
 
     </React.Fragment>
   ;
@@ -251,8 +247,8 @@ const Component = (props) => {
 
   const initialStateObj = {
 
-    gameCommunityObj: props.gameCommunityObj,
-    userCommunityObj: props.userCommunityObj,
+    // gameCommunityObj: props.gameCommunityObj,
+    // userCommunityObj: props.userCommunityObj,
 
     forumThreadsObj: props.forumThreadsObj,
     forumCommentsObj: props.forumCommentsObj,
@@ -325,7 +321,6 @@ export async function getServerSideProps({ req, res, query }) {
   const userID = query.userID;
   const slugsArr = lodashGet(query, ['slug'], []);
 
-  let contentsOrList = 'contents';
   let category = 'all';
   let contents = 'all';
   let page = 1;
@@ -592,7 +587,6 @@ export async function getServerSideProps({ req, res, query }) {
 
       accessLevel,
       userID,
-      contentsOrList,
       category,
       contents,
       period,

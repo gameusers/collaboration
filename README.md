@@ -1,5 +1,5 @@
 <!-- # [Game Users](https://gameusers.org/) -->
-![Game Users Banner](https://gameusers.org/assets/img/social/ogp_image.jpg)
+![Game Users Banner](https://gameusers.org/img/common/social/ogp_image.jpg)
 
 
 [![node](https://img.shields.io/badge/node-v14.16.0-lightgrey.svg)](https://nodejs.org/ja/)
@@ -49,10 +49,17 @@ Docker を利用します。起動していない場合は、以下のコマン�
     sudo service docker start
 <br />
 
-ディレクトリのルートに [docker.sh](https://github.com/gameusers/collaboration/blob/master/docker.sh) というファイルが用意されます。これは起動の処理をまとめたシェルスクリプトです。コンテナの起動、MongoDB のレプリカセットの設定、MongoDB のユーザー追加、サーバーの起動までを行います。以下は例です。配置した場所に合わせてパスを変更して実行してください。
+ディレクトリのルートに [docker.sh](https://github.com/gameusers/collaboration/blob/master/docker.sh) というファイルが用意されます。これは初回起動の処理をまとめたシェルスクリプトです。コンテナの起動、MongoDB のレプリカセットの設定、MongoDB のユーザー追加、サーバーの起動までを行います。以下は例です。配置した場所に合わせてパスを変更して実行してください。
 
     bash /home/（ユーザー名）/gameusers/collaboration/docker.sh
 シェルスクリプトが問題なく実行されればサーバーが起動します。
+<br /><br />
+
+[docker.sh](https://github.com/gameusers/collaboration/blob/master/docker.sh) の実行は初回だけです。以後は以下のコマンドでサーバーを起動してください。
+
+開発を進めているとエラーでサーバーが停止することがあります。その際も Cntl + C で一度停止してから以下のコマンドを入力してください。これは Node.js のコンテナに入って npm run dev を実行するコマンドになります。
+
+    docker exec -it gameusers-node npm run dev
 <br /><br />
 
 
@@ -83,14 +90,7 @@ Docker を利用します。起動していない場合は、以下のコマン�
 <br /><br />
 
 
-## 4. サーバーがエラーで停止した場合
-開発を進めているとエラーでサーバーが停止することがあります。その場合は Cntl + C で一度停止して、以下のコマンドを入力してください。コンテナに入って npm run dev を実行するコマンドです。
-
-    docker exec -it gameusers-node npm run dev
-<br />
-
-
-## 5. その他のコマンド
+## 4. その他のコマンド
 よく使う Docker のコマンドを掲載しておきます。コピペして利用してください。
 
     # Node.js のコンテナで bash を実行する際に入力
@@ -128,7 +128,7 @@ Docker を利用します。起動していない場合は、以下のコマン�
 <br />
 
 
-## 6. docker-compose build でエラーが出る場合
+## 5. docker-compose build でエラーが出る場合
 Docker でイメージを作成する際に以下のようなエラーが出る場合があります。
 
     npm ERR! code EAI_AGAIN
@@ -273,17 +273,15 @@ Node.js が利用できない場合はインストールを行い、利用でき
 # メモリ設定
 
 ## 開発環境で利用できるメモリ量に合わせる
-デフォルトでは Node.js が利用できる最大メモリサイズは 4GB に設定されています。ご利用の開発環境で大きなメモリを扱えない場合は、以下の設定を利用できるメモリの範囲内に収めてください。小さな値に変更した場合は、開発時にメモリが不足して JavaScript heap out of memory というエラーが出ることがあります。このエラー自体は開発ができなくなるような致命的なものではありませんので、できるだけエラーがでなくなるような適切なメモリ量を見つけて設定してください。
+デフォルトでは Node.js が利用できる最大メモリサイズは 4GB に設定されています。ご利用の開発環境で大きなメモリを扱えない場合は、以下の設定を利用できるメモリの範囲内に収めてください。逆にメモリに余裕のある場合は、大きめに設定することでエラーが起きにくくなります。
+
+小さな値に変更した場合は、開発時にメモリが不足して JavaScript heap out of memory というエラーが出ることがあります。このエラー自体は開発ができなくなるような致命的なものではありませんので、できるだけエラーがでなくなるような適切なメモリ量を見つけて設定してください。
 
 
     # package.json ファイルを開いて scripts > dev の欄に max-old-space-size と書かれた部分があります。この部分を利用できるメモリの範囲内に設定してください。
     --max-old-space-size=4096
     ↓
     --max-old-space-size=1024
-<br />
-
----
-
 <br /><br />
 
 

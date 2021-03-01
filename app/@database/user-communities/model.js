@@ -1986,6 +1986,7 @@ const findUserCommunitiesListCommon = async ({
 
   commonType = 'default',
   localeObj,
+  loginUsers_id,
   matchConditionArr = [],
   sortSkipLimitArr = [],
   page = 1,
@@ -2246,8 +2247,10 @@ const findUserCommunitiesListCommon = async ({
           createdDate: 1,
           updatedDate: 1,
           userCommunityID: 1,
+          users_id: 1,
           localesArr: 1,
           communityType: 1,
+          anonymity: 1,
           gameCommunities_idsArr: 1,
           gamesArr: 1,
           imagesAndVideosThumbnailObj: 1,
@@ -2299,9 +2302,17 @@ const findUserCommunitiesListCommon = async ({
       obj._id = _id;
       obj.userCommunityID = lodashGet(value1Obj, ['userCommunityID'], '');
       obj.communityType = lodashGet(value1Obj, ['communityType'], 'open');
+      obj.anonymity = lodashGet(value1Obj, ['anonymity'], false);
       obj.approval = lodashGet(value1Obj, ['followsObj', 'approval'], false);
       obj.followedCount = lodashGet(value1Obj, ['followsObj', 'followedCount'], 0);
 
+
+      // ---------------------------------------------
+      //   deletable
+      // ---------------------------------------------
+
+      obj.deletable = value1Obj.users_id === loginUsers_id ? true : false;
+      
 
       // --------------------------------------------------
       //   createdDate

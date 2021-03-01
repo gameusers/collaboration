@@ -1000,8 +1000,8 @@ const findForGameCommunityByGameCommunities_id = async ({ gameCommunities_id }) 
       //   $project
       // --------------------------------------------------
 
-      { $project:
-        {
+      {
+        $project: {
           createdDate: 0,
           updatedDate: 0,
           __v: 0,

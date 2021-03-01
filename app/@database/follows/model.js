@@ -1354,10 +1354,10 @@ const findFollowContents = async ({
   period = process.env.NEXT_PUBLIC_FOLLOW_CONTENTS_PERIOD,
   page = 1,
   limit = process.env.NEXT_PUBLIC_FOLLOW_CONTENTS_LIMIT,
-  forumCommentLimit,
-  forumReplyLimit,
-  recruitmentCommentLimit,
-  recruitmentReplyLimit,
+  forumCommentLimit = process.env.NEXT_PUBLIC_FORUM_COMMENT_LIMIT,
+  forumReplyLimit = process.env.NEXT_PUBLIC_FORUM_REPLY_LIMIT,
+  recruitmentCommentLimit = process.env.NEXT_PUBLIC_RECRUITMENT_COMMENT_LIMIT,
+  recruitmentReplyLimit = process.env.NEXT_PUBLIC_RECRUITMENT_REPLY_LIMIT,
 
 }) => {
 
@@ -1367,7 +1367,7 @@ const findFollowContents = async ({
   // --------------------------------------------------
 
   try {
-
+    
 
     // --------------------------------------------------
     //   parseInt
@@ -1384,6 +1384,28 @@ const findFollowContents = async ({
 
     const datePeriod = new Date("2018-02-05T12:00:00.000Z");
     // const datePeriod = moment().utc().add(-(intPeriod), 'minutes').toDate();
+
+
+
+
+    // --------------------------------------------------
+    //   returnObj
+    // --------------------------------------------------
+
+    const returnObj = {
+
+      pageObj: {
+        page: intPage,
+        limit: intLimit,
+        count: 0,
+        arr: [],
+      },
+      forumObj: {},
+      recruitmentObj: {},
+      gameCommunityObj: {},
+      userCommunityObj: {},
+
+    };
 
 
     
@@ -1462,7 +1484,7 @@ const findFollowContents = async ({
 
 
       // --------------------------------------------------
-      //   all
+      //   All
       // --------------------------------------------------
 
       if (contents === 'all') {
@@ -1485,6 +1507,7 @@ const findFollowContents = async ({
           {
             $match: {
               users_id: { $in: users_idsArr },
+              anonymity: { $ne: true },
               updatedDate: { $gte: datePeriod }
             }
           },
@@ -1508,7 +1531,7 @@ const findFollowContents = async ({
 
 
       // --------------------------------------------------
-      //   forum
+      //   Forum
       // --------------------------------------------------
 
       } else if (contents === 'forum') {
@@ -1523,6 +1546,7 @@ const findFollowContents = async ({
           {
             $match: {
               users_id: { $in: users_idsArr },
+              anonymity: { $ne: true },
               updatedDate: { $gte: datePeriod }
             }
           },
@@ -1545,7 +1569,7 @@ const findFollowContents = async ({
 
 
       // --------------------------------------------------
-      //   forum
+      //   Recruitment
       // --------------------------------------------------
 
       } else if (contents === 'rec') {
@@ -1613,11 +1637,6 @@ const findFollowContents = async ({
     }
 
 
-    console.log(`
-      ----- checkUnauthorizedUserCommunities_idsArr -----\n
-      ${util.inspect(checkUnauthorizedUserCommunities_idsArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
     
 
     // --------------------------------------------------
@@ -1719,7 +1738,7 @@ const findFollowContents = async ({
           if (index !== 1) {
             userCommunities_idsArr.splice(index, 1);
           }
-          // console.log('aaaa');
+          
           unauthorizedUserCommunities_idsArr.push(valueObj._id);
           
         }
@@ -1736,8 +1755,11 @@ const findFollowContents = async ({
     }
 
 
+
+
     // --------------------------------------------------
     //   ループで forumThreads_idsArr と recruitmentThreads_idsArr に追加する
+    //   表示する権限がないユーザーコミュニティのコンテンツは除く
     // --------------------------------------------------
 
     const forumRecruitmentThreads_idsArr = [];
@@ -1750,7 +1772,6 @@ const findFollowContents = async ({
       //   --------------------\n
       // `);
 
-      // 表示する権限がないユーザーコミュニティのコンテンツは除く
       if (!unauthorizedUserCommunities_idsArr.includes(valueObj.userCommunities_id)) {
         
         if (valueObj.forumThreads_id) {
@@ -1769,30 +1790,49 @@ const findFollowContents = async ({
 
 
 
+    // console.log(chalk`
+    // loginUsers_id: {green ${loginUsers_id}}
+    // users_id: {green ${users_id}}
+    // category: {green ${category}}
+    // contents: {green ${contents}}
+    // period: {green ${period}}
+    // page: {green ${page}}
+    // limit: {green ${limit}}
+    // forumCommentLimit: {green ${forumCommentLimit}}
+    // forumReplyLimit: {green ${forumReplyLimit}}
+    // recruitmentCommentLimit: {green ${recruitmentCommentLimit}}
+    // recruitmentReplyLimit: {green ${recruitmentReplyLimit}}
+    // `);
 
-    console.log(`
-      ----- unauthorizedUserCommunities_idsArr -----\n
-      ${util.inspect(unauthorizedUserCommunities_idsArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- checkUnauthorizedUserCommunities_idsArr -----\n
+    //   ${util.inspect(checkUnauthorizedUserCommunities_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- gameCommunities_idsArr -----\n
-      ${util.inspect(gameCommunities_idsArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- unauthorizedUserCommunities_idsArr -----\n
+    //   ${util.inspect(unauthorizedUserCommunities_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- userCommunities_idsArr -----\n
-      ${util.inspect(userCommunities_idsArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gameCommunities_idsArr -----\n
+    //   ${util.inspect(gameCommunities_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
-    console.log(`
-      ----- forumRecruitmentThreads_idsArr -----\n
-      ${util.inspect(forumRecruitmentThreads_idsArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- userCommunities_idsArr -----\n
+    //   ${util.inspect(userCommunities_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- forumRecruitmentThreads_idsArr -----\n
+    //   ${util.inspect(forumRecruitmentThreads_idsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
 
 
@@ -1845,15 +1885,15 @@ const findFollowContents = async ({
     // --------------------------------------------------
     
     if (orArr.length === 0) {
-
+      return returnObj;
     }
 
 
-    console.log(`
-      ----- conditionObj -----\n
-      ${util.inspect(conditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- conditionObj -----\n
+    //   ${util.inspect(conditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 
@@ -2177,23 +2217,11 @@ const findFollowContents = async ({
 
 
     // --------------------------------------------------
-    //   returnObj
+    //   count & arr
     // --------------------------------------------------
 
-    const returnObj = {
-
-      pageObj: {
-        page: intPage,
-        limit: intLimit,
-        count: lodashGet(threadCountObj, [0, 'n'], 0),
-        arr,
-      },
-      forumObj: {},
-      recruitmentObj: {},
-      gameCommunityObj: {},
-      userCommunityObj: {},
-
-    };
+    returnObj.pageObj.count = lodashGet(threadCountObj, [0, 'n'], 0);
+    returnObj.pageObj.arr = arr;
 
 
 
@@ -2386,6 +2414,7 @@ const findFollowContents = async ({
 
         commonType: 'followContents',
         localeObj,
+        loginUsers_id,
         matchConditionArr: [
           {
             $match: {

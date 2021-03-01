@@ -1864,6 +1864,7 @@ const findForDelete = async ({
 
     const docCommentObj = lodashGet(docArr, [0], {});
     const recruitmentRepliesArr = lodashGet(docCommentObj, ['recruitmentRepliesArr'], []);
+    const users_id = lodashGet(docCommentObj, ['users_id'], '');
     const gameCommunities_id = lodashGet(docCommentObj, ['gameCommunities_id'], '');
     const recruitmentThreads_id = lodashGet(docCommentObj, ['recruitmentThreads_id'], '');
 
@@ -1949,6 +1950,7 @@ const findForDelete = async ({
 
     const returnObj = {
 
+      users_id,
       gameCommunities_id,
       recruitmentThreads_id,
       replies,

@@ -42,7 +42,7 @@ import { CustomError } from 'app/@modules/error/custom.js';
 // ---------------------------------------------
 
 import { validationInteger } from 'app/@validations/integer.js';
-import { validationFollowLimit } from 'app/@database/follows/validations/follow-limit.js';
+import { validationFollowListLimit } from 'app/@database/follows/validations/follow-limit.js';
 
 
 // ---------------------------------------------
@@ -113,12 +113,12 @@ export default async (req, res) => {
     // --------------------------------------------------
 
     const userID = lodashGet(req, ['query', 'userID'], '');
-    const listType = lodashGet(req, ['query', 'listType'], '');
+    const category = lodashGet(req, ['query', 'category'], '');
     const page = parseInt(lodashGet(req, ['query', 'page'], 1), 10);
     const limit = parseInt(lodashGet(req, ['query', 'limit'], '') || process.env.NEXT_PUBLIC_FOLLOW_LIST_LIMIT, 10);
 
     lodashSet(requestParametersObj, ['userID'], userID);
-    lodashSet(requestParametersObj, ['listType'], listType);
+    lodashSet(requestParametersObj, ['category'], category);
     lodashSet(requestParametersObj, ['page'], lodashGet(req, ['query', 'page'], ''));
     lodashSet(requestParametersObj, ['limit'], lodashGet(req, ['query', 'limit'], ''));
 
@@ -138,10 +138,10 @@ export default async (req, res) => {
 
 
     // --------------------------------------------------
-    //   listType が存在しない場合はエラー
+    //   category が存在しない場合はエラー
     // --------------------------------------------------
 
-    if (!listType) {
+    if (!category) {
 
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 's0_x1UM-3', messageID: 'Error' }] });
@@ -261,7 +261,7 @@ export default async (req, res) => {
       argumentsObj.page = page;
     }
 
-    if (await validationFollowLimit({ throwError: false, required: true, value: limit }).error === false) {
+    if (await validationFollowListLimit({ throwError: false, required: true, value: limit }).error === false) {
       argumentsObj.limit = limit;
     }
 
@@ -270,7 +270,7 @@ export default async (req, res) => {
     //   - ゲームコミュニティ
     // ---------------------------------------------
 
-    if (listType === 'gc') {
+    if (category === 'gc') {
 
       returnObj.followListGcObj = await ModelFollows.findFollowListGc(argumentsObj);
 
@@ -279,7 +279,7 @@ export default async (req, res) => {
     //   - ユーザーコミュニティ
     // ---------------------------------------------
 
-    } else if (listType === 'uc') {
+    } else if (category === 'uc') {
 
       returnObj.followListUcObj = await ModelFollows.findFollowListUc(argumentsObj);
 
@@ -354,7 +354,7 @@ export default async (req, res) => {
 
     // console.log(chalk`
     //   userID: {green ${userID}}
-    //   listType: {green ${listType}}
+    //   category: {green ${category}}
     //   page: {green ${page} / ${typeof page}}
     //   limit: {green ${limit} / ${typeof limit}}
     // `);

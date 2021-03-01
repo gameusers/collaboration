@@ -58,7 +58,7 @@ import Select from '@material-ui/core/Select';
 //   States
 // ---------------------------------------------
 
-import { ContainerStateCommunity } from 'app/@states/community.js';
+// import { ContainerStateCommunity } from 'app/@states/community.js';
 import { ContainerStateForum } from 'app/@states/forum.js';
 import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 
@@ -128,7 +128,11 @@ const Component = (props) => {
     urlID,
     userCommunityID,
     userID,
+    category,
+    contents,
     pageObj,
+    gameCommunityObj,
+    userCommunityObj,
 
   } = props;
 
@@ -142,8 +146,6 @@ const Component = (props) => {
   const intl = useIntl();
   const classes = useStyles();
   const [buttonDisabled, setButtonDisabled] = useState(true);
-
-  // const [panelExpanded, setPanelExpanded] = useState(false);
 
 
   useEffect(() => {
@@ -159,16 +161,16 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
 
-  const stateCommunity = ContainerStateCommunity.useContainer();
+  // const stateCommunity = ContainerStateCommunity.useContainer();
   const stateForum = ContainerStateForum.useContainer();
   const stateRecruitment = ContainerStateRecruitment.useContainer();
 
-  const {
+  // const {
 
-    gameCommunityObj,
-    userCommunityObj,
+  //   gameCommunityObj,
+  //   userCommunityObj,
 
-  } = stateCommunity;
+  // } = stateCommunity;
 
   const {
 
@@ -211,31 +213,34 @@ const Component = (props) => {
 
       let url = '';
 
+      const urlCategory = category === 'all' ? '' : `/${category}`;
+      const urlContents = contents === 'all' ? '' : `/${contents}`;
+      const urlCategoryContents = `${urlCategory}${urlContents}`;
+
       if (urlID) {
 
         if (page === 1) {
-          url = `/gc/${urlID}/follow`;
+          url = `/gc/${urlID}/follow${urlCategoryContents}`;
         } else {
-          url = `/gc/${urlID}/follow/${page}`;
+          url = `/gc/${urlID}/follow${urlCategoryContents}/${page}`;
         }
 
       } else if (userCommunityID) {
 
         if (page === 1) {
-          url = `/uc/${userCommunityID}/follow`;
+          url = `/uc/${userCommunityID}/follow${urlCategoryContents}`;
         } else {
-          url = `/uc/${userCommunityID}/follow/${page}`;
+          url = `/uc/${userCommunityID}/follow${urlCategoryContents}/${page}`;
         }
 
       } else {
 
         if (page === 1) {
-          url = `/ur/${userID}/follow`;
+          url = `/ur/${userID}/follow${urlCategoryContents}`;
         } else {
-          url = `/ur/${userID}/follow/${page}`;
+          url = `/ur/${userID}/follow${urlCategoryContents}/${page}`;
         }
         
-
       }
 
 
@@ -254,21 +259,17 @@ const Component = (props) => {
 
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/common/forum/v2/components/forum.js - handleRead
+      //   app/common/follow/v2/contents.js - handleRead
       // `);
 
       // console.log(chalk`
-      //   gameCommunities_id: {green ${gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id}}
-      //   page: {green ${page}}
-      //   changeLimit: {green ${changeLimit}}
-
-      //   url: {green ${url}}
-      //   as: {green ${as}}
+      // category: {green ${category}}
+      // contents: {green ${contents}}
+      // page: {green ${page}}
+      // changeLimit: {green ${changeLimit}}
+      // url: {green ${url}}
       // `);
-
-      // return;
-
+      
 
       // ---------------------------------------------
       //   Router.push = History API pushState()
@@ -350,17 +351,16 @@ const Component = (props) => {
     let communitiesDataObj = {};
     let contentsUrlID = '';
     let contentsUserCommunityID = '';
-    let gameCommunities_id = '';
-    let userCommunities_id = '';
+    // let gameCommunities_id = '';
+    // let userCommunities_id = '';
 
     const _id = valueObj._id;
     const type = valueObj.type;
 
     const dataObj = type === 'forum' ? forumDataObj : recruitmentDataObj;
-    
 
-    gameCommunities_id = lodashGet(dataObj, [_id, 'gameCommunities_id'], '');
-    userCommunities_id = lodashGet(dataObj, [_id, 'userCommunities_id'], '');
+    const gameCommunities_id = lodashGet(dataObj, [_id, 'gameCommunities_id'], '');
+    const userCommunities_id = lodashGet(dataObj, [_id, 'userCommunities_id'], '');
 
     if (gameCommunities_id) {
 
@@ -374,6 +374,15 @@ const Component = (props) => {
 
     }
 
+    const anonymity = lodashGet(communitiesDataObj, ['anonymity'], false);
+    const deletable = lodashGet(communitiesDataObj, ['deletable'], false);
+
+
+    // console.log(`
+    //   ----- communitiesDataObj -----\n
+    //   ${util.inspect(communitiesDataObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
     // console.log(`
     //   ----- communitiesDataObj -----\n
@@ -431,8 +440,8 @@ const Component = (props) => {
             userCommunityID={contentsUserCommunityID}
             userCommunities_id={userCommunities_id}
             forumThreads_id={_id}
-            enableAnonymity={false}
-            deletable={false}
+            enableAnonymity={anonymity}
+            deletable={deletable}
           />
   
         </React.Fragment>

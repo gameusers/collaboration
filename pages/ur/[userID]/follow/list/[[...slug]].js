@@ -50,7 +50,6 @@ import FollowNavigation from 'app/common/follow/v2/navigation.js';
 import ListGc from 'app/common/follow/v2/list-gc.js';
 import ListUc from 'app/common/follow/v2/list-uc.js';
 import ListUr from 'app/common/follow/v2/list-ur.js';
-// import FollowList from 'app/common/follow/v2/list.js';
 
 
 
@@ -106,7 +105,7 @@ const ContainerLayout = (props) => {
 
   let componentList = '';
 
-  if (props.listType === 'gc') {
+  if (props.category === 'gc') {
 
     componentList =
       <ListGc
@@ -115,7 +114,7 @@ const ContainerLayout = (props) => {
       />
     ;
 
-  } else if (props.listType === 'uc') {
+  } else if (props.category === 'uc') {
 
     componentList =
       <ListUc
@@ -124,7 +123,7 @@ const ContainerLayout = (props) => {
       />
     ;
 
-  } else if (props.listType === 'ur') {
+  } else if (props.category === 'ur') {
 
     componentList =
       <ListUr
@@ -153,9 +152,9 @@ const ContainerLayout = (props) => {
       />
 
       <FollowNavigation
-        pageType="list"
-        listType={props.listType}
+        contentsOrList="list"
         userID={props.userID}
+        category={props.category}
       />
 
       <FeedSidebar
@@ -178,19 +177,6 @@ const ContainerLayout = (props) => {
       />
 
       {componentList}
-
-      {/* <FollowList
-        ISO8601={props.ISO8601}
-        pageType="ur"
-        listType={props.listType}
-        userID={props.userID}
-        users_id={props.users_id}
-        // accessLevel={props.accessLevel}
-        followListGcObj={props.followListGcObj}
-        followListUcObj={props.followListUcObj}
-        cardPlayersObj={props.cardPlayersObj}
-        followListUrObj={props.followListUrObj}
-      /> */}
 
     </React.Fragment>
   ;
@@ -279,13 +265,18 @@ export async function getServerSideProps({ req, res, query }) {
   const userID = query.userID;
   const slugsArr = lodashGet(query, ['slug'], []);
 
-  let listType = slugsArr[0] || '';
+  // let category = slugsArr[0] || '';
+  let category = '';
   let page = 1;
+
+  if (slugsArr[0] === 'gc' || slugsArr[0] === 'uc' || slugsArr[0] === 'ur') {
+    category = slugsArr[0];
+  }
 
   if (Math.sign(slugsArr[1]) === 1) {
     page = slugsArr[1];
   }
-
+  
   // console.log(`
   //   ----- query -----\n
   //   ${util.inspect(query, { colors: true, depth: null })}\n
@@ -322,7 +313,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   const resultObj = await fetchWrapper({
 
-    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}/follow/list?listType=${listType}&page=${page}&limit=${limit}`),
+    urlApi: encodeURI(`${process.env.NEXT_PUBLIC_URL_API}/v2/ur/${userID}/follow/list?category=${category}&page=${page}&limit=${limit}`),
     methodType: 'GET',
     reqHeadersCookie,
     reqAcceptLanguage,
@@ -501,9 +492,9 @@ export async function getServerSideProps({ req, res, query }) {
 
       accessLevel,
       userID,
-      listType,
+      category,
       page,
-      // users_id,
+      
       followListGcObj,
       followListUcObj,
       cardPlayersObj,

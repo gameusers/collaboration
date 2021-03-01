@@ -41,7 +41,7 @@ import { CustomError } from 'app/@modules/error/custom.js';
 // ---------------------------------------------
 
 import { validationInteger } from 'app/@validations/integer.js';
-import { validationFollowCategory, validationFollowContents ,validationFollowPeriod, validationFollowLimit } from 'app/@database/follows/validations/follow-limit.js';
+import { validationFollowCategory, validationFollowContents ,validationFollowPeriod, validationFollowContentsLimit } from 'app/@database/follows/validations/follow-limit.js';
 import { validationForumCommentsLimit, validationForumRepliesLimit } from 'app/@database/forum-comments/validations/limit.js';
 import { validationRecruitmentCommentsLimit } from 'app/@database/recruitment-comments/validations/limit.js';
 import { validationRecruitmentRepliesLimit } from 'app/@database/recruitment-replies/validations/limit.js';
@@ -267,7 +267,7 @@ export default async (req, res) => {
       argumentsObj.page = page;
     }
     
-    if (await validationFollowLimit({ throwError: false, required: true, value: limit }).error === false) {
+    if (await validationFollowContentsLimit({ throwError: false, required: true, value: limit }).error === false) {
       argumentsObj.limit = limit;
     }
 

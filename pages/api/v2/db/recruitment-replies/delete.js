@@ -161,6 +161,7 @@ export default async (req, res) => {
 
     });
 
+    const users_id = lodashGet(docRepliesObj, ['users_id'], '');
     const gameCommunities_id = lodashGet(docRepliesObj, ['gameCommunities_id'], '');
     const recruitmentThreads_id = lodashGet(docRepliesObj, ['recruitmentThreads_id'], '');
     const recruitmentComments_id = lodashGet(docRepliesObj, ['recruitmentComments_id'], '');
@@ -200,19 +201,13 @@ export default async (req, res) => {
     // `);
 
     // console.log(chalk`
-    //   users_id: {green ${imagesAndVideos_id}}
-    //   users_id: {green ${users_id}}
+    // loginUsers_id: {green ${loginUsers_id}}
+    // users_id: {green ${users_id}}
     // `);
 
     // console.log(`
     //   ----- docRepliesObj -----\n
     //   ${util.inspect(docRepliesObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- docThreadsObj -----\n
-    //   ${util.inspect(docThreadsObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
@@ -359,20 +354,24 @@ export default async (req, res) => {
     //   experience
     // --------------------------------------------------
 
-    const experienceObj = await experienceCalculate({
+    if (loginUsers_id && users_id && loginUsers_id === users_id) {
 
-      req,
-      localeObj,
-      loginUsers_id,
-      arr: [{
-        type: 'recruitment-count-post',
-        calculation: 'subtraction',
-      }],
+      const experienceObj = await experienceCalculate({
 
-    });
+        req,
+        localeObj,
+        loginUsers_id,
+        arr: [{
+          type: 'recruitment-count-post',
+          calculation: 'subtraction',
+        }],
 
-    if (Object.keys(experienceObj).length !== 0) {
-      returnObj.experienceObj = experienceObj;
+      });
+
+      if (Object.keys(experienceObj).length !== 0) {
+        returnObj.experienceObj = experienceObj;
+      }
+
     }
 
 

@@ -127,6 +127,7 @@ const Component = (props) => {
 
   const {
 
+    accessLevel,
     userID,
     followListGcObj,
 
@@ -507,42 +508,44 @@ const Component = (props) => {
 
 
         {/* Manage Button */}
-        <Paper
-          css={css`
-            display: flex;
-            flex-flow: row wrap;
-            border-top: 1px dashed #A4A4A4;
-            margin: 0 0 16px 0;
-            padding: 10px 12px;
-          `}
-        >
-
-
-          <div
+        {accessLevel >= 50 &&
+          <Paper
             css={css`
-              margin: 0 16px 0 0;
+              display: flex;
+              flex-flow: row wrap;
+              border-top: 1px dashed #A4A4A4;
+              margin: 0 0 16px 0;
+              padding: 10px 12px;
             `}
           >
-            <Button
-              css={cssButton}
-              variant="contained"
-              color="primary"
-              disabled={buttonDisabled}
-              onClick={() => handleDialogOpen({
-                title: 'フォロー解除',
-                description: 'フォローを解除しますか？',
-                handle: handleManage,
-                argumentsObj: {
-                  gameCommunities_id,
-                },
-              })}
+
+
+            <div
+              css={css`
+                margin: 0 16px 0 0;
+              `}
             >
-              フォロー解除
-            </Button>
-          </div>
+              <Button
+                css={cssButton}
+                variant="contained"
+                color="primary"
+                disabled={buttonDisabled}
+                onClick={() => handleDialogOpen({
+                  title: 'フォロー解除',
+                  description: 'フォローを解除しますか？',
+                  handle: handleManage,
+                  argumentsObj: {
+                    gameCommunities_id,
+                  },
+                })}
+              >
+                フォロー解除
+              </Button>
+            </div>
 
 
-        </Paper>
+          </Paper>
+        }
 
 
       </div>

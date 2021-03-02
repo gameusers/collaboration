@@ -109,6 +109,7 @@ const ContainerLayout = (props) => {
 
     componentList =
       <ListGc
+        accessLevel={props.accessLevel}
         userID={props.userID}
         followListGcObj={followListGcObj}
       />
@@ -118,6 +119,7 @@ const ContainerLayout = (props) => {
 
     componentList =
       <ListUc
+        accessLevel={props.accessLevel}
         userID={props.userID}
         followListUcObj={followListUcObj}
       />
@@ -127,6 +129,7 @@ const ContainerLayout = (props) => {
 
     componentList =
       <ListUr
+        accessLevel={props.accessLevel}
         userID={props.userID}
         cardPlayersObj={cardPlayersObj}
         setCardPlayersObj={setCardPlayersObj}
@@ -152,6 +155,7 @@ const ContainerLayout = (props) => {
       />
 
       <FollowNavigation
+        accessLevel={props.accessLevel}
         contentsOrList="list"
         userID={props.userID}
         category={props.category}
@@ -265,7 +269,6 @@ export async function getServerSideProps({ req, res, query }) {
   const userID = query.userID;
   const slugsArr = lodashGet(query, ['slug'], []);
 
-  // let category = slugsArr[0] || '';
   let category = '';
   let page = 1;
 
@@ -336,17 +339,12 @@ export async function getServerSideProps({ req, res, query }) {
   const feedObj = lodashGet(dataObj, ['feedObj'], {});
 
   const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
-  // const users_id = lodashGet(dataObj, ['users_id'], '');
   const followListGcObj = lodashGet(dataObj, ['followListGcObj'], {});
   const followListUcObj = lodashGet(dataObj, ['followListUcObj'], {});
   const cardPlayersObj = lodashGet(dataObj, ['cardPlayersObj'], {});
   const followListUrObj = lodashGet(dataObj, ['followListUrObj'], {});
 
-  // console.log(`
-  //   ----- followListUrObj -----\n
-  //   ${util.inspect(followListUrObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  
 
 
   // --------------------------------------------------
@@ -357,12 +355,31 @@ export async function getServerSideProps({ req, res, query }) {
     return valueObj.type === 'follow';
   });
 
-  const pageTitle = lodashGet(pagesObj, ['title'], '');
   const userName = lodashGet(headerObj, ['name'], '');
+  const pageTitle = lodashGet(pagesObj, ['title'], userName);
+
+  const titlesArr = [];
+
+  if (category === 'gc') {
+
+    titlesArr.push('ゲームコミュニティ');
+
+  } else if (category === 'uc') {
+
+    titlesArr.push('ユーザーコミュニティ');
+
+  } else if (category === 'ur') {
+
+    titlesArr.push('ユーザー');
+
+  }
+
+  const titles = titlesArr.length > 0 ? ` ${titlesArr.join(' > ')}` : '';
+  const title = `フォロー一覧 > ${titles} - ${pageTitle}`;
 
   const metaObj = {
 
-    title: pageTitle ? pageTitle : `フォロー一覧 - ${userName}`,
+    title,
     description: `${userName}さんのフォロー一覧ページです。`,
     type: 'article',
     url: `${process.env.NEXT_PUBLIC_URL_BASE}ur/${userID}/follow/list`,

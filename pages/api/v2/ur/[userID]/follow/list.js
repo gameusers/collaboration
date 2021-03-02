@@ -129,7 +129,7 @@ export default async (req, res) => {
     //   Login Check
     // --------------------------------------------------
 
-    if (!req.isAuthenticated()) {
+    if (!req.isAuthenticated() && category === 'ur') {
 
       statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CTObVauuz', messageID: 'xLLNIpo6a' }] });
@@ -184,7 +184,7 @@ export default async (req, res) => {
     //   自分のページではない場合はエラー
     // --------------------------------------------------
 
-    if (users_id !== loginUsers_id) {
+    if (users_id !== loginUsers_id && category === 'ur') {
 
       statusCode = 401;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'gWL-VLRft', messageID: 'Error' }] });
@@ -254,6 +254,7 @@ export default async (req, res) => {
 
       localeObj,
       loginUsers_id,
+      users_id,
 
     };
 

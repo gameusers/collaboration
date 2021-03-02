@@ -437,17 +437,6 @@ export async function getServerSideProps({ req, res, query }) {
   const userCommunityObj = lodashGet(dataObj, ['userCommunityObj'], {});
   
   
-  // console.log(`
-  //   ----- 2 -----\n
-  //   ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-
-  // console.log(`
-  //   ----- forumThreadsObj -----\n
-  //   ${util.inspect(forumThreadsObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
 
 
   // --------------------------------------------------
@@ -458,12 +447,41 @@ export async function getServerSideProps({ req, res, query }) {
     return valueObj.type === 'follow';
   });
 
-  const pageTitle = lodashGet(pagesObj, ['title'], '');
   const userName = lodashGet(headerObj, ['name'], '');
+  const pageTitle = lodashGet(pagesObj, ['title'], userName);
+
+  const titlesArr = [];
+
+  if (category === 'gc') {
+
+    titlesArr.push('ゲームコミュニティ');
+
+  } else if (category === 'uc') {
+
+    titlesArr.push('ユーザーコミュニティ');
+
+  } else if (category === 'ur') {
+
+    titlesArr.push('ユーザー');
+
+  }
+
+  if (contents === 'forum') {
+
+    titlesArr.push('フォーラム');
+
+  } else if (contents === 'rec') {
+
+    titlesArr.push('募集');
+
+  }
+
+  const titles = titlesArr.length > 0 ? ` ${titlesArr.join(' > ')}` : '';
+  const title = `フォロー > ${titles} - ${pageTitle}`;
 
   const metaObj = {
 
-    title: pageTitle ? pageTitle : `フォロー - ${userName}`,
+    title,
     description: `${userName}さんのフォローページです。`,
     type: 'article',
     url: `${process.env.NEXT_PUBLIC_URL_BASE}ur/${userID}/follow`,

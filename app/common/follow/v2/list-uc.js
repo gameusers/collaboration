@@ -127,6 +127,7 @@ const Component = (props) => {
 
   const {
 
+    accessLevel,
     userID,
     followListUcObj,
 
@@ -509,7 +510,7 @@ const Component = (props) => {
 
 
         {/* Manage Button */}
-        {!owner &&
+        {(!owner && accessLevel >= 50) &&
           <Paper
             css={css`
               display: flex;

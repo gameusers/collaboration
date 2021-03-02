@@ -488,6 +488,10 @@ const Component = (props) => {
 
           <FormControl>
 
+          {accessLevel >= 50
+
+          ?
+
             <Select
               value={category}
               onChange={(eventObj) => handleChangeList({ newCategory: eventObj.target.value })}
@@ -500,6 +504,22 @@ const Component = (props) => {
               <MenuItem value="uc">ユーザーコミュニティ</MenuItem>
               <MenuItem value="ur">ユーザー</MenuItem>
             </Select>
+
+          :
+
+            <Select
+              value={category}
+              onChange={(eventObj) => handleChangeList({ newCategory: eventObj.target.value })}
+              inputProps={{
+                name: 'category',
+                id: 'category',
+              }}
+            >
+              <MenuItem value="gc">ゲームコミュニティ</MenuItem>
+              <MenuItem value="uc">ユーザーコミュニティ</MenuItem>
+            </Select>
+
+          }
 
           </FormControl>
 

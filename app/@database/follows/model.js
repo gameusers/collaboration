@@ -339,7 +339,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 /**
  * フォローしているゲームコミュニティの一覧データを取得する / pages/api/v2/ur/[userID]/follow/list.js
  * @param {Object} localeObj - ロケール
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} users_id - DB users _id / ユーザーID
  * @param {number} page - ページ
  * @param {number} limit - リミット
  * @return {Object} 取得データ
@@ -347,7 +347,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 const findFollowListGc = async ({
 
   localeObj,
-  loginUsers_id,
+  users_id,
   page = 1,
   limit = process.env.NEXT_PUBLIC_FOLLOW_LIST_LIMIT,
 
@@ -385,7 +385,7 @@ const findFollowListGc = async ({
 
     const conditionObj = {
 
-      followedArr: { $in: [loginUsers_id] },
+      followedArr: { $in: [users_id] },
       gameCommunities_id: { $exists: true },
       userCommunities_id: '',
       users_id: '',
@@ -840,6 +840,7 @@ const findFollowListGc = async ({
  * 参加しているユーザーコミュニティ一覧のデータを取得する / 
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} users_id - DB users _id / ユーザーID
  * @param {number} page - ページ
  * @param {number} limit - リミット
  * @return {Object} 取得データ
@@ -848,6 +849,7 @@ const findFollowListUc = async ({
 
   localeObj,
   loginUsers_id,
+  users_id,
   page = 1,
   limit = process.env.NEXT_PUBLIC_COMMUNITY_LIST_LIMIT,
 
@@ -885,7 +887,7 @@ const findFollowListUc = async ({
 
     const conditionObj = {
       
-      followedArr: { $in: [loginUsers_id] },
+      followedArr: { $in: [users_id] },
       gameCommunities_id: '',
       userCommunities_id: { $exists: true },
       users_id: '',

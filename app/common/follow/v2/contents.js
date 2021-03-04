@@ -15,7 +15,6 @@ import util from 'util';
 // ---------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
 import Router from 'next/router';
 import { useIntl } from 'react-intl';
 import { Element } from 'react-scroll';
@@ -39,7 +38,6 @@ import lodashGet from 'lodash/get';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -48,17 +46,9 @@ import Select from '@material-ui/core/Select';
 
 
 // ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-// import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
-
-
-// ---------------------------------------------
 //   States
 // ---------------------------------------------
 
-// import { ContainerStateCommunity } from 'app/@states/community.js';
 import { ContainerStateForum } from 'app/@states/forum.js';
 import { ContainerStateRecruitment } from 'app/@states/recruitment.js';
 
@@ -74,7 +64,6 @@ import { setCookie } from 'app/@modules/cookie.js';
 //   Components
 // ---------------------------------------------
 
-import Panel from 'app/common/layout/v2/panel.js';
 import ForumThread from 'app/common/forum/v2/thread.js';
 import RecruitmentThread from 'app/gc/rec/v2/thread.js';
 import CardGc from 'app/common/community-list/v2/card-gc.js';
@@ -161,16 +150,8 @@ const Component = (props) => {
   //   States
   // --------------------------------------------------
 
-  // const stateCommunity = ContainerStateCommunity.useContainer();
   const stateForum = ContainerStateForum.useContainer();
   const stateRecruitment = ContainerStateRecruitment.useContainer();
-
-  // const {
-
-  //   gameCommunityObj,
-  //   userCommunityObj,
-
-  // } = stateCommunity;
 
   const {
 
@@ -192,8 +173,8 @@ const Component = (props) => {
   // --------------------------------------------------
 
   /**
-   * スレッドを読み込む
-   * @param {number} page - スレッドのページ
+   * ページを移行する
+   * @param {number} page - ページ
    * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
   const handleRead = async ({
@@ -336,7 +317,7 @@ const Component = (props) => {
 
 
   // --------------------------------------------------
-  //   Component - Thread
+  //   Component - Contents
   // --------------------------------------------------
 
   const componentsArr = [];
@@ -351,8 +332,6 @@ const Component = (props) => {
     let communitiesDataObj = {};
     let contentsUrlID = '';
     let contentsUserCommunityID = '';
-    // let gameCommunities_id = '';
-    // let userCommunities_id = '';
 
     const _id = valueObj._id;
     const type = valueObj.type;

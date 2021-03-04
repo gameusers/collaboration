@@ -14,7 +14,7 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useIntl } from 'react-intl';
 import moment from 'moment';
@@ -35,6 +35,13 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import Avatar from '@material-ui/core/Avatar';
+
+
+// ---------------------------------------------
+//   Material UI / Icons
+// ---------------------------------------------
+
+import IconHealing from '@material-ui/icons/Healing';
 
 
 // ---------------------------------------------
@@ -67,6 +74,7 @@ const Component = (props) => {
 
     headerObj,
     userCommunityObj,
+    userCommunitiesAdministratorObj,
     accessRightRead,
 
   } = props;
@@ -134,11 +142,122 @@ const Component = (props) => {
   const codeAnonymity = anonymity ? intl.formatMessage({ id: 'I2lSx_RQh' }) : intl.formatMessage({ id: 'btIZLhdBM' });
 
 
+
+
+  // --------------------------------------------------
+  //   コミュニティ管理者
+  // --------------------------------------------------
+
+  const ucaSrc = lodashGet(userCommunitiesAdministratorObj, ['cardPlayerObj', 'imagesAndVideosThumbnailObj', 'arr', 0, 'src'], '/img/common/thumbnail/none.svg');
+  const ucaSrcSet = lodashGet(userCommunitiesAdministratorObj, ['cardPlayerObj', 'imagesAndVideosThumbnailObj', 'arr', 0, 'srcSet'], '');
+  const ucaName = lodashGet(userCommunitiesAdministratorObj, ['cardPlayerObj', 'name'], '');
+  const ucaStatus = lodashGet(userCommunitiesAdministratorObj, ['cardPlayerObj', 'status'], '');
+
+  const ucaUserID = lodashGet(userCommunitiesAdministratorObj, ['userID'], '');
+
+
+  // ---------------------------------------------
+  //   - Component - Name
+  // ---------------------------------------------
+
+  let componentName = '';
+
+  if (ucaName && ucaUserID) {
+
+    componentName =
+      <div
+        css={css`
+          font-size: 14px;
+          margin: 0 2px 0 0;
+        `}
+      >
+        <Link
+          href={`/ur/${ucaUserID}`}
+        >
+          <a>{ucaName}</a>
+        </Link>
+      </div>
+    ;
+
+  }
+
+  
+  // ---------------------------------------------
+  //   - Component - Status
+  // ---------------------------------------------
+
+  let componentStatus = '';
+
+  if (ucaStatus) {
+
+    componentStatus =
+      <div
+        css={css`
+          display: flex;
+          flex-flow: row wrap;
+        `}
+      >
+
+        <IconHealing
+          css={css`
+            && {
+              font-size: 18px;
+              margin: 3px 2px 0 0;
+            }
+          `}
+        />
+
+        <div
+          css={css`
+            font-size: 14px;
+            margin: 0 2px 0 0;
+          `}
+        >
+          {ucaStatus}
+        </div>
+
+      </div>
+    ;
+
+  }
+
+
+  const componentAdministrator =
+    <div
+      css={css`
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        margin: 8px 0 0 0;
+      `}
+    >
+
+      <Avatar
+        css={css`
+          && {
+            width: 32px;
+            height: 32px;
+            margin: 0 8px 0 0;
+          }
+        `}
+        alt={ucaName}
+        src={ucaSrc}
+        srcSet={ucaSrcSet}
+      />
+
+      {componentName}{componentStatus}
+
+    </div>
+  ;
+
+
+
+
   // --------------------------------------------------
   //   関連するゲーム
   // --------------------------------------------------
 
-  const codeGames = [];
+  const componentGames = [];
 
   for (const [index, valueObj] of gamesArr.entries()) {
 
@@ -161,7 +280,7 @@ const Component = (props) => {
     }
 
 
-    codeGames.push(
+    componentGames.push(
       <div
         key={index}
         css={css`
@@ -359,6 +478,23 @@ const Component = (props) => {
 
 
 
+        {/* 管理者 */}
+        <p
+          css={css`
+            font-weight: bold;
+            border-top: 1px dashed #848484;
+            margin: 24px 0 0 0;
+            padding: 24px 0 0 0;
+          `}
+        >
+          コミュニティ管理者
+        </p>
+
+        {componentAdministrator}
+
+
+
+
         {/* 関連ゲーム */}
         <p
           css={css`
@@ -371,7 +507,7 @@ const Component = (props) => {
           関連ゲーム
         </p>
 
-        {codeGames}
+        {componentGames}
 
 
       </Panel>

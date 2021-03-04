@@ -209,6 +209,7 @@ const ContainerLayout = (props) => {
       <About
         headerObj={props.headerObj}
         userCommunityObj={props.userCommunityObj}
+        userCommunitiesAdministratorObj={props.userCommunitiesAdministratorObj}
         accessRightRead={props.accessRightRead}
       />
 
@@ -391,7 +392,8 @@ export async function getServerSideProps({ req, res, query }) {
   const forumThreadsObj = lodashGet(dataObj, ['forumThreadsObj'], {});
   const forumCommentsObj = lodashGet(dataObj, ['forumCommentsObj'], {});
   const forumRepliesObj = lodashGet(dataObj, ['forumRepliesObj'], {});
-
+  const userCommunitiesAdministratorObj = lodashGet(dataObj, ['userCommunitiesAdministratorObj'], {});
+  
 
 
 
@@ -569,6 +571,7 @@ export async function getServerSideProps({ req, res, query }) {
       forumThreadsObj,
       forumCommentsObj,
       forumRepliesObj,
+      userCommunitiesAdministratorObj,
       enableAnonymity,
       deletable, 
 

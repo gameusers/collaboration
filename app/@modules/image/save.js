@@ -24,6 +24,7 @@ const imageminMozjpeg = require('imagemin-mozjpeg');
 const imageminPngquant = require('imagemin-pngquant');
 const imageminGifsicle = require('imagemin-gifsicle');
 const imageminSvgo = require('imagemin-svgo');
+const {extendDefaultPlugins} = require('svgo');
 
 
 // ---------------------------------------------
@@ -144,7 +145,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   // ---------------------------------------------
 
   if (newArr.length === 0 && oldArr.length === 0) {
-    return [];
+    return {};
   }
 
 
@@ -231,7 +232,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
     }
 
 
-    // console.log('fff');
+    
 
     // ---------------------------------------------
     //   新規の動画
@@ -259,7 +260,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
 
     }
 
-    // console.log('ggg');
+
 
 
     // ---------------------------------------------
@@ -477,7 +478,11 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
             imageminMozjpeg({ quality: 80 }),
             imageminPngquant({ quality: [0.5, 0.7] }),
             imageminGifsicle(),
-            imageminSvgo()
+            imageminSvgo({
+              plugins: extendDefaultPlugins([
+                {name: 'removeViewBox', active: false}
+              ])
+            })
           ]
 
         });
@@ -589,6 +594,12 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   //   countOldImages: {green ${countOldImages}}
   // `);
 
+  // console.log(`
+  //   ----- _idsArr -----\n
+  //   ${util.inspect(_idsArr, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+
 
   // ---------------------------------------------
   //   画像を削除する　【チェック時は要コメントアウト】
@@ -609,6 +620,8 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
       }
     });
 
+    // console.log('すべて削除');
+
 
   // ----------------------------------------
   //   個別に削除
@@ -624,6 +637,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
       //   --------------------\n
       // `);
 
+      // 新しい _id の入った配列に古い _id が含まれていない場合、削除する
       if (_idsArr.includes(valueObj._id) === false) {
 
         const dirPath = `public/img/${type}/${_id}/${valueObj._id}`;
@@ -635,18 +649,17 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
         });
 
         // console.log(chalk`
+        //   個別に削除
         //   valueObj._id: {green ${valueObj._id}}
         //   dirPath: {green ${dirPath}}
         // `);
-
-        // console.log(`\n---------- fs.statSync(dirPath) ----------\n`);
-        // console.dir(fs.statSync(dirPath));
-        // console.log(`\n-----------------------------------\n`);
 
       }
 
 
     }
+
+    // console.log('個別に削除');
 
   }
 
@@ -731,5 +744,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
 // --------------------------------------------------
 
 module.exports = {
+
   formatAndSave
+  
 };

@@ -51,7 +51,7 @@ const { formatFollowsObj } = require('../follows/format.js');
 
 
 // --------------------------------------------------
-//   Function
+//   Common
 // --------------------------------------------------
 
 /**
@@ -314,6 +314,10 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 
 
+
+// --------------------------------------------------
+//   Function
+// --------------------------------------------------
 
 /**
  * ユーザーページ用のデータを取得する / ヘッダーの更新にも利用する
@@ -1274,6 +1278,228 @@ const findOneForLoginUsersObj = async ({
 
 
 
+/**
+ * ユーザーコミュニティのAbout用のデータを取得する
+ * 2020/8/13 / 2021/3/4
+ * @param {Object} localeObj - ロケール
+ * @param {string} users_id - DB users _id / ユーザーID
+ * @return {Object} 取得データ
+ */
+const findOneForAbout = async ({
+
+  localeObj,
+  users_id,
+
+}) => {
+
+
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+
+  try {
+
+
+    // --------------------------------------------------
+    //   Language & Country
+    // --------------------------------------------------
+
+    const language = lodashGet(localeObj, ['language'], '');
+    // const country = lodashGet(localeObj, ['country'], '');
+
+
+    // --------------------------------------------------
+    //   データ取得
+    // --------------------------------------------------
+
+    const docUsersArr = await SchemaUsers.aggregate([
+
+
+      // --------------------------------------------------
+      //   Match Condition
+      // --------------------------------------------------
+
+      {
+        $match: {
+          _id: users_id
+        }
+      },
+
+
+      // --------------------------------------------------
+      //   card-players
+      // --------------------------------------------------
+
+      {
+        $lookup:
+          {
+            from: 'card-players',
+            let: { let_id: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$language', language] },
+                      { $eq: ['$users_id', '$$let_id'] },
+                    ]
+                  },
+                }
+              },
+
+
+              // --------------------------------------------------
+              //   card-players / images-and-videos / サムネイル用
+              // --------------------------------------------------
+
+              {
+                $lookup:
+                  {
+                    from: 'images-and-videos',
+                    let: { letImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$_id', '$$letImagesAndVideosThumbnail_id']
+                          },
+                        }
+                      },
+                      {
+                        $project: {
+                          createdDate: 0,
+                          updatedDate: 0,
+                          users_id: 0,
+                          __v: 0,
+                        }
+                      }
+                    ],
+                    as: 'imagesAndVideosThumbnailObj'
+                  }
+              },
+
+              {
+                $unwind: {
+                  path: '$imagesAndVideosThumbnailObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+
+
+              {
+                $project: {
+                  _id: 0,
+                  name: 1,
+                  status: 1,
+                  imagesAndVideosThumbnailObj: 1,
+                }
+              }
+
+
+            ],
+            as: 'cardPlayerObj'
+          }
+      },
+
+
+      {
+        $unwind: {
+          path: '$cardPlayerObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+
+
+      // --------------------------------------------------
+      //   $project
+      // --------------------------------------------------
+
+      {
+        $project: {
+          _id: 0,
+          userID: 1,
+          cardPlayerObj: 1,
+        }
+      },
+
+
+    ]).exec();
+
+
+
+
+    // --------------------------------------------------
+    //   returnObj
+    // --------------------------------------------------
+
+    let returnObj = {};
+
+    if (docUsersArr.length > 0) {
+      returnObj = docUsersArr[0];
+    }
+
+
+    // --------------------------------------------------
+    //   Format - Images And Videos
+    // --------------------------------------------------
+
+    const imagesAndVideosThumbnailObj = lodashGet(returnObj, ['cardPlayerObj', 'imagesAndVideosThumbnailObj'], '');
+
+    if (imagesAndVideosThumbnailObj) {
+
+      const formattedImagesAndVideosThumbnailObj = formatImagesAndVideosObj({ obj: imagesAndVideosThumbnailObj });
+      lodashSet(returnObj, ['cardPlayerObj', 'imagesAndVideosThumbnailObj'], formattedImagesAndVideosThumbnailObj);
+
+    } else {
+
+      delete returnObj.imagesAndVideosThumbnailObj;
+
+    }
+
+
+
+
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/users/model.js - findOneForAbout
+    // `);
+
+    // console.log(chalk`
+    // users_id: {green ${users_id}}
+    // `);
+
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+
+
+
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+
+    return returnObj;
+
+
+  } catch (err) {
+
+    throw err;
+
+  }
+
+
+};
+
+
+
+
 
 
 // --------------------------------------------------
@@ -2011,6 +2237,8 @@ module.exports = {
   findSetting,
   findHeader,
   findOneForLoginUsersObj,
+  findOneForAbout,
+
   transactionForEditAccount,
   transactionForUpsert,
   transactionForDelete,

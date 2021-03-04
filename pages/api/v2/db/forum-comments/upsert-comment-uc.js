@@ -313,10 +313,12 @@ export default async (req, res) => {
       // --------------------------------------------------
       
       const formatAndSaveObj = await formatAndSave({
+
         newObj: imagesAndVideosObj,
         oldObj: oldImagesAndVideosObj,
         loginUsers_id,
         ISO8601,
+        
       });
       
       

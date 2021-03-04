@@ -28,6 +28,7 @@ import { css, jsx } from '@emotion/react';
 // ---------------------------------------------
 
 import lodashGet from 'lodash/get';
+import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
@@ -484,6 +485,10 @@ const Component = (props) => {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
 
+      // if (lodashHas(imagesAndVideosObj, ['arr', 0, '_id'])) {
+      //   formDataObj.imagesAndVideosObj = imagesAndVideosObj;
+      // }
+      
 
       // ---------------------------------------------
       //   Fetch

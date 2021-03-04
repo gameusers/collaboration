@@ -40,36 +40,10 @@ import lodashMerge from 'lodash/merge';
 
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
-import Popover from '@material-ui/core/Popover';
-import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
-
-
-// ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-import IconHelpOutline from '@material-ui/icons/HelpOutline';
-
-
-// ---------------------------------------------
-//   States
-// ---------------------------------------------
-
-import { ContainerStateLayout } from 'app/@states/layout.js';
-
-
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-import { validationKeyword } from 'app/@validations/keyword.js';
 
 
 // ---------------------------------------------
@@ -102,27 +76,8 @@ const Component = (props) => {
     accessLevel,
     userID,
     contentsOrList,
-    // category,
-    // contents,
-    // period = process.env.NEXT_PUBLIC_FOLLOW_CONTENTS_PERIOD,
-    // period = 7200,
 
   } = props;
-
-
-
-
-  // --------------------------------------------------
-  //   States
-  // --------------------------------------------------
-
-  // const stateLayout = ContainerStateLayout.useContainer();
-
-  // const {
-
-  //   handleScrollTo,
-
-  // } = stateLayout;
 
 
 
@@ -133,11 +88,6 @@ const Component = (props) => {
 
   const intl = useIntl();
   const [buttonDisabled, setButtonDisabled] = useState(true);
-
-  // const [contentsOrList, setContentsOrList] = useState(props.contentsOrList);
-  // const [category, setCategory] = useState(props.category);
-  // const [contents, setContents] = useState(props.contents);
-  // const [period, setPeriod] = useState(props.period || parseInt(process.env.NEXT_PUBLIC_FOLLOW_CONTENTS_PERIOD, 10));
 
 
   useEffect(() => {

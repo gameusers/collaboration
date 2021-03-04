@@ -58,7 +58,6 @@ import FeedSidebar from 'app/common/feed/v2/sidebar.js';
 
 import FollowNavigation from 'app/common/follow/v2/navigation.js';
 import FollowContents from 'app/common/follow/v2/contents.js';
-// import FollowMembers from 'app/common/follow/v2/members.js';
 
 
 
@@ -82,12 +81,10 @@ const ContainerLayout = (props) => {
   // --------------------------------------------------
 
   const stateLayout = ContainerStateLayout.useContainer();
-  // const stateCommunity = ContainerStateCommunity.useContainer();
   const stateForum = ContainerStateForum.useContainer();
   const stateRecruitment = ContainerStateRecruitment.useContainer();
 
   const { handleScrollTo } = stateLayout;
-  // const { setGameCommunityObj, setUserCommunityObj } = stateCommunity;
   const { setForumThreadsObj, setForumCommentsObj, setForumRepliesObj } = stateForum;
   const { setRecruitmentThreadsObj, setRecruitmentCommentsObj, setRecruitmentRepliesObj } = stateRecruitment;
 
@@ -106,8 +103,6 @@ const ContainerLayout = (props) => {
     //   getServerSideProps でデータを取得してからデータを更新する
     // --------------------------------------------------
 
-    // setGameCommunityObj(props.gameCommunityObj);
-    // setUserCommunityObj(props.userCommunityObj);
     setRecruitmentThreadsObj(props.recruitmentThreadsObj);
     setRecruitmentCommentsObj(props.recruitmentCommentsObj);
     setRecruitmentRepliesObj(props.recruitmentRepliesObj);
@@ -246,9 +241,6 @@ const Component = (props) => {
   // --------------------------------------------------
 
   const initialStateObj = {
-
-    // gameCommunityObj: props.gameCommunityObj,
-    // userCommunityObj: props.userCommunityObj,
 
     forumThreadsObj: props.forumThreadsObj,
     forumCommentsObj: props.forumCommentsObj,
@@ -421,7 +413,6 @@ export async function getServerSideProps({ req, res, query }) {
   const feedObj = lodashGet(dataObj, ['feedObj'], {});
 
   const pagesArr = lodashGet(dataObj, ['pagesObj', 'arr'], []);
-  // const users_id = lodashGet(dataObj, ['users_id'], '');
   
   const pageObj = lodashGet(dataObj, ['pageObj'], {});
 

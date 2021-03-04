@@ -25,6 +25,8 @@ import lodashHas from 'lodash/has';
 
 import ModelUserCommunities from 'app/@database/user-communities/model.js';
 import ModelForumThreads from 'app/@database/forum-threads/model.js';
+import ModelUsers from 'app/@database/users/model.js';
+import ModelCardPlayers from 'app/@database/card-players/model.js';
 import ModelFeeds from 'app/@database/feeds/model.js';
 import ModelRedirections from 'app/@database/redirections/model.js';
 
@@ -232,6 +234,26 @@ export default async (req, res) => {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'RNzXSgP2P', messageID: 'Error' }] });
 
     }
+
+
+
+
+    // --------------------------------------------------
+    //   DB find / users / About の管理者情報用
+    // --------------------------------------------------
+    
+    returnObj.userCommunitiesAdministratorObj = await ModelUsers.findOneForAbout({
+
+      localeObj,
+      users_id: userCommunityObj.users_id,
+
+    });
+
+    // console.log(`
+    //   ----- returnObj.userCommunitiesAdministratorObj -----\n
+    //   ${util.inspect(returnObj.userCommunitiesAdministratorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
 
 
 

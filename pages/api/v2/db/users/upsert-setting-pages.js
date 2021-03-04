@@ -50,7 +50,7 @@ import { experienceCalculate } from 'app/@modules/experience.js';
 // ---------------------------------------------
 
 import { validationIP } from 'app/@validations/ip.js';
-import { validationBoolean } from 'app/@validations/boolean.js';
+// import { validationBoolean } from 'app/@validations/boolean.js';
 
 import { validationUsersUserIDServer } from 'app/@database/users/validations/user-id-server.js';
 import { validationUsersPagesType, validationUsersPagesTitle, validationUsersPagesLanguage } from 'app/@database/users/validations/pages.js';
@@ -125,7 +125,7 @@ export default async (req, res) => {
       imagesAndVideosObj,
       userID,
       pagesArr,
-      approval,
+      // approval,
       
     } = bodyObj;
     
@@ -136,7 +136,7 @@ export default async (req, res) => {
     
     lodashSet(requestParametersObj, ['userID'], userID);
     lodashSet(requestParametersObj, ['pagesArr'], pagesArr);
-    lodashSet(requestParametersObj, ['approval'], approval);
+    // lodashSet(requestParametersObj, ['approval'], approval);
     lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
     
     
@@ -169,7 +169,7 @@ export default async (req, res) => {
     
     await validationIP({ throwError: true, required: true, value: ip });
     await validationUsersUserIDServer({ throwError: true, value: userID, loginUsers_id });
-    await validationBoolean({ throwError: true, value: approval });
+    // await validationBoolean({ throwError: true, value: approval });
     
     
     // --------------------------------------------------
@@ -208,7 +208,7 @@ export default async (req, res) => {
     //   Find One - userID が変更された場合はページを再読み込みする
     // --------------------------------------------------
     
-    let docUsersObj = await ModelUsers.findOne({
+    const docUsersObj = await ModelUsers.findOne({
       
       conditionObj: {
         _id: loginUsers_id
@@ -220,6 +220,11 @@ export default async (req, res) => {
       returnObj.pageTransition = true;
     }
     
+    // console.log(chalk`
+    // userID: {green ${userID}}
+    // docUsersObj.userID: {green ${docUsersObj.userID}}
+    // `);
+
     // console.log(`
     //   ----- docUsersObj -----\n
     //   ${util.inspect(docUsersObj, { colors: true, depth: null })}\n
@@ -271,7 +276,6 @@ export default async (req, res) => {
         
         conditionObj: {
           _id: imagesAndVideos_id,
-          users_id: loginUsers_id,
         }
         
       });
@@ -320,7 +324,11 @@ export default async (req, res) => {
       //   ページを再読み込みする
       // --------------------------------------------------
       
-      returnObj.pageTransition = true;
+      const oldImagesAndVideos_id = lodashGet(imagesAndVideosSaveObj, ['_id'], '');
+
+      if (imagesAndVideos_id === oldImagesAndVideos_id) {
+        returnObj.pageTransition = true;
+      }
       
       
       // --------------------------------------------------
@@ -338,6 +346,37 @@ export default async (req, res) => {
       //   });
         
       // }
+
+      
+
+      // console.log(chalk`
+      // imagesAndVideos_id: {green ${imagesAndVideos_id}}
+      // loginUsers_id: {green ${loginUsers_id}}
+      // `);
+
+      // console.log(`
+      //   ----- imagesAndVideosObj -----\n
+      //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // console.log(`
+      //   ----- oldImagesAndVideosObj -----\n
+      //   ${util.inspect(oldImagesAndVideosObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // console.log(`
+      //   ----- imagesAndVideosConditionObj -----\n
+      //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+
+      // console.log(`
+      //   ----- imagesAndVideosSaveObj -----\n
+      //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
     }
@@ -370,22 +409,22 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   Follows
+    //   Follows / ユーザー承認制をやめたためコメントアウト 2021/3/4
     // --------------------------------------------------
     
-    const followsConditionObj = {
+    // const followsConditionObj = {
       
-      users_id: loginUsers_id
+    //   users_id: loginUsers_id
       
-    };
+    // };
     
-    const followsSaveObj = {
+    // const followsSaveObj = {
       
-      $set: {
-        approval
-      }
+    //   $set: {
+    //     approval
+    //   }
       
-    };
+    // };
     
     
     // --------------------------------------------------
@@ -396,8 +435,8 @@ export default async (req, res) => {
       
       usersConditionObj,
       usersSaveObj,
-      followsConditionObj,
-      followsSaveObj,
+      // followsConditionObj,
+      // followsSaveObj,
       imagesAndVideosConditionObj,
       imagesAndVideosSaveObj,
       
@@ -409,26 +448,6 @@ export default async (req, res) => {
     // --------------------------------------------------
     //   experiences
     // --------------------------------------------------
-    
-    // experienceCalculateArr.push({
-    //   type: 'user-page-change-url',
-    //   calculation: 'addition',
-    // });
-      
-    // experienceCalculateArr.push({
-    //   type: 'user-page-upload-image-main',
-    // });
-    
-    // experienceCalculateArr.push({
-    //   type: 'card-player-edit',
-    //   calculation: 'addition',
-    // });
-    
-    // console.log(`
-    //   ----- experienceCalculateArr -----\n
-    //   ${util.inspect(experienceCalculateArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     let experienceObj = {};
     
@@ -468,22 +487,6 @@ export default async (req, res) => {
     
     
     
-    // --------------------------------------------------
-    //   ヘッダーデータ取得
-    // --------------------------------------------------
-    
-    // docUsersObj = await ModelUsers.findOneForUser({
-      
-    //   localeObj,
-    //   loginUsers_id,
-    //   users_id: loginUsers_id,
-      
-    // });
-    
-    // returnObj.headerObj = lodashGet(docUsersObj, ['headerObj'], {});
-    
-    
-    
     
     // --------------------------------------------------
     //   console.log
@@ -504,10 +507,16 @@ export default async (req, res) => {
     //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
+
     // console.log(`
     //   ----- pagesArr -----\n
     //   ${util.inspect(pagesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

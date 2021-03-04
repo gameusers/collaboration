@@ -266,7 +266,7 @@ export default async (req, res) => {
     let videos = 0;
     
     if (imagesAndVideosObj) {
-      
+      // console.log('imagesAndVideosObjあり');
       
       // --------------------------------------------------
       //   画像を保存する

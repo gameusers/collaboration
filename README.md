@@ -278,8 +278,10 @@ Node.js が利用できない場合はインストールを行い、利用でき
 
 メモリに余裕のある場合は、大きめの値に設定するとエラーが起きにくくなります。
 
+package.json ファイルを開くと scripts の欄に "dev": "NODE_ENV=development node --max-old-space-size=4096 server.js" と書かれた部分があります。ここの --max-old-space-size=4096 を変更します。
 
-    # package.json ファイルを開いて scripts > dev の欄に max-old-space-size と書かれた部分があります。この部分を利用できるメモリの範囲内に設定してください。
+
+    # 1024(1GB) / 2048(2GB) / 3072(3GB) / 4096(4GB)
     --max-old-space-size=4096
     ↓
     --max-old-space-size=1024

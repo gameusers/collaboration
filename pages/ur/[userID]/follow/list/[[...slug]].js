@@ -58,7 +58,7 @@ import ListUr from 'app/common/follow/v2/list-ur.js';
 
 // --------------------------------------------------
 //   Function Components
-//   URL: http://localhost:8080/ur/***/follow/list
+//   URL: http://localhost:8080/ur/***/follow/list/***
 // --------------------------------------------------
 
 /**
@@ -85,8 +85,6 @@ const ContainerLayout = (props) => {
     //   Router.push でページを移動した際の処理
     //   ISO8601に変更があったら（ページを移動したら）更新する
     // --------------------------------------------------
-
-    // setButtonDisabled(false);
 
     setFollowListGcObj(props.followListGcObj);
     setFollowListUcObj(props.followListUcObj);

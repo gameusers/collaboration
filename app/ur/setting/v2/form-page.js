@@ -29,6 +29,7 @@ import { css, jsx } from '@emotion/react';
 
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 import lodashCloneDeep from 'lodash/cloneDeep';
 
 
@@ -38,8 +39,8 @@ import lodashCloneDeep from 'lodash/cloneDeep';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+// import FormControlLabel from '@material-ui/core/FormControlLabel';
+// import Checkbox from '@material-ui/core/Checkbox';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -373,7 +374,7 @@ const Component = (props) => {
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
   const [userID, setUserID] = useState(lodashGet(props, ['userID'], ''));
-  const [approval, setApproval] = useState(lodashGet(props, ['approval'], false));
+  // const [approval, setApproval] = useState(lodashGet(props, ['approval'], false));
   const [pagesArr, setPagesArr] = useState(arr);
 
   const [imagesAndVideosObj, setImagesAndVideosObj] = useState(pagesImagesAndVideosObj);
@@ -467,14 +468,24 @@ const Component = (props) => {
       const formDataObj = {
 
         userID,
-        approval,
+        // approval,
         pagesArr,
 
       };
 
+      // if (lodashHas(imagesAndVideosObj, ['arr', 0, '_id'])) {
+      //   formDataObj.imagesAndVideosObj = imagesAndVideosObj;
+      // }
+
       if (Object.keys(imagesAndVideosObj).length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
+
+      // console.log(`
+      //   ----- imagesAndVideosObj -----\n
+      //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
 
 
       // ---------------------------------------------
@@ -511,6 +522,8 @@ const Component = (props) => {
       // ---------------------------------------------
       //   Snackbar: Success
       // ---------------------------------------------
+
+      const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
 
       // ページをリロードする場合は短い表示にする
       if (pageTransition) {
@@ -552,8 +565,6 @@ const Component = (props) => {
       // ---------------------------------------------
       //   Page Transition / URLを変更した場合にリロードする
       // ---------------------------------------------
-
-      const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
 
       if (pageTransition) {
         window.location.href = `${process.env.NEXT_PUBLIC_URL_BASE}ur/${userID}/setting`;
@@ -854,7 +865,7 @@ const Component = (props) => {
 
 
           {/* フォロー承認 */}
-          <div
+          {/* <div
             css={css`
               border-top: 1px dashed #848484;
               margin: 24px 0 0 0;
@@ -890,7 +901,7 @@ const Component = (props) => {
               label="フォロー承認制にする"
             />
 
-          </div>
+          </div> */}
 
 
 

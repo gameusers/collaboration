@@ -1384,8 +1384,8 @@ const findFollowContents = async ({
     //   Period
     // --------------------------------------------------
 
-    const datePeriod = new Date("2018-02-05T12:00:00.000Z");
-    // const datePeriod = moment().utc().add(-(intPeriod), 'minutes').toDate();
+    // const datePeriod = new Date("2018-02-05T12:00:00.000Z");
+    const datePeriod = moment().utc().add(-(intPeriod), 'minutes').toDate();
 
 
 

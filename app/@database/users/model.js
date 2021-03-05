@@ -1280,7 +1280,7 @@ const findOneForLoginUsersObj = async ({
 
 /**
  * ユーザーコミュニティのAbout用のデータを取得する
- * 2020/8/13 / 2021/3/4
+ * create: 2021/3/4
  * @param {Object} localeObj - ロケール
  * @param {string} users_id - DB users _id / ユーザーID
  * @return {Object} 取得データ

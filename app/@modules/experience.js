@@ -426,67 +426,6 @@ const calculateAccountCountDay = async ({
 
     }
 
-    // ---------------------------------------------
-    //   newHistoryObj
-    // ---------------------------------------------
-
-    // ----------------------------------------
-    //   - Update
-    // ----------------------------------------
-
-    // let newHistoryObj = {};
-
-    // if (Object.keys(historyObj).length !== 0) {
-
-    //   newHistoryObj = historyObj;
-
-    //   const datetimeCurrent = moment(ISO8601).utc();
-    //   const datetimeUpdated = moment(newHistoryObj.updatedDate).utc();
-
-
-    //   // ---------------------------------------------
-    //   //   前回の更新から日、月、年が変わっている場合はカウントを0にする
-    //   // ---------------------------------------------
-
-    //   if (limitDay && datetimeCurrent.isSame(datetimeUpdated, 'day') === false) {
-
-    //     newHistoryObj.countDay = 0;
-
-    //   } else if (limitMonth && datetimeCurrent.isSame(datetimeUpdated, 'month') === false) {
-
-    //     newHistoryObj.countMonth = 0;
-
-    //   } else if (limitYear && datetimeCurrent.isSame(datetimeUpdated, 'year') === false) {
-
-    //     newHistoryObj.countYear = 0;
-
-    //   }
-
-    //   newHistoryObj.updatedDate = ISO8601;
-
-
-    // // ----------------------------------------
-    // //   - Insert
-    // // ----------------------------------------
-
-    // } else {
-
-    //   newHistoryObj = {
-
-    //     _id: shortid.generate(),
-    //     createdDate: ISO8601,
-    //     updatedDate: ISO8601,
-    //     type: 'account-count-day',
-    //     countDay: 0,
-    //     countMonth: 0,
-    //     countYear: 0,
-    //     countValid: 0,
-    //     countTotal: 0,
-
-    //   };
-
-    // }
-
 
 
 
@@ -517,8 +456,8 @@ const calculateAccountCountDay = async ({
       // 獲得できるすべての titles_id を取得する
       allTitles_idsArr.push(valueObj.titles_id);
 
-      // 獲得した titles_id を取得する
-      if (valueObj.count <= newHistoryObj.countValid) {
+      // 獲得した titles_id を取得する  (アカウント作成当日 countValid が 0 のときは無効)
+      if (newHistoryObj.countValid > 0 && valueObj.count <= newHistoryObj.countValid) {
         newAcquiredTitles_idsArr.push(valueObj.titles_id);
       }
 
@@ -570,15 +509,20 @@ const calculateAccountCountDay = async ({
     //   /app/@modules/experience.js - calculateAccountCountDay
     // `);
 
+    // console.log(chalk`
+    // users_id: {green ${users_id}}
+    // ISO8601: {green ${ISO8601}}
+    // `);
+
     // console.log(`
-    //   ----- acquiredTitles_idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(acquiredTitles_idsArr)), { colors: true, depth: null })}\n
+    //   ----- historiesArr -----\n
+    //   ${util.inspect(historiesArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
     // console.log(`
-    //   ----- allTitles_idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(allTitles_idsArr)), { colors: true, depth: null })}\n
+    //   ----- acquiredTitles_idsArr -----\n
+    //   ${util.inspect(acquiredTitles_idsArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
@@ -602,25 +546,13 @@ const calculateAccountCountDay = async ({
 
     // console.log(`
     //   ----- newHistoryObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(newHistoryObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- historiesArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(historiesArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-
-    // console.log(`
-    //   ----- newHistoryObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(newHistoryObj)), { colors: true, depth: null })}\n
+    //   ${util.inspect(newHistoryObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 
     // console.log(`
     //   ----- returnObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
 

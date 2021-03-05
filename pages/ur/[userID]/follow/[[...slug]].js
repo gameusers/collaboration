@@ -467,8 +467,8 @@ export async function getServerSideProps({ req, res, query }) {
 
   }
 
-  const titles = titlesArr.length > 0 ? ` ${titlesArr.join(' > ')}` : '';
-  const title = `フォロー > ${titles} - ${pageTitle}`;
+  const titles = titlesArr.length > 0 ? ` > ${titlesArr.join(' > ')}` : '';
+  const title = `フォロー${titles} - ${pageTitle}`;
 
   const metaObj = {
 

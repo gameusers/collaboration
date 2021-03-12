@@ -1,4 +1,4 @@
-FROM node:lts
+FROM node:lts-buster
 
 # 作業ディレクトリーを作成
 WORKDIR /src

@@ -79,7 +79,7 @@
     "rimraf": "^3.0.2",
     "shortid": "^2.2.16",
     "simple-react-lightbox": "^3.6.3",
-    "swiper": "^6.4.15",
+    "swiper": "^6.5.1",
     "twitter": "^1.7.1",
     "unstated-next": "^1.1.0",
     "validator": "^13.5.2",
